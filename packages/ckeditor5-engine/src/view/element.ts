@@ -8,7 +8,7 @@
  */
 
 import { ViewNode } from './node.js';
-import { Text } from './text.js';
+import { ViewText } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
 import { Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
@@ -1366,7 +1366,7 @@ export interface ViewNormalizedConsumables {
 function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<string | ViewItem> ): Array<ViewNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( document, nodes ) ];
+		return [ new ViewText( document, nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -1377,9 +1377,9 @@ function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<
 
 	for ( const node of nodes ) {
 		if ( typeof node == 'string' ) {
-			normalizedNodes.push( new Text( document, node ) );
+			normalizedNodes.push( new ViewText( document, node ) );
 		} else if ( node instanceof TextProxy ) {
-			normalizedNodes.push( new Text( document, node.data ) );
+			normalizedNodes.push( new ViewText( document, node.data ) );
 		} else {
 			normalizedNodes.push( node );
 		}

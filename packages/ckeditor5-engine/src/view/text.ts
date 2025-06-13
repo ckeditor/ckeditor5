@@ -20,7 +20,7 @@ import { type ViewDocument } from './document.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
  * method when working on non-semantic views.
  */
-export class Text extends ViewNode {
+export class ViewText extends ViewNode {
 	/**
 	 * The text content.
 	 *
@@ -85,7 +85,7 @@ export class Text extends ViewNode {
 	 * @param otherNode Node to check if it is same as this node.
 	 */
 	public isSimilar( otherNode: ViewNode ): boolean {
-		if ( !( otherNode instanceof Text ) ) {
+		if ( !( otherNode instanceof ViewText ) ) {
 			return false;
 		}
 
@@ -98,8 +98,8 @@ export class Text extends ViewNode {
 	 * @internal
 	 * @returns Text node that is a clone of this node.
 	 */
-	public _clone(): Text {
-		return new Text( this.document, this.data );
+	public _clone(): ViewText {
+		return new ViewText( this.document, this.data );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -117,12 +117,10 @@ export class Text extends ViewNode {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Text.prototype.is = function( type: string ): boolean {
+ViewText.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'view:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'view:text' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'view:node';
 };
-
-export { Text as ViewText };

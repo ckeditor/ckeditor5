@@ -7,7 +7,7 @@ import { ViewRange } from '../../src/view/range.js';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -403,9 +403,9 @@ describe( 'Range', () => {
 		// t1      t2             t3
 
 		beforeEach( () => {
-			t1 = new Text( document, 'foo' );
-			t2 = new Text( document, 'bar' );
-			t3 = new Text( document, 'baz' );
+			t1 = new ViewText( document, 'foo' );
+			t2 = new ViewText( document, 'bar' );
+			t3 = new ViewText( document, 'baz' );
 			p1 = new ViewElement( document, 'p', null, [ t1, t2 ] );
 			p2 = new ViewElement( document, 'p', null, t3 );
 			root = new ViewElement( document, 'div', null, [ p1, p2 ] );
@@ -685,7 +685,7 @@ describe( 'Range', () => {
 		let div, p, foz;
 
 		beforeEach( () => {
-			foz = new Text( document, 'foz' );
+			foz = new ViewText( document, 'foz' );
 			p = new ViewElement( document, 'p', null, foz );
 			div = new ViewElement( document, 'div', null, p );
 		} );
@@ -712,7 +712,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should create a proper range on a text proxy', () => {
-				const text = new Text( document, 'foobar' );
+				const text = new ViewText( document, 'foobar' );
 				const textProxy = new TextProxy( text, 2, 3 );
 				const range = ViewRange._createOn( textProxy );
 
@@ -759,8 +759,8 @@ describe( 'Range', () => {
 
 	describe( 'getCommonAncestor()', () => {
 		it( 'should return common ancestor for positions from Range', () => {
-			const foz = new Text( document, 'foz' );
-			const bar = new Text( document, 'bar' );
+			const foz = new ViewText( document, 'foz' );
+			const bar = new ViewText( document, 'bar' );
 
 			const li1 = new ViewElement( document, 'li', null, foz );
 			const li2 = new ViewElement( document, 'li', null, bar );

@@ -4,7 +4,7 @@
  */
 
 import { TextProxy } from '../../src/view/textproxy.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
@@ -19,7 +19,7 @@ describe( 'TextProxy', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );
-		text = new Text( document, 'abcdefgh' );
+		text = new ViewText( document, 'abcdefgh' );
 		parent = new ViewContainerElement( document, 'p', [], [ text ] );
 		wrapper = new ViewContainerElement( document, 'div', [], parent );
 

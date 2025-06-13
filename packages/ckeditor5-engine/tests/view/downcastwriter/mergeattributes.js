@@ -5,7 +5,7 @@
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { Text } from '../../../src/view/text.js';
+import { ViewText } from '../../../src/view/text.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewDocument } from '../../../src/view/document.js';
@@ -65,8 +65,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should merge when placed between two text nodes', () => {
 			// <p>foobar</p> -> <p>foo|bar</p>
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
 			const p = new ViewContainerElement( document, 'p', null, [ t1, t2 ] );
 			const position = new ViewPosition( p, 1 );
 

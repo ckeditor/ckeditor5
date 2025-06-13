@@ -4,7 +4,7 @@
  */
 
 import { ViewElement } from '../../src/view/element.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
@@ -21,10 +21,10 @@ describe( 'Node', () => {
 	before( () => {
 		document = new ViewDocument( new StylesProcessor() );
 
-		charB = new Text( document, 'b' );
-		charA = new Text( document, 'a' );
+		charB = new ViewText( document, 'b' );
+		charA = new ViewText( document, 'a' );
 		img = new ViewElement( document, 'img' );
-		charR = new Text( document, 'r' );
+		charR = new ViewText( document, 'r' );
 
 		one = new ViewElement( document, 'one' );
 		two = new ViewElement( document, 'two', null, [ charB, charA, img, charR ] );
@@ -179,9 +179,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( document, 'foo' );
-			const bar = new Text( document, 'bar' );
-			const bom = new Text( document, 'bom' );
+			const foo = new ViewText( document, 'foo' );
+			const bar = new ViewText( document, 'bar' );
+			const bom = new ViewText( document, 'bom' );
 			const d = new ViewElement( document, 'd', null, [ bar ] );
 			const c = new ViewElement( document, 'c', null, [ foo, d ] );
 			const b = new ViewElement( document, 'b', null, [ c ] );
@@ -206,8 +206,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( document, 'foo' );
-			const bar = new Text( document, 'bar' );
+			const foo = new ViewText( document, 'foo' );
+			const bar = new ViewText( document, 'bar' );
 			const df = new ViewDocumentFragment( document, [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
@@ -231,7 +231,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			const f = new Text( document, 'f' );
+			const f = new ViewText( document, 'f' );
 			const bar = new ViewElement( document, 'bar', [], [] );
 
 			f.parent = bar;
@@ -352,7 +352,7 @@ describe( 'Node', () => {
 
 	describe( 'isAttached()', () => {
 		it( 'returns false for a fresh node', () => {
-			const char = new Text( document, 'x' );
+			const char = new ViewText( document, 'x' );
 			const el = new ViewElement( document, 'one' );
 
 			expect( char.isAttached() ).to.equal( false );
@@ -366,7 +366,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			new ViewDocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
@@ -375,7 +375,7 @@ describe( 'Node', () => {
 
 	describe( '_remove()', () => {
 		it( 'should remove node from its parent', () => {
-			const char = new Text( document, 'a' );
+			const char = new ViewText( document, 'a' );
 			const parent = new ViewElement( document, 'p', null, [ char ] );
 			char._remove();
 
@@ -383,7 +383,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'uses parent._removeChildren method', () => {
-			const char = new Text( document, 'a' );
+			const char = new ViewText( document, 'a' );
 			const parent = new ViewElement( document, 'p', null, [ char ] );
 			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
 			const index = char.index;
@@ -396,7 +396,7 @@ describe( 'Node', () => {
 
 	describe( 'toJSON()', () => {
 		it( 'should prevent circular reference when stringifying a node', () => {
-			const char = new Text( document, 'a' );
+			const char = new ViewText( document, 'a' );
 			const parent = new ViewElement( document, 'p', null );
 			parent._appendChild( char );
 
@@ -420,7 +420,7 @@ describe( 'Node', () => {
 		} );
 
 		beforeEach( () => {
-			text = new Text( document, 'foo' );
+			text = new ViewText( document, 'foo' );
 			img = new ViewElement( document, 'img', { 'src': 'img.png' } );
 
 			root = new ViewElement( document, 'p', { renderer: { markToSync: rootChangeSpy } } );

@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 
 import { Mention } from '../src/mention.js';
 import { MentionEditing } from '../src/mentionediting.js';
@@ -61,7 +61,7 @@ describe( 'Mention', () => {
 
 	describe( 'toMentionAttribute()', () => {
 		it( 'should create mention attribute with default properties', () => {
-			const text = new Text( viewDocument, 'John Doe' );
+			const text = new ViewText( viewDocument, 'John Doe' );
 
 			const viewElement = new ViewElement( viewDocument, 'span', {
 				'data-mention': '@John'
@@ -75,7 +75,7 @@ describe( 'Mention', () => {
 		} );
 
 		it( 'should create mention attribute with provided attributes', () => {
-			const text = new Text( viewDocument, 'John Doe' );
+			const text = new ViewText( viewDocument, 'John Doe' );
 
 			const viewElement = new ViewElement( viewDocument, 'span', {
 				'data-mention': '@John'

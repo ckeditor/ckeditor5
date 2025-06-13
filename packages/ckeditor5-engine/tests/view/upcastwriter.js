@@ -5,7 +5,7 @@
 
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewElement } from '../../src/view/element.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { UpcastWriter } from '../../src/view/upcastwriter.js';
 import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 import { ViewPosition } from '../../src/view/position.js';
@@ -95,7 +95,7 @@ describe( 'UpcastWriter', () => {
 		it( 'should create text', () => {
 			const text = writer.createText( 'FooBar' );
 
-			expect( text ).to.instanceOf( Text );
+			expect( text ).to.instanceOf( ViewText );
 			expect( text.data ).to.equal( 'FooBar' );
 		} );
 	} );

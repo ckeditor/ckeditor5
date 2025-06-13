@@ -16,7 +16,7 @@ import { type ViewRange } from './range.js';
 import { type ViewRawElement } from './rawelement.js';
 import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type ViewSelection } from './selection.js';
-import { type Text } from './text.js';
+import { type ViewText } from './text.js';
 import { type TextProxy } from './textproxy.js';
 import { type UIElement } from './uielement.js';
 
@@ -56,7 +56,7 @@ export abstract class TypeCheckable {
 	 */
 	public is( type: 'node' | 'view:node' ): this is (
 		ViewNode |
-		Text |
+		ViewText |
 		ViewElement |
 		ViewAttributeElement |
 		ViewContainerElement |
@@ -300,7 +300,7 @@ export abstract class TypeCheckable {
 	public is( type: 'uiElement' | 'view:uiElement' ): this is UIElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/text~Text}.
+	 * Checks whether this object is of type {@link module:engine/view/text~ViewText}.
 	 *
 	 * ```ts
 	 * text.is( '$text' ); // -> true
@@ -315,7 +315,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label TEXT
 	 */
-	public is( type: '$text' | 'view:$text' ): this is Text;
+	public is( type: '$text' | 'view:$text' ): this is ViewText;
 
 	/**
 	 * hecks whether this object is of type {@link module:engine/view/documentfragment~ViewDocumentFragment}.

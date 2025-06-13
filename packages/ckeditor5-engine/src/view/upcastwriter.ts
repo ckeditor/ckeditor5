@@ -9,7 +9,7 @@
 
 import { ViewDocumentFragment } from './documentfragment.js';
 import { ViewElement, type ViewElementAttributes } from './element.js';
-import { Text } from './text.js';
+import { ViewText } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewRange } from './range.js';
@@ -93,13 +93,13 @@ export class UpcastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/text~Text} instance.
+	 * Creates a new {@link module:engine/view/text~ViewText} instance.
 	 *
 	 * @param data The text's data.
 	 * @returns The created text node.
 	 */
-	public createText( data: string ): Text {
-		return new Text( this.document, data );
+	public createText( data: string ): ViewText {
+		return new ViewText( this.document, data );
 	}
 
 	/**

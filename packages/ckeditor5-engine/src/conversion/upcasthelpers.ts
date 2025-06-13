@@ -515,9 +515,10 @@ export function convertToModelFragment() {
 }
 
 /**
- * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~ModelText}.
+ * Function factory, creates a converter that converts
+ * {@link module:engine/view/text~ViewText} to {@link module:engine/model/text~ModelText}.
  *
- * @returns {@link module:engine/view/text~Text View text} converter.
+ * @returns {@link module:engine/view/text~ViewText View text} converter.
  * @internal
  */
 export function convertText() {

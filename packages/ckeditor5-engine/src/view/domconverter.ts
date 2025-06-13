@@ -1042,7 +1042,7 @@ export class ViewDomConverter {
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
-	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * To find a corresponding text for {@link module:engine/view/text~ViewText view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
 	 * @label ELEMENT
@@ -1054,7 +1054,7 @@ export class ViewDomConverter {
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
-	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * To find a corresponding text for {@link module:engine/view/text~ViewText view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
 	 * @label DOCUMENT_FRAGMENT
@@ -1066,7 +1066,7 @@ export class ViewDomConverter {
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
-	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
+	 * To find a corresponding text for {@link module:engine/view/text~ViewText view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
 	 * @label DOCUMENT_FRAGMENT_OR_ELEMENT
@@ -1657,7 +1657,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Takes text data from a given {@link module:engine/view/text~Text#data} and processes it so
+	 * Takes text data from a given {@link module:engine/view/text~ViewText#data} and processes it so
 	 * it is correctly displayed in the DOM.
 	 *
 	 * Following changes are done:
@@ -1758,7 +1758,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling
+	 * Helper function. For given {@link module:engine/view/text~ViewText view text node}, it finds previous or next sibling
 	 * that is contained in the same container element. If there is no such sibling, `null` is returned.
 	 *
 	 * @param node Reference node.

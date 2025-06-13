@@ -22,7 +22,7 @@ import { UIElement } from './uielement.js';
 import { ViewRawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { ViewDocumentFragment } from './documentfragment.js';
-import { Text } from './text.js';
+import { ViewText } from './text.js';
 import { ViewEditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
@@ -205,7 +205,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/text~Text text node}.
+	 * Creates a new {@link module:engine/view/text~ViewText text node}.
 	 *
 	 * ```ts
 	 * writer.createText( 'foo' );
@@ -214,8 +214,8 @@ export class ViewDowncastWriter {
 	 * @param data The text's data.
 	 * @returns The created text node.
 	 */
-	public createText( data: string ): Text {
-		return new Text( this.document, data );
+	public createText( data: string ): ViewText {
+		return new ViewText( this.document, data );
 	}
 
 	/**
@@ -828,7 +828,7 @@ export class ViewDowncastWriter {
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
-	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
+	 * {@link module:engine/view/text~ViewText text nodes} while `mergeContainer` merges two
 	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
@@ -899,7 +899,7 @@ export class ViewDowncastWriter {
 	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
 	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
-	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
+	 * {@link module:engine/view/text~ViewText text nodes} while `mergeContainer` merges two
 	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
@@ -922,7 +922,9 @@ export class ViewDowncastWriter {
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
-		const newPosition = lastChild instanceof Text ? ViewPosition._createAt( lastChild, 'end' ) : ViewPosition._createAt( prev, 'end' );
+		const newPosition = lastChild instanceof ViewText ?
+			ViewPosition._createAt( lastChild, 'end' ) :
+			ViewPosition._createAt( prev, 'end' );
 
 		this.move( ViewRange._createIn( next ), ViewPosition._createAt( prev, 'end' ) );
 		this.remove( ViewRange._createOn( next ) );
@@ -935,7 +937,7 @@ export class ViewDowncastWriter {
 	 * and merging them afterwards.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
-	 * contains instances that are not {@link module:engine/view/text~Text Texts},
+	 * contains instances that are not {@link module:engine/view/text~ViewText Texts},
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElements},
 	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
 	 * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElements},
@@ -2147,28 +2149,28 @@ function movePositionToTextNode( position: ViewPosition ): ViewPosition {
  * @returns New position after breaking text node.
  */
 function breakTextNode( position: ViewPosition ): ViewPosition {
-	if ( position.offset == ( position.parent as Text ).data.length ) {
-		return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+	if ( position.offset == ( position.parent as ViewText ).data.length ) {
+		return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! + 1 );
 	}
 
 	if ( position.offset === 0 ) {
-		return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! );
+		return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! );
 	}
 
 	// Get part of the text that need to be moved.
-	const textToMove = ( position.parent as Text ).data.slice( position.offset );
+	const textToMove = ( position.parent as ViewText ).data.slice( position.offset );
 
 	// Leave rest of the text in position's parent.
-	( position.parent as Text )._data = ( position.parent as Text ).data.slice( 0, position.offset );
+	( position.parent as ViewText )._data = ( position.parent as ViewText ).data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
 	( position.parent.parent as any )._insertChild(
-		( position.parent as Text ).index! + 1,
-		new Text( position.root.document, textToMove )
+		( position.parent as ViewText ).index! + 1,
+		new ViewText( position.root.document, textToMove )
 	);
 
 	// Return new position between two newly created text nodes.
-	return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+	return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! + 1 );
 }
 
 /**
@@ -2178,7 +2180,7 @@ function breakTextNode( position: ViewPosition ): ViewPosition {
  * @param t2 Second text node to merge. This node will be removed after merging.
  * @returns Position after merging text nodes.
  */
-function mergeTextNodes( t1: Text, t2: Text ): ViewPosition {
+function mergeTextNodes( t1: ViewText, t2: ViewText ): ViewPosition {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
 	t1._data += t2.data;
@@ -2187,7 +2189,7 @@ function mergeTextNodes( t1: Text, t2: Text ): ViewPosition {
 	return new ViewPosition( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, UIElement ];
+const validNodesToInsert = [ ViewText, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, UIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.
@@ -2209,7 +2211,7 @@ function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDoc
 			 * * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement},
 			 * * {@link module:engine/view/uielement~UIElement UIElement},
 			 * * {@link module:engine/view/rawelement~ViewRawElement RawElement},
-			 * * {@link module:engine/view/text~Text Text}.
+			 * * {@link module:engine/view/text~ViewText Text}.
 			 *
 			 * @error view-writer-insert-invalid-node-type
 			 */

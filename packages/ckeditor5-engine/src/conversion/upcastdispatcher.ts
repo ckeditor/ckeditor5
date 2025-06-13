@@ -582,7 +582,7 @@ export interface UpcastConversionData<TItem extends ViewItem | ViewDocumentFragm
 export type UpcastElementEvent = UpcastEvent<'element', ViewElement>;
 
 /**
- * Fired when a {@link module:engine/view/text~Text} is converted.
+ * Fired when a {@link module:engine/view/text~ViewText} is converted.
  *
  * @eventName ~UpcastDispatcher#text
  * @see ~UpcastDispatcher#event:element

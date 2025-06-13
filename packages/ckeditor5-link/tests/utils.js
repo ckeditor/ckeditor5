@@ -8,7 +8,7 @@ import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { ViewAttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
 import { ViewContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
-import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import { ModelSchema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -45,7 +45,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return false for text nodes', () => {
-			expect( isLinkElement( new Text( 'foo' ) ) ).to.be.false;
+			expect( isLinkElement( new ViewText( 'foo' ) ) ).to.be.false;
 		} );
 	} );
 

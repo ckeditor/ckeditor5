@@ -8,7 +8,7 @@
  */
 
 import { type ViewElement } from './element.js';
-import { type Text } from './text.js';
+import { type ViewText } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { ViewPosition } from './position.js';
 import { type ViewItem } from './item.js';
@@ -38,8 +38,8 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	public readonly boundaries: ViewRange | null;
 
 	/**
-	 * Flag indicating whether all characters from {@link module:engine/view/text~Text} should be returned as one
-	 * {@link module:engine/view/text~Text} or one by one as {@link module:engine/view/textproxy~TextProxy}.
+	 * Flag indicating whether all characters from {@link module:engine/view/text~ViewText} should be returned as one
+	 * {@link module:engine/view/text~ViewText} or one by one as {@link module:engine/view/textproxy~TextProxy}.
 	 */
 	public readonly singleCharacters: boolean;
 
@@ -240,12 +240,12 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				textLength = 1;
 			} else {
 				// Check if text stick out of walker range.
-				const endOffset = parent === this._boundaryEndParent ? this.boundaries!.end.offset : ( parent as Text ).data.length;
+				const endOffset = parent === this._boundaryEndParent ? this.boundaries!.end.offset : ( parent as ViewText ).data.length;
 
 				textLength = endOffset - position.offset;
 			}
 
-			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
+			const textProxy = new TextProxy( parent as ViewText, position.offset, textLength );
 
 			position.offset += textLength;
 			this._position = position;
@@ -329,7 +329,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		// Get node just before current position.
 		let node;
 
-		// Text {@link module:engine/view/text~Text} element is a specific parent because contains string instead of child nodes.
+		// Text {@link module:engine/view/text~ViewText} element is a specific parent because contains string instead of child nodes.
 		if ( parent.is( 'view:$text' ) ) {
 			if ( position.isAtStart ) {
 				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
@@ -357,7 +357,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			position.offset -= textLength;
 
-			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
+			const textProxy = new TextProxy( parent as ViewText, position.offset, textLength );
 
 			this._position = position;
 
@@ -419,7 +419,8 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	}
 
 	/**
-	 * Format returned data and adjust `previousPosition` and `nextPosition` if reach the bound of the {@link module:engine/view/text~Text}.
+	 * Format returned data and adjust `previousPosition` and `nextPosition` if
+	 * reach the bound of the {@link module:engine/view/text~ViewText}.
 	 *
 	 * @param type Type of step.
 	 * @param item Item between old and new position.
@@ -481,7 +482,7 @@ export { TreeWalker as ViewTreeWalker };
  * Type of the step made by {@link module:engine/view/treewalker~TreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end
  * of node, or `'text'` if walker traversed over single and multiple characters.
- * For {@link module:engine/view/text~Text} `elementStart` and `elementEnd` is not returned.
+ * For {@link module:engine/view/text~ViewText} `elementStart` and `elementEnd` is not returned.
  */
 export type TreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
 
@@ -506,7 +507,7 @@ export interface TreeWalkerValue {
 	 * position before the item.
 	 * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
 	 * the position after item.
-	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
+	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~ViewText} it is always moved from the
 	 * inside of the text to its parent just before or just after that text.
 	 */
 	previousPosition: ViewPosition;
@@ -517,7 +518,7 @@ export interface TreeWalkerValue {
 	 * the position after the item.
 	 * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
 	 * before the item.
-	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
+	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~ViewText} it is always moved from the
 	 * inside of the text to its parent just before or just after that text.
 	 */
 	nextPosition: ViewPosition;
@@ -558,7 +559,8 @@ export interface TreeWalkerOptions {
 
 	/**
 	 * Flag indicating whether all characters from
-	 * {@link module:engine/view/text~Text} should be returned as one {@link module:engine/view/text~Text} (`false`) or one by one as
+	 * {@link module:engine/view/text~ViewText} should be returned as one
+	 * {@link module:engine/view/text~ViewText} (`false`) or one by one as
 	 * {@link module:engine/view/textproxy~TextProxy} (`true`).
 	 */
 	singleCharacters?: boolean;

@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { Text } from './text.js';
+import { ViewText } from './text.js';
 import { TextProxy } from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
@@ -280,7 +280,7 @@ ViewDocumentFragment.prototype.is = function( type: string ): boolean {
 function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<ViewItem | string> ): Array<ViewNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( document, nodes ) ];
+		return [ new ViewText( document, nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -291,11 +291,11 @@ function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<
 	return Array.from( nodes )
 		.map( node => {
 			if ( typeof node == 'string' ) {
-				return new Text( document, node );
+				return new ViewText( document, node );
 			}
 
 			if ( node instanceof TextProxy ) {
-				return new Text( document, node.data );
+				return new ViewText( document, node.data );
 			}
 
 			return node;

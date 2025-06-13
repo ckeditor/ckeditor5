@@ -557,8 +557,8 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * The length is calculated as follows:
 	 * * if a {@link #registerViewToModelLength length mapping callback} is provided for the given `viewNode`, it is used to
 	 * evaluate the model length (`viewNode` is used as first and only parameter passed to the callback),
-	 * * length of a {@link module:engine/view/text~Text text node} is equal to the length of its
-	 * {@link module:engine/view/text~Text#data data},
+	 * * length of a {@link module:engine/view/text~ViewText text node} is equal to the length of its
+	 * {@link module:engine/view/text~ViewText#data data},
 	 * * length of a {@link module:engine/view/uielement~UIElement ui element} is equal to 0,
 	 * * length of a mapped {@link module:engine/view/element~ViewElement element} is equal to 1,
 	 * * length of a non-mapped {@link module:engine/view/element~ViewElement element} is equal to the length of its children.

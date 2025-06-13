@@ -12,7 +12,7 @@ import { UIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
-import { Text } from '../../../src/view/text.js';
+import { ViewText } from '../../../src/view/text.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewDocument } from '../../../src/view/document.js';
@@ -58,7 +58,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw error when element is not instance of ViewAttributeElement', () => {
 			const container = new ViewContainerElement(
-				document, 'p', null, new ViewAttributeElement( document, 'b', null, new Text( 'foo' ) )
+				document, 'p', null, new ViewAttributeElement( document, 'b', null, new ViewText( 'foo' ) )
 			);
 
 			const range = new ViewRange(

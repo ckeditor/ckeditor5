@@ -8,7 +8,7 @@ import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewElement } from '../../src/view/element.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { ViewPosition } from '../../src/view/position.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
@@ -26,7 +26,7 @@ describe( 'Selection', () => {
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 
-		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
+		const text = new ViewText( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new ViewElement( viewDocument, 'p', null, text );
 
 		selection = new ViewSelection();
@@ -707,7 +707,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should collapse selection at node and offset', () => {
-				const foo = new Text( viewDocument, 'foo' );
+				const foo = new ViewText( viewDocument, 'foo' );
 				const p = new ViewElement( viewDocument, 'p', null, foo );
 
 				selection.setTo( foo, 0 );
@@ -726,7 +726,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw an error when the second parameter is not passed and first is an item', () => {
-				const foo = new Text( viewDocument, 'foo' );
+				const foo = new ViewText( viewDocument, 'foo' );
 
 				expectToThrowCKEditorError( () => {
 					selection.setTo( foo );
@@ -734,7 +734,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
-				const foo = new Text( viewDocument, 'foo' );
+				const foo = new ViewText( viewDocument, 'foo' );
 				const p = new ViewElement( viewDocument, 'p', null, foo );
 
 				selection.setTo( foo, 'end' );
@@ -891,9 +891,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection on an item', () => {
-			const textNode1 = new Text( viewDocument, 'foo' );
-			const textNode2 = new Text( viewDocument, 'bar' );
-			const textNode3 = new Text( viewDocument, 'baz' );
+			const textNode1 = new ViewText( viewDocument, 'foo' );
+			const textNode2 = new ViewText( viewDocument, 'bar' );
+			const textNode3 = new ViewText( viewDocument, 'baz' );
 			const element = new ViewElement( viewDocument, 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on' );
@@ -908,7 +908,7 @@ describe( 'Selection', () => {
 
 		it( 'should allow setting selection inside an element', () => {
 			const element = new ViewElement(
-				viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ]
+				viewDocument, 'p', null, [ new ViewText( viewDocument, 'foo' ), new ViewText( viewDocument, 'bar' ) ]
 			);
 
 			selection.setTo( element, 'in' );
@@ -923,7 +923,7 @@ describe( 'Selection', () => {
 
 		it( 'should allow setting backward selection inside an element', () => {
 			const element = new ViewElement(
-				viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ]
+				viewDocument, 'p', null, [ new ViewText( viewDocument, 'foo' ), new ViewText( viewDocument, 'bar' ) ]
 			);
 
 			selection.setTo( element, 'in', { backward: true } );

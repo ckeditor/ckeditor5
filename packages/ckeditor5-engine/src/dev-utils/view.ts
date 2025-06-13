@@ -144,7 +144,7 @@ _setViewData._parse = _parseView;
 /**
  * Converts view elements to HTML-like string representation.
  *
- * A root element can be provided as {@link module:engine/view/text~Text text}:
+ * A root element can be provided as {@link module:engine/view/text~ViewText text}:
  *
  * ```ts
  * const text = downcastWriter.createText( 'foobar' );
@@ -321,7 +321,7 @@ export function _stringifyView(
 
 /**
  * Parses an HTML-like string and returns a view tree.
- * A simple string will be converted to a {@link module:engine/view/text~Text text} node:
+ * A simple string will be converted to a {@link module:engine/view/text~ViewText text} node:
  *
  * ```ts
  * _parseView( 'foobar' ); // Returns an instance of text.
@@ -342,7 +342,7 @@ export function _stringifyView(
  *
  * The method can _parseView multiple {@link module:engine/view/range~ViewRange ranges} provided in string data and return a
  * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
- * {@link module:engine/view/text~Text text} nodes should be marked using `{` and `}` brackets:
+ * {@link module:engine/view/text~ViewText text} nodes should be marked using `{` and `}` brackets:
  *
  * ```ts
  * const { text, selection } = _parseView( 'f{ooba}r' );
@@ -476,7 +476,7 @@ export function _parseView(
 }
 
 /**
- * Private helper class used for converting ranges represented as text inside view {@link module:engine/view/text~Text text nodes}.
+ * Private helper class used for converting ranges represented as text inside view {@link module:engine/view/text~ViewText text nodes}.
  */
 class RangeParser {
 	public sameSelectionCharacters: boolean;
@@ -494,7 +494,7 @@ class RangeParser {
 	}
 
 	/**
-	 * Parses the view and returns ranges represented inside {@link module:engine/view/text~Text text nodes}.
+	 * Parses the view and returns ranges represented inside {@link module:engine/view/text~ViewText text nodes}.
 	 * The method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If a text node is empty after
 	 * the process, it will be removed, too.
 	 *

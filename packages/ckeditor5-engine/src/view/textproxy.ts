@@ -14,13 +14,13 @@ import { type ViewDocument } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
-import { type Text } from './text.js';
+import { type ViewText } from './text.js';
 
 /**
- * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by
- * {@link module:engine/view/treewalker~TreeWalker} when only a part of {@link module:engine/view/text~Text} needs to be returned.
+ * TextProxy is a wrapper for substring of {@link module:engine/view/text~ViewText}. Instance of this class is created by
+ * {@link module:engine/view/treewalker~TreeWalker} when only a part of {@link module:engine/view/text~ViewText} needs to be returned.
  *
- * `ViewTextProxy` has an API similar to {@link module:engine/view/text~Text Text} and allows to do most of the common tasks performed
+ * `ViewTextProxy` has an API similar to {@link module:engine/view/text~ViewText Text} and allows to do most of the common tasks performed
  * on view nodes.
  *
  * **Note:** Some `ViewTextProxy` instances may represent whole text node, not just a part of it.
@@ -28,7 +28,8 @@ import { type Text } from './text.js';
  *
  * **Note:** `ViewTextProxy` is a readonly interface.
  *
- * **Note:** `ViewTextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
+ * **Note:** `ViewTextProxy` instances are created on the fly basing
+ * on the current state of parent {@link module:engine/view/text~ViewText}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
  * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~ViewNode} so it cannot be
  * inserted as a child of {@link module:engine/view/element~ViewElement}.
@@ -38,9 +39,9 @@ import { type Text } from './text.js';
  */
 export class TextProxy extends TypeCheckable {
 	/**
-	 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
+	 * Reference to the {@link module:engine/view/text~ViewText} element which TextProxy is a substring.
 	 */
-	public readonly textNode: Text;
+	public readonly textNode: ViewText;
 
 	/**
 	 * Text data represented by this text proxy.
@@ -61,7 +62,7 @@ export class TextProxy extends TypeCheckable {
 	 * from which the text proxy starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 */
-	constructor( textNode: Text, offsetInText: number, length: number ) {
+	constructor( textNode: ViewText, offsetInText: number, length: number ) {
 		super();
 
 		this.textNode = textNode;
@@ -96,7 +97,7 @@ export class TextProxy extends TypeCheckable {
 	}
 
 	/**
-	 * Flag indicating whether `ViewTextProxy` instance covers only part of the original {@link module:engine/view/text~Text text node}
+	 * Flag indicating whether `ViewTextProxy` instance covers only part of the original {@link module:engine/view/text~ViewText text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
 	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/view/textproxy~TextProxy#textNode textNode}
@@ -141,9 +142,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<Text | ViewElement | ViewDocumentFragment> {
-		const ancestors: Array<Text | ViewElement | ViewDocumentFragment> = [];
-		let parent: Text | ViewElement | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
+	} = {} ): Array<ViewText | ViewElement | ViewDocumentFragment> {
+		const ancestors: Array<ViewText | ViewElement | ViewDocumentFragment> = [];
+		let parent: ViewText | ViewElement | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
 
 		while ( parent !== null ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );

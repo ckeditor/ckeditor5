@@ -4,7 +4,7 @@
  */
 
 import { ViewNode } from '../../src/view/node.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -17,7 +17,7 @@ describe( 'Text', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
-			const text = new Text( document, 'foo' );
+			const text = new ViewText( document, 'foo' );
 
 			expect( text ).to.be.an.instanceof( ViewNode );
 			expect( text.data ).to.equal( 'foo' );
@@ -29,7 +29,7 @@ describe( 'Text', () => {
 		let text;
 
 		before( () => {
-			text = new Text( document, 'foo' );
+			text = new ViewText( document, 'foo' );
 		} );
 
 		it( 'should return true for node, text', () => {
@@ -59,7 +59,7 @@ describe( 'Text', () => {
 
 	describe( '_clone()', () => {
 		it( 'should return new text with same data', () => {
-			const text = new Text( document, 'foo bar' );
+			const text = new ViewText( document, 'foo bar' );
 			const clone = text._clone();
 
 			expect( clone ).to.not.equal( text );
@@ -68,7 +68,7 @@ describe( 'Text', () => {
 	} );
 
 	describe( 'isSimilar', () => {
-		const text = new Text( document, 'foo' );
+		const text = new ViewText( document, 'foo' );
 
 		it( 'should return false when comparing to non-text', () => {
 			expect( text.isSimilar( null ) ).to.be.false;
@@ -80,7 +80,7 @@ describe( 'Text', () => {
 		} );
 
 		it( 'should return true when data is the same', () => {
-			const other = new Text( document, 'foo' );
+			const other = new ViewText( document, 'foo' );
 
 			expect( text.isSimilar( other ) ).to.be.true;
 		} );
@@ -95,15 +95,15 @@ describe( 'Text', () => {
 
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
-			const text = new Text( document, 'foo' );
+			const text = new ViewText( document, 'foo' );
 			text._data = 'bar';
 
 			expect( text.data ).to.equal( 'bar' );
 		} );
 
 		it( 'works when using addition assignment operator (+=)', () => {
-			const foo = new Text( document, 'foo' );
-			const bar = new Text( document, 'bar' );
+			const foo = new ViewText( document, 'foo' );
+			const bar = new ViewText( document, 'bar' );
 
 			foo._data += bar.data;
 			expect( foo.data ).to.equal( 'foobar' );

@@ -11,13 +11,14 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewElement, ViewNormalizedConsumables } from '../view/element.js';
 import { type ViewNode } from '../view/node.js';
-import { type Text } from '../view/text.js';
+import { type ViewText } from '../view/text.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~ViewElement elements},
- * {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments}.
+ * {@link module:engine/view/text~ViewText text nodes} and
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments}.
  * Element's name and its parts (attributes, classes and styles) can be consumed separately. Consuming an element's name
  * does not consume its attributes, classes and styles.
  * To add items for consumption use {@link module:engine/conversion/viewconsumable~ViewConsumable#add add method}.
@@ -44,13 +45,13 @@ export class ViewConsumable {
 	/**
 	 * Map of consumable elements. If {@link module:engine/view/element~ViewElement element} is used as a key,
 	 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
-	 * For {@link module:engine/view/text~Text text nodes} and
+	 * For {@link module:engine/view/text~ViewText text nodes} and
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments} boolean value is stored as value.
 	 */
 	private _consumables = new Map<ViewNode | ViewDocumentFragment, ViewElementConsumables | boolean>();
 
 	/**
-	 * Adds view {@link module:engine/view/element~ViewElement element}, {@link module:engine/view/text~Text text node} or
+	 * Adds view {@link module:engine/view/element~ViewElement element}, {@link module:engine/view/text~ViewText text node} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} as ready to be consumed.
 	 *
 	 * ```ts
@@ -79,7 +80,7 @@ export class ViewConsumable {
 	 * @param consumables.styles Style name or array of style names.
 	 */
 	public add(
-		element: Text | ViewElement | ViewDocumentFragment,
+		element: ViewText | ViewElement | ViewDocumentFragment,
 		consumables?: Consumables | ViewNormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
@@ -103,7 +104,7 @@ export class ViewConsumable {
 	}
 
 	/**
-	 * Tests if {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~Text text node} or
+	 * Tests if {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~ViewText text node} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} can be consumed.
 	 * It returns `true` when all items included in method's call can be consumed. Returns `false` when
 	 * first already consumed item is found and `null` when first non-consumable item is found.
@@ -151,7 +152,7 @@ export class ViewConsumable {
 	}
 
 	/**
-	 * Consumes {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~Text text node} or
+	 * Consumes {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~ViewText text node} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
 	 *
@@ -204,7 +205,7 @@ export class ViewConsumable {
 	}
 
 	/**
-	 * Reverts {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~Text text node} or
+	 * Reverts {@link module:engine/view/element~ViewElement view element}, {@link module:engine/view/text~ViewText text node} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} so they can be consumed once again.
 	 * Method does not revert items that were never previously added for consumption, even if they are included in
 	 * method's call.

@@ -9,7 +9,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { Text } from '../../src/view/text.js';
+import { ViewText } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
@@ -82,7 +82,7 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should equal null if position is located inside text node', () => {
-			const text = new Text( document, 'foobar' );
+			const text = new ViewText( document, 'foobar' );
 			const position = new ViewPosition( text, 3 );
 
 			expect( position.nodeBefore ).to.be.null;
@@ -107,7 +107,7 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should equal null if position is located inside text node', () => {
-			const text = new Text( document, 'foobar' );
+			const text = new ViewText( document, 'foobar' );
 			const position = new ViewPosition( text, 3 );
 
 			expect( position.nodeAfter ).to.be.null;
@@ -157,12 +157,12 @@ describe( 'ViewPosition', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return it\'s parent root', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const docFrag = new ViewDocumentFragment( document, foo );
 
 			expect( new ViewPosition( foo, 1 ).root ).to.equal( docFrag );
 
-			const bar = new Text( document, 'bar' );
+			const bar = new ViewText( document, 'bar' );
 			const p = new ViewElement( document, 'p', null, bar );
 
 			expect( new ViewPosition( bar, 2 ).root ).to.equal( p );
@@ -172,7 +172,7 @@ describe( 'ViewPosition', () => {
 
 	describe( 'getAncestors', () => {
 		it( 'should return it\'s parent and all it\'s ancestors', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const p = new ViewElement( document, 'p', null, foo );
 			const div = new ViewElement( document, 'div', null, p );
 			const docFrag = new ViewDocumentFragment( document, div );
@@ -226,8 +226,8 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should return false if no common ancestor is found', () => {
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
 			const e1 = new ViewElement( document, 'p', null, [ t1 ] );
 			const e2 = new ViewElement( document, 'p', null, [ t2 ] );
 			const position1 = new ViewPosition( e1, 0 );
@@ -247,8 +247,8 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should compare positions that have common parent', () => {
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
 			const root = new ViewElement( document, 'p', null, [ t1, t2 ] );
 			const position1 = new ViewPosition( t1, 2 );
 			const position2 = new ViewPosition( t2, 0 );
@@ -284,8 +284,8 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should return false if no common ancestor is found', () => {
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
 			const e1 = new ViewElement( document, 'p', null, [ t1 ] );
 			const e2 = new ViewElement( document, 'p', null, [ t2 ] );
 			const position1 = new ViewPosition( e1, 0 );
@@ -305,8 +305,8 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should compare positions that have common parent', () => {
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
 			const root = new ViewElement( document, 'p', null, [ t1, t2 ] );
 			const position1 = new ViewPosition( t1, 2 );
 			const position2 = new ViewPosition( t2, 0 );
@@ -331,13 +331,13 @@ describe( 'ViewPosition', () => {
 
 	describe( 'isAtStart', () => {
 		it( 'should return true if it is at the start of it\'s parent', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const position = new ViewPosition( foo, 0 );
 			expect( position.isAtStart ).to.be.true;
 		} );
 
 		it( 'should return false if it is not at the start of it\'s parent', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const position = new ViewPosition( foo, 1 );
 			expect( position.isAtStart ).to.be.false;
 		} );
@@ -345,7 +345,7 @@ describe( 'ViewPosition', () => {
 
 	describe( 'isAtEnd', () => {
 		it( 'should return true if it is at the end of it\'s parent', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const p = new ViewElement( document, 'p', null, foo );
 
 			expect( new ViewPosition( foo, 3 ).isAtEnd ).to.be.true;
@@ -353,7 +353,7 @@ describe( 'ViewPosition', () => {
 		} );
 
 		it( 'should return false if it is not at the end of it\'s parent', () => {
-			const foo = new Text( document, 'foo' );
+			const foo = new ViewText( document, 'foo' );
 			const p = new ViewElement( document, 'p', null, foo );
 
 			expect( new ViewPosition( foo, 2 ).isAtEnd ).to.be.false;
@@ -430,7 +430,7 @@ describe( 'ViewPosition', () => {
 			} );
 
 			it( 'should create positions from node and offset', () => {
-				const foo = new Text( document, 'foo' );
+				const foo = new ViewText( document, 'foo' );
 				const p = new ViewElement( document, 'p', null, foo );
 
 				expect( ViewPosition._createAt( foo, 0 ).parent ).to.equal( foo );
@@ -444,7 +444,7 @@ describe( 'ViewPosition', () => {
 			} );
 
 			it( 'should create positions from node and flag', () => {
-				const foo = new Text( document, 'foo' );
+				const foo = new ViewText( document, 'foo' );
 				const p = new ViewElement( document, 'p', null, foo );
 
 				const fooEnd = ViewPosition._createAt( foo, 'end' );
@@ -468,7 +468,7 @@ describe( 'ViewPosition', () => {
 			} );
 
 			it( 'should create positions in document fragment', () => {
-				const foo = new Text( document, 'foo' );
+				const foo = new ViewText( document, 'foo' );
 				const docFrag = new ViewDocumentFragment( document, [ foo ] );
 
 				const pStart = ViewPosition._createAt( docFrag, 0 );
@@ -499,7 +499,7 @@ describe( 'ViewPosition', () => {
 			} );
 
 			it( 'should create positions before `ModelTextProxy`', () => {
-				const text = new Text( document, 'abc' );
+				const text = new ViewText( document, 'abc' );
 
 				const textProxy = new TextProxy( text, 1, 1 );
 				const position = new ViewPosition( text, 1 );
@@ -526,7 +526,7 @@ describe( 'ViewPosition', () => {
 			} );
 
 			it( 'should create positions after `ModelTextProxy`', () => {
-				const text = new Text( document, 'abcd' );
+				const text = new ViewText( document, 'abcd' );
 
 				const textProxy = new TextProxy( text, 1, 2 );
 				const position = new ViewPosition( text, 3 );
@@ -574,12 +574,12 @@ describe( 'ViewPosition', () => {
 
 		beforeEach( () => {
 			texts = {
-				foz: new Text( document, 'foz' ),
-				bar: new Text( document, 'bar' ),
-				lorem: new Text( document, 'Lorem ipsum dolor sit amet.' ),
-				mauris: new Text( document, 'Mauris tincidunt tincidunt leo ac rutrum.' ),
-				maecenas: new Text( document, 'Maecenas accumsan tellus.' ),
-				sed: new Text( document, 'Sed id libero at libero tristique.' )
+				foz: new ViewText( document, 'foz' ),
+				bar: new ViewText( document, 'bar' ),
+				lorem: new ViewText( document, 'Lorem ipsum dolor sit amet.' ),
+				mauris: new ViewText( document, 'Mauris tincidunt tincidunt leo ac rutrum.' ),
+				maecenas: new ViewText( document, 'Maecenas accumsan tellus.' ),
+				sed: new ViewText( document, 'Sed id libero at libero tristique.' )
 			};
 
 			liUl1 = new ViewElement( document, 'li', null, texts.foz );
@@ -648,7 +648,7 @@ describe( 'ViewPosition', () => {
 
 			root = createViewRoot( doc );
 
-			const textAbcd = new Text( document, 'abcd' );
+			const textAbcd = new ViewText( document, 'abcd' );
 			const bold = new ViewAttributeElement( document, 'b', null, [ textAbcd ] );
 
 			const paragraph = new ViewContainerElement( document, 'p', null, [ bold ] );
