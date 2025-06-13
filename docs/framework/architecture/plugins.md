@@ -60,11 +60,11 @@ The data used to generate the following tables comes from the package metadata. 
 	.doc.b-table__cell:last-child {
 		width: 66.667%;
 	}
-	.doc.html-output-default {
+	.doc.b-table__cell--default {
 		position: relative;
 		padding-right: var(--spacing-18);
 	}
-	.doc.html-output-default::after {
+	.doc.b-table__cell--default::after {
 		content: "Default";
 		border: 1px solid var(--color-primary-400);
 		color: var(--color-primary-400);
