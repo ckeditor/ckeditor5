@@ -15,7 +15,7 @@ import { type ViewDocument } from './document.js';
 import { type ViewNode } from './node.js';
 
 /**
- * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
+ * Editable element which can be a {@link module:engine/view/rooteditableelement~ViewRootEditableElement root}
  * or nested editable area in the editor.
  *
  * Editable is automatically read-only when its {@link module:engine/view/document~ViewDocument Document} is read-only.

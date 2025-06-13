@@ -65,7 +65,7 @@ Read more about bubbling events in the {@link framework/deep-dive/event-system#v
 
 #### The `delete` event
 
-Before, the {@link module:engine/view/document~ViewDocument#event:delete `delete`} event was handled by different features on different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~RootEditableElement root element}.
+Before, the {@link module:engine/view/document~ViewDocument#event:delete `delete`} event was handled by different features on different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~ViewRootEditableElement root element}.
 
 Take a look at the list of `delete` listeners across the core editor features and their {@link module:utils/priorities~PriorityString priorities}:
 

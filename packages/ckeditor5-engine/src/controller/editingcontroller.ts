@@ -14,7 +14,7 @@ import {
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils';
 
-import { RootEditableElement } from '../view/rooteditableelement.js';
+import { ViewRootEditableElement } from '../view/rooteditableelement.js';
 import { View } from '../view/view.js';
 import { Mapper } from '../conversion/mapper.js';
 import {
@@ -151,7 +151,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 				return null;
 			}
 
-			const viewRoot = new RootEditableElement( this.view.document, root.name );
+			const viewRoot = new ViewRootEditableElement( this.view.document, root.name );
 
 			viewRoot.rootName = root.rootName;
 			this.mapper.bindElements( root, viewRoot );

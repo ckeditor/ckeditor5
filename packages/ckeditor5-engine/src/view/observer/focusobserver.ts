@@ -17,8 +17,8 @@ import type { ViewDocumentInputEvent } from './inputobserver.js';
 /**
  * {@link module:engine/view/document~ViewDocument#event:focus Focus}
  * and {@link module:engine/view/document~ViewDocument#event:blur blur} events observer.
- * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
- * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
+ * Focus observer handle also {@link module:engine/view/rooteditableelement~ViewRootEditableElement#isFocused isFocused} property of the
+ * {@link module:engine/view/rooteditableelement~ViewRootEditableElement root elements}.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */

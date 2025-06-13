@@ -13,7 +13,7 @@ import { BubblingEmitterMixin } from './observer/bubblingemittermixin.js';
 import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap.js';
-import { type RootEditableElement } from './rooteditableelement.js';
+import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
@@ -36,7 +36,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
 	 * model root using {@link module:engine/model/document~ModelDocument#createRoot}.
 	 */
-	public readonly roots: Collection<RootEditableElement>;
+	public readonly roots: Collection<ViewRootEditableElement>;
 
 	/**
 	 * The styles processor instance used by this document when normalizing styles.
@@ -115,7 +115,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * @param name Name of the root.
 	 * @returns The view root element with the specified name or null when there is no root of given name.
 	 */
-	public getRoot( name: string = 'main' ): RootEditableElement | null {
+	public getRoot( name: string = 'main' ): ViewRootEditableElement | null {
 		return this.roots.get( name );
 	}
 

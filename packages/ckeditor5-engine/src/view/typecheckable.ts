@@ -14,7 +14,7 @@ import { type ViewNode } from './node.js';
 import { type ViewPosition } from './position.js';
 import { type ViewRange } from './range.js';
 import { type ViewRawElement } from './rawelement.js';
-import { type RootEditableElement } from './rooteditableelement.js';
+import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type Selection } from './selection.js';
 import { type Text } from './text.js';
 import { type TextProxy } from './textproxy.js';
@@ -63,7 +63,7 @@ export abstract class TypeCheckable {
 		ViewEditableElement |
 		ViewEmptyElement |
 		ViewRawElement |
-		RootEditableElement |
+		ViewRootEditableElement |
 		UIElement
 	);
 
@@ -97,7 +97,7 @@ export abstract class TypeCheckable {
 		ViewEditableElement |
 		ViewEmptyElement |
 		ViewRawElement |
-		RootEditableElement |
+		ViewRootEditableElement |
 		UIElement
 	);
 
@@ -156,7 +156,7 @@ export abstract class TypeCheckable {
 	 * @label CONTAINER_ELEMENT
 	 */
 	public is( type: 'containerElement' | 'view:containerElement' ):
-		this is ViewContainerElement | ViewEditableElement | RootEditableElement;
+		this is ViewContainerElement | ViewEditableElement | ViewRootEditableElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/editableelement~ViewEditableElement} or its subclass.
@@ -184,7 +184,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label EDITABLE_ELEMENT
 	 */
-	public is( type: 'editableElement' | 'view:editableElement' ): this is ViewEditableElement | RootEditableElement;
+	public is( type: 'editableElement' | 'view:editableElement' ): this is ViewEditableElement | ViewRootEditableElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/emptyelement~ViewEmptyElement}.
@@ -243,7 +243,7 @@ export abstract class TypeCheckable {
 	public is( type: 'rawElement' | 'view:rawElement' ): this is ViewRawElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/rooteditableelement~RootEditableElement}.
+	 * Checks whether this object is of type {@link module:engine/view/rooteditableelement~ViewRootEditableElement}.
 	 *
 	 * ```ts
 	 * rootEditableElement.is( 'rootElement' ); // -> true
@@ -259,7 +259,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is a root editable element, you can also check its
-	 * {@link module:engine/view/rooteditableelement~RootEditableElement#name name}:
+	 * {@link module:engine/view/rooteditableelement~ViewRootEditableElement#name name}:
 	 *
 	 * ```ts
 	 * rootEditableElement.is( 'element', 'div' ); // -> true if this is a div root editable element
@@ -269,7 +269,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ROOT_ELEMENT
 	 */
-	public is( type: 'rootElement' | 'view:rootElement' ): this is RootEditableElement;
+	public is( type: 'rootElement' | 'view:rootElement' ): this is ViewRootEditableElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/uielement~UIElement}.
@@ -431,7 +431,7 @@ export abstract class TypeCheckable {
 		ViewEditableElement |
 		ViewEmptyElement |
 		ViewRawElement |
-		RootEditableElement |
+		ViewRootEditableElement |
 		UIElement
 	) & { name: N };
 
@@ -451,7 +451,7 @@ export abstract class TypeCheckable {
 	public is<N extends string>( type: 'containerElement' | 'view:containerElement', name: N ): this is (
 		ViewContainerElement |
 		ViewEditableElement |
-		RootEditableElement
+		ViewRootEditableElement
 	) & { name: N };
 
 	/**
@@ -462,7 +462,7 @@ export abstract class TypeCheckable {
 	 */
 	public is<N extends string>( type: 'editableElement' | 'view:editableElement', name: N ): this is (
 		ViewEditableElement |
-		RootEditableElement
+		ViewRootEditableElement
 	) & { name: N };
 
 	/**
@@ -480,11 +480,12 @@ export abstract class TypeCheckable {
 	public is<N extends string>( type: 'rawElement' | 'view:rawElement', name: N ): this is ViewRawElement & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/rooteditableelement~RootEditableElement} and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/rooteditableelement~ViewRootEditableElement}
+	 * and has the specified `name`.
 	 *
 	 * @label ROOT_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'rootElement' | 'view:rootElement', name: N ): this is RootEditableElement & { name: N };
+	public is<N extends string>( type: 'rootElement' | 'view:rootElement', name: N ): this is ViewRootEditableElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/uielement~UIElement} and has the specified `name`.
