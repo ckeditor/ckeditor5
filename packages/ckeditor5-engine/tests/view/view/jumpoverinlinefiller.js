@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler.js';
 
 import { createViewRoot } from '../_utils/createroot.js';
@@ -22,7 +22,7 @@ describe( 'View', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

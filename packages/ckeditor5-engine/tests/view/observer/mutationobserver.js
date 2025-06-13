@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
@@ -22,7 +22,7 @@ describe( 'MutationObserver', () => {
 		domWrapper.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domWrapper );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		viewDocument.selection._setTo( null );
 		document.getSelection().removeAllRanges();

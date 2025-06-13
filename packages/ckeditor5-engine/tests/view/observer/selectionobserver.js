@@ -8,7 +8,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
 import { ViewSelection } from '../../../src/view/selection.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { SelectionObserver } from '../../../src/view/observer/selectionobserver.js';
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
@@ -29,7 +29,7 @@ describe( 'SelectionObserver', () => {
 		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>';
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domMain );

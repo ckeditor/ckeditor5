@@ -4,7 +4,7 @@
  */
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
@@ -557,7 +557,7 @@ describe( 'DowncastWriter', () => {
 			let view, viewDocument, viewRoot;
 
 			beforeEach( () => {
-				view = new View( new StylesProcessor() );
+				view = new EditingView( new StylesProcessor() );
 				viewDocument = view.document;
 				viewRoot = createViewRoot( viewDocument );
 			} );

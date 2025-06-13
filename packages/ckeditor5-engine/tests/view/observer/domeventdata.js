@@ -4,14 +4,14 @@
  */
 
 import { ViewDocumentDomEventData } from '../../../src/view/observer/domeventdata.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'ViewDocumentDomEventData', () => {
 	let view, viewDocument, viewBody, domRoot;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 
 		domRoot = document.createElement( 'div' );

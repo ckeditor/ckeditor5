@@ -32,7 +32,7 @@ import {
 import { Mapper } from '../../src/conversion/mapper.js';
 import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 import { _stringifyView } from '../../src/dev-utils/view.js';
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -5041,7 +5041,7 @@ describe( 'downcast selection converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;

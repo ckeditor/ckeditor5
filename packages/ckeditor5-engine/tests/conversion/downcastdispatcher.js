@@ -16,7 +16,7 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelConsumable } from '../../src/conversion/modelconsumable.js';
 
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
@@ -28,7 +28,7 @@ describe( 'DowncastDispatcher', () => {
 
 	beforeEach( () => {
 		model = new Model();
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		doc = model.document;
 		mapper = new Mapper();
 		apiObj = {};

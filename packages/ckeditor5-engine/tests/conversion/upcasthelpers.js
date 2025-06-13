@@ -22,7 +22,7 @@ import { ModelPosition } from '../../src/model/position.js';
 import { UpcastHelpers, convertToModelFragment, convertText, convertSelectionChange } from '../../src/conversion/upcasthelpers.js';
 
 import { _getModelData, _setModelData, _stringifyModel } from '../../src/dev-utils/model.js';
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
 import { _setViewData, _parseView } from '../../src/dev-utils/view.js';
 import { Mapper } from '../../src/conversion/mapper.js';
@@ -1459,7 +1459,7 @@ describe( 'upcast-converters', () => {
 
 			_setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			view = new View( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 

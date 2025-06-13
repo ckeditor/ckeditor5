@@ -16,7 +16,7 @@ import { ViewRawElement } from '../../src/view/rawelement.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { ViewRange } from '../../src/view/range.js';
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -31,7 +31,7 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sinon.spy( _getViewData, '_stringify' );
-				const view = new View( new StylesProcessor() );
+				const view = new EditingView( new StylesProcessor() );
 				const viewDocument = view.document;
 				const options = {
 					showType: false,
@@ -58,7 +58,7 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sinon.spy( _getViewData, '_stringify' );
-				const view = new View( new StylesProcessor() );
+				const view = new EditingView( new StylesProcessor() );
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
 				const root = createAttachedRoot( viewDocument, element );
@@ -89,7 +89,7 @@ describe( 'view test utils', () => {
 
 		describe( '_setViewData', () => {
 			it( 'should use parse method', () => {
-				const view = new View( new StylesProcessor() );
+				const view = new EditingView( new StylesProcessor() );
 				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
 				const parseSpy = sinon.spy( _setViewData, '_parse' );
@@ -108,7 +108,7 @@ describe( 'view test utils', () => {
 			} );
 
 			it( 'should use parse method with selection', () => {
-				const view = new View( new StylesProcessor() );
+				const view = new EditingView( new StylesProcessor() );
 				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
 				const parseSpy = sinon.spy( _setViewData, '_parse' );

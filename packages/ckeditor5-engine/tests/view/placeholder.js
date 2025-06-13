@@ -11,7 +11,7 @@ import {
 	needsViewPlaceholder
 } from '../../src/view/placeholder.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { ViewRange } from '../../src/view/range.js';
 import { _setViewData } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -20,7 +20,7 @@ describe( 'placeholder', () => {
 	let view, viewDocument, viewRoot;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
@@ -173,7 +173,7 @@ describe( 'placeholder', () => {
 			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			const secondView = new View( new StylesProcessor() );
+			const secondView = new EditingView( new StylesProcessor() );
 			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );

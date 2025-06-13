@@ -5,7 +5,7 @@
 
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { FakeSelectionObserver } from '../../../src/view/observer/fakeselectionobserver.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { ViewDocumentDomEventData } from '../../../src/view/observer/domeventdata.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -29,7 +29,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

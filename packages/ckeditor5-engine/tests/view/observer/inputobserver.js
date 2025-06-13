@@ -8,7 +8,7 @@ import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { InputObserver } from '../../../src/view/observer/inputobserver.js';
 import { ViewDataTransfer } from '../../../src/view/datatransfer.js';
 import { ViewRange } from '../../../src/view/range.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 import { createViewRoot } from '../_utils/createroot.js';
@@ -21,7 +21,7 @@ describe( 'InputObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		domEditable = global.document.createElement( 'div' );
 		viewRoot = createViewRoot( viewDocument );

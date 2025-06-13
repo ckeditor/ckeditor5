@@ -6,7 +6,7 @@
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -17,7 +17,7 @@ describe( 'FocusObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( FocusObserver );
 	} );
@@ -299,7 +299,7 @@ describe( 'FocusObserver', () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
-			view = new View( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );

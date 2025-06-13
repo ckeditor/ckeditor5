@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -38,7 +38,7 @@ describe( 'View', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

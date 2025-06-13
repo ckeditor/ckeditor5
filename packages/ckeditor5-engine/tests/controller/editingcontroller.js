@@ -7,7 +7,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
 import { EditingController } from '../../src/controller/editingcontroller.js';
 
-import { View } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 
 import { Mapper } from '../../src/conversion/mapper.js';
 import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
@@ -43,7 +43,7 @@ describe( 'EditingController', () => {
 
 		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
-			expect( editing ).to.have.property( 'view' ).that.is.instanceof( View );
+			expect( editing ).to.have.property( 'view' ).that.is.instanceof( EditingView );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'downcastDispatcher' ).that.is.instanceof( DowncastDispatcher );
 
