@@ -228,14 +228,14 @@ export class AriaLiveAnnouncerRegionView extends View {
 	}
 }
 
-type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+export type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
 
-type AriaLiveAppendContentAttributes = {
+export type AriaLiveAppendContentAttributes = {
 	announcement: string;
 	isUnsafeHTML?: boolean;
 };
 
-type AriaLiveAnnounceConfig = {
+export type AriaLiveAnnounceConfig = {
 	politeness: AriaLiveAnnouncerPolitenessValue;
 	isUnsafeHTML?: boolean;
 };
