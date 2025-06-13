@@ -3,6 +3,7 @@ category: crash-course
 order: 50
 menu-title: Commands
 meta-title: CKEditor 5 crash course - Commands | CKEditor 5 Documentation
+meta-description: Discover how to create and use commands in CKEditor 5 to define editor actions and enable custom functionality in your plugins.
 modified_at: 2025-03-14
 ---
 

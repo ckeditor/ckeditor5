@@ -2,6 +2,7 @@
 category: framework-deep-dive-conversion-helpers
 menu-title: Introduction
 meta-title: Introduction to conversion helpers | CKEditor 5 Framework Documentation
+meta-description: Explore CKEditor 5 conversion helpers that simplify writing upcast and downcast converters for efficient model-view synchronization.
 order: 10
 since: 33.0.0
 modified_at: 2022-03-02

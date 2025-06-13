@@ -2,6 +2,7 @@
 category: framework-deep-dive-ui
 menu-title: Widget internals
 meta-title: Widget internals | CKEditor 5 Framework Documentation
+meta-description: Explore CKEditor 5 widget internals, including structure, behaviors, and how to create interactive, editable UI components.
 ---
 
 # Deep dive into widget internals

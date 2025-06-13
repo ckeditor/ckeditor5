@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-ui
 meta-title: Theme customization | CKEditor 5 Framework Documentation
+meta-description: Learn how to customize CKEditor 5 themes, including styling components and applying custom CSS for a unique editor look.
 order: 10
 ---
 

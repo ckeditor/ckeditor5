@@ -2,6 +2,7 @@
 category: framework-deep-dive-conversion
 menu-title: Introduction
 meta-title: Introduction to conversion | CKEditor 5 Framework Documentation
+meta-description: Discover CKEditor 5’s conversion system, transforming model data to view and vice versa, including concepts and customization techniques.
 order: 10
 since: 33.0.0
 modified_at: 2022-03-02

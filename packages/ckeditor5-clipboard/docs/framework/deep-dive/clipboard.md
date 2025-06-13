@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 meta-title: Clipboard | CKEditor 5 Framework Documentation
+meta-description: Explore how the CKEditor 5 clipboard pipeline works, including input/output processing, integration, and customization techniques.
 ---
 
 # Clipboard

@@ -2,6 +2,7 @@
 category: framework-deep-dive-ui
 menu-title: Focus tracking
 meta-title: Deep dive into focus tracking | CKEditor 5 Framework Documentation
+meta-description: Learn how CKEditor 5 tracks UI focus, managing focus state across components for better user interaction and accessibility.
 classes: focus-tracking
 ---
 

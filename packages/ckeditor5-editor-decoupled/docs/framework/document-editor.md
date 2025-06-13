@@ -1,5 +1,7 @@
 ---
 category: framework-deep-dive-ui
+meta-title: Document editor | CKEditor 5 Framework Documentation
+meta-description: Explore CKEditor 5 Document Editor UI, its architecture, features, and how to customize the editing interface for complex documents.
 order: 30
 ---
 

@@ -2,6 +2,7 @@
 category: framework-deep-dive
 classes: schema-deep-dive
 meta-title: Schema | CKEditor 5 Framework Documentation
+meta-description: Explore the CKEditor 5 schema system, defining document structure, rules, and how to extend and customize content models.
 ---
 
 # Schema
