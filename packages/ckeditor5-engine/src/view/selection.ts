@@ -705,7 +705,7 @@ export type ViewPlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in
 /**
  * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
  *
- * @eventName ~ModelSelection#change
+ * @eventName ~ViewSelection#change
  */
 export type ViewSelectionChangeEvent = {
 	name: 'change';
