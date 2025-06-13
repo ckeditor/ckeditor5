@@ -38,12 +38,12 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
  * @param options.text Placeholder text. It's **deprecated** and will be removed soon. Use
- * {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `options.element.placeholder`} instead.
+ * {@link module:engine/view/placeholder~PlaceholderableViewElement#placeholder `options.element.placeholder`} instead.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
+export function enableViewPlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
-	element: PlaceholderableElement | ViewEditableElement;
+	element: PlaceholderableViewElement | ViewEditableElement;
 	isDirectHost?: boolean;
 	text?: string;
 	keepOnFocus?: boolean;
@@ -99,7 +99,7 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
  *
  * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
  */
-export function disablePlaceholder( view: View, element: ViewElement ): void {
+export function disableViewPlaceholder( view: View, element: ViewElement ): void {
 	const doc = element.document;
 
 	if ( !documentPlaceholders.has( doc ) ) {
@@ -111,7 +111,7 @@ export function disablePlaceholder( view: View, element: ViewElement ): void {
 		const config = placeholders.get( element )!;
 
 		writer.removeAttribute( 'data-placeholder', config.hostElement! );
-		hidePlaceholder( writer, config.hostElement! );
+		hideViewPlaceholder( writer, config.hostElement! );
 
 		placeholders.delete( element );
 	} );
@@ -133,7 +133,7 @@ export function disablePlaceholder( view: View, element: ViewElement ): void {
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function showPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
+export function showViewPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
 
@@ -154,7 +154,7 @@ export function showPlaceholder( writer: ViewDowncastWriter, element: ViewElemen
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function hidePlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
+export function hideViewPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
 
@@ -177,7 +177,7 @@ export function hidePlaceholder( writer: ViewDowncastWriter, element: ViewElemen
  * @param element Element that holds the placeholder.
  * @param keepOnFocus Focusing the element will keep the placeholder visible.
  */
-export function needsPlaceholder( element: ViewElement, keepOnFocus: boolean ): boolean {
+export function needsViewPlaceholder( element: ViewElement, keepOnFocus: boolean ): boolean {
 	if ( !element.isAttached() ) {
 		return false;
 	}
@@ -293,11 +293,11 @@ function updatePlaceholder( writer: ViewDowncastWriter, element: ViewElement, co
 	// If the host element is not a direct host then placeholder is needed only when there is only one element.
 	const isOnlyChild = isDirectHost || element.childCount == 1;
 
-	if ( isOnlyChild && needsPlaceholder( hostElement!, config.keepOnFocus ) ) {
-		if ( showPlaceholder( writer, hostElement! ) ) {
+	if ( isOnlyChild && needsViewPlaceholder( hostElement!, config.keepOnFocus ) ) {
+		if ( showViewPlaceholder( writer, hostElement! ) ) {
 			wasViewModified = true;
 		}
-	} else if ( hidePlaceholder( writer, hostElement! ) ) {
+	} else if ( hideViewPlaceholder( writer, hostElement! ) ) {
 		wasViewModified = true;
 	}
 
@@ -354,7 +354,7 @@ interface PlaceholderConfig {
 /**
  * Element that could have a placeholder.
  */
-export interface PlaceholderableElement extends ViewElement {
+export interface PlaceholderableViewElement extends ViewElement {
 
 	/**
 	 * The text of element's placeholder.

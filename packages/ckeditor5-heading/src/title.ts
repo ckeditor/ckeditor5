@@ -11,10 +11,10 @@ import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import {
 	ViewDowncastWriter,
-	enablePlaceholder,
-	hidePlaceholder,
-	needsPlaceholder,
-	showPlaceholder,
+	enableViewPlaceholder,
+	hideViewPlaceholder,
+	needsViewPlaceholder,
+	showViewPlaceholder,
 	type DowncastInsertEvent,
 	type ModelElement,
 	type MapperModelToViewPositionEvent,
@@ -26,7 +26,7 @@ import {
 	type EditingView,
 	type ViewElement,
 	type ModelWriter,
-	type PlaceholderableElement
+	type PlaceholderableViewElement
 } from 'ckeditor5/src/engine.js';
 
 // A list of element names that should be treated by the Title plugin as title-like.
@@ -360,11 +360,11 @@ export class Title extends Plugin {
 
 		// Attach placeholder to the view title element.
 		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:title-content', ( evt, data, conversionApi ) => {
-			const element: PlaceholderableElement = conversionApi.mapper.toViewElement( data.item )!;
+			const element: PlaceholderableViewElement = conversionApi.mapper.toViewElement( data.item )!;
 
 			element.placeholder = titlePlaceholder;
 
-			enablePlaceholder( {
+			enableViewPlaceholder( {
 				view,
 				element,
 				keepOnFocus: true
@@ -392,7 +392,7 @@ export class Title extends Plugin {
 				// If body element has changed we need to disable placeholder on the previous element and enable on the new one.
 				if ( body !== oldBody ) {
 					if ( oldBody ) {
-						hidePlaceholder( writer, oldBody );
+						hideViewPlaceholder( writer, oldBody );
 						writer.removeAttribute( 'data-placeholder', oldBody );
 					}
 
@@ -404,11 +404,11 @@ export class Title extends Plugin {
 
 				// Then we need to display placeholder if it is needed.
 				// See: https://github.com/ckeditor/ckeditor5/issues/8689.
-				if ( needsPlaceholder( body, true ) && viewRoot!.childCount === 2 && body!.name === 'p' ) {
-					hasChanged = showPlaceholder( writer, body ) ? true : hasChanged;
+				if ( needsViewPlaceholder( body, true ) && viewRoot!.childCount === 2 && body!.name === 'p' ) {
+					hasChanged = showViewPlaceholder( writer, body ) ? true : hasChanged;
 				} else {
 					// Or hide if it is not needed.
-					hasChanged = hidePlaceholder( writer, body ) ? true : hasChanged;
+					hasChanged = hideViewPlaceholder( writer, body ) ? true : hasChanged;
 				}
 			}
 

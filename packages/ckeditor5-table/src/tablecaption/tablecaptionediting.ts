@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { ModelElement, enablePlaceholder } from 'ckeditor5/src/engine.js';
+import { ModelElement, enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 
 import { injectTableCaptionPostFixer } from '../converters/table-caption-post-fixer.js';
@@ -104,7 +104,7 @@ export class TableCaptionEditing extends Plugin {
 
 				figcaptionElement.placeholder = t( 'Enter table caption' );
 
-				enablePlaceholder( {
+				enableViewPlaceholder( {
 					view,
 					element: figcaptionElement,
 					keepOnFocus: true

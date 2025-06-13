@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core.js';
-import { ModelElement, enablePlaceholder, type ModelDocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
+import { ModelElement, enableViewPlaceholder, type ModelDocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';
 
@@ -130,7 +130,7 @@ export class ImageCaptionEditing extends Plugin {
 				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
 				figcaptionElement.placeholder = t( 'Enter image caption' );
-				enablePlaceholder( {
+				enableViewPlaceholder( {
 					view,
 					element: figcaptionElement,
 					keepOnFocus: true

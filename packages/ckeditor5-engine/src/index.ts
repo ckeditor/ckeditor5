@@ -8,12 +8,12 @@
  */
 
 export {
-	type PlaceholderableElement,
-	disablePlaceholder,
-	enablePlaceholder,
-	hidePlaceholder,
-	needsPlaceholder,
-	showPlaceholder
+	type PlaceholderableViewElement,
+	disableViewPlaceholder,
+	enableViewPlaceholder,
+	hideViewPlaceholder,
+	needsViewPlaceholder,
+	showViewPlaceholder
 } from './view/placeholder.js';
 
 // Controller.
