@@ -954,7 +954,7 @@ export class ViewDomConverter {
 	 * to the given DOM - `undefined` is returned.
 	 *
 	 * For all DOM elements rendered by a {@link module:engine/view/uielement~UIElement} or
-	 * a {@link module:engine/view/rawelement~RawElement}, the parent `UIElement` or `RawElement` will be returned.
+	 * a {@link module:engine/view/rawelement~ViewRawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * @param domElementOrDocumentFragment DOM element or document fragment.
 	 * @returns Corresponding view element, document fragment or `undefined` if no element was bound.
@@ -977,7 +977,7 @@ export class ViewDomConverter {
 	 * element, it is used to find the corresponding text node.
 	 *
 	 * For all text nodes rendered by a {@link module:engine/view/uielement~UIElement} or
-	 * a {@link module:engine/view/rawelement~RawElement}, the parent `UIElement` or `RawElement` will be returned.
+	 * a {@link module:engine/view/rawelement~ViewRawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * Otherwise `null` is returned.
 	 *
@@ -1268,7 +1268,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Returns a parent {@link module:engine/view/uielement~UIElement} or {@link module:engine/view/rawelement~RawElement}
+	 * Returns a parent {@link module:engine/view/uielement~UIElement} or {@link module:engine/view/rawelement~ViewRawElement}
 	 * that hosts the provided DOM node. Returns `null` if there is no such parent.
 	 */
 	public getHostViewElement( domNode: DomNode ): ViewUIElement | ViewRawElement | null {
@@ -1296,7 +1296,7 @@ export class ViewDomConverter {
 	 *
 	 * * before or in the middle of an inline filler sequence,
 	 * * inside a DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element},
-	 * * inside a DOM element which represents {@link module:engine/view/rawelement~RawElement a view raw element}.
+	 * * inside a DOM element which represents {@link module:engine/view/rawelement~ViewRawElement a view raw element}.
 	 *
 	 * @param domSelection The DOM selection object to be checked.
 	 * @returns `true` if the given selection is at a correct place, `false` otherwise.

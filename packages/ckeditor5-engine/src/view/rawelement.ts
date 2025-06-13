@@ -35,12 +35,12 @@ type DomElement = globalThis.HTMLElement;
  * To create a new raw element, use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
  */
-export class RawElement extends ViewElement {
+export class ViewRawElement extends ViewElement {
 	/**
 	 * Creates a new instance of a raw element.
 	 *
 	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} when the `children`
-	 * parameter is passed to inform that the usage of `RawElement` is incorrect (adding child nodes to `RawElement` is forbidden).
+	 * parameter is passed to inform that the usage of `ViewRawElement` is incorrect (adding child nodes to `ViewRawElement` is forbidden).
 	 *
 	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createRawElement
 	 * @internal
@@ -71,7 +71,7 @@ export class RawElement extends ViewElement {
 	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
 		if ( items && ( items instanceof ViewNode || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
-			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
+			 * Cannot add children to a {@link module:engine/view/rawelement~ViewRawElement} instance.
 			 *
 			 * @error view-rawelement-cannot-add
 			 */
@@ -85,7 +85,7 @@ export class RawElement extends ViewElement {
 	}
 
 	/**
-	 * This allows rendering the children of a {@link module:engine/view/rawelement~RawElement} on the DOM level.
+	 * This allows rendering the children of a {@link module:engine/view/rawelement~ViewRawElement} on the DOM level.
 	 * This method is called by the {@link module:engine/view/domconverter~DomConverter} with the raw DOM element
 	 * passed as an argument, leaving the number and shape of the children up to the integrator.
 	 *
@@ -107,7 +107,7 @@ export class RawElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-RawElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewRawElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rawElement' || type === 'view:rawElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -121,8 +121,6 @@ RawElement.prototype.is = function( type: string, name?: string ): boolean {
 		);
 	}
 };
-
-export { RawElement as ViewRawElement };
 
 /**
  * Returns `null` because block filler is not needed for raw elements.

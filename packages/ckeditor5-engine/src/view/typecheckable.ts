@@ -13,7 +13,7 @@ import { type ViewEmptyElement } from './emptyelement.js';
 import { type ViewNode } from './node.js';
 import { type ViewPosition } from './position.js';
 import { type ViewRange } from './range.js';
-import { type RawElement } from './rawelement.js';
+import { type ViewRawElement } from './rawelement.js';
 import { type RootEditableElement } from './rooteditableelement.js';
 import { type Selection } from './selection.js';
 import { type Text } from './text.js';
@@ -62,7 +62,7 @@ export abstract class TypeCheckable {
 		ViewContainerElement |
 		ViewEditableElement |
 		ViewEmptyElement |
-		RawElement |
+		ViewRawElement |
 		RootEditableElement |
 		UIElement
 	);
@@ -96,7 +96,7 @@ export abstract class TypeCheckable {
 		ViewContainerElement |
 		ViewEditableElement |
 		ViewEmptyElement |
-		RawElement |
+		ViewRawElement |
 		RootEditableElement |
 		UIElement
 	);
@@ -215,7 +215,7 @@ export abstract class TypeCheckable {
 	public is( type: 'emptyElement' | 'view:emptyElement' ): this is ViewEmptyElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/rawelement~RawElement}.
+	 * Checks whether this object is of type {@link module:engine/view/rawelement~ViewRawElement}.
 	 *
 	 * ```ts
 	 * rawElement.is( 'rawElement' ); // -> true
@@ -230,7 +230,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is a raw element, you can also check its
-	 * {@link module:engine/view/rawelement~RawElement#name name}:
+	 * {@link module:engine/view/rawelement~ViewRawElement#name name}:
 	 *
 	 * ```ts
 	 * rawElement.is( 'img' ); // -> true if this is an img element
@@ -240,7 +240,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label RAW_ELEMENT
 	 */
-	public is( type: 'rawElement' | 'view:rawElement' ): this is RawElement;
+	public is( type: 'rawElement' | 'view:rawElement' ): this is ViewRawElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/rooteditableelement~RootEditableElement}.
@@ -430,7 +430,7 @@ export abstract class TypeCheckable {
 		ViewContainerElement |
 		ViewEditableElement |
 		ViewEmptyElement |
-		RawElement |
+		ViewRawElement |
 		RootEditableElement |
 		UIElement
 	) & { name: N };
@@ -473,11 +473,11 @@ export abstract class TypeCheckable {
 	public is<N extends string>( type: 'emptyElement' | 'view:emptyElement', name: N ): this is ViewEmptyElement & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/rawelement~RawElement} and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/rawelement~ViewRawElement} and has the specified `name`.
 	 *
 	 * @label RAW_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'rawElement' | 'view:rawElement', name: N ): this is RawElement & { name: N };
+	public is<N extends string>( type: 'rawElement' | 'view:rawElement', name: N ): this is ViewRawElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/rooteditableelement~RootEditableElement} and has the specified `name`.

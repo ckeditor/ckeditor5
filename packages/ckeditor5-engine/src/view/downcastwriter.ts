@@ -19,7 +19,7 @@ import { ViewContainerElement } from './containerelement.js';
 import { ViewAttributeElement } from './attributeelement.js';
 import { ViewEmptyElement } from './emptyelement.js';
 import { UIElement } from './uielement.js';
-import { RawElement } from './rawelement.js';
+import { ViewRawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { ViewDocumentFragment } from './documentfragment.js';
 import { Text } from './text.js';
@@ -465,7 +465,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
+	 * Creates a new {@link module:engine/view/rawelement~ViewRawElement}.
 	 *
 	 * ```ts
 	 * writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
@@ -500,8 +500,8 @@ export class ViewDowncastWriter {
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): RawElement {
-		const rawElement = new RawElement( this.document, name, attributes );
+	): ViewRawElement {
+		const rawElement = new ViewRawElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			rawElement.render = renderFunction;
@@ -939,7 +939,7 @@ export class ViewDowncastWriter {
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElements},
 	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
 	 * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElements},
-	 * {@link module:engine/view/rawelement~RawElement RawElements} or
+	 * {@link module:engine/view/rawelement~ViewRawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
 	 *
 	 * @param position Insertion position.
@@ -2187,7 +2187,7 @@ function mergeTextNodes( t1: Text, t2: Text ): ViewPosition {
 	return new ViewPosition( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, RawElement, UIElement ];
+const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, UIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.
@@ -2208,7 +2208,7 @@ function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDoc
 			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
 			 * * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement},
 			 * * {@link module:engine/view/uielement~UIElement UIElement},
-			 * * {@link module:engine/view/rawelement~RawElement RawElement},
+			 * * {@link module:engine/view/rawelement~ViewRawElement RawElement},
 			 * * {@link module:engine/view/text~Text Text}.
 			 *
 			 * @error view-writer-insert-invalid-node-type

@@ -23,7 +23,7 @@ import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewEmptyElement } from '../view/emptyelement.js';
 import { UIElement } from '../view/uielement.js';
-import { RawElement } from '../view/rawelement.js';
+import { ViewRawElement } from '../view/rawelement.js';
 import { StylesProcessor } from '../view/stylesmap.js';
 
 import { type ViewNode } from '../view/node.js';
@@ -39,7 +39,7 @@ const allowedTypes = {
 	'attribute': ViewAttributeElement,
 	'empty': ViewEmptyElement,
 	'ui': UIElement,
-	'raw': RawElement
+	'raw': ViewRawElement
 };
 // Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf ViewDomConverter.setContentOf}
 // method. Used to render UIElement and RawElement.
@@ -64,7 +64,7 @@ const domConverterStub: ViewDomConverter = {
  * @param options.renderUIElements When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
- * {@link module:engine/view/rawelement~RawElement} will be printed.
+ * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
  * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
@@ -282,7 +282,7 @@ _setViewData._parse = _parseView;
  * @param options.renderUIElements When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
- * {@link module:engine/view/rawelement~RawElement} will be printed.
+ * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
  * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
@@ -723,7 +723,7 @@ class ViewStringify {
 	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
-	 * {@link module:engine/view/rawelement~RawElement} will be printed.
+	 * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
 	 * @param options.skipListItemIds When set to `true`, `<li>` elements will not have `listItemId` attribute. By default it's hidden
 	 * because it's randomly generated and hard to verify properly, while bringing little value.
 	 */
@@ -943,7 +943,7 @@ class ViewStringify {
 	 * * 'container' for {@link module:engine/view/containerelement~ViewContainerElement container elements},
 	 * * 'empty' for {@link module:engine/view/emptyelement~ViewEmptyElement empty elements},
 	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
-	 * * 'raw' for {@link module:engine/view/rawelement~RawElement raw elements},
+	 * * 'raw' for {@link module:engine/view/rawelement~ViewRawElement raw elements},
 	 * * an empty string when the current configuration is preventing showing elements' types.
 	 */
 	private _stringifyElementType( element: ViewElement ): string {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { RawElement } from '../../src/view/rawelement.js';
+import { ViewRawElement } from '../../src/view/rawelement.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -15,7 +15,7 @@ describe( 'RawElement', () => {
 	beforeEach( () => {
 		doc = new ViewDocument( new StylesProcessor() );
 
-		rawElement = new RawElement( doc, 'span', {
+		rawElement = new ViewRawElement( doc, 'span', {
 			foo: 'bar',
 			style: 'margin-top: 2em;color: white;',
 			class: 'foo bar'
@@ -34,7 +34,7 @@ describe( 'RawElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
-				new RawElement( doc, 'img', null, [ new ViewElement( doc, 'i' ) ] ); // eslint-disable-line no-new
+				new ViewRawElement( doc, 'img', null, [ new ViewElement( doc, 'i' ) ] ); // eslint-disable-line no-new
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );
@@ -43,7 +43,7 @@ describe( 'RawElement', () => {
 		let el;
 
 		before( () => {
-			el = new RawElement( doc, 'span' );
+			el = new ViewRawElement( doc, 'span' );
 		} );
 
 		it( 'should return true for rawElement/element, also with correct name and element name', () => {
