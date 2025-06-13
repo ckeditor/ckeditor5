@@ -7,7 +7,7 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Rect, type DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { Element, Position, Range } from 'ckeditor5/src/engine.js';
@@ -60,7 +60,7 @@ export function repositionContextualBalloon( editor: Editor, target: string ): v
  *
  * @param editor The editor instance.
  */
-export function getBalloonTablePositionData( editor: Editor ): Partial<PositionOptions> {
+export function getBalloonTablePositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const selection = editor.model.document.selection;
 	const modelTable = getSelectionAffectedTable( selection );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable )!;
@@ -78,7 +78,7 @@ export function getBalloonTablePositionData( editor: Editor ): Partial<PositionO
  *
  * @param editor The editor instance.
  */
-export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOptions> {
+export function getBalloonCellPositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const selection = editor.model.document.selection;
