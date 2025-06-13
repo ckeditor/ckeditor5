@@ -5,7 +5,7 @@
 
 import { ClipboardObserver } from '../src/clipboardobserver.js';
 
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
@@ -17,7 +17,7 @@ describe( 'ClipboardObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View();
+		view = new EditingView();
 		doc = view.document;
 		writer = new ViewDowncastWriter( doc );
 		root = createViewRoot( doc );

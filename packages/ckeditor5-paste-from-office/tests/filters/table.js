@@ -5,7 +5,7 @@
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { transformTables } from '../../src/filters/table.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { addBorderStylesRules, addPaddingStylesRules } from '@ckeditor/ckeditor5-engine';
@@ -15,7 +15,7 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		writer = new UpcastWriter( viewDocument );
+		writer = new ViewUpcastWriter( viewDocument );
 		htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 
 		addBorderStylesRules( viewDocument.stylesProcessor );

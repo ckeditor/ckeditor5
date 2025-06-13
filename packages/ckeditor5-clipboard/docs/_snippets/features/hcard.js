@@ -5,7 +5,7 @@
 
 import {
 	Plugin,
-	UpcastWriter,
+	ViewUpcastWriter,
 	Widget,
 	toWidget,
 	viewToModelPositionOutsideModelElement
@@ -134,7 +134,7 @@ export class HCardEditing extends Plugin {
 			const contact = JSON.parse( contactData );
 
 			// Translate the h-card data to a view fragment.
-			const writer = new UpcastWriter( viewDocument );
+			const writer = new ViewUpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
 			writer.appendChild(

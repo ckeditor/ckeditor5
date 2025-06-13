@@ -93,7 +93,7 @@ The default action is to fire a {@link module:clipboard/clipboardpipeline~Clipbo
 At this stage, features can process the pasted content. For example, you can implement a feature that wants to transform the pasted text into a link in the following way:
 
 ```js
-const writer = new UpcastWriter( editor.editing.view.document );
+const writer = new ViewUpcastWriter( editor.editing.view.document );
 
 editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
 	if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {

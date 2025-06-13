@@ -13,7 +13,7 @@ import {
 	isListView
 } from '../../../src/list/utils/view.js';
 
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
@@ -28,7 +28,7 @@ describe( 'List - utils - view', () => {
 	beforeEach( () => {
 		const viewDocument = new ViewDocument( new StylesProcessor() );
 
-		viewUpcastWriter = new UpcastWriter( viewDocument );
+		viewUpcastWriter = new ViewUpcastWriter( viewDocument );
 		viewDowncastWriter = new ViewDowncastWriter( viewDocument );
 	} );
 

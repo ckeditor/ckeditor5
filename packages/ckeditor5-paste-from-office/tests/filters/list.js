@@ -6,7 +6,7 @@
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
@@ -646,7 +646,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument( new StylesProcessor() );
-			writer = new UpcastWriter( viewDocument );
+			writer = new ViewUpcastWriter( viewDocument );
 			htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 		} );
 

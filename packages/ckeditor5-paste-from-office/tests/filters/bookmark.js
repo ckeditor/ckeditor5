@@ -6,7 +6,7 @@
 import { transformBookmarks } from '../../src/filters/bookmark.js';
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -16,7 +16,7 @@ describe( 'PasteFromOffice - filters - bookmark', () => {
 
 	before( () => {
 		viewDocument = new ViewDocument();
-		writer = new UpcastWriter( viewDocument );
+		writer = new ViewUpcastWriter( viewDocument );
 	} );
 
 	it( 'should move the text from the <a> element and place it right after', () => {

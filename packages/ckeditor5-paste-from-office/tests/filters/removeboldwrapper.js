@@ -5,7 +5,7 @@
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { removeBoldWrapper } from '../../src/filters/removeboldwrapper.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -16,7 +16,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 		before( () => {
 			viewDocument = new ViewDocument();
-			writer = new UpcastWriter( viewDocument );
+			writer = new ViewUpcastWriter( viewDocument );
 		} );
 
 		it( 'should remove bold wrapper added by google docs', () => {

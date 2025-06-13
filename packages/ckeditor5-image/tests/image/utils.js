@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -136,7 +136,7 @@ describe( 'image utils', () => {
 
 				imageUtils = editor.plugins.get( 'ImageUtils' );
 
-				writer = new UpcastWriter( editor.editing.view.document );
+				writer = new ViewUpcastWriter( editor.editing.view.document );
 			} );
 
 			afterEach( async () => {
@@ -206,7 +206,7 @@ describe( 'image utils', () => {
 
 				imageUtils = editor.plugins.get( 'ImageUtils' );
 
-				writer = new UpcastWriter( editor.editing.view.document );
+				writer = new ViewUpcastWriter( editor.editing.view.document );
 			} );
 
 			afterEach( async () => {

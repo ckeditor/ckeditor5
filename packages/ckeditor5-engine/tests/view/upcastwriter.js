@@ -6,7 +6,7 @@
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
-import { UpcastWriter } from '../../src/view/upcastwriter.js';
+import { ViewUpcastWriter } from '../../src/view/upcastwriter.js';
 import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewRange } from '../../src/view/range.js';
@@ -19,7 +19,7 @@ describe( 'UpcastWriter', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );
-		writer = new UpcastWriter( document );
+		writer = new ViewUpcastWriter( document );
 		dataprocessor = new HtmlDataProcessor( document );
 
 		const html = '' +
