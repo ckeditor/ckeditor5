@@ -7,7 +7,7 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, StylePropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
+import type { StylesProcessor, StylePropertyDescriptor, Styles, StylesNormalizer, StylesReducer } from '../stylesmap.js';
 import {
 	getShorthandStylesValues,
 	isAttachmentStyleValue,
@@ -49,7 +49,7 @@ export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): vo
 	stylesProcessor.setStyleRelation( 'background', [ 'background-color' ] );
 }
 
-function getBackgroundNormalizer(): Normalizer {
+function getBackgroundNormalizer(): StylesNormalizer {
 	return value => {
 		const background: {
 			repeat?: Array<string>;
@@ -86,11 +86,11 @@ function getBackgroundNormalizer(): Normalizer {
 	};
 }
 
-function getBackgroundColorNormalizer(): Normalizer {
+function getBackgroundColorNormalizer(): StylesNormalizer {
 	return value => ( { path: 'background.color', value } );
 }
 
-function getBackgroundReducer(): Reducer {
+function getBackgroundReducer(): StylesReducer {
 	return value => {
 		const ret: Array<StylePropertyDescriptor> = [];
 

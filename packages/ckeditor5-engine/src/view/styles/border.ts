@@ -9,9 +9,9 @@
 
 import type {
 	BoxStyleSides,
-	Extractor,
-	Normalizer,
-	Reducer,
+	StylesExtractor,
+	StylesNormalizer,
+	StylesReducer,
 	StylesProcessor,
 	Styles,
 	StyleValue,
@@ -144,7 +144,7 @@ export function addBorderStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setStyleRelation( 'border-left', [ 'border-left-color', 'border-left-style', 'border-left-width' ] );
 }
 
-function getBorderNormalizer(): Normalizer {
+function getBorderNormalizer(): StylesNormalizer {
 	return value => {
 		const { color, style, width } = normalizeBorderShorthand( value );
 
@@ -159,7 +159,7 @@ function getBorderNormalizer(): Normalizer {
 	};
 }
 
-function getBorderPositionNormalizer( side: string ): Normalizer {
+function getBorderPositionNormalizer( side: string ): StylesNormalizer {
 	return value => {
 		const { color, style, width } = normalizeBorderShorthand( value );
 
@@ -184,7 +184,7 @@ function getBorderPositionNormalizer( side: string ): Normalizer {
 	};
 }
 
-function getBorderPropertyNormalizer( propertyName: string ): Normalizer {
+function getBorderPropertyNormalizer( propertyName: string ): StylesNormalizer {
 	return value => {
 		return {
 			path: 'border',
@@ -199,7 +199,7 @@ function toBorderPropertyShorthand( value: string, property: string ): Record<st
 	};
 }
 
-function getBorderPropertyPositionNormalizer( property: string, side: keyof BoxStyleSides ): Normalizer {
+function getBorderPropertyPositionNormalizer( property: string, side: keyof BoxStyleSides ): StylesNormalizer {
 	return value => {
 		return {
 			path: 'border',
@@ -212,7 +212,7 @@ function getBorderPropertyPositionNormalizer( property: string, side: keyof BoxS
 	};
 }
 
-function getBorderPositionExtractor( which: string ): Extractor {
+function getBorderPositionExtractor( which: string ): StylesExtractor {
 	return ( name, styles ) => {
 		if ( styles.border ) {
 			return extractBorderPosition( styles.border, which );
@@ -292,7 +292,7 @@ function normalizeBorderShorthand( string: string ) {
  *
  * The definitions are merged only if all border selectors have the same values.
  */
-function getBorderReducer(): Reducer {
+function getBorderReducer(): StylesReducer {
 	return value => {
 		const topStyles = extractBorderPosition( value, 'top' );
 		const rightStyles = extractBorderPosition( value, 'right' );
@@ -346,7 +346,7 @@ function getBorderReducer(): Reducer {
 	}
 }
 
-function getBorderPositionReducer( which: keyof BoxStyleSides | 'all' ): Reducer {
+function getBorderPositionReducer( which: keyof BoxStyleSides | 'all' ): StylesReducer {
 	return value => reduceBorderPosition( value, which );
 }
 

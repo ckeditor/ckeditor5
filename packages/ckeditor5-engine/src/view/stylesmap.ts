@@ -638,9 +638,9 @@ export class StylesMap implements ViewElementAttributeValue {
  * Style processor is responsible for writing and reading a normalized styles object.
  */
 export class StylesProcessor {
-	private readonly _normalizers: Map<string, Normalizer>;
-	private readonly _extractors: Map<string, Extractor>;
-	private readonly _reducers: Map<string, Reducer>;
+	private readonly _normalizers: Map<string, StylesNormalizer>;
+	private readonly _extractors: Map<string, StylesExtractor>;
+	private readonly _reducers: Map<string, StylesReducer>;
 	private readonly _consumables: Map<string, Array<string>>;
 
 	/**
@@ -887,7 +887,7 @@ export class StylesProcessor {
 	 * } );
 	 * ```
 	 */
-	public setNormalizer( name: string, callback: Normalizer ): void {
+	public setNormalizer( name: string, callback: StylesNormalizer ): void {
 		this._normalizers.set( name, callback );
 	}
 
@@ -935,7 +935,7 @@ export class StylesProcessor {
 	 *
 	 * @param callbackOrPath Callback that return a requested value or path string for single values.
 	 */
-	public setExtractor( name: string, callbackOrPath: Extractor ): void {
+	public setExtractor( name: string, callbackOrPath: StylesExtractor ): void {
 		this._extractors.set( name, callbackOrPath );
 	}
 
@@ -975,7 +975,7 @@ export class StylesProcessor {
 	 * } );
 	 * ```
 	 */
-	public setReducer( name: string, callback: Reducer ): void {
+	public setReducer( name: string, callback: StylesReducer ): void {
 		this._reducers.set( name, callback );
 	}
 
@@ -1214,18 +1214,18 @@ export type StyleValue = string | Array<string> | Styles | BoxStyleSides;
  *
  * @see ~StylesProcessor#setNormalizer
  */
-export type Normalizer = ( name: string ) => { path: string; value: StyleValue };
+export type StylesNormalizer = ( name: string ) => { path: string; value: StyleValue };
 
 /**
  * An extractor callback for a style property or path string for single values.
  *
  * @see ~StylesProcessor#setExtractor
  */
-export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
+export type StylesExtractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
 
 /**
  * A reducer callback for a style property.
  *
  * @see ~StylesProcessor#setReducer
  */
-export type Reducer = ( value: StyleValue ) => Array<StylePropertyDescriptor>;
+export type StylesReducer = ( value: StyleValue ) => Array<StylePropertyDescriptor>;

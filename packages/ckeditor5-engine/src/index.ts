@@ -354,6 +354,9 @@ export {
 	StylesMap,
 	StylesProcessor,
 	type StyleValue,
+	type StylesNormalizer,
+	type StylesExtractor,
+	type StylesReducer,
 	type Styles,
 	type BoxStyleSides,
 	type StylePropertyDescriptor
