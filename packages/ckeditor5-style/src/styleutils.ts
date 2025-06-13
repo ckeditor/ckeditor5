@@ -348,7 +348,7 @@ export interface InlineStyleDefinition extends StyleDefinition {
 	previewTemplate: TemplateDefinition;
 }
 
-export type NormalizedStyleDefinition = BlockStyleDefinition | InlineStyleDefinition;
+export type _NormalizedStyleDefinition = BlockStyleDefinition | InlineStyleDefinition;
 
 export type StyleUtilsIsEnabledForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleEnabledForBlock'>;
 export type StyleUtilsIsActiveForBlockEvent = DecoratedMethodEvent<StyleUtils, 'isStyleActiveForBlock'>;

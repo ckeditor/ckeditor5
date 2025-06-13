@@ -11,7 +11,7 @@ import { View, addKeyboardHandlingForGrid, type ViewCollection, type FocusableVi
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
 import { StyleGridButtonView } from './stylegridbuttonview.js';
-import type { NormalizedStyleDefinition } from '../styleutils.js';
+import type { _NormalizedStyleDefinition } from '../styleutils.js';
 
 import '../../theme/stylegrid.css';
 
@@ -59,7 +59,7 @@ export class StyleGridView extends View<HTMLDivElement> implements FocusableView
 	 * @param locale The localization services instance.
 	 * @param styleDefinitions Definitions of the styles.
 	 */
-	constructor( locale: Locale, styleDefinitions: Array<NormalizedStyleDefinition> ) {
+	constructor( locale: Locale, styleDefinitions: Array<_NormalizedStyleDefinition> ) {
 		super( locale );
 
 		this.focusTracker = new FocusTracker();
