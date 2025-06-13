@@ -39,14 +39,14 @@ import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.
 import { debounce } from 'es-toolkit/compat';
 
 import { MentionsView } from './ui/mentionsview.js';
-import { DomWrapperView } from './ui/domwrapperview.js';
+import { MentionDomWrapperView } from './ui/domwrapperview.js';
 import { MentionListItemView } from './ui/mentionlistitemview.js';
 
 import type {
-	FeedCallback,
+	MentionFeedbackCallback,
 	MentionFeed,
 	MentionFeedItem,
-	ItemRenderer,
+	MentionItemRenderer,
 	MentionFeedObjectItem
 } from './mentionconfig.js';
 
@@ -302,7 +302,7 @@ export class MentionUI extends Plugin {
 	/**
 	 * Returns item renderer for the marker.
 	 */
-	private _getItemRenderer( marker: string ): ItemRenderer | undefined {
+	private _getItemRenderer( marker: string ): MentionItemRenderer | undefined {
 		const { itemRenderer } = this._mentionsConfigurations.get( marker )!;
 
 		return itemRenderer;
@@ -508,7 +508,7 @@ export class MentionUI extends Plugin {
 	/**
 	 * Renders a single item in the autocomplete list.
 	 */
-	private _renderItem( item: MentionFeedObjectItem, marker: string ): DomWrapperView | ButtonView {
+	private _renderItem( item: MentionFeedObjectItem, marker: string ): MentionDomWrapperView | ButtonView {
 		const editor = this.editor;
 
 		let view;
@@ -520,7 +520,7 @@ export class MentionUI extends Plugin {
 			const renderResult = renderer( item );
 
 			if ( typeof renderResult != 'string' ) {
-				view = new DomWrapperView( editor.locale, renderResult );
+				view = new MentionDomWrapperView( editor.locale, renderResult );
 			} else {
 				label = renderResult;
 			}
@@ -892,8 +892,8 @@ type RequestFeedErrorEvent = {
 
 type Definition = {
 	marker: string;
-	feedCallback: FeedCallback;
-	itemRenderer?: ItemRenderer;
+	feedCallback: MentionFeedbackCallback;
+	itemRenderer?: MentionItemRenderer;
 	dropdownLimit?: number;
 };
 

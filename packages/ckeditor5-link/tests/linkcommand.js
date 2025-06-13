@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { LinkCommand } from '../src/linkcommand.js';
-import { ManualDecorator } from '../src/utils/manualdecorator.js';
+import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { AutomaticDecorators } from '../src/utils/automaticdecorators.js';
 import { LinkEditing } from '../src/linkediting.js';
@@ -998,21 +998,21 @@ describe( 'LinkCommand', () => {
 					model = newEditor.model;
 					command = new LinkCommand( newEditor );
 
-					command.manualDecorators.add( new ManualDecorator( {
+					command.manualDecorators.add( new LinkManualDecorator( {
 						id: 'linkIsFoo',
 						label: 'Foo',
 						attributes: {
 							class: 'Foo'
 						}
 					} ) );
-					command.manualDecorators.add( new ManualDecorator( {
+					command.manualDecorators.add( new LinkManualDecorator( {
 						id: 'linkIsBar',
 						label: 'Bar',
 						attributes: {
 							target: '_blank'
 						}
 					} ) );
-					command.manualDecorators.add( new ManualDecorator( {
+					command.manualDecorators.add( new LinkManualDecorator( {
 						id: 'linkIsSth',
 						label: 'Sth',
 						attributes: {

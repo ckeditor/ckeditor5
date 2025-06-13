@@ -17,7 +17,7 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { LinkPropertiesView } from '../../src/ui/linkpropertiesview.js';
-import { ManualDecorator } from '../../src/utils/manualdecorator.js';
+import { LinkManualDecorator } from '../../src/utils/manualdecorator.js';
 
 const mockLocale = { t: val => val };
 
@@ -29,7 +29,7 @@ describe( 'LinkPropertiesView', () => {
 	beforeEach( () => {
 		collection = new Collection();
 
-		decorator1 = new ManualDecorator( {
+		decorator1 = new LinkManualDecorator( {
 			id: 'decorator1',
 			label: 'Foo',
 			attributes: {
@@ -37,7 +37,7 @@ describe( 'LinkPropertiesView', () => {
 			}
 		} );
 
-		decorator2 = new ManualDecorator( {
+		decorator2 = new LinkManualDecorator( {
 			id: 'decorator2',
 			label: 'Download',
 			attributes: {
@@ -46,7 +46,7 @@ describe( 'LinkPropertiesView', () => {
 			defaultValue: true
 		} );
 
-		decorator3 = new ManualDecorator( {
+		decorator3 = new LinkManualDecorator( {
 			id: 'decorator3',
 			label: 'Multi',
 			attributes: {

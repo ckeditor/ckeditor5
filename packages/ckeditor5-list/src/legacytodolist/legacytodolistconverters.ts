@@ -31,6 +31,7 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  * @param onCheckboxChecked Callback function.
@@ -84,6 +85,7 @@ export function modelViewInsertion(
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  * @returns Returns a conversion callback.
@@ -148,6 +150,7 @@ export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInse
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
+ * @internal
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  */
 export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
@@ -187,6 +190,7 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param onCheckedChange Callback fired after clicking the checkbox UI element.
  * @param view Editing view controller.
@@ -243,6 +247,7 @@ export function modelViewChangeType(
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns Returns a conversion callback.
@@ -279,6 +284,8 @@ export function modelViewChangeChecked(
  * This helper ensures that position inside todo-list in the view is mapped after the checkbox.
  *
  * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
+ *
+ * @internal
  */
 export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {

@@ -32,7 +32,7 @@ import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
-import { ManualDecorator } from './utils/manualdecorator.js';
+import { LinkManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
 	ensureSafeUrl,
@@ -206,7 +206,7 @@ export class LinkEditing extends Plugin {
 
 	/**
 	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorators},
-	 * transforms them into {@link module:link/utils/manualdecorator~ManualDecorator} instances and stores them in the
+	 * transforms them into {@link module:link/utils/manualdecorator~LinkManualDecorator} instances and stores them in the
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attribute-to-element}
@@ -226,7 +226,7 @@ export class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorDefinition.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			const decorator = new ManualDecorator( decoratorDefinition );
+			const decorator = new LinkManualDecorator( decoratorDefinition );
 
 			manualDecorators.add( decorator );
 

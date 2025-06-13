@@ -14,7 +14,7 @@ import { ModelLivePosition, type ModelRange, type ModelItem } from 'ckeditor5/sr
 
 import { AutomaticDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
-import { type ManualDecorator } from './utils/manualdecorator.js';
+import { type LinkManualDecorator } from './utils/manualdecorator.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -29,12 +29,12 @@ export class LinkCommand extends Command {
 	declare public value: string | undefined;
 
 	/**
-	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
+	 * A collection of {@link module:link/utils/manualdecorator~LinkManualDecorator manual decorators}
 	 * corresponding to the {@link module:link/linkconfig~LinkConfig#decorators decorator configuration}.
 	 *
 	 * You can consider it a model with states of manual decorators added to the currently selected link.
 	 */
-	public readonly manualDecorators = new Collection<ManualDecorator>();
+	public readonly manualDecorators = new Collection<LinkManualDecorator>();
 
 	/**
 	 * An instance of the helper that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition}
@@ -91,7 +91,7 @@ export class LinkCommand extends Command {
 	 *
 	 * There is an optional argument to this command that applies or removes model
 	 * {@glink framework/architecture/editing-engine#text-attributes text attributes} brought by
-	 * {@link module:link/utils/manualdecorator~ManualDecorator manual link decorators}.
+	 * {@link module:link/utils/manualdecorator~LinkManualDecorator manual link decorators}.
 	 *
 	 * Text attribute names in the model correspond to the entries in the {@link module:link/linkconfig~LinkConfig#decorators
 	 * configuration}.
