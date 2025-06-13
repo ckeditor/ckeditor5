@@ -211,7 +211,7 @@ What this means is that:
 * The view is yet another custom structure.
 * It resembles the DOM. While the model's tree structure only slightly resembled the DOM (for example, by introducing text attributes), the view is much closer to the DOM. In other words, it is a **virtual DOM**.
 * There are two "pipelines": the [**editing pipeline**](#editing-pipeline) (also called the "editing view") and the [**data pipeline**](#data-pipeline) (the "data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM that the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
-* The views are rendered to the DOM by the {@link module:engine/view/renderer~Renderer} which handles all the quirks required to tame the `contentEditable` used in the editing pipeline.
+* The views are rendered to the DOM by the {@link module:engine/view/renderer~ViewRenderer} which handles all the quirks required to tame the `contentEditable` used in the editing pipeline.
 
 The fact that there are two views is visible in the API:
 
@@ -232,7 +232,7 @@ editor.data;                    // The data pipeline (DataController).
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free," so to provide additional information and to better express the semantics of the content, the view structure implements six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~ViewEmptyElement}, {@link module:engine/view/rawelement~ViewRawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) and so-called {@link module:engine/view/element~ViewElement#getCustomProperty "custom properties"} (that is custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
+The structure of the view resembles the structure in the DOM closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free," so to provide additional information and to better express the semantics of the content, the view structure implements six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~ViewEmptyElement}, {@link module:engine/view/rawelement~ViewRawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) and so-called {@link module:engine/view/element~ViewElement#getCustomProperty "custom properties"} (that is custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~ViewRenderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 

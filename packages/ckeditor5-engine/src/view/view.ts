@@ -9,7 +9,7 @@
 
 import { ViewDocument, type ViewDocumentLayoutChangedEvent } from './document.js';
 import { ViewDowncastWriter } from './downcastwriter.js';
-import { Renderer } from './renderer.js';
+import { ViewRenderer } from './renderer.js';
 import { ViewDomConverter } from './domconverter.js';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewRange } from './range.js';
@@ -119,9 +119,9 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	declare public hasDomSelection: boolean;
 
 	/**
-	 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
+	 * Instance of the {@link module:engine/view/renderer~ViewRenderer renderer}.
 	 */
-	private readonly _renderer: Renderer;
+	private readonly _renderer: ViewRenderer;
 
 	/**
 	 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -174,7 +174,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 		this.set( 'isRenderingInProgress', false );
 		this.set( 'hasDomSelection', false );
 
-		this._renderer = new Renderer( this.domConverter, this.document.selection );
+		this._renderer = new ViewRenderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
 			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
@@ -244,7 +244,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Attaches a DOM root element to the view element and enable all observers on that element.
-	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized
+	 * Also {@link module:engine/view/renderer~ViewRenderer#markToSync mark element} to be synchronized
 	 * with the view what means that all child nodes will be removed and replaced with content of the view root.
 	 *
 	 * This method also will change view element name as the same as tag name of given dom root.

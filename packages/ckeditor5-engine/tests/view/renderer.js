@@ -15,7 +15,7 @@ import { ViewRange } from '../../src/view/range.js';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { ViewDomConverter } from '../../src/view/domconverter.js';
-import { Renderer } from '../../src/view/renderer.js';
+import { ViewRenderer } from '../../src/view/renderer.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
@@ -39,7 +39,7 @@ describe( 'Renderer', () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		selection = new ViewDocumentSelection();
 		domConverter = new ViewDomConverter( viewDocument );
-		renderer = new Renderer( domConverter, selection );
+		renderer = new ViewRenderer( domConverter, selection );
 		renderer.domDocuments.add( document );
 	} );
 
@@ -4795,7 +4795,7 @@ describe( 'Renderer', () => {
 				viewDocument = new ViewDocument( new StylesProcessor() );
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
+				renderer = new ViewRenderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
 				const renderSpy = sinon.spy( renderer, 'render' );
@@ -4815,7 +4815,7 @@ describe( 'Renderer', () => {
 				viewDocument = new ViewDocument( new StylesProcessor() );
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
+				renderer = new ViewRenderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
 				const renderSpy = sinon.spy( renderer, 'render' );
@@ -4834,7 +4834,7 @@ describe( 'Renderer', () => {
 				viewDocument = new ViewDocument( new StylesProcessor() );
 				selection = new ViewDocumentSelection();
 				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
+				renderer = new ViewRenderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
 				const renderSpy = sinon.spy( renderer, 'render' );

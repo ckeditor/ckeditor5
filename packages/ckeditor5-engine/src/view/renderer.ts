@@ -45,7 +45,7 @@ type DomSelection = globalThis.Selection;
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
- * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.
+ * the {@link module:engine/view/renderer~ViewRenderer#markToSync information about updated view nodes}.
  * In other words, it renders the view to the DOM.
  *
  * Its main responsibility is to make only the necessary, minimal changes to the DOM. However, unlike in many
@@ -56,7 +56,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export class Renderer extends /* #__PURE__ */ ObservableMixin() {
+export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Set of DOM Documents instances.
 	 */

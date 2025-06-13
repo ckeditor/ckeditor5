@@ -31,7 +31,7 @@ import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js'
  * transparent for the selection. The arrow key moves the caret between zero-width spaces characters, so the additional
  * code is needed to handle the caret.
  *
- * Both inline and block fillers are handled by the {@link module:engine/view/renderer~Renderer renderer} and are not present in the
+ * Both inline and block fillers are handled by the {@link module:engine/view/renderer~ViewRenderer renderer} and are not present in the
  * view.
  *
  * @module engine/view/filler

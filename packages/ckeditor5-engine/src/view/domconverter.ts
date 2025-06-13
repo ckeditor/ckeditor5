@@ -64,7 +64,7 @@ const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
  * An instance of the DOM converter is available under
  * {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
  *
- * The DOM converter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep the
+ * The DOM converter does not check which nodes should be rendered (use {@link module:engine/view/renderer~ViewRenderer}), does not keep the
  * state of a tree nor keeps the synchronization between the tree view and
  * the DOM tree (use {@link module:engine/view/document~ViewDocument}).
  *

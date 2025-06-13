@@ -8,11 +8,11 @@
  */
 
 import { Rect, global } from 'ckeditor5/src/utils.js';
-import { ViewDomConverter, Renderer } from 'ckeditor5/src/engine.js';
+import { ViewDomConverter, ViewRenderer } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
- * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~Renderer} and
+ * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~ViewRenderer} and
  * {@link module:engine/view/domconverter~DomConverter}. The DOM root clone updates incrementally to stay in sync with the
  * source root.
  *
@@ -25,7 +25,7 @@ export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HT
 	const viewDocument = editor.editing.view.document;
 	const viewRoot = viewDocument.getRoot( rootName )!;
 	const domConverter = new ViewDomConverter( viewDocument );
-	const renderer = new Renderer( domConverter, viewDocument.selection );
+	const renderer = new ViewRenderer( domConverter, viewDocument.selection );
 	const domRootClone = editor.editing.view.getDomRoot()!.cloneNode() as HTMLElement;
 
 	domConverter.bindElements( domRootClone, viewRoot );
