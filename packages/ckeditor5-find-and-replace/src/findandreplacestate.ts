@@ -9,7 +9,7 @@
 
 import type { Model, Item } from 'ckeditor5/src/engine.js';
 import { ObservableMixin, Collection, type CollectionChangeEvent, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
-import type { ResultType } from './findandreplace.js';
+import type { FindResultType } from './findandreplace.js';
 
 /**
  * The object storing find and replace plugin state for a given editor instance.
@@ -20,7 +20,7 @@ export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @observable
 	 */
-	declare public results: Collection<ResultType>;
+	declare public results: Collection<FindResultType>;
 
 	/**
 	 * Currently highlighted search result in {@link #results matched results}.
@@ -28,7 +28,7 @@ export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 	 * @readonly
 	 * @observable
 	 */
-	declare public highlightedResult: ResultType | null;
+	declare public highlightedResult: FindResultType | null;
 
 	/**
 	 * Currently highlighted search result offset in {@link #results matched results}.
@@ -94,7 +94,7 @@ export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 		this.set( 'matchCase', false );
 		this.set( 'matchWholeWords', false );
 
-		this.results.on<CollectionChangeEvent<ResultType>>( 'change', ( eventInfo, { removed, index } ) => {
+		this.results.on<CollectionChangeEvent<FindResultType>>( 'change', ( eventInfo, { removed, index } ) => {
 			if ( Array.from( removed ).length ) {
 				let highlightedResultRemoved = false;
 
@@ -117,7 +117,7 @@ export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 			}
 		} );
 
-		this.on<ObservableChangeEvent<ResultType | null>>( 'change:highlightedResult', ( ) => {
+		this.on<ObservableChangeEvent<FindResultType | null>>( 'change:highlightedResult', ( ) => {
 			this.refreshHighlightOffset( model );
 		} );
 	}
@@ -167,7 +167,7 @@ export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
  *
  * @internal
  */
-export function sortSearchResultsByMarkerPositions( model: Model, results: Array<ResultType> ): Array<ResultType> {
+export function sortSearchResultsByMarkerPositions( model: Model, results: Array<FindResultType> ): Array<FindResultType> {
 	const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
 
 	// `compareWith` doesn't play well with multi-root documents, so we need to sort results by root name first
@@ -193,7 +193,7 @@ export type FindCallback = ( { item, text }: { item: Item; text: string } ) => F
  * while searching for next item and the search will start from the beginning of the document.
  */
 export type FindCallbackResultObject = {
-	results: Array<ResultType>;
+	results: Array<FindResultType>;
 	searchText: string;
 };
 
@@ -202,4 +202,4 @@ export type FindCallbackResultObject = {
  *
  * @deprecated Use `FindCallbackResultObject` instead.
  */
-export type FindCallbackResult = Array<ResultType>;
+export type FindCallbackResult = Array<FindResultType>;
