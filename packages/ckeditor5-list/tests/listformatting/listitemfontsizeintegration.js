@@ -1,0 +1,588 @@
+/**
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import FontSizeEditing from '@ckeditor/ckeditor5-font/src/fontsize/fontsizeediting.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+
+import stubUid from '../list/_utils/uid.js';
+import ListEditing from '../../src/list/listediting.js';
+import ListItemFontSizeIntegration from '../../src/listformatting/listitemfontsizeintegration.js';
+
+describe( 'ListItemFontSizeIntegration', () => {
+	let editor, model, view;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [
+				ListItemFontSizeIntegration,
+				FontSizeEditing,
+				Paragraph,
+				BlockQuoteEditing,
+				CodeBlockEditing,
+				HeadingEditing,
+				TableEditing
+			],
+			fontSize: {
+				options: [
+					10,
+					11,
+					12,
+					13
+				]
+			}
+		} );
+
+		model = editor.model;
+		view = editor.editing.view;
+
+		stubUid();
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	it( 'should have pluginName', () => {
+		expect( ListItemFontSizeIntegration.pluginName ).to.equal( 'ListItemFontSizeIntegration' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListItemFontSizeIntegration.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListItemFontSizeIntegration.isPremiumPlugin ).to.be.false;
+	} );
+
+	it( 'should be loaded', () => {
+		expect( editor.plugins.get( ListItemFontSizeIntegration ) ).to.be.instanceOf( ListItemFontSizeIntegration );
+	} );
+
+	it( 'should require ListEditing plugin', () => {
+		expect( ListItemFontSizeIntegration.requires ).to.deep.equal( [
+			ListEditing
+		] );
+	} );
+
+	describe( 'schema', () => {
+		it( 'should allow listItemFontSize attribute in $listItem', () => {
+			model.schema.register( 'myElement', {
+				inheritAllFrom: '$block',
+				allowAttributesOf: '$listItem'
+			} );
+
+			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
+
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontSize' ) ).to.be.true;
+		} );
+
+		it( 'listItemFontSize attribute should have isFormatting set to true', () => {
+			expect( model.schema.getAttributeProperties( 'listItemFontSize' ) ).to.include( {
+				isFormatting: true
+			} );
+		} );
+
+		it( 'should set proper schema rules', () => {
+			const listItemParagraph = new ModelElement( 'paragraph', { listItemId: 'a' } );
+			const listItemBlockQuote = new ModelElement( 'blockQuote', { listItemId: 'a' } );
+			const listItemHeading = new ModelElement( 'heading1', { listItemId: 'a' } );
+			const listItemTable = new ModelElement( 'table', { listItemId: 'a' } );
+
+			const paragraph = new ModelElement( 'paragraph' );
+			const blockQuote = new ModelElement( 'blockQuote' );
+			const heading = new ModelElement( 'heading1' );
+			const table = new ModelElement( 'table' );
+
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontSize' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontSize' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontSize' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontSize' ) ).to.be.true;
+
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontSize' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontSize' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontSize' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontSize' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'downcast', () => {
+		it( 'should downcast listItemFontSize attribute as style in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'<span style="font-size:10px">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast listItemFontSize attribute as style in nested list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'<span style="font-size:10px">foo</span>' +
+						'</span>' +
+						'<ul>' +
+							'<li style="font-size:10px">' +
+								'<span class="ck-list-bogus-paragraph">' +
+									'<span style="font-size:10px">foo</span>' +
+								'</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+						'<ul>' +
+							'<li style="font-size:10px;">' +
+								'<span style="font-size:10px;">foo</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast listItemFontSize attribute as style in <li> in multi-block', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">bar</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<p>' +
+							'<span style="font-size:10px">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span style="font-size:10px">bar</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<p>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span style="font-size:10px;">bar</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast listItemFontSize attribute as style in <li> in blockquote list item', () => {
+			setModelData( model,
+				'<blockQuote listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<paragraph>' +
+						'<$text fontSize="10px">foo</$text>' +
+					'</paragraph>' +
+				'</blockQuote>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<blockquote>' +
+							'<p>' +
+								'<span style="font-size:10px">foo</span>' +
+							'</p>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<blockquote>' +
+							'<p>' +
+								'<span style="font-size:10px;">foo</span>' +
+							'</p>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast listItemFontSize attribute as style in <li> in heading list item', () => {
+			setModelData( model,
+				'<heading1 listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</heading1>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<h2>' +
+							'<span style="font-size:10px">foo</span>' +
+						'</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<h2>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should downcast listItemFontSize attribute as style in <li> in table list item', () => {
+			setModelData( model,
+				'<table listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'foo' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px">' +
+						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handle"></div>' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
+											'tabindex="-1">' +
+											'<span class="ck-table-bogus-paragraph">' +
+												'foo' +
+											'</span>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'foo' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not downcast listItemFontSize attribute if value is empty', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="">' +
+					'foo' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'foo' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'foo' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'upcast', () => {
+		it( 'should upcast style in <li> to listItemFontSize attribute (unordered list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute (ordered list)', () => {
+			editor.setData(
+				'<ol>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="numbered">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
+			editor.setData(
+				'<ul style="font-size:11px;">' +
+					'<li style="font-size:10px;">' +
+						'<p style="font-size:12px;">' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>' +
+				'<p style="font-size:13px;">baz</p>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute (nested list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+						'<ul>' +
+							'<li style="font-size:10px;">' +
+								'<span style="font-size:10px;">bar</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a01" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute in multi-block', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<p>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span style="font-size:10px;">bar</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute for blockquote', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<blockquote>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<blockQuote listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<paragraph>' +
+						'<$text fontSize="10px">foo</$text>' +
+					'</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute for heading', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<h2>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<heading1 listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</heading1>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontSize attribute for table', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'foo' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<table listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'foo' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'when FontSizeEditing is not loaded', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontSizeIntegration,
+					Paragraph
+				]
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemFontSize attribute as style in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+} );
