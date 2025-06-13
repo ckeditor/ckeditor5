@@ -23,7 +23,7 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  * Batches represent single undo steps, hence changes added to one single batch are undone together.
  *
  * The buffer has a configurable limit of atomic changes that it can accommodate. After the limit was
- * exceeded (see {@link ~ChangeBuffer#input}), a new batch is created in {@link ~ChangeBuffer#batch}.
+ * exceeded (see {@link ~TypingChangeBuffer#input}), a new batch is created in {@link ~TypingChangeBuffer#batch}.
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
@@ -35,7 +35,7 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  * buffer.input( insertedCharacters.length );
  * ```
  */
-export class ChangeBuffer {
+export class TypingChangeBuffer {
 	/**
 	 * The model instance.
 	 */
