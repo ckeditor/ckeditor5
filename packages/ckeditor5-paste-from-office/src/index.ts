@@ -8,9 +8,9 @@
  */
 
 export { PasteFromOffice } from './pastefromoffice.js';
-export type { Normalizer, NormalizerData } from './normalizer.js';
-export { MSWordNormalizer } from './normalizers/mswordnormalizer.js';
-export { parseHtml } from './filters/parse.js';
+export type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from './normalizer.js';
+export { PasteFromOfficeMSWordNormalizer } from './normalizers/mswordnormalizer.js';
+export { parsePasteOfficeHtml, type PasteOfficeHtmlParseResult } from './filters/parse.js';
 
 export { transformBookmarks as _transformPasteOfficeBookmarks } from './filters/bookmark.js';
 export { transformBlockBrsToParagraphs as _transformPasteOfficeBlockBrsToParagraphs } from './filters/br.js';
