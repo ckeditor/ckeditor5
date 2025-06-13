@@ -8,7 +8,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
-import { ChangeBuffer } from '../src/utils/changebuffer.js';
+import { TypingChangeBuffer } from '../src/utils/changebuffer.js';
 import { Input } from '../src/input.js';
 
 describe( 'InsertTextCommand', () => {
@@ -41,7 +41,7 @@ describe( 'InsertTextCommand', () => {
 
 	describe( 'buffer', () => {
 		it( 'has buffer getter', () => {
-			expect( editor.commands.get( 'insertText' ).buffer ).to.be.an.instanceof( ChangeBuffer );
+			expect( editor.commands.get( 'insertText' ).buffer ).to.be.an.instanceof( TypingChangeBuffer );
 		} );
 
 		it( 'has a buffer limit configured to default value of 20', () => {

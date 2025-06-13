@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
-import { ChangeBuffer } from './utils/changebuffer.js';
+import { TypingChangeBuffer } from './utils/changebuffer.js';
 
 import type { ModelDocumentSelection, ModelRange, ModelSelection } from '@ckeditor/ckeditor5-engine';
 
@@ -20,7 +20,7 @@ export class InsertTextCommand extends Command {
 	/**
 	 * Typing's change buffer used to group subsequent changes into batches.
 	 */
-	private readonly _buffer: ChangeBuffer;
+	private readonly _buffer: TypingChangeBuffer;
 
 	/**
 	 * Creates an instance of the command.
@@ -31,7 +31,7 @@ export class InsertTextCommand extends Command {
 	constructor( editor: Editor, undoStepSize: number ) {
 		super( editor );
 
-		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
+		this._buffer = new TypingChangeBuffer( editor.model, undoStepSize );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
 		this._isEnabledBasedOnSelection = false;
@@ -40,7 +40,7 @@ export class InsertTextCommand extends Command {
 	/**
 	 * The current change buffer.
 	 */
-	public get buffer(): ChangeBuffer {
+	public get buffer(): TypingChangeBuffer {
 		return this._buffer;
 	}
 

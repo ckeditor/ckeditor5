@@ -106,7 +106,7 @@ export class InlineEditorUIView extends EditorUIView {
 	 *            [ Panel ]
 	 * ```
 	 *
-	 * See: {@link module:utils/dom/position~Options#positions}.
+	 * See: {@link module:utils/dom/position~DomOptimalPositionOptions#positions}.
 	 */
 	public readonly panelPositions: Array<PositioningFunction>;
 
@@ -239,7 +239,7 @@ export class InlineEditorUIView extends EditorUIView {
 	/**
 	 * Returns the positions for {@link #panelPositions}.
 	 *
-	 * See: {@link module:utils/dom/position~Options#positions}.
+	 * See: {@link module:utils/dom/position~DomOptimalPositionOptions#positions}.
 	 */
 	private _getPanelPositions(): Array<PositioningFunction> {
 		const positions: Array<PositioningFunction> = [

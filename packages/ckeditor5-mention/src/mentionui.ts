@@ -31,7 +31,7 @@ import {
 	env,
 	keyCodes,
 	logWarning,
-	type PositionOptions
+	type DomOptimalPositionOptions
 } from 'ckeditor5/src/utils.js';
 
 import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
@@ -544,7 +544,10 @@ export class MentionUI extends Plugin {
 	 * @param mentionMarker
 	 * @param preferredPosition The name of the last matched position name.
 	 */
-	private _getBalloonPanelPositionData( mentionMarker: Marker, preferredPosition: MentionsView['position'] ): Partial<PositionOptions> {
+	private _getBalloonPanelPositionData(
+		mentionMarker: Marker,
+		preferredPosition: MentionsView['position']
+	): Partial<DomOptimalPositionOptions> {
 		const editor = this.editor;
 		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
@@ -588,8 +591,8 @@ export class MentionUI extends Plugin {
 function getBalloonPanelPositions(
 	preferredPosition: MentionsView['position'],
 	uiLanguageDirection: string
-): PositionOptions['positions'] {
-	const positions: Record<string, PositionOptions['positions'][0]> = {
+): DomOptimalPositionOptions['positions'] {
+	const positions: Record<string, DomOptimalPositionOptions['positions'][0]> = {
 		// Positions the panel to the southeast of the caret rectangle.
 		'caret_se': ( targetRect: Rect ) => {
 			return {

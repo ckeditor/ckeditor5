@@ -41,7 +41,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
-import { verticalNavigationHandler } from './verticalnavigation.js';
+import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
 import '../theme/widget.css';
@@ -197,7 +197,7 @@ export class Widget extends Plugin {
 		this.listenTo<ViewDocumentArrowKeyEvent>(
 			viewDocument,
 			'arrowKey',
-			verticalNavigationHandler( this.editor.editing ),
+			verticalWidgetNavigationHandler( this.editor.editing ),
 			{ context: '$text' }
 		);
 

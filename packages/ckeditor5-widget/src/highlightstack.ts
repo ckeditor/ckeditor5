@@ -22,7 +22,7 @@ import type { ViewDowncastWriter, DowncastHighlightDescriptor } from '@ckeditor/
  *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
-export class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
+export class WidgetHighlightStack extends /* #__PURE__ */ EmitterMixin() {
 	private readonly _stack: Array<DowncastHighlightDescriptor> = [];
 
 	/**
@@ -40,7 +40,7 @@ export class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
 
 		// When new object is at the top and stores different information.
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
-			this.fire<HighlightStackChangeEvent>( 'change:top', {
+			this.fire<WidgetHighlightStackChangeEvent>( 'change:top', {
 				oldDescriptor: oldTop,
 				newDescriptor: newTop,
 				writer
@@ -63,7 +63,7 @@ export class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
 
 		// When new object is at the top and stores different information.
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
-			this.fire<HighlightStackChangeEvent>( 'change:top', {
+			this.fire<WidgetHighlightStackChangeEvent>( 'change:top', {
 				oldDescriptor: oldTop,
 				newDescriptor: newTop,
 				writer
@@ -148,19 +148,19 @@ function classesToString( classes: ArrayOrItem<string> ) {
 }
 
 /**
- * Fired when top element on {@link module:widget/highlightstack~HighlightStack} has been changed
+ * Fired when top element on {@link module:widget/highlightstack~WidgetHighlightStack} has been changed
  *
- * @eventName ~HighlightStack#change:top
+ * @eventName ~WidgetHighlightStack#change:top
  */
-export type HighlightStackChangeEvent = {
+export type WidgetHighlightStackChangeEvent = {
 	name: 'change' | 'change:top';
-	args: [ HighlightStackChangeEventData ];
+	args: [ WidgetHighlightStackChangeEventData ];
 };
 
 /**
  * Additional information about the change.
  */
-export type HighlightStackChangeEventData = {
+export type WidgetHighlightStackChangeEventData = {
 
 	/**
 	 * Old highlight descriptor. It will be `undefined` when first descriptor is added to the stack.
