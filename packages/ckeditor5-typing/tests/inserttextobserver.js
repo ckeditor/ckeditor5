@@ -6,7 +6,7 @@
 import { InsertTextObserver } from '../src/inserttextobserver.js';
 import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -21,7 +21,7 @@ describe( 'InsertTextObserver', () => {
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
 
-		view = new View();
+		view = new EditingView();
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
@@ -37,7 +37,7 @@ describe( 'InsertTextObserver', () => {
 
 	it( 'can be initialized', () => {
 		expect( () => {
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( document.createElement( 'div' ) );
@@ -256,7 +256,7 @@ describe( 'InsertTextObserver', () => {
 
 			domRoot = document.createElement( 'div' );
 
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { DomEventObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -15,7 +15,7 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
-		view = new View();
+		view = new EditingView();
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );

@@ -5,7 +5,7 @@
 
 import { DeleteObserver } from '../src/deleteobserver.js';
 
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -28,7 +28,7 @@ describe( 'Delete', () => {
 
 			document.body.appendChild( domRoot );
 
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
@@ -48,7 +48,7 @@ describe( 'Delete', () => {
 			expect( () => {
 				const newDomRoot = document.createElement( 'div' );
 
-				view = new View( new StylesProcessor() );
+				view = new EditingView( new StylesProcessor() );
 				viewDocument = view.document;
 
 				createViewRoot( viewDocument );

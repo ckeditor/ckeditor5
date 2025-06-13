@@ -4,7 +4,7 @@
  */
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -23,7 +23,7 @@ describe( 'table caption utils', () => {
 	let view, document;
 
 	beforeEach( async () => {
-		view = new View();
+		view = new EditingView();
 		document = view.document;
 
 		editor = await VirtualTestEditor.create( {

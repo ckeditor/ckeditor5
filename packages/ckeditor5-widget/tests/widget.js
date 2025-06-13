@@ -19,7 +19,7 @@ import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { ViewRootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
 import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
 
@@ -209,7 +209,7 @@ describe( 'Widget', () => {
 			.withArgs( 'editableElement' )
 			.returns( false );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -236,7 +236,7 @@ describe( 'Widget', () => {
 			.withArgs( 'editableElement' )
 			.returns( false );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -267,7 +267,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -293,7 +293,7 @@ describe( 'Widget', () => {
 			.spy( editor.editing.view, 'createPositionAt' )
 			.withArgs( editableView, 0 );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -321,7 +321,7 @@ describe( 'Widget', () => {
 			}
 		);
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 		viewDocument.fire( 'mousedown', domEventDataMock );
 		expect( focusSpy ).not.to.be.called;
 	} );
@@ -361,7 +361,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -392,7 +392,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -420,7 +420,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.spy( View.prototype, 'focus' );
+		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -448,7 +448,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.stub( View.prototype, 'focus' ).returns( true );
+		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -480,7 +480,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.stub( View.prototype, 'focus' ).returns( true );
+		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
@@ -512,7 +512,7 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.stub( View.prototype, 'focus' ).returns( true );
+		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
