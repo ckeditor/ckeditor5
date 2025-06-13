@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 import { TableSelection } from '../src/tableselection.js';
@@ -63,7 +63,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'getCellLocation()', () => {
 		it( 'should return proper table cell location', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, colspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ]
 			] ) );
@@ -78,7 +78,7 @@ describe( 'TableUtils', () => {
 		it( 'should be decorated', () => {
 			const spy = sinon.spy();
 
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
@@ -87,7 +87,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -97,14 +97,14 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert row in given table at given index', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -112,14 +112,14 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert row in given table at default index', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ) );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '11[]', '12' ],
 				[ '21', '22' ]
@@ -127,7 +127,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should update table heading rows attribute when inserting row in headings section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -135,7 +135,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -144,7 +144,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should not update table heading rows attribute when inserting row after headings section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -152,7 +152,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -169,7 +169,7 @@ describe( 'TableUtils', () => {
 			// |         | 22 | 23 |
 			// +----+----+----+----+
 			//                     ^-- heading columns
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { contents: '00', colspan: 2 }, '02', '03' ],
 				[ { contents: '10[]', colspan: 2, rowspan: 2 }, '12', '13' ],
 				[ '22', '23' ]
@@ -191,7 +191,7 @@ describe( 'TableUtils', () => {
 			// |         | 22 | 23 |
 			// +----+----+----+----+
 			//                     ^-- heading columns
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', colspan: 2 }, '02', '03' ],
 				[ { contents: '10[]', colspan: 2, rowspan: 5 }, '12', '13' ],
 				[ '', '' ],
@@ -209,7 +209,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+ <-- heading rows
 			// | 20 | 21 | 22 |
 			// +----+----+----+
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ '20', '21', '22' ]
@@ -230,7 +230,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+
 			// | 20 | 21 | 22 |
 			// +----+----+----+
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ '', '', '' ],
@@ -248,7 +248,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+ <-- heading rows
 			// | 20           |
 			// +----+----+----+
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ { contents: '20', colspan: 3 } ]
@@ -269,7 +269,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+
 			// | 20           |
 			// +----+----+----+
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', rowspan: 2 }, '01', '02' ],
 				[ '11[]', '12' ],
 				[ '', '', '' ],
@@ -280,14 +280,14 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert rows at the end of a table', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -297,7 +297,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should throw error when options.at is larger than the amount of rows in the table', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
@@ -309,14 +309,14 @@ describe( 'TableUtils', () => {
 				'tableutils-insertrows-insert-out-of-range'
 			);
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert rows into a table with a non-row element', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -332,7 +332,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
-			expect( getData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -378,7 +378,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
 					[ '10', { contents: '14', colspan: 2 } ]
 				] ) );
@@ -394,7 +394,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '', { contents: '', colspan: 2 }, '', '', '' ],
 					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -411,7 +411,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
 					[ '', '', '' ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -428,7 +428,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+----+
 				// |    |         |    |         |
 				// +----+----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '03', rowspan: 2 }, '04', '05' ],
 					[ '10', { contents: '14', colspan: 2 } ],
 					[ '', { contents: '', colspan: 2 }, '', { contents: '', colspan: 2 } ]
@@ -445,7 +445,7 @@ describe( 'TableUtils', () => {
 				// +----+         +    +----+----+
 				// | 10 |         |    | 14      |
 				// +----+----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents: '01', colspan: 2, rowspan: 3 }, { contents: '03', rowspan: 3 }, '04', '05' ],
 					[ '', { contents: '', colspan: 2 } ],
 					[ '10', { contents: '14', colspan: 2 } ]
@@ -458,7 +458,7 @@ describe( 'TableUtils', () => {
 		it( 'should be decorated', () => {
 			const spy = sinon.spy();
 
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
@@ -467,7 +467,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
@@ -476,49 +476,49 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert column in given table at given index', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert column in given table with default values', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert column in given table at default index', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert columns at the end of a row', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ { colspan: 2, contents: '10' } ],
 				[ '20', { rowspan: 2, contents: '21' } ],
@@ -527,7 +527,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00[]', '01', '', '' ],
 				[ { colspan: 2, contents: '10' }, '', '' ],
 				[ '20', { rowspan: 2, contents: '21' }, '', '' ],
@@ -536,7 +536,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert columns at the beginning of a row', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ { colspan: 2, contents: '10' } ],
 				[ '20', { rowspan: 2, contents: '21' } ],
@@ -546,7 +546,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '00[]', '01' ],
 				[ '', '', { colspan: 2, contents: '10' } ],
 				[ '', '', '20', { rowspan: 2, contents: '21' } ],
@@ -556,7 +556,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly insert column at beginning of row-col-spanned cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11', '12', '13' ],
 				[ '21', { colspan: 2, rowspan: 2, contents: '22[]' } ],
 				[ '31' ],
@@ -565,7 +565,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11', '', '12', '13' ],
 				[ '21', '', { colspan: 2, rowspan: 2, contents: '22[]' } ],
 				[ '31', '' ],
@@ -574,7 +574,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should update table heading columns attribute when inserting column in headings section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -582,7 +582,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ],
 				[ '31', '', '32' ]
@@ -590,7 +590,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should not update table heading columns attribute when inserting column after headings section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -598,7 +598,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '11[]', '12', '', '13' ],
 				[ '21', '22', '', '23' ],
 				[ '31', '32', '', '33' ]
@@ -606,7 +606,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should expand spanned columns', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ { colspan: 2, contents: '10' } ],
 				[ '20', '21' ]
@@ -614,7 +614,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00[]', '', '01' ],
 				[ { colspan: 3, contents: '10' } ],
 				[ '20', '', '21' ]
@@ -630,7 +630,7 @@ describe( 'TableUtils', () => {
 			// | 20                | 24      |
 			// +----+----+----+----+----+----+
 			//                     ^-- heading columns
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03', '04', '05' ],
 				[ '10', '11', { contents: '12', colspan: 2 }, '14', '15' ],
 				[ { contents: '20', colspan: 4 }, { contents: '24', colspan: 2 } ]
@@ -646,7 +646,7 @@ describe( 'TableUtils', () => {
 			// | 20                          | 24      |
 			// +----+----+----+----+----+----+----+----+
 			//                               ^-- heading columns
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '', '', '02', '03', '04', '05' ],
 				[ '10', '11', '', '', { contents: '12', colspan: 2 }, '14', '15' ],
 				[ { contents: '20', colspan: 6 }, { contents: '24', colspan: 2 } ]
@@ -661,7 +661,7 @@ describe( 'TableUtils', () => {
 			// +----+----+----+
 			// | 20 | 21 | 22 |
 			// +----+----+----+
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { colspan: 2, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],
 				[ '20', '21', '22' ]
@@ -669,7 +669,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 4, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],
 				[ '20', '', '', '21', '22' ]
@@ -677,7 +677,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly insert column while table has row-spanned cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
 				[ { rowspan: 2, contents: '21' }, '22' ],
@@ -686,7 +686,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 4, contents: '00[]' }, '', { rowspan: 2, contents: '01' }, '02' ],
 				[ '', '12' ],
 				[ '', { rowspan: 2, contents: '21' }, '22' ],
@@ -695,7 +695,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should ignore table element that is not a row', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>11[]</paragraph></tableCell>' +
@@ -711,7 +711,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-			expect( getData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -741,7 +741,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should insert columns into a table with a non-row element', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -757,7 +757,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
 
-			expect( getData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -781,7 +781,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'splitCellVertically()', () => {
 		it( 'should split table cell to given table cells number', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', { colspan: 2, contents: '21' } ],
@@ -790,7 +790,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '', '12' ],
 				[ '20', { colspan: 4, contents: '21' } ],
@@ -799,7 +799,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split table cell for two table cells as a default', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', { colspan: 2, contents: '21' } ],
@@ -808,7 +808,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { colspan: 2, contents: '01' }, '02' ],
 				[ '10', '[]11', '', '12' ],
 				[ '20', { colspan: 3, contents: '21' } ],
@@ -817,7 +817,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split table cell if split is equal to colspan', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', { colspan: 2, contents: '21[]' } ],
@@ -826,7 +826,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21[]', '' ],
@@ -835,35 +835,35 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly split table cell if split is uneven', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 3, contents: '10[]' } ]
 			] ) );
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, contents: '10[]' }, '' ]
 			] ) );
 		} );
 
 		it( 'should properly set colspan of inserted cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ { colspan: 4, contents: '10[]' } ]
 			] ) );
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ { colspan: 2, contents: '10[]' }, { colspan: 2, contents: '' } ]
 			] ) );
 		} );
 
 		it( 'should keep rowspan attribute for newly inserted cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03', '04', '05' ],
 				[ { colspan: 5, rowspan: 2, contents: '10[]' }, '15' ],
 				[ '25' ]
@@ -871,7 +871,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03', '04', '05' ],
 				[ { colspan: 3, rowspan: 2, contents: '10[]' }, { colspan: 2, rowspan: 2, contents: '' }, '15' ],
 				[ '25' ]
@@ -879,7 +879,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should keep rowspan attribute of for newly inserted cells if number of cells is bigger then curren colspan', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 2, rowspan: 2, contents: '10[]' }, '12' ],
 				[ '22' ]
@@ -887,7 +887,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '00' }, '01', '02' ],
 				[ { rowspan: 2, contents: '10[]' }, { rowspan: 2, contents: '' }, { rowspan: 2, contents: '' }, '12' ],
 				[ '22' ]
@@ -895,35 +895,35 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly break a cell if it has colspan and number of created cells is bigger then colspan', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ { colspan: 4, contents: '10[]' } ]
 			] ) );
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 6 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '01', '02', '03' ],
 				[ '10[]', '', '', '', '', '' ]
 			] ) );
 		} );
 
 		it( 'should update heading columns is split cell is in heading section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10[]', '11' ]
 			], { headingColumns: 1 } ) );
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
 		} );
 
 		it( 'should split cells in a table with a non-row element', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -939,7 +939,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell colspan="3"><paragraph>00</paragraph></tableCell>' +
@@ -959,7 +959,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'splitCellHorizontally()', () => {
 		it( 'should split table cell to default table cells number', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', '21', '22' ]
@@ -967,7 +967,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, '[]11', { rowspan: 2, contents: '12' } ],
 				[ '' ],
@@ -976,7 +976,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split table cell to given table cells number', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', '21', '22' ]
@@ -984,7 +984,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 4, contents: '10' }, '[]11', { rowspan: 4, contents: '12' } ],
 				[ '' ],
@@ -995,7 +995,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly update row-spanned cells overlapping selected cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
 				[ '[]11' ],
 				[ '20', '21' ]
@@ -1003,7 +1003,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 4, contents: '00' }, '01', { rowspan: 5, contents: '02' } ],
 				[ '[]11' ],
 				[ '' ],
@@ -1013,7 +1013,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split row-spanned cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
 				[ '20', '21' ]
@@ -1023,7 +1023,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '' ],
 				[ '20', '21' ]
@@ -1031,7 +1031,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should copy colspan while splitting row-spanned cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 2, colspan: 2, contents: '01[]' } ],
 				[ '10' ],
 				[ '20', '21', '22' ]
@@ -1041,7 +1041,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', { colspan: 2, contents: '' } ],
 				[ '20', '21', '22' ]
@@ -1049,7 +1049,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should properly split large table in two parts with odd amount of rows', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 7, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1063,7 +1063,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { rowspan: 4, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1075,7 +1075,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should not insert or modify rest of cells when splitting larger table rowspan with 7 cells ', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
 				[ '10', '11', '12', '13' ],
 				[ { rowspan: 9, contents: '20[]' }, '21', '22', '23', '24' ],
@@ -1094,7 +1094,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 2 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { colspan: 2, contents: '01' }, { colspan: 2, contents: '02' } ],
 				[ '10', '11', '12', '13' ],
 				[ { rowspan: 5, contents: '20[]' }, '21', '22', '23', '24' ],
@@ -1111,7 +1111,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should evenly distribute rowspan attribute', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 7, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1126,7 +1126,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { rowspan: 3, contents: '01[]' } ],
 				[ '10' ],
 				[ '20' ],
@@ -1139,7 +1139,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split row-spanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
 				[ '20', '21' ]
@@ -1149,7 +1149,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01[]' ],
 				[ '' ],
 				[ '10', '' ],
@@ -1158,7 +1158,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split row-spanned & col-spanned cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', '11', '12' ]
 			] ) );
@@ -1167,7 +1167,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( tableCell, 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 3, contents: '00' }, { colspan: 2, contents: '01[]' } ],
 				[ { colspan: 2, contents: '' } ],
 				[ { colspan: 2, contents: '' } ],
@@ -1176,7 +1176,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split table cell from a heading section', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
@@ -1184,7 +1184,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00[]', { rowspan: 3, contents: '01' }, { rowspan: 3, contents: '02' } ],
 				[ '' ],
 				[ '' ],
@@ -1194,7 +1194,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should split cells in a table with a non-row element', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1206,7 +1206,7 @@ describe( 'TableUtils', () => {
 
 			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
-			expect( getData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -1234,7 +1234,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'getColumns()', () => {
 		it( 'should return proper number of columns', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '04' ]
 			] ) );
 
@@ -1242,7 +1242,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should ignore elements other than tableCell (e.g. $marker elements) when counting', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '02', '03' ]
 			] ) );
 
@@ -1260,7 +1260,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'getRows()', () => {
 		it( 'should return proper number of columns for simple table', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -1269,7 +1269,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should return proper number of columns for a table with header', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
@@ -1278,7 +1278,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should return proper number of columns for rowspan table', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ { rowspan: 2, contents: '10' }, '11' ],
 				[ '21' ]
@@ -1288,7 +1288,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should return proper number of rows for a table with a non-row element', () => {
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1309,7 +1309,7 @@ describe( 'TableUtils', () => {
 	describe( 'removeRows()', () => {
 		describe( 'single row', () => {
 			it( 'should remove a given row from a table start', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -1317,27 +1317,27 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '10', '11' ],
 					[ '20', '21' ]
 				] ) );
 			} );
 
 			it( 'should remove last row', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ]
 				] ) );
 			} );
 
 			it( 'should change heading rows if removing a heading row', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -1345,14 +1345,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '20', '21' ]
 				], { headingRows: 1 } ) );
 			} );
 
 			it( 'should change heading rows if removing a heading row (and cell below is row-spanned)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', { contents: '11', rowspan: 2 } ],
 					[ '20' ]
@@ -1360,7 +1360,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '10', { contents: '11', rowspan: 2 } ],
 					[ '20' ]
 				] ) );
@@ -1380,7 +1380,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
 						{ contents: '04', rowspan: 5 } ],
 					[ '10' ],
@@ -1403,7 +1403,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01', { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 3 }, { contents: '04', rowspan: 4 } ],
 					[ '20', '21' ],
 					[ '30', '31', '32' ],
@@ -1413,7 +1413,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease rowspan of table cells from previous rows (row-spanned cells on different rows)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
 					[ '22', '24' ],
@@ -1422,7 +1422,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ '13', '14' ],
 					[ '31', '32', '33', '34' ]
@@ -1430,7 +1430,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should move row-spanned cells to a row below removing it\'s row', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 					[ '12' ],
 					[ '21', '22' ],
@@ -1439,7 +1439,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '12' ],
 					[ '21', '22' ],
 					[ '30', '31', '32' ]
@@ -1447,7 +1447,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should move row-spanned cells to a row below removing it\'s row (other cell is overlapping removed row)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { rowspan: 3, contents: '01' }, '02', '03', '04' ],
 					[ '10', { rowspan: 2, contents: '12' }, '13', '14' ],
 					[ '20', '23', '24' ]
@@ -1455,14 +1455,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, '02', '03', '04' ],
 					[ '20', '12', '23', '24' ]
 				] ) );
 			} );
 
 			it( 'should remove row in a table with a non-row element', () => {
-				setData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1478,7 +1478,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
 
-				expect( getData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1492,7 +1492,7 @@ describe( 'TableUtils', () => {
 
 		describe( 'many rows', () => {
 			it( 'should properly remove middle rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1501,14 +1501,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '30', '31' ]
 				] ) );
 			} );
 
 			it( 'should properly remove tailing rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1517,14 +1517,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 2, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
 			} );
 
 			it( 'should properly remove beginning rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1533,14 +1533,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '20', '21' ],
 					[ '30', '31' ]
 				] ) );
 			} );
 
 			it( 'should support removing multiple headings (removed rows in heading section)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1549,14 +1549,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '20', '21' ],
 					[ '30', '31' ]
 				], { headingRows: 1 } ) );
 			} );
 
 			it( 'should support removing multiple headings (removed rows in heading and body section)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1566,14 +1566,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 3 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { headingRows: 1 } ) );
 			} );
 
 			it( 'should support removing mixed heading and cell rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -1581,13 +1581,13 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 0, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '20', '21' ]
 				] ) );
 			} );
 
 			it( 'should move row-spanned cells to a row after removed rows section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ { rowspan: 4, contents: '10' }, { rowspan: 3, contents: '11' }, { rowspan: 2, contents: '12' }, '13' ],
 					[ { rowspan: 3, contents: '23' } ],
@@ -1597,7 +1597,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ { rowspan: 2, contents: '10' }, '11', '32', { rowspan: 2, contents: '23' } ],
 					[ '41', '42' ]
@@ -1605,7 +1605,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease rowspan of table cells from rows before removed rows section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03' ],
 					[ '13' ],
 					[ '22', '23' ],
@@ -1614,7 +1614,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02', '03' ],
 					[ '31', '32', '33' ]
 				] ) );
@@ -1634,7 +1634,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 3 }, { contents: '03', rowspan: 4 },
 						{ contents: '04', rowspan: 5 } ],
 					[ '10' ],
@@ -1655,7 +1655,7 @@ describe( 'TableUtils', () => {
 				// +----+----+----+----+----+
 				// | 50 | 51 | 52 | 53 | 54 |
 				// +----+----+----+----+----+
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents: '01', rowspan: 2 }, { contents: '02', rowspan: 2 }, { contents: '03', rowspan: 2 },
 						{ contents: '04', rowspan: 3 } ],
 					[ '10' ],
@@ -1665,7 +1665,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should re-use batch to create one undo step', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -1688,7 +1688,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should throw the error when provided options point to a non-existent rows', () => {
-				setData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1715,7 +1715,7 @@ describe( 'TableUtils', () => {
 	describe( 'removeColumns()', () => {
 		describe( 'single row', () => {
 			it( 'should remove a given column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
@@ -1723,7 +1723,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '02' ],
 					[ '10', '12' ],
 					[ '20', '22' ]
@@ -1731,7 +1731,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should remove a given column from a table start', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -1739,7 +1739,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '21' ]
@@ -1747,7 +1747,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should change heading columns if removing a heading column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -1755,7 +1755,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '21' ]
@@ -1763,7 +1763,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease colspan of table cells from previous column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { colspan: 4, contents: '00' }, '04' ],
 					[ { colspan: 3, contents: '10' }, '13', '14' ],
 					[ { colspan: 2, contents: '20' }, '22', '23', '24' ],
@@ -1773,7 +1773,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ { colspan: 3, contents: '00' }, '04' ],
 					[ { colspan: 2, contents: '10' }, '13', '14' ],
 					[ { colspan: 2, contents: '20' }, '23', '24' ],
@@ -1784,7 +1784,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should decrease colspan of cells that are on removed column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { colspan: 3, contents: '00' }, '03' ],
 					[ { colspan: 2, contents: '10' }, '12', '13' ],
 					[ '20', '21', '22', '23' ]
@@ -1792,7 +1792,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ { colspan: 2, contents: '00' }, '03' ],
 					[ '10', '12', '13' ],
 					[ '21', '22', '23' ]
@@ -1800,61 +1800,61 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should remove column with rowspan (first column)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
 					[ '11' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ]
 				] ) );
 			} );
 
 			it( 'should remove column with rowspan (last column)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' } ],
 					[ '10' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ]
 				] ) );
 			} );
 
 			it( 'should remove column if other column is row-spanned (last column)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' } ],
 					[ '10' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01' ]
 				] ) );
 			} );
 
 			it( 'should remove column if other column is row-spanned (first column)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
 					[ '11' ]
 				] ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00' ]
 				] ) );
 			} );
 
 			it( 'should remove column if removing row with one column - other columns are spanned', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
 					[ '10' ],
 					[ '20', '21', '22' ]
@@ -1862,14 +1862,14 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01', '02' ],
 					[ '21', '22' ]
 				] ) );
 			} );
 
 			it( 'should remove the column properly when multiple rows should be removed (because of to row-spans)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { contents: '01', rowspan: 3 }, { contents: '02', rowspan: 3 } ],
 					[ '10' ],
 					[ '20' ]
@@ -1877,13 +1877,13 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '01', '02' ]
 				] ) );
 			} );
 
 			it( 'should remove column in a table with a non-row element', () => {
-				setData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -1899,7 +1899,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getChild( 0 ), { at: 0 } );
 
-				expect( getData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>01</paragraph></tableCell>' +
@@ -1915,7 +1915,7 @@ describe( 'TableUtils', () => {
 
 		describe( 'multiple columns', () => {
 			it( 'should properly remove two first columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -1924,7 +1924,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '02' ],
 					[ '12' ],
 					[ '22' ],
@@ -1933,7 +1933,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should properly remove two middle columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ '10', '11', '12', '13' ],
 					[ '20', '21', '22', '23' ],
@@ -1942,7 +1942,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '23' ],
@@ -1951,7 +1951,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should properly remove two last columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -1960,7 +1960,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '10' ],
 					[ '20' ],
@@ -1969,21 +1969,21 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should properly remove multiple heading columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03', '04' ],
 					[ '10', '11', '12', '13', '14' ]
 				], { headingColumns: 3 } ) );
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '04' ],
 					[ '10', '14' ]
 				], { headingColumns: 1 } ) );
 			} );
 
 			it( 'should properly calculate truncated colspans', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { contents: '00', colspan: 3 } ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
@@ -1991,7 +1991,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '12' ],
 					[ '22' ]
@@ -1999,7 +1999,7 @@ describe( 'TableUtils', () => {
 			} );
 
 			it( 'should remove column in a table with a non-row element', () => {
-				setData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -2015,7 +2015,7 @@ describe( 'TableUtils', () => {
 
 				tableUtils.removeColumns( root.getChild( 0 ), { at: 1, columns: 1 } );
 
-				expect( getData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>00</paragraph></tableCell>' +
@@ -2032,7 +2032,7 @@ describe( 'TableUtils', () => {
 
 	describe( 'createTable()', () => {
 		it( 'should create table', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			model.change( writer => {
 				const table = tableUtils.createTable( writer, { rows: 3, columns: 2 } );
@@ -2040,7 +2040,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2048,7 +2048,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should create table with heading rows', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			model.change( writer => {
 				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 1 } );
@@ -2056,7 +2056,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2064,7 +2064,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should create table with heading columns', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			model.change( writer => {
 				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingColumns: 1 } );
@@ -2072,7 +2072,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2080,7 +2080,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should create table with heading rows and columns', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			model.change( writer => {
 				const table = tableUtils.createTable( writer, { rows: 3, columns: 2, headingRows: 2, headingColumns: 1 } );
@@ -2088,7 +2088,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ],
 				[ '', '' ]
@@ -2096,7 +2096,7 @@ describe( 'TableUtils', () => {
 		} );
 
 		it( 'should clamp table heading rows and columns to the rows and columns number', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			model.change( writer => {
 				const table = tableUtils.createTable( writer, { rows: 2, columns: 2, headingRows: 3, headingColumns: 3 } );
@@ -2104,7 +2104,7 @@ describe( 'TableUtils', () => {
 				model.insertContent( table, model.document.selection.focus );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 2 } ) );
@@ -2125,7 +2125,7 @@ describe( 'TableUtils - selection methods', () => {
 		tableSelection = editor.plugins.get( TableSelection );
 		tableUtils = editor.plugins.get( TableUtils );
 
-		setData( model, modelTable( [
+		_setModelData( model, modelTable( [
 			[ '11[]', '12', '13' ],
 			[ '21', '22', '23' ],
 			[ '31', '32', '33' ]
@@ -2389,7 +2389,7 @@ describe( 'TableUtils - selection methods', () => {
 		} );
 
 		it( 'should return an empty array when unrelated elements host selection ranges', () => {
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			const paragraph = modelRoot.getNodeByPath( [ 0 ] );
 
@@ -2445,7 +2445,7 @@ describe( 'TableUtils - selection methods', () => {
 
 			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).to.be.empty;
 
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			const paragraph = modelRoot.getNodeByPath( [ 0 ] );
 
@@ -2460,7 +2460,7 @@ describe( 'TableUtils - selection methods', () => {
 	describe( 'createTableWalker()', () => {
 		// More tests for the table walker are available in tests/tablewalker.js.
 		it( 'should create a table walker', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );

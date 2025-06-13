@@ -18,8 +18,8 @@ import {
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment,
 	type SelectionChangeRangeEvent,
-	type DocumentFragment,
-	type Element
+	type ModelDocumentFragment,
+	type ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -361,7 +361,7 @@ export class TodoListEditing extends Plugin {
 	 * is not a clear solution. We need to design an API for using commands beyond the selection range.
 	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
 	 */
-	private _handleCheckmarkChange( listItem: Element ): void {
+	private _handleCheckmarkChange( listItem: ModelElement ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const previousSelectionRanges = Array.from( model.document.selection.getRanges() );
@@ -381,7 +381,7 @@ export class TodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+		let lastFocusedCodeBlock: ModelElement | ModelDocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
@@ -417,7 +417,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		// Group to-do list items by their listItemId attribute to ensure that all items of the same list item have the same checked state.
 		const groupedItems = Array
 			.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( ( item ): item is Element =>
+			.filter( ( item ): item is ModelElement =>
 				item.getAttribute( 'listType' ) === 'todo' && schema.checkAttribute( item, 'listItemId' )
 			)
 			.reduce( ( acc, item ) => {
@@ -428,7 +428,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 				}
 
 				return acc;
-			}, new Map<string, Array<Element>>() );
+			}, new Map<string, Array<ModelElement>>() );
 
 		// During the upcast, we need to ensure that all items of the same list have the same checked state. From time to time
 		// the checked state of the items can be different when the user pastes content from the clipboard with <input type="checkbox">
@@ -450,7 +450,7 @@ function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 function todoItemInputConverter(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, conversionApi ) => {
 		const modelCursor = data.modelCursor;
-		const modelItem = modelCursor.parent as Element;
+		const modelItem = modelCursor.parent as ModelElement;
 		const viewItem = data.viewItem;
 
 		if ( !conversionApi.consumable.test( viewItem, { name: true } ) ) {
@@ -519,7 +519,7 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
 /**
  * Returns true if the given list item block should be converted as a description block of a to-do list item.
  */
-function isDescriptionBlock( modelElement: Element, listAttributeNames: Array<string> ): boolean {
+function isDescriptionBlock( modelElement: ModelElement, listAttributeNames: Array<string> ): boolean {
 	return ( modelElement.is( 'element', 'paragraph' ) || modelElement.is( 'element', 'listItem' ) ) &&
 		modelElement.getAttribute( 'listType' ) == 'todo' &&
 		isFirstBlockOfListItem( modelElement ) &&
@@ -529,7 +529,7 @@ function isDescriptionBlock( modelElement: Element, listAttributeNames: Array<st
 /**
  * Returns true if only attributes from the given list are present on the model element.
  */
-function hasOnlyListAttributes( modelElement: Element, attributeNames: Array<string> ): boolean {
+function hasOnlyListAttributes( modelElement: ModelElement, attributeNames: Array<string> ): boolean {
 	for ( const attributeKey of modelElement.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
 		if ( attributeKey.startsWith( 'selection:' ) ) {
@@ -559,7 +559,7 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 		}
 
 		const position = selection.getFirstPosition()!;
-		const parent = position.parent as Element;
+		const parent = position.parent as ModelElement;
 
 		// Right arrow before a to-do list item.
 		if ( direction == 'right' && position.isAtEnd ) {
@@ -606,7 +606,7 @@ function isLabelElement( viewElement: ViewElement | ViewDocumentFragment | null 
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+function isTodoListItemElement( element: ModelElement | ModelDocumentFragment | null ): boolean {
 	if ( !element ) {
 		return false;
 	}

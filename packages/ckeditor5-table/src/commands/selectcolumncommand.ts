@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Range } from 'ckeditor5/src/engine.js';
+import type { ModelRange } from 'ckeditor5/src/engine.js';
 import { type TableUtils } from '../tableutils.js';
 
 import { TableWalker } from '../tablewalker.js';
@@ -62,7 +62,7 @@ export class SelectColumnCommand extends Command {
 		const startColumn = Math.min( startLocation.column, endLocation.column );
 		const endColumn = Math.max( startLocation.column, endLocation.column );
 
-		const rangesToSelect: Array<Range> = [];
+		const rangesToSelect: Array<ModelRange> = [];
 
 		for ( const cellInfo of new TableWalker( table, { startColumn, endColumn } ) ) {
 			rangesToSelect.push( model.createRangeOn( cellInfo.cell ) );

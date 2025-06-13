@@ -18,7 +18,7 @@ import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -432,7 +432,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		it( 'should focus the main toolbar when the focus is in the editing root', () => {
 			const spy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
@@ -446,7 +446,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
 			pressAltF10();
@@ -466,7 +466,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const toolbarSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
 
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
 				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
 				'<paragraph>baz</paragraph>'
@@ -491,7 +491,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
 			pressAltF10();
@@ -506,7 +506,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			pressEsc();
 

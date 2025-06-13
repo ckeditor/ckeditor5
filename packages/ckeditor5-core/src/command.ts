@@ -166,7 +166,7 @@ export class Command extends /* #__PURE__ */ ObservableMixin() {
 	 * in this method.
 	 *
 	 * This method is automatically called when
-	 * {@link module:engine/model/document~Document#event:change any changes are applied to the document}.
+	 * {@link module:engine/model/document~ModelDocument#event:change any changes are applied to the document}.
 	 */
 	public refresh(): void {
 		this.isEnabled = true;

@@ -8,9 +8,9 @@
  */
 
 import type {
-	Element,
-	Node,
-	Writer
+	ModelElement,
+	ModelNode,
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
@@ -53,7 +53,7 @@ export class MergeCellCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	public declare value: Node | undefined;
+	public declare value: ModelNode | undefined;
 
 	/**
 	 * Creates a new `MergeCellCommand` instance.
@@ -99,11 +99,11 @@ export class MergeCellCommand extends Command {
 			const isMergeNext = direction == 'right' || direction == 'down';
 
 			// The merge mechanism is always the same so sort cells to be merged.
-			const cellToExpand = ( isMergeNext ? tableCell : cellToMerge ) as Element;
-			const cellToRemove = ( isMergeNext ? cellToMerge : tableCell ) as Element;
+			const cellToExpand = ( isMergeNext ? tableCell : cellToMerge ) as ModelElement;
+			const cellToRemove = ( isMergeNext ? cellToMerge : tableCell ) as ModelElement;
 
 			// Cache the parent of cell to remove for later check.
-			const removedTableCellRow = cellToRemove.parent as Element;
+			const removedTableCellRow = cellToRemove.parent as ModelElement;
 
 			mergeTableCells( cellToRemove, cellToExpand, writer );
 
@@ -126,7 +126,7 @@ export class MergeCellCommand extends Command {
 	/**
 	 * Returns a cell that can be merged with the current cell depending on the command's direction.
 	 */
-	private _getMergeableCell(): Node | undefined {
+	private _getMergeableCell(): ModelNode | undefined {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -160,9 +160,9 @@ export class MergeCellCommand extends Command {
 /**
  * Returns the cell that can be merged horizontally.
  */
-function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ) {
+function getHorizontalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ) {
 	const tableRow = tableCell.parent!;
-	const table = tableRow.parent as Element;
+	const table = tableRow.parent as ModelElement;
 	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
 	const hasHeadingColumns = ( table.getAttribute( 'headingColumns' ) as number || 0 ) > 0;
 
@@ -171,8 +171,8 @@ function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection
 	}
 
 	// Sort cells:
-	const cellOnLeft = ( direction == 'right' ? tableCell : horizontalCell ) as Element;
-	const cellOnRight = ( direction == 'right' ? horizontalCell : tableCell ) as Element;
+	const cellOnLeft = ( direction == 'right' ? tableCell : horizontalCell ) as ModelElement;
+	const cellOnRight = ( direction == 'right' ? horizontalCell : tableCell ) as ModelElement;
 
 	// Get their column indexes:
 	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft );
@@ -198,9 +198,9 @@ function getHorizontalCell( tableCell: Element, direction: ArrowKeyCodeDirection
 /**
  * Returns the cell that can be merged vertically.
  */
-function getVerticalCell( tableCell: Element, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ): Node | null {
-	const tableRow = tableCell.parent as Element;
-	const table = tableRow.parent as Element;
+function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ): ModelNode | null {
+	const tableRow = tableCell.parent as ModelElement;
+	const table = tableRow.parent as ModelElement;
 
 	const rowIndex = table.getChildIndex( tableRow )!;
 
@@ -250,7 +250,7 @@ function getVerticalCell( tableCell: Element, direction: ArrowKeyCodeDirection, 
  * paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
  */
-function mergeTableCells( cellToRemove: Element, cellToExpand: Element, writer: Writer ) {
+function mergeTableCells( cellToRemove: ModelElement, cellToExpand: ModelElement, writer: ModelWriter ) {
 	if ( !isEmpty( cellToRemove ) ) {
 		if ( isEmpty( cellToExpand ) ) {
 			writer.remove( writer.createRangeIn( cellToExpand ) );
@@ -266,8 +266,8 @@ function mergeTableCells( cellToRemove: Element, cellToExpand: Element, writer: 
 /**
  * Checks if the passed table cell contains an empty paragraph.
  */
-function isEmpty( tableCell: Element ): boolean {
-	const firstTableChild = tableCell.getChild( 0 ) as Element;
+function isEmpty( tableCell: ModelElement ): boolean {
+	const firstTableChild = tableCell.getChild( 0 ) as ModelElement;
 
 	return tableCell.childCount == 1 && firstTableChild.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
 }

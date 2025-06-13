@@ -8,11 +8,11 @@
  */
 
 import type {
-	DocumentSelection,
-	Selection,
-	Position,
-	Schema,
-	SchemaContextDefinition
+	ModelDocumentSelection,
+	ModelSelection,
+	ModelPosition,
+	ModelSchema,
+	ModelSchemaContextDefinition
 } from 'ckeditor5/src/engine.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
 import { Command } from 'ckeditor5/src/core.js';
@@ -82,7 +82,7 @@ export class InsertBookmarkCommand extends Command {
 			// If the position does not allow for `bookmark` but allows for a `paragraph`
 			// then insert a `paragraph` then we will insert a `bookmark` inside.
 			if ( !isBookmarkAllowed ) {
-				const newPosition = editor.execute( 'insertParagraph', { position } ) as Position | null;
+				const newPosition = editor.execute( 'insertParagraph', { position } ) as ModelPosition | null;
 
 				if ( !newPosition ) {
 					return;
@@ -104,7 +104,7 @@ export class InsertBookmarkCommand extends Command {
 	 * Returns the position where the bookmark can be inserted. And if it is not possible to insert a bookmark,
 	 * check if it is possible to insert a paragraph.
 	 */
-	private _getPositionToInsertBookmark( selection: Selection | DocumentSelection ): Position | null {
+	private _getPositionToInsertBookmark( selection: ModelSelection | ModelDocumentSelection ): ModelPosition | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 
@@ -138,7 +138,7 @@ export class InsertBookmarkCommand extends Command {
 /**
  * Verify if the given position allows for bookmark insertion. Verify if auto-paragraphing could help.
  */
-function isBookmarkAllowed( position: SchemaContextDefinition, schema: Schema ): boolean {
+function isBookmarkAllowed( position: ModelSchemaContextDefinition, schema: ModelSchema ): boolean {
 	if ( schema.checkChild( position, 'bookmark' ) ) {
 		return true;
 	}

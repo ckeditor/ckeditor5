@@ -12,7 +12,7 @@ import { transformListItemLikeElementsIntoLists } from '../filters/list.js';
 import { replaceImagesSourceWithBase64 } from '../filters/image.js';
 import { removeMSAttributes } from '../filters/removemsattributes.js';
 import { transformTables } from '../filters/table.js';
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
@@ -47,7 +47,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 	 * @inheritDoc
 	 */
 	public execute( data: PasteFromOfficeNormalizerData ): void {
-		const writer = new UpcastWriter( this.document );
+		const writer = new ViewUpcastWriter( this.document );
 		const { body: documentFragment, stylesString } = data._parsedData;
 
 		transformBookmarks( documentFragment, writer );

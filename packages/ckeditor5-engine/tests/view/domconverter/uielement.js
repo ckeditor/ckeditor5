@@ -5,7 +5,7 @@
 
 import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -27,7 +27,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {

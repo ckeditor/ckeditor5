@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { ShiftEnter } from '../src/shiftenter.js';
 import { ShiftEnterCommand } from '../src/shiftentercommand.js';
 import { EnterObserver } from '../src/enterobserver.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'ShiftEnter feature', () => {
 	let element, editor, viewDocument;
@@ -75,7 +75,7 @@ describe( 'ShiftEnter feature', () => {
 		const domEvt = getDomEvent();
 		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithExactly( 'shiftEnter' ) ).to.be.true;
@@ -88,7 +88,7 @@ describe( 'ShiftEnter feature', () => {
 		const executeSpy = editor.execute = sinon.spy();
 		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( domEvt.preventDefault, executeSpy, scrollSpy );
@@ -98,7 +98,7 @@ describe( 'ShiftEnter feature', () => {
 		const domEvt = getDomEvent();
 		const commandExecuteSpy = sinon.stub( editor.commands.get( 'shiftEnter' ), 'execute' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		sinon.assert.notCalled( commandExecuteSpy );
 	} );
@@ -106,7 +106,7 @@ describe( 'ShiftEnter feature', () => {
 	it( 'prevents default event action even if the command should not be executed', () => {
 		const domEvt = getDomEvent();
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		sinon.assert.calledOnce( domEvt.preventDefault );
 	} );
@@ -116,7 +116,7 @@ describe( 'ShiftEnter feature', () => {
 
 		viewDocument.isComposing = true;
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		sinon.assert.notCalled( domEvt.preventDefault );
 	} );

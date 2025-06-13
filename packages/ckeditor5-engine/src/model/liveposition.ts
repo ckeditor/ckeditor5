@@ -7,46 +7,46 @@
  * @module engine/model/liveposition
  */
 
-import { Position, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
-import { type DocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelItem } from './item.js';
 import { type Operation } from './operation/operation.js';
-import { type RootElement } from './rootelement.js';
+import { type ModelRootElement } from './rootelement.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
- * `LivePosition` is a type of {@link module:engine/model/position~Position Position}
- * that updates itself as {@link module:engine/model/document~Document document}
+ * `ModelLivePosition` is a type of {@link module:engine/model/position~ModelPosition Position}
+ * that updates itself as {@link module:engine/model/document~ModelDocument document}
  * is changed through operations. It may be used as a bookmark.
  *
- * **Note:** Contrary to {@link module:engine/model/position~Position}, `LivePosition` works only in roots that are
- * {@link module:engine/model/rootelement~RootElement}.
- * If {@link module:engine/model/documentfragment~DocumentFragment} is passed, error will be thrown.
+ * **Note:** Contrary to {@link module:engine/model/position~ModelPosition}, `ModelLivePosition` works only in roots that are
+ * {@link module:engine/model/rootelement~ModelRootElement}.
+ * If {@link module:engine/model/documentfragment~ModelDocumentFragment} is passed, error will be thrown.
  *
- * **Note:** Be very careful when dealing with `LivePosition`. Each `LivePosition` instance bind events that might
+ * **Note:** Be very careful when dealing with `ModelLivePosition`. Each `ModelLivePosition` instance bind events that might
  * have to be unbound.
- * Use {@link module:engine/model/liveposition~LivePosition#detach} whenever you don't need `LivePosition` anymore.
+ * Use {@link module:engine/model/liveposition~ModelLivePosition#detach} whenever you don't need `ModelLivePosition` anymore.
  */
-export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
+export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPosition ) {
 	/**
 	 * Root of the position path.
 	 */
-	declare public readonly root: RootElement;
+	declare public readonly root: ModelRootElement;
 
 	/**
 	 * Creates a live position.
 	 *
-	 * @see module:engine/model/position~Position
+	 * @see module:engine/model/position~ModelPosition
 	 */
-	constructor( root: RootElement, path: Array<number>, stickiness: PositionStickiness = 'toNone' ) {
+	constructor( root: ModelRootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone' ) {
 		super( root, path, stickiness );
 
 		if ( !this.root.is( 'rootElement' ) ) {
 			/**
-			 * LivePosition's root has to be an instance of RootElement.
+			 * LivePosition's root has to be an instance of ModelRootElement.
 			 *
 			 * @error model-liveposition-root-not-rootelement
 			 */
@@ -57,7 +57,7 @@ export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	}
 
 	/**
-	 * Unbinds all events previously bound by `LivePosition`. Use it whenever you don't need `LivePosition` instance
+	 * Unbinds all events previously bound by `ModelLivePosition`. Use it whenever you don't need `ModelLivePosition` instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
@@ -66,55 +66,61 @@ export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	}
 
 	/**
-	 * Creates a {@link module:engine/model/position~Position position instance}, which is equal to this live position.
+	 * Creates a {@link module:engine/model/position~ModelPosition position instance}, which is equal to this live position.
 	 */
-	public toPosition(): Position {
-		return new Position( this.root, this.path.slice(), this.stickiness );
+	public toPosition(): ModelPosition {
+		return new ModelPosition( this.root, this.path.slice(), this.stickiness );
 	}
 
 	/**
-	 * Creates a `LivePosition` instance that is equal to position.
+	 * Creates a `ModelLivePosition` instance that is equal to position.
 	 */
-	public static fromPosition( position: Position, stickiness?: PositionStickiness ): LivePosition {
-		return new this( position.root as RootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
+	public static fromPosition( position: ModelPosition, stickiness?: ModelPositionStickiness ): ModelLivePosition {
+		return new this( position.root as ModelRootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
 	}
 
 	/**
 	 * @internal
-	 * @see module:engine/model/position~Position._createAfter
+	 * @see module:engine/model/position~ModelPosition._createAfter
 	 */
-	declare public static readonly _createAfter: ( item: Item | DocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createAfter: (
+		item: ModelItem | ModelDocumentFragment,
+		stickiness?: ModelPositionStickiness
+	) => ModelLivePosition;
 
 	/**
 	 * @internal
-	 * @see module:engine/model/position~Position._createBefore
+	 * @see module:engine/model/position~ModelPosition._createBefore
 	 */
-	declare public static readonly _createBefore: ( item: Item | DocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createBefore: (
+		item: ModelItem | ModelDocumentFragment,
+		stickiness?: ModelPositionStickiness
+	) => ModelLivePosition;
 
 	/**
 	 * @internal
-	 * @see module:engine/model/position~Position._createAt
+	 * @see module:engine/model/position~ModelPosition._createAt
 	 */
 	declare public static readonly _createAt: (
-		itemOrPosition: Item | Position | DocumentFragment,
-		offset?: PositionOffset,
-		stickiness?: PositionStickiness
-	) => LivePosition;
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
+		offset?: ModelPositionOffset,
+		stickiness?: ModelPositionStickiness
+	) => ModelLivePosition;
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-LivePosition.prototype.is = function( type: string ): boolean {
+ModelLivePosition.prototype.is = function( type: string ): boolean {
 	return type === 'livePosition' || type === 'model:livePosition' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'position' || type === 'model:position';
 };
 
 /**
- * Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
- * this position's {@link module:engine/model/position~Position#root root}.
+ * Binds this `ModelLivePosition` to the {@link module:engine/model/document~ModelDocument document} that owns
+ * this position's {@link module:engine/model/position~ModelPosition#root root}.
  */
-function bindWithDocument( this: LivePosition ) {
+function bindWithDocument( this: ModelLivePosition ) {
 	this.listenTo<ModelApplyOperationEvent>(
 		this.root.document!.model,
 		'applyOperation',
@@ -134,7 +140,7 @@ function bindWithDocument( this: LivePosition ) {
 /**
  * Updates this position accordingly to the updates applied to the model. Bases on change events.
  */
-function transform( this: LivePosition, operation: Operation ) {
+function transform( this: ModelLivePosition, operation: Operation ) {
 	const result = this.getTransformedByOperation( operation );
 
 	if ( !this.isEqual( result ) ) {
@@ -143,17 +149,17 @@ function transform( this: LivePosition, operation: Operation ) {
 		( this as any ).path = result.path;
 		( this as any ).root = result.root;
 
-		this.fire<LivePositionChangeEvent>( 'change', oldPosition );
+		this.fire<ModelLivePositionChangeEvent>( 'change', oldPosition );
 	}
 }
 
 /**
- * Fired when `LivePosition` instance is changed due to changes on {@link module:engine/model/document~Document}.
+ * Fired when `ModelLivePosition` instance is changed due to changes on {@link module:engine/model/document~ModelDocument}.
  *
- * @eventName ~LivePosition#change
+ * @eventName ~ModelLivePosition#change
  * @param oldPosition Position equal to this live position before it got changed.
  */
-export type LivePositionChangeEvent = {
+export type ModelLivePositionChangeEvent = {
 	name: 'change';
-	args: [ oldPosition: Position ];
+	args: [ oldPosition: ModelPosition ];
 };

@@ -7,7 +7,7 @@
  * @module engine/view/styles/utils
  */
 
-import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap.js';
+import type { BoxStyleSides, StylePropertyDescriptor, StyleValue } from '../stylesmap.js';
 
 const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;
@@ -57,16 +57,16 @@ const COLOR_NAMES = new Set( [
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
  *
  * ```ts
- * isColor( '#f00' );						// true
- * isColor( '#AA00BB33' );					// true
- * isColor( 'rgb(0, 0, 250)' );				// true
- * isColor( 'hsla(240, 100%, 50%, .7)' );	// true
- * isColor( 'deepskyblue' );				// true
+ * isColorStyleValue( '#f00' );						// true
+ * isColorStyleValue( '#AA00BB33' );				// true
+ * isColorStyleValue( 'rgb(0, 0, 250)' );			// true
+ * isColorStyleValue( 'hsla(240, 100%, 50%, .7)' );	// true
+ * isColorStyleValue( 'deepskyblue' );				// true
  * ```
  *
  * **Note**: It does not support CSS Level 4 whitespace syntax, system colors and radius values for HSL colors.
  */
-export function isColor( string: string ): boolean {
+export function isColorStyleValue( string: string ): boolean {
 	// As far as I was able to test checking some pre-conditions is faster than joining each test with ||.
 	if ( string.startsWith( '#' ) ) {
 		return HEX_COLOR_REGEXP.test( string );
@@ -89,7 +89,7 @@ const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double
 /**
  * Checks if string contains [line style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) CSS value.
  */
-export function isLineStyle( string: string ): boolean {
+export function isLineStyleValue( string: string ): boolean {
 	return lineStyleValues.includes( string );
 }
 
@@ -98,7 +98,7 @@ const lengthRegExp = /^([+-]?[0-9]*([.][0-9]+)?(px|cm|mm|in|pc|pt|ch|em|ex|rem|v
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
  */
-export function isLength( string: string ): boolean {
+export function isLengthStyleValue( string: string ): boolean {
 	return lengthRegExp.test( string );
 }
 
@@ -107,7 +107,7 @@ const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*([.][0-9]+)?%$/;
 /**
  * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
  */
-export function isPercentage( string: string ): boolean {
+export function isPercentageStyleValue( string: string ): boolean {
 	return PERCENTAGE_VALUE_REGEXP.test( string );
 }
 
@@ -116,7 +116,7 @@ const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-r
 /**
  * Checks if string contains [background repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) CSS value.
  */
-export function isRepeat( string: string ): boolean {
+export function isRepeatStyleValue( string: string ): boolean {
 	return repeatValues.includes( string );
 }
 
@@ -125,7 +125,7 @@ const positionValues = [ 'center', 'top', 'bottom', 'left', 'right' ];
 /**
  * Checks if string contains [background position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position) CSS value.
  */
-export function isPosition( string: string ): boolean {
+export function isPositionStyleValue( string: string ): boolean {
 	return positionValues.includes( string );
 }
 
@@ -134,7 +134,7 @@ const attachmentValues = [ 'fixed', 'scroll', 'local' ];
 /**
  * Checks if string contains [background attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment) CSS value.
  */
-export function isAttachment( string: string ): boolean {
+export function isAttachmentStyleValue( string: string ): boolean {
 	return attachmentValues.includes( string );
 }
 
@@ -143,19 +143,19 @@ const urlRegExp = /^url\(/;
 /**
  * Checks if string contains [URL](https://developer.mozilla.org/en-US/docs/Web/CSS/url) CSS value.
  */
-export function isURL( string: string ): boolean {
+export function isURLStyleValue( string: string ): boolean {
 	return urlRegExp.test( string );
 }
 
 /**
  * Parses box sides as individual values.
  */
-export function getBoxSidesValues( value: string = '' ): BoxSides {
+export function getBoxSidesStyleValues( value: string = '' ): BoxStyleSides {
 	if ( value === '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
 
-	const values = getShorthandValues( value );
+	const values = getShorthandStylesValues( value );
 
 	const top = values[ 0 ];
 	const bottom = values[ 2 ] || top;
@@ -170,14 +170,14 @@ export function getBoxSidesValues( value: string = '' ): BoxSides {
  * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
  *
  * ```ts
- * stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
+ * stylesProcessor.setReducer( 'padding', getBoxSidesStyleValueReducer( 'padding' ) );
  * ```
  */
-export function getBoxSidesValueReducer( styleShorthand: string ) {
-	return ( value: StyleValue ): Array<PropertyDescriptor> => {
-		const { top, right, bottom, left } = value as BoxSides;
+export function getBoxSidesStyleValueReducer( styleShorthand: string ) {
+	return ( value: StyleValue ): Array<StylePropertyDescriptor> => {
+		const { top, right, bottom, left } = value as BoxStyleSides;
 
-		const reduced: Array<PropertyDescriptor> = [];
+		const reduced: Array<StylePropertyDescriptor> = [];
 
 		if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 			if ( top ) {
@@ -196,7 +196,7 @@ export function getBoxSidesValueReducer( styleShorthand: string ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getBoxSidesShorthandValue( value as BoxSides ) ] );
+			reduced.push( [ styleShorthand, getBoxSidesStyleShorthandValue( value as BoxStyleSides ) ] );
 		}
 
 		return reduced;
@@ -208,11 +208,11 @@ export function getBoxSidesValueReducer( styleShorthand: string ) {
  * of a CSS property value.
  *
  * ```ts
- * getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ * getBoxSidesStyleShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  * // will return '1px 1px 2px'
  * ```
  */
-export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSides ): string {
+export function getBoxSidesStyleShorthandValue( { top, right, bottom, left }: BoxStyleSides ): string {
 	const out = [];
 
 	if ( left !== right ) {
@@ -232,14 +232,14 @@ export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSide
  * Creates a normalizer for a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) 1-to-4 value.
  *
  * ```ts
- * stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+ * stylesProcessor.setNormalizer( 'margin', getPositionStyleShorthandNormalizer( 'margin' ) );
  * ```
  */
-export function getPositionShorthandNormalizer( shorthand: string ) {
-	return ( value: string ): { path: string; value: BoxSides } => {
+export function getPositionStyleShorthandNormalizer( shorthand: string ) {
+	return ( value: string ): { path: string; value: BoxStyleSides } => {
 		return {
 			path: shorthand,
-			value: getBoxSidesValues( value )
+			value: getBoxSidesStyleValues( value )
 		};
 	};
 }
@@ -248,11 +248,11 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * Parses parts of a 1-to-4 value notation - handles some CSS values with spaces (like RGB()).
  *
  * ```ts
- * getShorthandValues( 'red blue RGB(0, 0, 0)');
+ * getShorthandStylesValues( 'red blue RGB(0, 0, 0)');
  * // will return [ 'red', 'blue', 'RGB(0, 0, 0)' ]
  * ```
  */
-export function getShorthandValues( string: string ): Array<string> {
+export function getShorthandStylesValues( string: string ): Array<string> {
 	const matches = string.trim().slice( 0, 1500 ).matchAll( CSS_SHORTHAND_VALUE_REGEXP );
 
 	return Array.from( matches ).map( i => i[ 0 ] );

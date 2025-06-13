@@ -4,14 +4,14 @@
  */
 
 import { MouseObserver } from '../../../src/view/observer/mouseobserver.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'MouseObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.addObserver( MouseObserver );
 	} );

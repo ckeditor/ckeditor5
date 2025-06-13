@@ -10,13 +10,13 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type {
-	DocumentSelection,
-	Element,
+	ModelDocumentSelection,
+	ModelElement,
 	Model,
-	Position,
-	Schema,
-	Text,
-	UpcastWriter,
+	ModelPosition,
+	ModelSchema,
+	ModelText,
+	ViewUpcastWriter,
 	ViewDocumentFragment,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -118,7 +118,7 @@ export function getPropertyAssociation(
  *
  * @internal
  */
-export function getLeadingWhiteSpaces( textNode: Text ): string {
+export function getLeadingWhiteSpaces( textNode: ModelText ): string {
 	return textNode.data.match( /^(\s*)/ )![ 0 ];
 }
 
@@ -146,7 +146,7 @@ export function getLeadingWhiteSpaces( textNode: Text ): string {
  * @param text The raw code text to be converted.
  * @internal
  */
-export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text: string ): ViewDocumentFragment {
+export function rawSnippetTextToViewDocumentFragment( writer: ViewUpcastWriter, text: string ): ViewDocumentFragment {
 	const fragment = writer.createDocumentFragment();
 	const textLines = text.split( '\n' );
 
@@ -204,9 +204,9 @@ export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text
  *
  * @internal
  */
-export function getIndentOutdentPositions( model: Model ): Array<Position> {
+export function getIndentOutdentPositions( model: Model ): Array<ModelPosition> {
 	const selection = model.document.selection;
-	const positions: Array<Position> = [];
+	const positions: Array<ModelPosition> = [];
 
 	// When the selection is collapsed, there's only one position we can indent or outdent.
 	if ( selection.isCollapsed ) {
@@ -256,26 +256,26 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
  *
  * @internal
  */
-export function isModelSelectionInCodeBlock( selection: DocumentSelection ): boolean {
+export function isModelSelectionInCodeBlock( selection: ModelDocumentSelection ): boolean {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return !!firstBlock && firstBlock.is( 'element', 'codeBlock' );
 }
 
 /**
- * Checks if an {@link module:engine/model/element~Element Element} can become a code block.
+ * Checks if an {@link module:engine/model/element~ModelElement Element} can become a code block.
  *
  * @param schema Model's schema.
  * @param element The element to be checked.
  * @returns Check result.
  * @internal
  */
-export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
+export function canBeCodeBlock( schema: ModelSchema, element: ModelElement ): boolean {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
 		return false;
 	}
 
-	return schema.checkChild( element.parent as Element, 'codeBlock' );
+	return schema.checkChild( element.parent as ModelElement, 'codeBlock' );
 }
 
 /**
@@ -286,7 +286,7 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 export function getCodeBlockAriaAnnouncement(
 	t: LocaleTranslate,
 	languageDefs: Array<CodeBlockLanguageDefinition>,
-	element: Element,
+	element: ModelElement,
 	direction: 'enter' | 'leave'
 ): string {
 	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
@@ -344,7 +344,7 @@ export function getCodeBlockAriaAnnouncement(
  *
  * @internal
  */
-export function getTextNodeAtLineStart( position: Position, model: Model ): Text | null {
+export function getTextNodeAtLineStart( position: ModelPosition, model: Model ): ModelText | null {
 	// First, move position before a text node, if it is inside a text node.
 	if ( position.textNode ) {
 		position = model.createPositionBefore( position.textNode );

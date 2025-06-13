@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { DocumentSelectionChangeEvent, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelectionChangeEvent, Model, ModelPosition, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
@@ -102,7 +102,7 @@ export class AutoLink extends Plugin {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		selection.on<DocumentSelectionChangeEvent>( 'change:range', () => {
+		selection.on<ModelDocumentSelectionChangeEvent>( 'change:range', () => {
 			// Disable plugin when selection is inside a code block.
 			this.isEnabled = !selection.anchor!.parent.is( 'element', 'codeBlock' );
 		} );
@@ -124,7 +124,7 @@ export class AutoLink extends Plugin {
 	 *
 	 * If position is not inside a link, returns `null`.
 	 */
-	private _expandLinkRange( model: Model, position: Position ): Range | null {
+	private _expandLinkRange( model: Model, position: ModelPosition ): ModelRange | null {
 		if ( position.textNode && position.textNode.hasAttribute( 'linkHref' ) ) {
 			return findAttributeRange( position, 'linkHref', position.textNode.getAttribute( 'linkHref' ), model );
 		} else {
@@ -135,7 +135,7 @@ export class AutoLink extends Plugin {
 	/**
 	 * Extends the document selection to includes all links that intersects with given `selectedRange`.
 	 */
-	private _selectEntireLinks( writer: Writer, selectedRange: Range ): void {
+	private _selectEntireLinks( writer: ModelWriter, selectedRange: ModelRange ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -263,7 +263,7 @@ export class AutoLink extends Plugin {
 		enterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition()!;
 
-			let rangeToCheck: Range;
+			let rangeToCheck: ModelRange;
 
 			// Previous sibling might not be an element if enter was blocked due to be triggered in a limit element.
 			if ( position.parent.previousSibling?.is( 'element' ) ) {
@@ -304,7 +304,7 @@ export class AutoLink extends Plugin {
 	/**
 	 * Checks if the passed range contains a linkable text.
 	 */
-	private _checkAndApplyAutoLinkOnRange( rangeToCheck: Range ): void {
+	private _checkAndApplyAutoLinkOnRange( rangeToCheck: ModelRange ): void {
 		const model = this.editor.model;
 		const { text, range } = getLastTextLine( rangeToCheck, model );
 
@@ -326,7 +326,7 @@ export class AutoLink extends Plugin {
 	 * @param url The URL to link.
 	 * @param range The text range to apply the link attribute to.
 	 */
-	private _applyAutoLink( url: string, range: Range ): void {
+	private _applyAutoLink( url: string, range: ModelRange ): void {
 		const model = this.editor.model;
 
 		const defaultProtocol = this.editor.config.get( 'link.defaultProtocol' );
@@ -345,7 +345,7 @@ export class AutoLink extends Plugin {
 	 * @param url The URL to link.
 	 * @param range The text range to apply the link attribute to.
 	 */
-	private _persistAutoLink( url: string, range: Range ): void {
+	private _persistAutoLink( url: string, range: ModelRange ): void {
 		const model = this.editor.model;
 		const deletePlugin = this.editor.plugins.get( 'Delete' );
 
@@ -371,11 +371,11 @@ function getUrlAtTextEnd( text: string ): string | null {
 	return match ? match[ URL_GROUP_IN_MATCH ] : null;
 }
 
-function isLinkAllowedOnRange( range: Range, model: Model ): boolean {
+function isLinkAllowedOnRange( range: ModelRange, model: Model ): boolean {
 	return model.schema.checkAttributeInSelection( model.createSelection( range ), 'linkHref' );
 }
 
-function linkIsAlreadySet( range: Range ): boolean {
+function linkIsAlreadySet( range: ModelRange ): boolean {
 	const item = range.start.nodeAfter;
 	return !!item && item.hasAttribute( 'linkHref' );
 }

@@ -9,8 +9,8 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'Link integration: clipboard paste', () => {
 	let editor, model;
@@ -35,10 +35,10 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<a href="http://ckedtior.com">foo</a>' )
+				content: _parseView( '<a href="http://ckedtior.com">foo</a>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph><$text linkHref="http://ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -47,10 +47,10 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<a href="ckedtior.com">foo</a>' )
+				content: _parseView( '<a href="ckedtior.com">foo</a>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -79,10 +79,10 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<a href="http://ckedtior.com">foo</a>' )
+				content: _parseView( '<a href="http://ckedtior.com">foo</a>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph><$text linkHref="http://ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -91,10 +91,10 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<a href="www.ckedtior.com">foo</a>' )
+				content: _parseView( '<a href="www.ckedtior.com">foo</a>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="http://www.ckedtior.com">foo</$text>[]</paragraph>'
 			);
 		} );
@@ -103,10 +103,10 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<a href="ckedtior.com">foo</a><a href="www.ckedtior.com">bar</a>' )
+				content: _parseView( '<a href="ckedtior.com">foo</a><a href="www.ckedtior.com">bar</a>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text linkHref="http://ckedtior.com">foo</$text>' +
 					'<$text linkHref="http://www.ckedtior.com">bar</$text>[]' +
@@ -118,14 +118,14 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView(
+				content: _parseView(
 					'<figure><table><tbody><tr><td>' +
 						'<a href="ckedtior.com">foo</a>' +
 					'</td></tr></tbody></table></figure>'
 				)
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'[<table><tableRow><tableCell><paragraph>' +
 					'<$text linkHref="http://ckedtior.com">foo</$text>' +
 				'</paragraph></tableCell></tableRow></table>]'
@@ -136,7 +136,7 @@ describe( 'Link integration: clipboard paste', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView(
+				content: _parseView(
 					'<table><tr><td>' +
 						'<a href="ckedtior.com">foo</a>' +
 					'</td>' +
@@ -147,7 +147,7 @@ describe( 'Link integration: clipboard paste', () => {
 				)
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'[<table><tableRow>' +
 					'<tableCell><paragraph>' +
 						'<$text linkHref="http://ckedtior.com">foo</$text>' +

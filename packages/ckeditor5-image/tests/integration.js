@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
@@ -57,7 +57,7 @@ describe( 'ImageToolbar integration', () => {
 			newEditor.ui.focusTracker.isFocused = true;
 
 			// When image is selected along with text.
-			setModelData( newEditor.model,
+			_setModelData( newEditor.model,
 				'<paragraph>fo[o</paragraph><imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			balloonToolbar.show();
@@ -66,7 +66,7 @@ describe( 'ImageToolbar integration', () => {
 			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 
 			// When only image is selected.
-			setModelData( newEditor.model,
+			_setModelData( newEditor.model,
 				'<paragraph>foo</paragraph>[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			balloonToolbar.show();
@@ -81,7 +81,7 @@ describe( 'ImageToolbar integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an image
-			setModelData( newEditor.model,
+			_setModelData( newEditor.model,
 				'<paragraph>foo</paragraph>[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
 			newEditor.listenTo( balloonToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );

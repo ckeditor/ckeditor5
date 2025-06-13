@@ -9,11 +9,11 @@
  * @module engine/model/node
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelElement } from './element.js';
 
 import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -24,12 +24,12 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  *
  * **Note:** If a node is detached from the model tree, you can manipulate it using it's API.
  * However, it is **very important** that nodes already attached to model tree should be only changed through
- * {@link module:engine/model/writer~Writer Writer API}.
+ * {@link module:engine/model/writer~ModelWriter Writer API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChild _insertChild} or
- * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
+ * Changes done by `Node` methods, like {@link module:engine/model/element~ModelElement#_insertChild _insertChild} or
+ * {@link module:engine/model/node~ModelNode#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
- * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.
+ * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~ModelDocument document} root.
  *
  * The flow of working on `Node` (and classes that inherits from it) is as such:
  * 1. You can create a `Node` instance, modify it using it's API.
@@ -37,24 +37,24 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * 3. Change `Node` that was already added to the model using `Batch` API.
  *
  * Similarly, you cannot use `Batch` API on a node that has not been added to the model tree, with the exception
- * of {@link module:engine/model/writer~Writer#insert inserting} that node to the model tree.
+ * of {@link module:engine/model/writer~ModelWriter#insert inserting} that node to the model tree.
  *
- * Be aware that using {@link module:engine/model/writer~Writer#remove remove from Batch API} does not allow to use `Node` API because
+ * Be aware that using {@link module:engine/model/writer~ModelWriter#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
- * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
+ * In case of {@link module:engine/model/element~ModelElement element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export abstract class Node extends TypeCheckable {
+export abstract class ModelNode extends ModelTypeCheckable {
 	/**
-	 * Parent of this node. It could be {@link module:engine/model/element~Element}
-	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
+	 * Parent of this node. It could be {@link module:engine/model/element~ModelElement}
+	 * or {@link module:engine/model/documentfragment~ModelDocumentFragment}.
 	 * Equals to `null` if the node has no parent.
 	 */
-	public readonly parent: Element | DocumentFragment | null = null;
+	public readonly parent: ModelElement | ModelDocumentFragment | null = null;
 
 	/**
-	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
 	declare public readonly rootName: string | undefined;
 
@@ -84,16 +84,16 @@ export abstract class Node extends TypeCheckable {
 	 *
 	 * @param attrs Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( attrs?: NodeAttributes ) {
+	constructor( attrs?: ModelNodeAttributes ) {
 		super();
 
 		this._attrs = toMap( attrs! );
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this root element.
+	 * {@link module:engine/model/document~ModelDocument Document} that owns this root element.
 	 */
-	public get document(): Document | null {
+	public get document(): ModelDocument | null {
 		return null;
 	}
 
@@ -116,9 +116,9 @@ export abstract class Node extends TypeCheckable {
 	 * Offset size of this node.
 	 *
 	 * Represents how much "offset space" is occupied by the node in its parent. It is important for
-	 * {@link module:engine/model/position~Position position}. When node has `offsetSize` greater than `1`, position can be placed between
-	 * that node start and end. `offsetSize` greater than `1` is for nodes that represents more than one entity, i.e.
-	 * a {@link module:engine/model/text~Text text node}.
+	 * {@link module:engine/model/position~ModelPosition position}. When node has `offsetSize` greater
+	 * than `1`, position can be placed between that node start and end. `offsetSize` greater than `1` is for
+	 * nodes that represents more than one entity, i.e. a {@link module:engine/model/text~ModelText text node}.
 	 */
 	public get offsetSize(): number {
 		return 1;
@@ -126,7 +126,7 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * Offset at which this node ends in its parent. It is equal to the sum of this node's
-	 * {@link module:engine/model/node~Node#startOffset start offset} and {@link #offsetSize offset size}.
+	 * {@link module:engine/model/node~ModelNode#startOffset start offset} and {@link #offsetSize offset size}.
 	 * Equals to `null` if the node has no parent.
 	 */
 	public get endOffset(): number | null {
@@ -140,7 +140,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Node's next sibling or `null` if the node is a last child of it's parent or if the node has no parent.
 	 */
-	public get nextSibling(): Node | null {
+	public get nextSibling(): ModelNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index + 1 ) ) || null;
@@ -149,7 +149,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Node's previous sibling or `null` if the node is a first child of it's parent or if the node has no parent.
 	 */
-	public get previousSibling(): Node | null {
+	public get previousSibling(): ModelNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index - 1 ) ) || null;
@@ -157,11 +157,11 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
-	 * of {@link module:engine/model/documentfragment~DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
+	 * of {@link module:engine/model/documentfragment~ModelDocumentFragment}, it's `root` is equal to that `DocumentFragment`.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): ModelNode | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let root: Node | DocumentFragment = this;
+		let root: ModelNode | ModelDocumentFragment = this;
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -183,15 +183,15 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
-	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
-	 * create {@link module:engine/model/position~Position Position} instance.
+	 * beginning from {@link module:engine/model/node~ModelNode#root root}, down to this node's starting offset. The path can be used to
+	 * create {@link module:engine/model/position~ModelPosition Position} instance.
 	 *
 	 * ```ts
 	 * const abc = new Text( 'abc' );
 	 * const foo = new Text( 'foo' );
-	 * const h1 = new Element( 'h1', null, new Text( 'header' ) );
-	 * const p = new Element( 'p', null, [ abc, foo ] );
-	 * const div = new Element( 'div', null, [ h1, p ] );
+	 * const h1 = new ModelElement( 'h1', null, new Text( 'header' ) );
+	 * const p = new ModelElement( 'p', null, [ abc, foo ] );
+	 * const div = new ModelElement( 'div', null, [ h1, p ] );
 	 * foo.getPath(); // Returns [ 1, 3 ]. `foo` is in `p` which is in `div`. `p` starts at offset 1, while `foo` at 3.
 	 * h1.getPath(); // Returns [ 0 ].
 	 * div.getPath(); // Returns [].
@@ -200,7 +200,7 @@ export abstract class Node extends TypeCheckable {
 	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | DocumentFragment = this;
+		let node: ModelNode | ModelDocumentFragment = this;
 
 		while ( node.parent ) {
 			path.unshift( node.startOffset! );
@@ -219,8 +219,8 @@ export abstract class Node extends TypeCheckable {
 	 * otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
-		const ancestors: Array<Node | DocumentFragment> = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<ModelNode | ModelDocumentFragment> {
+		const ancestors: Array<ModelNode | ModelDocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -232,7 +232,7 @@ export abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Returns a {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns a {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~ModelDocumentFragment}
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param node The second node.
@@ -240,7 +240,7 @@ export abstract class Node extends TypeCheckable {
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | DocumentFragment | null {
+	public getCommonAncestor( node: ModelNode, options: { includeSelf?: boolean } = {} ): ModelElement | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -250,16 +250,16 @@ export abstract class Node extends TypeCheckable {
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | DocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( ModelElement | ModelDocumentFragment );
 	}
 
 	/**
 	 * Returns whether this node is before given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/model/documentfragment~ModelDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isBefore( node: Node ): boolean {
+	public isBefore( node: ModelNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -289,11 +289,11 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * Returns whether this node is after given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/model/documentfragment~ModelDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isAfter( node: Node ): boolean {
+	public isAfter( node: ModelNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -372,7 +372,7 @@ export abstract class Node extends TypeCheckable {
 	 * @internal
 	 * @returns Node with same attributes as this node.
 	 */
-	public _clone( _deep?: boolean ): Node {
+	public _clone( _deep?: boolean ): ModelNode {
 		return new ( this.constructor as any )( this._attrs );
 	}
 
@@ -380,7 +380,7 @@ export abstract class Node extends TypeCheckable {
 	 * Removes this node from its parent.
 	 *
 	 * @internal
-	 * @see module:engine/model/writer~Writer#remove
+	 * @see module:engine/model/writer~ModelWriter#remove
 	 */
 	public _remove(): void {
 		this.parent!._removeChildren( this.index! );
@@ -389,7 +389,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * @see module:engine/model/writer~Writer#setAttribute
+	 * @see module:engine/model/writer~ModelWriter#setAttribute
 	 * @internal
 	 * @param key Key of attribute to set.
 	 * @param value Attribute value.
@@ -401,18 +401,18 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Removes all attributes from the node and sets given attributes.
 	 *
-	 * @see module:engine/model/writer~Writer#setAttributes
+	 * @see module:engine/model/writer~ModelWriter#setAttributes
 	 * @internal
 	 * @param attrs Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	public _setAttributesTo( attrs: NodeAttributes ): void {
+	public _setAttributesTo( attrs: ModelNodeAttributes ): void {
 		this._attrs = toMap( attrs );
 	}
 
 	/**
 	 * Removes an attribute with given key from the node.
 	 *
-	 * @see module:engine/model/writer~Writer#removeAttribute
+	 * @see module:engine/model/writer~ModelWriter#removeAttribute
 	 * @internal
 	 * @param key Key of attribute to remove.
 	 * @returns `true` if the attribute was set on the element, `false` otherwise.
@@ -424,7 +424,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Removes all attributes from the node.
 	 *
-	 * @see module:engine/model/writer~Writer#clearAttributes
+	 * @see module:engine/model/writer~ModelWriter#clearAttributes
 	 * @internal
 	 */
 	public _clearAttributes(): void {
@@ -434,13 +434,11 @@ export abstract class Node extends TypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Node.prototype.is = function( type: string ): boolean {
+ModelNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
 };
-
-export { Node as ModelNode };
 
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
  */
-export type NodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;
+export type ModelNodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;

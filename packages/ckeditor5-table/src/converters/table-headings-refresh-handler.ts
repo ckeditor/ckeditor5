@@ -9,7 +9,7 @@
 
 import type {
 	EditingController,
-	Element,
+	ModelElement,
 	Model
 } from 'ckeditor5/src/engine.js';
 
@@ -66,7 +66,7 @@ export function tableHeadingsRefreshHandler( model: Model, editing: EditingContr
 			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
 
 			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as Element );
+				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as ModelElement );
 			}
 		}
 	}

@@ -27,9 +27,9 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { ChangeType } from './document.js';
-import { type DocumentSelection } from './documentselection.js';
-import { type DomConverter } from './domconverter.js';
+import type { ViewDocumentChangeType } from './document.js';
+import { type ViewDocumentSelection } from './documentselection.js';
+import { type ViewDomConverter } from './domconverter.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
 
@@ -45,7 +45,7 @@ type DomSelection = globalThis.Selection;
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
- * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.
+ * the {@link module:engine/view/renderer~ViewRenderer#markToSync information about updated view nodes}.
  * In other words, it renders the view to the DOM.
  *
  * Its main responsibility is to make only the necessary, minimal changes to the DOM. However, unlike in many
@@ -53,10 +53,10 @@ type DomSelection = globalThis.Selection;
  * that native editing features such as text composition, autocompletion, spell checking, selection's x-index are
  * affected as little as possible.
  *
- * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
+ * Renderer uses {@link module:engine/view/domconverter~ViewDomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export class Renderer extends /* #__PURE__ */ ObservableMixin() {
+export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Set of DOM Documents instances.
 	 */
@@ -65,7 +65,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Converter instance.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Set of nodes which attributes changed and may need to be rendered.
@@ -85,7 +85,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * View selection. Renderer updates DOM selection based on the view selection.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
 	 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
@@ -110,7 +110,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * True if composition is in progress inside the document.
 	 *
-	 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
+	 * This property is bound to the {@link module:engine/view/document~ViewDocument#isComposing `Document#isComposing`} property.
 	 *
 	 * @observable
 	 */
@@ -132,7 +132,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param domConverter Converter instance.
 	 * @param selection View selection.
 	 */
-	constructor( domConverter: DomConverter, selection: DocumentSelection ) {
+	constructor( domConverter: ViewDomConverter, selection: ViewDocumentSelection ) {
 		super();
 
 		this.domConverter = domConverter;
@@ -167,7 +167,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param type Type of the change.
 	 * @param node ViewNode to be marked.
 	 */
-	public markToSync( type: ChangeType, node: ViewNode ): void {
+	public markToSync( type: ViewDocumentChangeType, node: ViewNode ): void {
 		if ( type === 'text' ) {
 			if ( this.domConverter.mapViewToDom( node.parent! ) ) {
 				this.markedTexts.add( node );
@@ -262,7 +262,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				this.markedChildren.add( inlineFillerPosition.parent as ViewElement );
 			}
 		}
-		// Make sure the inline filler has any parent, so it can be mapped to view position by DomConverter.
+		// Make sure the inline filler has any parent, so it can be mapped to view position by ViewDomConverter.
 		else if ( this._inlineFiller && this._inlineFiller.parentNode ) {
 			// While the user is making selection, preserve the inline filler at its original position.
 			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller )!;
@@ -1294,9 +1294,9 @@ function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
  * * Element nodes represented by the same object.
  * * Two block filler elements.
  *
- * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
+ * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~ViewDomConverter#blockFillerMode}.
  */
-function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
+function sameNodes( domConverter: ViewDomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
 	// Elements.
 	if ( actualDomChild === expectedDomChild ) {
 		return true;
@@ -1326,7 +1326,7 @@ function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expecte
  * which happens a lot when using the soft line break, the browser fails to (visually) move the
  * caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
  */
-function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPositionToDom' ]>, domSelection: DomSelection ) {
+function fixGeckoSelectionAfterBr( focus: ReturnType<ViewDomConverter[ 'viewPositionToDom' ]>, domSelection: DomSelection ) {
 	let parent = focus!.parent;
 	let offset = focus!.offset;
 

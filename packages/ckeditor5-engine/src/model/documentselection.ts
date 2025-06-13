@@ -7,25 +7,25 @@
  * @module engine/model/documentselection
  */
 
-import { TypeCheckable } from './typecheckable.js';
-import { LiveRange } from './liverange.js';
+import { ModelTypeCheckable } from './typecheckable.js';
+import { ModelLiveRange } from './liverange.js';
 import {
-	Selection,
-	type SelectionChangeAttributeEvent,
-	type SelectionChangeRangeEvent
+	ModelSelection,
+	type ModelSelectionChangeAttributeEvent,
+	type ModelSelectionChangeRangeEvent
 } from './selection.js';
-import { Text } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ModelText } from './text.js';
+import { ModelTextProxy } from './textproxy.js';
 
-import type { Document, DocumentChangeEvent } from './document.js';
+import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
-import { type Element } from './element.js';
-import { type Item } from './item.js';
-import type { Position, PositionOffset } from './position.js';
-import { type Range } from './range.js';
-import { type Schema } from './schema.js';
+import { type ModelElement } from './element.js';
+import { type ModelItem } from './item.js';
+import type { ModelPosition, ModelPositionOffset } from './position.js';
+import { type ModelRange } from './range.js';
+import { type ModelSchema } from './schema.js';
 
 import {
 	CKEditorError,
@@ -38,41 +38,41 @@ import {
 const storePrefix = 'selection:';
 
 /**
- * `DocumentSelection` is a special selection which is used as the
- * {@link module:engine/model/document~Document#selection document's selection}.
- * There can be only one instance of `DocumentSelection` per document.
+ * `ModelDocumentSelection` is a special selection which is used as the
+ * {@link module:engine/model/document~ModelDocument#selection document's selection}.
+ * There can be only one instance of `ModelDocumentSelection` per document.
  *
- * Document selection can only be changed by using the {@link module:engine/model/writer~Writer} instance
+ * Document selection can only be changed by using the {@link module:engine/model/writer~ModelWriter} instance
  * inside the {@link module:engine/model/model~Model#change `change()`} block, as it provides a secure way to modify model.
  *
- * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `DocumentSelection` are:
- * * there is always a range in `DocumentSelection` - even if no ranges were added there is a "default range"
+ * Differences between {@link module:engine/model/selection~ModelSelection} and `ModelDocumentSelection` are:
+ * * there is always a range in `ModelDocumentSelection` - even if no ranges were added there is a "default range"
  * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
- * * attributes of `DocumentSelection` are updated automatically according to selection ranges.
+ * * attributes of `ModelDocumentSelection` are updated automatically according to selection ranges.
  *
- * Since `DocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
- * and is updated when {@link module:engine/model/document~Document document}
- * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
- * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+ * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~ModelLiveRange live ranges}
+ * and is updated when {@link module:engine/model/document~ModelDocument document}
+ * changes, it cannot be set on {@link module:engine/model/node~ModelNode nodes}
+ * that are inside {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
- * use {@link module:engine/model/selection~Selection Selection class} instead.
+ * use {@link module:engine/model/selection~ModelSelection Selection class} instead.
  */
-export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
-	 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
+	 * Selection used internally by that class (`ModelDocumentSelection` is a proxy to that selection).
 	 */
 	private _selection: LiveSelection;
 
 	/**
-	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
+	 * Creates an empty live selection for given {@link module:engine/model/document~ModelDocument}.
 	 *
 	 * @param doc Document which owns this selection.
 	 */
-	constructor( doc: Document ) {
+	constructor( doc: ModelDocument ) {
 		super();
 
 		this._selection = new LiveSelection( doc );
@@ -93,14 +93,14 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	/**
 	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
 	 * Together with {@link #focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~ModelRange#start start} or
+	 * {@link module:engine/model/range~ModelRange#end end} position of the most recently added range.
 	 *
 	 * Is set to `null` if there are no ranges in selection.
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ModelPosition | null {
 		return this._selection.anchor;
 	}
 
@@ -111,7 +111,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ModelPosition | null {
 		return this._selection.focus;
 	}
 
@@ -124,7 +124,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Describes whether `Documentselection` has own range(s) set, or if it is defaulted to
-	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 * {@link module:engine/model/document~ModelDocument#_getDefaultRange document's default range}.
 	 */
 	public get hasOwnRange(): boolean {
 		return this._selection.hasOwnRange;
@@ -142,7 +142,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~Writer#overrideSelectionGravity}) or not.
+	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}) or not.
 	 *
 	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
 	 */
@@ -154,76 +154,76 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * A collection of selection {@link module:engine/model/markercollection~Marker markers}.
 	 * Marker is a selection marker when selection range is inside the marker range.
 	 *
-	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkers observed markers groups} are collected.
+	 * **Note**: Only markers from {@link ~ModelDocumentSelection#observeMarkers observed markers groups} are collected.
 	 */
 	public get markers(): Collection<Marker> {
 		return this._selection.markers;
 	}
 
 	/**
-	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
+	 * Used for the compatibility with the {@link module:engine/model/selection~ModelSelection#isEqual} method.
 	 *
 	 * @internal
 	 */
-	public get _ranges(): Array<Range> {
+	public get _ranges(): Array<ModelRange> {
 		return this._selection._ranges;
 	}
 
 	/**
 	 * Returns an iterable that iterates over copies of selection ranges.
 	 */
-	public getRanges(): IterableIterator<Range> {
+	public getRanges(): IterableIterator<ModelRange> {
 		return this._selection.getRanges();
 	}
 
 	/**
 	 * Returns the first position in the selection.
-	 * First position is the position that {@link module:engine/model/position~Position#isBefore is before}
+	 * First position is the position that {@link module:engine/model/position~ModelPosition#isBefore is before}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ModelPosition | null {
 		return this._selection.getFirstPosition();
 	}
 
 	/**
 	 * Returns the last position in the selection.
-	 * Last position is the position that {@link module:engine/model/position~Position#isAfter is after}
+	 * Last position is the position that {@link module:engine/model/position~ModelPosition#isAfter is after}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ModelPosition | null {
 		return this._selection.getLastPosition();
 	}
 
 	/**
 	 * Returns a copy of the first range in the selection.
-	 * First range is the one which {@link module:engine/model/range~Range#start start} position
-	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
+	 * First range is the one which {@link module:engine/model/range~ModelRange#start start} position
+	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ModelRange | null {
 		return this._selection.getFirstRange();
 	}
 
 	/**
 	 * Returns a copy of the last range in the selection.
-	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
-	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
-	 * recently added to the selection).
+	 * Last range is the one which {@link module:engine/model/range~ModelRange#end end} position
+	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all
+	 * other ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ModelRange | null {
 		return this._selection.getLastRange();
 	}
 
 	/**
-	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~ModelSchema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
@@ -275,28 +275,28 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * <paragraph>]c</paragraph> // this block will not be returned
 	 * ```
 	 */
-	public getSelectedBlocks(): IterableIterator<Element> {
+	public getSelectedBlocks(): IterableIterator<ModelElement> {
 		return this._selection.getSelectedBlocks();
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/model/element~ModelElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ModelElement | null {
 		return this._selection.getSelectedElement();
 	}
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
-	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * at a position {@link module:engine/model/position~ModelPosition#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
 	 *
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
 	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
 	 */
-	public containsEntireContent( element: Element ): boolean {
+	public containsEntireContent( element: ModelElement ): boolean {
 		return this._selection.containsEntireContent( element );
 	}
 
@@ -354,7 +354,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Registers a marker group prefix or a marker name to be collected in the
-	 * {@link ~DocumentSelection#markers selection markers collection}.
+	 * {@link ~ModelDocumentSelection#markers selection markers collection}.
 	 *
 	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
 	 *
@@ -365,38 +365,38 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
+	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelectionFocus} method.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt writer.createPositionAt()} parameters.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelectionFocus
+	 * @see module:engine/model/writer~ModelWriter#setSelectionFocus
 	 * @internal
 	 * @param offset Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public _setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable}.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
+	 * {@link module:engine/model/selection~ModelSelectable selectable}.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelection} method.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelection
+	 * @see module:engine/model/writer~ModelWriter#setSelection
 	 * @internal
 	 */
-	public _setTo( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public _setTo( ...args: Parameters<ModelSelection[ 'setTo' ]> ): void {
 		this._selection.setTo( ...args );
 	}
 
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionAttribute} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelectionAttribute} method.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelectionAttribute
+	 * @see module:engine/model/writer~ModelWriter#setSelectionAttribute
 	 * @internal
 	 * @param key Key of the attribute to set.
 	 * @param value Attribute value.
@@ -407,11 +407,11 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Removes an attribute with given key from the selection.
-	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change:range}
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~ModelSelection#event:change:range}
 	 * event with removed attribute key.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#removeSelectionAttribute} method.
 	 *
-	 * @see module:engine/model/writer~Writer#removeSelectionAttribute
+	 * @see module:engine/model/writer~ModelWriter#removeSelectionAttribute
 	 * @internal
 	 * @param key Key of the attribute to remove.
 	 */
@@ -438,7 +438,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * It returns an unique identifier which is required to restore the gravity. It guarantees the symmetry
 	 * of the process.
 	 *
-	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
+	 * @see module:engine/model/writer~ModelWriter#overrideSelectionGravity
 	 * @internal
 	 * @returns The unique id which allows restoring the gravity.
 	 */
@@ -447,13 +447,13 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Restores the {@link ~DocumentSelection#_overrideGravity overridden gravity}.
+	 * Restores the {@link ~ModelDocumentSelection#_overrideGravity overridden gravity}.
 	 *
 	 * Restoring the gravity is only possible using the unique identifier returned by
-	 * {@link ~DocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * {@link ~ModelDocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
 	 * the same number of times it was overridden.
 	 *
-	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
+	 * @see module:engine/model/writer~ModelWriter#restoreSelectionGravity
 	 * @internal
 	 * @param uid The unique id returned by {@link #_overrideGravity}.
 	 */
@@ -484,55 +484,53 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-DocumentSelection.prototype.is = function( type: string ): boolean {
+ModelDocumentSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'model:selection' ||
 		type == 'documentSelection' ||
 		type == 'model:documentSelection';
 };
 
-export { DocumentSelection as ModelDocumentSelection };
-
 /**
  * Fired when selection range(s) changed.
  *
- * @eventName ~DocumentSelection#change:range
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @eventName ~ModelDocumentSelection#change:range
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
- * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
+ * was directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  */
-export type DocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
+export type ModelDocumentSelectionChangeRangeEvent = ModelSelectionChangeRangeEvent;
 
 /**
  * Fired when selection attribute changed.
  *
- * @eventName ~DocumentSelection#change:attribute
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @eventName ~ModelDocumentSelection#change:attribute
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
- * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
+ * were directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  * @param attributeKeys Array containing keys of attributes that changed.
 */
-export type DocumentSelectionChangeAttributeEvent = SelectionChangeAttributeEvent;
+export type ModelDocumentSelectionChangeAttributeEvent = ModelSelectionChangeAttributeEvent;
 
 /**
  * Fired when selection marker(s) changed.
  *
- * @eventName ~DocumentSelection#change:marker
+ * @eventName ~ModelDocumentSelection#change:marker
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
- * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
- * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
- * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
+ * to change markers directly through {@link module:engine/model/documentselection~ModelDocumentSelection} API.
+ * See also {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:range} and
+ * {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:attribute}.
  * @param oldMarkers Markers in which the selection was before the change.
  */
-export type DocumentSelectionChangeMarkerEvent = {
+export type ModelDocumentSelectionChangeMarkerEvent = {
 	name: 'change:marker';
 	args: [ {
 		directChange: boolean;
@@ -543,15 +541,15 @@ export type DocumentSelectionChangeMarkerEvent = {
 /**
  * Fired when selection range(s), attribute(s) or marker(s) changed.
  *
- * @eventName ~DocumentSelection#change
+ * @eventName ~ModelDocumentSelection#change
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
- * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
- * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
- * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
+ * to change markers directly through {@link module:engine/model/documentselection~ModelDocumentSelection} API.
+ * See also {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:range} and
+ * {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:attribute}.
  * @param attributeKeys Array containing keys of attributes that changed.
  * @param oldMarkers Markers in which the selection was before the change.
  */
-export type DocumentSelectionChangeEvent = {
+export type ModelDocumentSelectionChangeEvent = {
 	name: 'change' | 'change:attribute' | 'change:marker' | 'change:range';
 	args: [ {
 		directChange: boolean;
@@ -561,18 +559,19 @@ export type DocumentSelectionChangeEvent = {
 };
 
 /**
- * `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
+ * `LiveSelection` is used internally by {@link module:engine/model/documentselection~ModelDocumentSelection}
+ * and shouldn't be used directly.
  *
- * LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
+ * Differences between {@link module:engine/model/selection~ModelSelection} and `LiveSelection` are:
  * * there is always a range in `LiveSelection` - even if no ranges were added there is a "default range"
  * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
  * * attributes of `LiveSelection` are updated automatically according to selection ranges.
  */
-class LiveSelection extends Selection {
+class LiveSelection extends ModelSelection {
 	/**
 	 * List of selection markers.
 	 * Marker is a selection marker when selection range is inside the marker range.
@@ -587,14 +586,14 @@ class LiveSelection extends Selection {
 	/**
 	 * Document which owns this selection.
 	 */
-	private _document: Document;
+	private _document: ModelDocument;
 
 	/**
 	 * Stores selection ranges.
 	 *
 	 * @internal
 	 */
-	public declare _ranges: Array<LiveRange>;
+	public declare _ranges: Array<ModelLiveRange>;
 
 	/**
 	 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
@@ -608,7 +607,7 @@ class LiveSelection extends Selection {
 	/**
 	 * Position to which the selection should be set if the last selection range was moved to the graveyard.
 	 */
-	private _selectionRestorePosition: Position | null = null;
+	private _selectionRestorePosition: ModelPosition | null = null;
 
 	/**
 	 * Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range` event is fired.
@@ -629,11 +628,11 @@ class LiveSelection extends Selection {
 	private _observedMarkers: Set<string> = new Set();
 
 	/**
-	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
+	 * Creates an empty live selection for given {@link module:engine/model/document~ModelDocument}.
 	 *
 	 * @param doc Document which owns this selection.
 	 */
-	constructor( doc: Document ) {
+	constructor( doc: ModelDocument ) {
 		super();
 
 		this._model = doc.model;
@@ -657,12 +656,12 @@ class LiveSelection extends Selection {
 
 			if ( this._hasChangedRange ) {
 				this._hasChangedRange = false;
-				this.fire<DocumentSelectionChangeRangeEvent>( 'change:range', { directChange: false } );
+				this.fire<ModelDocumentSelectionChangeRangeEvent>( 'change:range', { directChange: false } );
 			}
 		}, { priority: 'lowest' } );
 
 		// Ensure selection is correct and up to date after each range change.
-		this.on<DocumentSelectionChangeRangeEvent>( 'change:range', () => {
+		this.on<ModelDocumentSelectionChangeRangeEvent>( 'change:range', () => {
 			this._validateSelectionRanges( this.getRanges() );
 		} );
 
@@ -673,7 +672,7 @@ class LiveSelection extends Selection {
 		} );
 
 		// Ensure selection is up to date after each change block.
-		this.listenTo<DocumentChangeEvent>( this._document, 'change', ( evt, batch ) => {
+		this.listenTo<ModelDocumentChangeEvent>( this._document, 'change', ( evt, batch ) => {
 			clearAttributesStoredInElement( this._model, batch );
 		} );
 	}
@@ -684,11 +683,11 @@ class LiveSelection extends Selection {
 		return length === 0 ? this._document._getDefaultRange().isCollapsed : super.isCollapsed;
 	}
 
-	public override get anchor(): Position {
+	public override get anchor(): ModelPosition {
 		return super.anchor || this._document._getDefaultRange().start;
 	}
 
-	public override get focus(): Position {
+	public override get focus(): ModelPosition {
 		return super.focus || this._document._getDefaultRange().end;
 	}
 
@@ -698,7 +697,7 @@ class LiveSelection extends Selection {
 
 	/**
 	 * Describes whether `LiveSelection` has own range(s) set, or if it is defaulted to
-	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 * {@link module:engine/model/document~ModelDocument#_getDefaultRange document's default range}.
 	 */
 	public get hasOwnRange(): boolean {
 		return this._ranges.length > 0;
@@ -723,7 +722,7 @@ class LiveSelection extends Selection {
 		this.stopListening();
 	}
 
-	public override* getRanges(): IterableIterator<Range> {
+	public override* getRanges(): IterableIterator<ModelRange> {
 		if ( this._ranges.length ) {
 			yield* super.getRanges();
 		} else {
@@ -731,21 +730,21 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	public override getFirstRange(): Range {
+	public override getFirstRange(): ModelRange {
 		return super.getFirstRange() || this._document._getDefaultRange();
 	}
 
-	public override getLastRange(): Range {
+	public override getLastRange(): ModelRange {
 		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
-	public override setTo( ...args: Parameters<Selection[ 'setTo' ]> ) {
+	public override setTo( ...args: Parameters<ModelSelection[ 'setTo' ]> ) {
 		super.setTo( ...args );
 		this._updateAttributes( true );
 		this.updateMarkers();
 	}
 
-	public override setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public override setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
 		this.updateMarkers();
@@ -755,7 +754,7 @@ class LiveSelection extends Selection {
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -763,7 +762,7 @@ class LiveSelection extends Selection {
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -785,11 +784,11 @@ class LiveSelection extends Selection {
 		if ( !this._overriddenGravityRegister.has( uid ) ) {
 			/**
 			 * Restoring gravity for an unknown UID is not possible. Make sure you are using a correct
-			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
+			 * UID obtained from the {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
 			 * @param {string} uid The unique identifier returned by
-			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
+			 * {@link module:engine/model/documentselection~ModelDocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore',
@@ -811,7 +810,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	protected override _replaceAllRanges( ranges: Array<Range> ): void {
+	protected override _replaceAllRanges( ranges: Array<ModelRange> ): void {
 		this._validateSelectionRanges( ranges );
 
 		super._replaceAllRanges( ranges );
@@ -821,7 +820,7 @@ class LiveSelection extends Selection {
 		this._ranges.pop()!.detach();
 	}
 
-	protected override _pushRange( range: Range ): void {
+	protected override _pushRange( range: ModelRange ): void {
 		const liveRange = this._prepareRange( range );
 
 		// `undefined` is returned when given `range` is in graveyard root.
@@ -830,15 +829,15 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	private _validateSelectionRanges( ranges: Iterable<Range> ) {
+	private _validateSelectionRanges( ranges: Iterable<ModelRange> ) {
 		for ( const range of ranges ) {
 			if ( !this._document._validateSelectionRange( range ) ) {
 				/**
-				 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+				 * Range from {@link module:engine/model/documentselection~ModelDocumentSelection document selection}
 				 * starts or ends at incorrect position.
 				 *
 				 * @error document-selection-wrong-position
-				 * @param {module:engine/model/range~Range} range The invalid range.
+				 * @param {module:engine/model/range~ModelRange} range The invalid range.
 				 */
 				throw new CKEditorError(
 					'document-selection-wrong-position',
@@ -851,10 +850,10 @@ class LiveSelection extends Selection {
 
 	/**
 	 * Prepares given range to be added to selection. Checks if it is correct,
-	 * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
+	 * converts it to {@link module:engine/model/liverange~ModelLiveRange ModelLiveRange}
 	 * and sets listeners listening to the range's change event.
 	 */
-	private _prepareRange( range: Range ): LiveRange | undefined {
+	private _prepareRange( range: ModelRange ): ModelLiveRange | undefined {
 		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
@@ -863,7 +862,7 @@ class LiveSelection extends Selection {
 			return;
 		}
 
-		const liveRange = LiveRange.fromRange( range );
+		const liveRange = ModelLiveRange.fromRange( range );
 
 		// If selection range is moved to the graveyard remove it from the selection object.
 		// Also, save some data that can be used to restore selection later, on `Model#applyOperation` event.
@@ -925,11 +924,11 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire<DocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
-	private _updateMarker( marker: Marker, markerRange: Range | null ): void {
+	private _updateMarker( marker: Marker, markerRange: ModelRange | null ): void {
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
 		if ( !this._observedMarkers.has( markerGroup ) ) {
@@ -969,12 +968,12 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire<DocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
 	/**
-	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
+	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~ModelDocument model document}.
 	 */
 	public _updateAttributes( clearAll: boolean ): void {
 		const newAttributes = toMap( this._getSurroundingAttributes() );
@@ -1016,7 +1015,7 @@ class LiveSelection extends Selection {
 
 		// Fire event with exact data (fire only if anything changed).
 		if ( changed.length > 0 ) {
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: changed, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: changed, directChange: false } );
 		}
 	}
 
@@ -1108,7 +1107,7 @@ class LiveSelection extends Selection {
 	 * Returns an iterable that iterates through all selection attributes stored in current selection's parent.
 	 */
 	public* getStoredAttributes(): IterableIterator<[ string, unknown ]> {
-		const selectionParent = this.getFirstPosition()!.parent as Element;
+		const selectionParent = this.getFirstPosition()!.parent as ModelElement;
 
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {
@@ -1205,7 +1204,7 @@ class LiveSelection extends Selection {
 	 * Fixes the selection after all its ranges got removed.
 	 * @param deletionPosition Position where the deletion happened.
 	 */
-	private _fixGraveyardSelection( deletionPosition: Position ): void {
+	private _fixGraveyardSelection( deletionPosition: ModelPosition ): void {
 		// Find a range that is a correct selection range and is closest to the position where the deletion happened.
 		const selectionRange = this._model.schema.getNearestSelectionRange( deletionPosition );
 
@@ -1224,12 +1223,12 @@ class LiveSelection extends Selection {
  * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[string, unknown]> | null {
+function getTextAttributes( node: ModelItem | null, schema: ModelSchema ): Iterable<[string, unknown]> | null {
 	if ( !node ) {
 		return null;
 	}
 
-	if ( node instanceof TextProxy || node instanceof Text ) {
+	if ( node instanceof ModelTextProxy || node instanceof ModelText ) {
 		return node.getAttributes();
 	}
 
@@ -1268,7 +1267,7 @@ function clearAttributesStoredInElement( model: Model, batch: Batch ) {
 			continue;
 		}
 
-		const changeParent = entry.position.parent as Element;
+		const changeParent = entry.position.parent as ModelElement;
 		const isNoLongerEmpty = entry.length === changeParent.maxOffset;
 
 		if ( isNoLongerEmpty ) {

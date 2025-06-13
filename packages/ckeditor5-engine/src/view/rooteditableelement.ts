@@ -7,18 +7,19 @@
  * @module engine/view/rooteditableelement
  */
 
-import { EditableElement } from './editableelement.js';
+import { ViewEditableElement } from './editableelement.js';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 
 const rootNameSymbol = Symbol( 'rootName' );
 
 /**
- * Class representing a single root in the data view. A root can be either {@link ~RootEditableElement#isReadOnly editable or read-only},
- * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~EditableElement
+ * Class representing a single root in the data view. A root can be either
+ * {@link ~ViewRootEditableElement#isReadOnly editable or read-only},
+ * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~ViewEditableElement
  * editable elements} making them "nested editables".
  */
-export class RootEditableElement extends EditableElement {
+export class ViewRootEditableElement extends ViewEditableElement {
 	/**
 	 * Creates root editable element.
 	 *
@@ -26,7 +27,7 @@ export class RootEditableElement extends EditableElement {
 	 * @param name Node name.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string
 	) {
 		super( document, name );
@@ -35,7 +36,7 @@ export class RootEditableElement extends EditableElement {
 	}
 
 	/**
-	 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root. If no
+	 * Name of this root inside {@link module:engine/view/document~ViewDocument} that is an owner of this root. If no
 	 * other name is set, `main` name is used.
 	 *
 	 * @readonly
@@ -64,7 +65,7 @@ export class RootEditableElement extends EditableElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-RootEditableElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewRootEditableElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'view:rootElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -82,5 +83,3 @@ RootEditableElement.prototype.is = function( type: string, name?: string ): bool
 		);
 	}
 };
-
-export { RootEditableElement as ViewRootEditableElement };

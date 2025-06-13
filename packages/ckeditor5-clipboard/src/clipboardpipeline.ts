@@ -12,14 +12,14 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type {
-	DataTransfer,
-	DocumentFragment,
-	DomEventData,
-	Range,
+	ViewDataTransfer,
+	ModelDocumentFragment,
+	ViewDocumentDomEventData,
+	ModelRange,
 	ViewDocumentFragment,
 	ViewRange,
-	Selection,
-	DocumentSelection
+	ModelSelection,
+	ModelDocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -92,7 +92,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  * ## Event: `paste` or `drop`
  *
  * 1. Translates the event data.
- * 2. Fires the {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event.
+ * 2. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} event.
  *
  * ## Event: `view.Document#clipboardInput`
  *
@@ -100,15 +100,15 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  *    from the last point.
  * 2. Otherwise, it retrieves `text/html` or `text/plain` from `data.dataTransfer`.
  * 3. Normalizes the raw data by applying simple filters on string data.
- * 4. Processes the raw data to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} with the
+ * 4. Processes the raw data to {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`} with the
  *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`}.
  * 5. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
  *   `ClipboardPipeline#inputTransformation`} event with the view document fragment in the `data.content` event field.
  *
  * ## Event: `ClipboardPipeline#inputTransformation`
  *
- * 1. Converts {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} from the `data.content` field to
- *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
+ * 1. Converts {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`} from the `data.content` field to
+ *    {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`}.
  * 2. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
  *    event with the model document fragment in the `data.content` event field.
  *    **Note**: The `ClipboardPipeline#contentInsertion` event is fired within a model change block to allow other handlers
@@ -125,10 +125,10 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  *
  * ## Event: `copy`, `cut` or `dragstart`
  *
- * 1. Retrieves the selected {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} by calling
+ * 1. Retrieves the selected {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`} by calling
  *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`}.
- * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
- * 3. Fires the {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} event
+ * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`}.
+ * 3. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} event
  *    with the view document fragment in the `data.content` event field.
  *
  * ## Event: `view.Document#clipboardOutput`
@@ -182,8 +182,8 @@ export class ClipboardPipeline extends Plugin {
 	 * @internal
 	 */
 	public _fireOutputTransformationEvent(
-		dataTransfer: DataTransfer,
-		selection: Selection | DocumentSelection,
+		dataTransfer: ViewDataTransfer,
+		selection: ModelSelection | ModelDocumentSelection,
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
 		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );
@@ -302,7 +302,7 @@ export class ClipboardPipeline extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		const onCopyCut = ( evt: EventInfo<'copy' | 'cut'>, data: DomEventData<ClipboardEvent> & ClipboardEventData ) => {
+		const onCopyCut = ( evt: EventInfo<'copy' | 'cut'>, data: ViewDocumentDomEventData<ClipboardEvent> & ClipboardEventData ) => {
 			const dataTransfer = data.dataTransfer;
 
 			data.preventDefault();
@@ -383,7 +383,7 @@ export interface ClipboardInputTransformationData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The target drop ranges.
@@ -436,7 +436,7 @@ export interface ClipboardContentInsertionData {
 	 * The content to be inserted into the editor.
 	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
-	content: DocumentFragment;
+	content: ModelDocumentFragment;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
@@ -452,7 +452,7 @@ export interface ClipboardContentInsertionData {
 	 * The data transfer instance.
 	 */
 
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The target drop ranges.
@@ -463,11 +463,11 @@ export interface ClipboardContentInsertionData {
 	 * The result of the `model.insertContent()` call
 	 * (inserted by the event handler at a low priority).
 	 */
-	resultRange?: Range;
+	resultRange?: ModelRange;
 }
 
 /**
- * Fired on {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
+ * Fired on {@link module:engine/view/document~ViewDocument#event:copy} and {@link module:engine/view/document~ViewDocument#event:cut}
  * with a copy of the selected content. The content can be processed before it ends up in the clipboard.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
@@ -475,7 +475,7 @@ export interface ClipboardContentInsertionData {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  *
- * @eventName module:engine/view/document~Document#clipboardOutput
+ * @eventName module:engine/view/document~ViewDocument#clipboardOutput
  * @param data The event data.
  */
 export type ViewDocumentClipboardOutputEvent = {
@@ -493,7 +493,7 @@ export interface ViewDocumentClipboardOutputEventData {
 	 *
 	 * @readonly
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
@@ -508,8 +508,8 @@ export interface ViewDocumentClipboardOutputEventData {
 }
 
 /**
- * Fired on {@link module:engine/view/document~Document#event:copy}, {@link module:engine/view/document~Document#event:cut}
- * and {@link module:engine/view/document~Document#event:dragstart}. The content can be processed before it ends up in the clipboard.
+ * Fired on {@link module:engine/view/document~ViewDocument#event:copy}, {@link module:engine/view/document~ViewDocument#event:cut}
+ * and {@link module:engine/view/document~ViewDocument#event:dragstart}. The content can be processed before it ends up in the clipboard.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *
@@ -531,13 +531,13 @@ export interface ClipboardOutputTransformationData {
 	 *
 	 * @readonly
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
 	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
-	content: DocumentFragment;
+	content: ModelDocumentFragment;
 
 	/**
 	 * Whether the event was triggered by a copy or cut operation.

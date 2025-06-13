@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 
 import { isDefault } from './utils.js';
 import type { AlignmentSupportedOption } from './alignmentconfig.js';
@@ -87,7 +87,7 @@ export class AlignmentCommand extends Command {
 	 *
 	 * @param block The block to be checked.
 	 */
-	private _canBeAligned( block: Element ) {
+	private _canBeAligned( block: ModelElement ) {
 		return this.editor.model.schema.checkAttribute( block, ALIGNMENT );
 	}
 }
@@ -95,7 +95,7 @@ export class AlignmentCommand extends Command {
 /**
  * Removes the alignment attribute from blocks.
  */
-function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) {
+function removeAlignmentFromSelection( blocks: Array<ModelElement>, writer: ModelWriter ) {
 	for ( const block of blocks ) {
 		writer.removeAttribute( ALIGNMENT, block );
 	}
@@ -104,7 +104,7 @@ function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) 
 /**
  * Sets the alignment attribute on blocks.
  */
-function setAlignmentOnSelection( blocks: Array<Element>, writer: Writer, alignment: string ) {
+function setAlignmentOnSelection( blocks: Array<ModelElement>, writer: ModelWriter, alignment: string ) {
 	for ( const block of blocks ) {
 		writer.setAttribute( ALIGNMENT, alignment, block );
 	}

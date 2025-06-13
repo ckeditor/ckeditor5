@@ -9,7 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
 import { TableCellWidthCommand } from '../../src/tablecellwidth/commands/tablecellwidthcommand.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableCellStyle } from '../_utils/utils.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableEditing } from '../../src/tableediting.js';
@@ -146,7 +146,7 @@ describe( 'TableCellWidthEditing', () => {
 			let tableCell;
 
 			beforeEach( () => {
-				setModelData(
+				_setModelData(
 					model,
 					'<table headingRows="0" headingColumns="0">' +
 						'<tableRow>' +

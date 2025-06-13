@@ -18,7 +18,7 @@ import {
 
 import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
 
-import type { DocumentChangeEvent } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
 
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
@@ -26,7 +26,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
  * when needed (when the user changed the content).
  *
- * It listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`}
+ * It listens to the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`}
  * and `window#beforeunload` events and calls the
  * {@link module:autosave/autosave~AutosaveAdapter#save `config.autosave.save()`} function.
  *
@@ -175,7 +175,7 @@ export class Autosave extends Plugin {
 
 		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
 		this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
-			this.listenTo<DocumentChangeEvent>( doc, 'change:data', ( evt, batch ) => {
+			this.listenTo<ModelDocumentChangeEvent>( doc, 'change:data', ( evt, batch ) => {
 				if ( !this._saveCallbacks.length ) {
 					return;
 				}

@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import { defaultConfig } from './schemadefinitions.js';
 import { mergeWith } from 'es-toolkit/compat';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
+import type { ModelAttributeProperties, ModelSchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -251,7 +251,7 @@ export interface HtmlSupportDataSchemaDefinition {
 	/**
 	 * The model schema item definition describing registered model.
 	 */
-	modelSchema?: SchemaItemDefinition;
+	modelSchema?: ModelSchemaItemDefinition;
 
 	/**
 	 * Indicates that the definition describes block element.
@@ -291,11 +291,11 @@ export interface HtmlSupportDataSchemaInlineElementDefinition extends HtmlSuppor
 	/**
 	 *  Additional metadata describing the model attribute.
 	 */
-	attributeProperties?: AttributeProperties;
+	attributeProperties?: ModelAttributeProperties;
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by
-	 * {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
 	 */
 	priority?: number;

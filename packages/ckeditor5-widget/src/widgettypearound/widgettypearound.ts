@@ -35,13 +35,13 @@ import {
 
 import type {
 	BubblingEventInfo,
-	DocumentChangeEvent,
-	DomEventData,
+	ModelDocumentChangeEvent,
+	ViewDocumentDomEventData,
 	DowncastInsertEvent,
 	DowncastSelectionEvent,
-	DowncastWriter,
-	Element,
-	Schema,
+	ViewDowncastWriter,
+	ModelElement,
+	ModelSchema,
 	SelectionChangeRangeEvent,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentCompositionStartEvent,
@@ -92,7 +92,7 @@ export class WidgetTypeAround extends Plugin {
 	 * on either side of it. It is later used to remove CSS classes associated with the fake caret
 	 * when the widget no longer needs it.
 	 */
-	private _currentFakeCaretModelElement: Element | null = null;
+	private _currentFakeCaretModelElement: ModelElement | null = null;
 
 	/**
 	 * @inheritDoc
@@ -171,7 +171,7 @@ export class WidgetTypeAround extends Plugin {
 	 * @param widgetModelElement The model widget element next to which a paragraph is inserted.
 	 * @param position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
-	private _insertParagraph( widgetModelElement: Element, position: 'before' | 'after' ) {
+	private _insertParagraph( widgetModelElement: ModelElement, position: 'before' | 'after' ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -247,7 +247,7 @@ export class WidgetTypeAround extends Plugin {
 	 * Creates a listener in the editing conversion pipeline that injects the widget type around
 	 * UI into every single widget instance created in the editor.
 	 *
-	 * The UI is delivered as a {@link module:engine/view/uielement~UIElement}
+	 * The UI is delivered as a {@link module:engine/view/uielement~ViewUIElement}
 	 * wrapper which renders DOM buttons that users can use to insert paragraphs.
 	 */
 	private _enableTypeAroundUIInjection() {
@@ -259,7 +259,7 @@ export class WidgetTypeAround extends Plugin {
 			after: t( 'Insert paragraph after block' )
 		};
 
-		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', ( evt, data, conversionApi ) => {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 			if ( !viewElement ) {
@@ -336,7 +336,7 @@ export class WidgetTypeAround extends Plugin {
 
 		// Get rid of the widget type around attribute of the selection on every document change
 		// that makes widget not selected any more (i.e. widget was removed).
-		this._listenToIfEnabled<DocumentChangeEvent>( model.document, 'change:data', () => {
+		this._listenToIfEnabled<ModelDocumentChangeEvent>( model.document, 'change:data', () => {
 			const selectedModelElement = modelSelection.getSelectedElement();
 
 			if ( selectedModelElement ) {
@@ -419,7 +419,7 @@ export class WidgetTypeAround extends Plugin {
 	 * plugin that is responsible for the regular keyboard navigation near/across all widgets (that
 	 * includes inline widgets, which are ignored by the widget type around plugin).
 	 */
-	private _handleArrowKeyPress( evt: BubblingEventInfo<'arrowKey'>, domEventData: DomEventData & KeystrokeInfo ) {
+	private _handleArrowKeyPress( evt: BubblingEventInfo<'arrowKey'>, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelSelection = model.document.selection;
@@ -764,7 +764,7 @@ export class WidgetTypeAround extends Plugin {
 						// next to a widget that should be removed. "delete" and "deleteForward" commands cannot get rid of it
 						// so calling Model#deleteContent here manually.
 						else {
-							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent as Element );
+							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent as ModelElement );
 
 							model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
 								doNotAutoparagraph: true
@@ -881,7 +881,7 @@ export class WidgetTypeAround extends Plugin {
  * Injects the type around UI into a view widget instance.
  */
 function injectUIIntoWidget(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	buttonTitles: { before: string; after: string },
 	widgetViewElement: ViewElement ) {
 	const typeAroundWrapper = viewWriter.createUIElement( 'div', {
@@ -950,7 +950,7 @@ function injectFakeCaret( wrapperDomElement: HTMLElement ) {
  *
  * it returns `<bar>`.
  */
-function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
+function getDeepestEmptyElementAncestor( schema: ModelSchema, element: ModelElement ) {
 	let deepestEmptyAncestor = element;
 
 	for ( const ancestor of element.getAncestors( { parentFirst: true } ) ) {
@@ -958,7 +958,7 @@ function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 			break;
 		}
 
-		deepestEmptyAncestor = ancestor as Element;
+		deepestEmptyAncestor = ancestor as ModelElement;
 	}
 
 	return deepestEmptyAncestor;

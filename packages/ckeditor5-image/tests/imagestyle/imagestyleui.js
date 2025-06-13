@@ -16,7 +16,7 @@ import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { SplitButtonView } from '../../../../src/ui.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory, defaultDropdowns;
@@ -380,7 +380,7 @@ describe( 'ImageStyleUI', () => {
 
 			customEditor.ui.focusTracker.isFocused = true;
 
-			setData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledOnce( console.warn );
 			sinon.assert.calledWithExactly( console.warn,
@@ -423,7 +423,7 @@ describe( 'ImageStyleUI', () => {
 
 			customEditor.ui.focusTracker.isFocused = true;
 
-			setData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledTwice( console.warn );
 			sinon.assert.calledWithExactly( console.warn,

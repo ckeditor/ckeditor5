@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -15,7 +15,7 @@ describe( 'DOMConverter raw content matcher', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'domToView()', () => {

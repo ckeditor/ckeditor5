@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '../../../src/view/view.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { EditingView } from '../../../src/view/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-const view = new View( new StylesProcessor() );
+const view = new EditingView( new StylesProcessor() );
 const viewDocument = view.document;
 createViewRoot( viewDocument );
 view.attachDomRoot( document.getElementById( 'editor' ) );
@@ -19,6 +19,6 @@ viewDocument.on( 'selectionChange', () => {
 	view.forceRender();
 } );
 
-setData( view,
+_setViewData( view,
 	'<container:p>foo</container:p>' +
 	'<container:p>bar</container:p>' );

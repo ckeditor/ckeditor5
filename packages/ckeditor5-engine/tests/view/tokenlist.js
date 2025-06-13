@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { TokenList } from '../../src/view/tokenlist.js';
+import { ViewTokenList } from '../../src/view/tokenlist.js';
 
 describe( 'TokenList', () => {
 	let tokenList;
 
 	beforeEach( () => {
-		tokenList = new TokenList();
+		tokenList = new ViewTokenList();
 	} );
 
 	describe( 'size getter', () => {
@@ -155,7 +155,7 @@ describe( 'TokenList', () => {
 		let otherTokenList;
 
 		beforeEach( () => {
-			otherTokenList = new TokenList();
+			otherTokenList = new ViewTokenList();
 		} );
 
 		it( 'should return false if count of tokens differs', () => {
@@ -273,7 +273,7 @@ describe( 'TokenList', () => {
 		let otherTokenList;
 
 		beforeEach( () => {
-			otherTokenList = new TokenList();
+			otherTokenList = new ViewTokenList();
 		} );
 
 		it( 'should return true for empty tokens', () => {
@@ -299,7 +299,7 @@ describe( 'TokenList', () => {
 		let otherTokenList;
 
 		beforeEach( () => {
-			otherTokenList = new TokenList();
+			otherTokenList = new ViewTokenList();
 		} );
 
 		it( 'should merge when tokens not intersect', () => {
@@ -327,7 +327,7 @@ describe( 'TokenList', () => {
 		let otherTokenList;
 
 		beforeEach( () => {
-			otherTokenList = new TokenList();
+			otherTokenList = new ViewTokenList();
 		} );
 
 		it( 'should return true when other tokens are empty', () => {

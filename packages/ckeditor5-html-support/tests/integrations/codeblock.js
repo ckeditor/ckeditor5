@@ -263,7 +263,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre data-language="Plain text" spellcheck="false" style="background-color:blue;color:red">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -290,7 +290,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre class="foo" data-language="Plain text" spellcheck="false">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -321,7 +321,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre data-foo="bar" data-language="Plain text" spellcheck="false">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -352,7 +352,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre data-language="Plain text" spellcheck="false" style="background-color:blue">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -379,7 +379,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre class="foo" data-language="Plain text" spellcheck="false">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -410,7 +410,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre data-foo="bar" data-language="Plain text" spellcheck="false">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -453,7 +453,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre class="foo" data-foo="bar" data-language="Plain text" spellcheck="false" style="background-color:blue">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'
@@ -482,7 +482,7 @@ describe( 'CodeBlockElementSupport', () => {
 	// 				attributes: {}
 	// 			} );
 
-	// 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+	// 			expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 	// 				'<pre data-language="Plain text" spellcheck="false">' +
 	// 					'<code class="language-plaintext">foobar</code>' +
 	// 				'</pre>'

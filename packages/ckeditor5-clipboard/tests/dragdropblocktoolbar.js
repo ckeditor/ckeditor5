@@ -21,7 +21,7 @@ import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Drag and Drop Block Toolbar', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropBlockToolbar,
@@ -107,7 +107,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should display block toolbar button', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			expect( blockToolbarButton ).not.to.be.null;
 			expect( blockToolbarButton.className.includes( 'ck-hidden' ) ).to.be.false;
@@ -116,7 +116,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 	describe( 'dragging', () => {
 		it( 'should set selection on drag block toolbar button', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			sinon.spy( editor.editing.view, 'focus' );
 
@@ -139,7 +139,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should not set selection if plugin is disabled', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			editor.enableReadOnlyMode( 'test' );
 
@@ -155,7 +155,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should display dragging marker', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dragStartEvent = new DragEvent( 'dragstart', {
 				dataTransfer: new DataTransfer()
@@ -179,7 +179,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should display dragging marker (RTL)', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			editor.locale.contentLanguageDirection = 'rtl';
 
@@ -205,7 +205,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should not drag if block toolbar is disabled', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			editor.enableReadOnlyMode( 'test' );
 
@@ -232,7 +232,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should not display dragging marker', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dragStartEvent = new DragEvent( 'dragstart', {
 				dataTransfer: new DataTransfer()
@@ -252,7 +252,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should drop element', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const modelParagraph = root.getNodeByPath( [ 0 ] );
 			const viewParagraph = mapper.toViewElement( modelParagraph );
@@ -293,7 +293,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 		} );
 
 		it( 'should end drag and drop', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const modelParagraph = root.getNodeByPath( [ 0 ] );
 			const viewParagraph = mapper.toViewElement( modelParagraph );
@@ -333,7 +333,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			env.isiOS = true;
 
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dataTransfer = new DataTransfer();
 			const spy = sinon.spy( dataTransfer, 'setDragImage' );
@@ -365,7 +365,7 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			env.isiOS = false;
 
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const dataTransfer = new DataTransfer();
 			const spy = sinon.spy( dataTransfer, 'setDragImage' );

@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { type Node } from './node.js';
-import { type TextProxy } from './textproxy.js';
+import { type ViewNode } from './node.js';
+import { type ViewTextProxy } from './textproxy.js';
 
 /**
  * @module engine/view/item
  */
 
 /**
- * Item is a {@link module:engine/view/node~Node Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
+ * Item is a {@link module:engine/view/node~ViewNode Node} or {@link module:engine/view/textproxy~ViewTextProxy ViewTextProxy}.
  */
-export type Item = Node | TextProxy;
-
-export { Item as ViewItem };
+export type ViewItem = ViewNode | ViewTextProxy;

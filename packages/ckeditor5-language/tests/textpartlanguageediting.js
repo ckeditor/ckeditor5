@@ -5,8 +5,8 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { TextPartLanguageEditing } from '../src/textpartlanguageediting.js';
 import { TextPartLanguageCommand } from '../src/textpartlanguagecommand.js';
@@ -67,7 +67,7 @@ describe( 'TextPartLanguageEditing', () => {
 		it( 'should convert lang to language attribute', () => {
 			editor.setData( '<p><span lang="fr">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text language="fr:ltr">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><span lang="fr" dir="ltr">foo</span>bar</p>' );
@@ -76,7 +76,7 @@ describe( 'TextPartLanguageEditing', () => {
 		it( 'should respect dir attribute', () => {
 			editor.setData( '<p><span lang="fr" dir="rtl">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text language="fr:rtl">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><span lang="fr" dir="rtl">foo</span>bar</p>' );
@@ -85,7 +85,7 @@ describe( 'TextPartLanguageEditing', () => {
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<span lang="fr">foo</span>bar' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text language="fr:ltr">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><span lang="fr" dir="ltr">foo</span>bar</p>' );
@@ -94,7 +94,7 @@ describe( 'TextPartLanguageEditing', () => {
 		it( 'should respect nested element language ', () => {
 			editor.setData( '<p><span dir="rtl" lang="he">hebrew<span dir="ltr" lang="fr">french</span>hebrew</span></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>' +
 					'<$text language="he:rtl">hebrew</$text>' +
 					'<$text language="fr:ltr">french</$text>' +
@@ -109,9 +109,9 @@ describe( 'TextPartLanguageEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( model, '<paragraph><$text language="fr:ltr">foo</$text>bar</paragraph>' );
+			_setModelData( model, '<paragraph><$text language="fr:ltr">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><span dir="ltr" lang="fr">foo</span>bar</p>' );
 		} );
 
@@ -121,22 +121,22 @@ describe( 'TextPartLanguageEditing', () => {
 			editor.conversion.elementToElement( { view: 'fakeBlock', model: 'fakeBlock' } );
 			model.schema.register( 'fakeBlock', { inheritAllFrom: '$block' } );
 
-			setModelData( model, '<fakeBlock language="fr:ltr">foo</fakeBlock>' );
+			_setModelData( model, '<fakeBlock language="fr:ltr">foo</fakeBlock>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<fakeBlock>foo</fakeBlock>' );
 		} );
 
 		// #11538.
 		// #11563.
 		it( 'should convert attribute set on document selection', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>', {
+			_setModelData( model, '<paragraph>foo[]</paragraph>', {
 				selectionAttributes: {
 					language: 'fr:ltr'
 				}
 			} );
 
-			expect( getViewData( editor.editing.view ) )
+			expect( _getViewData( editor.editing.view ) )
 				.to.equal( '<p>foo<span dir="ltr" lang="fr">[]</span></p>' );
 		} );
 	} );

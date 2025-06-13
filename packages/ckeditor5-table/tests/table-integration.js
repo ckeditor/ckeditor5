@@ -13,10 +13,10 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquot
 import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { TableEditing } from '../src/tableediting.js';
 import { modelTable, viewTable } from './_utils/utils.js';
@@ -39,47 +39,47 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'pastes td as p when pasting into the table', () => {
-			setModelData( editor.model, modelTable( [ [ 'foo[]' ] ] ) );
+			_setModelData( editor.model, modelTable( [ [ 'foo[]' ] ] ) );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<td>bar</td>' )
+				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
 				[ 'foobar[]' ]
 			] ) );
 		} );
 
 		it( 'pastes td as p when pasting into the p', () => {
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<td>bar</td>' )
+				content: _parseView( '<td>bar</td>' )
 			} );
 
-			expect( getModelData( editor.model ) ).to.equalMarkup( '<paragraph>foobar[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equalMarkup( '<paragraph>foobar[]</paragraph>' );
 		} );
 
 		it( 'pastes list into the td', () => {
-			setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
+			_setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<li>bar</li>' )
+				content: _parseView( '<li>bar</li>' )
 			} );
 
-			expect( getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
 				[ '<listItem listIndent="0" listType="bulleted">bar[]</listItem>' ]
 			] ) );
 		} );
 
 		it( 'pastes blockquote into the td', () => {
-			setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
+			_setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<blockquote>bar</blockquote>' )
+				content: _parseView( '<blockquote>bar</blockquote>' )
 			} );
 
-			expect( getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
 				[ '<blockQuote><paragraph>bar[]</paragraph></blockQuote>' ]
 			] ) );
 		} );
@@ -174,19 +174,19 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'merges elements without throwing errors', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>[]Bar</paragraph>' ]
 			] ) );
 
 			editor.execute( 'delete' );
 
-			expect( getModelData( editor.model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( editor.model ) ).to.equalMarkup( modelTable( [
 				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
 			] ) );
 		} );
 
 		it( 'should not make the Model#hasContent() method return "true" when an empty table cell is selected', () => {
-			setModelData( editor.model, (
+			_setModelData( editor.model, (
 				'<table>' +
 					'<tableRow>' +
 						'[<tableCell><paragraph></paragraph></tableCell>]' +
@@ -220,7 +220,7 @@ describe( 'Table feature – integration with markers', () => {
 
 		editor.setData( '<table><tbody><tr><td></td></tr></tbody></table>' );
 
-		expect( getModelData( editor.model, { withoutSelection: true } ) )
+		expect( _getModelData( editor.model, { withoutSelection: true } ) )
 			.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 	} );
 
@@ -311,7 +311,7 @@ describe( 'Table feature – integration with markers', () => {
 			let paragraph;
 
 			beforeEach( async () => {
-				setModelData( editor.model, modelTable( [ [ '' ] ] ) );
+				_setModelData( editor.model, modelTable( [ [ '' ] ] ) );
 
 				paragraph = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 			} );
@@ -403,7 +403,7 @@ describe( 'Table feature – integration with markers', () => {
 			let paragraph;
 
 			beforeEach( async () => {
-				setModelData( editor.model, modelTable( [ [ 'text' ] ] ) );
+				_setModelData( editor.model, modelTable( [ [ 'text' ] ] ) );
 
 				paragraph = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0, 0 ] );
 			} );
@@ -510,7 +510,7 @@ describe( 'Table feature – integration with markers', () => {
 			let paragraphA, paragraphB, tableCell;
 
 			beforeEach( async () => {
-				setModelData( editor.model, modelTable( [ [ '<paragraph>a</paragraph><paragraph>b</paragraph>' ] ] ) );
+				_setModelData( editor.model, modelTable( [ [ '<paragraph>a</paragraph><paragraph>b</paragraph>' ] ] ) );
 
 				tableCell = editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				paragraphA = tableCell.getChild( 0 );

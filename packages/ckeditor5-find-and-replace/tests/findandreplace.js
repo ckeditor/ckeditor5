@@ -8,8 +8,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { FindAndReplace } from '../src/findandreplace.js';
 import { FindAndReplaceUI } from '../src/findandreplaceui.js';
@@ -532,7 +532,7 @@ describe( 'FindAndReplace', () => {
 
 				editor.execute( 'undo' );
 
-				expect( stringify( model.document.getRoot(), null, editor.model.markers ) ).to.equal(
+				expect( _stringifyModel( model.document.getRoot(), null, editor.model.markers ) ).to.equal(
 					'<paragraph>Foo bar baz</paragraph>'
 				);
 			} );
@@ -659,7 +659,7 @@ describe( 'FindAndReplace', () => {
 			} );
 
 			expect( findResults ).to.have.property( 'length', 0 );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>Foo bxar baz</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>Foo bxar baz</p>' );
 		} );
 
 		it( 'should find result in any element that allows $text inside', () => {

@@ -9,17 +9,17 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
-	Element,
-	Text,
-	Writer,
-	Document,
-	AttributeElement,
+	ModelElement,
+	ModelText,
+	ModelWriter,
+	ModelDocument,
+	ViewAttributeElement,
 	DowncastConversionApi,
 	DowncastDispatcher,
-	Position,
-	Schema,
+	ModelPosition,
+	ModelSchema,
 	DowncastAttributeEvent,
-	Item
+	ModelItem
 } from 'ckeditor5/src/engine.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
@@ -68,7 +68,7 @@ export class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: ( viewElement: Element ) => _toMentionAttribute( viewElement )
+				value: ( viewElement: ModelElement ) => _toMentionAttribute( viewElement )
 			}
 		} );
 
@@ -106,12 +106,12 @@ export function _addMentionAttributes(
  * @internal
  */
 export function _toMentionAttribute(
-	viewElementOrMention: Element,
+	viewElementOrMention: ModelElement,
 	data?: Record<string, unknown>
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
 
-	const textNode = viewElementOrMention.getChild( 0 ) as Text;
+	const textNode = viewElementOrMention.getChild( 0 ) as ModelText;
 
 	// Do not convert empty mentions.
 	if ( !textNode ) {
@@ -142,7 +142,7 @@ function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
 		}
 
 		const start = data.range.start;
-		const textNode = start.textNode || start.nodeAfter as Text;
+		const textNode = start.textNode || start.nodeAfter as ModelText;
 
 		if ( textNode!.data != mention._text ) {
 			// Consume item to prevent partial mention conversion.
@@ -154,7 +154,7 @@ function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
 /**
  * Creates a mention element from the mention data.
  */
-function createViewMentionElement( mention: MentionAttribute, { writer }: DowncastConversionApi ): AttributeElement | undefined {
+function createViewMentionElement( mention: MentionAttribute, { writer }: DowncastConversionApi ): ViewAttributeElement | undefined {
 	if ( !mention ) {
 		return;
 	}
@@ -176,7 +176,7 @@ function createViewMentionElement( mention: MentionAttribute, { writer }: Downca
  * Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
  * before a text node with mention attribute.
  */
-function selectionMentionAttributePostFixer( writer: Writer, doc: Document ): boolean {
+function selectionMentionAttributePostFixer( writer: ModelWriter, doc: ModelDocument ): boolean {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
@@ -197,7 +197,7 @@ function selectionMentionAttributePostFixer( writer: Writer, doc: Document ): bo
  * a) after a text node
  * b) the position is at parents start - the selection will set attributes from node after.
  */
-function shouldNotTypeWithMentionAt( position: Position ): boolean {
+function shouldNotTypeWithMentionAt( position: ModelPosition ): boolean {
 	const isAtStart = position.isAtStart;
 	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( '$text' );
 
@@ -207,7 +207,7 @@ function shouldNotTypeWithMentionAt( position: Position ): boolean {
 /**
  * Model post-fixer that removes the mention attribute from the modified text node.
  */
-function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: Schema ): boolean {
+function removePartialMentionPostFixer( writer: ModelWriter, doc: ModelDocument, schema: ModelSchema ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
@@ -234,7 +234,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
 
 		// Checks text nodes in inserted elements (might occur when splitting a paragraph or pasting content inside text with mention).
 		if ( change.name != '$text' && change.type == 'insert' ) {
-			const insertedNode = position.nodeAfter as Element;
+			const insertedNode = position.nodeAfter as ModelElement;
 
 			for ( const item of writer.createRangeIn( insertedNode! ).getItems() ) {
 				wasChanged = checkAndFix( item, writer ) || wasChanged;
@@ -257,7 +257,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
  * This post-fixer will extend the attribute applied on the part of the mention so the whole text node of the mention will have
  * the added attribute.
  */
-function extendAttributeOnMentionPostFixer( writer: Writer, doc: Document ): boolean {
+function extendAttributeOnMentionPostFixer( writer: ModelWriter, doc: ModelDocument ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
@@ -286,7 +286,7 @@ function extendAttributeOnMentionPostFixer( writer: Writer, doc: Document ): boo
  * Checks if a node has a correct mention attribute if present.
  * Returns `true` if the node is text and has a mention attribute whose text does not match the expected mention text.
  */
-function isBrokenMentionNode( node: Item | null ): boolean {
+function isBrokenMentionNode( node: ModelItem | null ): boolean {
 	if ( !node || !( node.is( '$text' ) || node.is( '$textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
@@ -302,7 +302,7 @@ function isBrokenMentionNode( node: Item | null ): boolean {
 /**
  * Fixes a mention on a text node if it needs a fix.
  */
-function checkAndFix( textNode: Item | null, writer: Writer ): boolean {
+function checkAndFix( textNode: ModelItem | null, writer: ModelWriter ): boolean {
 	if ( isBrokenMentionNode( textNode ) ) {
 		writer.removeAttribute( 'mention', textNode! );
 

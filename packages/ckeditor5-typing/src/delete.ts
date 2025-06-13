@@ -7,7 +7,7 @@
  * @module typing/delete
  */
 
-import { BubblingEventInfo, DomEventData, type ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
+import { BubblingEventInfo, ViewDocumentDomEventData, type ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { DeleteCommand } from './deletecommand.js';
@@ -118,7 +118,7 @@ export class Delete extends Plugin {
 					selectionToRemove: viewSelection
 				};
 
-				viewDocument.fire( eventInfo, new DomEventData( view, data.domEvent, deleteData ) );
+				viewDocument.fire( eventInfo, new ViewDocumentDomEventData( view, data.domEvent, deleteData ) );
 			}
 		} );
 

@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine.js';
+import { isColorStyleValue, isLengthStyleValue, isPercentageStyleValue } from 'ckeditor5/src/engine.js';
 
 import { type TableCellPropertiesView } from '../../tablecellproperties/ui/tablecellpropertiesview.js';
 import { type TablePropertiesView } from '../../tableproperties/ui/tablepropertiesview.js';
@@ -77,43 +77,43 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
  * Returns `true` when the passed value is an empty string or a valid CSS color expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isColor}.
+ * See {@link module:engine/view/styles/utils~isColorStyleValue}.
  *
  * @internal
  */
 export function colorFieldValidator( value: string ): boolean {
 	value = value.trim().toLowerCase();
 
-	return isEmpty( value ) || isColor( value );
+	return isEmpty( value ) || isColorStyleValue( value );
 }
 
 /**
  * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isLength}.
- * See {@link module:engine/view/styles/utils~isPercentage}.
+ * See {@link module:engine/view/styles/utils~isLengthStyleValue}.
+ * See {@link module:engine/view/styles/utils~isPercentageStyleValue}.
  *
  * @internal
  */
 export function lengthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
-	return isEmpty( value ) || isNumberString( value ) || isLength( value ) || isPercentage( value );
+	return isEmpty( value ) || isNumberString( value ) || isLengthStyleValue( value ) || isPercentageStyleValue( value );
 }
 
 /**
  * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isLength}.
+ * See {@link module:engine/view/styles/utils~isLengthStyleValue}.
  *
  * @internal
  */
 export function lineWidthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
-	return isEmpty( value ) || isNumberString( value ) || isLength( value );
+	return isEmpty( value ) || isNumberString( value ) || isLengthStyleValue( value );
 }
 
 /**

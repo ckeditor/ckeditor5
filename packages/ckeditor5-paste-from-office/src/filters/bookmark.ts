@@ -8,7 +8,7 @@
  */
 
 import {
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
@@ -19,7 +19,7 @@ import {
  */
 export function transformBookmarks(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	const elementsToChange = [];
 

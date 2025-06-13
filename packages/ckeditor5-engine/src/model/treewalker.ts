@@ -7,29 +7,29 @@
  * @module engine/model/treewalker
  */
 
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import {
-	Position,
+	ModelPosition,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from './position.js';
-import { TextProxy } from './textproxy.js';
+import { ModelTextProxy } from './textproxy.js';
 
-import { type DocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
-import { type Range } from './range.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelItem } from './item.js';
+import { type ModelRange } from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
  */
-export class TreeWalker implements Iterable<TreeWalkerValue> {
+export class ModelTreeWalker implements Iterable<ModelTreeWalkerValue> {
 	/**
 	 * Walking direction. Defaults `'forward'`.
 	 */
-	public readonly direction: TreeWalkerDirection;
+	public readonly direction: ModelTreeWalkerDirection;
 
 	/**
 	 * Iterator boundaries.
@@ -39,11 +39,11 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 *
 	 * If boundaries are not defined they are set before first and after last child of the root node.
 	 */
-	public readonly boundaries: Range | null;
+	public readonly boundaries: ModelRange | null;
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes should be
-	 * returned as one {@link module:engine/model/textproxy~TextProxy} (`true`) or one by one (`false`).
+	 * returned as one {@link module:engine/model/textproxy~ModelTextProxy} (`true`) or one by one (`false`).
 	 */
 	public readonly singleCharacters: boolean;
 
@@ -55,7 +55,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd` tags. If the option is true walker will not
-	 * return a parent node of the start position. If this option is `true` each {@link module:engine/model/element~Element} will
+	 * return a parent node of the start position. If this option is `true` each {@link module:engine/model/element~ModelElement} will
 	 * be returned once, while if the option is `false` they might be returned twice:
 	 * for `'elementStart'` and `'elementEnd'`.
 	 */
@@ -63,33 +63,33 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Iterator position. This is always static position, even if the initial position was a
-	 * {@link module:engine/model/liveposition~LivePosition live position}. If start position is not defined then position depends
+	 * {@link module:engine/model/liveposition~ModelLivePosition live position}. If start position is not defined then position depends
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */
-	private _position: Position;
+	private _position: ModelPosition;
 
 	/**
 	 * Start boundary cached for optimization purposes.
 	 */
-	private _boundaryStartParent: Element | DocumentFragment | null;
+	private _boundaryStartParent: ModelElement | ModelDocumentFragment | null;
 
 	/**
 	 * End boundary cached for optimization purposes.
 	 */
-	private _boundaryEndParent: Element | DocumentFragment | null;
+	private _boundaryEndParent: ModelElement | ModelDocumentFragment | null;
 
 	/**
 	 * Parent of the most recently visited node. Cached for optimization purposes.
 	 */
-	private _visitedParent: Element | DocumentFragment;
+	private _visitedParent: ModelElement | ModelDocumentFragment;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
 	 *
 	 * @param options Object with configuration.
 	 */
-	constructor( options: TreeWalkerOptions ) {
+	constructor( options: ModelTreeWalkerOptions ) {
 		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
 			/**
 			 * Neither boundaries nor starting position of a `TreeWalker` have been defined.
@@ -119,7 +119,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 		if ( options.startPosition ) {
 			this._position = options.startPosition.clone();
 		} else {
-			this._position = Position._createAt( this.boundaries![ this.direction == 'backward' ? 'end' : 'start' ] );
+			this._position = ModelPosition._createAt( this.boundaries![ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		// Reset position stickiness in case it was set to other value, as the stickiness is kept after cloning.
@@ -137,19 +137,19 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Iterable interface.
 	 *
-	 * @returns {Iterable.<module:engine/model/treewalker~TreeWalkerValue>}
+	 * @returns {Iterable.<module:engine/model/treewalker~ModelTreeWalkerValue>}
 	 */
-	public [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
+	public [ Symbol.iterator ](): IterableIterator<ModelTreeWalkerValue> {
 		return this;
 	}
 
 	/**
 	 * Iterator position. This is always static position, even if the initial position was a
-	 * {@link module:engine/model/liveposition~LivePosition live position}. If start position is not defined then position depends
+	 * {@link module:engine/model/liveposition~ModelLivePosition live position}. If start position is not defined then position depends
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */
-	public get position(): Position {
+	public get position(): ModelPosition {
 		return this._position;
 	}
 
@@ -164,10 +164,10 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * walker.skip( () => false ); // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~ModelTreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
 	 */
-	public skip( skip: ( value: TreeWalkerValue ) => boolean ): void {
+	public skip( skip: ( value: ModelTreeWalkerValue ) => boolean ): void {
 		let done, value, prevPosition, prevVisitedParent;
 
 		do {
@@ -187,9 +187,9 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
 	 * continue traversing from that position.
 	 *
-	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * Note: in contrary to {@link ~ModelTreeWalker#skip}, this method does not iterate over the nodes along the way.
 	 * It simply sets the current tree walker position to a new one.
-	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 * From the performance standpoint, it is better to use {@link ~ModelTreeWalker#jumpTo} rather than {@link ~ModelTreeWalker#skip}.
 	 *
 	 * If the provided position is before the start boundary, the position will be
 	 * set to the start boundary. If the provided position is after the end boundary,
@@ -198,7 +198,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 *
 	 * @param position Position to jump to.
 	 */
-	public jumpTo( position: Position ): void {
+	public jumpTo( position: ModelPosition ): void {
 		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
 			position = this.boundaries!.start;
 		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
@@ -212,7 +212,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Gets the next tree walker's value.
 	 */
-	public next(): IteratorResult<TreeWalkerValue> {
+	public next(): IteratorResult<ModelTreeWalkerValue> {
 		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
@@ -223,7 +223,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Makes a step forward in model. Moves the {@link #position} to the next position and returns the encountered value.
 	 */
-	private _next(): IteratorResult<TreeWalkerValue> {
+	private _next(): IteratorResult<ModelTreeWalkerValue> {
 		const previousPosition = this.position;
 		const position = this.position.clone();
 		const parent = this._visitedParent;
@@ -278,7 +278,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			}
 
 			const offsetInTextNode = position.offset - node.startOffset!;
-			const item = new TextProxy( node, offsetInTextNode, charactersCount );
+			const item = new ModelTextProxy( node, offsetInTextNode, charactersCount );
 
 			position.offset += charactersCount;
 			this._position = position;
@@ -296,13 +296,13 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			return this._next();
 		}
 
-		return formatReturnValue( 'elementEnd', parent as Element, previousPosition, position );
+		return formatReturnValue( 'elementEnd', parent as ModelElement, previousPosition, position );
 	}
 
 	/**
 	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 */
-	private _previous(): IteratorResult<TreeWalkerValue> {
+	private _previous(): IteratorResult<ModelTreeWalkerValue> {
 		const previousPosition = this.position;
 		const position = this.position.clone();
 		const parent = this._visitedParent;
@@ -359,7 +359,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			}
 
 			const offsetInTextNode = position.offset - node.startOffset!;
-			const item = new TextProxy( node, offsetInTextNode - charactersCount, charactersCount );
+			const item = new ModelTextProxy( node, offsetInTextNode - charactersCount, charactersCount );
 
 			position.offset -= charactersCount;
 			this._position = position;
@@ -372,17 +372,17 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 		this._position = position;
 		this._visitedParent = parent.parent!;
 
-		return formatReturnValue( 'elementStart', parent as Element, previousPosition, position, 1 );
+		return formatReturnValue( 'elementStart', parent as ModelElement, previousPosition, position, 1 );
 	}
 }
 
 function formatReturnValue(
-	type: TreeWalkerValueType,
-	item: Item,
-	previousPosition: Position,
-	nextPosition: Position,
+	type: ModelTreeWalkerValueType,
+	item: ModelItem,
+	previousPosition: ModelPosition,
+	nextPosition: ModelPosition,
 	length?: number
-): IteratorYieldResult<TreeWalkerValue> {
+): IteratorYieldResult<ModelTreeWalkerValue> {
 	return {
 		done: false,
 		value: {
@@ -396,22 +396,22 @@ function formatReturnValue(
 }
 
 /**
- * Type of the step made by {@link module:engine/model/treewalker~TreeWalker}.
+ * Type of the step made by {@link module:engine/model/treewalker~ModelTreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end of node,
  * or `'text'` if walker traversed over text.
  */
-export type TreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
+export type ModelTreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
 
 /**
- * Object returned by {@link module:engine/model/treewalker~TreeWalker} when traversing tree model.
+ * Object returned by {@link module:engine/model/treewalker~ModelTreeWalker} when traversing tree model.
  */
-export interface TreeWalkerValue {
-	type: TreeWalkerValueType;
+export interface ModelTreeWalkerValue {
+	type: ModelTreeWalkerValueType;
 
 	/**
-	 * Item between old and new positions of {@link module:engine/model/treewalker~TreeWalker}.
+	 * Item between old and new positions of {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	item: Item;
+	item: ModelItem;
 
 	/**
 	 * Previous position of the iterator.
@@ -420,7 +420,7 @@ export interface TreeWalkerValue {
 	 * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
 	 * the position after item.
 	 */
-	previousPosition: Position;
+	previousPosition: ModelPosition;
 
 	/**
 	 * Next position of the iterator.
@@ -429,7 +429,7 @@ export interface TreeWalkerValue {
 	 * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
 	 * before the item.
 	 */
-	nextPosition: Position;
+	nextPosition: ModelPosition;
 
 	/**
 	 * Length of the item. For `'elementStart'` it is 1. For `'text'` it is the length of the text. For `'elementEnd'` it is `undefined`.
@@ -440,36 +440,36 @@ export interface TreeWalkerValue {
 /**
  * Tree walking direction.
  */
-export type TreeWalkerDirection = 'forward' | 'backward';
+export type ModelTreeWalkerDirection = 'forward' | 'backward';
 
 /**
  * The configuration of TreeWalker.
  *
  * All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
  */
-export interface TreeWalkerOptions {
+export interface ModelTreeWalkerOptions {
 
 	/**
 	 * Walking direction.
 	 *
 	 * @default 'forward'
 	 */
-	direction?: TreeWalkerDirection;
+	direction?: ModelTreeWalkerDirection;
 
 	/**
 	 * Range to define boundaries of the iterator.
 	 */
-	boundaries?: Range | null;
+	boundaries?: ModelRange | null;
 
 	/**
 	 * Starting position.
 	 */
-	startPosition?: Position;
+	startPosition?: ModelPosition;
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link module:engine/model/textproxy~TextProxy} (`true`) objects or as one
-	 * {@link module:engine/model/textproxy~TextProxy} (`false`).
+	 * should be returned one by one as multiple {@link module:engine/model/textproxy~ModelTextProxy} (`true`) objects or as one
+	 * {@link module:engine/model/textproxy~ModelTextProxy} (`false`).
 	 */
 	singleCharacters?: boolean;
 
@@ -482,7 +482,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd` tags.
 	 * If the option is true walker will not return a parent node of start position. If this option is `true`
-	 * each {@link module:engine/model/element~Element} will be returned once, while if the option is `false` they might be returned
+	 * each {@link module:engine/model/element~ModelElement} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	ignoreElementEnd?: boolean;

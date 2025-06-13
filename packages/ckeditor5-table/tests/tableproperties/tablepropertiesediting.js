@@ -19,7 +19,7 @@ import { TableWidthCommand } from '../../src/tableproperties/commands/tablewidth
 import { TableHeightCommand } from '../../src/tableproperties/commands/tableheightcommand.js';
 import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
@@ -270,7 +270,7 @@ describe( 'table properties', () => {
 
 						// Also check the entire structure of the model.
 						// Previously the test was too loose in that regard.
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -316,7 +316,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -349,7 +349,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -397,7 +397,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -446,7 +446,7 @@ describe( 'table properties', () => {
 							expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
 							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -486,7 +486,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -513,7 +513,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -551,7 +551,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -1164,7 +1164,7 @@ describe( 'table properties', () => {
 
 					editor.setData( '<figure class="image" style="width:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="alt text" resizedWidth="50%" src="/assets/sample.png"></imageBlock>'
 					);
 
@@ -1363,7 +1363,7 @@ describe( 'table properties', () => {
 
 					editor.setData( '<figure class="image" style="height:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="alt text" resizedHeight="50%" src="/assets/sample.png"></imageBlock>'
 					);
 
@@ -1569,7 +1569,7 @@ describe( 'table properties', () => {
 
 					editor.setData( '<figure class="image" style="float:right"><img src="/assets/sample.png" alt="alt text"></figure>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
 					);
 
@@ -1601,7 +1601,7 @@ describe( 'table properties', () => {
 						'</figure>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
 					);
 
@@ -1670,7 +1670,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should downcast "center" alignment for content table using float:none', () => {
-						setModelData( model,
+						_setModelData( model,
 							'<table headingRows="0" headingColumns="0">' +
 								'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
 							'</table>'
@@ -1691,7 +1691,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should downcast "center" alignment for layout table using auto margins', () => {
-						setModelData( model,
+						_setModelData( model,
 							'<table tableType="layout" headingRows="0" headingColumns="0">' +
 								'<tableRow><tableCell><paragraph>layout table</paragraph></tableCell></tableRow>' +
 							'</table>'
@@ -2185,7 +2185,7 @@ describe( 'table properties', () => {
 		} );
 
 		function createEmptyTable() {
-			setModelData(
+			_setModelData(
 				model,
 				'<table headingRows="0" headingColumns="0">' +
 					'<tableRow>' +

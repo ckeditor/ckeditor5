@@ -9,16 +9,16 @@
 
 import '../../theme/placeholder.css';
 
-import { type Document } from './document.js';
-import { type DowncastWriter } from './downcastwriter.js';
-import { type EditableElement } from './editableelement.js';
-import { type Element } from './element.js';
-import { type View } from './view.js';
+import { type ViewDocument } from './document.js';
+import { type ViewDowncastWriter } from './downcastwriter.js';
+import { type ViewEditableElement } from './editableelement.js';
+import { type ViewElement } from './element.js';
+import { type EditingView } from './view.js';
 
 import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
-const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
+const documentPlaceholders = new WeakMap<ViewDocument, Map<ViewElement, PlaceholderConfig>>();
 
 let hasDisplayedPlaceholderDeprecationWarning = false;
 
@@ -28,7 +28,7 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  *
  * To change the placeholder text, change value of the `placeholder` property in the provided `element`.
  *
- * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
+ * To disable the placeholder, use {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} helper.
  *
  * @param options Configuration options of the placeholder.
  * @param options.view Editing view instance.
@@ -38,12 +38,12 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
  * @param options.text Placeholder text. It's **deprecated** and will be removed soon. Use
- * {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `options.element.placeholder`} instead.
+ * {@link module:engine/view/placeholder~PlaceholderableViewElement#placeholder `options.element.placeholder`} instead.
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
-export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
-	view: View;
-	element: PlaceholderableElement | EditableElement;
+export function enableViewPlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
+	view: EditingView;
+	element: PlaceholderableViewElement | ViewEditableElement;
 	isDirectHost?: boolean;
 	text?: string;
 	keepOnFocus?: boolean;
@@ -75,7 +75,7 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 	}
 
 	if ( text ) {
-		showPlaceholderTextDeprecationWarning();
+		showViewPlaceholderTextDeprecationWarning();
 	}
 
 	function setPlaceholder( text: string ) {
@@ -97,9 +97,9 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
 /**
  * Disables the placeholder functionality from a given element.
  *
- * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
+ * See {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} to learn more.
  */
-export function disablePlaceholder( view: View, element: Element ): void {
+export function disableViewPlaceholder( view: EditingView, element: ViewElement ): void {
 	const doc = element.document;
 
 	if ( !documentPlaceholders.has( doc ) ) {
@@ -111,7 +111,7 @@ export function disablePlaceholder( view: View, element: Element ): void {
 		const config = placeholders.get( element )!;
 
 		writer.removeAttribute( 'data-placeholder', config.hostElement! );
-		hidePlaceholder( writer, config.hostElement! );
+		hideViewPlaceholder( writer, config.hostElement! );
 
 		placeholders.delete( element );
 	} );
@@ -122,18 +122,18 @@ export function disablePlaceholder( view: View, element: Element ): void {
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} and
+ * {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} for full
  * placeholder functionality.
  *
  * **Note**: This helper will blindly show the placeholder directly in the root editable element if
  * one is passed, which could result in a visual clash if the editable element has some children
- * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+ * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`}
  * in that case or make sure the correct element is passed to the helper.
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function showPlaceholder( writer: DowncastWriter, element: Element ): boolean {
+export function showViewPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
 
@@ -148,13 +148,13 @@ export function showPlaceholder( writer: DowncastWriter, element: Element ): boo
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} and
+ * {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} for full
  * placeholder functionality.
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function hidePlaceholder( writer: DowncastWriter, element: Element ): boolean {
+export function hideViewPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
 
@@ -171,13 +171,13 @@ export function hidePlaceholder( writer: DowncastWriter, element: Element ): boo
  * root editable element if one is passed, which may not be the expected result. If an element can
  * host other elements (not just text), most likely one of its children should be checked instead
  * because it will be the final host for the placeholder. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
  * @param element Element that holds the placeholder.
  * @param keepOnFocus Focusing the element will keep the placeholder visible.
  */
-export function needsPlaceholder( element: Element, keepOnFocus: boolean ): boolean {
+export function needsViewPlaceholder( element: ViewElement, keepOnFocus: boolean ): boolean {
 	if ( !element.isAttached() ) {
 		return false;
 	}
@@ -211,7 +211,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 /**
  * Anything but uiElement(s) counts as content.
  */
-function hasContent( element: Element ): boolean {
+function hasContent( element: ViewElement ): boolean {
 	for ( const child of element.getChildren() ) {
 		if ( !child.is( 'uiElement' ) ) {
 			return true;
@@ -227,10 +227,10 @@ function hasContent( element: Element ): boolean {
  * @returns True if any changes were made to the view document.
  */
 function updateDocumentPlaceholders(
-	placeholders: Iterable<[ Element, PlaceholderConfig ]>,
-	writer: DowncastWriter
+	placeholders: Iterable<[ ViewElement, PlaceholderConfig ]>,
+	writer: ViewDowncastWriter
 ): boolean {
-	const directHostElements: Array<Element> = [];
+	const directHostElements: Array<ViewElement> = [];
 	let wasViewModified = false;
 
 	// First set placeholders on the direct hosts.
@@ -279,7 +279,7 @@ function updateDocumentPlaceholders(
  *
  * @returns True if any changes were made to the view document.
  */
-function updatePlaceholder( writer: DowncastWriter, element: Element, config: PlaceholderConfig ) {
+function updatePlaceholder( writer: ViewDowncastWriter, element: ViewElement, config: PlaceholderConfig ) {
 	const { text, isDirectHost, hostElement } = config;
 
 	let wasViewModified = false;
@@ -293,11 +293,11 @@ function updatePlaceholder( writer: DowncastWriter, element: Element, config: Pl
 	// If the host element is not a direct host then placeholder is needed only when there is only one element.
 	const isOnlyChild = isDirectHost || element.childCount == 1;
 
-	if ( isOnlyChild && needsPlaceholder( hostElement!, config.keepOnFocus ) ) {
-		if ( showPlaceholder( writer, hostElement! ) ) {
+	if ( isOnlyChild && needsViewPlaceholder( hostElement!, config.keepOnFocus ) ) {
+		if ( showViewPlaceholder( writer, hostElement! ) ) {
 			wasViewModified = true;
 		}
-	} else if ( hidePlaceholder( writer, hostElement! ) ) {
+	} else if ( hideViewPlaceholder( writer, hostElement! ) ) {
 		wasViewModified = true;
 	}
 
@@ -309,7 +309,7 @@ function updatePlaceholder( writer: DowncastWriter, element: Element, config: Pl
  * than just text (for instance, when it is a root editable element). The child element
  * can then be used in other placeholder helpers as a substitute of its parent.
  */
-function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
+function getChildPlaceholderHostSubstitute( parent: ViewElement ): ViewElement | null {
 	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 )!;
 
@@ -324,18 +324,18 @@ function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
 /**
  * Displays a deprecation warning message in the console, but only once per page load.
  */
-function showPlaceholderTextDeprecationWarning() {
+function showViewPlaceholderTextDeprecationWarning() {
 	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
 		/**
-		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+		 * The "text" option in the {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`}
 		 * function is deprecated and will be removed soon.
 		 *
 		 * See the {@glink updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
 		 * more information on how to apply this change.
 		 *
-		 * @error enableplaceholder-deprecated-text-option
+		 * @error enableViewPlaceholder-deprecated-text-option
 		 */
-		logWarning( 'enableplaceholder-deprecated-text-option' );
+		logWarning( 'enableViewPlaceholder-deprecated-text-option' );
 	}
 
 	hasDisplayedPlaceholderDeprecationWarning = true;
@@ -348,13 +348,13 @@ interface PlaceholderConfig {
 	text: string;
 	isDirectHost: boolean;
 	keepOnFocus: boolean;
-	hostElement: Element | null;
+	hostElement: ViewElement | null;
 }
 
 /**
  * Element that could have a placeholder.
  */
-export interface PlaceholderableElement extends Element {
+export interface PlaceholderableViewElement extends ViewElement {
 
 	/**
 	 * The text of element's placeholder.

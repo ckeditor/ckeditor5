@@ -8,26 +8,26 @@
  */
 
 import { Operation } from './operation.js';
-import { Position } from '../position.js';
-import { Range } from '../range.js';
+import { ModelPosition } from '../position.js';
+import { ModelRange } from '../range.js';
 import { _move } from './utils.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
 /**
- * Operation to move a range of {@link module:engine/model/item~Item model items}
- * to given {@link module:engine/model/position~Position target position}.
+ * Operation to move a range of {@link module:engine/model/item~ModelItem model items}
+ * to given {@link module:engine/model/position~ModelPosition target position}.
  */
 export class MoveOperation extends Operation {
 	/**
-	 * Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Offset size of moved range.
@@ -37,19 +37,19 @@ export class MoveOperation extends Operation {
 	/**
 	 * Position at which moved nodes will be inserted.
 	 */
-	public targetPosition: Position;
+	public targetPosition: ModelPosition;
 
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param sourcePosition Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param sourcePosition Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param targetPosition Position at which moved nodes will be inserted.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( sourcePosition: Position, howMany: number, targetPosition: Position, baseVersion: number | null ) {
+	constructor( sourcePosition: ModelPosition, howMany: number, targetPosition: ModelPosition, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.sourcePosition = sourcePosition.clone();
@@ -78,10 +78,10 @@ export class MoveOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return [
-			Range._createFromPositionAndShift( this.sourcePosition, this.howMany ),
-			Range._createFromPositionAndShift( this.targetPosition, 0 )
+			ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ),
+			ModelRange._createFromPositionAndShift( this.targetPosition, 0 )
 		];
 	}
 
@@ -106,7 +106,7 @@ export class MoveOperation extends Operation {
 	 *      offset 6   offset 4
 	 *```
 	 */
-	public getMovedRangeStart(): Position {
+	public getMovedRangeStart(): ModelPosition {
 		return this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany )!;
 	}
 
@@ -173,7 +173,7 @@ export class MoveOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		_move( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		_move( ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**
@@ -201,9 +201,9 @@ export class MoveOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): MoveOperation {
-		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
-		const targetPosition = Position.fromJSON( json.targetPosition, document );
+	public static override fromJSON( json: any, document: ModelDocument ): MoveOperation {
+		const sourcePosition = ModelPosition.fromJSON( json.sourcePosition, document );
+		const targetPosition = ModelPosition.fromJSON( json.targetPosition, document );
 
 		return new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 	}

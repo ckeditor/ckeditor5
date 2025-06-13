@@ -8,18 +8,18 @@
  */
 
 import type {
-	Element,
+	ModelElement,
 	ViewElement,
 	ViewNode,
-	DocumentSelection,
+	ModelDocumentSelection,
 	ViewDocumentSelection,
-	Selection,
+	ModelSelection,
 	ViewSelection,
-	DocumentFragment,
+	ModelDocumentFragment,
 	ViewDocumentFragment,
-	DowncastWriter,
+	ViewDowncastWriter,
 	Model,
-	Position,
+	ModelPosition,
 	ViewContainerElement
 } from 'ckeditor5/src/engine.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
@@ -55,7 +55,7 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
-	public isImage( modelElement?: Element | null ): modelElement is Element & { name: 'imageInline' | 'imageBlock' } {
+	public isImage( modelElement?: ModelElement | null ): modelElement is ModelElement & { name: 'imageInline' | 'imageBlock' } {
 		return this.isInlineImage( modelElement ) || this.isBlockImage( modelElement );
 	}
 
@@ -88,7 +88,7 @@ export class ImageUtils extends Plugin {
 	 * ```
 	 *
 	 * @param attributes Attributes of the inserted image.
-	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.
+	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~ModelSchema}.
 	 * @param selectable Place to insert the image. If not specified,
 	 * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
 	 * and `model.document.selection` for the inline images.
@@ -104,10 +104,10 @@ export class ImageUtils extends Plugin {
 	 */
 	public insertImage(
 		attributes: Record<string, unknown> = {},
-		selectable: Selection | Position | null = null,
+		selectable: ModelSelection | ModelPosition | null = null,
 		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
 		options: { setImageSizes?: boolean } = {}
-	): Element | null {
+	): ModelElement | null {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -158,7 +158,7 @@ export class ImageUtils extends Plugin {
 	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
 	 * this method is called again after the upload process is complete and the `src` attribute is available.
 	 */
-	public setImageNaturalSizeAttributes( imageElement: Element ): void {
+	public setImageNaturalSizeAttributes( imageElement: ModelElement ): void {
 		const src = imageElement.getAttribute( 'src' ) as string;
 
 		if ( !src ) {
@@ -221,7 +221,7 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Returns a image model element if one is selected or is among the selection's ancestors.
 	 */
-	public getClosestSelectedImageElement( selection: Selection | DocumentSelection ): Element | null {
+	public getClosestSelectedImageElement( selection: ModelSelection | ModelDocumentSelection ): ModelElement | null {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
@@ -247,15 +247,15 @@ export class ImageUtils extends Plugin {
 	}
 
 	/**
-	 * Converts a given {@link module:engine/view/element~Element} to an image widget:
-	 * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget
+	 * Converts a given {@link module:engine/view/element~ViewElement} to an image widget:
+	 * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} allowing to recognize the image widget
 	 * element.
 	 * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 	 *
 	 * @param writer An instance of the view writer.
 	 * @param label The element's label. It will be concatenated with the image `alt` attribute if one is present.
 	 */
-	public toImageWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+	public toImageWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 		writer.setCustomProperty( 'image', true, viewElement );
 
 		const labelCreator = () => {
@@ -278,14 +278,14 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image`.
 	 */
-	public isBlockImage( modelElement?: Element | null ): boolean {
+	public isBlockImage( modelElement?: ModelElement | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageBlock' );
 	}
 
 	/**
 	 * Checks if the provided model element is an `imageInline`.
 	 */
-	public isInlineImage( modelElement?: Element | null ): boolean {
+	public isInlineImage( modelElement?: ModelElement | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageInline' );
 	}
 
@@ -321,13 +321,13 @@ export class ImageUtils extends Plugin {
 /**
  * Checks if image is allowed by schema in optimal insertion parent.
  */
-function isImageAllowedInParent( editor: Editor, selection: Selection | DocumentSelection ): boolean {
+function isImageAllowedInParent( editor: Editor, selection: ModelSelection | ModelDocumentSelection ): boolean {
 	const imageType = determineImageTypeForInsertion( editor, selection, null );
 
 	if ( imageType == 'imageBlock' ) {
 		const parent = getInsertImageParent( selection, editor.model );
 
-		if ( editor.model.schema.checkChild( parent as Element, 'imageBlock' ) ) {
+		if ( editor.model.schema.checkChild( parent as ModelElement, 'imageBlock' ) ) {
 			return true;
 		}
 	} else if ( editor.model.schema.checkChild( selection.focus!, 'imageInline' ) ) {
@@ -340,14 +340,14 @@ function isImageAllowedInParent( editor: Editor, selection: Selection | Document
 /**
  * Checks if selection is not placed inside an image (e.g. its caption).
  */
-function isNotInsideImage( selection: DocumentSelection ): boolean {
+function isNotInsideImage( selection: ModelDocumentSelection ): boolean {
 	return [ ...selection.focus!.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'imageBlock' ) );
 }
 
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
-function getInsertImageParent( selection: Selection | DocumentSelection, model: Model ): Element | DocumentFragment {
+function getInsertImageParent( selection: ModelSelection | ModelDocumentSelection, model: Model ): ModelElement | ModelDocumentFragment {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
@@ -366,7 +366,7 @@ function getInsertImageParent( selection: Selection | DocumentSelection, model: 
  */
 function determineImageTypeForInsertion(
 	editor: Editor,
-	selectable: Position | Selection | DocumentSelection,
+	selectable: ModelPosition | ModelSelection | ModelDocumentSelection,
 	imageType: 'imageBlock' | 'imageInline' | null
 ): 'imageBlock' | 'imageInline' {
 	const schema = editor.model.schema;

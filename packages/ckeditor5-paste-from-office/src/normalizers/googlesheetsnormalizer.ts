@@ -7,7 +7,7 @@
  * @module paste-from-office/normalizers/googlesheetsnormalizer
  */
 
-import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 
 import { removeXmlns } from '../filters/removexmlns.js';
 import { removeGoogleSheetsTag } from '../filters/removegooglesheetstag.js';
@@ -45,7 +45,7 @@ export class GoogleSheetsNormalizer implements PasteFromOfficeNormalizer {
 	 * @inheritDoc
 	 */
 	public execute( data: PasteFromOfficeNormalizerData ): void {
-		const writer = new UpcastWriter( this.document );
+		const writer = new ViewUpcastWriter( this.document );
 		const { body: documentFragment } = data._parsedData;
 
 		removeGoogleSheetsTag( documentFragment, writer );

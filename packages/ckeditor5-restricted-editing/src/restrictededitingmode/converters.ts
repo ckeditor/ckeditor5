@@ -10,12 +10,12 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import {
 	Matcher,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type MatcherPattern,
 	type ModelPostFixer,
-	type Position,
+	type ModelPosition,
 	type UpcastDispatcher,
-	type Writer,
+	type ModelWriter,
 	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -43,7 +43,7 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 	const highlightedMarkers = new Set<ViewElement>();
 
 	// Adding the class.
-	view.document.registerPostFixer( ( writer: DowncastWriter ): boolean => {
+	view.document.registerPostFixer( ( writer: ViewDowncastWriter ): boolean => {
 		const modelSelection = model.document.selection;
 
 		const marker = getMarkerAtPosition( editor, modelSelection.anchor! );
@@ -170,7 +170,7 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 /**
  * Extend marker if change detected on marker's start position.
  */
-function _tryExtendMarkerStart( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
@@ -187,7 +187,7 @@ function _tryExtendMarkerStart( editor: Editor, position: Position, length: numb
 /**
  * Extend marker if change detected on marker's end position.
  */
-function _tryExtendMarkedEnd( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkedEnd( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {

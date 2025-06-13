@@ -7,7 +7,7 @@
  * @module image/imageresize/utils/getselectedimageeditornodes
  */
 
-import type { ViewElement, Element } from 'ckeditor5/src/engine.js';
+import type { ViewElement, ModelElement } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
@@ -40,7 +40,7 @@ export function getSelectedImageEditorNodes( editor: Editor ): ImageEditorNodes 
  * @internal;
  */
 type ImageEditorNodes = {
-	model: Element;
+	model: ModelElement;
 	view: ViewElement;
 	dom: HTMLElement;
 };

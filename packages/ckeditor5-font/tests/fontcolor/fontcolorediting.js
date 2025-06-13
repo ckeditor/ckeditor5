@@ -7,8 +7,8 @@ import { FontColorEditing } from './../../src/fontcolor/fontcolorediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontColorEditing', () => {
@@ -175,7 +175,7 @@ describe( 'FontColorEditing', () => {
 			];
 			tests.forEach( test => {
 				it( `should convert fontColor attribute: "${ test }" to proper style value.`, () => {
-					setModelData( doc, `<paragraph>fo<$text fontColor="${ test }">o b</$text>ar</paragraph>` );
+					_setModelData( doc, `<paragraph>fo<$text fontColor="${ test }">o b</$text>ar</paragraph>` );
 
 					expect( editor.getData() ).to.equal( `<p>fo<span style="color:${ test };">o b</span>ar</p>` );
 				} );
@@ -222,7 +222,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>f<span style="color:rgb(10,20,30);">o</span>o</p>' );
 		} );
 
@@ -243,7 +243,7 @@ describe( 'FontColorEditing', () => {
 					const data = `<p>f<span style="color: ${ test }">o</span>o</p>`;
 					editor.setData( data );
 
-					expect( getModelData( doc ) )
+					expect( _getModelData( doc ) )
 						.to.equal( `<paragraph>[]f<$text fontColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
 
 					expect( editor.getData() ).to.equal( `<p>f<span style="color:${ test.replace( / /g, '' ) };">o</span>o</p>` );
@@ -259,7 +259,7 @@ describe( 'FontColorEditing', () => {
 				'<p>b<span style="color:#fff;">a</span>z</p>'
 			);
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]f<$text fontColor="lightgreen">o</$text>o</paragraph>' +
 				'<paragraph>f<$text fontColor="hsl(200,100%,50%)">o</$text>o</paragraph>' +
 				'<paragraph>b<$text fontColor="rgba(1,2,3,.4)">a</$text>r</paragraph>' +
@@ -279,7 +279,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph><$text fontColor="#ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -292,7 +292,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph><$text fontColor="ACABAA">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -305,7 +305,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph><$text fontColor="#FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -318,7 +318,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph><$text fontColor="FAF">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -331,7 +331,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph><$text fontColor="lightgreen">[]foo</$text><$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -344,7 +344,7 @@ describe( 'FontColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]foo<$text fontColor="rgb(10,20,30)">bar</$text>o</paragraph>'
 			);
 			expect( editor.getData() ).to.equal(
@@ -359,7 +359,7 @@ describe( 'FontColorEditing', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( _getModelData( doc ) ).to.equal(
 					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
 				);
 				expect( editor.getData() ).to.equal(
@@ -372,7 +372,7 @@ describe( 'FontColorEditing', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( _getModelData( doc ) ).to.equal(
 					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
 				);
 				expect( editor.getData() ).to.equal(
@@ -385,7 +385,7 @@ describe( 'FontColorEditing', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( _getModelData( doc ) ).to.equal(
 					'<paragraph><$text fontColor="#00ffff">[]foo</$text></paragraph>'
 				);
 				expect( editor.getData() ).to.equal(
@@ -398,7 +398,7 @@ describe( 'FontColorEditing', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( _getModelData( doc ) ).to.equal(
 					'<paragraph><$text fontColor="#ff0000">[]foo</$text></paragraph>'
 				);
 				expect( editor.getData() ).to.equal(

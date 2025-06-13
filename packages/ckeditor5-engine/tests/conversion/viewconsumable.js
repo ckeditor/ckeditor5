@@ -8,9 +8,9 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewConsumable } from '../../src/conversion/viewconsumable.js';
-import { addBorderRules } from '../../src/view/styles/border.js';
-import { addMarginRules } from '../../src/view/styles/margin.js';
-import { addPaddingRules } from '../../src/view/styles/padding.js';
+import { addBorderStylesRules } from '../../src/view/styles/border.js';
+import { addMarginStylesRules } from '../../src/view/styles/margin.js';
+import { addPaddingStylesRules } from '../../src/view/styles/padding.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'ViewConsumable', () => {
@@ -20,9 +20,9 @@ describe( 'ViewConsumable', () => {
 		const stylesProcessor = new StylesProcessor();
 		viewDocument = new ViewDocument( stylesProcessor );
 
-		addBorderRules( stylesProcessor );
-		addMarginRules( stylesProcessor );
-		addPaddingRules( stylesProcessor );
+		addBorderStylesRules( stylesProcessor );
+		addMarginStylesRules( stylesProcessor );
+		addPaddingStylesRules( stylesProcessor );
 
 		viewConsumable = new ViewConsumable();
 		el = new ViewElement( viewDocument, 'p' );

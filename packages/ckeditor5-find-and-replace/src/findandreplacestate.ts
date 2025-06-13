@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplacestate
  */
 
-import type { Model, Item } from 'ckeditor5/src/engine.js';
+import type { Model, ModelItem } from 'ckeditor5/src/engine.js';
 import { ObservableMixin, Collection, type CollectionChangeEvent, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 import type { FindResultType } from './findandreplace.js';
 
@@ -183,7 +183,7 @@ export function sortSearchResultsByMarkerPositions( model: Model, results: Array
 /**
  * The callback function used to find matches in the document.
  */
-export type FindCallback = ( { item, text }: { item: Item; text: string } ) => FindCallbackResultObject | FindCallbackResult;
+export type FindCallback = ( { item, text }: { item: ModelItem; text: string } ) => FindCallbackResultObject | FindCallbackResult;
 
 /**
  * Represents the result of a find callback.

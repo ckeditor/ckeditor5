@@ -215,7 +215,7 @@ export default class AbbreviationEditing extends Plugin {
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'abbreviation',
 			// Callback function provides access to the model attribute value
-			// and the DowncastWriter.
+			// and the ViewDowncastWriter.
 			view: ( modelAttributeValue, conversionApi ) => {
 				const { writer } = conversionApi;
 

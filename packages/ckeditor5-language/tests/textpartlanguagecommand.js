@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TextPartLanguageCommand } from '../src/textpartlanguagecommand.js';
 
@@ -69,31 +69,31 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute #1', () => {
-			setData( model, '<p><$text language="fr:ltr">fo[o</$text></p><h1>b]ar</h1>' );
+			_setModelData( model, '<p><$text language="fr:ltr">fo[o</$text></p><h1>b]ar</h1>' );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		it( 'includes language when the first item that allows attribute has the attribute #2', () => {
-			setData( model, '<h1>fo[o</h1><p><$text language="fr:ltr">f</$text>o]o</p>' );
+			_setModelData( model, '<h1>fo[o</h1><p><$text language="fr:ltr">f</$text>o]o</p>' );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
 		} );
 
 		it( 'is false when the selection does not have the attribute', () => {
-			setData( model, '<p>[foo]bar</p>' );
+			_setModelData( model, '<p>[foo]bar</p>' );
 
 			expect( command.value ).to.be.false;
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute #1', () => {
-			setData( model, '<p>b[a<$text language="fr:ltr">r</$text></p><h1>fo]o</h1>' );
+			_setModelData( model, '<p>b[a<$text language="fr:ltr">r</$text></p><h1>fo]o</h1>' );
 
 			expect( command.value ).to.be.false;
 		} );
 
 		it( 'is false when the first item that allows attribute does not have the attribute #2', () => {
-			setData( model, '<h1>fo[o</h1><p>b<$text language="fr:ltr">r</$text>r]</p>' );
+			_setModelData( model, '<h1>fo[o</h1><p>b<$text language="fr:ltr">r</$text>r]</p>' );
 
 			expect( command.value ).to.be.false;
 		} );
@@ -109,14 +109,14 @@ describe( 'TextPartLanguageCommand', () => {
 				allowAttributes: 'language'
 			} );
 
-			setData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
+			_setModelData( model, '<p>[<img><caption>Some caption inside the image.</caption></img>]</p>' );
 
 			expect( command.value ).to.be.false;
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<p>[<img><caption><$text language="fr:ltr">Some caption inside the image.</$text></caption></img>]</p>'
 			);
 		} );
@@ -132,101 +132,101 @@ describe( 'TextPartLanguageCommand', () => {
 
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
-				setData( model, '<p>f[]oo</p>' );
+				_setModelData( model, '<p>f[]oo</p>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-				setData( model, '<x>fo[]o</x>' );
+				_setModelData( model, '<x>fo[]o</x>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
 
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
-				setData( model, '<p>[foo]</p>' );
+				_setModelData( model, '<p>[foo]</p>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
-				setData( model, '<x>[foo]</x>' );
+				_setModelData( model, '<x>[foo]</x>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
 
 		it( 'should be disabled in a readonly mode', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
-			setData( model, '<p>f[]oo</p>' );
+			_setModelData( model, '<p>f[]oo</p>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 
 	describe( 'execute()', () => {
 		it( 'should do nothing if the command is disabled', () => {
-			setData( model, '<p>fo[ob]ar</p>' );
+			_setModelData( model, '<p>fo[ob]ar</p>' );
 
 			command.isEnabled = false;
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
-			expect( getData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
+			expect( _getModelData( model ) ).to.equal( '<p>fo[ob]ar</p>' );
 		} );
 
 		it( 'should add attribute on selected nodes if the command value was not set', () => {
-			setData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
+			_setModelData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
 
 			expect( command.value ).to.be.false;
 
 			command.execute( { languageCode: 'fr', textDirection: 'ltr' } );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
-			expect( getData( model ) ).to.equal( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
+			expect( _getModelData( model ) ).to.equal( '<p>a[<$text language="fr:ltr">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was not set', () => {
-			setData( model, '<p>abc[<$text language="fr:ltr">foo]bar</$text>xyz</p>' );
+			_setModelData( model, '<p>abc[<$text language="fr:ltr">foo]bar</$text>xyz</p>' );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equal( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
+			expect( _getModelData( model ) ).to.equal( '<p>abc[foo]<$text language="fr:ltr">bar</$text>xyz</p>' );
 			expect( command.value ).to.be.false;
 		} );
 
 		it( 'should replace attribute on selected nodes if execute parameter was set', () => {
-			setData( model, '<p>abc<$text language="fr:ltr">foob[ar</$text>x]yz</p>' );
+			_setModelData( model, '<p>abc<$text language="fr:ltr">foob[ar</$text>x]yz</p>' );
 
 			expect( command.value ).to.equal( 'fr:ltr' );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
 			expect( command.value ).to.equal( 'ar:rtl' );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<p>abc<$text language="fr:ltr">foob</$text>[<$text language="ar:rtl">arx</$text>]yz</p>'
 			);
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
-			setData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
+			_setModelData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
 
 			command.execute( { languageCode: false } );
 
 			expect( command.value ).to.be.false;
-			expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to null', () => {
-			setData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
+			_setModelData( model, '<p>a[bc<$text language="fr:ltr">fo]obar</$text>xyz</p>' );
 
 			command.execute( { languageCode: null } );
 
 			expect( command.value ).to.be.false;
-			expect( getData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
+			expect( _getModelData( model ) ).to.equal( '<p>a[bcfo]<$text language="fr:ltr">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
-			setData( model, '<p>a[]bc<$text language="fr:ltr">foobar</$text>xyz</p><p></p>' );
+			_setModelData( model, '<p>a[]bc<$text language="fr:ltr">foobar</$text>xyz</p><p></p>' );
 
 			expect( command.value ).to.be.false;
 
@@ -242,7 +242,7 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
-			setData( model, '<p>a[]bc<$text language="fr:ltr">foobar</$text>xyz</p>' );
+			_setModelData( model, '<p>a[]bc<$text language="fr:ltr">foobar</$text>xyz</p>' );
 
 			command.execute( { languageCode: 'ar', textDirection: 'rtl' } );
 
@@ -264,7 +264,7 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
-			setData( model, '<p>abc<$text language="fr:ltr">foobar</$text>xyz</p><p>[]</p>' );
+			_setModelData( model, '<p>abc<$text language="fr:ltr">foobar</$text>xyz</p><p>[]</p>' );
 
 			expect( command.value ).to.be.false;
 
@@ -296,7 +296,7 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'should force language text direction if textDirection was set', () => {
-			setData( model, '<p>x[]y</p>' );
+			_setModelData( model, '<p>x[]y</p>' );
 
 			command.execute( { languageCode: 'ar', textDirection: 'ltr' } );
 
@@ -305,7 +305,7 @@ describe( 'TextPartLanguageCommand', () => {
 		} );
 
 		it( 'should detect language text direction if textDirection was not set', () => {
-			setData( model, '<p>x[]y</p>' );
+			_setModelData( model, '<p>x[]y</p>' );
 
 			command.execute( { languageCode: 'ar' } );
 
@@ -322,7 +322,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 			describe( 'should be fired when execute parameter was set to language', () => {
 				it( 'collapsed selection in non-empty parent', () => {
-					setData( model, '<p>x[]y</p>' );
+					_setModelData( model, '<p>x[]y</p>' );
 
 					model.document.on( 'change', spy );
 
@@ -332,7 +332,7 @@ describe( 'TextPartLanguageCommand', () => {
 				} );
 
 				it( 'non-collapsed selection', () => {
-					setData( model, '<p>[xy]</p>' );
+					_setModelData( model, '<p>[xy]</p>' );
 
 					model.document.on( 'change', spy );
 
@@ -342,7 +342,7 @@ describe( 'TextPartLanguageCommand', () => {
 				} );
 
 				it( 'in empty parent', () => {
-					setData( model, '<p>[]</p>' );
+					_setModelData( model, '<p>[]</p>' );
 
 					model.document.on( 'change', spy );
 
@@ -354,7 +354,7 @@ describe( 'TextPartLanguageCommand', () => {
 
 			describe( 'should not be fired when execute parameter was set to false', () => {
 				it( 'collapsed selection in non-empty parent', () => {
-					setData( model, '<p>x[]y</p>' );
+					_setModelData( model, '<p>x[]y</p>' );
 
 					model.document.on( 'change', spy );
 
@@ -364,7 +364,7 @@ describe( 'TextPartLanguageCommand', () => {
 				} );
 
 				it( 'non-collapsed selection', () => {
-					setData( model, '<p>[xy]</p>' );
+					_setModelData( model, '<p>[xy]</p>' );
 
 					model.document.on( 'change', spy );
 
@@ -374,7 +374,7 @@ describe( 'TextPartLanguageCommand', () => {
 				} );
 
 				it( 'in empty parent', () => {
-					setData( model, '<p>[]</p>' );
+					_setModelData( model, '<p>[]</p>' );
 
 					model.document.on( 'change', spy );
 

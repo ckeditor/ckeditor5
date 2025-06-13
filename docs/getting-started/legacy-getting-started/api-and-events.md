@@ -40,7 +40,7 @@ Check more {@link framework/how-tos#editors-api examples how to use the API} or 
 
 ## Using events
 
-The editor's instance can also be used to set up listeners for events. Every plugin in the editor publishes events that you can subscribe to and interact with. For example, the {@link module:engine/model/document~Document#event:change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data:
+The editor's instance can also be used to set up listeners for events. Every plugin in the editor publishes events that you can subscribe to and interact with. For example, the {@link module:engine/model/document~ModelDocument#event:change:data `Document#change:data`} event is fired when the document changes in such a way that is "visible" in the editor data:
 
 ```js
 editor.model.document.on( 'change:data', () => {

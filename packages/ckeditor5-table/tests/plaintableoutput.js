@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Table } from '../src/table.js';
 import { PlainTableOutput } from '../src/plaintableoutput.js';
 import { modelTable } from './_utils/utils.js';
@@ -52,7 +52,7 @@ describe( 'PlainTableOutput', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ 'foo' ]
 				] ) );
 
@@ -66,7 +66,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should create heading rows', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '1', '2' ],
 					[ '3', '4' ],
 					[ '5', '6' ]
@@ -86,7 +86,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should create heading columns', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '1', '2' ],
 					[ '3', '4' ],
 					[ '5', '6' ]
@@ -104,7 +104,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should create heading rows and columns', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '1', '2' ],
 					[ '3', '4' ],
 					[ '5', '6' ]
@@ -124,7 +124,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should work when heading rows number is bigger than number of rows', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '1', '2' ],
 					[ '3', '4' ]
 				], { headingRows: 3 } ) );
@@ -140,7 +140,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should create caption element', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>1</paragraph></tableCell>' +
@@ -492,7 +492,7 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			function createEmptyTable() {
-				setModelData(
+				_setModelData(
 					model,
 					'<table>' +
 						'<tableRow>' +

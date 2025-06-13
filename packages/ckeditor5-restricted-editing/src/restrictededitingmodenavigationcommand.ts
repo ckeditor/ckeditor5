@@ -7,7 +7,7 @@
  * @module restricted-editing/restrictededitingmodenavigationcommand
  */
 
-import type { Model, Range } from 'ckeditor5/src/engine.js';
+import type { Model, ModelRange } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 /**
@@ -70,7 +70,7 @@ export class RestrictedEditingModeNavigationCommand extends Command {
 /**
  * Returns the range of the exception marker closest to the last position of the model selection.
  */
-function getNearestExceptionRange( model: Model, direction: RestrictedEditingModeNavigationDirection ): Range | undefined {
+function getNearestExceptionRange( model: Model, direction: RestrictedEditingModeNavigationDirection ): ModelRange | undefined {
 	const selection = model.document.selection;
 	const selectionPosition = selection.getFirstPosition()!;
 	const markerRanges = [];

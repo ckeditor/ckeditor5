@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop"). This is an operation,
@@ -26,7 +26,7 @@ export class NoOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return null;
 	}
 

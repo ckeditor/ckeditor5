@@ -8,7 +8,7 @@
  */
 
 import {
-	DomConverter,
+	ViewDomConverter,
 	ViewDocument,
 	type StylesProcessor,
 	type ViewDocumentFragment
@@ -82,13 +82,13 @@ export interface PasteOfficeHtmlParseResult {
 }
 
 /**
- * Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
+ * Transforms native `Document` object into {@link module:engine/view/documentfragment~ViewDocumentFragment}. Comments are skipped.
  *
  * @param htmlDocument Native `Document` object to be transformed.
  */
 function documentToView( htmlDocument: Document, stylesProcessor: StylesProcessor ) {
 	const viewDocument = new ViewDocument( stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+	const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 

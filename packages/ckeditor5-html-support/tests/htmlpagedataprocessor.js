@@ -6,7 +6,7 @@
 import { HtmlPageDataProcessor } from '../src/htmlpagedataprocessor.js';
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { StylesProcessor, ViewDocument, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
-import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'HtmlPageDataProcessor', () => {
 	let dataProcessor, viewDocument;
@@ -34,7 +34,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		it( 'should convert HTML to DocumentFragment with single text node', () => {
 			const fragment = dataProcessor.toView( 'foo bar' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo bar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo bar' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageDocType' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageXmlDeclaration' ) ).to.be.undefined;
@@ -43,7 +43,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
 			const fragment = dataProcessor.toView( '<p>foo</p><p>bar</p>' );
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageDocType' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageXmlDeclaration' ) ).to.be.undefined;
@@ -52,7 +52,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		it( 'should not add any additional nodes', () => {
 			const fragment = dataProcessor.toView( 'foo <b>bar</b> text' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo <b>bar</b> text' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo <b>bar</b> text' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageDocType' ) ).to.be.undefined;
 			expect( fragment.getCustomProperty( '$fullPageXmlDeclaration' ) ).to.be.undefined;
@@ -66,7 +66,7 @@ describe( 'HtmlPageDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( 'foobar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foobar' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.equal(
 				'<html><head><title>Testing full page</title></head><body style="background: red"></body></html>'
 			);
@@ -83,7 +83,7 @@ describe( 'HtmlPageDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( 'foobar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foobar' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.equal(
 				'<html><head><title>Testing full page</title></head><body style="background: red"></body></html>'
 			);
@@ -100,7 +100,7 @@ describe( 'HtmlPageDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( 'foobar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foobar' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.equal(
 				'<html><head><title>Testing full page</title></head><body style="background: red"></body></html>'
 			);
@@ -118,7 +118,7 @@ describe( 'HtmlPageDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( 'foobar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foobar' );
 			expect( fragment.getCustomProperty( '$fullPageDocument' ) ).to.equal(
 				'<html><head><title>Testing full page</title></head><body style="background: red"></body></html>'
 			);
@@ -136,19 +136,19 @@ describe( 'HtmlPageDataProcessor', () => {
 
 		it( 'should return text if document fragment with single text node is passed', () => {
 			const fragment = new ViewDocumentFragment( viewDocument );
-			fragment._appendChild( parse( 'foo bar' ) );
+			fragment._appendChild( _parseView( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should return multiple child nodes', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should return full page HTML if document fragment had custom property', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			fragment._setCustomProperty(
 				'$fullPageDocument',
@@ -166,7 +166,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		} );
 
 		it( 'should return full page HTML with doctype if document fragment had custom property', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			fragment._setCustomProperty(
 				'$fullPageDocument',
@@ -189,7 +189,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		} );
 
 		it( 'should return full page HTML with xml declaration if document fragment had custom property', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			fragment._setCustomProperty(
 				'$fullPageDocument',
@@ -212,7 +212,7 @@ describe( 'HtmlPageDataProcessor', () => {
 		} );
 
 		it( 'should return full page HTML with xml declaration and doctype if document fragment had custom property', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			fragment._setCustomProperty(
 				'$fullPageDocument',

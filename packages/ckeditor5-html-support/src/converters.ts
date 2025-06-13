@@ -9,18 +9,18 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type {
-	AttributeElement,
+	ViewAttributeElement,
 	DowncastAttributeEvent,
 	DowncastConversionApi,
 	DowncastDispatcher,
-	DowncastWriter,
-	Element,
-	ElementCreatorFunction,
+	ViewDowncastWriter,
+	ModelElement,
+	DowncastElementCreatorFunction,
 	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
-	Item
+	ModelItem
 } from 'ckeditor5/src/engine.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import {
@@ -46,7 +46,7 @@ import type {
  * @internal
 */
 export function viewToModelObjectConverter( { model: modelName }: HtmlSupportDataSchemaDefinition ) {
-	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): Element => {
+	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): ModelElement => {
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
 			htmlContent: viewElement.getCustomProperty( '$rawContent' )
@@ -63,10 +63,10 @@ export function viewToModelObjectConverter( { model: modelName }: HtmlSupportDat
 export function toObjectWidgetConverter(
 	editor: Editor,
 	{ view: viewName, isInline }: HtmlSupportDataSchemaInlineElementDefinition
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	const t = editor.t;
 
-	return ( modelElement: Element, { writer }: DowncastConversionApi ) => {
+	return ( modelElement: ModelElement, { writer }: DowncastConversionApi ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName!, modelElement, writer );
@@ -97,7 +97,7 @@ export function toObjectWidgetConverter(
 *
 * @internal
 */
-export function createObjectView( viewName: string, modelElement: Element, writer: DowncastWriter ): ViewElement {
+export function createObjectView( viewName: string, modelElement: ModelElement, writer: ViewDowncastWriter ): ViewElement {
 	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) as string );
 	} );
@@ -163,7 +163,7 @@ export function viewToAttributeInlineConverter(
 		}, { priority: 'low' } );
 	};
 
-	function setAttributeOnItem( node: Item, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
+	function setAttributeOnItem( node: ModelItem, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
 		if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
 			// Node's children are converted recursively, so node can already include model attribute.
 			// We want to extend it, not replace.
@@ -183,7 +183,7 @@ export function viewToAttributeInlineConverter(
 export function emptyInlineModelElementToViewConverter(
 	{ model: attributeKey, view: viewName }: HtmlSupportDataSchemaInlineElementDefinition,
 	asWidget?: boolean
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	return ( item, { writer, consumable } ) => {
 		if ( !item.hasAttribute( attributeKey ) ) {
 			return null;
@@ -208,7 +208,7 @@ export function emptyInlineModelElementToViewConverter(
  * @internal
 */
 export function attributeToViewInlineConverter( { priority, view: viewName }: HtmlSupportDataSchemaInlineElementDefinition ) {
-	return ( attributeValue: any, conversionApi: DowncastConversionApi ): AttributeElement | undefined => {
+	return ( attributeValue: any, conversionApi: DowncastConversionApi ): ViewAttributeElement | undefined => {
 		if ( !attributeValue ) {
 			return;
 		}
@@ -277,7 +277,7 @@ export function modelToViewBlockAttributeConverter( { view: viewName, model: mod
 
 				const { attributeOldValue, attributeNewValue } = data;
 				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 
 				updateViewAttributes(
 					viewWriter,

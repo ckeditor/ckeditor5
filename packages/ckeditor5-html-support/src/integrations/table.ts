@@ -10,7 +10,7 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
@@ -115,7 +115,7 @@ function createHeadingRowsPostFixer( model: Model, tableUtils: TableUtils ): Mod
 				continue;
 			}
 
-			const table = change.range.start.nodeAfter as Element;
+			const table = change.range.start.nodeAfter as ModelElement;
 			const hasTHeadAttributes = table.getAttribute( 'htmlTheadAttributes' );
 			const hasTBodyAttributes = table.getAttribute( 'htmlTbodyAttributes' );
 
@@ -214,7 +214,7 @@ function modelToViewTableAttributeConverter() {
 					return;
 				}
 
-				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+				const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
 				if ( !viewElement ) {

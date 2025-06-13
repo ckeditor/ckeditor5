@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element
+	ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
@@ -89,7 +89,7 @@ function modelToViewHorizontalLineAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const containerElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+			const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 			const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'hr' );
 
 			if ( viewElement ) {

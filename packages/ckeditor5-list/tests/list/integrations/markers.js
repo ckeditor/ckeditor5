@@ -10,7 +10,7 @@ import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imagebloc
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { stubUid } from '../_utils/uid.js';
 
@@ -61,7 +61,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 	describe( 'list item with a single paragraph', () => {
 		beforeEach( () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>'
 			);
 		} );
@@ -184,7 +184,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 	describe( 'list item with multiple paragraphs', () => {
 		beforeEach( () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">B</paragraph>'
 			);

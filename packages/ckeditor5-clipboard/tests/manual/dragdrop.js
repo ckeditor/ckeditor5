@@ -23,7 +23,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservi
 import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -122,7 +122,7 @@ class HCardEditing extends Plugin {
 			}
 
 			const contact = JSON.parse( contactData );
-			const writer = new UpcastWriter( viewDocument );
+			const writer = new ViewUpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
 			writer.appendChild(

@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TextPartLanguageEditing } from '../src/textpartlanguageediting.js';
 import { TextPartLanguageUI } from '../src/textpartlanguageui.js';
@@ -32,7 +32,7 @@ describe( 'TextPartLanguageUI', () => {
 				command = editor.commands.get( 'textPartLanguage' );
 
 				// Set data so the commands will be enabled.
-				setData( editor.model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 			} );
 	} );
 
@@ -175,7 +175,7 @@ describe( 'TextPartLanguageUI', () => {
 
 					const listView = dropdownView.listView;
 
-					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+					_setModelData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
 
 					expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
 						false,
@@ -274,7 +274,7 @@ describe( 'TextPartLanguageUI', () => {
 
 					const listView = menuView.panelView.children.first;
 
-					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+					_setModelData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
 
 					expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
 						false,
@@ -288,7 +288,7 @@ describe( 'TextPartLanguageUI', () => {
 					// Trigger lazy init.
 					menuView.isOpen = true;
 
-					setData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
+					_setModelData( editor.model, '<paragraph>[<$text language="fr:ltr">te]xt</$text></paragraph>' );
 
 					const listView = menuView.panelView.children.first;
 					const attributes = getListViewItems( listView )

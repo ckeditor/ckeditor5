@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { LiveRange, LivePosition } from 'ckeditor5/src/engine.js';
+import { ModelLiveRange, ModelLivePosition } from 'ckeditor5/src/engine.js';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { Undo, type UndoCommand } from 'ckeditor5/src/undo.js';
@@ -56,7 +56,7 @@ export class AutoMediaEmbed extends Plugin {
 	 * The position where the `<media>` element will be inserted after the timeout,
 	 * determined each time the new content is pasted into the document.
 	 */
-	private _positionToInsert: LivePosition | null;
+	private _positionToInsert: ModelLivePosition | null;
 
 	/**
 	 * @inheritDoc
@@ -82,10 +82,10 @@ export class AutoMediaEmbed extends Plugin {
 		this.listenTo( clipboardPipeline, 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange()!;
 
-			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
+			const leftLivePosition = ModelLivePosition.fromPosition( firstRange.start );
 			leftLivePosition.stickiness = 'toPrevious';
 
-			const rightLivePosition = LivePosition.fromPosition( firstRange.end );
+			const rightLivePosition = ModelLivePosition.fromPosition( firstRange.end );
 			rightLivePosition.stickiness = 'toNext';
 
 			modelDocument.once( 'change:data', () => {
@@ -115,11 +115,11 @@ export class AutoMediaEmbed extends Plugin {
 	 * @param leftPosition Left position of the selection.
 	 * @param rightPosition Right position of the selection.
 	 */
-	private _embedMediaBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
+	private _embedMediaBetweenPositions( leftPosition: ModelLivePosition, rightPosition: ModelLivePosition ): void {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
-		// TODO: Use marker instead of LiveRange & LivePositions.
-		const urlRange = new LiveRange( leftPosition, rightPosition );
+		// TODO: Use marker instead of ModelLiveRange & LivePositions.
+		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 
 		let url = '';
@@ -156,7 +156,7 @@ export class AutoMediaEmbed extends Plugin {
 		}
 
 		// Position won't be available in the `setTimeout` function so let's clone it.
-		this._positionToInsert = LivePosition.fromPosition( leftPosition );
+		this._positionToInsert = ModelLivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
@@ -166,7 +166,7 @@ export class AutoMediaEmbed extends Plugin {
 				writer.remove( urlRange );
 				urlRange.detach();
 
-				let insertionPosition: LivePosition | null = null;
+				let insertionPosition: ModelLivePosition | null = null;
 
 				// Check if position where the media element should be inserted is still valid.
 				// Otherwise leave it as undefined to use document.selection - default behavior of model.insertContent().

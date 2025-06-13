@@ -10,11 +10,11 @@
 import { isWidget } from '../utils.js';
 
 import type {
-	DocumentSelection,
-	DomConverter,
-	Element,
-	Schema,
-	Selection,
+	ModelDocumentSelection,
+	ViewDomConverter,
+	ModelElement,
+	ModelSchema,
+	ModelSelection,
 	ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -29,7 +29,7 @@ export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 /**
  * Checks if an element is a widget that qualifies to get the widget type around UI.
  */
-export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: Element, schema: Schema ): boolean {
+export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: ModelElement, schema: ModelSchema ): boolean {
 	return !!viewElement && isWidget( viewElement ) && !schema.isInline( modelElement );
 }
 
@@ -59,7 +59,7 @@ export function getTypeAroundButtonPosition( domElement: HTMLElement ): 'before'
  *
  * @internal
  */
-export function getClosestWidgetViewElement( domElement: HTMLElement, domConverter: DomConverter ): ViewElement {
+export function getClosestWidgetViewElement( domElement: HTMLElement, domConverter: ViewDomConverter ): ViewElement {
 	const widgetDomElement = domElement.closest( '.ck-widget' );
 
 	return domConverter.mapDomToView( widgetDomElement as any ) as ViewElement;
@@ -73,6 +73,6 @@ export function getClosestWidgetViewElement( domElement: HTMLElement, domConvert
  * @internal
  * @returns The position of the fake caret or `null` when none is present.
  */
-export function getTypeAroundFakeCaretPosition( selection: Selection | DocumentSelection ): 'before' | 'after' | null {
+export function getTypeAroundFakeCaretPosition( selection: ModelSelection | ModelDocumentSelection ): 'before' | 'after' | null {
 	return selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) as any;
 }

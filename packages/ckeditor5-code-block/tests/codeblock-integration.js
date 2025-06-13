@@ -12,7 +12,7 @@ import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinl
 import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 import { ListPropertiesEditing } from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { CodeBlockUI } from '../src/codeblockui.js';
 import { CodeBlockEditing } from '../src/codeblockediting.js';
@@ -152,20 +152,20 @@ describe( 'CodeBlock - integration', () => {
 			expect( cSharpButton.label ).to.equal( 'C#' );
 
 			// Initial state.
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			// Select a language from dropdown.
 			cSharpButton.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
 
 			// Click on the `codeBlock` button next to the dropdown. When selection is inside the `<codeBlock>` element,
 			// the entire element should be replaced with the paragraph.
 			codeBlock.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
 			codeBlock.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
 
 			dropdown.element.remove();
 		} );
@@ -196,7 +196,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should allow all list attributes in the schema', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
@@ -209,7 +209,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should disallow attributes that are not registered as list attributes', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
@@ -238,7 +238,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should disallow all attributes starting with list* in the schema', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 

@@ -9,7 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
 import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'SelectAllCommand', () => {
 	let editor, model, command;
@@ -50,49 +50,53 @@ describe( 'SelectAllCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should select all (collapsed selection in a block with text)', () => {
-			setData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
 		} );
 
 		it( 'should select all (collapsed selection in a content with an object)', () => {
-			setData( model, '<paragraph>fo[]o</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>' );
+			_setModelData( model, '<paragraph>fo[]o</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]' );
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]'
+			);
 		} );
 
 		it( 'should select all (selection on an object)', () => {
-			setData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo.png"><caption></caption></imageBlock>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo.png"><caption></caption></imageBlock>]' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]' );
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]'
+			);
 		} );
 
 		it( 'should select all (collapsed selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[]ar</caption></imageBlock>' );
+			_setModelData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[]ar</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
 		it( 'should select all (selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[ar]</caption></imageBlock>' );
+			_setModelData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[ar]</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
 		it( 'should select all (selection within limit element)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -111,7 +115,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -130,7 +134,7 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all in the closest nested editable (nested editable inside another nested editable)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -144,7 +148,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -157,16 +161,16 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all in the parent select-all-limit element (the entire editable is selected)', () => {
-			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
+			_setModelData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption>bar</caption></imageBlock>]' );
 		} );
 
 		it( 'should select all in the parent sellect-all-limit element (consecutive execute() on a nested editable)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -181,7 +185,7 @@ describe( 'SelectAllCommand', () => {
 			editor.execute( 'selectAll' );
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -194,7 +198,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -207,7 +211,7 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should not change the selection (the entire editor is selected)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
@@ -221,7 +225,7 @@ describe( 'SelectAllCommand', () => {
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo</paragraph>' +
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

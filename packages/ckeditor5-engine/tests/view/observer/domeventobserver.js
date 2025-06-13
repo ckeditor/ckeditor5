@@ -5,8 +5,8 @@
 
 import { DomEventObserver } from '../../../src/view/observer/domeventobserver.js';
 import { Observer } from '../../../src/view/observer/observer.js';
-import { View } from '../../../src/view/view.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { EditingView } from '../../../src/view/view.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -54,7 +54,7 @@ describe( 'DomEventObserver', () => {
 	let view, viewDocument;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 	} );
 
@@ -211,7 +211,7 @@ describe( 'DomEventObserver', () => {
 		let domRoot, domEvent, evtSpy, uiElement;
 
 		function createUIElement( name ) {
-			const element = new UIElement( viewDocument, name );
+			const element = new ViewUIElement( viewDocument, name );
 
 			element.render = function( domDocument ) {
 				const root = this.toDomElement( domDocument );

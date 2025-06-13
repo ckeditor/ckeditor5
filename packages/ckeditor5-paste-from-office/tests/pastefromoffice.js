@@ -15,9 +15,9 @@ import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 import { CodeBlockUI } from '@ckeditor/ckeditor5-code-block/src/codeblockui.js';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { priorities } from '@ckeditor/ckeditor5-utils';
-import { DomConverter } from '@ckeditor/ckeditor5-engine';
+import { ViewDomConverter } from '@ckeditor/ckeditor5-engine';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
@@ -70,7 +70,7 @@ describe( 'PasteFromOffice', () => {
 		clipboardPipeline.on( 'inputTransformation', ( evt, data ) => {
 			const domParser = new DOMParser();
 			const htmlDocument = domParser.parseFromString( '<p>Existing data</p>', 'text/html' );
-			const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 			const fragment = htmlDocument.createDocumentFragment();
 
 			data._parsedData = {
@@ -160,7 +160,7 @@ describe( 'PasteFromOffice', () => {
 			} );
 
 			it( 'should process data for codeBlock', () => {
-				setModelData( editor.model, '<codeBlock language="plaintext">[]</codeBlock>' );
+				_setModelData( editor.model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
 				const data = setUpData( '<p id="docs-internal-guid-12345678-1234-1234-1234-1234567890ab"></p>' );
 				const getDataSpy = sinon.spy( data.dataTransfer, 'getData' );

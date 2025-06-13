@@ -23,7 +23,7 @@ import { type ModelDocumentFragment } from '../model/documentfragment.js';
 import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
 
 /**
- * Maps elements, positions and markers between the {@link module:engine/view/document~Document view} and
+ * Maps elements, positions and markers between the {@link module:engine/view/document~ViewDocument view} and
  * the {@link module:engine/model/model model}.
  *
  * The instance of the Mapper used for the editing pipeline is available in
@@ -61,7 +61,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Model marker name to view elements mapping.
 	 *
-	 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~Element view elements}.
+	 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~ViewElement view elements}.
 	 * One marker (name) can be mapped to multiple elements.
 	 */
 	private _markerNameToElements = new Map<string, Set<ViewElement>>();
@@ -150,7 +150,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Unbinds the given {@link module:engine/view/element~Element view element} from the map.
+	 * Unbinds the given {@link module:engine/view/element~ViewElement view element} from the map.
 	 *
 	 * **Note:** view-to-model binding will be removed, if it existed. However, corresponding model-to-view binding
 	 * will be removed only if model element is still bound to the passed `viewElement`.
@@ -192,7 +192,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Unbinds the given {@link module:engine/model/element~Element model element} from the map.
+	 * Unbinds the given {@link module:engine/model/element~ModelElement model element} from the map.
 	 *
 	 * **Note:** the model-to-view binding will be removed, if it existed. However, the corresponding view-to-model binding
 	 * will be removed only if the view element is still bound to the passed `modelElement`.
@@ -218,7 +218,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Binds the given marker name with the given {@link module:engine/view/element~Element view element}. The element
+	 * Binds the given marker name with the given {@link module:engine/view/element~ViewElement view element}. The element
 	 * will be added to the current set of elements bound with the given marker name.
 	 *
 	 * @param element Element to bind.
@@ -306,7 +306,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Gets the corresponding model element.
 	 *
-	 * **Note:** {@link module:engine/view/uielement~UIElement} does not have corresponding element in model.
+	 * **Note:** {@link module:engine/view/uielement~ViewUIElement} does not have corresponding element in model.
 	 *
 	 * @label ELEMENT
 	 * @param viewElement View element.
@@ -557,11 +557,11 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * The length is calculated as follows:
 	 * * if a {@link #registerViewToModelLength length mapping callback} is provided for the given `viewNode`, it is used to
 	 * evaluate the model length (`viewNode` is used as first and only parameter passed to the callback),
-	 * * length of a {@link module:engine/view/text~Text text node} is equal to the length of its
-	 * {@link module:engine/view/text~Text#data data},
-	 * * length of a {@link module:engine/view/uielement~UIElement ui element} is equal to 0,
-	 * * length of a mapped {@link module:engine/view/element~Element element} is equal to 1,
-	 * * length of a non-mapped {@link module:engine/view/element~Element element} is equal to the length of its children.
+	 * * length of a {@link module:engine/view/text~ViewText text node} is equal to the length of its
+	 * {@link module:engine/view/text~ViewText#data data},
+	 * * length of a {@link module:engine/view/uielement~ViewUIElement ui element} is equal to 0,
+	 * * length of a mapped {@link module:engine/view/element~ViewElement element} is equal to 1,
+	 * * length of a non-mapped {@link module:engine/view/element~ViewElement element} is equal to the length of its children.
 	 *
 	 * Examples:
 	 *
@@ -1231,8 +1231,8 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 
 /**
  * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
- * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to
- * calculate the {@link module:engine/view/position~Position view position}. The calculated view position should be added as
+ * mapping. Callbacks added to this event take {@link module:engine/model/position~ModelPosition model position} and are expected to
+ * calculate the {@link module:engine/view/position~ViewPosition view position}. The calculated view position should be added as
  * a `viewPosition` value in the `data` object that is passed as one of parameters to the event callback.
  *
  * ```ts
@@ -1303,7 +1303,7 @@ export type MapperModelToViewPositionEvent = {
 
 /**
  * Data pipeline object that can store and pass data between callbacks. The callback should add
- * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
+ * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~ViewPosition view position}.
  */
 export type MapperModelToViewPositionEventData = {
 
@@ -1319,7 +1319,7 @@ export type MapperModelToViewPositionEventData = {
 
 	/**
 	 * The callback should add the `viewPosition` value to that object with calculated the
-	 * {@link module:engine/view/position~Position view position}.
+	 * {@link module:engine/view/position~ViewPosition view position}.
 	 */
 	viewPosition?: ViewPosition;
 
@@ -1368,7 +1368,7 @@ export type MapperViewToModelPositionEvent = {
 
 /**
  * Data pipeline object that can store and pass data between callbacks. The callback should add
- * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
+ * `modelPosition` value to that object with calculated {@link module:engine/model/position~ModelPosition model position}.
  */
 export type MapperViewToModelPositionEventData = {
 
@@ -1379,7 +1379,7 @@ export type MapperViewToModelPositionEventData = {
 
 	/**
 	 * The callback should add `modelPosition` value to that object with calculated
-	 * {@link module:engine/model/position~Position model position}.
+	 * {@link module:engine/model/position~ModelPosition model position}.
 	 */
 	modelPosition?: ModelPosition;
 

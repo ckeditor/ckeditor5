@@ -6,9 +6,9 @@
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'FocusObserver', () => {
@@ -17,7 +17,7 @@ describe( 'FocusObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( FocusObserver );
 	} );
@@ -299,7 +299,7 @@ describe( 'FocusObserver', () => {
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
-			view = new View( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
@@ -316,7 +316,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( view, '<div contenteditable="true">foo bar</div>' );
+			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
 			view.forceRender();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
@@ -338,7 +338,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( view, '<div contenteditable="true">foo bar</div>' );
+			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
 			view.forceRender();
 			const domEditable = domRoot.childNodes[ 0 ];
 

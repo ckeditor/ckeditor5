@@ -10,7 +10,7 @@ import { HeadingUI } from '../src/headingui.js';
 import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HeadingUI', () => {
@@ -53,7 +53,7 @@ describe( 'HeadingUI', () => {
 				editor = newEditor;
 
 				// Set data so the commands will be enabled.
-				setData( editor.model, '<paragraph>f{}oo</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f{}oo</paragraph>' );
 			} );
 	} );
 
@@ -324,7 +324,7 @@ describe( 'HeadingUI', () => {
 
 					const listView = dropdown.listView;
 
-					setData( editor.model, '<heading2>f{}oo</heading2>' );
+					_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
 					expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [
 						false,

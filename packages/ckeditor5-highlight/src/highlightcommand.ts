@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
+import type { ModelTreeWalkerValue } from 'ckeditor5/src/engine.js';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -65,7 +65,7 @@ export class HighlightCommand extends Command {
 				// When selection is inside text with `highlight` attribute.
 				if ( selection.hasAttribute( 'highlight' ) ) {
 					// Find the full highlighted range.
-					const isSameHighlight = ( value: TreeWalkerValue ) => {
+					const isSameHighlight = ( value: ModelTreeWalkerValue ) => {
 						return value.item.hasAttribute( 'highlight' ) && value.item.getAttribute( 'highlight' ) === this.value;
 					};
 

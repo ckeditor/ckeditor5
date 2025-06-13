@@ -7,14 +7,21 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
-import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils.js';
+import type { StylesProcessor, StylePropertyDescriptor, Styles, StylesNormalizer, StylesReducer } from '../stylesmap.js';
+import {
+	getShorthandStylesValues,
+	isAttachmentStyleValue,
+	isColorStyleValue,
+	isPositionStyleValue,
+	isRepeatStyleValue,
+	isURLStyleValue
+} from './utils.js';
 
 /**
  * Adds a background CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addBackgroundRules );
+ * editor.data.addStyleProcessorRules( addBackgroundStylesRules );
  * ```
  *
  * The normalized value is stored as:
@@ -34,7 +41,7 @@ import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL 
  * **Note**: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
  * `'background-color'` value.
  */
-export function addBackgroundRules( stylesProcessor: StylesProcessor ): void {
+export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'background', getBackgroundNormalizer() );
 	stylesProcessor.setNormalizer( 'background-color', getBackgroundColorNormalizer() );
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );
@@ -42,7 +49,7 @@ export function addBackgroundRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setStyleRelation( 'background', [ 'background-color' ] );
 }
 
-function getBackgroundNormalizer(): Normalizer {
+function getBackgroundNormalizer(): StylesNormalizer {
 	return value => {
 		const background: {
 			repeat?: Array<string>;
@@ -52,22 +59,22 @@ function getBackgroundNormalizer(): Normalizer {
 			image?: string;
 		} = {};
 
-		const parts = getShorthandValues( value );
+		const parts = getShorthandStylesValues( value );
 
 		for ( const part of parts ) {
-			if ( isRepeat( part ) ) {
+			if ( isRepeatStyleValue( part ) ) {
 				background.repeat = background.repeat || [];
 
 				background.repeat.push( part );
-			} else if ( isPosition( part ) ) {
+			} else if ( isPositionStyleValue( part ) ) {
 				background.position = background.position || [];
 
 				background.position.push( part );
-			} else if ( isAttachment( part ) ) {
+			} else if ( isAttachmentStyleValue( part ) ) {
 				background.attachment = part;
-			} else if ( isColor( part ) ) {
+			} else if ( isColorStyleValue( part ) ) {
 				background.color = part;
-			} else if ( isURL( part ) ) {
+			} else if ( isURLStyleValue( part ) ) {
 				background.image = part;
 			}
 		}
@@ -79,13 +86,13 @@ function getBackgroundNormalizer(): Normalizer {
 	};
 }
 
-function getBackgroundColorNormalizer(): Normalizer {
+function getBackgroundColorNormalizer(): StylesNormalizer {
 	return value => ( { path: 'background.color', value } );
 }
 
-function getBackgroundReducer(): Reducer {
+function getBackgroundReducer(): StylesReducer {
 	return value => {
-		const ret: Array<PropertyDescriptor> = [];
+		const ret: Array<StylePropertyDescriptor> = [];
 
 		ret.push( [ 'background-color', ( value as Styles ).color as string ] );
 

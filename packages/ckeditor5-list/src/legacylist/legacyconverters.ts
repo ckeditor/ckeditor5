@@ -8,18 +8,18 @@
  */
 
 import {
-	TreeWalker,
+	ModelTreeWalker,
 	type DowncastAttributeEvent,
 	type DowncastConversionApi,
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
-	type Element,
+	type ModelElement,
 	type MapperModelToViewPositionEvent,
 	type MapperViewToModelPositionEvent,
 	type Model,
 	type ModelInsertContentEvent,
-	type Node,
-	type Position,
+	type ModelNode,
+	type ModelPosition,
 	type UpcastConversionApi,
 	type UpcastElementEvent,
 	type EditingView,
@@ -28,7 +28,7 @@ import {
 	type ViewNode,
 	type ViewPosition,
 	type ViewTypeCheckable,
-	type Writer
+	type ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -51,7 +51,7 @@ import {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  */
-export function modelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
+export function modelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -138,7 +138,7 @@ export function modelViewRemove( model: Model ): GetCallback<DowncastRemoveEvent
  * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
-export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewChangeType: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
@@ -165,7 +165,7 @@ export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> =
  * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
-export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	conversionApi.consumable.consume( data.item, evt.name );
 
 	const viewItem = conversionApi.mapper.toViewElement( data.item )!;
@@ -185,7 +185,7 @@ export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<E
  * @param model Model instance.
  * @returns Returns a conversion callback.
  */
-export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttributeEvent<Element>> {
+export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
 			return;
@@ -253,7 +253,7 @@ export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttri
  * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  */
-export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
@@ -610,9 +610,9 @@ export function viewToModelPosition( model: Model ): GetCallback<MapperViewToMod
  * @param writer The writer to do changes with.
  * @returns `true` if any change has been applied, `false` otherwise.
  */
-export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
+export function modelChangePostFixer( model: Model, writer: ModelWriter ): boolean {
 	const changes = model.document.differ.getChanges();
-	const itemToListHead = new Map<Element, Element>();
+	const itemToListHead = new Map<ModelElement, ModelElement>();
 
 	let applied = false;
 
@@ -622,7 +622,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		} else if ( entry.type == 'insert' && entry.name != 'listItem' ) {
 			if ( entry.name != '$text' ) {
 				// In case of renamed element.
-				const item = entry.position.nodeAfter as Element;
+				const item = entry.position.nodeAfter as ModelElement;
 
 				if ( item.hasAttribute( 'listIndent' ) ) {
 					writer.removeAttribute( 'listIndent', item );
@@ -678,7 +678,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 
 	return applied;
 
-	function _addListToFix( position: Position ) {
+	function _addListToFix( position: ModelPosition ) {
 		const previousNode = position.nodeBefore;
 
 		if ( !previousNode || !previousNode.is( 'element', 'listItem' ) ) {
@@ -711,7 +711,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		}
 	}
 
-	function _fixListIndents( item: Node | null ) {
+	function _fixListIndents( item: ModelNode | null ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
@@ -744,7 +744,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		}
 	}
 
-	function _fixListTypes( item: Node | null ) {
+	function _fixListTypes( item: ModelNode | null ) {
 		let typesStack: Array<string> = [];
 		let prev = null;
 
@@ -861,7 +861,7 @@ export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = funct
  * @returns Position on which next elements should be inserted after children conversion.
  */
 function viewToModelListItemChildrenConverter(
-	listItemModel: Element,
+	listItemModel: ModelElement,
 	viewChildren: Iterable<ViewNode>,
 	conversionApi: UpcastConversionApi
 ) {
@@ -933,8 +933,8 @@ function viewToModelListItemChildrenConverter(
 /**
  * Helper function that seeks for a next list item starting from given `startPosition`.
  */
-function findNextListItem( startPosition: Position ) {
-	const treeWalker = new TreeWalker( { startPosition } );
+function findNextListItem( startPosition: ModelPosition ) {
+	const treeWalker = new ModelTreeWalker( { startPosition } );
 
 	let value;
 
@@ -951,7 +951,7 @@ function findNextListItem( startPosition: Position ) {
  */
 function hoistNestedLists(
 	nextIndent: number,
-	modelRemoveStartPosition: Position,
+	modelRemoveStartPosition: ModelPosition,
 	viewRemoveStartPosition: ViewPosition,
 	viewRemovedItem: ViewElement,
 	conversionApi: DowncastConversionApi,

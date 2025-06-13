@@ -16,7 +16,7 @@ import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
@@ -277,7 +277,7 @@ describe( 'ColorSelectorView', () => {
 
 		it( 'should call updateDocumentColors in colorGridsFragmentView', () => {
 			const spy = sinon.spy( colorSelectorView.colorGridsFragmentView, 'updateDocumentColors' );
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -299,7 +299,7 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should unset selected color', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -318,7 +318,7 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should has colors', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +

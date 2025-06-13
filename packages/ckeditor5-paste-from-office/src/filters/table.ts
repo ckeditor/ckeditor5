@@ -8,7 +8,7 @@
  */
 
 import {
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
@@ -22,7 +22,7 @@ import { convertCssLengthToPx } from './utils.js';
  */
 export function transformTables(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (

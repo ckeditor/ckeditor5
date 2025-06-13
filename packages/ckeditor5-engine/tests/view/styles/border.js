@@ -4,14 +4,14 @@
  */
 
 import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
-import { addBorderRules } from '../../../src/view/styles/border.js';
+import { addBorderStylesRules } from '../../../src/view/styles/border.js';
 
 describe( 'Border styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
-		addBorderRules( stylesProcessor );
+		addBorderStylesRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );
 

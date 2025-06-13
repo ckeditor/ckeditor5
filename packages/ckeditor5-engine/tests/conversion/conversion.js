@@ -14,8 +14,8 @@ import { EditingController } from '../../src/controller/editingcontroller.js';
 
 import { Model } from '../../src/model/model.js';
 
-import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view.js';
-import { stringify as modelStringify } from '../../src/dev-utils/model.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
+import { _stringifyModel } from '../../src/dev-utils/model.js';
 import { ConversionHelpers } from '../../src/conversion/conversionhelpers.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -719,12 +719,12 @@ describe( 'Conversion', () => {
 		function testConversion( input, expectedModel, expectedView = null ) {
 			loadData( input );
 
-			expect( modelStringify( model.document.getRoot() ) ).to.equal( expectedModel );
-			expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView || input );
+			expect( _stringifyModel( model.document.getRoot() ) ).to.equal( expectedModel );
+			expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView || input );
 		}
 
 		function loadData( input ) {
-			const parsedView = viewParse( input );
+			const parsedView = _parseView( input );
 			let convertedModel;
 
 			model.change( writer => {

@@ -4,7 +4,7 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { MentionCommand } from '../src/mentioncommand.js';
 
@@ -38,7 +38,7 @@ describe( 'MentionCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should return true if characters with the attribute can be placed at caret position', () => {
-			setData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -50,14 +50,14 @@ describe( 'MentionCommand', () => {
 				}
 			} );
 
-			setData( model, '<x>fo[]o</x>' );
+			_setModelData( model, '<x>fo[]o</x>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 
 	describe( 'execute()', () => {
 		it( 'inserts mention object if mention was passed as string', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -69,7 +69,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'should not execute if selectable is not editable', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			model.document.isReadOnly = true;
 
@@ -83,7 +83,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'inserts mention object with data if mention was passed as object', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -97,7 +97,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'inserts options.text as mention text', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -110,7 +110,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'inserts mention attribute with passed marker for given range', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			const end = model.createPositionAt( selection.focus );
 			const start = end.getShiftedBy( -3 );
@@ -125,7 +125,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'inserts mention attribute at current selection if no range was passed', () => {
-			setData( model, '<paragraph>foo []bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo []bar</paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -138,7 +138,7 @@ describe( 'MentionCommand', () => {
 		it( 'should set also other styles in inserted text', () => {
 			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
 
-			setData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -152,7 +152,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'should throw if marker does not match mention id', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			const testCases = [
 				{ marker: '@', mention: 'foo' },
@@ -166,7 +166,7 @@ describe( 'MentionCommand', () => {
 		} );
 
 		it( 'should not insert a white space if the mention was already followed by one', () => {
-			setData( model, '<paragraph>foo [] bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo [] bar</paragraph>' );
 
 			command.execute( {
 				marker: '@',
@@ -175,7 +175,7 @@ describe( 'MentionCommand', () => {
 
 			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 
-			expect( getData( model ) ).to.match(
+			expect( _getModelData( model ) ).to.match(
 				/<paragraph>foo <\$text mention="{"uid":"[^"]+","_text":"@John","id":"@John"}">@John\[\]<\/\$text> bar<\/paragraph>/
 			);
 		} );
@@ -199,7 +199,7 @@ describe( 'MentionCommand', () => {
 
 				assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 
-				expect( getData( model ) ).to.match(
+				expect( _getModelData( model ) ).to.match(
 					new RegExp( '<paragraph>\\' + openingBracket +
 						'<\\$text mention="{"uid":"[^"]+","_text":"@John","id":"@John"}">@John\\[\\]</\\$text>\\' +
 						closingBracket + '</paragraph>'

@@ -10,7 +10,7 @@ import { TodoListUI } from '../../src/todolist/todolistui.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'TodoListUI', () => {
@@ -60,7 +60,7 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should bind button to command', () => {
-			setData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
 
 			const command = editor.commands.get( 'todoList' );
 
@@ -94,7 +94,7 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should bind button to command', () => {
-			setData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
 
 			const command = editor.commands.get( 'todoList' );
 

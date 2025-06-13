@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import { type Batch, type Writer } from 'ckeditor5/src/engine.js';
+import { type Batch, type ModelWriter } from 'ckeditor5/src/engine.js';
 
 /**
  * The base font command.
@@ -66,7 +66,7 @@ export abstract class FontCommand extends Command {
 		const value = options.value;
 		const batch = options.batch;
 
-		const updateAttribute = ( writer: Writer ) => {
+		const updateAttribute = ( writer: ModelWriter ) => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( this.attributeKey, value );

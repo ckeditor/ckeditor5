@@ -9,13 +9,13 @@
 
 import { Operation } from './operation.js';
 import { _setAttribute } from './utils.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'es-toolkit/compat';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to change nodes' attribute.
@@ -28,7 +28,7 @@ export class AttributeOperation extends Operation {
 	 *
 	 * @readonly
 	 */
-	public range: Range;
+	public range: ModelRange;
 
 	/**
 	 * Key of an attribute to change or remove.
@@ -67,10 +67,10 @@ export class AttributeOperation extends Operation {
 	 * @param key Key of an attribute to change or remove.
 	 * @param oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
 	 * @param newValue New value of the attribute with given key or `null`, if operation should remove attribute.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( range: Range, key: string, oldValue: unknown, newValue: unknown, baseVersion: number | null ) {
+	constructor( range: ModelRange, key: string, oldValue: unknown, newValue: unknown, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.range = range.clone();
@@ -95,7 +95,7 @@ export class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.range.clone();
 	}
 
@@ -144,7 +144,7 @@ export class AttributeOperation extends Operation {
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
 				 * @error attribute-operation-wrong-old-value
-				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {module:engine/model/item~ModelItem} root The item element.
 				 * @param {string} key The key of the attribute.
 				 * @param {never} value The value.
 				 */
@@ -160,7 +160,7 @@ export class AttributeOperation extends Operation {
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error attribute-operation-attribute-exists
-				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {module:engine/model/item~ModelItem} root The item element.
 				 * @param {string} key The key of the attribute.
 				 */
 				throw new CKEditorError(
@@ -197,8 +197,11 @@ export class AttributeOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): AttributeOperation {
-		return new AttributeOperation( Range.fromJSON( json.range, document ), json.key, json.oldValue, json.newValue, json.baseVersion );
+	public static override fromJSON( json: any, document: ModelDocument ): AttributeOperation {
+		return new AttributeOperation(
+			ModelRange.fromJSON( json.range, document ),
+			json.key, json.oldValue, json.newValue, json.baseVersion
+		);
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {

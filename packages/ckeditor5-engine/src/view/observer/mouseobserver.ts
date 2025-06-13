@@ -8,13 +8,13 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 
 /**
  * Mouse events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} by {@link module:engine/view/view~EditingView#addObserver} method.
  */
 export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'mouseover' | 'mouseout'> {
 	/**
@@ -36,15 +36,15 @@ export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'm
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mousedown
+ * @eventName module:engine/view/document~ViewDocument#mousedown
  * @param data The event data.
  */
 export type ViewDocumentMouseDownEvent = {
 	name: 'mousedown';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };
 
 /**
@@ -53,15 +53,15 @@ export type ViewDocumentMouseDownEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseup
+ * @eventName module:engine/view/document~ViewDocument#mouseup
  * @param  data The event data.
  */
 export type ViewDocumentMouseUpEvent = {
 	name: 'mouseup';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };
 
 /**
@@ -70,15 +70,15 @@ export type ViewDocumentMouseUpEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseover
+ * @eventName module:engine/view/document~ViewDocument#mouseover
  * @param  data The event data.
  */
 export type ViewDocumentMouseOverEvent = {
 	name: 'mouseover';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };
 
 /**
@@ -87,13 +87,13 @@ export type ViewDocumentMouseOverEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseout
+ * @eventName module:engine/view/document~ViewDocument#mouseout
  * @param  data The event data.
  */
 export type ViewDocumentMouseOutEvent = {
 	name: 'mouseout';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };

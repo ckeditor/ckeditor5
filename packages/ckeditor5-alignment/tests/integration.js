@@ -14,7 +14,7 @@ import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Alignment integration', () => {
 	let editor, model, element;
@@ -41,15 +41,15 @@ describe( 'Alignment integration', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does not work inside image caption', () => {
-			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal( '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<imageBlock src="/assets/sample.png"><caption>Foo[]</caption></imageBlock>' );
 		} );
 
 		it( 'does not work inside image caption when selection overlaps image', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>foo[foo</paragraph>' +
 				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
@@ -58,7 +58,7 @@ describe( 'Alignment integration', () => {
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph alignment="center">foo[foo</paragraph>' +
 				'<imageBlock src="/assets/sample.png"><caption>bar</caption></imageBlock>' +
 				'<paragraph alignment="center">baz]baz</paragraph>'
@@ -68,27 +68,27 @@ describe( 'Alignment integration', () => {
 
 	describe( 'compatibility with blockQuote', () => {
 		it( 'does work inside BlockQuote on paragraph', () => {
-			setModelData( model, '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
+			expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on heading', () => {
-			setModelData( model, '<blockQuote><heading1>Foo[]</heading1></blockQuote>' );
+			_setModelData( model, '<blockQuote><heading1>Foo[]</heading1></blockQuote>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
+			expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
 		} );
 
 		it( 'does work inside blockQuote on listItem', () => {
-			setModelData( model, '<blockQuote><listItem listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>' );
+			_setModelData( model, '<blockQuote><listItem listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote><listItem alignment="center" listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>'
 			);
 		} );
@@ -134,7 +134,7 @@ describe( 'Alignment integration', () => {
 
 			// As we do not allow for the `alignment` attribute for the `div` element, we expect
 			// that the `customAlignment` property will be set.
-			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<div customAlignment="right">foo</div>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<div customAlignment="right">foo</div>' );
 			expect( editor.getData() ).to.equal( '<div style="text-align:right;">foo</div>' );
 		} );
 	} );

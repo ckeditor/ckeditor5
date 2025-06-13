@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../../src/tableediting.js';
 import { TableCaptionEditing } from '../../../src/tablecaption/tablecaptionediting.js';
@@ -36,29 +36,29 @@ describe( 'TableTypeCommand', () => {
 	describe( 'isEnabled', () => {
 		describe( 'collapsed selection', () => {
 			it( 'should be false if selection does not have table', () => {
-				setModelData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be true if selection has table', () => {
-				setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
+				_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
 		describe( 'non-collapsed selection', () => {
 			it( 'should be false if selection does not have table', () => {
-				setModelData( model, '<paragraph>f[oo]</paragraph>' );
+				_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be true if selection is inside table', () => {
-				setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+				_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if selection is over table', () => {
-				setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+				_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
@@ -67,12 +67,12 @@ describe( 'TableTypeCommand', () => {
 	describe( 'value', () => {
 		describe( 'collapsed selection', () => {
 			it( 'should be null if selection does not have table', () => {
-				setModelData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.value ).to.be.null;
 			} );
 
 			it( 'should equal table type attribute value if selection has table', () => {
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="layout">' +
 						'<tableRow>' +
@@ -85,7 +85,7 @@ describe( 'TableTypeCommand', () => {
 
 				expect( command.value ).to.equal( 'layout' );
 
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="content">' +
 						'<tableRow>' +
@@ -101,12 +101,12 @@ describe( 'TableTypeCommand', () => {
 
 		describe( 'non-collapsed selection', () => {
 			it( 'should be null if selection does not have table', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 				expect( command.value ).to.be.null;
 			} );
 
 			it( 'should equal table type attribute value if selection is inside table', () => {
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="layout">' +
 						'<tableRow>' +
@@ -118,7 +118,7 @@ describe( 'TableTypeCommand', () => {
 				);
 				expect( command.value ).to.equal( 'layout' );
 
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="content">' +
 						'<tableRow>' +
@@ -132,7 +132,7 @@ describe( 'TableTypeCommand', () => {
 			} );
 
 			it( 'should equal table type attribute value if selection is over table', () => {
-				setModelData(
+				_setModelData(
 					model,
 					'[<table tableType="layout">' +
 						'<tableRow>' +
@@ -144,7 +144,7 @@ describe( 'TableTypeCommand', () => {
 				);
 				expect( command.value ).to.equal( 'layout' );
 
-				setModelData(
+				_setModelData(
 					model,
 					'[<table tableType="content">' +
 						'<tableRow>' +
@@ -159,7 +159,7 @@ describe( 'TableTypeCommand', () => {
 
 			it( 'should equal table type attribute value if selection is inside a table caption', () => {
 				expect( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table tableType="layout">' +
 							'<tableRow>' +
@@ -172,7 +172,7 @@ describe( 'TableTypeCommand', () => {
 					);
 				} ).to.throw( /Element 'caption' was not allowed in given position/ );
 
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="content">' +
 						'<tableRow>' +
@@ -188,7 +188,7 @@ describe( 'TableTypeCommand', () => {
 			} );
 
 			it( 'should equal table type attribute value if multiple table cells are selected', () => {
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="layout">' +
 						'<tableRow>' +
@@ -204,7 +204,7 @@ describe( 'TableTypeCommand', () => {
 
 				expect( command.value ).to.equal( 'layout' );
 
-				setModelData(
+				_setModelData(
 					model,
 					'<table tableType="content">' +
 						'<tableRow>' +
@@ -230,7 +230,7 @@ describe( 'TableTypeCommand', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -238,7 +238,7 @@ describe( 'TableTypeCommand', () => {
 
 			command.execute( 'content' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -252,7 +252,7 @@ describe( 'TableTypeCommand', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -260,7 +260,7 @@ describe( 'TableTypeCommand', () => {
 
 			command.execute( 'layout' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -274,7 +274,7 @@ describe( 'TableTypeCommand', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -282,7 +282,7 @@ describe( 'TableTypeCommand', () => {
 
 			command.execute( 'layout' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -301,7 +301,7 @@ describe( 'TableTypeCommand', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table headingRows="1" tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -310,7 +310,7 @@ describe( 'TableTypeCommand', () => {
 
 			command.execute( 'layout' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -328,7 +328,7 @@ describe( 'TableTypeCommand', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<caption>foobar</caption>' +
@@ -337,7 +337,7 @@ describe( 'TableTypeCommand', () => {
 
 			command.execute( 'layout' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'

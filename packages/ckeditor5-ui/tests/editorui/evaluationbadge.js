@@ -14,7 +14,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 describe( 'EvaluationBadge', () => {
@@ -952,7 +952,7 @@ describe( 'EvaluationBadge', () => {
 			licenseKey: developmentLicenseKey
 		} );
 
-		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+		_setModelData( editor.model, '<heading2>foo[]bar</heading2>' );
 
 		focusEditor( editor );
 

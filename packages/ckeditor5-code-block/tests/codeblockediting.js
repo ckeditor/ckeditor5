@@ -15,15 +15,15 @@ import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { DragDrop } from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData as setModelData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 
@@ -154,19 +154,19 @@ describe( 'CodeBlockEditing', () => {
 	} );
 
 	it( 'disallows all attributes (except "language") for codeBlock', () => {
-		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+		_setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 		editor.execute( 'alignment', { value: 'right' } );
 
-		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+		expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 	} );
 
 	it( 'disallows for formatting attributes on nodes inside codeBlock #1 - text', () => {
-		setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+		_setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 		editor.execute( 'bold' );
 
-		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
+		expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 	} );
 
 	it( 'disallows for formatting attributes on nodes inside codeBlock #2 - object', () => {
@@ -211,7 +211,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute indentCodeBlock command on tab key', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -224,7 +224,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should execute outdentCodeBlock command on Shift+Tab keystroke', () => {
 			domEvtDataStub.shiftKey = true;
 
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			// '<codeBlock language="plaintext">	[]foo</codeBlock>
 			model.change( writer => {
@@ -240,7 +240,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should not indent if command is disabled', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -252,7 +252,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not indent or outdent if alt+tab is pressed', () => {
 			domEvtDataStub.keyCode += getCode( 'alt' );
 
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -265,7 +265,7 @@ describe( 'CodeBlockEditing', () => {
 			const indentBlockCommand = editor.commands.get( 'indentCodeBlock' );
 			const indentBlockCommandSpy = sinon.spy( indentBlockCommand, 'execute' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>',
 				'<codeBlock language="plaintext">bar</codeBlock>'
 			);
@@ -283,7 +283,7 @@ describe( 'CodeBlockEditing', () => {
 
 			domEvtDataStub.shiftKey = true;
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>',
 				'<codeBlock language="plaintext">bar</codeBlock>'
 			);
@@ -296,7 +296,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should not indent on tab key when tab event was captured by listener with higher priority', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			const onTabPress = ( bubblingEventInfo, domEventData ) => {
 				domEventData.preventDefault();
@@ -317,7 +317,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should not be stopped by a listener with lower priority', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			const onTabPress = ( bubblingEventInfo, domEventData ) => {
 				domEventData.preventDefault();
@@ -339,7 +339,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should not outdent on tab key when tab event was captured by listener with higher priority', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			model.change( writer => {
 				// <codeBlock language="plaintext">  foo[]</codeBlock>
@@ -367,7 +367,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'outdent should not be stopped by a listener with lower priority', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 			model.change( writer => {
 				// <codeBlock language="plaintext">  []foo</codeBlock>
@@ -405,7 +405,7 @@ describe( 'CodeBlockEditing', () => {
 				view: 'pre'
 			} );
 
-			setModelData( model, '<fakePre>[]</fakePre>' );
+			_setModelData( model, '<fakePre>[]</fakePre>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -424,7 +424,7 @@ describe( 'CodeBlockEditing', () => {
 				view: 'pre'
 			} );
 
-			setModelData( model, '<fakePre>[]</fakePre>' );
+			_setModelData( model, '<fakePre>[]</fakePre>' );
 
 			domEvtDataStub.shiftKey = true;
 
@@ -444,11 +444,11 @@ describe( 'CodeBlockEditing', () => {
 			sinon.spy( enterCommand, 'execute' );
 			sinon.spy( shiftEnterCommand, 'execute' );
 
-			setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
+			_setModelData( model, '<codeBlock>foo[]bar</codeBlock>' );
 
 			viewDoc.fire( 'enter', getEvent() );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock>foo<softBreak></softBreak>[]bar</codeBlock>' );
 			sinon.assert.calledOnce( shiftEnterCommand.execute );
 			sinon.assert.notCalled( enterCommand.execute );
 		} );
@@ -460,11 +460,11 @@ describe( 'CodeBlockEditing', () => {
 			sinon.spy( enterCommand, 'execute' );
 			sinon.spy( shiftEnterCommand, 'execute' );
 
-			setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			viewDoc.fire( 'enter', getEvent() );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 			sinon.assert.calledOnce( enterCommand.execute );
 			sinon.assert.notCalled( shiftEnterCommand.execute );
 		} );
@@ -483,11 +483,11 @@ describe( 'CodeBlockEditing', () => {
 			sinon.spy( enterCommand, 'execute' );
 			sinon.spy( shiftEnterCommand, 'execute' );
 
-			setModelData( model, '<codeBlock>foo<codeBlockSub>b[]a</codeBlockSub>r</codeBlock>' );
+			_setModelData( model, '<codeBlock>foo<codeBlockSub>b[]a</codeBlockSub>r</codeBlock>' );
 
 			viewDoc.fire( 'enter', getEvent() );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock>foo<codeBlockSub>b</codeBlockSub><codeBlockSub>[]a</codeBlockSub>r</codeBlock>'
 			);
 			sinon.assert.calledOnce( enterCommand.execute );
@@ -496,7 +496,7 @@ describe( 'CodeBlockEditing', () => {
 
 		describe( 'indentation retention', () => {
 			it( 'should work when indentation is with spaces', () => {
-				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">  foo[]</codeBlock>
@@ -505,16 +505,16 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">  foo<softBreak></softBreak>  []</codeBlock>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">  foo[]</codeBlock>' );
+				expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">  foo[]</codeBlock>' );
 			} );
 
 			it( 'should work when indentation is with tabs', () => {
-				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">	foo[]</codeBlock>
@@ -523,16 +523,16 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">	foo<softBreak></softBreak>	[]</codeBlock>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">	foo[]</codeBlock>' );
+				expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">	foo[]</codeBlock>' );
 			} );
 
 			it( 'should retain only the last line', () => {
-				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>bar[]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>bar[]</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">  foo<softBreak></softBreak>	bar[]</codeBlock>
@@ -542,17 +542,17 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">  foo<softBreak></softBreak>	bar<softBreak></softBreak>	[]</codeBlock>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">  foo<softBreak></softBreak>	bar[]</codeBlock>' );
 			} );
 
 			it( 'should retain when the selection is non–collapsed', () => {
-				setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">    f[o]o</codeBlock>
@@ -561,16 +561,16 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">    f<softBreak></softBreak>    []o</codeBlock>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">    f[o]o</codeBlock>' );
+				expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">    f[o]o</codeBlock>' );
 			} );
 
 			it( 'should consider only leading white-spaces', () => {
-				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">  foo []</codeBlock>
@@ -580,16 +580,16 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">  foo <softBreak></softBreak>  []</codeBlock>' );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal( '<codeBlock language="css">  foo []</codeBlock>' );
+				expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">  foo []</codeBlock>' );
 			} );
 
 			it( 'should not work when there is some non-whitespace character', () => {
-				setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
 				model.change( writer => {
 					// <codeBlock language="css">foo   []</codeBlock>
@@ -598,7 +598,7 @@ describe( 'CodeBlockEditing', () => {
 
 				viewDoc.fire( 'enter', getEvent() );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<codeBlock language="css">foo   <softBreak></softBreak>[]</codeBlock>' );
 			} );
 		} );
@@ -608,21 +608,21 @@ describe( 'CodeBlockEditing', () => {
 				it( 'should leave the block when pressed three times at the end', () => {
 					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
-					setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo</codeBlock>' +
 						'<paragraph>[]</paragraph>'
 					);
@@ -630,80 +630,80 @@ describe( 'CodeBlockEditing', () => {
 					sinon.assert.calledOnce( spy );
 
 					editor.execute( 'undo' );
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					editor.execute( 'undo' );
-					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+					expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
 					editor.execute( 'undo' );
-					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
+					expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed', () => {
-					setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak><softBreak></softBreak>]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak><softBreak></softBreak>]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">f<softBreak></softBreak>[]</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when pressed three times when in the middle of the code', () => {
-					setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">fo<softBreak></softBreak>[]o</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">' +
 						'fo<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]o' +
 						'</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when pressed three times at the beginning of the code', () => {
-					setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak>[]foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">' +
 						'<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]foo' +
 						'</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when pressed shift+enter three times at the end of the code', () => {
-					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">' +
 						'foo<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]' +
 						'</codeBlock>' );
 				} );
 
 				it( 'should clean up the last two lines if the last one has white-space characters only', () => {
-					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					model.change( writer => {
 						// <codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>  []</codeBlock>
@@ -712,12 +712,12 @@ describe( 'CodeBlockEditing', () => {
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo</codeBlock><paragraph>[]</paragraph>' );
 				} );
 
 				it( 'should clean up the last two lines if both have white-space characters only', () => {
-					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					model.change( writer => {
 						// <codeBlock language="css">foo<softBreak></softBreak>  <softBreak></softBreak>[]</codeBlock>
@@ -729,7 +729,7 @@ describe( 'CodeBlockEditing', () => {
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo</codeBlock><paragraph>[]</paragraph>' );
 				} );
 			} );
@@ -738,11 +738,11 @@ describe( 'CodeBlockEditing', () => {
 				it( 'should leave the block when pressed at the beginning in a new line', () => {
 					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>[]</paragraph>' +
 						'<codeBlock language="css">foo</codeBlock>'
 					);
@@ -750,48 +750,48 @@ describe( 'CodeBlockEditing', () => {
 					sinon.assert.calledOnce( spy );
 
 					editor.execute( 'undo' );
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed (#1)', () => {
-					setModelData( model, '<codeBlock language="css">[f]<softBreak></softBreak>oo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[f]<softBreak></softBreak>oo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>oo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed (#2)', () => {
-					setModelData( model, '<codeBlock language="css">[<softBreak></softBreak>oo]</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[<softBreak></softBreak>oo]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak>[]</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when pressed shift+enter at the beginning of the code', () => {
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when there is some text after the selection', () => {
-					setModelData( model, '<codeBlock language="css">[]foo<softBreak></softBreak>foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[]foo<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak>[]foo<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when there is some text before the selection', () => {
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					// <codeBlock language="css">    []<softBreak></softBreak>foo</codeBlock>
 					model.change( writer => {
@@ -801,14 +801,14 @@ describe( 'CodeBlockEditing', () => {
 					viewDoc.fire( 'enter', getEvent() );
 
 					// Extra spaces before "[]" come from the indentation retention mechanism.
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<codeBlock language="css">    <softBreak></softBreak>    []<softBreak></softBreak>foo</codeBlock>' );
 				} );
 			} );
 		} );
 
 		function getEvent( data = {} ) {
-			return new DomEventData( viewDoc, {
+			return new ViewDocumentDomEventData( viewDoc, {
 				preventDefault: sinon.spy()
 			}, data );
 		}
@@ -882,7 +882,7 @@ describe( 'CodeBlockEditing', () => {
 					} );
 					editor.execute( 'indent' );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<codeBlock language="css">[\t\t\tx<softBreak></softBreak>\t\tx]</codeBlock>'
 					);
 
@@ -895,25 +895,25 @@ describe( 'CodeBlockEditing', () => {
 
 	describe( 'editing pipeline m -> v', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
-			setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">[]</code>' +
 				'</pre>' );
 		} );
 
 		it( 'should convert non-empty codeBlock to pre tag', () => {
-			setModelData( model, '<codeBlock language="plaintext">Foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">Foo</codeBlock>' );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">{}Foo</code>' +
 				'</pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">' +
 					'Foo<softBreak></softBreak>' +
 					'Bar<softBreak></softBreak>' +
@@ -921,14 +921,14 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">{}Foo<br></br>Bar<br></br>Biz</code>' +
 				'</pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">' +
 					'<softBreak></softBreak>' +
 					'<softBreak></softBreak>' +
@@ -938,7 +938,7 @@ describe( 'CodeBlockEditing', () => {
 				'</codeBlock>'
 			);
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">[]<br></br><br></br>Foo<br></br><br></br></code>' +
 				'</pre>' );
@@ -958,11 +958,11 @@ describe( 'CodeBlockEditing', () => {
 					const model = editor.model;
 					const view = editor.editing.view;
 
-					setModelData( model,
+					_setModelData( model,
 						'<codeBlock language="plaintext">foo</codeBlock>'
 					);
 
-					expect( getViewData( view ) ).to.equal(
+					expect( _getViewData( view ) ).to.equal(
 						'<pre data-language="Zwykły tekst" spellcheck="false">' +
 							'<code class="language-plaintext">{}foo</code>' +
 						'</pre>' );
@@ -991,9 +991,9 @@ describe( 'CodeBlockEditing', () => {
 					const model = editor.model;
 					const view = editor.editing.view;
 
-					setModelData( model, '<codeBlock language="cpp">foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="cpp">foo</codeBlock>' );
 
-					expect( getViewData( view ) ).to.equal(
+					expect( _getViewData( view ) ).to.equal(
 						'<pre data-language="C++" spellcheck="false">' +
 							'<code>{}foo</code>' +
 						'</pre>' );
@@ -1007,7 +1007,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert markers inside pre > code', () => {
 			editor.conversion.for( 'editingDowncast' ).markerToElement( { view: 'group', model: 'group' } );
 
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">[]Foo</codeBlock>'
 			);
 
@@ -1017,7 +1017,7 @@ describe( 'CodeBlockEditing', () => {
 				writer.addMarker( 'group', { range, usingOperation: false } );
 			} );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<pre data-language="Plain text" spellcheck="false">' +
 					'<code class="language-plaintext">[]<group></group>Foo<group></group></code>' +
 				'</pre>'
@@ -1027,19 +1027,19 @@ describe( 'CodeBlockEditing', () => {
 
 	describe( 'data pipeline m -> v conversion ', () => {
 		it( 'should convert empty codeBlock to empty pre tag', () => {
-			setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext"></codeBlock>' );
 
 			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<pre><code class="language-plaintext">&nbsp;</code></pre>' );
 		} );
 
 		it( 'should convert non-empty codeBlock to pre tag', () => {
-			setModelData( model, '<codeBlock language="plaintext">Foo</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">Foo</codeBlock>' );
 
 			expect( editor.getData() ).to.equal( '<pre><code class="language-plaintext">Foo</code></pre>' );
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #1', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">' +
 					'Foo<softBreak></softBreak>' +
 					'Bar<softBreak></softBreak>' +
@@ -1052,7 +1052,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should convert codeBlock with softBreaks to pre tag #2', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">' +
 					'<softBreak></softBreak>' +
 					'<softBreak></softBreak>' +
@@ -1066,7 +1066,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should convert codeBlock with html content', () => {
-			setModelData( model, '<codeBlock language="plaintext">[]</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">[]</codeBlock>' );
 
 			model.change( writer => writer.insertText( '<div><p>Foo</p></div>', model.document.selection.getFirstPosition() ) );
 
@@ -1093,7 +1093,7 @@ describe( 'CodeBlockEditing', () => {
 				api.writer.insert( position, api.writer.createText( '\n' ) );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<codeBlock language="plaintext">Foo<softBreak></softBreak>Bar</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">Foo<softBreak></softBreak>Bar</codeBlock>' );
 
 			expect( editor.getData() ).to.equal( '<code>Foo\nBar</code>' );
 		} );
@@ -1115,7 +1115,7 @@ describe( 'CodeBlockEditing', () => {
 					const editor = newEditor;
 					const model = editor.model;
 
-					setModelData( model, '<codeBlock language="cpp">foo</codeBlock>' );
+					_setModelData( model, '<codeBlock language="cpp">foo</codeBlock>' );
 					expect( editor.getData() ).to.equal( '<pre><code>foo</code></pre>' );
 
 					element.remove();
@@ -1141,7 +1141,7 @@ describe( 'CodeBlockEditing', () => {
 				.then( editor => {
 					const model = editor.model;
 
-					setModelData( model,
+					_setModelData( model,
 						'<codeBlock language="swift">foo</codeBlock>' +
 						'<codeBlock language="javascript">foo</codeBlock>'
 					);
@@ -1159,7 +1159,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert markers inside pre > code', () => {
 			editor.conversion.for( 'downcast' ).markerToData( { model: 'group' } );
 
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">[]Foo</codeBlock>'
 			);
 
@@ -1181,7 +1181,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert markers on a code block', () => {
 			editor.conversion.for( 'downcast' ).markerToData( { model: 'group' } );
 
-			setModelData( model,
+			_setModelData( model,
 				'<codeBlock language="plaintext">[]Foo</codeBlock>'
 			);
 
@@ -1205,25 +1205,25 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not convert empty pre tag to code block', () => {
 			editor.setData( '<pre></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should not convert pre with no code child to code block', () => {
 			editor.setData( '<pre><samp></samp></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should convert pre > code to code block', () => {
 			editor.setData( '<pre><code></code></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]</codeBlock>' );
 		} );
 
 		it( 'should convert pre > code with multi-line text to code block #1', () => {
 			editor.setData( '<pre><code>foo\nbar</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]' +
 					'foo' +
 					'<softBreak></softBreak>' +
@@ -1235,7 +1235,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert pre > code with multi-line text to code block #2', () => {
 			editor.setData( '<pre><code>\n\nfoo\n\n</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]' +
 					'<softBreak></softBreak>' +
 					'<softBreak></softBreak>' +
@@ -1251,7 +1251,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert pre > code with only &nbsp; inside to a codeBlock with &nbsp;', () => {
 			editor.setData( '<pre><code>&nbsp;</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]\u00a0</codeBlock>'
 			);
 		} );
@@ -1259,7 +1259,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert pre > code with HTML inside', () => {
 			editor.setData( '<pre><code><p>Foo</p>\n<p>Bar</p></code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]' +
 					'Foo' +
 					'<softBreak></softBreak>' +
@@ -1271,14 +1271,14 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should convert pre > code tag with HTML and nested pre > code tag and use only the text content of invalid HTML tags', () => {
 			editor.setData( '<pre><code><p>Foo</p><pre><code>Bar</code></pre><p>Biz</p></code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]FooBarBiz</codeBlock>' );
 		} );
 
 		it( 'should convert pre > code tag with escaped html content', () => {
 			editor.setData( '<pre><code>&lt;div&gt;&lt;p&gt;Foo&apos;s&amp;&quot;bar&quot;&lt;/p&gt;&lt;/div&gt;</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo\'s&"bar"</p></div></codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo\'s&"bar"</p></div></codeBlock>' );
 		} );
 
 		it( 'should preserve markers inside pre > code', () => {
@@ -1303,7 +1303,7 @@ describe( 'CodeBlockEditing', () => {
 			expect( marker.getStart().path ).to.deep.equal( [ 0, 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 0, 3 ] );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Bar</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Bar</codeBlock>' );
 		} );
 
 		it( 'should preserve markers on a code block', () => {
@@ -1324,7 +1324,7 @@ describe( 'CodeBlockEditing', () => {
 			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Foo</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Foo</codeBlock>' );
 		} );
 
 		it( 'should be overridable (pre)', () => {
@@ -1341,7 +1341,7 @@ describe( 'CodeBlockEditing', () => {
 
 			editor.setData( '<pre><code>Foo Bar</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should be overridable (code)', () => {
@@ -1362,14 +1362,14 @@ describe( 'CodeBlockEditing', () => {
 
 			editor.setData( '<pre><code>Foo Bar</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should split parents to correctly upcast the code block', () => {
 			editor.setData( '<p>foo<pre><code>x</code></pre>bar</p>' );
 
 			// Note: The empty <paragraph> should not be here. It's a conversion/auto–paragraphing bug.
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[]foo</paragraph>' +
 				'<codeBlock language="plaintext">x</codeBlock>' +
 				'<paragraph>bar</paragraph>' +
@@ -1379,7 +1379,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should upcast two code blocks in a row (#1)', () => {
 			editor.setData( '<pre><code>foo</code></pre><pre><code>bar</code></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock><codeBlock language="plaintext">bar</codeBlock>' );
 		} );
 
@@ -1387,7 +1387,7 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( `<pre><code>foo</code></pre>
 				<pre><code>bar</code></pre>` );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock>' +
 				'<codeBlock language="plaintext">bar</codeBlock>' );
 		} );
@@ -1402,7 +1402,7 @@ describe( 'CodeBlockEditing', () => {
 
 			editor.data.set( { title: '<pre><code>foo</code></pre>' } );
 
-			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+			expect( _getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
 		} );
 
 		it( 'should not conflict with code attribute conversion', async () => {
@@ -1415,11 +1415,11 @@ describe( 'CodeBlockEditing', () => {
 
 			editor.setData( '<pre><code>foobar</code></pre>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<codeBlock language="plaintext">[]foobar</codeBlock>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="plaintext">[]foobar</codeBlock>' );
 
 			editor.setData( '<code>foobar</code>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text code="true">[]foobar</$text></paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text code="true">[]foobar</$text></paragraph>' );
 
 			await editor.destroy();
 			element.remove();
@@ -1428,19 +1428,19 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should upcast <pre> with single space around <code>', () => {
 			editor.setData( '<pre> <code>Hello World!</code> </pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should upcast <pre> with multiple spaces around <code>', () => {
 			editor.setData( '<pre>    <code>Hello World!</code>    </pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should upcast <pre> with tabs around <code>', () => {
 			editor.setData( '<pre>		<code>Hello World!</code>		</pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should upcast <pre> with line breaks around <code>', () => {
@@ -1448,19 +1448,19 @@ describe( 'CodeBlockEditing', () => {
 				<code>Hello World!</code>
 			</pre>` );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should upcast <pre> with accidental text around <code>', () => {
 			editor.setData( '<pre>foo<code>Hello World!</code>bar</pre>' );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Hello World!</codeBlock>' );
 		} );
 
 		it( 'should upcast <pre> with accidental elements around <code>', () => {
 			editor.setData( '<pre><b>foo</b><code>Hello World!</code><span>bar</span></pre>' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text bold="true">[]foo</$text></paragraph>' +
 				'<codeBlock language="plaintext">Hello World!</codeBlock>' +
 				'<paragraph>bar</paragraph>'
@@ -1483,7 +1483,7 @@ describe( 'CodeBlockEditing', () => {
 				'</pre>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text bold="true">[]foo</$text></paragraph>' +
 				'<codeBlock language="plaintext">Hello World!Nested-boldNested codeNested-span</codeBlock>' +
 				'<paragraph>bar</paragraph>'
@@ -1520,7 +1520,7 @@ describe( 'CodeBlockEditing', () => {
 					.then( editor => {
 						model = editor.model;
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<codeBlock language="foo">[]bar</codeBlock>' +
 							'<codeBlock language="bar">baz</codeBlock>' +
 							'<codeBlock language="qux">qux</codeBlock>'
@@ -1548,7 +1548,7 @@ describe( 'CodeBlockEditing', () => {
 					.then( editor => {
 						model = editor.model;
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<codeBlock language="foo">[]bar</codeBlock>' +
 							'<codeBlock language="bar">baz</codeBlock>' +
 							'<codeBlock language="qux">qux</codeBlock>'
@@ -1572,7 +1572,7 @@ describe( 'CodeBlockEditing', () => {
 					.then( editor => {
 						model = editor.model;
 
-						expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">[]bar</codeBlock>' );
+						expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">[]bar</codeBlock>' );
 
 						return editor.destroy();
 					} );
@@ -1592,7 +1592,7 @@ describe( 'CodeBlockEditing', () => {
 					.then( editor => {
 						model = editor.model;
 
-						expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">[]bar</codeBlock>' );
+						expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">[]bar</codeBlock>' );
 
 						return editor.destroy();
 					} );
@@ -1613,7 +1613,7 @@ describe( 'CodeBlockEditing', () => {
 				} ).then( editor => {
 					model = editor.model;
 
-					expect( getModelData( model ) ).to.equal( '<codeBlock language="baz">[]foo</codeBlock>' );
+					expect( _getModelData( model ) ).to.equal( '<codeBlock language="baz">[]foo</codeBlock>' );
 
 					return editor.destroy();
 				} );
@@ -1634,7 +1634,7 @@ describe( 'CodeBlockEditing', () => {
 				} ).then( editor => {
 					model = editor.model;
 
-					expect( getModelData( model ) ).to.equal( '<codeBlock language="foo">[]foo</codeBlock>' );
+					expect( _getModelData( model ) ).to.equal( '<codeBlock language="foo">[]foo</codeBlock>' );
 
 					return editor.destroy();
 				} );
@@ -1644,7 +1644,7 @@ describe( 'CodeBlockEditing', () => {
 
 	describe( 'clipboard integration', () => {
 		it( 'should not intercept input when selection anchored outside any code block', () => {
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
 			const contentInsertionSpy = sinon.spy();
@@ -1660,14 +1660,14 @@ describe( 'CodeBlockEditing', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fbar baz[]oo</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fbar baz[]oo</paragraph>' );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
 		} );
 
 		it( 'should intercept input when selection anchored in the code block', () => {
-			setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+			_setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
 			const contentInsertionSpy = sinon.spy();
@@ -1683,7 +1683,7 @@ describe( 'CodeBlockEditing', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="css">' +
 					'fbar' +
 					'<softBreak></softBreak>' +
@@ -1699,7 +1699,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should intercept input when target range is in the code block (drop integration)', () => {
-			setModelData( model, '<codeBlock language="css">foo</codeBlock><paragraph>b[]ar</paragraph>' );
+			_setModelData( model, '<codeBlock language="css">foo</codeBlock><paragraph>b[]ar</paragraph>' );
 
 			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
 			const contentInsertionSpy = sinon.spy();
@@ -1722,7 +1722,7 @@ describe( 'CodeBlockEditing', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<codeBlock language="css">' +
 				'fbar' +
 				'<softBreak></softBreak>' +
@@ -1740,7 +1740,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should filter out the disallowed element from pasted content', () => {
-			setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
+			_setModelData( model, '<codeBlock language="css">f[o]o</codeBlock>' );
 
 			const clipboardPlugin = editor.plugins.get( ClipboardPipeline );
 			const contentInsertionSpy = sinon.spy();
@@ -1764,7 +1764,7 @@ describe( 'CodeBlockEditing', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[]o</codeBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<codeBlock language="css">f[]o</codeBlock>' );
 
 			// Make sure that ClipboardPipeline was not interrupted.
 			sinon.assert.calledOnce( contentInsertionSpy );
@@ -1772,39 +1772,39 @@ describe( 'CodeBlockEditing', () => {
 
 		describe( 'getSelectedContent()', () => {
 			it( 'should not engage when there is nothing selected', () => {
-				setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( '' );
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal( '' );
 			} );
 
 			it( 'should wrap a partial multi-line selection into a code block (#1)', () => {
-				setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>b]ar</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>b]ar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">o<softBreak></softBreak>b</codeBlock>'
 				);
 			} );
 
 			it( 'should wrap a partial multi-line selection into a code block (#2)', () => {
-				setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>]bar</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>]bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">o<softBreak></softBreak></codeBlock>'
 				);
 			} );
 
 			it( 'should wrap a partial multi-line selection into a code block (#3)', () => {
-				setModelData( model, '<codeBlock language="css">[foo<softBreak></softBreak>bar]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">[foo<softBreak></softBreak>bar]</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">foo<softBreak></softBreak>bar</codeBlock>'
 				);
 			} );
 
 			it( 'should wrap a complete single-line selection into a code block', () => {
-				setModelData( model, '<codeBlock language="css">[foo]</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">[foo]</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">foo</codeBlock>'
 				);
 			} );
@@ -1814,9 +1814,9 @@ describe( 'CodeBlockEditing', () => {
 					allowAttributes: 'code'
 				} );
 
-				setModelData( model, '<codeBlock language="css">[fo]o<softBreak></softBreak>bar</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">[fo]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<$text code="true">fo</$text>'
 				);
 			} );
@@ -1826,42 +1826,42 @@ describe( 'CodeBlockEditing', () => {
 					allowAttributes: 'code'
 				} );
 
-				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<$text code="true">a</$text>'
 				);
 			} );
 
 			it( 'should now wrap a partial single-line selection into an inline code when the attribute is disallowed', () => {
-				setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
+				_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( 'a' );
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal( 'a' );
 			} );
 
 			it( 'should preserve a code block in a cross-selection (#1)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[x</paragraph><codeBlock language="css">fo]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<paragraph>x</paragraph><codeBlock language="css">fo</codeBlock>'
 				);
 			} );
 
 			it( 'should preserve a code block in a cross-selection (#2)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b]ar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<paragraph>x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b</codeBlock>'
 				);
 			} );
 
 			it( 'should preserve a code block in a cross-selection (#3)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<codeBlock language="css">foo<softBreak></softBreak>b[ar</codeBlock><paragraph>x]</paragraph>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">ar</codeBlock><paragraph>x</paragraph>'
 				);
 			} );
@@ -1876,7 +1876,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should announce enter and leave code block with specified language label', () => {
-			setModelData( model, join( codeblock( 'css' ), tag( 'paragraph' ) ) );
+			_setModelData( model, join( codeblock( 'css' ), tag( 'paragraph' ) ) );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
@@ -1892,7 +1892,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should announce enter and leave code block without language label', () => {
-			setModelData( model, join( codeblock( 'FooBar' ), tag( 'paragraph' ) ) );
+			_setModelData( model, join( codeblock( 'FooBar' ), tag( 'paragraph' ) ) );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
@@ -1908,7 +1908,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should announce sequential entry and exit of a code block with paragraph between', () => {
-			setModelData( model, join( codeblock( 'php' ), tag( 'paragraph' ), codeblock( 'css' ) ) );
+			_setModelData( model, join( codeblock( 'php' ), tag( 'paragraph' ), codeblock( 'css' ) ) );
 
 			model.change( writer => {
 				writer.setSelection( createRange( root, [ 0, 0 ], root, [ 0, 1 ] ) );
@@ -1932,7 +1932,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should announce sequential entry and exit of a code block that starts immediately after another code block', () => {
-			setModelData(
+			_setModelData(
 				model,
 				join(
 					codeblock( 'css' ),
@@ -1964,7 +1964,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should announce random enter and exit of a code block that starts immediately after another code block', () => {
-			setModelData(
+			_setModelData(
 				model,
 				join(
 					codeblock( 'css' ),

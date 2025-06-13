@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DiffItem, DiffItemAttribute, Element, Node } from 'ckeditor5/src/engine.js';
+import type { DifferItem, DifferItemAttribute, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
@@ -211,12 +211,12 @@ export class FindAndReplaceEditing extends Plugin {
 	 * Reacts to document changes in order to update search list.
 	 */
 	private _onDocumentChange = () => {
-		const changedNodes = new Set<Node>();
+		const changedNodes = new Set<ModelNode>();
 		const removedMarkers = new Set<string>();
 		const model = this.editor.model;
 		const { results } = this.state!;
 
-		const changes = model.document.differ.getChanges() as Array<Exclude<DiffItem, DiffItemAttribute>>;
+		const changes = model.document.differ.getChanges() as Array<Exclude<DifferItem, DifferItemAttribute>>;
 		const changedMarkers = model.document.differ.getChangedMarkers();
 
 		// Get nodes in which changes happened to re-run a search callback on them.
@@ -226,7 +226,7 @@ export class FindAndReplaceEditing extends Plugin {
 			}
 
 			if ( change.name === '$text' || ( change.position.nodeAfter && model.schema.isInline( change.position.nodeAfter ) ) ) {
-				changedNodes.add( change.position.parent as Element );
+				changedNodes.add( change.position.parent as ModelElement );
 
 				[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
 					removedMarkers.add( markerAtChange.name );
@@ -245,7 +245,7 @@ export class FindAndReplaceEditing extends Plugin {
 
 		// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
 		changedNodes.forEach( node => {
-			const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node as Element ) ) ];
+			const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node as ModelElement ) ) ];
 
 			markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 		} );

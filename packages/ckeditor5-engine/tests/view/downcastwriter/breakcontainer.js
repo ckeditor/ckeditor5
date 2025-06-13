@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { Position } from '../../../src/view/position.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -16,21 +16,21 @@ describe( 'DowncastWriter', () => {
 	describe( 'breakContainer()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test break position.
 		//
 		// @param {String} input
 		// @param {String} expected
 		function testBreakContainer( input, expected ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 
 			const newPosition = writer.breakContainer( selection.getFirstPosition() );
-			expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
 		}
 
 		before( () => {
-			document = new Document( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			document = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'break inside element - should break container element at given position', () => {
@@ -86,7 +86,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if position parent is not container', () => {
-			const { selection } = parse( '<container:div>foo{}bar</container:div>' );
+			const { selection } = _parseView( '<container:div>foo{}bar</container:div>' );
 
 			expectToThrowCKEditorError( () => {
 				writer.breakContainer( selection.getFirstPosition() );
@@ -94,8 +94,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if position parent is root', () => {
-			const element = new ContainerElement( document, 'div' );
-			const position = Position._createAt( element, 0 );
+			const element = new ViewContainerElement( document, 'div' );
+			const position = ViewPosition._createAt( element, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.breakContainer( position );

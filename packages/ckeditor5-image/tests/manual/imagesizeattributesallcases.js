@@ -12,7 +12,7 @@ import { ImageResize } from '../../src/imageresize.js';
 import { ImageSizeAttributes } from '../../src/imagesizeattributes.js';
 import { PictureEditing } from '../../src/pictureediting.js';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 const commonConfig = getConfig();
 const configPx = getConfig( true );
@@ -360,7 +360,7 @@ function updateLogsAndData( domElement, editor ) {
 	const editorDataText = domElement.parentElement.querySelector( '.editor-data-text' );
 
 	// model
-	editorModel.insertAdjacentText( 'beforeend', getData( editor.model, { withoutSelection: true } ) );
+	editorModel.insertAdjacentText( 'beforeend', _getModelData( editor.model, { withoutSelection: true } ) );
 	editorModel.insertAdjacentHTML( 'beforeend', '<p>---</p>' );
 
 	// data (html)

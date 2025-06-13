@@ -48,7 +48,7 @@ export class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * @param callback If a string is passed, then the keystroke will
 	 * {@link module:core/editor/editor~Editor#execute execute a command}.
 	 * If a function, then it will be called with the
-	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
+	 * {@link module:engine/view/observer/keyobserver~ViewDocumentKeyEventData key event data} object and
 	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
 	 * @param options Additional options.
 	 * @param options.priority The priority of the keystroke callback. The higher the priority value

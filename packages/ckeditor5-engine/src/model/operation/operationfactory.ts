@@ -19,11 +19,11 @@ import { RootOperation } from './rootoperation.js';
 import { SplitOperation } from './splitoperation.js';
 import { MergeOperation } from './mergeoperation.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 const operations: {
 	[ className: string ]: {
-		fromJSON( json: any, document: Document ): Operation;
+		fromJSON( json: any, document: ModelDocument ): Operation;
 	};
 } = {};
 
@@ -49,7 +49,7 @@ export abstract class OperationFactory {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static fromJSON( json: any, document: Document ): Operation {
+	public static fromJSON( json: any, document: ModelDocument ): Operation {
 		return operations[ json.__className ].fromJSON( json, document );
 	}
 }

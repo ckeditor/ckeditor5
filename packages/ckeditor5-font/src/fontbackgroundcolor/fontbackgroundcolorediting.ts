@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { addBackgroundRules } from 'ckeditor5/src/engine.js';
+import { addBackgroundStylesRules } from 'ckeditor5/src/engine.js';
 
 import { FontBackgroundColorCommand } from './fontbackgroundcolorcommand.js';
 import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils.js';
@@ -109,7 +109,7 @@ export class FontBackgroundColorEditing extends Plugin {
 			columns: 5
 		} );
 
-		editor.data.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',
