@@ -7,7 +7,7 @@
  * @module engine/view/styles/utils
  */
 
-import type { BoxSides, PropertyDescriptor, StyleValue } from '../stylesmap.js';
+import type { BoxSides, StylePropertyDescriptor, StyleValue } from '../stylesmap.js';
 
 const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;
@@ -150,12 +150,12 @@ export function isURLStyleValue( string: string ): boolean {
 /**
  * Parses box sides as individual values.
  */
-export function getBoxSidesValues( value: string = '' ): BoxSides {
+export function getBoxSidesStyleValues( value: string = '' ): BoxSides {
 	if ( value === '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
 
-	const values = getShorthandValues( value );
+	const values = getShorthandStylesValues( value );
 
 	const top = values[ 0 ];
 	const bottom = values[ 2 ] || top;
@@ -170,14 +170,14 @@ export function getBoxSidesValues( value: string = '' ): BoxSides {
  * [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) notations:
  *
  * ```ts
- * stylesProcessor.setReducer( 'padding', getBoxSidesValueReducer( 'padding' ) );
+ * stylesProcessor.setReducer( 'padding', getBoxSidesStyleValueReducer( 'padding' ) );
  * ```
  */
-export function getBoxSidesValueReducer( styleShorthand: string ) {
-	return ( value: StyleValue ): Array<PropertyDescriptor> => {
+export function getBoxSidesStyleValueReducer( styleShorthand: string ) {
+	return ( value: StyleValue ): Array<StylePropertyDescriptor> => {
 		const { top, right, bottom, left } = value as BoxSides;
 
-		const reduced: Array<PropertyDescriptor> = [];
+		const reduced: Array<StylePropertyDescriptor> = [];
 
 		if ( ![ top, right, left, bottom ].every( value => !!value ) ) {
 			if ( top ) {
@@ -196,7 +196,7 @@ export function getBoxSidesValueReducer( styleShorthand: string ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getBoxSidesShorthandValue( value as BoxSides ) ] );
+			reduced.push( [ styleShorthand, getBoxSidesStyleShorthandValue( value as BoxSides ) ] );
 		}
 
 		return reduced;
@@ -208,11 +208,11 @@ export function getBoxSidesValueReducer( styleShorthand: string ) {
  * of a CSS property value.
  *
  * ```ts
- * getBoxSidesShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
+ * getBoxSidesStyleShorthandValue( { top: '1px', right: '1px', bottom: '2px', left: '1px' } );
  * // will return '1px 1px 2px'
  * ```
  */
-export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSides ): string {
+export function getBoxSidesStyleShorthandValue( { top, right, bottom, left }: BoxSides ): string {
 	const out = [];
 
 	if ( left !== right ) {
@@ -232,14 +232,14 @@ export function getBoxSidesShorthandValue( { top, right, bottom, left }: BoxSide
  * Creates a normalizer for a [shorthand](https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties) 1-to-4 value.
  *
  * ```ts
- * stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+ * stylesProcessor.setNormalizer( 'margin', getPositionStyleShorthandNormalizer( 'margin' ) );
  * ```
  */
-export function getPositionShorthandNormalizer( shorthand: string ) {
+export function getPositionStyleShorthandNormalizer( shorthand: string ) {
 	return ( value: string ): { path: string; value: BoxSides } => {
 		return {
 			path: shorthand,
-			value: getBoxSidesValues( value )
+			value: getBoxSidesStyleValues( value )
 		};
 	};
 }
@@ -248,11 +248,11 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * Parses parts of a 1-to-4 value notation - handles some CSS values with spaces (like RGB()).
  *
  * ```ts
- * getShorthandValues( 'red blue RGB(0, 0, 0)');
+ * getShorthandStylesValues( 'red blue RGB(0, 0, 0)');
  * // will return [ 'red', 'blue', 'RGB(0, 0, 0)' ]
  * ```
  */
-export function getShorthandValues( string: string ): Array<string> {
+export function getShorthandStylesValues( string: string ): Array<string> {
 	const matches = string.trim().slice( 0, 1500 ).matchAll( CSS_SHORTHAND_VALUE_REGEXP );
 
 	return Array.from( matches ).map( i => i[ 0 ] );

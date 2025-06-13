@@ -4,9 +4,9 @@
  */
 
 import {
-	getBoxSidesShorthandValue,
-	getBoxSidesValues,
-	getShorthandValues,
+	getBoxSidesStyleShorthandValue,
+	getBoxSidesStyleValues,
+	getShorthandStylesValues,
 	isColor,
 	isLength,
 	isLineStyle, isPercentage
@@ -205,29 +205,29 @@ describe( 'Styles utils', () => {
 		} );
 	} );
 
-	describe( 'getBoxSidesShorthandValue()', () => {
+	describe( 'getBoxSidesStyleShorthandValue()', () => {
 		it( 'should output one value for same values', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should output two value for top == bottom and right == left', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should output three values if bottom is different then top', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
 				.to.equal( 'foo foo bar' );
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
 				.to.equal( 'foo foo foo bar' );
 		} );
 	} );
 
-	describe( 'getBoxSidesValues()', () => {
+	describe( 'getBoxSidesStyleValues()', () => {
 		it( 'should parse empty string', () => {
-			expect( getBoxSidesValues( '' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '' ) ).to.deep.equal( {
 				top: undefined,
 				right: undefined,
 				bottom: undefined,
@@ -236,7 +236,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse one value', () => {
-			expect( getBoxSidesValues( 'foo' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -245,7 +245,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse two value', () => {
-			expect( getBoxSidesValues( 'foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'bar',
 				bottom: 'foo',
@@ -254,7 +254,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse three values', () => {
-			expect( getBoxSidesValues( 'foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'bar',
@@ -263,7 +263,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getBoxSidesValues( 'foo foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -272,7 +272,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should work with values containing white spaces', () => {
-			expect( getBoxSidesValues(
+			expect( getBoxSidesStyleValues(
 				'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 				'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 			) )
@@ -285,7 +285,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should work with values containing nested declarations', () => {
-			expect( getBoxSidesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
 				top: 'calc( 10px  -  3px )',
 				right: 'calc(  var( --foo-var ) + 20px  )',
 				bottom: 'calc( 10px  -  3px )',
@@ -294,53 +294,55 @@ describe( 'Styles utils', () => {
 		} );
 	} );
 
-	describe( 'getShorthandValues()', () => {
+	describe( 'getShorthandStylesValues()', () => {
 		it( 'should split string to separate values', () => {
-			expect( getShorthandValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( getShorthandStylesValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should trim truncate analyzed content to 1500 characters', () => {
 			const attribute = 'abc(10, 1)'.repeat( 160 );
 
-			expect( getShorthandValues( '   ' + attribute ) ).to.be.deep.equal(
+			expect( getShorthandStylesValues( '   ' + attribute ) ).to.be.deep.equal(
 				[ ...Array( 150 ) ].fill( 'abc(10, 1)' )
 			);
 		} );
 
 		it( 'should split string to separate values when value contain grouping parens', () => {
-			expect( getShorthandValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
+			expect( getShorthandStylesValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
 				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
 		} );
 
 		describe( 'for colors', () => {
 			it( 'should split color declarations: named colors', () => {
-				expect( getShorthandValues( 'red green black' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'red green black' ) ).to.deep.equal( [
 					'red', 'green', 'black'
 				] );
 			} );
 
 			it( 'should split color declarations: hex colors', () => {
-				expect( getShorthandValues( '#000 #000000EE' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '#000 #000000EE' ) ).to.deep.equal( [
 					'#000', '#000000EE'
 				] );
 			} );
 
 			it( 'should split color declarations: rgb colors', () => {
-				expect( getShorthandValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
+				expect( getShorthandStylesValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
 					.to.deep.equal( [
 						'rgb(10, 10, 10)', 'rgba(100, 100, 100, .3)', 'rgb(20% 20% 20%)', 'rgba(255 255 255 / .5)'
 					] );
 			} );
 
 			it( 'should split color declarations: hsl colors', () => {
-				expect( getShorthandValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' ) )
+				expect(
+					getShorthandStylesValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' )
+				)
 					.to.deep.equal( [
 						'hsl(50 80% 40%)', 'hsl(212.4, 89.3%, 89%)', 'hsla(209, 90%, 72%,.3)', 'hsla(0.3turn 60% 45% / .7)'
 					] );
 			} );
 
 			it( 'should split color declarations: other color formats', () => {
-				expect( getShorthandValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
+				expect( getShorthandStylesValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
 					.to.deep.equal( [
 						'hwb(50deg 30% 40%)', 'cmyk(0 81% 81% 30%)', 'color(xyz 22% 26% 53%)', 'lab(30 59.4 -96)'
 					] );
@@ -348,19 +350,19 @@ describe( 'Styles utils', () => {
 
 			describe( 'with additional white spaces in declarations', () => {
 				it( 'should split color declarations: named colors', () => {
-					expect( getShorthandValues( ' red   green  black ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' red   green  black ' ) ).to.deep.equal( [
 						'red', 'green', 'black'
 					] );
 				} );
 
 				it( 'should split color declarations: hex colors', () => {
-					expect( getShorthandValues( ' #000    #000000EE ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' #000    #000000EE ' ) ).to.deep.equal( [
 						'#000', '#000000EE'
 					] );
 				} );
 
 				it( 'should split color declarations: rgb colors', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 						'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 					) )
@@ -373,7 +375,7 @@ describe( 'Styles utils', () => {
 				} );
 
 				it( 'should split color declarations: hsl colors', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						' hsl( 50  80%  40%)   hsl(  212.4,   89.3%,   89% )' +
 						' hsla(  209,  90%,   72%, .3  ) hsla( 0.3turn  60%   45%  /  .7  )'
 					) )
@@ -386,7 +388,7 @@ describe( 'Styles utils', () => {
 				} );
 
 				it( 'should split color declarations: other color formats', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						'  hwb(  50deg  30%   40%  )  cmyk( 0   81%  81%    30% )' +
 						'  color( xyz   22%  26%  53%)  lab(  30 59.4  -96 ) '
 					) )
@@ -402,26 +404,26 @@ describe( 'Styles utils', () => {
 
 		describe( 'for non-color declarations', () => {
 			it( 'should split size declarations: simple units', () => {
-				expect( getShorthandValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
 					'3px', '2em', '10vw', '20%'
 				] );
 			} );
 
 			it( 'should split size declarations: values with calc() expressions', () => {
-				expect( getShorthandValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
 					'calc(10px - 3px)', 'calc(var(--foo-var) + 20px)'
 				] );
 			} );
 
 			describe( 'with additional white spaces', () => {
 				it( 'should split size declarations: simple units', () => {
-					expect( getShorthandValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
 						'3px', '2em', '10vw', '20%'
 					] );
 				} );
 
 				it( 'should split size declarations: values with calc() expressions', () => {
-					expect( getShorthandValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
 						'calc( 10px  -  3px )', 'calc(  var( --foo-var ) + 20px  )'
 					] );
 				} );

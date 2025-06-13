@@ -7,9 +7,9 @@
  * @module engine/view/styles/background
  */
 
-import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
+import type { StylesProcessor, StylePropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
 import {
-	getShorthandValues,
+	getShorthandStylesValues,
 	isAttachmentStyleValue,
 	isColorStyleValue,
 	isPositionStyleValue,
@@ -59,7 +59,7 @@ function getBackgroundNormalizer(): Normalizer {
 			image?: string;
 		} = {};
 
-		const parts = getShorthandValues( value );
+		const parts = getShorthandStylesValues( value );
 
 		for ( const part of parts ) {
 			if ( isRepeatStyleValue( part ) ) {
@@ -92,7 +92,7 @@ function getBackgroundColorNormalizer(): Normalizer {
 
 function getBackgroundReducer(): Reducer {
 	return value => {
-		const ret: Array<PropertyDescriptor> = [];
+		const ret: Array<StylePropertyDescriptor> = [];
 
 		ret.push( [ 'background-color', ( value as Styles ).color as string ] );
 

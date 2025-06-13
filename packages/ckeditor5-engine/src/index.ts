@@ -350,7 +350,7 @@ export type { ViewDocumentSelectionChangeEvent, ViewDocumentSelectionChangeDoneE
 export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view.js';
 
 // View / Styles.
-export { StylesMap, StylesProcessor, type BoxSides } from './view/stylesmap.js';
+export { StylesMap, StylesProcessor, type BoxSides, type StylePropertyDescriptor } from './view/stylesmap.js';
 export { addBackgroundStylesRules } from './view/styles/background.js';
 export { addBorderStylesRules } from './view/styles/border.js';
 export { addMarginStylesRules } from './view/styles/margin.js';
@@ -364,11 +364,11 @@ export {
 	isPositionStyleValue,
 	isAttachmentStyleValue,
 	isURLStyleValue,
-	getBoxSidesValues,
-	getBoxSidesValueReducer,
-	getBoxSidesShorthandValue,
-	getPositionShorthandNormalizer,
-	getShorthandValues
+	getBoxSidesStyleValues,
+	getBoxSidesStyleValueReducer,
+	getBoxSidesStyleShorthandValue,
+	getPositionStyleShorthandNormalizer,
+	getShorthandStylesValues
 } from './view/styles/utils.js';
 
 // Development / testing utils.

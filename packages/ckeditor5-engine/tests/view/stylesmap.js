@@ -7,7 +7,7 @@ import { StylesMap, StylesProcessor } from '../../src/view/stylesmap.js';
 import encodedImage from './_utils/encodedimage.txt';
 import { addMarginStylesRules } from '../../src/view/styles/margin.js';
 import { addBorderStylesRules } from '../../src/view/styles/border.js';
-import { getBoxSidesValueReducer } from '../../src/view/styles/utils.js';
+import { getBoxSidesStyleValueReducer } from '../../src/view/styles/utils.js';
 
 describe( 'StylesMap', () => {
 	let stylesMap, stylesProcessor;
@@ -24,7 +24,7 @@ describe( 'StylesMap', () => {
 			path: 'foo.top',
 			value
 		} ) );
-		stylesProcessor.setReducer( 'foo', getBoxSidesValueReducer( 'foo' ) );
+		stylesProcessor.setReducer( 'foo', getBoxSidesStyleValueReducer( 'foo' ) );
 
 		addMarginStylesRules( stylesProcessor );
 		stylesMap = new StylesMap( stylesProcessor );

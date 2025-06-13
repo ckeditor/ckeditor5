@@ -489,8 +489,8 @@ export class StylesMap implements ViewElementAttributeValue {
 	/**
 	 * Returns normalized styles entries for further processing.
 	 */
-	public getStylesEntries(): Array<PropertyDescriptor> {
-		const parsed: Array<PropertyDescriptor> = [];
+	public getStylesEntries(): Array<StylePropertyDescriptor> {
+		const parsed: Array<StylePropertyDescriptor> = [];
 
 		const keys = Object.keys( this._styles );
 
@@ -772,7 +772,7 @@ export class StylesProcessor {
 	 *
 	 * @param name Name of style property.
 	 */
-	public getReducedForm( name: string, styles: Styles ): Array<PropertyDescriptor> {
+	public getReducedForm( name: string, styles: Styles ): Array<StylePropertyDescriptor> {
 		const normalizedValue = this.getNormalized( name, styles );
 
 		// Might be empty string.
@@ -1152,7 +1152,7 @@ function removeStyles( styles: Styles, toRemove: Styles ) {
  * const marginTopDescriptor = [ 'margin-top', '2px' ];
  * ```
  */
-export type PropertyDescriptor = [ name: string, value: string ];
+export type StylePropertyDescriptor = [ name: string, value: string ];
 
 /**
  * An object describing values associated with the sides of a box, for instance margins, paddings,
@@ -1228,4 +1228,4 @@ export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValu
  *
  * @see ~StylesProcessor#setReducer
  */
-export type Reducer = ( value: StyleValue ) => Array<PropertyDescriptor>;
+export type Reducer = ( value: StyleValue ) => Array<StylePropertyDescriptor>;
