@@ -222,6 +222,8 @@ export { ViewRenderer } from './view/renderer.js';
 export { EditingView } from './view/view.js';
 export { ViewDocument, type ViewDocumentPostFixer, type ViewDocumentChangeType } from './view/document.js';
 export { ViewText } from './view/text.js';
+export { ViewTextProxy } from './view/textproxy.js';
+export { ViewTokenList } from './view/tokenlist.js';
 export {
 	ViewElement,
 	type ViewElementAttributes,

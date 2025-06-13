@@ -12,7 +12,7 @@ import { ViewDocument } from '../../src/view/document.js';
 import { addBorderStylesRules } from '../../src/view/styles/border.js';
 import { addMarginStylesRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import { TokenList } from '../../src/view/tokenlist.js';
+import { ViewTokenList } from '../../src/view/tokenlist.js';
 import { StylesMap } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Element', () => {
@@ -71,7 +71,7 @@ describe( 'Element', () => {
 		it( 'should move class attribute to class set ', () => {
 			const el = new ViewElement( document, 'p', { id: 'test', class: 'one two three' } );
 
-			expect( el._attrs.get( 'class' ) ).to.be.instanceof( TokenList );
+			expect( el._attrs.get( 'class' ) ).to.be.instanceof( ViewTokenList );
 			expect( el._attrs.has( 'id' ) ).to.be.true;
 			expect( el._attrs.get( 'class' ).has( 'one' ) ).to.be.true;
 			expect( el._attrs.get( 'class' ).has( 'two' ) ).to.be.true;
@@ -526,7 +526,7 @@ describe( 'Element', () => {
 			it( 'should set class', () => {
 				el._setAttribute( 'class', 'foo bar' );
 
-				expect( el._attrs.get( 'class' ) ).to.be.instanceof( TokenList );
+				expect( el._attrs.get( 'class' ) ).to.be.instanceof( ViewTokenList );
 				expect( el._attrs.get( 'class' ).has( 'foo' ) ).to.be.true;
 				expect( el._attrs.get( 'class' ).has( 'bar' ) ).to.be.true;
 			} );

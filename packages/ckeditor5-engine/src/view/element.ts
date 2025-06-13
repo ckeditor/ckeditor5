@@ -16,7 +16,7 @@ import { StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
 import { type ViewDocument } from './document.js';
 import { type ViewItem } from './item.js';
-import { TokenList } from './tokenlist.js';
+import { ViewTokenList } from './tokenlist.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -83,8 +83,8 @@ export class ViewElement extends ViewNode {
 	 *
 	 * Note that this is just an alias for `this._attrs.get( 'class' );`
 	 */
-	private get _classes(): TokenList | undefined {
-		return this._attrs.get( 'class' ) as TokenList | undefined;
+	private get _classes(): ViewTokenList | undefined {
+		return this._attrs.get( 'class' ) as ViewTokenList | undefined;
 	}
 
 	/**
@@ -626,7 +626,7 @@ export class ViewElement extends ViewNode {
 			if ( !currentValue ) {
 				currentValue = usesStylesMap( this.name, key ) ?
 					new StylesMap( this.document.stylesProcessor ) :
-					new TokenList();
+					new ViewTokenList();
 
 				this._attrs.set( key, currentValue );
 			}
@@ -1140,9 +1140,9 @@ export class ViewElement extends ViewNode {
 			}
 			else if ( usesTokenList( this.name, key ) ) {
 				// This is either an element clone so we need to clone token list, or a new instance which requires value to be parsed.
-				const newValue = value instanceof TokenList ?
+				const newValue = value instanceof ViewTokenList ?
 					value._clone() :
-					new TokenList().setTo( String( value ) );
+					new ViewTokenList().setTo( String( value ) );
 
 				attrsMap.set( key, newValue );
 			}
@@ -1199,7 +1199,7 @@ ViewElement.prototype.is = function( type: string, name?: string ): boolean {
 };
 
 /**
- * Common interface for a {@link module:engine/view/tokenlist~TokenList} and {@link module:engine/view/stylesmap~StylesMap}.
+ * Common interface for a {@link module:engine/view/tokenlist~ViewTokenList} and {@link module:engine/view/stylesmap~StylesMap}.
  */
 export interface ViewElementAttributeValue {
 

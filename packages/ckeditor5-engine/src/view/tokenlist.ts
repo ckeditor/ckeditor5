@@ -13,7 +13,7 @@ import type { ViewElementAttributeValue } from './element.js';
 /**
  * Token list. Allows handling (adding, removing, retrieving) a set of tokens (for example class names).
  */
-export class TokenList implements ViewElementAttributeValue {
+export class ViewTokenList implements ViewElementAttributeValue {
 	/**
 	 * The set of tokens.
 	 */
@@ -99,7 +99,7 @@ export class TokenList implements ViewElementAttributeValue {
 	/**
 	 * Returns `true` if both attributes have the same tokens.
 	 */
-	public isSimilar( other: TokenList ): boolean {
+	public isSimilar( other: ViewTokenList ): boolean {
 		if ( this.size !== other.size ) {
 			return false;
 		}
@@ -199,7 +199,7 @@ export class TokenList implements ViewElementAttributeValue {
 	 *
 	 * @internal
 	 */
-	public _mergeFrom( other: TokenList ): void {
+	public _mergeFrom( other: ViewTokenList ): void {
 		for ( const token of other._set.keys() ) {
 			if ( !this._set.has( token ) ) {
 				this._set.add( token );
@@ -216,7 +216,7 @@ export class TokenList implements ViewElementAttributeValue {
 	 *
 	 * @internal
 	 */
-	public _isMatching( other: TokenList ): boolean {
+	public _isMatching( other: ViewTokenList ): boolean {
 		for ( const name of other._set.keys() ) {
 			if ( !this._set.has( name ) ) {
 				return false;
