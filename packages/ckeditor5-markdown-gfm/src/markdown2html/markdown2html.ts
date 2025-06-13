@@ -7,51 +7,56 @@
  * @module markdown-gfm/markdown2html/markdown2html
  */
 
-import { marked } from 'marked';
+import { unified, type Plugin } from 'unified';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import remarkBreaks from 'remark-breaks';
+import rehypeStringify from 'rehype-dom-stringify';
+import { visit } from 'unist-util-visit';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
  */
 export class MarkdownToHtml {
-	private _parser: typeof marked;
-
-	private _options = {
-		gfm: true,
-		breaks: true,
-		tables: true,
-		xhtml: true,
-		headerIds: false
-	};
+	private _processor;
 
 	constructor() {
-		// Overrides.
-		marked.use( {
-			tokenizer: {
-				// Disable the autolink rule in the lexer.
-				autolink: () => null as any,
-				url: () => null as any
-			},
-			renderer: {
-				checkbox( ...args: Array<any> ) {
-					// Remove bogus space after <input type="checkbox"> because it would be preserved
-					// by DomConverter as it's next to an inline object.
-					return Object.getPrototypeOf( this ).checkbox.call( this, ...args ).trimRight();
-				},
-
-				code( ...args: Array<any> ) {
-					// Since marked v1.2.8, every <code> gets a trailing "\n" whether it originally
-					// ended with one or not (see https://github.com/markedjs/marked/issues/1884 to learn why).
-					// This results in a redundant soft break in the model when loaded into the editor, which
-					// is best prevented at this stage. See https://github.com/ckeditor/ckeditor5/issues/11124.
-					return Object.getPrototypeOf( this ).code.call( this, ...args ).replace( '\n</code>', '</code>' );
-				}
-			}
-		} );
-
-		this._parser = marked;
+		this._processor = unified()
+			// Parses Markdown to an abstract syntax tree (AST).
+			.use( remarkParse )
+			// Adds support for GitHub Flavored Markdown (GFM).
+			.use( remarkGfm, { singleTilde: true } )
+			// Replaces line breaks with `<br>` tags.
+			.use( remarkBreaks )
+			// Turns markdown syntax tree to HTML syntax tree, ignoring embedded HTML.
+			.use( remarkRehype, { allowDangerousHtml: true } )
+			// Handles embedded HTML.
+			.use( rehypeRaw )
+			// Removes classes from list elements.
+			.use( this.deleteClassesFromToDoLists )
+			// Serializes HTML syntax tree
+			.use( rehypeStringify );
 	}
 
 	public parse( markdown: string ): string {
-		return this._parser.parse( markdown, this._options );
+		return this._processor
+			.processSync( markdown )
+			.toString()
+			.replaceAll( '\n</code>', '</code>' );
+	}
+
+	/**
+	 * Removes default classes added to `<ul>`, `<ol>`, and `<li>` elements.
+	 */
+	private deleteClassesFromToDoLists(): ReturnType<Plugin> {
+		return function( tree ) {
+			visit( tree, 'element', ( node: any ) => {
+				if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
+					delete node.properties.className;
+				}
+			} );
+		};
 	}
 }
