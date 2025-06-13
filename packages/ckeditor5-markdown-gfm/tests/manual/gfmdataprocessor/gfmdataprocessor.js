@@ -7,11 +7,11 @@ import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { _stringifyView, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import { GFMDataProcessor } from '../../../src/gfmdataprocessor.js';
+import { MarkdownGfmDataProcessor } from '../../../src/gfmdataprocessor.js';
 
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );
-const dataProcessor = new GFMDataProcessor( new ViewDocument( new StylesProcessor() ) );
+const dataProcessor = new MarkdownGfmDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 document.getElementById( 'button_to_view' ).addEventListener( 'click', convertToView );
 document.getElementById( 'button_to_md' ).addEventListener( 'click', convertToMarkdown );

@@ -15,15 +15,15 @@ import {
 	type MatcherPattern
 } from 'ckeditor5/src/engine.js';
 
-import { MarkdownToHtml } from './markdown2html/markdown2html.js';
-import { HtmlToMarkdown } from './html2markdown/html2markdown.js';
+import { MarkdownGfmMdToHtml } from './markdown2html/markdown2html.js';
+import { MarkdownGfmHtmlToMd } from './html2markdown/html2markdown.js';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
  *
  * See the {@glink features/markdown Markdown output} guide to learn more on how to enable it.
  */
-export class GFMDataProcessor implements DataProcessor {
+export class MarkdownGfmDataProcessor implements DataProcessor {
 	/**
 	 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 	 */
@@ -32,20 +32,20 @@ export class GFMDataProcessor implements DataProcessor {
 	/**
 	 * Helper for converting Markdown to HTML.
 	 */
-	private _markdown2html: MarkdownToHtml;
+	private _markdown2html: MarkdownGfmMdToHtml;
 
 	/**
 	 * Helper for converting HTML to Markdown.
 	 */
-	private _html2markdown: HtmlToMarkdown;
+	private _html2markdown: MarkdownGfmHtmlToMd;
 
 	/**
 	 * Creates a new instance of the Markdown data processor class.
 	 */
 	constructor( document: ViewDocument ) {
 		this._htmlDP = new HtmlDataProcessor( document );
-		this._markdown2html = new MarkdownToHtml();
-		this._html2markdown = new HtmlToMarkdown();
+		this._markdown2html = new MarkdownGfmMdToHtml();
+		this._html2markdown = new MarkdownGfmHtmlToMd();
 	}
 
 	/**
