@@ -1,7 +1,7 @@
 ---
 category: examples-builds
 meta-title: Inline editor example | CKEditor 5 Documentation
-meta-description: Explore the Inline Editor type of CKEditor 5 for a seamless editing experience directly within page content without a fixed toolbar.
+meta-description: Learn how to implement an inline editor with a floating toolbar for direct content editing in its target location.
 order: 20
 toc: false
 contributeUrl: false

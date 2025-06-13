@@ -1,7 +1,7 @@
 ---
 category: examples-builds
 meta-title: Document editor example | CKEditor 5 Documentation
-meta-description: Use the Document Editor build in CKEditor 5 for a full-page, Word-like editing experience with advanced formatting and layout features.
+meta-description: Explore the document editor preset for rich text editing with features similar to native word processors.
 order: 50
 toc: false
 contributeUrl: false
