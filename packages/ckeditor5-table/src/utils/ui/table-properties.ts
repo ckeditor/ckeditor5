@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { isColorStyleValue, isLength, isPercentage } from 'ckeditor5/src/engine.js';
+import { isColorStyleValue, isLengthStyleValue, isPercentageStyleValue } from 'ckeditor5/src/engine.js';
 
 import { type TableCellPropertiesView } from '../../tablecellproperties/ui/tablecellpropertiesview.js';
 import { type TablePropertiesView } from '../../tableproperties/ui/tablepropertiesview.js';
@@ -99,7 +99,7 @@ export function colorFieldValidator( value: string ): boolean {
 export function lengthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
-	return isEmpty( value ) || isNumberString( value ) || isLength( value ) || isPercentage( value );
+	return isEmpty( value ) || isNumberString( value ) || isLengthStyleValue( value ) || isPercentageStyleValue( value );
 }
 
 /**
@@ -113,7 +113,7 @@ export function lengthFieldValidator( value: string ): boolean {
 export function lineWidthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
-	return isEmpty( value ) || isNumberString( value ) || isLength( value );
+	return isEmpty( value ) || isNumberString( value ) || isLengthStyleValue( value );
 }
 
 /**

@@ -7,31 +7,32 @@ import {
 	getBoxSidesStyleShorthandValue,
 	getBoxSidesStyleValues,
 	getShorthandStylesValues,
-	isColor,
-	isLength,
-	isLineStyle, isPercentage
+	isColorStyleValue,
+	isLengthStyleValue,
+	isLineStyleValue,
+	isPercentageStyleValue
 } from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
 		it( 'returns true for #RGB color', () => {
-			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColor );
+			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RRGGBB color', () => {
-			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColor );
+			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RGBA color', () => {
-			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColor );
+			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RRGGBBAA color', () => {
-			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColor );
+			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColorStyleValue );
 		} );
 
 		it( 'returns false for invalid # color', () => {
-			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColor( value ) );
+			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for rgb() color', () => {
@@ -44,7 +45,7 @@ describe( 'Styles utils', () => {
 				// 'rgb(11, 22, 33, 0.1)', // rgba() is equal to rgb()
 				// 'rgb(255, 0, 153.0)', // Floats are valid
 				// 'rgb(255 0 153)', // CSS Level 4 notation
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for invalid rgb() color', () => {
@@ -62,7 +63,7 @@ describe( 'Styles utils', () => {
 				'rgb(11, 22, 33, .153)'
 				// Unsupported:
 				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages - adds complexity.,
-			], value => !isColor( value ) );
+			], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for rgba() color', () => {
@@ -81,7 +82,7 @@ describe( 'Styles utils', () => {
 				'rgba(255, 0, 153, 1)',
 				'rgba(100%,0%,60%, 1)',
 				'rgba(100%, 0%, 60%, 1)'
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for wrong rgba() color', () => {
@@ -90,7 +91,7 @@ describe( 'Styles utils', () => {
 				'rgba((1,2,3,0.7',
 				'rgba(1,a,3,0.7)',
 				'rgba(1,2,3,*)'
-			], value => !isColor( value ) );
+			], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for hsl() color', () => {
@@ -107,15 +108,15 @@ describe( 'Styles utils', () => {
 				// 'hsl(270 60% 70%)', // CSS Level 4 notation
 				// 'hsl(270 60% 50% / .15)', // CSS Level 4 notation
 				// 'hsl(270 60% 50% / 15%)' // CSS Level 4 notation
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns true for hsla() color', () => {
-			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColor );
+			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for color keywords', () => {
-			testValues( [ 'currentColor', 'transparent' ], isColor );
+			testValues( [ 'currentColor', 'transparent' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for color keyword', () => {
@@ -130,11 +131,11 @@ describe( 'Styles utils', () => {
 				'windowtext',
 				// CSS Level 4
 				'rebeccapurple'
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for unknown color keyword', () => {
-			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColor( value ) );
+			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColorStyleValue( value ) );
 		} );
 	} );
 
@@ -142,7 +143,7 @@ describe( 'Styles utils', () => {
 		it( 'returns true for line style', () => {
 			testValues(
 				[ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-				isLineStyle
+				isLineStyleValue
 			);
 		} );
 	} );
@@ -166,7 +167,7 @@ describe( 'Styles utils', () => {
 					'1vmin',
 					'1vmax'
 				],
-				isLength
+				isLengthStyleValue
 			);
 		} );
 
@@ -180,28 +181,28 @@ describe( 'Styles utils', () => {
 					'345.457px',
 					'.457px'
 				],
-				isLength
+				isLengthStyleValue
 			);
 		} );
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isLength( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isLengthStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'isPercentage()', () => {
 		it( 'returns true valid values', () => {
-			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentage );
+			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentageStyleValue );
 		} );
 
 		it( 'returns false for not a percentage values', () => {
-			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentage( value ) );
+			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentageStyleValue( value ) );
 		} );
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isPercentage( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isPercentageStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
 		} );
 	} );
 
