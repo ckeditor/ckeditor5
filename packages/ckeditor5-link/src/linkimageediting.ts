@@ -24,7 +24,7 @@ import {
 import { toMap } from 'ckeditor5/src/utils.js';
 
 import { LinkEditing } from './linkediting.js';
-import { type ManualDecorator } from './utils/manualdecorator.js';
+import { type LinkManualDecorator } from './utils/manualdecorator.js';
 import { type LinkCommand } from './linkcommand.js';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
@@ -91,7 +91,7 @@ export class LinkImageEditing extends Plugin {
 	}
 
 	/**
-	 * Processes transformed {@link module:link/utils/manualdecorator~ManualDecorator} instances and attaches proper converters
+	 * Processes transformed {@link module:link/utils/manualdecorator~LinkManualDecorator} instances and attaches proper converters
 	 * that will work when linking an image.
 	 */
 	private _enableManualDecorators(): void {
@@ -239,7 +239,7 @@ function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher )
 /**
  * Returns a converter that decorates the `<a>` element when the image is the link label.
  */
-function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
+function downcastImageLinkManualDecorator( decorator: LinkManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
 		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
 			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
@@ -289,7 +289,7 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
 /**
  * Returns a converter that checks whether manual decorators should be applied to the link.
  */
-function upcastImageLinkManualDecorator( editor: Editor, decorator: ManualDecorator ): ( dispatcher: UpcastDispatcher ) => void {
+function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDecorator ): ( dispatcher: UpcastDispatcher ) => void {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
