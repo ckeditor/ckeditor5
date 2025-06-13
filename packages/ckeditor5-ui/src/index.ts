@@ -29,7 +29,7 @@ export { addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgri
 export { AccessibilityHelpContentView } from './editorui/accessibilityhelp/accessibilityhelpcontentview.js';
 export { AccessibilityHelp } from './editorui/accessibilityhelp/accessibilityhelp.js';
 export { BodyCollection } from './editorui/bodycollection.js';
-export { PoweredBy, type PoweredByConfig } from './editorui/poweredby.js';
+export { PoweredBy } from './editorui/poweredby.js';
 
 export { Badge, type BadgeConfig } from './badge/badge.js';
 

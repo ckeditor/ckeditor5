@@ -13,11 +13,9 @@ import { parseBase64EncodedObject, type Locale } from '@ckeditor/ckeditor5-utils
 import { View } from '../view.js';
 import { Badge } from '../badge/badge.js';
 import { IconView } from '../icon/iconview.js';
-import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
+import type { Editor, PoweredByConfig } from '@ckeditor/ckeditor5-core';
 
 const DEFAULT_LABEL = 'Powered by';
-
-export type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
