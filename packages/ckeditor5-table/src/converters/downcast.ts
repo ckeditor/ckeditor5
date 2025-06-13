@@ -12,7 +12,7 @@ import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
-import type { AdditionalSlot } from '../tableediting.js';
+import type { TableConversionAdditionalSlot } from '../tableediting.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -225,5 +225,5 @@ export interface DowncastTableOptions {
 	/**
 	 * Array of additional slot handlers.
 	 */
-	additionalSlots: Array<AdditionalSlot>;
+	additionalSlots: Array<TableConversionAdditionalSlot>;
 }
