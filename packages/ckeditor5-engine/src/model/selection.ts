@@ -790,7 +790,7 @@ export type ModelSelectionChangeEvent = {
 /**
  * Fired when selection range(s) changed.
  *
- * @eventName ~Selection#change:range
+ * @eventName ~ModelSelection#change:range
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
@@ -809,7 +809,7 @@ export type ModelSelectionChangeRangeEvent = {
 /**
  * Fired when selection attribute changed.
  *
- * @eventName ~Selection#change:attribute
+ * @eventName ~ModelSelection#change:attribute
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes

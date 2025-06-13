@@ -1302,7 +1302,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName ~Schema#checkChild
+ * @eventName ~ModelSchema#checkChild
  * @param args The `checkChild()`'s arguments.
  */
 export type ModelSchemaCheckChildEvent = {
@@ -1370,7 +1370,7 @@ export type ModelSchemaCheckChildEvent = {
  * }, { priority: 'high' } );
  * ```
  *
- * @eventName ~Schema#checkAttribute
+ * @eventName ~ModelSchema#checkAttribute
  * @param args The `checkAttribute()`'s arguments.
  */
 export type ModelSchemaCheckAttributeEvent = {

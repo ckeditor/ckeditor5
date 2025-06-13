@@ -228,7 +228,7 @@ export type ViewDocumentChangeType = 'children' | 'attributes' | 'text';
  * {@link module:engine/view/view~EditingView#event:render rendered}, but should be also fired by observers in case of
  * other actions which may change layout, for instance when image loads.
  *
- * @eventName ~Document#layoutChanged
+ * @eventName ~ViewDocument#layoutChanged
  */
 export type ViewDocumentLayoutChangedEvent = {
 	name: 'layoutChanged';

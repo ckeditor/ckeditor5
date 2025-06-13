@@ -827,7 +827,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
  * balloon panel. If you wants to change view structure use
  * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers}.
  *
- * @eventName ~View#render
+ * @eventName ~EditingView#render
  */
 export type ViewRenderEvent = {
 	name: 'render';
@@ -845,7 +845,7 @@ export type ViewRenderEvent = {
  *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
  *   for instance, if the integration requires re–scrolling after certain interaction.
  *
- * @eventName ~View#scrollToTheSelection
+ * @eventName ~EditingView#scrollToTheSelection
  */
 export type ViewScrollToTheSelectionEvent = {
 	name: 'scrollToTheSelection';

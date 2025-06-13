@@ -156,7 +156,7 @@ function transform( this: ModelLivePosition, operation: Operation ) {
 /**
  * Fired when `ModelLivePosition` instance is changed due to changes on {@link module:engine/model/document~ModelDocument}.
  *
- * @eventName ~ModelLivePositionChangeEvent#change
+ * @eventName ~ModelLivePosition#change
  * @param oldPosition Position equal to this live position before it got changed.
  */
 export type ModelLivePositionChangeEvent = {

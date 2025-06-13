@@ -313,10 +313,10 @@ ViewNode.prototype.is = function( type: string ): boolean {
  *
  * If `change:children` event is fired, there is an additional second parameter, which is an object with additional data related to change.
  *
- * @eventName ~Node#change
- * @eventName ~Node#change:children
- * @eventName ~Node#change:attributes
- * @eventName ~Node#change:text
+ * @eventName ~ViewNode#change
+ * @eventName ~ViewNode#change:children
+ * @eventName ~ViewNode#change:attributes
+ * @eventName ~ViewNode#change:text
  */
 export type ViewNodeChangeEvent = {
 	name: 'change' | `change:${ ViewDocumentChangeType }`;
