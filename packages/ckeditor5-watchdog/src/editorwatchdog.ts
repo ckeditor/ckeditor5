@@ -76,7 +76,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 *
 	 * @see #setCreator
 	 */
-	declare protected _creator: EditorCreatorFunction<TEditor>;
+	declare protected _creator: EditorWatchdogCreatorFunction<TEditor>;
 
 	/**
 	 * The destruction method.
@@ -131,7 +131,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 * ```
 	 */
-	public setCreator( creator: EditorCreatorFunction<TEditor> ): void {
+	public setCreator( creator: EditorWatchdogCreatorFunction<TEditor> ): void {
 		this._creator = creator;
 	}
 
@@ -616,7 +616,7 @@ export type EditorWatchdogRestartEvent = {
 	return: undefined;
 };
 
-export type EditorCreatorFunction<TEditor = Editor> = (
+export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
 	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
 	config: EditorConfig
 ) => Promise<TEditor>;

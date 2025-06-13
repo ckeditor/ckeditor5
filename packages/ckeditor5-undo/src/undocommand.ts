@@ -7,7 +7,7 @@
  * @module undo/undocommand
  */
 
-import { BaseCommand } from './basecommand.js';
+import { UndoRedoBaseCommand } from './basecommand.js';
 import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -17,7 +17,7 @@ import type { Batch } from '@ckeditor/ckeditor5-engine';
  *
  * The undo command also takes care of restoring the {@link module:engine/model/document~ModelDocument#selection document selection}.
  */
-export class UndoCommand extends BaseCommand {
+export class UndoCommand extends UndoRedoBaseCommand {
 	/**
 	 * Executes the command. This method reverts a {@link module:engine/model/batch~Batch batch} added to the command's stack, transforms
 	 * and applies the reverted version on the {@link module:engine/model/document~ModelDocument document} and removes the batch from

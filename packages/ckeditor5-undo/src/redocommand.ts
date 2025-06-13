@@ -7,7 +7,7 @@
  * @module undo/redocommand
  */
 
-import { BaseCommand } from './basecommand.js';
+import { UndoRedoBaseCommand } from './basecommand.js';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -17,7 +17,7 @@ import { BaseCommand } from './basecommand.js';
  *
  * The redo command also takes care of restoring the {@link module:engine/model/document~ModelDocument#selection document selection}.
  */
-export class RedoCommand extends BaseCommand {
+export class RedoCommand extends UndoRedoBaseCommand {
 	/**
 	 * Executes the command. This method reverts the last {@link module:engine/model/batch~Batch batch} added to
 	 * the command's stack, applies the reverted and transformed version on the
