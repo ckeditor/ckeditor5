@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingVIew } from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
@@ -4300,7 +4300,7 @@ describe( 'Renderer', () => {
 			let view, viewDoc, viewRoot, domRoot;
 
 			beforeEach( () => {
-				view = new EditingVIew( new StylesProcessor() );
+				view = new EditingView( new StylesProcessor() );
 
 				testUtils.sinon.stub( console, 'warn' )
 					.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
@@ -4477,7 +4477,7 @@ describe( 'Renderer', () => {
 		let view, viewDoc, viewRoot, domRoot, converter, observer;
 
 		beforeEach( () => {
-			view = new EditingVIew( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDoc = view.document;
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );

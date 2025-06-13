@@ -11,7 +11,7 @@ import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewText } from '../../../src/view/text.js';
@@ -414,7 +414,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if range is inside UIElement', () => {
-				const uiElement = new UIElement( document, 'span' );
+				const uiElement = new ViewUIElement( document, 'span' );
 				const container = new ViewContainerElement( document, 'p', null, uiElement );
 				const range = ViewRange._createFromParentsAndOffsets( uiElement, 0, container, 1 );
 

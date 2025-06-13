@@ -10,7 +10,7 @@ import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 
 import { ViewDocument } from '../../../src/view/document.js';
@@ -151,7 +151,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if range is placed inside UIElement', () => {
-			const uiElement = new UIElement( document, 'span' );
+			const uiElement = new ViewUIElement( document, 'span' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = ViewRange._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );

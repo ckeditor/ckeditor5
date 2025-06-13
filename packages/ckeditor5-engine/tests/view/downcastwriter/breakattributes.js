@@ -9,7 +9,7 @@ import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewPosition } from '../../../src/view/position.js';
@@ -264,7 +264,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if breaking inside UIElement #1', () => {
-				const span = new UIElement( document, 'span' );
+				const span = new ViewUIElement( document, 'span' );
 				new ViewContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
 				const position = new ViewPosition( span, 0 );
 
@@ -274,7 +274,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if breaking inside UIElement #2', () => {
-				const span = new UIElement( document, 'span' );
+				const span = new ViewUIElement( document, 'span' );
 				const b = new ViewAttributeElement( document, 'b' );
 				new ViewContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
 				const range = ViewRange._createFromParentsAndOffsets( span, 0, b, 0 );

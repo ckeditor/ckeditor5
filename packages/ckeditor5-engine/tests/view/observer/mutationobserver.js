@@ -5,7 +5,7 @@
 
 import { EditingView } from '../../../src/view/view.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
@@ -506,7 +506,7 @@ describe( 'MutationObserver', () => {
 		const renderStub = sinon.stub();
 
 		function createUIElement( name ) {
-			const element = new UIElement( viewDocument, name );
+			const element = new ViewUIElement( viewDocument, name );
 
 			element.render = function( domDocument ) {
 				const root = this.toDomElement( domDocument );

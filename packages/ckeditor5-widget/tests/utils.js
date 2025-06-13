@@ -22,7 +22,7 @@ import {
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
-import { UIElement } from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
+import { ViewUIElement } from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -133,7 +133,7 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).to.be.true;
 
 			const selectionHandle = element.getChild( 0 );
-			expect( selectionHandle ).to.be.instanceof( UIElement );
+			expect( selectionHandle ).to.be.instanceof( ViewUIElement );
 
 			const domSelectionHandle = selectionHandle.render( document );
 

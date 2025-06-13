@@ -9,7 +9,7 @@ import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 
 import { ViewDocument } from '../../../src/view/document.js';
@@ -158,7 +158,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove UIElement', () => {
-			const elementToRemove = new UIElement( document, 'span' );
+			const elementToRemove = new ViewUIElement( document, 'span' );
 
 			testDowncast(
 				elementToRemove,

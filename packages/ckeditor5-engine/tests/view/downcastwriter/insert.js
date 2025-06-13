@@ -7,7 +7,7 @@ import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 
@@ -252,7 +252,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to insert inside UIElement', () => {
-			const uiElement = new UIElement( document, 'span' );
+			const uiElement = new ViewUIElement( document, 'span' );
 			new ViewContainerElement( document, 'p', null, uiElement ); // eslint-disable-line no-new
 			const position = new ViewPosition( uiElement, 0 );
 			const attributeElement = new ViewAttributeElement( document, 'i' );

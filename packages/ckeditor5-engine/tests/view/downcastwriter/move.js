@@ -9,7 +9,7 @@ import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewRootEditableElement } from '../../../src/view/rooteditableelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewPosition } from '../../../src/view/position.js';
@@ -180,7 +180,7 @@ describe( 'DowncastWriter', () => {
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstUI = new UIElement( document, 'span' );
+			const dstUI = new ViewUIElement( document, 'span' );
 			new ViewContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
 			const dstPosition = new ViewPosition( dstUI, 0 );
 

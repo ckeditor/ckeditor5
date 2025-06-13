@@ -4,7 +4,7 @@
  */
 
 import { EditingView } from '../../../src/view/view.js';
-import { UIElement } from '../../../src/view/uielement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewText } from '../../../src/view/text.js';
@@ -20,7 +20,7 @@ describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
 	function createUIElement( name, contents ) {
-		const element = new UIElement( viewDocument, name );
+		const element = new ViewUIElement( viewDocument, name );
 
 		element.render = function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
