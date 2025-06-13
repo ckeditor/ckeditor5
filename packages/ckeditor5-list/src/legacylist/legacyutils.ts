@@ -25,6 +25,7 @@ import {
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
  *
+ * @internal
  * @param writer The writer instance.
  */
 export function createViewListItemElement( writer: DowncastWriter ): ViewContainerElement {
@@ -40,6 +41,7 @@ export function createViewListItemElement( writer: DowncastWriter ): ViewContain
  * Then, it binds the created view list item (`<li>`) with the model `listItem` element.
  * The function then returns the created view list item (`<li>`).
  *
+ * @internal
  * @param modelItem Model list item.
  * @param conversionApi Conversion interface.
  * @returns View list element.
@@ -65,6 +67,7 @@ export function generateLiInUl( modelItem: Item, conversionApi: DowncastConversi
  * should be in a view list element (`<ul>` or `<ol>`) and should be its only child.
  * See comments below to better understand the algorithm.
  *
+ * @internal
  * @param modelItem Model list item.
  * @param injectedItem
  * @param conversionApi Conversion interface.
@@ -187,6 +190,7 @@ export function injectViewList(
  * Helper function that takes two parameters that are expected to be view list elements, and merges them.
  * The merge happens only if both parameters are list elements of the same type (the same element name and the same class attributes).
  *
+ * @internal
  * @param viewWriter The writer instance.
  * @param firstList The first element to compare.
  * @param secondList The second element to compare.
@@ -224,6 +228,7 @@ export function mergeViewLists(
  * `<container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</container:p>`
  * For position ^, the position before "bar" will be returned.
  *
+ * @internal
  */
 export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosition {
 	return viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
@@ -233,6 +238,7 @@ export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosit
  * Helper function that searches for a previous list item sibling of a given model item that meets the given criteria
  * passed by the options object.
  *
+ * @internal
  * @param options Search criteria.
  * @param options.sameIndent Whether the sought sibling should have the same indentation.
  * @param options.smallerIndent Whether the sought sibling should have a smaller indentation.
@@ -273,6 +279,8 @@ export function getSiblingListItem(
 
 /**
  * Returns a first list view element that is direct child of the given view element.
+ *
+ * @internal
  */
 export function findNestedList( viewElement: ViewElement ): ViewElement | null {
 	for ( const node of ( viewElement.getChildren() as Iterable<ViewElement> ) ) {
@@ -291,6 +299,7 @@ export function findNestedList( viewElement: ViewElement ): ViewElement | null {
  *
  * Additionally, if the `position` is inside a list item, that list item will be returned as well.
  *
+ * @internal
  * @param position Starting position.
  * @param direction Walking direction.
  */
@@ -424,6 +433,8 @@ const NUMBERED_LIST_STYLE_TYPES = [
 
 /**
  * Checks whether the given list-style-type is supported by numbered or bulleted list.
+ *
+ * @internal
  */
 export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
 	if ( BULLETED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
