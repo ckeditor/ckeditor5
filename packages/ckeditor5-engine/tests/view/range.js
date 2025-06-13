@@ -8,7 +8,7 @@ import { ViewPosition } from '../../src/view/position.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewText } from '../../src/view/text.js';
-import { TextProxy } from '../../src/view/textproxy.js';
+import { ViewTextProxy } from '../../src/view/textproxy.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
@@ -713,7 +713,7 @@ describe( 'Range', () => {
 
 			it( 'should create a proper range on a text proxy', () => {
 				const text = new ViewText( document, 'foobar' );
-				const textProxy = new TextProxy( text, 2, 3 );
+				const textProxy = new ViewTextProxy( text, 2, 3 );
 				const range = ViewRange._createOn( textProxy );
 
 				expect( range.start.parent ).to.equal( text );

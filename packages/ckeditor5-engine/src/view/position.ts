@@ -332,7 +332,7 @@ export class ViewPosition extends TypeCheckable {
 	 * @param item View item after which the position should be located.
 	 */
 	public static _createAfter( item: ViewItem ): ViewPosition {
-		// TextProxy is not a instance of Node so we need do handle it in specific way.
+		// ViewTextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( '$textProxy' ) ) {
 			return new ViewPosition( item.textNode, item.offsetInText + item.data.length );
 		}
@@ -357,7 +357,7 @@ export class ViewPosition extends TypeCheckable {
 	 * @param item View item before which the position should be located.
 	 */
 	public static _createBefore( item: ViewItem ): ViewPosition {
-		// TextProxy is not a instance of Node so we need do handle it in specific way.
+		// ViewTextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( '$textProxy' ) ) {
 			return new ViewPosition( item.textNode, item.offsetInText );
 		}

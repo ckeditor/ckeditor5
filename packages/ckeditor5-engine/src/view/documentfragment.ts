@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { ViewText } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ViewTextProxy } from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -294,7 +294,7 @@ function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<
 				return new ViewText( document, node );
 			}
 
-			if ( node instanceof TextProxy ) {
+			if ( node instanceof ViewTextProxy ) {
 				return new ViewText( document, node.data );
 			}
 

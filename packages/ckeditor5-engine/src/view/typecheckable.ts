@@ -17,7 +17,7 @@ import { type ViewRawElement } from './rawelement.js';
 import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type ViewSelection } from './selection.js';
 import { type ViewText } from './text.js';
-import { type TextProxy } from './textproxy.js';
+import { type ViewTextProxy } from './textproxy.js';
 import { type UIElement } from './uielement.js';
 
 /**
@@ -334,7 +334,7 @@ export abstract class TypeCheckable {
 	public is( type: 'documentFragment' | 'view:documentFragment' ): this is ViewDocumentFragment;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/textproxy~TextProxy}.
+	 * Checks whether this object is of type {@link module:engine/view/textproxy~ViewTextProxy}.
 	 *
 	 * ```ts
 	 * textProxy.is( '$textProxy' ); // -> true
@@ -350,7 +350,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label TEXT_PROXY
 	 */
-	public is( type: '$textProxy' | 'view:$textProxy' ): this is TextProxy;
+	public is( type: '$textProxy' | 'view:$textProxy' ): this is ViewTextProxy;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/position~ViewPosition}.

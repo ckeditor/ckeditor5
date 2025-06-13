@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { TextProxy } from '../../src/view/textproxy.js';
+import { ViewTextProxy } from '../../src/view/textproxy.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
@@ -23,11 +23,11 @@ describe( 'TextProxy', () => {
 		parent = new ViewContainerElement( document, 'p', [], [ text ] );
 		wrapper = new ViewContainerElement( document, 'div', [], parent );
 
-		textProxy = new TextProxy( text, 2, 3 );
+		textProxy = new ViewTextProxy( text, 2, 3 );
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create TextProxy instance with specified properties', () => {
+		it( 'should create ViewTextProxy instance with specified properties', () => {
 			expect( textProxy ).to.have.property( 'parent' ).to.equal( parent );
 			expect( textProxy ).to.have.property( 'data' ).to.equal( 'cde' );
 			expect( textProxy ).to.have.property( 'textNode' ).to.equal( text );
@@ -35,8 +35,8 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should have isPartial property', () => {
-			const startTextProxy = new TextProxy( text, 0, 4 );
-			const fullTextProxy = new TextProxy( text, 0, 8 );
+			const startTextProxy = new ViewTextProxy( text, 0, 4 );
+			const fullTextProxy = new ViewTextProxy( text, 0, 8 );
 
 			expect( textProxy.isPartial ).to.be.true;
 			expect( startTextProxy.isPartial ).to.be.true;
@@ -45,21 +45,21 @@ describe( 'TextProxy', () => {
 
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, -1, 2 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-offsetintext/ );
 
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 9, 1 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 2, -1 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-length/ );
 
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 2, 9 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-length/ );
 		} );
 	} );

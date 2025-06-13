@@ -9,7 +9,7 @@
 
 import { type ViewElement } from './element.js';
 import { type ViewText } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ViewTextProxy } from './textproxy.js';
 import { ViewPosition } from './position.js';
 import { type ViewItem } from './item.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
@@ -39,7 +39,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 	/**
 	 * Flag indicating whether all characters from {@link module:engine/view/text~ViewText} should be returned as one
-	 * {@link module:engine/view/text~ViewText} or one by one as {@link module:engine/view/textproxy~TextProxy}.
+	 * {@link module:engine/view/text~ViewText} or one by one as {@link module:engine/view/textproxy~ViewTextProxy}.
 	 */
 	public readonly singleCharacters: boolean;
 
@@ -245,7 +245,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				textLength = endOffset - position.offset;
 			}
 
-			const textProxy = new TextProxy( parent as ViewText, position.offset, textLength );
+			const textProxy = new ViewTextProxy( parent as ViewText, position.offset, textLength );
 
 			position.offset += textLength;
 			this._position = position;
@@ -281,13 +281,13 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			let charactersCount = node.data.length;
 			let item;
 
-			// If text stick out of walker range, we need to cut it and wrap in TextProxy.
+			// If text stick out of walker range, we need to cut it and wrap in ViewTextProxy.
 			if ( node == this._boundaryEndParent ) {
 				charactersCount = this.boundaries!.end.offset;
-				item = new TextProxy( node, 0, charactersCount );
+				item = new ViewTextProxy( node, 0, charactersCount );
 				position = ViewPosition._createAfter( item );
 			} else {
-				item = new TextProxy( node, 0, node.data.length );
+				item = new ViewTextProxy( node, 0, node.data.length );
 				// If not just keep moving forward.
 				position.offset++;
 			}
@@ -357,7 +357,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			position.offset -= textLength;
 
-			const textProxy = new TextProxy( parent as ViewText, position.offset, textLength );
+			const textProxy = new ViewTextProxy( parent as ViewText, position.offset, textLength );
 
 			this._position = position;
 
@@ -393,15 +393,15 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			let charactersCount = node.data.length;
 			let item;
 
-			// If text stick out of walker range, we need to cut it and wrap in TextProxy.
+			// If text stick out of walker range, we need to cut it and wrap in ViewTextProxy.
 			if ( node == this._boundaryStartParent ) {
 				const offset = this.boundaries!.start.offset;
 
-				item = new TextProxy( node, offset, node.data.length - offset );
+				item = new ViewTextProxy( node, offset, node.data.length - offset );
 				charactersCount = item.data.length;
 				position = ViewPosition._createBefore( item );
 			} else {
-				item = new TextProxy( node, 0, node.data.length );
+				item = new ViewTextProxy( node, 0, node.data.length );
 				// If not just keep moving backward.
 				position.offset--;
 			}
@@ -561,7 +561,7 @@ export interface TreeWalkerOptions {
 	 * Flag indicating whether all characters from
 	 * {@link module:engine/view/text~ViewText} should be returned as one
 	 * {@link module:engine/view/text~ViewText} (`false`) or one by one as
-	 * {@link module:engine/view/textproxy~TextProxy} (`true`).
+	 * {@link module:engine/view/textproxy~ViewTextProxy} (`true`).
 	 */
 	singleCharacters?: boolean;
 

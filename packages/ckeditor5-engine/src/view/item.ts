@@ -4,13 +4,13 @@
  */
 
 import { type ViewNode } from './node.js';
-import { type TextProxy } from './textproxy.js';
+import { type ViewTextProxy } from './textproxy.js';
 
 /**
  * @module engine/view/item
  */
 
 /**
- * Item is a {@link module:engine/view/node~ViewNode Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
+ * Item is a {@link module:engine/view/node~ViewNode Node} or {@link module:engine/view/textproxy~ViewTextProxy ViewTextProxy}.
  */
-export type ViewItem = ViewNode | TextProxy;
+export type ViewItem = ViewNode | ViewTextProxy;

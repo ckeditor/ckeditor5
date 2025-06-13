@@ -10,7 +10,7 @@ import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewText } from '../../src/view/text.js';
-import { TextProxy } from '../../src/view/textproxy.js';
+import { ViewTextProxy } from '../../src/view/textproxy.js';
 
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
@@ -501,7 +501,7 @@ describe( 'ViewPosition', () => {
 			it( 'should create positions before `ModelTextProxy`', () => {
 				const text = new ViewText( document, 'abc' );
 
-				const textProxy = new TextProxy( text, 1, 1 );
+				const textProxy = new ViewTextProxy( text, 1, 1 );
 				const position = new ViewPosition( text, 1 );
 
 				expect( ViewPosition._createBefore( textProxy ) ).deep.equal( position );
@@ -528,7 +528,7 @@ describe( 'ViewPosition', () => {
 			it( 'should create positions after `ModelTextProxy`', () => {
 				const text = new ViewText( document, 'abcd' );
 
-				const textProxy = new TextProxy( text, 1, 2 );
+				const textProxy = new ViewTextProxy( text, 1, 2 );
 				const position = new ViewPosition( text, 3 );
 
 				expect( ViewPosition._createAfter( textProxy ) ).deep.equal( position );

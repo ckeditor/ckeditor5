@@ -7,7 +7,7 @@ import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewText } from '../../src/view/text.js';
-import { TextProxy } from '../../src/view/textproxy.js';
+import { ViewTextProxy } from '../../src/view/textproxy.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -178,7 +178,7 @@ describe( 'DocumentFragment', () => {
 			it( 'should accept and correctly handle text proxies', () => {
 				const frag = new ViewDocumentFragment( document );
 				const text = new ViewText( document, 'abcxyz' );
-				const textProxy = new TextProxy( text, 2, 3 );
+				const textProxy = new ViewTextProxy( text, 2, 3 );
 
 				frag._insertChild( 0, textProxy );
 

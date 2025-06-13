@@ -9,7 +9,7 @@
 
 import { ViewNode } from './node.js';
 import { ViewText } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ViewTextProxy } from './textproxy.js';
 import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
 import { Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
 import { StylesMap, type Styles, type StyleValue } from './stylesmap.js';
@@ -1378,7 +1378,7 @@ function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<
 	for ( const node of nodes ) {
 		if ( typeof node == 'string' ) {
 			normalizedNodes.push( new ViewText( document, node ) );
-		} else if ( node instanceof TextProxy ) {
+		} else if ( node instanceof ViewTextProxy ) {
 			normalizedNodes.push( new ViewText( document, node.data ) );
 		} else {
 			normalizedNodes.push( node );
