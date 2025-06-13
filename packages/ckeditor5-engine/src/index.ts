@@ -350,7 +350,15 @@ export type { ViewDocumentSelectionChangeEvent, ViewDocumentSelectionChangeDoneE
 export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view.js';
 
 // View / Styles.
-export { StylesMap, StylesProcessor, type BoxSides, type StylePropertyDescriptor } from './view/stylesmap.js';
+export {
+	StylesMap,
+	StylesProcessor,
+	type StyleValue,
+	type Styles,
+	type BoxStyleSides,
+	type StylePropertyDescriptor
+} from './view/stylesmap.js';
+
 export { addBackgroundStylesRules } from './view/styles/background.js';
 export { addBorderStylesRules } from './view/styles/border.js';
 export { addMarginStylesRules } from './view/styles/margin.js';

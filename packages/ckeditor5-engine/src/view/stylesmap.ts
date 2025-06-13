@@ -1174,7 +1174,7 @@ export type StylePropertyDescriptor = [ name: string, value: string ];
  * };
  * ```
  */
-export type BoxSides = {
+export type BoxStyleSides = {
 
 	/**
 	 * Top side value.
@@ -1207,7 +1207,7 @@ export interface Styles {
 /**
  * The value of style.
  */
-export type StyleValue = string | Array<string> | Styles | BoxSides;
+export type StyleValue = string | Array<string> | Styles | BoxStyleSides;
 
 /**
  * A normalizer method for a style property.

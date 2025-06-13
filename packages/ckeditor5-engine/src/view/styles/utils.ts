@@ -7,7 +7,7 @@
  * @module engine/view/styles/utils
  */
 
-import type { BoxSides, StylePropertyDescriptor, StyleValue } from '../stylesmap.js';
+import type { BoxStyleSides, StylePropertyDescriptor, StyleValue } from '../stylesmap.js';
 
 const HEX_COLOR_REGEXP = /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 const RGB_COLOR_REGEXP = /^rgb\([ ]?([0-9]{1,3}[ %]?,[ ]?){2,3}[0-9]{1,3}[ %]?\)$/i;
@@ -150,7 +150,7 @@ export function isURLStyleValue( string: string ): boolean {
 /**
  * Parses box sides as individual values.
  */
-export function getBoxSidesStyleValues( value: string = '' ): BoxSides {
+export function getBoxSidesStyleValues( value: string = '' ): BoxStyleSides {
 	if ( value === '' ) {
 		return { top: undefined, right: undefined, bottom: undefined, left: undefined };
 	}
@@ -175,7 +175,7 @@ export function getBoxSidesStyleValues( value: string = '' ): BoxSides {
  */
 export function getBoxSidesStyleValueReducer( styleShorthand: string ) {
 	return ( value: StyleValue ): Array<StylePropertyDescriptor> => {
-		const { top, right, bottom, left } = value as BoxSides;
+		const { top, right, bottom, left } = value as BoxStyleSides;
 
 		const reduced: Array<StylePropertyDescriptor> = [];
 
@@ -196,7 +196,7 @@ export function getBoxSidesStyleValueReducer( styleShorthand: string ) {
 				reduced.push( [ styleShorthand + '-left', left ] );
 			}
 		} else {
-			reduced.push( [ styleShorthand, getBoxSidesStyleShorthandValue( value as BoxSides ) ] );
+			reduced.push( [ styleShorthand, getBoxSidesStyleShorthandValue( value as BoxStyleSides ) ] );
 		}
 
 		return reduced;
@@ -212,7 +212,7 @@ export function getBoxSidesStyleValueReducer( styleShorthand: string ) {
  * // will return '1px 1px 2px'
  * ```
  */
-export function getBoxSidesStyleShorthandValue( { top, right, bottom, left }: BoxSides ): string {
+export function getBoxSidesStyleShorthandValue( { top, right, bottom, left }: BoxStyleSides ): string {
 	const out = [];
 
 	if ( left !== right ) {
@@ -236,7 +236,7 @@ export function getBoxSidesStyleShorthandValue( { top, right, bottom, left }: Bo
  * ```
  */
 export function getPositionStyleShorthandNormalizer( shorthand: string ) {
-	return ( value: string ): { path: string; value: BoxSides } => {
+	return ( value: string ): { path: string; value: BoxStyleSides } => {
 		return {
 			path: shorthand,
 			value: getBoxSidesStyleValues( value )

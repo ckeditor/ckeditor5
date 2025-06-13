@@ -8,7 +8,7 @@
  */
 
 import type {
-	BoxSides,
+	BoxStyleSides,
 	Extractor,
 	Normalizer,
 	Reducer,
@@ -193,13 +193,13 @@ function getBorderPropertyNormalizer( propertyName: string ): Normalizer {
 	};
 }
 
-function toBorderPropertyShorthand( value: string, property: string ): Record<string, BoxSides> {
+function toBorderPropertyShorthand( value: string, property: string ): Record<string, BoxStyleSides> {
 	return {
 		[ property ]: getBoxSidesStyleValues( value )
 	};
 }
 
-function getBorderPropertyPositionNormalizer( property: string, side: keyof BoxSides ): Normalizer {
+function getBorderPropertyPositionNormalizer( property: string, side: keyof BoxStyleSides ): Normalizer {
 	return value => {
 		return {
 			path: 'border',
@@ -346,7 +346,7 @@ function getBorderReducer(): Reducer {
 	}
 }
 
-function getBorderPositionReducer( which: keyof BoxSides | 'all' ): Reducer {
+function getBorderPositionReducer( which: keyof BoxStyleSides | 'all' ): Reducer {
 	return value => reduceBorderPosition( value, which );
 }
 
@@ -361,7 +361,7 @@ function getBorderPositionReducer( which: keyof BoxSides | 'all' ): Reducer {
  * @param value Styles if defined.
  * @param which The border position.
  */
-function reduceBorderPosition( value: any, which: keyof BoxSides | 'all' ): Array<StylePropertyDescriptor> {
+function reduceBorderPosition( value: any, which: keyof BoxStyleSides | 'all' ): Array<StylePropertyDescriptor> {
 	const borderTypes = [];
 
 	if ( value && ( value.width ) ) {
