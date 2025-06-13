@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Selection } from '../../src/view/selection.js';
+import { ViewSelection } from '../../src/view/selection.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -29,7 +29,7 @@ describe( 'Selection', () => {
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new ViewElement( viewDocument, 'p', null, text );
 
-		selection = new Selection();
+		selection = new ViewSelection();
 
 		range1 = ViewRange._createFromParentsAndOffsets( text, 5, text, 10 );
 		range2 = ViewRange._createFromParentsAndOffsets( text, 1, text, 2 );
@@ -38,27 +38,27 @@ describe( 'Selection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should be able to create an empty selection', () => {
-			const selection = new Selection();
+			const selection = new ViewSelection();
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should be able to create a selection from the given ranges', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges );
+			const selection = new ViewSelection( ranges );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
 		} );
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges, { backward: true } );
+			const selection = new ViewSelection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, { backward: true } );
+			const selection = new ViewSelection( range1, { backward: true } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 			expect( selection.isBackward ).to.be.true;
@@ -66,7 +66,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given iterable of ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, { backward: false } );
+			const selection = new ViewSelection( ranges, { backward: false } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 			expect( selection.isBackward ).to.be.false;
@@ -74,7 +74,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a collapsed selection at the given position', () => {
 			const position = range1.start;
-			const selection = new Selection( position );
+			const selection = new ViewSelection( position );
 
 			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 			expect( selection.getFirstRange().start ).to.deep.equal( position );
@@ -83,8 +83,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection from the other selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new ViewSelection( [ range2, range3 ], { backward: true } );
+			const selection = new ViewSelection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
 			expect( selection.isBackward ).to.be.true;
@@ -92,15 +92,15 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the other document selection', () => {
 			const otherSelection = new ViewDocumentSelection( [ range2, range3 ], { backward: true } );
-			const selection = new Selection( otherSelection );
+			const selection = new ViewSelection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
 			expect( selection.isBackward ).to.be.true;
 		} );
 
 		it( 'should be able to create a fake selection from the other fake selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new ViewSelection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
+			const selection = new ViewSelection( otherSelection );
 
 			expect( selection.isFake ).to.be.true;
 			expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
@@ -109,7 +109,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [ { invalid: 'range' } ] );
+				new ViewSelection( [ { invalid: 'range' } ] );
 			}, /view-selection-add-range-not-range/ );
 		} );
 
@@ -119,14 +119,14 @@ describe( 'Selection', () => {
 
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [ range1, range2 ] );
+				new ViewSelection( [ range1, range2 ] );
 			}, 'view-selection-range-intersects' );
 		} );
 
 		it( 'should throw an error when trying to set to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( {} );
+				new ViewSelection( {} );
 			}, 'view-selection-setto-not-selectable' );
 		} );
 	} );
@@ -460,7 +460,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 			otherSelection.setTo( [ range1, range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
@@ -469,7 +469,7 @@ describe( 'Selection', () => {
 		it( 'should return true if backward selections equal', () => {
 			selection.setTo( range1, { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -477,7 +477,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new ViewSelection( [ range1 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -485,7 +485,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges (other than the last added one) do not equal', () => {
 			selection.setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ViewSelection( [ range2, range3 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -493,33 +493,33 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new Selection( null, { fake: true } );
+			const otherSelection = new ViewSelection( null, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selection are fake', () => {
-			const otherSelection = new Selection( range1, { fake: true } );
+			const otherSelection = new ViewSelection( range1, { fake: true } );
 			selection.setTo( range1, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return false if both selection are fake but have different label', () => {
-			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
+			const otherSelection = new ViewSelection( [ range1 ], { fake: true, label: 'foo bar baz' } );
 			selection.setTo( range1, { fake: true, label: 'foo' } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selections are empty', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -529,7 +529,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1, range2 ] );
+			const otherSelection = new ViewSelection( [ range1, range2 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -537,7 +537,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new ViewSelection( [ range1 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -545,7 +545,7 @@ describe( 'Selection', () => {
 		it( 'should return false if trimmed ranges (other than the last added one) are not equal', () => {
 			selection.setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ViewSelection( [ range2, range3 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -553,13 +553,13 @@ describe( 'Selection', () => {
 		it( 'should return false if directions are not equal', () => {
 			selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selections are empty', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -583,7 +583,7 @@ describe( 'Selection', () => {
 
 			selection.setTo( [ rangeA1, rangeA2 ] );
 
-			const otherSelection = new Selection( [ rangeB2, rangeB1 ] );
+			const otherSelection = new ViewSelection( [ rangeB2, rangeB1 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 			expect( otherSelection.isSimilar( selection ) ).to.be.true;
@@ -616,7 +616,7 @@ describe( 'Selection', () => {
 			it( 'should set selection ranges from the given selection', () => {
 				selection.setTo( range1 );
 
-				const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
+				const otherSelection = new ViewSelection( [ range2, range3 ], { backward: true } );
 
 				selection.setTo( otherSelection );
 
@@ -659,14 +659,14 @@ describe( 'Selection', () => {
 					done();
 				} );
 
-				const otherSelection = new Selection( [ range1 ] );
+				const otherSelection = new ViewSelection( [ range1 ] );
 
 				selection.setTo( otherSelection );
 			} );
 
 			it( 'should set fake state and label', () => {
 				const label = 'foo bar baz';
-				const otherSelection = new Selection( null, { fake: true, label } );
+				const otherSelection = new ViewSelection( null, { fake: true, label } );
 				selection.setTo( otherSelection );
 
 				expect( selection.isFake ).to.be.true;
@@ -674,7 +674,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw an error when trying to set to not selectable', () => {
-				const otherSelection = new Selection();
+				const otherSelection = new ViewSelection();
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo( {} );
@@ -682,7 +682,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
-				const otherSelection = new Selection();
+				const otherSelection = new ViewSelection();
 
 				expectToThrowCKEditorError( () => {
 					otherSelection.setTo();
@@ -971,7 +971,7 @@ describe( 'Selection', () => {
 		it( 'should return selected element', () => {
 			const { selection: docSelection, view } = _parseView( 'foo [<b>bar</b>] baz' );
 			const b = view.getChild( 1 );
-			const selection = new Selection( docSelection );
+			const selection = new ViewSelection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.equal( b );
 		} );
@@ -979,14 +979,14 @@ describe( 'Selection', () => {
 		it( 'should return selected element if the selection is anchored at the end/at the beginning of a text node', () => {
 			const { selection: docSelection, view } = _parseView( 'foo {<b>bar</b>} baz' );
 			const b = view.getChild( 1 );
-			const selection = new Selection( docSelection );
+			const selection = new ViewSelection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.equal( b );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
 			const { selection: docSelection } = _parseView( 'foo [<b>bar</b>] [<i>baz</i>]' );
-			const selection = new Selection( docSelection );
+			const selection = new ViewSelection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -997,14 +997,14 @@ describe( 'Selection', () => {
 
 		it( 'should return null if selection is not over single element #1', () => {
 			const { selection: docSelection } = _parseView( 'foo [<b>bar</b> ba}z' );
-			const selection = new Selection( docSelection );
+			const selection = new ViewSelection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
 			const { selection: docSelection } = _parseView( 'foo <b>{bar}</b> baz' );
-			const selection = new Selection( docSelection );
+			const selection = new ViewSelection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );

@@ -561,7 +561,7 @@ export function convertText() {
 }
 
 /**
- * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection
+ * Function factory, creates a callback function which converts a {@link module:engine/view/selection~ViewSelection
  * view selection} taken from the {@link module:engine/view/document~ViewDocument#event:selectionChange} event
  * and sets in on the {@link module:engine/model/document~ModelDocument#selection model}.
  *

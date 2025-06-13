@@ -15,7 +15,7 @@ import { type ViewPosition } from './position.js';
 import { type ViewRange } from './range.js';
 import { type ViewRawElement } from './rawelement.js';
 import { type ViewRootEditableElement } from './rooteditableelement.js';
-import { type Selection } from './selection.js';
+import { type ViewSelection } from './selection.js';
 import { type Text } from './text.js';
 import { type TextProxy } from './textproxy.js';
 import { type UIElement } from './uielement.js';
@@ -385,7 +385,7 @@ export abstract class TypeCheckable {
 	public is( type: 'range' | 'view:range' ): this is ViewRange;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/selection~Selection} or
+	 * Checks whether this object is of type {@link module:engine/view/selection~ViewSelection} or
 	 * {@link module:engine/view/documentselection~DocumentSelection}.
 	 *
 	 * ```ts
@@ -399,7 +399,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label SELECTION
 	 */
-	public is( type: 'selection' | 'view:selection' ): this is Selection | ViewDocumentSelection;
+	public is( type: 'selection' | 'view:selection' ): this is ViewSelection | ViewDocumentSelection;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/documentselection~DocumentSelection}.

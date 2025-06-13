@@ -10,10 +10,10 @@
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewRange } from './range.js';
 import {
-	Selection,
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions
 } from './selection.js';
 import { ViewContainerElement } from './containerelement.js';
 import { ViewAttributeElement } from './attributeelement.js';
@@ -121,7 +121,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
+	public setSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): void;
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
@@ -175,9 +175,9 @@ export class ViewDowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, ViewNode>, options?: SelectionOptions ): void;
+	public setSelection( selectable: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions ): void;
 
-	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public setSelection( ...args: Parameters<ViewSelection[ 'setTo' ]> ): void {
 		this.document.selection._setTo( ...args );
 	}
 
@@ -1342,7 +1342,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
@@ -1381,10 +1381,10 @@ export class ViewDowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): ViewSelection;
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -1433,10 +1433,10 @@ export class ViewDowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, ViewNode>, option?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<ViewSelectable, ViewNode>, option?: ViewSelectionOptions ): ViewSelection;
 
-	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
-		return new Selection( ...args );
+	public createSelection( ...args: ConstructorParameters<typeof ViewSelection> ): ViewSelection {
+		return new ViewSelection( ...args );
 	}
 
 	/**

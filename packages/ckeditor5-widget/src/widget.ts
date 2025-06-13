@@ -55,7 +55,7 @@ import '../theme/widget.css';
  *
  * * The model to view selection converter for the editing pipeline (it handles widget custom selection rendering).
  * If a converted selection wraps around a widget element, that selection is marked as
- * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, the `ck-widget_selected` CSS class
+ * {@link module:engine/view/selection~ViewSelection#isFake fake}. Additionally, the `ck-widget_selected` CSS class
  * is added to indicate that widget has been selected.
  * * The mouse and keyboard events handling on and around widget elements.
  */

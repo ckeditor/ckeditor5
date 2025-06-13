@@ -34,9 +34,9 @@ import { type ViewEditableElement } from './editableelement.js';
  * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
  *
  * A selection can consist of {@link module:engine/view/range~ViewRange ranges} that can be set by using
- * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
+ * the {@link module:engine/view/selection~ViewSelection#setTo `Selection#setTo()`} method.
  */
-export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ViewSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Stores all ranges that are selected.
 	 */
@@ -125,11 +125,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	constructor(
 		...args: [] | [
 			selectable: ViewNode,
-			placeOrOffset: PlaceOrOffset,
-			options?: SelectionOptions
+			placeOrOffset: ViewPlaceOrOffset,
+			options?: ViewSelectionOptions
 		] | [
-			selectable?: Exclude<Selectable, ViewNode>,
-			options?: SelectionOptions
+			selectable?: Exclude<ViewSelectable, ViewNode>,
+			options?: ViewSelectionOptions
 		]
 	) {
 		super();
@@ -305,7 +305,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | ViewDocumentSelection ): boolean {
+	public isEqual( otherSelection: ViewSelection | ViewDocumentSelection ): boolean {
 		if ( this.isFake != otherSelection.isFake ) {
 			return false;
 		}
@@ -350,7 +350,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are similar, `false` otherwise.
 	 */
-	public isSimilar( otherSelection: Selection | ViewDocumentSelection ): boolean {
+	public isSimilar( otherSelection: ViewSelection | ViewDocumentSelection ): boolean {
 		if ( this.isBackward != otherSelection.isBackward ) {
 			return false;
 		}
@@ -474,11 +474,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	public setTo(
 		...args: [
 			selectable: ViewNode,
-			placeOrOffset: PlaceOrOffset,
-			options?: SelectionOptions
+			placeOrOffset: ViewPlaceOrOffset,
+			options?: ViewSelectionOptions
 		] | [
-			selectable?: Exclude<Selectable, ViewNode>,
-			options?: SelectionOptions
+			selectable?: Exclude<ViewSelectable, ViewNode>,
+			options?: ViewSelectionOptions
 		]
 	): void {
 		let [ selectable, placeOrOffset, options ] = args;
@@ -491,7 +491,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		if ( selectable === null ) {
 			this._setRanges( [] );
 			this._setFakeOptions( options );
-		} else if ( selectable instanceof Selection || selectable instanceof ViewDocumentSelection ) {
+		} else if ( selectable instanceof ViewSelection || selectable instanceof ViewDocumentSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
 		} else if ( selectable instanceof ViewRange ) {
@@ -607,7 +607,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 */
-	private _setFakeOptions( options: SelectionOptions = {} ) {
+	private _setFakeOptions( options: ViewSelectionOptions = {} ) {
 		this._isFake = !!options.fake;
 		this._fakeSelectionLabel = options.fake ? options.label || '' : '';
 	}
@@ -671,16 +671,14 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Selection.prototype.is = function( type: string ): boolean {
+ViewSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
 };
-
-export { Selection as ViewSelection };
 
 /**
  * Additional options for {@link ~Selection}.
  */
-export interface SelectionOptions {
+export interface ViewSelectionOptions {
 
 	/**
 	 * Sets this selection instance to be backward.
@@ -701,7 +699,7 @@ export interface SelectionOptions {
 /**
  * The place or offset of the selection.
  */
-export type PlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
+export type ViewPlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
 
 /**
  * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
@@ -716,6 +714,6 @@ export type ViewSelectionChangeEvent = {
 /**
  * An entity that is used to set selection.
  *
- * See also {@link module:engine/view/selection~Selection#setTo}
+ * See also {@link module:engine/view/selection~ViewSelection#setTo}
  */
-export type Selectable = Selection | ViewDocumentSelection | ViewPosition | Iterable<ViewRange> | ViewRange | ViewNode | null;
+export type ViewSelectable = ViewSelection | ViewDocumentSelection | ViewPosition | Iterable<ViewRange> | ViewRange | ViewNode | null;

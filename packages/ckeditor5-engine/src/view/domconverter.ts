@@ -208,7 +208,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/selection~Selection view selection} instance corresponding to a given
+	 * Returns a {@link module:engine/view/selection~ViewSelection view selection} instance corresponding to a given
 	 * DOM element that represents fake selection. Returns `undefined` if binding to the given DOM element does not exist.
 	 */
 	public fakeSelectionToView( domElement: DomElement ): ViewSelection | undefined {
@@ -807,7 +807,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Converts DOM selection to view {@link module:engine/view/selection~Selection}.
+	 * Converts DOM selection to view {@link module:engine/view/selection~ViewSelection}.
 	 * Ranges which cannot be converted will be omitted.
 	 *
 	 * @param domSelection DOM selection.

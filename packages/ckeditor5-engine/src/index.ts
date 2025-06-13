@@ -252,7 +252,9 @@ export { ViewRange } from './view/range.js';
 export {
 	ViewSelection,
 	type ViewSelectionChangeEvent,
-	type Selectable as ViewSelectable
+	type ViewSelectable,
+	type ViewSelectionOptions,
+	type ViewPlaceOrOffset
 } from './view/selection.js';
 
 export type { ViewTypeCheckable } from './view/typecheckable.js';

@@ -9,10 +9,10 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import {
-	Selection,
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions,
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions,
 	type ViewSelectionChangeEvent
 } from './selection.js';
 
@@ -30,7 +30,7 @@ import { type ViewRange } from './range.js';
  *
  * Its instance is available in {@link module:engine/view/document~ViewDocument#selection `Document#selection`}.
  *
- * It is similar to {@link module:engine/view/selection~Selection} but
+ * It is similar to {@link module:engine/view/selection~ViewSelection} but
  * it has a read-only API and can be modified only by the writer available in
  * the {@link module:engine/view/view~View#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `DowncastWriter#setSelection()`}).
@@ -39,7 +39,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	/**
 	 * Selection is used internally (`ViewDocumentSelection` is a proxy to that selection).
 	 */
-	private readonly _selection: Selection;
+	private readonly _selection: ViewSelection;
 
 	/**
 	 * Creates new ViewDocumentSelection instance.
@@ -81,7 +81,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public constructor( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
+	public constructor( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions );
 
 	/**
 	 * Creates new ViewDocumentSelection instance.
@@ -130,12 +130,12 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @label SELECTABLE
 	 */
-	public constructor( selectable?: Exclude<Selectable, ViewNode>, options?: SelectionOptions );
+	public constructor( selectable?: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions );
 
-	constructor( ...args: ConstructorParameters<typeof Selection> ) {
+	constructor( ...args: ConstructorParameters<typeof ViewSelection> ) {
 		super();
 
-		this._selection = new Selection();
+		this._selection = new ViewSelection();
 
 		// Delegate change event to be fired on ViewDocumentSelection instance.
 		this._selection.delegate( 'change' ).to( this );
@@ -216,7 +216,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	}
 
 	/**
-	 * Used for the compatibility with the {@link module:engine/view/selection~Selection#isEqual} method.
+	 * Used for the compatibility with the {@link module:engine/view/selection~ViewSelection#isEqual} method.
 	 *
 	 * @internal
 	 */
@@ -285,7 +285,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | ViewDocumentSelection ): boolean {
+	public isEqual( otherSelection: ViewSelection | ViewDocumentSelection ): boolean {
 		return this._selection.isEqual( otherSelection );
 	}
 
@@ -297,7 +297,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are similar, `false` otherwise.
 	 */
-	public isSimilar( otherSelection: Selection | ViewDocumentSelection ): boolean {
+	public isSimilar( otherSelection: ViewSelection | ViewDocumentSelection ): boolean {
 		return this._selection.isSimilar( otherSelection );
 	}
 
@@ -364,7 +364,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @internal
 	 * @fires change
 	 */
-	public _setTo( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public _setTo( ...args: Parameters<ViewSelection[ 'setTo' ]> ): void {
 		this._selection.setTo( ...args );
 	}
 

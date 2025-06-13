@@ -16,7 +16,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 import { type View } from '../view.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
 import { type ViewDomConverter } from '../domconverter.js';
-import { type Selection } from '../selection.js';
+import { type ViewSelection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -384,7 +384,7 @@ export type ViewDocumentSelectionEventData = {
 	/**
 	 * New View selection which is converted DOM selection.
 	 */
-	newSelection: Selection;
+	newSelection: ViewSelection;
 
 	/**
 	 * Native DOM selection.

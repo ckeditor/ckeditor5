@@ -14,10 +14,10 @@ import { isPlainObject } from 'es-toolkit/compat';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewRange } from './range.js';
 import {
-	Selection,
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions
 } from './selection.js';
 
 import { type ViewDocument } from './document.js';
@@ -449,7 +449,7 @@ export class UpcastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/selection~Selection} instance.
+	 * Creates a new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
@@ -488,10 +488,10 @@ export class UpcastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): ViewSelection;
 
 	/**
-	 * Creates a new {@link module:engine/view/selection~Selection} instance.
+	 * Creates a new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -540,9 +540,9 @@ export class UpcastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, ViewNode>, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions ): ViewSelection;
 
-	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
-		return new Selection( ...args );
+	public createSelection( ...args: ConstructorParameters<typeof ViewSelection> ): ViewSelection {
+		return new ViewSelection( ...args );
 	}
 }
