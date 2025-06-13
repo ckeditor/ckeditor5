@@ -7,7 +7,7 @@
  * @module engine/view/documentselection
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import {
 	ViewSelection,
 	type ViewPlaceOrOffset,
@@ -35,7 +35,7 @@ import { type ViewRange } from './range.js';
  * the {@link module:engine/view/view~View#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
-export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
 	/**
 	 * Selection is used internally (`ViewDocumentSelection` is a proxy to that selection).
 	 */

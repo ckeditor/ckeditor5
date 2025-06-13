@@ -7,7 +7,7 @@
  * @module engine/view/selection
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import { ViewRange } from './range.js';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewNode } from './node.js';
@@ -36,7 +36,7 @@ import { type ViewEditableElement } from './editableelement.js';
  * A selection can consist of {@link module:engine/view/range~ViewRange ranges} that can be set by using
  * the {@link module:engine/view/selection~ViewSelection#setTo `Selection#setTo()`} method.
  */
-export class ViewSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
 	/**
 	 * Stores all ranges that are selected.
 	 */

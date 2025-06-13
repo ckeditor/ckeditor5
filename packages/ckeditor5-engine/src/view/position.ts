@@ -7,7 +7,7 @@
  * @module engine/view/position
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -28,7 +28,7 @@ import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } 
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export class ViewPosition extends TypeCheckable {
+export class ViewPosition extends ViewTypeCheckable {
 	/**
 	 * Position parent.
 	 */

@@ -24,7 +24,7 @@ import { type UIElement } from './uielement.js';
  * @module engine/view/typecheckable
  */
 
-export abstract class TypeCheckable {
+export abstract class ViewTypeCheckable {
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/node~ViewNode} or its subclass.
 	 *
@@ -505,5 +505,3 @@ export abstract class TypeCheckable {
 		throw new Error( 'is() method is abstract' );
 	}
 }
-
-export { TypeCheckable as ViewTypeCheckable };

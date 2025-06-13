@@ -7,7 +7,7 @@
  * @module engine/view/documentfragment
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import { ViewText } from './text.js';
 import { ViewTextProxy } from './textproxy.js';
 
@@ -25,7 +25,7 @@ import { type ViewNode } from './node.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
  * method.
  */
-export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<ViewNode> {
+export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) implements Iterable<ViewNode> {
 	/**
 	 * The document to which this document fragment belongs.
 	 */

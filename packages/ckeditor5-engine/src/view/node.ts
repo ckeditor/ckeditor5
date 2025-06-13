@@ -7,7 +7,7 @@
  * @module engine/view/node
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 
 import {
 	CKEditorError,
@@ -28,7 +28,7 @@ import { type ViewElement } from './element.js';
  * Use the {@link module:engine/view/downcastwriter~ViewDowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
  * to create new instances of view nodes.
  */
-export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
 	/**
 	 * The document instance to which this node belongs.
 	 */

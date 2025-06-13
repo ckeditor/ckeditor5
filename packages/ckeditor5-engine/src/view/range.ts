@@ -7,7 +7,7 @@
  * @module engine/view/range
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import { ViewPosition } from './position.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
@@ -25,7 +25,7 @@ import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } 
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export class ViewRange extends TypeCheckable implements Iterable<ViewTreeWalkerValue> {
+export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWalkerValue> {
 	/**
 	 * Start position.
 	 */

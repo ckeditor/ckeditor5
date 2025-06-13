@@ -7,7 +7,7 @@
  * @module engine/view/textproxy
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
@@ -37,7 +37,7 @@ import { type ViewText } from './text.js';
  * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~ViewTreeWalker view tree walker}.
  * You should not need to create an instance of this class by your own.
  */
-export class ViewTextProxy extends TypeCheckable {
+export class ViewTextProxy extends ViewTypeCheckable {
 	/**
 	 * Reference to the {@link module:engine/view/text~ViewText} element which ViewTextProxy is a substring.
 	 */
