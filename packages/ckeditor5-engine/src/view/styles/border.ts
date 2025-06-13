@@ -14,7 +14,7 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
  * Adds a border CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addBorderRules );
+ * editor.data.addStyleProcessorRules( addBorderStylesRules );
  * ```
  *
  * This rules merges all [border](https://developer.mozilla.org/en-US/docs/Web/CSS/border) styles notation shorthands:
@@ -44,7 +44,7 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
  * };
  * ```
  */
-export function addBorderRules( stylesProcessor: StylesProcessor ): void {
+export function addBorderStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'border', getBorderNormalizer() );
 
 	// Border-position shorthands.

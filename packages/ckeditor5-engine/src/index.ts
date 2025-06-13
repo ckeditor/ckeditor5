@@ -351,10 +351,10 @@ export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view
 
 // View / Styles.
 export { StylesMap, StylesProcessor, type BoxSides } from './view/stylesmap.js';
-export { addBackgroundRules } from './view/styles/background.js';
-export { addBorderRules } from './view/styles/border.js';
-export { addMarginRules } from './view/styles/margin.js';
-export { addPaddingRules } from './view/styles/padding.js';
+export { addBackgroundStylesRules } from './view/styles/background.js';
+export { addBorderStylesRules } from './view/styles/border.js';
+export { addMarginStylesRules } from './view/styles/margin.js';
+export { addPaddingStylesRules } from './view/styles/padding.js';
 export {
 	isColor,
 	isLineStyle,

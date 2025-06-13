@@ -8,9 +8,9 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import { addMarginRules } from '../../src/view/styles/margin.js';
-import { addBorderRules } from '../../src/view/styles/border.js';
-import { addBackgroundRules } from '../../src/view/styles/background.js';
+import { addMarginStylesRules } from '../../src/view/styles/margin.js';
+import { addBorderStylesRules } from '../../src/view/styles/border.js';
+import { addBackgroundStylesRules } from '../../src/view/styles/background.js';
 
 describe( 'Matcher', () => {
 	let document;
@@ -20,9 +20,9 @@ describe( 'Matcher', () => {
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );
 
-		addMarginRules( document.stylesProcessor );
-		addBorderRules( document.stylesProcessor );
-		addBackgroundRules( document.stylesProcessor );
+		addMarginStylesRules( document.stylesProcessor );
+		addBorderStylesRules( document.stylesProcessor );
+		addBackgroundStylesRules( document.stylesProcessor );
 	} );
 
 	describe( 'add', () => {

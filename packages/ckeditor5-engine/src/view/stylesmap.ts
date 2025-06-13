@@ -100,7 +100,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.setTo( 'margin:2px;' );
 	 *
@@ -145,7 +145,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.set( 'margin', '2px' );
 	 * ```
@@ -239,7 +239,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.setTo( 'margin:1px' );
 	 *
@@ -284,7 +284,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * const styles = new Styles();
 	 * styles.setTo( 'margin:1px 2px 3em;' );
@@ -323,7 +323,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.set( 'margin' , '1px' );
 	 * styles.set( 'background', '#f00' );
@@ -349,7 +349,7 @@ export class StylesMap implements ViewElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * const styles = new Styles();
 	 * styles.setTo( 'margin:1px;' );

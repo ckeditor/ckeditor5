@@ -16,7 +16,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getModelDataWithAttributes } from './_utils/utils.js';
-import { addBackgroundRules, addBorderRules, addMarginRules, addPaddingRules } from '@ckeditor/ckeditor5-engine';
+import { addBackgroundStylesRules, addBorderStylesRules, addMarginStylesRules, addPaddingStylesRules } from '@ckeditor/ckeditor5-engine';
 import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
 import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
@@ -4280,7 +4280,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'expanded styles (shorthand vs longhand notation)', () => {
 		it( 'should handle expanded styles by matcher', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: true } );
@@ -4302,7 +4302,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle longhand style for shorthand filter (background vs background-color)', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'background' } );
@@ -4324,7 +4324,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle shorthand style for longhand filter (background vs background-color)', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'background' } );
@@ -4346,7 +4346,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (single box side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4368,7 +4368,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for specific full padding filter (single box side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding-left' } );
@@ -4390,7 +4390,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (multiple sides)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4413,7 +4413,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (box top side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4435,7 +4435,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4457,7 +4457,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style only)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4479,7 +4479,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style and color)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4502,7 +4502,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (missing border color)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-left' } );
@@ -4525,7 +4525,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for partial border filter (box bottom side)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-bottom' } );
@@ -4547,7 +4547,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for partial border filter (color only)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-color' } );
@@ -4569,7 +4569,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (mixed)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4593,7 +4593,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (partly consumed)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4633,7 +4633,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial margin consumed for generic margin filter', () => {
-			editor.data.addStyleProcessorRules( addMarginRules );
+			editor.data.addStyleProcessorRules( addMarginStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'margin' } );
@@ -4677,7 +4677,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should store only reduced styles in model attribute (without duplicated long and shorthand)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: [ 'border' ] } );

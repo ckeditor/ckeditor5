@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	addBorderRules,
-	addPaddingRules,
-	addBackgroundRules,
+	addBorderStylesRules,
+	addPaddingStylesRules,
+	addBackgroundStylesRules,
 	type ModelSchema,
 	type Conversion,
 	type ViewElement,
@@ -97,7 +97,7 @@ export class TableCellPropertiesEditing extends Plugin {
 			}
 		);
 
-		editor.data.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderStylesRules );
 		enableBorderProperties( schema, conversion, {
 			color: defaultTableCellProperties.borderColor,
 			style: defaultTableCellProperties.borderStyle,
@@ -116,7 +116,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
 
-		editor.data.addStyleProcessorRules( addPaddingRules );
+		editor.data.addStyleProcessorRules( addPaddingStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellPadding',
 			styleName: 'padding',
@@ -125,7 +125,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding! ) );
 
-		editor.data.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellBackgroundColor',
 			styleName: 'background-color',

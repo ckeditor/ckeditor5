@@ -14,7 +14,7 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
  * Adds a padding CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addPaddingRules );
+ * editor.data.addStyleProcessorRules( addPaddingStylesRules );
  * ```
  *
  * The normalized value is stored as:
@@ -30,7 +30,7 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
  * };
  * ```
  */
-export function addPaddingRules( stylesProcessor: StylesProcessor ): void {
+export function addPaddingStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'padding', getPositionShorthandNormalizer( 'padding' ) );
 	stylesProcessor.setNormalizer( 'padding-top', value => ( { path: 'padding.top', value } ) );
 	stylesProcessor.setNormalizer( 'padding-right', value => ( { path: 'padding.right', value } ) );

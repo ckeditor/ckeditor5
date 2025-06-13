@@ -500,10 +500,10 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * You can implement your own rules as well as use one of the available processor rules:
 	 *
-	 * * background: {@link module:engine/view/styles/background~addBackgroundRules}
-	 * * border: {@link module:engine/view/styles/border~addBorderRules}
-	 * * margin: {@link module:engine/view/styles/margin~addMarginRules}
-	 * * padding: {@link module:engine/view/styles/padding~addPaddingRules}
+	 * * background: {@link module:engine/view/styles/background~addBackgroundStylesRules}
+	 * * border: {@link module:engine/view/styles/border~addBorderStylesRules}
+	 * * margin: {@link module:engine/view/styles/margin~addMarginStylesRules}
+	 * * padding: {@link module:engine/view/styles/padding~addPaddingStylesRules}
 	 */
 	public addStyleProcessorRules( callback: ( stylesProcessor: StylesProcessor ) => void ): void {
 		callback( this.stylesProcessor );

@@ -9,8 +9,8 @@ import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { addBorderRules } from '../../src/view/styles/border.js';
-import { addMarginRules } from '../../src/view/styles/margin.js';
+import { addBorderStylesRules } from '../../src/view/styles/border.js';
+import { addMarginStylesRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { TokenList } from '../../src/view/tokenlist.js';
 import { StylesMap } from '@ckeditor/ckeditor5-engine';
@@ -972,7 +972,7 @@ describe( 'Element', () => {
 
 		describe( '_getConsumables()', () => {
 			it( 'should return all consumables', () => {
-				addMarginRules( document.stylesProcessor );
+				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
 				expect( el._getConsumables() ).to.deep.equal( {
@@ -992,7 +992,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return filtered consumables', () => {
-				addMarginRules( document.stylesProcessor );
+				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
 				expect( el._getConsumables( 'foo' ) ).to.deep.equal( {
@@ -1004,7 +1004,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return filtered consumables with related values', () => {
-				addMarginRules( document.stylesProcessor );
+				addMarginStylesRules( document.stylesProcessor );
 				el = new ViewElement( document, 'p', { foo: 'bar', class: 'foo bar', style: 'color: red; margin: 10px;' } );
 
 				expect( el._getConsumables( 'style', 'margin' ) ).to.deep.equal( {
@@ -1375,8 +1375,8 @@ describe( 'Element', () => {
 
 		describe( 'getStyleNames - expand = true', () => {
 			it( 'should return all styles in an expanded form', () => {
-				addBorderRules( el.document.stylesProcessor );
-				addMarginRules( el.document.stylesProcessor );
+				addBorderStylesRules( el.document.stylesProcessor );
+				addMarginStylesRules( el.document.stylesProcessor );
 
 				el._setStyle( {
 					margin: '1 em',

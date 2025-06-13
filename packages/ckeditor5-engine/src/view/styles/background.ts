@@ -14,7 +14,7 @@ import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL 
  * Adds a background CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addBackgroundRules );
+ * editor.data.addStyleProcessorRules( addBackgroundStylesRules );
  * ```
  *
  * The normalized value is stored as:
@@ -34,7 +34,7 @@ import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL 
  * **Note**: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
  * `'background-color'` value.
  */
-export function addBackgroundRules( stylesProcessor: StylesProcessor ): void {
+export function addBackgroundStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'background', getBackgroundNormalizer() );
 	stylesProcessor.setNormalizer( 'background-color', getBackgroundColorNormalizer() );
 	stylesProcessor.setReducer( 'background', getBackgroundReducer() );

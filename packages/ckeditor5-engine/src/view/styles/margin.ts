@@ -14,7 +14,7 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
  * Adds a margin CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addMarginRules );
+ * editor.data.addStyleProcessorRules( addMarginStylesRules );
  * ```
  *
  * The normalized value is stored as:
@@ -30,7 +30,7 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
  * };
  * ```
  */
-export function addMarginRules( stylesProcessor: StylesProcessor ): void {
+export function addMarginStylesRules( stylesProcessor: StylesProcessor ): void {
 	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
 
 	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );

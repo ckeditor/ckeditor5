@@ -333,7 +333,7 @@ export class ViewElement extends ViewNode {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * const element = view.change( writer => {
 	 * 	const element = writer.createElement();

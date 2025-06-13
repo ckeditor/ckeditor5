@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
-import { addMarginRules, type DowncastAttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
+import { addMarginStylesRules, type DowncastAttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import { IndentBlockCommand } from './indentblockcommand.js';
 import { IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
@@ -72,7 +72,7 @@ export class IndentBlock extends Plugin {
 				classes: configuration.classes
 			} ) ) );
 		} else {
-			editor.data.addStyleProcessorRules( addMarginRules );
+			editor.data.addStyleProcessorRules( addMarginStylesRules );
 			this._setupConversionUsingOffset();
 
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( {
