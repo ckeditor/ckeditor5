@@ -126,7 +126,7 @@ class UpdatedTurndown extends Turndown {
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert HTML to Markdown.
  */
-export class HtmlToMarkdown {
+export class MarkdownGfmHtmlToMd {
 	private _parser: UpdatedTurndown;
 
 	constructor() {

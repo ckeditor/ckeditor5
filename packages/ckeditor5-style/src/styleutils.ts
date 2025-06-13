@@ -12,7 +12,12 @@ import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } fro
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
-import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
+import type {
+	DataFilter,
+	DataSchema,
+	GeneralHtmlSupport,
+	HtmlSupportDataSchemaBlockElementDefinition
+} from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig.js';
 import { isObject } from 'es-toolkit/compat';
@@ -106,7 +111,7 @@ export class StyleUtils extends Plugin {
 					if ( typeof appliesToBlock == 'string' ) {
 						modelElements.push( appliesToBlock );
 					} else if ( ghsDefinition.isBlock ) {
-						const ghsBlockDefinition: DataSchemaBlockElementDefinition = ghsDefinition;
+						const ghsBlockDefinition: HtmlSupportDataSchemaBlockElementDefinition = ghsDefinition;
 
 						modelElements.push( ghsDefinition.model );
 

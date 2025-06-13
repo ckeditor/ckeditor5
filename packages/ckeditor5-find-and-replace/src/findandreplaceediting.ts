@@ -23,7 +23,7 @@ import { FindNextCommand } from './findnextcommand.js';
 import { FindPreviousCommand } from './findpreviouscommand.js';
 import { FindAndReplaceState, type FindCallback } from './findandreplacestate.js';
 import { FindAndReplaceUtils } from './findandreplaceutils.js';
-import type { ResultType } from './findandreplace.js';
+import type { FindResultType } from './findandreplace.js';
 
 import { debounce } from 'es-toolkit/compat';
 
@@ -137,7 +137,7 @@ export class FindAndReplaceEditing extends Plugin {
 	/**
 	 * Initiate a search.
 	 */
-	public find( callbackOrText: string | FindCallback, findAttributes?: FindAttributes ): Collection<ResultType> {
+	public find( callbackOrText: string | FindCallback, findAttributes?: FindAttributes ): Collection<FindResultType> {
 		this._isSearchActive = true;
 		this.editor.execute( 'find', callbackOrText, findAttributes );
 
@@ -264,7 +264,7 @@ export class FindAndReplaceEditing extends Plugin {
 		} );
 
 		// Run search callback again on updated nodes.
-		const changedSearchResults: Array<ResultType> = [];
+		const changedSearchResults: Array<FindResultType> = [];
 		const findAndReplaceUtils: FindAndReplaceUtils = this.editor.plugins.get( 'FindAndReplaceUtils' );
 
 		changedNodes.forEach( nodeToCheck => {

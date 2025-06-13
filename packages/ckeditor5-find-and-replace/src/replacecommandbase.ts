@@ -8,10 +8,10 @@
 */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ResultType } from './findandreplace.js';
+import type { FindResultType } from './findandreplace.js';
 import { type FindAndReplaceState } from './findandreplacestate.js';
 
-export abstract class ReplaceCommandBase extends Command {
+export abstract class FindReplaceCommandBase extends Command {
 	/**
 	 * The find and replace state object used for command operations.
 	 */
@@ -43,7 +43,7 @@ export abstract class ReplaceCommandBase extends Command {
 	 *
 	 * @param result A single result from the find command.
 	 */
-	protected _replace( replacementText: string, result: ResultType ): void {
+	protected _replace( replacementText: string, result: FindResultType ): void {
 		const { model } = this.editor;
 
 		const range = result.marker!.getRange();

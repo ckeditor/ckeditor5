@@ -2,6 +2,7 @@
 title: Show blocks
 menu-title: Show blocks
 meta-title: Show blocks | CKEditor 5 Documentation
+meta-description: Display block-level elements in CKEditor 5 using the Show Blocks feature to visualize document structure during editing.
 category: features
 modified_at: 2023-06-20
 ---

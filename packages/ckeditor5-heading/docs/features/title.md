@@ -2,6 +2,7 @@
 category: features
 menu-title: Document title
 meta-title: Document title | CKEditor 5 Documentation
+meta-description: Add and configure a document title in CKEditor 5 to define the main heading, thereby improving content structure and accessibility.
 ---
 
 # Document title
@@ -53,7 +54,7 @@ ClassicEditor
 
 The title plugin is integrated with the {@link features/editor-placeholder placeholder} configuration. If you define it, the placeholder text will be used for the body element.
 
-To change the title placeholder, use the {@link module:heading/title~TitleConfig#placeholder `title.placeholder`} configuration option. For instance:
+To change the title placeholder, use the {@link module:heading/title~HeadingTitleConfig#placeholder `title.placeholder`} configuration option. For instance:
 
 ```js
 ClassicEditor

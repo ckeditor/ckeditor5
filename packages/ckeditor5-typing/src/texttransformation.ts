@@ -15,13 +15,13 @@ import {
 import type { Position } from '@ckeditor/ckeditor5-engine';
 
 import { TextWatcher, type TextWatcherMatchedDataEvent } from './textwatcher.js';
-import type { TextTransformationConfig, TextTransformationDescription } from './typingconfig.js';
+import type { TextTransformationConfig, TextTypingTransformationDescription } from './typingconfig.js';
 import { type Delete } from './delete.js';
 
 import { escapeRegExp } from 'es-toolkit/compat';
 
 // All named transformations.
-const TRANSFORMATIONS: Record<string, TextTransformationDescription> = {
+const TRANSFORMATIONS: Record<string, TextTypingTransformationDescription> = {
 	// Common symbols:
 	copyright: { from: '(c)', to: '©' },
 	registeredTrademark: { from: '(r)', to: '®' },
@@ -217,7 +217,7 @@ function normalizeFrom( from: string | RegExp ): RegExp {
  * The normalized value for the `to` parameter is a function that takes an array and returns an array. See more in the
  * configuration description. If the passed `to` is already a function, it is returned unchanged.
  */
-function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
+function normalizeTo( to: TextTypingTransformationDescription[ 'to' ] ) {
 	if ( typeof to == 'string' ) {
 		return () => [ to ];
 	} else if ( to instanceof Array ) {
@@ -253,7 +253,7 @@ function buildQuotesRegExp( quoteCharacter: string ): RegExp {
 function normalizeTransformations( config: TextTransformationConfig ): Array<NormalizedTransformationConfig> {
 	const extra = config.extra || [];
 	const remove = config.remove || [];
-	const isNotRemoved = ( transformation: TextTransformationDescription | string ) => !remove.includes( transformation );
+	const isNotRemoved = ( transformation: TextTypingTransformationDescription | string ) => !remove.includes( transformation );
 
 	const configured = config.include.concat( extra ).filter( isNotRemoved );
 
@@ -263,7 +263,7 @@ function normalizeTransformations( config: TextTransformationConfig ): Array<Nor
 			typeof transformation == 'string' && TRANSFORMATIONS[ transformation ] ? TRANSFORMATIONS[ transformation ] : transformation )
 		)
 		// Filter out transformations set as string that has not been found.
-		.filter( ( transformation ): transformation is TextTransformationDescription => typeof transformation === 'object' )
+		.filter( ( transformation ): transformation is TextTypingTransformationDescription => typeof transformation === 'object' )
 		.map( transformation => ( {
 			from: normalizeFrom( transformation.from ),
 			to: normalizeTo( transformation.to )
@@ -275,10 +275,10 @@ function normalizeTransformations( config: TextTransformationConfig ): Array<Nor
  * This method also removes duplicated named transformations if any.
  */
 function expandGroupsAndRemoveDuplicates(
-	definitions: Array<TextTransformationDescription | string>
-): Array<TextTransformationDescription | string> {
+	definitions: Array<TextTypingTransformationDescription | string>
+): Array<TextTypingTransformationDescription | string> {
 	// Set is using to make sure that transformation names are not duplicated.
-	const definedTransformations = new Set<TextTransformationDescription | string>();
+	const definedTransformations = new Set<TextTypingTransformationDescription | string>();
 
 	for ( const transformationOrGroup of definitions ) {
 		if ( typeof transformationOrGroup == 'string' && TRANSFORMATION_GROUPS[ transformationOrGroup ] ) {

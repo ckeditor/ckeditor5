@@ -13,8 +13,8 @@ export { HeadingEditing } from './headingediting.js';
 export { HeadingUI } from './headingui.js';
 export { HeadingButtonsUI } from './headingbuttonsui.js';
 export { HeadingCommand } from './headingcommand.js';
-export { Title, type TitleConfig } from './title.js';
-export type { HeadingConfig } from './headingconfig.js';
+export { Title, type HeadingTitleConfig } from './title.js';
+export type { HeadingConfig, HeadingParagraphOption } from './headingconfig.js';
 
 export { getLocalizedOptions as _getLocalizedHeadingOptions } from './utils.js';
 

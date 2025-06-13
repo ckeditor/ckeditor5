@@ -15,8 +15,20 @@ export { CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
 export { CKBoxImageEdit } from './ckboximageedit.js';
 export { CKBoxCommand } from './ckboxcommand.js';
 export { CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
+export { CKBoxUploadAdapter } from './ckboxuploadadapter.js';
+export { CKBoxUtils } from './ckboxutils.js';
 
-export type { CKBoxConfig } from './ckboxconfig.js';
+export type {
+	CKBoxConfig,
+	CKBoxDialogConfig,
+	CKBoxCategoriesConfig,
+	CKBoxViewConfig,
+	CKBoxUploadConfig,
+	CKBoxImageUrls,
+	CKBoxRawAssetDefinition,
+	CKBoxRawAssetDataDefinition,
+	CKBoxRawAssetMetadataDefinition
+} from './ckboxconfig.js';
 
 export {
 	getImageUrls as _getCKBoxImageUrls,

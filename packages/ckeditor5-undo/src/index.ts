@@ -10,7 +10,8 @@
 export { Undo } from './undo.js';
 export { UndoEditing } from './undoediting.js';
 export { UndoUI } from './undoui.js';
-export { UndoCommand } from './undocommand.js';
+export { UndoCommand, type UndoCommandRevertEvent } from './undocommand.js';
 export { RedoCommand } from './redocommand.js';
+export { UndoRedoBaseCommand } from './basecommand.js';
 
 import './augmentation.js';

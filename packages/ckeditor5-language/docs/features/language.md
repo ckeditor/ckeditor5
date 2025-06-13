@@ -2,6 +2,7 @@
 category: features
 menu-title: Text part language
 meta-title: Text part language | CKEditor 5 Documentation
+meta-description: Set the language of content in CKEditor 5 to improve accessibility, support screen readers, and optimize language-specific features.
 ---
 
 # Text part language

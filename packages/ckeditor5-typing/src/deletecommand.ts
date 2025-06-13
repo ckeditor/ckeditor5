@@ -11,7 +11,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
 import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
-import { ChangeBuffer } from './utils/changebuffer.js';
+import { TypingChangeBuffer } from './utils/changebuffer.js';
 
 // @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 
@@ -29,7 +29,7 @@ export class DeleteCommand extends Command {
 	/**
 	 * Delete's change buffer used to group subsequent changes into batches.
 	 */
-	private readonly _buffer: ChangeBuffer;
+	private readonly _buffer: TypingChangeBuffer;
 
 	/**
 	 * Creates an instance of the command.
@@ -41,7 +41,7 @@ export class DeleteCommand extends Command {
 		super( editor );
 
 		this.direction = direction;
-		this._buffer = new ChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
+		this._buffer = new TypingChangeBuffer( editor.model, editor.config.get( 'typing.undoStep' ) );
 
 		// Since this command may execute on different selectable than selection, it should be checked directly in execute block.
 		this._isEnabledBasedOnSelection = false;
@@ -50,7 +50,7 @@ export class DeleteCommand extends Command {
 	/**
 	 * The current change buffer.
 	 */
-	public get buffer(): ChangeBuffer {
+	public get buffer(): TypingChangeBuffer {
 		return this._buffer;
 	}
 

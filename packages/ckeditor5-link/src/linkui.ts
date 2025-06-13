@@ -28,7 +28,7 @@ import {
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 
-import { Collection, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import { LinkEditing } from './linkediting.js';
@@ -1165,7 +1165,7 @@ export class LinkUI extends Plugin {
 	 * If the selection is collapsed and inside a link element, the panel will be attached to the
 	 * entire link element. Otherwise, it will be attached to the selection.
 	 */
-	private _getBalloonPositionData(): Partial<PositionOptions> {
+	private _getBalloonPositionData(): Partial<DomOptimalPositionOptions> {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 		const model = this.editor.model;
