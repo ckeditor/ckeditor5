@@ -93,6 +93,10 @@ In the CKEditor&nbsp;5 data model the document title is represented as follows:
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Known issues
+
+The feature is not compatible with the {@link features/pagination pagination} feature.
+
 ## Related features
 
 CKEditor&nbsp;5 has more features that can help you structure your document better:
