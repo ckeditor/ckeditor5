@@ -398,7 +398,7 @@ export function transformOperationSets(
 }
 
 /**
- * The result of {@link module:engine/model/operation/transform~transformSets}.
+ * The result of {@link module:engine/model/operation/transform~transformOperationSets}.
  */
 export interface TransformOperationSetsResult {
 

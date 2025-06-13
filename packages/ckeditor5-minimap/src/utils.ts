@@ -13,7 +13,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
  * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~ViewRenderer} and
- * {@link module:engine/view/domconverter~DomConverter}. The DOM root clone updates incrementally to stay in sync with the
+ * {@link module:engine/view/domconverter~ViewDomConverter}. The DOM root clone updates incrementally to stay in sync with the
  * source root.
  *
  * @internal

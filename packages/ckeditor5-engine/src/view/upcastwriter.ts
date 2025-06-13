@@ -388,14 +388,14 @@ export class ViewUpcastWriter {
 	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
 		return ViewPosition._createAt( itemOrPosition, offset );
@@ -432,7 +432,7 @@ export class ViewUpcastWriter {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
 	public createRangeOn( item: ViewItem ): ViewRange {
 		return ViewRange._createOn( item );
@@ -460,7 +460,7 @@ export class ViewUpcastWriter {
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```

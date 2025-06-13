@@ -289,7 +289,7 @@ export class ViewPosition extends ViewTypeCheckable {
 	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
@@ -297,7 +297,7 @@ export class ViewPosition extends ViewTypeCheckable {
 	 * * {@link module:engine/view/position~ViewPosition._createAfter}.
 	 *
 	 * @internal
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public static _createAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
 		if ( itemOrPosition instanceof ViewPosition ) {

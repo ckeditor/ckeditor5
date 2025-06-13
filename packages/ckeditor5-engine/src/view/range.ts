@@ -54,7 +54,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	/**
 	 * Iterable interface.
 	 *
-	 * Iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
+	 * Iterates over all {@link module:engine/view/item~ViewItem view items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/view/position~ViewPosition positions},
 	 * grouped as {@link module:engine/view/treewalker~ViewTreeWalkerValue}.
 	 *
@@ -379,11 +379,11 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/view/item~ViewItem view items} that are in this range and returns
 	 * them.
 	 *
 	 * This method uses {@link module:engine/view/treewalker~ViewTreeWalker} with `boundaries` set to this range
-	 * and `ignoreElementEnd` option set to `true`. However it returns only {@link module:engine/view/item~Item items},
+	 * and `ignoreElementEnd` option set to `true`. However it returns only {@link module:engine/view/item~ViewItem items},
 	 * not {@link module:engine/view/treewalker~ViewTreeWalkerValue}.
 	 *
 	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~ViewTreeWalker} for
@@ -485,7 +485,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 *
 	 * @internal
 	 */

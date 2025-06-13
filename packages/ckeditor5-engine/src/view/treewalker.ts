@@ -163,9 +163,9 @@ export class ViewTreeWalker implements IterableIterator<ViewTreeWalkerValue> {
 	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
 	 * continue traversing from that position.
 	 *
-	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * Note: in contrary to {@link ~ViewTreeWalker#skip}, this method does not iterate over the nodes along the way.
 	 * It simply sets the current tree walker position to a new one.
-	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 * From the performance standpoint, it is better to use {@link ~ViewTreeWalker#jumpTo} rather than {@link ~ViewTreeWalker#skip}.
 	 *
 	 * If the provided position is before the start boundary, the position will be
 	 * set to the start boundary. If the provided position is after the end boundary,
@@ -534,7 +534,7 @@ export interface ViewTreeWalkerValue {
 export type ViewTreeWalkerDirection = 'forward' | 'backward';
 
 /**
- * The configuration of {@link ~TreeWalker}.
+ * The configuration of {@link ~ViewTreeWalker}.
  */
 export interface ViewTreeWalkerOptions {
 

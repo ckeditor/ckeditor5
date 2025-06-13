@@ -515,7 +515,7 @@ The {@link module:engine/model/schema~ModelSchema#isObject `Schema#isObject()`} 
 
 Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~ModelSchemaItemDefinition#isBlock `isBlock`}.
 
-Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements.
+Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~ModelDocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements.
 
 It is important to remember that a block should not allow another block inside. Container elements like `<blockQuote>`, which can contain other block elements, should not be marked as blocks.
 

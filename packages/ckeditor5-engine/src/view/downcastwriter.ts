@@ -76,8 +76,8 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
+	 * Sets {@link module:engine/view/documentselection~ViewDocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * Usage:
 	 *
@@ -94,7 +94,7 @@ export class ViewDowncastWriter {
 	 * writer.setSelection( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on the {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on the {@link module:engine/view/item~ViewItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'on' );
@@ -124,8 +124,8 @@ export class ViewDowncastWriter {
 	public setSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): void;
 
 	/**
-	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
+	 * Sets {@link module:engine/view/documentselection~ViewDocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * Usage:
 	 *
@@ -182,14 +182,14 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
+	 * Moves {@link module:engine/view/documentselection~ViewDocumentSelection#focus selection's focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
 	 * {@link module:engine/view/view~EditingView#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public setSelectionFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		this.document.selection._setFocus( itemOrPosition, offset );
@@ -1007,7 +1007,7 @@ export class ViewDowncastWriter {
 	 * positions are not placed inside same parent container.
 	 *
 	 * @param rangeOrItem Range to remove from container
-	 * or an {@link module:engine/view/item~Item item} to remove. If range is provided, after removing, it will be updated
+	 * or an {@link module:engine/view/item~ViewItem item} to remove. If range is provided, after removing, it will be updated
 	 * to a collapsed range showing the new position.
 	 * @returns Document fragment containing removed nodes.
 	 */
@@ -1284,14 +1284,14 @@ export class ViewDowncastWriter {
 	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
 		return ViewPosition._createAt( itemOrPosition, offset );
@@ -1328,7 +1328,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
 	public createRangeOn( item: ViewItem ): ViewRange {
 		return ViewRange._createOn( item );
@@ -1356,7 +1356,7 @@ export class ViewDowncastWriter {
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```

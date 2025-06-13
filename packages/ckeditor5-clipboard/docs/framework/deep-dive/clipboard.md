@@ -23,7 +23,7 @@ When the user pastes or drops content into the editor, the browser fires an even
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns this event into a synthetic {@link module:engine/view/document~ViewDocument#event:paste `view.Document#paste`} or {@link module:engine/view/document~ViewDocument#event:drop `view.Document#drop`}.
 2. The content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a similar effect. Both events are thus turned into a single {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
 3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event and retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:engine/view/datatransfer~ViewDataTransfer event's `dataTransfer`}. It then fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event with the retrieved content in the event data `content` property as a {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`}.
-4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event. It takes the processed content and transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}. It then fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
+4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event. It takes the processed content and transforms it to the {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`}. It then fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`}.
 5. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event. It takes the model fragment and {@link module:engine/model/model~Model#insertContent inserts} it into the editor. Then it stores the range which contains all the performed changes in the `resultRange` property of the event data.
 
 The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardPipeline#inputTransformation`, and `ClipboardPipeline#contentInsertion` events using {@link framework/deep-dive/event-system#listener-priorities low priority listeners}. This means that adding a normal listener and calling `evt.stop()` allows overriding the behavior implemented by the clipboard feature. It is a similar mechanism to the DOM's `evt.preventDefault()` that lets you override the default browser behavior.
@@ -158,13 +158,13 @@ The default action is to:
 
 1. {@link module:engine/model/model~Model#getSelectedContent Get the selected content} from the editor.
 1. Prevent the default action of the native `copy` or `cut` event.
-1. Fire {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `clipboard.ClipboardPipeline#outputTransformation`}` with a selected content represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+1. Fire {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `clipboard.ClipboardPipeline#outputTransformation`}` with a selected content represented by a {@link module:engine/model/documentfragment~ModelDocumentFragment model document fragment}.
 
 ### 2. On {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:outputTransformation `clipboard.ClipboardPipeline#outputTransformation`}
 
 The default action is to:
 
-1. Processes `data.content` represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+1. Processes `data.content` represented by a {@link module:engine/model/documentfragment~ModelDocumentFragment model document fragment}.
 1. Fire {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} with a processed `data.content` converted to a {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}.
 
 ### 3. On {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`}

@@ -325,8 +325,8 @@ modelList.defaultBlock = 'paragraph';
 /**
  * Returns document list pseudo markdown notation for a given document fragment or element.
  *
- * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~ModelElement} fragmentOrElement The document
- * fragment or element to stringify to pseudo markdown notation.
+ * @param {module:engine/model/documentfragment~ModelDocumentFragment|module:engine/model/element~ModelElement} fragmentOrElement
+ * The document fragment or element to stringify to pseudo markdown notation.
  * @returns {String}
  */
 export function stringifyList( fragmentOrElement ) {

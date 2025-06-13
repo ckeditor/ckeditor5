@@ -187,9 +187,9 @@ export class ModelTreeWalker implements Iterable<ModelTreeWalkerValue> {
 	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
 	 * continue traversing from that position.
 	 *
-	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * Note: in contrary to {@link ~ModelTreeWalker#skip}, this method does not iterate over the nodes along the way.
 	 * It simply sets the current tree walker position to a new one.
-	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 * From the performance standpoint, it is better to use {@link ~ModelTreeWalker#jumpTo} rather than {@link ~ModelTreeWalker#skip}.
 	 *
 	 * If the provided position is before the start boundary, the position will be
 	 * set to the start boundary. If the provided position is after the end boundary,

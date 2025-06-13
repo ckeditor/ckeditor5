@@ -48,7 +48,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~ModelElement}
-	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
+	 * or {@link module:engine/model/documentfragment~ModelDocumentFragment}.
 	 * Equals to `null` if the node has no parent.
 	 */
 	public readonly parent: ModelElement | ModelDocumentFragment | null = null;
@@ -157,7 +157,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 
 	/**
 	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
-	 * of {@link module:engine/model/documentfragment~DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
+	 * of {@link module:engine/model/documentfragment~ModelDocumentFragment}, it's `root` is equal to that `DocumentFragment`.
 	 */
 	public get root(): ModelNode | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
@@ -232,7 +232,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	}
 
 	/**
-	 * Returns a {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns a {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~ModelDocumentFragment}
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param node The second node.
@@ -255,7 +255,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 
 	/**
 	 * Returns whether this node is before given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/model/documentfragment~ModelDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */
@@ -289,7 +289,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 
 	/**
 	 * Returns whether this node is after given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/model/documentfragment~ModelDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */

@@ -935,7 +935,7 @@ export function createViewElementFromDowncastHighlightDescriptor(
 /**
  * Function factory that creates a converter which converts a non-collapsed
  * {@link module:engine/model/selection~ModelSelection model selection}
- * to a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * to a {@link module:engine/view/documentselection~ViewDocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object and maps model positions from the selection to view positions.
  *
  * ```ts
@@ -974,7 +974,7 @@ export function convertRangeSelection() {
 /**
  * Function factory that creates a converter which converts a collapsed
  * {@link module:engine/model/selection~ModelSelection model selection} to
- * a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * a {@link module:engine/view/documentselection~ViewDocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object, maps the model selection position to the view position and breaks
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} at the selection position.
  *
@@ -2297,7 +2297,7 @@ interface NormalizedModelElementConfig {
 }
 
 /**
- * Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
+ * Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ViewElementDefinition}, converts it
  * to a function (because lower level converters accept only element creator functions).
  *
  * @param view View configuration.
@@ -2318,7 +2318,7 @@ function normalizeToElementConfig<T extends Function>(
 }
 
 /**
- * Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
+ * Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ViewElementDefinition} and class.
  */
 function createViewElementFromDefinition(
 	viewElementDefinition: ViewElementDefinition,

@@ -14,7 +14,7 @@ import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 /**
  * Provides an interface to operate on a list of {@link module:engine/model/node~ModelNode nodes}. `NodeList` is used internally
  * in classes like {@link module:engine/model/element~ModelElement Element}
- * or {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment}.
+ * or {@link module:engine/model/documentfragment~ModelDocumentFragment ModelDocumentFragment}.
  */
 export class ModelNodeList implements Iterable<ModelNode> {
 	/**

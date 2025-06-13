@@ -41,7 +41,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 	public _ranges: Array<ModelRange> = [];
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
@@ -295,7 +295,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable}.
+	 * {@link module:engine/model/selection~ModelSelectable selectable}.
 	 *
 	 * ```ts
 	 * // Removes all selection's ranges.
@@ -793,7 +793,7 @@ export type ModelSelectionChangeEvent = {
  * @eventName ~ModelSelection#change:range
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
  * was directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
@@ -812,7 +812,7 @@ export type ModelSelectionChangeRangeEvent = {
  * @eventName ~ModelSelection#change:attribute
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
  * were directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")

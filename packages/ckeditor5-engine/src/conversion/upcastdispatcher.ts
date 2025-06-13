@@ -192,7 +192,7 @@ export class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param context Elements will be converted according to this context.
 	 * @returns Model data that is the result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as the document fragment's
-	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
+	 * {@link module:engine/model/documentfragment~ModelDocumentFragment#markers static markers map}.
 	 */
 	public convert(
 		viewElement: ViewElement | ViewDocumentFragment,

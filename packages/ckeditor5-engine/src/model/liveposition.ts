@@ -24,7 +24,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  *
  * **Note:** Contrary to {@link module:engine/model/position~ModelPosition}, `ModelLivePosition` works only in roots that are
  * {@link module:engine/model/rootelement~ModelRootElement}.
- * If {@link module:engine/model/documentfragment~DocumentFragment} is passed, error will be thrown.
+ * If {@link module:engine/model/documentfragment~ModelDocumentFragment} is passed, error will be thrown.
  *
  * **Note:** Be very careful when dealing with `ModelLivePosition`. Each `ModelLivePosition` instance bind events that might
  * have to be unbound.

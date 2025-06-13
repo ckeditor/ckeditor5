@@ -82,7 +82,8 @@ type DomRange = globalThis.Range;
  * This class also {@link module:engine/view/view~EditingView#attachDomRoot binds the DOM and the view elements}.
  *
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
- * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter ViewDomConverter} instead.
+ * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
+ * instead.
  */
 export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	/**
@@ -91,7 +92,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	public readonly document: ViewDocument;
 
 	/**
-	 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
+	 * Instance of the {@link module:engine/view/domconverter~ViewDomConverter domConverter} used by
 	 * {@link module:engine/view/view~EditingView#_renderer renderer}
 	 * and {@link module:engine/view/observer/observer~Observer observers}.
 	 */
@@ -429,7 +430,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
 	 * caret, **if not already visible to the user**.
 	 *
-	 * **Note**: Calling this method fires the {@link module:engine/view/view~EditingViewScrollToTheSelectionEvent} event that
+	 * **Note**: Calling this method fires the {@link module:engine/view/view~ViewScrollToTheSelectionEvent} event that
 	 * allows custom behaviors.
 	 *
 	 * @param options Additional configuration of the scrolling behavior.
@@ -624,14 +625,14 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
 		return ViewPosition._createAt( itemOrPosition, offset );
@@ -668,7 +669,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
 	public createRangeOn( item: ViewItem ): ViewRange {
 		return ViewRange._createOn( item );
@@ -696,7 +697,7 @@ export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = view.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = view.createSelection( paragraph, 'on' );
 	 * ```
@@ -838,7 +839,7 @@ export type ViewRenderEvent = {
  * An event fired at the moment of {@link module:engine/view/view~EditingView#scrollToTheSelection} being called. It
  * carries two objects in its payload (`args`):
  *
- * * The first argument is the {@link module:engine/view/view~EditingViewScrollToTheSelectionEventData object containing data} that gets
+ * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
  *   passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listener modifies it, it can
  *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`).
  * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.

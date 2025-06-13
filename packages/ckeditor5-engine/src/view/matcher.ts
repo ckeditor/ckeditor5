@@ -678,7 +678,7 @@ function matchStyles(
  * };
  * ```
  *
- * `MatcherPattern` is defined in a way that it is a superset of {@link module:engine/view/elementdefinition~ElementDefinition},
+ * `MatcherPattern` is defined in a way that it is a superset of {@link module:engine/view/elementdefinition~ViewElementDefinition},
  * that is, every `ElementDefinition` also can be used as a `MatcherPattern`.
  */
 export type MatcherPattern = string | RegExp | MatcherFunctionPattern | MatcherObjectPattern;

@@ -121,7 +121,7 @@ export class ModelWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+	 * Creates a new {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
 	 *
 	 * @returns Created document fragment.
 	 */
@@ -1418,7 +1418,7 @@ export class ModelWriter {
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
+	 * {@link module:engine/model/selection~ModelSelectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
 	 * // Sets collapsed selection at the position of the given node and an offset.
@@ -1455,7 +1455,7 @@ export class ModelWriter {
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
+	 * {@link module:engine/model/selection~ModelSelectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
 	 * // Sets selection to the given range.
@@ -1504,7 +1504,7 @@ export class ModelWriter {
 	}
 
 	/**
-	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
 	 * {@link #createPositionAt `writer.createPositionAt()`} parameters.
@@ -1599,7 +1599,7 @@ export class ModelWriter {
 	}
 
 	/**
-	 * Temporarily changes the {@link module:engine/model/documentselection~DocumentSelection#isGravityOverridden gravity}
+	 * Temporarily changes the {@link module:engine/model/documentselection~ModelDocumentSelection#isGravityOverridden gravity}
 	 * of the selection from left to right.
 	 *
 	 * The gravity defines from which direction the selection inherits its attributes. If it's the default left gravity,
@@ -1625,13 +1625,13 @@ export class ModelWriter {
 	}
 
 	/**
-	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
+	 * Restores {@link ~ModelWriter#overrideSelectionGravity} gravity to default.
 	 *
 	 * Restoring the gravity is only possible using the unique identifier returned by
-	 * {@link ~Writer#overrideSelectionGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * {@link ~ModelWriter#overrideSelectionGravity}. Note that the gravity remains overridden as long as won't be restored
 	 * the same number of times it was overridden.
 	 *
-	 * @param uid The unique id returned by {@link ~Writer#overrideSelectionGravity}.
+	 * @param uid The unique id returned by {@link ~ModelWriter#overrideSelectionGravity}.
 	 */
 	public restoreSelectionGravity( uid: string ): void {
 		this.model.document.selection._restoreGravity( uid );

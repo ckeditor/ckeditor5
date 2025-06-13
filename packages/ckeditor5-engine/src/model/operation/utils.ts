@@ -151,7 +151,7 @@ export function _setAttribute( range: ModelRange, key: string, value: unknown ):
 
 /**
  * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~ModelNode nodes}. See
- * {@link ~NodeSet NodeSet} for details on how normalization is performed.
+ * {@link ~ModelNodeSet NodeSet} for details on how normalization is performed.
  *
  * @internal
  * @param nodes Objects to normalize.
@@ -274,8 +274,8 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
  * * {@link module:engine/model/textproxy~ModelTextProxy TextProxy} and `string` are normalized to
  * {@link module:engine/model/text~ModelText Text},
  * * {@link module:engine/model/nodelist~ModelNodeList NodeList} is normalized to an array containing all nodes that are in that node list,
- * * {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment} is normalized to an array containing all of it's
- * * children.
+ * * {@link module:engine/model/documentfragment~ModelDocumentFragment ModelDocumentFragment} is normalized to an array containing all of
+ * it's children.
  *
  * Arrays are processed item by item like non-array values and flattened to one array. Normalization always results in
  * a flat array of {@link module:engine/model/node~ModelNode nodes}. Consecutive text nodes (or items normalized to text nodes) will be

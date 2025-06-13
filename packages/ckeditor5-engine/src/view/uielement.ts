@@ -86,7 +86,7 @@ export class ViewUIElement extends ViewElement {
 
 	/**
 	 * Renders this {@link module:engine/view/uielement~ViewUIElement} to DOM. This method is called by
-	 * {@link module:engine/view/domconverter~DomConverter}.
+	 * {@link module:engine/view/domconverter~ViewDomConverter}.
 	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
 	 *
 	 * ```ts

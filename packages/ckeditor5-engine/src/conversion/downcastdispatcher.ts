@@ -789,7 +789,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  *
  * @eventName ~DowncastDispatcher#attribute
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/item~ModelItem|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+ * @param {module:engine/model/item~ModelItem|module:engine/model/documentselection~ModelDocumentSelection} data.item Changed item
  * or converted selection.
  * @param {module:engine/model/range~ModelRange} data.range Range spanning over changed item or selection range.
  * @param {String} data.attributeKey Attribute key.

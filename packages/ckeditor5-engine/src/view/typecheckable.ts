@@ -386,7 +386,7 @@ export abstract class ViewTypeCheckable {
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/selection~ViewSelection} or
-	 * {@link module:engine/view/documentselection~DocumentSelection}.
+	 * {@link module:engine/view/documentselection~ViewDocumentSelection}.
 	 *
 	 * ```ts
 	 * selection.is( 'selection' ); // -> true
@@ -402,7 +402,7 @@ export abstract class ViewTypeCheckable {
 	public is( type: 'selection' | 'view:selection' ): this is ViewSelection | ViewDocumentSelection;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/documentselection~DocumentSelection}.
+	 * Checks whether this object is of type {@link module:engine/view/documentselection~ViewDocumentSelection}.
 	 *
 	 * ```ts
 	 * `docSelection.is( 'selection' ); // -> true

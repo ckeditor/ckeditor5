@@ -77,7 +77,7 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
  * Returns `true` when the passed value is an empty string or a valid CSS color expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isColor}.
+ * See {@link module:engine/view/styles/utils~isColorStyleValue}.
  *
  * @internal
  */
@@ -91,8 +91,8 @@ export function colorFieldValidator( value: string ): boolean {
  * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isLength}.
- * See {@link module:engine/view/styles/utils~isPercentage}.
+ * See {@link module:engine/view/styles/utils~isLengthStyleValue}.
+ * See {@link module:engine/view/styles/utils~isPercentageStyleValue}.
  *
  * @internal
  */
@@ -106,7 +106,7 @@ export function lengthFieldValidator( value: string ): boolean {
  * Returns `true` when the passed value is an empty string, a number without a unit or a valid CSS length expression.
  * Otherwise, `false` is returned.
  *
- * See {@link module:engine/view/styles/utils~isLength}.
+ * See {@link module:engine/view/styles/utils~isLengthStyleValue}.
  *
  * @internal
  */

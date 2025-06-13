@@ -53,7 +53,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = new ViewDocumentSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = new ViewDocumentSelection( paragraph, 'on' );
 	 * ```
@@ -303,7 +303,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selectable selectable}.
+	 * {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * ```ts
 	 * // Sets selection to the given range.
@@ -333,7 +333,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 	 * documentSelection._setTo( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * documentSelection._setTo( paragraph, 'on' );
@@ -377,7 +377,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 	 *
 	 * @internal
 	 * @fires change
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public _setFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );

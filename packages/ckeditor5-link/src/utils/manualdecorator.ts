@@ -41,19 +41,19 @@ export class LinkManualDecorator extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * A set of attributes added to downcasted data when the decorator is activated for a specific link.
-	 * Attributes should be added in a form of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+	 * Attributes should be added in a form of attributes defined in {@link module:engine/view/elementdefinition~ViewElementDefinition}.
 	 */
 	public attributes?: Record<string, string>;
 
 	/**
 	 * A set of classes added to downcasted data when the decorator is activated for a specific link.
-	 * Classes should be added in a form of classes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+	 * Classes should be added in a form of classes defined in {@link module:engine/view/elementdefinition~ViewElementDefinition}.
 	 */
 	public classes?: ArrayOrItem<string>;
 
 	/**
 	 * A set of styles added to downcasted data when the decorator is activated for a specific link.
-	 * Styles should be added in a form of styles defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+	 * Styles should be added in a form of styles defined in {@link module:engine/view/elementdefinition~ViewElementDefinition}.
 	 */
 	public styles?: Record<string, string>;
 

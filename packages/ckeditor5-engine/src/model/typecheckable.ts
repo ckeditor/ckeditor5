@@ -208,7 +208,7 @@ export abstract class ModelTypeCheckable {
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/selection~ModelSelection}
-	 * or {@link module:engine/model/documentselection~DocumentSelection}.
+	 * or {@link module:engine/model/documentselection~ModelDocumentSelection}.
 	 *
 	 * ```ts
 	 * selection.is( 'selection' ); // -> true
@@ -223,7 +223,7 @@ export abstract class ModelTypeCheckable {
 	public is( type: 'selection' | 'model:selection' ): this is ModelSelection | ModelDocumentSelection;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/documentselection~DocumentSelection}.
+	 * Checks whether the object is of type {@link module:engine/model/documentselection~ModelDocumentSelection}.
 	 *
 	 * ```ts
 	 * selection.is( 'selection' ); // -> true

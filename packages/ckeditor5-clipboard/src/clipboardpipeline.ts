@@ -108,7 +108,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  * ## Event: `ClipboardPipeline#inputTransformation`
  *
  * 1. Converts {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`} from the `data.content` field to
- *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
+ *    {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`}.
  * 2. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
  *    event with the model document fragment in the `data.content` event field.
  *    **Note**: The `ClipboardPipeline#contentInsertion` event is fired within a model change block to allow other handlers
@@ -125,7 +125,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  *
  * ## Event: `copy`, `cut` or `dragstart`
  *
- * 1. Retrieves the selected {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} by calling
+ * 1. Retrieves the selected {@link module:engine/model/documentfragment~ModelDocumentFragment `model.DocumentFragment`} by calling
  *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`}.
  * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`}.
  * 3. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} event

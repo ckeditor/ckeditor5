@@ -17,7 +17,7 @@ const smallPaddingElements = [ 'figcaption', 'li' ];
 const listElements = [ 'ol', 'ul' ];
 
 /**
- * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
+ * Converts {@link module:engine/view/item~ViewItem view item} and all of its children to plain text.
  *
  * @param converter The converter instance.
  * @param viewItem View item to convert.

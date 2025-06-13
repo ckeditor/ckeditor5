@@ -56,7 +56,7 @@ export class ModelDocumentFragment extends ModelTypeCheckable implements Iterabl
 	 * Creates an empty `ModelDocumentFragment`.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~ModelWriter#createModelDocumentFragment} method instead.
+	 * Use the {@link module:engine/model/writer~ModelWriter#createDocumentFragment} method instead.
 	 *
 	 * @internal
 	 * @param children Nodes to be contained inside the `ModelDocumentFragment`.

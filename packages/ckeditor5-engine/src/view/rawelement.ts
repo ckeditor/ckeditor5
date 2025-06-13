@@ -86,7 +86,7 @@ export class ViewRawElement extends ViewElement {
 
 	/**
 	 * This allows rendering the children of a {@link module:engine/view/rawelement~ViewRawElement} on the DOM level.
-	 * This method is called by the {@link module:engine/view/domconverter~DomConverter} with the raw DOM element
+	 * This method is called by the {@link module:engine/view/domconverter~ViewDomConverter} with the raw DOM element
 	 * passed as an argument, leaving the number and shape of the children up to the integrator.
 	 *
 	 * This method **must be defined** for the raw element to work:

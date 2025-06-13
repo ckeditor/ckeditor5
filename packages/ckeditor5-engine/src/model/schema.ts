@@ -586,7 +586,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param callback The callback to be called. It is called with two parameters:
 	 * {@link module:engine/model/schema~ModelSchemaContext} (context) instance and
-	 * {@link module:engine/model/schema~ModelModelSchemaCompiledItemDefinition} (definition). The callback may return `true/false` to
+	 * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} (definition). The callback may return `true/false` to
 	 * override `checkChild()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks) will define
 	 * `checkChild()`'s return value.
 	 * @param itemName Name of the schema item for which the callback is registered. If specified, the callback will be run only for
@@ -1263,7 +1263,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
  * normalized to a {@link module:engine/model/schema~ModelSchemaContext} instance and `child` to a
- * {@link module:engine/model/schema~ModelModelSchemaCompiledItemDefinition} instance, so you do not have to worry about
+ * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} instance, so you do not have to worry about
  * the various ways how `context` and `child` may be passed to `checkChild()`.
  *
  * **Note:** `childDefinition` may be `undefined` if `checkChild()` was called with a non-registered element.

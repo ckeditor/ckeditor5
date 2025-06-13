@@ -57,7 +57,7 @@ const storePrefix = 'selection:';
  * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~ModelLiveRange live ranges}
  * and is updated when {@link module:engine/model/document~ModelDocument document}
  * changes, it cannot be set on {@link module:engine/model/node~ModelNode nodes}
- * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+ * that are inside {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~ModelSelection Selection class} instead.
  */
@@ -382,7 +382,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable}.
+	 * {@link module:engine/model/selection~ModelSelectable selectable}.
 	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelection} method.
 	 *
 	 * @see module:engine/model/writer~ModelWriter#setSelection

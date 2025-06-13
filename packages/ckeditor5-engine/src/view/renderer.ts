@@ -53,7 +53,7 @@ type DomSelection = globalThis.Selection;
  * that native editing features such as text composition, autocompletion, spell checking, selection's x-index are
  * affected as little as possible.
  *
- * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
+ * Renderer uses {@link module:engine/view/domconverter~ViewDomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
 export class ViewRenderer extends /* #__PURE__ */ ObservableMixin() {
@@ -1294,7 +1294,7 @@ function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
  * * Element nodes represented by the same object.
  * * Two block filler elements.
  *
- * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
+ * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~ViewDomConverter#blockFillerMode}.
  */
 function sameNodes( domConverter: ViewDomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
 	// Elements.

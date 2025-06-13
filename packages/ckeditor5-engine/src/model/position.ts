@@ -406,7 +406,7 @@ export class ModelPosition extends ModelTypeCheckable {
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~ModelDocumentFragment}
 	 * which is a common ancestor of both positions. The {@link #root roots} of these two positions must be identical.
 	 *
 	 * @param position The second position.
@@ -586,7 +586,7 @@ export class ModelPosition extends ModelTypeCheckable {
 	 *
 	 * The new position's parameters are updated accordingly to the effect of the `operation`.
 	 *
-	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~Position#offset} will be
+	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~ModelPosition#offset} will be
 	 * increased by `n`. If the position was in a merged element, it will be accordingly moved to the new element, etc.
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).

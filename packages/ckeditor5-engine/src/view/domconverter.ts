@@ -199,7 +199,7 @@ export class ViewDomConverter {
 
 	/**
 	 * Binds a given DOM element that represents fake selection to a **position** of a
-	 * {@link module:engine/view/documentselection~DocumentSelection document selection}.
+	 * {@link module:engine/view/documentselection~ViewDocumentSelection document selection}.
 	 * Document selection copy is stored and can be retrieved by the
 	 * {@link module:engine/view/domconverter~ViewDomConverter#fakeSelectionToView} method.
 	 */

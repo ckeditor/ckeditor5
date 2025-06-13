@@ -41,7 +41,7 @@ const allowedTypes = {
 	'ui': ViewUIElement,
 	'raw': ViewRawElement
 };
-// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf ViewDomConverter.setContentOf}
+// Returns simplified implementation of {@link module:engine/view/domconverter~ViewDomConverter#setContentOf ViewDomConverter.setContentOf}
 // method. Used to render UIElement and RawElement.
 const domConverterStub: ViewDomConverter = {
 	setContentOf: ( node: any, html: string ) => {
@@ -65,7 +65,7 @@ const domConverterStub: ViewDomConverter = {
  * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
@@ -169,7 +169,7 @@ _setViewData._parse = _parseView;
  * stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  * ```
  *
- * Additionally, a {@link module:engine/view/documentselection~DocumentSelection selection} instance can be provided.
+ * Additionally, a {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance can be provided.
  * Ranges from the selection will then be included in the output data.
  * If a range position is placed inside the element node, it will be represented with `[` and `]`:
  *
@@ -215,7 +215,7 @@ _setViewData._parse = _parseView;
  * ```
  *
  * A {@link module:engine/view/range~ViewRange range} or {@link module:engine/view/position~ViewPosition position} instance can be provided
- * instead of the {@link module:engine/view/documentselection~DocumentSelection selection} instance. If a range instance
+ * instead of the {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance. If a range instance
  * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
  * be converted to a selection containing one range collapsed at this position.
  *
@@ -283,7 +283,7 @@ _setViewData._parse = _parseView;
  * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns An HTML-like string representing the view.
@@ -341,7 +341,7 @@ export function _stringifyView(
  * ```
  *
  * The method can _parseView multiple {@link module:engine/view/range~ViewRange ranges} provided in string data and return a
- * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
+ * {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance containing these ranges. Ranges placed inside
  * {@link module:engine/view/text~ViewText text} nodes should be marked using `{` and `}` brackets:
  *
  * ```ts
@@ -369,8 +369,8 @@ export function _stringifyView(
  * added as the third and the third range (`{ba}`) will be added as the first one.
  *
  * If the selection's last range should be added as a backward one
- * (so the {@link module:engine/view/documentselection~DocumentSelection#anchor selection anchor} is represented
- * by the `end` position and {@link module:engine/view/documentselection~DocumentSelection#focus selection focus} is
+ * (so the {@link module:engine/view/documentselection~ViewDocumentSelection#anchor selection anchor} is represented
+ * by the `end` position and {@link module:engine/view/documentselection~ViewDocumentSelection#focus selection focus} is
  * represented by the `start` position), use the `lastRangeBackward` flag:
  *
  * ```ts
@@ -392,11 +392,11 @@ export function _stringifyView(
  *
  * @param data An HTML-like string to be parsed.
  * @param options.order An array with the order of parsed ranges added to the returned
- * {@link module:engine/view/documentselection~DocumentSelection Selection} instance. Each element should represent the
+ * {@link module:engine/view/documentselection~ViewDocumentSelection Selection} instance. Each element should represent the
  * desired position of each range in the selection instance. For example: `[2, 3, 1]` means that the first range will be
  * placed as the second, the second as the third and the third as the first.
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward to the returned
- * {@link module:engine/view/documentselection~DocumentSelection selection} instance.
+ * {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance.
  * @param options.rootElement The default root to use when parsing elements.
  * When set to `null`, the root element will be created automatically. If set to
  * {@link module:engine/view/element~ViewElement Element} or
@@ -720,7 +720,7 @@ class ViewStringify {
 	 * @param options.renderUIElements When set to `true`, the inner content of each
 	 * {@link module:engine/view/uielement~ViewUIElement} will be printed.
 	 * @param options.renderRawElements When set to `true`, the inner content of each
-	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
+	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~ViewRawElement} will be printed.

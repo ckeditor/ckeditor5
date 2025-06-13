@@ -48,7 +48,7 @@ export class SelectionObserver extends Observer {
 	public readonly focusObserver: FocusObserver;
 
 	/**
-	 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
+	 * Reference to the view {@link module:engine/view/documentselection~ViewDocumentSelection} object used to compare
 	 * new selection with it.
 	 */
 	public readonly selection: ViewDocumentSelection;

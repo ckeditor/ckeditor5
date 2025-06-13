@@ -51,8 +51,8 @@ export class ViewElement extends ViewNode {
 
 	/**
 	 * A list of attribute names that should be rendered in the editing pipeline even though filtering mechanisms
-	 * implemented in the {@link module:engine/view/domconverter~DomConverter} (for instance,
-	 * {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute}) would filter them out.
+	 * implemented in the {@link module:engine/view/domconverter~ViewDomConverter} (for instance,
+	 * {@link module:engine/view/domconverter~ViewDomConverter#shouldRenderAttribute}) would filter them out.
 	 *
 	 * These attributes can be specified as an option when the element is created by
 	 * the {@link module:engine/view/downcastwriter~ViewDowncastWriter}. To check whether an unsafe an attribute should
@@ -495,7 +495,7 @@ export class ViewElement extends ViewNode {
 
 	/**
 	 * Decides whether an unsafe attribute is whitelisted and should be rendered in the editing pipeline even though filtering mechanisms
-	 * like {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute} say it should not.
+	 * like {@link module:engine/view/domconverter~ViewDomConverter#shouldRenderAttribute} say it should not.
 	 *
 	 * Unsafe attribute names can be specified when creating an element via {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 *
@@ -1284,7 +1284,8 @@ export interface ViewElementAttributeValue {
 	_getConsumables( name?: string ): Array<string>;
 
 	/**
-	 * Used by {@link ~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without conflicts into the attribute.
+	 * Used by {@link ~ViewElement#_canMergeAttributesFrom} to verify if the given attribute can be merged without
+	 * conflicts into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
@@ -1292,7 +1293,7 @@ export interface ViewElementAttributeValue {
 	_canMergeFrom( other: this ): boolean;
 
 	/**
-	 * Used by {@link ~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 * Used by {@link ~ViewElement#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
@@ -1300,7 +1301,7 @@ export interface ViewElementAttributeValue {
 	_mergeFrom( other: this ): void;
 
 	/**
-	 * Used by {@link ~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
+	 * Used by {@link ~ViewElement#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.

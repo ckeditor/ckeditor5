@@ -307,14 +307,14 @@ export interface ViewDocumentInputEventData extends ViewDocumentDomEventData<Inp
 	 *
 	 * * the web browser and input events implementation (for instance [Level 1](https://www.w3.org/TR/input-events-1/) or
 	 * [Level 2](https://www.w3.org/TR/input-events-2/)),
-	 * * {@link module:engine/view/observer/inputobserver~InputEventData#inputType input type}
+	 * * {@link module:engine/view/observer/inputobserver~InputViewInputEvent#inputType input type}
 	 *
 	 * text data is sometimes passed in the `data` and sometimes in the `dataTransfer` property.
 	 *
 	 * * If `InputEvent#data` was set, this property reflects its value.
 	 * * If `InputEvent#data` is unavailable, this property contains the `'text/plain'` data from
-	 * {@link module:engine/view/observer/inputobserver~InputEventData#dataTransfer}.
-	 * * If the event ({@link module:engine/view/observer/inputobserver~InputEventData#inputType input type})
+	 * {@link module:engine/view/observer/inputobserver~InputViewInputEvent#dataTransfer}.
+	 * * If the event ({@link module:engine/view/observer/inputobserver~ViewDocumentInputEventData#inputType input type})
 	 * provides no data whatsoever, this property is `null`.
 	 */
 	readonly data: string | null;

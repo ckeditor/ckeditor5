@@ -841,7 +841,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * This method is decorated. Although this method accepts any parameter of `Selectable` type, the
 	 * {@link ~Model#event:canEditAt `canEditAt` event} is fired with `selectable` normalized to an instance of
-	 * {@link module:engine/model/selection~ModelSelection} or {@link module:engine/model/documentselection~DocumentSelection}
+	 * {@link module:engine/model/selection~ModelSelection} or {@link module:engine/model/documentselection~ModelDocumentSelection}
 	 *
 	 * @fires canEditAt
 	 */
@@ -977,7 +977,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
@@ -1009,7 +1009,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	public createSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
@@ -1288,7 +1288,7 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
  *
  * Although the original method accepts any parameter of `Selectable` type, this event is fired with `selectable` normalized
  * to an instance of {@link module:engine/model/selection~ModelSelection} or
- * {@link module:engine/model/documentselection~DocumentSelection}.
+ * {@link module:engine/model/documentselection~ModelDocumentSelection}.
  *
  * @eventName ~Model#canEditAt
  * @param args The arguments passed to the original method.

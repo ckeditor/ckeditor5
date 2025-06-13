@@ -26,7 +26,7 @@ import { type ViewEditableElement } from './editableelement.js';
 
 /**
  * Class representing an arbirtary selection in the view.
- * See also {@link module:engine/view/documentselection~DocumentSelection}.
+ * See also {@link module:engine/view/documentselection~ViewDocumentSelection}.
  *
  * New selection instances can be created via the constructor or one these methods:
  *
@@ -96,7 +96,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
@@ -408,7 +408,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selectable selectable}.
+	 * {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * ```ts
 	 * // Sets selection to the given range.
@@ -441,7 +441,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	 * selection.setTo( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * selection.setTo( paragraph, 'on' );
@@ -546,7 +546,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	 * parameters.
 	 *
 	 * @fires change
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
 	public setFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		if ( this.anchor === null ) {
@@ -677,7 +677,7 @@ ViewSelection.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Additional options for {@link ~Selection}.
+ * Additional options for {@link ~ViewSelection}.
  */
 export interface ViewSelectionOptions {
 
@@ -703,7 +703,7 @@ export interface ViewSelectionOptions {
 export type ViewPlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
 
 /**
- * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
+ * Fired whenever selection ranges are changed through {@link ~ViewSelection Selection API}.
  *
  * @eventName ~ViewSelection#change
  */
