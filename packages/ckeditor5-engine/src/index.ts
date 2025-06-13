@@ -308,7 +308,7 @@ export {
 } from './view/observer/focusobserver.js';
 
 export { ViewDowncastWriter } from './view/downcastwriter.js';
-export { UpcastWriter } from './view/upcastwriter.js';
+export { ViewUpcastWriter } from './view/upcastwriter.js';
 export {
 	Matcher,
 	type MatcherPattern,

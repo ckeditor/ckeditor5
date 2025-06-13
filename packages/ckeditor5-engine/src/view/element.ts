@@ -40,7 +40,7 @@ import { ViewTokenList } from './tokenlist.js';
  *
  * Note that for view elements which are not created from the model, like elements from mutations, paste or
  * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element.
- * In such cases the {@link module:engine/view/upcastwriter~UpcastWriter#createElement `UpcastWriter#createElement()`} method
+ * In such cases the {@link module:engine/view/upcastwriter~ViewUpcastWriter#createElement `UpcastWriter#createElement()`} method
  * should be used to create generic view elements.
  */
 export class ViewElement extends ViewNode {

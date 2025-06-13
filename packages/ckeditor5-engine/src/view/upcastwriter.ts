@@ -36,16 +36,16 @@ import { type ViewNode } from './node.js';
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  *
  * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
- * `UpcastWriter` can be created wherever you need it:
+ * `ViewUpcastWriter` can be created wherever you need it:
  *
  * ```ts
- * const writer = new UpcastWriter( viewDocument );
+ * const writer = new ViewUpcastWriter( viewDocument );
  * const text = writer.createText( 'foo!' );
  *
  * writer.appendChild( text, someViewElement );
  * ```
  */
-export class UpcastWriter {
+export class ViewUpcastWriter {
 	/**
 	 * The view document instance in which this upcast writer operates.
 	 */

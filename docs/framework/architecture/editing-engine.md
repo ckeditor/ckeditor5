@@ -275,7 +275,7 @@ editor.editing.view.change( writer => {
 	There are two view writers:
 
 	* {@link module:engine/view/downcastwriter~ViewDowncastWriter} &ndash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
-	* {@link module:engine/view/upcastwriter~UpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (e.g. pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
+	* {@link module:engine/view/upcastwriter~ViewUpcastWriter} &ndash; a writer to be used when pre-processing the "input" data (e.g. pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
 </info-box>
 
 ### Positions

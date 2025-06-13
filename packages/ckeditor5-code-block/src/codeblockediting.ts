@@ -11,7 +11,7 @@ import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
 import {
-	UpcastWriter,
+	ViewUpcastWriter,
 	type ModelRange,
 	type ModelNode,
 	type ModelGetSelectedContentEvent,
@@ -192,7 +192,7 @@ export class CodeBlockEditing extends Plugin {
 			}
 
 			const text = data.dataTransfer.getData( 'text/plain' );
-			const writer = new UpcastWriter( editor.editing.view.document );
+			const writer = new ViewUpcastWriter( editor.editing.view.document );
 
 			// Pass the view fragment to the default clipboardInput handler.
 			data.content = rawSnippetTextToViewDocumentFragment( writer, text );

@@ -10,7 +10,7 @@
 import {
 	ViewDomConverter,
 	ViewDocument,
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewNode
@@ -24,7 +24,7 @@ import {
  */
 export function transformBlockBrsToParagraphs(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	const viewDocument = new ViewDocument( writer.document.stylesProcessor );
 	const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
@@ -69,7 +69,7 @@ export function transformBlockBrsToParagraphs(
 function findSibling(
 	viewElement: ViewElement,
 	direction: 'forward' | 'backward',
-	writer: UpcastWriter,
+	writer: ViewUpcastWriter,
 	{ blockElements, inlineObjectElements }: { blockElements: Array<string>; inlineObjectElements: Array<string> }
 ) {
 	let position = writer.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );

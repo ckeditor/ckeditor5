@@ -26,7 +26,7 @@ import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } 
  *
  * * {@link module:engine/view/view~View}
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
- * * {@link module:engine/view/upcastwriter~UpcastWriter}
+ * * {@link module:engine/view/upcastwriter~ViewUpcastWriter}
  */
 export class ViewPosition extends ViewTypeCheckable {
 	/**

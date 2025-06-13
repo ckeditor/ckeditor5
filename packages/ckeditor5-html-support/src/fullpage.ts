@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, global } from 'ckeditor5/src/utils.js';
 import {
-	UpcastWriter,
+	ViewUpcastWriter,
 	type DataControllerToModelEvent,
 	type DataControllerToViewEvent,
 	type ModelRootElement
@@ -109,7 +109,7 @@ export class FullPage extends Plugin {
 				return;
 			}
 
-			const writer = new UpcastWriter( viewFragment.document );
+			const writer = new ViewUpcastWriter( viewFragment.document );
 
 			for ( const name of properties ) {
 				const value = root.getAttribute( name );

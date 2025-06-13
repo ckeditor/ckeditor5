@@ -46,7 +46,7 @@ type DomElement = globalThis.HTMLElement;
  *
  * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
  * To work with ordinary views (e.g. parsed from a pasted content) use the
- * {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ * {@link module:engine/view/upcastwriter~ViewUpcastWriter upcast writer}.
  *
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.

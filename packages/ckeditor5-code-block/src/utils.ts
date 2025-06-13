@@ -16,7 +16,7 @@ import type {
 	ModelPosition,
 	ModelSchema,
 	ModelText,
-	UpcastWriter,
+	ViewUpcastWriter,
 	ViewDocumentFragment,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -146,7 +146,7 @@ export function getLeadingWhiteSpaces( textNode: ModelText ): string {
  * @param text The raw code text to be converted.
  * @internal
  */
-export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text: string ): ViewDocumentFragment {
+export function rawSnippetTextToViewDocumentFragment( writer: ViewUpcastWriter, text: string ): ViewDocumentFragment {
 	const fragment = writer.createDocumentFragment();
 	const textLines = text.split( '\n' );
 
