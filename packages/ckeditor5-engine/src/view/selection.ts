@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { Range } from './range.js';
-import { Position, type PositionOffset } from './position.js';
+import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewNode } from './node.js';
 import { ViewDocumentSelection } from './documentselection.js';
 
@@ -170,7 +170,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ViewPosition | null {
 		if ( !this._ranges.length ) {
 			return null;
 		}
@@ -186,7 +186,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ViewPosition | null {
 		if ( !this._ranges.length ) {
 			return null;
 		}
@@ -242,7 +242,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns copy of the first range in the selection. First range is the one which
-	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
+	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~ViewPosition#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
 	 */
@@ -260,7 +260,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
-	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
+	 * position {@link module:engine/view/position~ViewPosition#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 */
 	public getLastRange(): Range | null {
@@ -277,10 +277,10 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns copy of the first position in the selection. First position is the position that
-	 * {@link module:engine/view/position~Position#isBefore is before} any other position in the selection ranges.
+	 * {@link module:engine/view/position~ViewPosition#isBefore is before} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ViewPosition | null {
 		const firstRange = this.getFirstRange();
 
 		return firstRange ? firstRange.start.clone() : null;
@@ -288,10 +288,10 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns copy of the last position in the selection. Last position is the position that
-	 * {@link module:engine/view/position~Position#isAfter is after} any other position in the selection ranges.
+	 * {@link module:engine/view/position~ViewPosition#isAfter is after} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ViewPosition | null {
 		const lastRange = this.getLastRange();
 
 		return lastRange ? lastRange.end.clone() : null;
@@ -496,7 +496,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], options && options.backward );
 			this._setFakeOptions( options );
-		} else if ( selectable instanceof Position ) {
+		} else if ( selectable instanceof ViewPosition ) {
 			this._setRanges( [ new Range( selectable ) ] );
 			this._setFakeOptions( options );
 		} else if ( selectable instanceof ViewNode ) {
@@ -515,7 +515,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			} else if ( placeOrOffset == 'on' ) {
 				range = Range._createOn( selectable );
 			} else {
-				range = new Range( Position._createAt( selectable, placeOrOffset ) );
+				range = new Range( ViewPosition._createAt( selectable, placeOrOffset ) );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -546,7 +546,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @fires change
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public setFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
@@ -556,7 +556,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			throw new CKEditorError( 'view-selection-setfocus-no-ranges', this );
 		}
 
-		const newFocus = Position._createAt( itemOrPosition, offset );
+		const newFocus = ViewPosition._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus! ) == 'same' ) {
 			return;
@@ -717,4 +717,4 @@ export type ViewSelectionChangeEvent = {
  *
  * See also {@link module:engine/view/selection~Selection#setTo}
  */
-export type Selectable = Selection | ViewDocumentSelection | Position | Iterable<Range> | Range | ViewNode | null;
+export type Selectable = Selection | ViewDocumentSelection | ViewPosition | Iterable<Range> | Range | ViewNode | null;

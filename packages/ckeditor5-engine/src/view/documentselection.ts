@@ -22,7 +22,7 @@ import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
 import { type ViewItem } from './item.js';
-import type { Position, PositionOffset } from './position.js';
+import type { ViewPosition, ViewPositionOffset } from './position.js';
 import { type Range } from './range.js';
 
 /**
@@ -172,7 +172,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ViewPosition | null {
 		return this._selection.anchor;
 	}
 
@@ -181,7 +181,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ViewPosition | null {
 		return this._selection.focus;
 	}
 
@@ -233,7 +233,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Returns copy of the first range in the selection. First range is the one which
-	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
+	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~ViewPosition#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
 	 */
@@ -243,7 +243,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
-	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
+	 * position {@link module:engine/view/position~ViewPosition#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 */
 	public getLastRange(): Range | null {
@@ -252,19 +252,19 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Returns copy of the first position in the selection. First position is the position that
-	 * {@link module:engine/view/position~Position#isBefore is before} any other position in the selection ranges.
+	 * {@link module:engine/view/position~ViewPosition#isBefore is before} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ViewPosition | null {
 		return this._selection.getFirstPosition();
 	}
 
 	/**
 	 * Returns copy of the last position in the selection. Last position is the position that
-	 * {@link module:engine/view/position~Position#isAfter is after} any other position in the selection ranges.
+	 * {@link module:engine/view/position~ViewPosition#isAfter is after} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ViewPosition | null {
 		return this._selection.getLastPosition();
 	}
 
@@ -377,7 +377,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @fires change
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public _setFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 }

@@ -11,7 +11,7 @@ import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
 import { type ViewEmptyElement } from './emptyelement.js';
 import { type ViewNode } from './node.js';
-import { type Position } from './position.js';
+import { type ViewPosition } from './position.js';
 import { type Range } from './range.js';
 import { type RawElement } from './rawelement.js';
 import { type RootEditableElement } from './rooteditableelement.js';
@@ -353,7 +353,7 @@ export abstract class TypeCheckable {
 	public is( type: '$textProxy' | 'view:$textProxy' ): this is TextProxy;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/position~Position}.
+	 * Checks whether this object is of type {@link module:engine/view/position~ViewPosition}.
 	 *
 	 * ```ts
 	 * position.is( 'position' ); // -> true
@@ -366,7 +366,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label POSITION
 	 */
-	public is( type: 'position' | 'view:position' ): this is Position;
+	public is( type: 'position' | 'view:position' ): this is ViewPosition;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/range~Range}.

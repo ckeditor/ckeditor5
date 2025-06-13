@@ -623,7 +623,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Converts view {@link module:engine/view/position~Position} to DOM parent and offset.
+	 * Converts view {@link module:engine/view/position~ViewPosition} to DOM parent and offset.
 	 *
 	 * Inline and block {@link module:engine/view/filler fillers} are handled during the conversion.
 	 * If the converted position is directly before inline filler it is moved inside the filler.
@@ -872,7 +872,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Converts DOM parent and offset to view {@link module:engine/view/position~Position}.
+	 * Converts DOM parent and offset to view {@link module:engine/view/position~ViewPosition}.
 	 *
 	 * If the position is inside a {@link module:engine/view/filler filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.

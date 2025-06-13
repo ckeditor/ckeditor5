@@ -10,7 +10,7 @@
 import { type ViewElement } from './element.js';
 import { type Text } from './text.js';
 import { TextProxy } from './textproxy.js';
-import { Position } from './position.js';
+import { ViewPosition } from './position.js';
 import { type ViewItem } from './item.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Range } from './range.js';
@@ -60,7 +60,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
 	 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
 	 */
-	private _position: Position;
+	private _position: ViewPosition;
 
 	/**
 	 * Start boundary parent.
@@ -102,9 +102,9 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		this.boundaries = options.boundaries || null;
 
 		if ( options.startPosition ) {
-			this._position = Position._createAt( options.startPosition );
+			this._position = ViewPosition._createAt( options.startPosition );
 		} else {
-			this._position = Position._createAt( options.boundaries![ options.direction == 'backward' ? 'end' : 'start' ] );
+			this._position = ViewPosition._createAt( options.boundaries![ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		this.direction = options.direction || 'forward';
@@ -127,7 +127,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
 	 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
 	 */
-	public get position(): Position {
+	public get position(): ViewPosition {
 		return this._position;
 	}
 
@@ -147,7 +147,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 */
 	public skip( skip: ( value: TreeWalkerValue ) => boolean ): void {
 		let nextResult: IteratorResult<TreeWalkerValue>;
-		let prevPosition: Position;
+		let prevPosition: ViewPosition;
 
 		do {
 			prevPosition = this.position;
@@ -174,7 +174,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 *
 	 * @param position Position to jump to.
 	 */
-	public jumpTo( position: Position ): void {
+	public jumpTo( position: ViewPosition ): void {
 		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
 			position = this.boundaries!.start;
 		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
@@ -223,7 +223,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		if ( parent && parent.is( 'view:$text' ) ) {
 			if ( position.isAtEnd ) {
 				// Prevent returning "elementEnd" for Text node. Skip that value and return the next walker step.
-				this._position = Position._createAfter( parent );
+				this._position = ViewPosition._createAfter( parent );
 
 				return this._next();
 			}
@@ -255,7 +255,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 		if ( node && node.is( 'view:element' ) ) {
 			if ( !this.shallow ) {
-				position = new Position( node, 0 );
+				position = new ViewPosition( node, 0 );
 			} else {
 				// We are past the walker boundaries.
 				if ( this.boundaries && this.boundaries.end.isBefore( position ) ) {
@@ -272,7 +272,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 		if ( node && node.is( 'view:$text' ) ) {
 			if ( this.singleCharacters ) {
-				position = new Position( node, 0 );
+				position = new ViewPosition( node, 0 );
 				this._position = position;
 
 				return this._next();
@@ -285,7 +285,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			if ( node == this._boundaryEndParent ) {
 				charactersCount = this.boundaries!.end.offset;
 				item = new TextProxy( node, 0, charactersCount );
-				position = Position._createAfter( item );
+				position = ViewPosition._createAfter( item );
 			} else {
 				item = new TextProxy( node, 0, node.data.length );
 				// If not just keep moving forward.
@@ -298,7 +298,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		}
 
 		// `node` is not set, we reached the end of current `parent`.
-		position = Position._createAfter( parent as any );
+		position = ViewPosition._createAfter( parent as any );
 		this._position = position;
 
 		if ( this.ignoreElementEnd ) {
@@ -333,7 +333,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		if ( parent.is( 'view:$text' ) ) {
 			if ( position.isAtStart ) {
 				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
-				this._position = Position._createBefore( parent );
+				this._position = ViewPosition._createBefore( parent );
 
 				return this._previous();
 			}
@@ -372,7 +372,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 				return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 
-			position = new Position( node, node.childCount );
+			position = new ViewPosition( node, node.childCount );
 			this._position = position;
 
 			if ( this.ignoreElementEnd ) {
@@ -384,7 +384,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 		if ( node && node.is( 'view:$text' ) ) {
 			if ( this.singleCharacters ) {
-				position = new Position( node, node.data.length );
+				position = new ViewPosition( node, node.data.length );
 				this._position = position;
 
 				return this._previous();
@@ -399,7 +399,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 				item = new TextProxy( node, offset, node.data.length - offset );
 				charactersCount = item.data.length;
-				position = Position._createBefore( item );
+				position = ViewPosition._createBefore( item );
 			} else {
 				item = new TextProxy( node, 0, node.data.length );
 				// If not just keep moving backward.
@@ -412,7 +412,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		}
 
 		// `node` is not set, we reached the beginning of current `parent`.
-		position = Position._createBefore( parent as any );
+		position = ViewPosition._createBefore( parent as any );
 		this._position = position;
 
 		return this._formatReturnValue( 'elementStart', parent as ViewElement, previousPosition, position, 1 );
@@ -430,8 +430,8 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	private _formatReturnValue(
 		type: TreeWalkerValueType,
 		item: ViewItem,
-		previousPosition: Position,
-		nextPosition: Position,
+		previousPosition: ViewPosition,
+		nextPosition: ViewPosition,
 		length?: number
 	): IteratorYieldResult<TreeWalkerValue> {
 		// Text is a specific parent, because contains string instead of children.
@@ -442,22 +442,22 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			// Position is at the end of Text.
 			if ( item.offsetInText + item.data.length == item.textNode.data.length ) {
 				if ( this.direction == 'forward' && !( this.boundaries && this.boundaries.end.isEqual( this.position ) ) ) {
-					nextPosition = Position._createAfter( item.textNode );
+					nextPosition = ViewPosition._createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this._position = nextPosition;
 				} else {
-					previousPosition = Position._createAfter( item.textNode );
+					previousPosition = ViewPosition._createAfter( item.textNode );
 				}
 			}
 
 			// Position is at the begining ot the text.
 			if ( item.offsetInText === 0 ) {
 				if ( this.direction == 'backward' && !( this.boundaries && this.boundaries.start.isEqual( this.position ) ) ) {
-					nextPosition = Position._createBefore( item.textNode );
+					nextPosition = ViewPosition._createBefore( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this._position = nextPosition;
 				} else {
-					previousPosition = Position._createBefore( item.textNode );
+					previousPosition = ViewPosition._createBefore( item.textNode );
 				}
 			}
 		}
@@ -509,7 +509,7 @@ export interface TreeWalkerValue {
 	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
 	 * inside of the text to its parent just before or just after that text.
 	 */
-	previousPosition: Position;
+	previousPosition: ViewPosition;
 
 	/**
 	 * Next position of the iterator.
@@ -520,7 +520,7 @@ export interface TreeWalkerValue {
 	 * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
 	 * inside of the text to its parent just before or just after that text.
 	 */
-	nextPosition: Position;
+	nextPosition: ViewPosition;
 
 	/**
 	 * Length of the item. For `'elementStart'` it is `1`. For `'text'` it is
@@ -554,7 +554,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Starting position.
 	 */
-	startPosition?: Position;
+	startPosition?: ViewPosition;
 
 	/**
 	 * Flag indicating whether all characters from

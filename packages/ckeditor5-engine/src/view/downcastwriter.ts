@@ -7,7 +7,7 @@
  * @module engine/view/downcastwriter
  */
 
-import { Position, type PositionOffset } from './position.js';
+import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { Range } from './range.js';
 import {
 	Selection,
@@ -190,7 +190,7 @@ export class ViewDowncastWriter {
 	 * @param itemOrPosition
 	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public setSelectionFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
+	public setSelectionFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		this.document.selection._setFocus( itemOrPosition, offset );
 	}
 
@@ -736,8 +736,8 @@ export class ViewDowncastWriter {
 	 * @param positionOrRange The position where to break attribute elements.
 	 * @returns The new position or range, after breaking the attribute elements.
 	 */
-	public breakAttributes( positionOrRange: Position | Range ): Position | Range {
-		if ( positionOrRange instanceof Position ) {
+	public breakAttributes( positionOrRange: ViewPosition | Range ): ViewPosition | Range {
+		if ( positionOrRange instanceof ViewPosition ) {
 			return this._breakAttributes( positionOrRange );
 		} else {
 			return this._breakAttributesRange( positionOrRange );
@@ -769,7 +769,7 @@ export class ViewDowncastWriter {
 	 * @returns The position between broken elements. If an element has not been broken,
 	 * the returned position is placed either before or after it.
 	 */
-	public breakContainer( position: Position ): Position {
+	public breakContainer( position: ViewPosition ): ViewPosition {
 		const element = position.parent;
 
 		if ( !( element.is( 'containerElement' ) ) ) {
@@ -791,19 +791,19 @@ export class ViewDowncastWriter {
 		}
 
 		if ( position.isAtStart ) {
-			return Position._createBefore( element );
+			return ViewPosition._createBefore( element );
 		} else if ( !position.isAtEnd ) {
 			const newElement = element._clone( false );
 
-			this.insert( Position._createAfter( element ), newElement as any );
+			this.insert( ViewPosition._createAfter( element ), newElement as any );
 
-			const sourceRange = new Range( position, Position._createAt( element, 'end' ) );
-			const targetPosition = new Position( newElement, 0 );
+			const sourceRange = new Range( position, ViewPosition._createAt( element, 'end' ) );
+			const targetPosition = new ViewPosition( newElement, 0 );
 
 			this.move( sourceRange, targetPosition );
 		}
 
-		return Position._createAfter( element );
+		return ViewPosition._createAfter( element );
 	}
 
 	/**
@@ -837,7 +837,7 @@ export class ViewDowncastWriter {
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
-	public mergeAttributes( position: Position ): Position {
+	public mergeAttributes( position: ViewPosition ): ViewPosition {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
 
@@ -854,7 +854,7 @@ export class ViewDowncastWriter {
 			positionParent._remove();
 			this._removeFromClonedElementsGroup( positionParent );
 
-			return this.mergeAttributes( new Position( parent!, offset! ) );
+			return this.mergeAttributes( new ViewPosition( parent!, offset! ) );
 		}
 
 		const nodeBefore = ( positionParent as ViewElement ).getChild( positionOffset - 1 );
@@ -880,7 +880,7 @@ export class ViewDowncastWriter {
 
 			// New position is located inside the first node, before new nodes.
 			// Call this method recursively to merge again if needed.
-			return this.mergeAttributes( new Position( nodeBefore, count ) );
+			return this.mergeAttributes( new ViewPosition( nodeBefore, count ) );
 		}
 
 		return position;
@@ -908,7 +908,7 @@ export class ViewDowncastWriter {
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
-	public mergeContainers( position: Position ): Position {
+	public mergeContainers( position: ViewPosition ): ViewPosition {
 		const prev = position.nodeBefore;
 		const next = position.nodeAfter;
 
@@ -922,9 +922,9 @@ export class ViewDowncastWriter {
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
-		const newPosition = lastChild instanceof Text ? Position._createAt( lastChild, 'end' ) : Position._createAt( prev, 'end' );
+		const newPosition = lastChild instanceof Text ? ViewPosition._createAt( lastChild, 'end' ) : ViewPosition._createAt( prev, 'end' );
 
-		this.move( Range._createIn( next ), Position._createAt( prev, 'end' ) );
+		this.move( Range._createIn( next ), ViewPosition._createAt( prev, 'end' ) );
 		this.remove( Range._createOn( next ) );
 
 		return newPosition;
@@ -946,7 +946,7 @@ export class ViewDowncastWriter {
 	 * @param nodes Node or nodes to insert.
 	 * @returns Range around inserted nodes.
 	 */
-	public insert( position: Position, nodes: ViewNode | Iterable<ViewNode> ): Range {
+	public insert( position: ViewPosition, nodes: ViewNode | Iterable<ViewNode> ): Range {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, ViewEmptyElements, UIElements or Text.
@@ -1111,7 +1111,7 @@ export class ViewDowncastWriter {
 	 * @returns Range in target container. Inserted nodes are placed between
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
 	 */
-	public move( sourceRange: Range, targetPosition: Position ): Range {
+	public move( sourceRange: Range, targetPosition: ViewPosition ): Range {
 		let nodes;
 
 		if ( targetPosition.isAfter( sourceRange.end ) ) {
@@ -1236,8 +1236,8 @@ export class ViewDowncastWriter {
 
 	/**
 	 * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
-	 * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~Position positions} which
-	 * has renamed element as {@link module:engine/view/position~Position#parent a parent}.
+	 * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~ViewPosition positions}
+	 * which has renamed element as {@link module:engine/view/position~ViewPosition#parent a parent}.
 	 *
 	 * New element has to be created because `Element#tagName` property in DOM is readonly.
 	 *
@@ -1250,8 +1250,8 @@ export class ViewDowncastWriter {
 	public rename( newName: string, viewElement: ViewContainerElement ): ViewContainerElement {
 		const newElement = new ViewContainerElement( this.document, newName, viewElement.getAttributes() );
 
-		this.insert( Position._createAfter( viewElement ), newElement );
-		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
+		this.insert( ViewPosition._createAfter( viewElement ), newElement );
+		this.move( Range._createIn( viewElement ), ViewPosition._createAt( newElement, 0 ) );
 		this.remove( Range._createOn( viewElement ) );
 
 		return newElement;
@@ -1278,7 +1278,7 @@ export class ViewDowncastWriter {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/view/position~Position position},
+	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
 	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
@@ -1290,8 +1290,8 @@ export class ViewDowncastWriter {
 	 *
 	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
-		return Position._createAt( itemOrPosition, offset );
+	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
+		return ViewPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
@@ -1299,8 +1299,8 @@ export class ViewDowncastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: ViewItem ): Position {
-		return Position._createAfter( item );
+	public createPositionAfter( item: ViewItem ): ViewPosition {
+		return ViewPosition._createAfter( item );
 	}
 
 	/**
@@ -1308,19 +1308,19 @@ export class ViewDowncastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: ViewItem ): Position {
-		return Position._createBefore( item );
+	public createPositionBefore( item: ViewItem ): ViewPosition {
+		return ViewPosition._createBefore( item );
 	}
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates its own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates its own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end?: Position | null ): Range {
+	public createRange( start: ViewPosition, end?: ViewPosition | null ): Range {
 		return new Range( start, end );
 	}
 
@@ -1511,7 +1511,7 @@ export class ViewDowncastWriter {
 	 * @param breakAttributes Whether attributes should be broken.
 	 * @returns Range around inserted nodes.
 	 */
-	private _insertNodes( position: Position, nodes: Iterable<ViewNode>, breakAttributes: boolean ): Range {
+	private _insertNodes( position: ViewPosition, nodes: Iterable<ViewNode>, breakAttributes: boolean ): Range {
 		let parentElement;
 
 		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
@@ -1567,7 +1567,7 @@ export class ViewDowncastWriter {
 	 */
 	private _wrapChildren( parent: ViewElement, startOffset: number, endOffset: number, wrapElement: ViewAttributeElement ) {
 		let i = startOffset;
-		const wrapPositions: Array<Position> = [];
+		const wrapPositions: Array<ViewPosition> = [];
 
 		while ( i < endOffset ) {
 			const child = parent.getChild( i )!;
@@ -1584,7 +1584,7 @@ export class ViewDowncastWriter {
 			//
 			if ( isAttribute && child._canMergeAttributesFrom( wrapElement ) ) {
 				child._mergeAttributesFrom( wrapElement );
-				wrapPositions.push( new Position( parent, i ) );
+				wrapPositions.push( new ViewPosition( parent, i ) );
 			}
 			//
 			// Wrap the child if it is not an attribute element or if it is an attribute element that should be inside
@@ -1603,7 +1603,7 @@ export class ViewDowncastWriter {
 				parent._insertChild( i, newAttribute );
 				this._addToClonedElementsGroup( newAttribute );
 
-				wrapPositions.push( new Position( parent, i ) );
+				wrapPositions.push( new ViewPosition( parent, i ) );
 			}
 			//
 			// If other nested attribute is found and it wasn't wrapped (see above), continue wrapping inside it.
@@ -1646,7 +1646,7 @@ export class ViewDowncastWriter {
 	 */
 	private _unwrapChildren( parent: ViewElement, startOffset: number, endOffset: number, unwrapElement: ViewAttributeElement ) {
 		let i = startOffset;
-		const unwrapPositions: Array<Position> = [];
+		const unwrapPositions: Array<ViewPosition> = [];
 
 		// Iterate over each element between provided offsets inside parent.
 		// We don't use tree walker or range iterator because we will be removing and merging potentially multiple nodes,
@@ -1680,8 +1680,8 @@ export class ViewDowncastWriter {
 
 				// Save start and end position of moved items.
 				unwrapPositions.push(
-					new Position( parent, i ),
-					new Position( parent, i + count )
+					new ViewPosition( parent, i ),
+					new ViewPosition( parent, i + count )
 				);
 
 				// Skip elements that were unwrapped. Assuming there won't be another element to unwrap in child elements.
@@ -1701,8 +1701,8 @@ export class ViewDowncastWriter {
 			if ( child._canSubtractAttributesOf( unwrapElement ) ) {
 				child._subtractAttributesOf( unwrapElement );
 				unwrapPositions.push(
-					new Position( parent, i ),
-					new Position( parent, i + 1 )
+					new ViewPosition( parent, i ),
+					new ViewPosition( parent, i + 1 )
 				);
 
 				i++;
@@ -1781,7 +1781,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @returns New position after wrapping.
 	 */
-	private _wrapPosition( position: Position, attribute: ViewAttributeElement ): Position {
+	private _wrapPosition( position: ViewPosition, attribute: ViewAttributeElement ): ViewPosition {
 		// Return same position when trying to wrap with attribute similar to position parent.
 		if ( attribute.isSimilar( position.parent as any ) ) {
 			return movePositionToTextNode( position.clone() );
@@ -1807,7 +1807,7 @@ export class ViewDowncastWriter {
 		this.wrap( wrapRange, attribute );
 
 		// Remove fake element and place new position there.
-		const newPosition = new Position( fakeElement.parent!, fakeElement.index! );
+		const newPosition = new ViewPosition( fakeElement.parent!, fakeElement.index! );
 		fakeElement._remove();
 
 		// If position is placed between text nodes - merge them and return position inside.
@@ -1867,7 +1867,7 @@ export class ViewDowncastWriter {
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
 	 * @returns New position after breaking the attributes.
 	 */
-	private _breakAttributes( position: Position, forceSplitText: boolean = false ): Position {
+	private _breakAttributes( position: ViewPosition, forceSplitText: boolean = false ): ViewPosition {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
 
@@ -1934,7 +1934,7 @@ export class ViewDowncastWriter {
 		// <p>foo<b><u>bar</u>[]</b></p>
 		// <p>foo<b><u>bar</u></b>[]</p>
 		if ( positionOffset == length ) {
-			const newPosition = new Position( positionParent.parent as any, ( positionParent as any ).index + 1 );
+			const newPosition = new ViewPosition( positionParent.parent as any, ( positionParent as any ).index + 1 );
 
 			return this._breakAttributes( newPosition, forceSplitText );
 		} else {
@@ -1942,7 +1942,7 @@ export class ViewDowncastWriter {
 			// <p>foo<b>[]<u>bar</u></b></p>
 			// <p>foo{}<b><u>bar</u></b></p>
 			if ( positionOffset === 0 ) {
-				const newPosition = new Position( positionParent.parent as ViewElement, ( positionParent as any ).index );
+				const newPosition = new ViewPosition( positionParent.parent as ViewElement, ( positionParent as any ).index );
 
 				return this._breakAttributes( newPosition, forceSplitText );
 			}
@@ -1968,7 +1968,7 @@ export class ViewDowncastWriter {
 				clonedNode._appendChild( nodesToMove );
 
 				// Create new position to work on.
-				const newPosition = new Position( ( positionParent as any ).parent, offsetAfter );
+				const newPosition = new ViewPosition( ( positionParent as any ).parent, offsetAfter );
 
 				return this._breakAttributes( newPosition, forceSplitText );
 			}
@@ -2068,14 +2068,14 @@ function _hasNonUiChildren( parent: ViewElement ): boolean {
  */
 
 /**
- * Returns first parent container of specified {@link module:engine/view/position~Position Position}.
+ * Returns first parent container of specified {@link module:engine/view/position~ViewPosition Position}.
  * Position's parent node is checked as first, then next parents are checked.
  * Note that {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment} is treated like a container.
  *
  * @param position Position used as a start point to locate parent container.
  * @returns Parent container element or `undefined` if container is not found.
  */
-function getParentContainer( position: Position ): ViewContainerElement | ViewDocumentFragment | undefined {
+function getParentContainer( position: ViewPosition ): ViewContainerElement | ViewDocumentFragment | undefined {
 	let parent = position.parent;
 
 	while ( !isContainerOrFragment( parent ) ) {
@@ -2118,17 +2118,17 @@ function shouldABeOutsideB( a: ViewAttributeElement, b: ViewAttributeElement ): 
  * @returns Position located inside text node or same position if there is no text nodes
  * before or after position location.
  */
-function movePositionToTextNode( position: Position ): Position {
+function movePositionToTextNode( position: ViewPosition ): ViewPosition {
 	const nodeBefore = position.nodeBefore;
 
 	if ( nodeBefore && nodeBefore.is( '$text' ) ) {
-		return new Position( nodeBefore, nodeBefore.data.length );
+		return new ViewPosition( nodeBefore, nodeBefore.data.length );
 	}
 
 	const nodeAfter = position.nodeAfter;
 
 	if ( nodeAfter && nodeAfter.is( '$text' ) ) {
-		return new Position( nodeAfter, 0 );
+		return new ViewPosition( nodeAfter, 0 );
 	}
 
 	return position;
@@ -2146,13 +2146,13 @@ function movePositionToTextNode( position: Position ): Position {
  * @param position Position that need to be placed inside text node.
  * @returns New position after breaking text node.
  */
-function breakTextNode( position: Position ): Position {
+function breakTextNode( position: ViewPosition ): ViewPosition {
 	if ( position.offset == ( position.parent as Text ).data.length ) {
-		return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+		return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
 	}
 
 	if ( position.offset === 0 ) {
-		return new Position( position.parent.parent as any, ( position.parent as Text ).index! );
+		return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! );
 	}
 
 	// Get part of the text that need to be moved.
@@ -2168,7 +2168,7 @@ function breakTextNode( position: Position ): Position {
 	);
 
 	// Return new position between two newly created text nodes.
-	return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+	return new ViewPosition( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
 }
 
 /**
@@ -2178,13 +2178,13 @@ function breakTextNode( position: Position ): Position {
  * @param t2 Second text node to merge. This node will be removed after merging.
  * @returns Position after merging text nodes.
  */
-function mergeTextNodes( t1: Text, t2: Text ): Position {
+function mergeTextNodes( t1: Text, t2: Text ): ViewPosition {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
 	t1._data += t2.data;
 	t2._remove();
 
-	return new Position( t1, nodeBeforeLength );
+	return new ViewPosition( t1, nodeBeforeLength );
 }
 
 const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, RawElement, UIElement ];

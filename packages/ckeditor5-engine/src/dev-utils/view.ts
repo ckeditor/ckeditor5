@@ -18,7 +18,7 @@ import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
 import { ViewElement } from '../view/element.js';
 import { ViewDocumentSelection } from '../view/documentselection.js';
 import { Range } from '../view/range.js';
-import { Position } from '../view/position.js';
+import { ViewPosition } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewEmptyElement } from '../view/emptyelement.js';
@@ -214,7 +214,7 @@ _setViewData._parse = _parseView;
  * stringify( text, selection ); // '{f}oo{ba}r'
  * ```
  *
- * A {@link module:engine/view/range~Range range} or {@link module:engine/view/position~Position position} instance can be provided
+ * A {@link module:engine/view/range~Range range} or {@link module:engine/view/position~ViewPosition position} instance can be provided
  * instead of the {@link module:engine/view/documentselection~DocumentSelection selection} instance. If a range instance
  * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
  * be converted to a selection containing one range collapsed at this position.
@@ -290,7 +290,7 @@ _setViewData._parse = _parseView;
  */
 export function _stringifyView(
 	node: ViewNode | ViewDocumentFragment,
-	selectionOrPositionOrRange: ViewDocumentSelection | Position | Range | null = null,
+	selectionOrPositionOrRange: ViewDocumentSelection | ViewPosition | Range | null = null,
 	options: {
 		showType?: boolean;
 		showPriority?: boolean;
@@ -306,7 +306,7 @@ export function _stringifyView(
 	let selection;
 
 	if (
-		selectionOrPositionOrRange instanceof Position ||
+		selectionOrPositionOrRange instanceof ViewPosition ||
 		selectionOrPositionOrRange instanceof Range
 	) {
 		selection = new ViewDocumentSelection( selectionOrPositionOrRange );
@@ -480,7 +480,7 @@ export function _parseView(
  */
 class RangeParser {
 	public sameSelectionCharacters: boolean;
-	private _positions!: Array<{ bracket: string; position: Position }>;
+	private _positions!: Array<{ bracket: string; position: ViewPosition }>;
 
 	/**
 	 * Creates a range parser instance.
@@ -590,7 +590,7 @@ class RangeParser {
 						// Store information about text range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
-							position: new Position( node, item.textOffset )
+							position: new ViewPosition( node, item.textOffset )
 						} );
 					} else {
 						// Check if element range delimiter is not placed inside text node.
@@ -604,7 +604,7 @@ class RangeParser {
 						// Store information about element range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
-							position: new Position( parent, offset )
+							position: new ViewPosition( parent, offset )
 						} );
 					}
 				} else {
@@ -618,7 +618,7 @@ class RangeParser {
 					// Store information about element range delimiter.
 					this._positions.push( {
 						bracket: item.bracket,
-						position: new Position( parent, index )
+						position: new ViewPosition( parent, index )
 					} );
 				}
 			}

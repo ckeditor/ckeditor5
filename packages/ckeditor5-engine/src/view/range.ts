@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { Position } from './position.js';
+import { ViewPosition } from './position.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
@@ -17,7 +17,7 @@ import { type ViewNode } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
 /**
- * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~Position positions}.
+ * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~ViewPosition positions}.
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
@@ -29,22 +29,22 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Start position.
 	 */
-	public readonly start: Position;
+	public readonly start: ViewPosition;
 
 	/**
 	 * End position.
 	 */
-	public readonly end: Position;
+	public readonly end: ViewPosition;
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** Constructor creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** Constructor creates it's own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at the `start` position.
 	 */
-	constructor( start: Position, end: Position | null = null ) {
+	constructor( start: ViewPosition, end: ViewPosition | null = null ) {
 		super();
 
 		this.start = start.clone();
@@ -55,7 +55,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * Iterable interface.
 	 *
 	 * Iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
-	 * them together with additional information like length or {@link module:engine/view/position~Position positions},
+	 * them together with additional information like length or {@link module:engine/view/position~ViewPosition positions},
 	 * grouped as {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
 	 * This iterator uses {@link module:engine/view/treewalker~TreeWalker TreeWalker} with `boundaries` set to this range and
@@ -75,7 +75,8 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Returns whether this range is flat, that is if {@link module:engine/view/range~Range#start start} position and
-	 * {@link module:engine/view/range~Range#end end} position are in the same {@link module:engine/view/position~Position#parent parent}.
+	 * {@link module:engine/view/range~Range#end end} position are in the same
+	 * {@link module:engine/view/position~ViewPosition#parent parent}.
 	 */
 	public get isFlat(): boolean {
 		return this.start.parent === this.end.parent;
@@ -113,11 +114,11 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 
 		// Fix positions, in case if they are in Text node.
 		if ( start.parent.is( '$text' ) && start.isAtStart ) {
-			start = Position._createBefore( start.parent );
+			start = ViewPosition._createBefore( start.parent );
 		}
 
 		if ( end.parent.is( '$text' ) && end.isAtEnd ) {
-			end = Position._createAfter( end.parent );
+			end = ViewPosition._createAfter( end.parent );
 		}
 
 		return new Range( start, end );
@@ -155,11 +156,11 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 
 		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
 		if ( nodeAfterStart && nodeAfterStart.is( '$text' ) ) {
-			start = new Position( nodeAfterStart, 0 );
+			start = new ViewPosition( nodeAfterStart, 0 );
 		}
 
 		if ( nodeBeforeEnd && nodeBeforeEnd.is( '$text' ) ) {
-			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
+			end = new ViewPosition( nodeBeforeEnd, nodeBeforeEnd.data.length );
 		}
 
 		return new Range( start, end );
@@ -176,12 +177,12 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Checks whether this range contains given {@link module:engine/view/position~Position position}.
+	 * Checks whether this range contains given {@link module:engine/view/position~ViewPosition position}.
 	 *
 	 * @param position Position to check.
-	 * @returns `true` if given {@link module:engine/view/position~Position position} is contained in this range, `false` otherwise.
+	 * @returns `true` if given {@link module:engine/view/position~ViewPosition position} is contained in this range, `false` otherwise.
 	 */
-	public containsPosition( position: Position ): boolean {
+	public containsPosition( position: ViewPosition ): boolean {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
 	}
 
@@ -401,18 +402,18 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/view/position~Position positions} that are boundaries or
+	 * Returns an iterator that iterates over all {@link module:engine/view/position~ViewPosition positions} that are boundaries or
 	 * contained in this range.
 	 *
 	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link module:engine/view/position~Position positions}, not {@link module:engine/view/treewalker~TreeWalkerValue}.
+	 * {@link module:engine/view/position~ViewPosition positions}, not {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
 	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
 	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 */
-	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<Position> {
+	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<ViewPosition> {
 		options.boundaries = this;
 
 		const treeWalker = new TreeWalker( options );
@@ -451,20 +452,20 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 		endOffset: number
 	): Range {
 		return new this(
-			new Position( startElement, startOffset ),
-			new Position( endElement, endOffset )
+			new ViewPosition( startElement, startOffset ),
+			new ViewPosition( endElement, endOffset )
 		);
 	}
 
 	/**
-	 * Creates a new range, spreading from specified {@link module:engine/view/position~Position position} to a position moved by
+	 * Creates a new range, spreading from specified {@link module:engine/view/position~ViewPosition position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
 	 * @internal
 	 * @param position Beginning of the range.
 	 * @param shift How long the range should be.
 	 */
-	public static _createFromPositionAndShift( position: Position, shift: number ): Range {
+	public static _createFromPositionAndShift( position: ViewPosition, shift: number ): Range {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -490,7 +491,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	public static _createOn( item: ViewItem ): Range {
 		const size = item.is( '$textProxy' ) ? item.offsetSize : 1;
 
-		return this._createFromPositionAndShift( Position._createBefore( item ), size );
+		return this._createFromPositionAndShift( ViewPosition._createBefore( item ), size );
 	}
 }
 

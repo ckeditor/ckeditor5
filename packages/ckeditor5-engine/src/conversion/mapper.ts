@@ -1232,7 +1232,7 @@ export class MapperCache extends /* #__PURE__ */ EmitterMixin() {
 /**
  * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
  * mapping. Callbacks added to this event take {@link module:engine/model/position~ModelPosition model position} and are expected to
- * calculate the {@link module:engine/view/position~Position view position}. The calculated view position should be added as
+ * calculate the {@link module:engine/view/position~ViewPosition view position}. The calculated view position should be added as
  * a `viewPosition` value in the `data` object that is passed as one of parameters to the event callback.
  *
  * ```ts
@@ -1303,7 +1303,7 @@ export type MapperModelToViewPositionEvent = {
 
 /**
  * Data pipeline object that can store and pass data between callbacks. The callback should add
- * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~Position view position}.
+ * the `viewPosition` value to that object with calculated the {@link module:engine/view/position~ViewPosition view position}.
  */
 export type MapperModelToViewPositionEventData = {
 
@@ -1319,7 +1319,7 @@ export type MapperModelToViewPositionEventData = {
 
 	/**
 	 * The callback should add the `viewPosition` value to that object with calculated the
-	 * {@link module:engine/view/position~Position view position}.
+	 * {@link module:engine/view/position~ViewPosition view position}.
 	 */
 	viewPosition?: ViewPosition;
 

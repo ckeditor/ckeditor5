@@ -11,7 +11,7 @@ import { ViewDocumentFragment } from './documentfragment.js';
 import { ViewElement, type ViewElementAttributes } from './element.js';
 import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
-import { Position, type PositionOffset } from './position.js';
+import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { Range } from './range.js';
 import {
 	Selection,
@@ -385,7 +385,7 @@ export class UpcastWriter {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/view/position~Position position},
+	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
 	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
@@ -397,8 +397,8 @@ export class UpcastWriter {
 	 *
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
-		return Position._createAt( itemOrPosition, offset );
+	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
+		return ViewPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
@@ -406,8 +406,8 @@ export class UpcastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: ViewItem ): Position {
-		return Position._createAfter( item );
+	public createPositionAfter( item: ViewItem ): ViewPosition {
+		return ViewPosition._createAfter( item );
 	}
 
 	/**
@@ -415,19 +415,19 @@ export class UpcastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: ViewItem ): Position {
-		return Position._createBefore( item );
+	public createPositionBefore( item: ViewItem ): ViewPosition {
+		return ViewPosition._createBefore( item );
 	}
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates it's own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end: Position ): Range {
+	public createRange( start: ViewPosition, end: ViewPosition ): Range {
 		return new Range( start, end );
 	}
 
