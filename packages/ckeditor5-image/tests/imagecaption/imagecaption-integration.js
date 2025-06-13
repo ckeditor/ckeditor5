@@ -6,7 +6,7 @@
 import { Image } from '../../src/image.js';
 import { ImageCaption } from '../../src/imagecaption.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -55,7 +55,7 @@ describe( 'ImageCaption integration', () => {
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			const domEvent = new ObserverDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
 			const preventDefaultOriginal = domEvent.preventDefault;
 			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
 
@@ -101,7 +101,7 @@ describe( 'ImageCaption integration', () => {
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			const domEvent = new ObserverDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
 			const preventDefaultOriginal = domEvent.preventDefault;
 			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
 

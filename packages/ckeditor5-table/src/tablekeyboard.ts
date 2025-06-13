@@ -22,7 +22,7 @@ import {
 import type {
 	BubblingEventInfo,
 	ModelDocumentSelection,
-	ObserverDomEventData,
+	ViewDocumentDomEventData,
 	ModelElement,
 	ModelSelection,
 	ViewDocumentArrowKeyEvent,
@@ -114,7 +114,7 @@ export class TableKeyboard extends Plugin {
 	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 */
-	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: ObserverDomEventData ) {
+	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -136,7 +136,7 @@ export class TableKeyboard extends Plugin {
 	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
-	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: ObserverDomEventData & KeystrokeInfo ) {
+	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const tableUtils: TableUtils = this.editor.plugins.get( TableUtils );
 		const tableSelection: TableSelection = this.editor.plugins.get( 'TableSelection' );
@@ -219,7 +219,7 @@ export class TableKeyboard extends Plugin {
 	/**
 	 * Handles {@link module:engine/view/document~ViewDocument#event:keydown keydown} events.
 	 */
-	private _onArrowKey( eventInfo: EventInfo, domEventData: ObserverDomEventData & KeystrokeInfo ) {
+	private _onArrowKey( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 

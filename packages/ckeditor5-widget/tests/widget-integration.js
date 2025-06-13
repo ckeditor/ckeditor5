@@ -9,7 +9,7 @@ import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
 import { Widget } from '../src/widget.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 import { toWidget } from '../src/utils.js';
 import {
@@ -105,7 +105,7 @@ describe( 'Widget - integration', () => {
 
 		const preventDefault = sinon.spy();
 
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
 			detail: 1
@@ -132,7 +132,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
 			detail: 3
@@ -157,7 +157,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
 			detail: 3
@@ -190,7 +190,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 ).getChild( 1 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
 			detail: 3
@@ -227,7 +227,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const secondViewFigcaption = viewDiv.getChild( 1 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( secondViewFigcaption ),
 			preventDefault,
 			detail: 3
@@ -254,7 +254,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
 			detail: 4
@@ -279,7 +279,7 @@ describe( 'Widget - integration', () => {
 
 		const image = viewDocument.getRoot().getChild( 0 );
 		const preventDefault = sinon.spy();
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( image ),
 			preventDefault,
 			detail: 3

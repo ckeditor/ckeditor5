@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type ObserverDomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -56,7 +56,7 @@ export class KeyObserver extends DomEventObserver<'keydown' | 'keyup', Keystroke
  */
 export type ViewDocumentKeyDownEvent = {
 	name: 'keydown';
-	args: [ data: KeyObserverEventData ];
+	args: [ data: ViewDocumentKeyEventData ];
 };
 
 /**
@@ -72,13 +72,13 @@ export type ViewDocumentKeyDownEvent = {
  */
 export type ViewDocumentKeyUpEvent = {
 	name: 'keyup';
-	args: [ data: KeyObserverEventData ];
+	args: [ data: ViewDocumentKeyEventData ];
 };
 
 /**
  * The value of both events - {@link ~ViewDocumentKeyDownEvent} and {@link ~ViewDocumentKeyUpEvent}.
  */
-export interface KeyObserverEventData extends ObserverDomEventData<KeyboardEvent>, KeystrokeInfo {
+export interface ViewDocumentKeyEventData extends ViewDocumentDomEventData<KeyboardEvent>, KeystrokeInfo {
 
 	/**
 	 * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.

@@ -24,7 +24,7 @@ import {
 import {
 	MouseObserver,
 	type ModelDocumentChangeEvent,
-	type ObserverDomEventData,
+	type ViewDocumentDomEventData,
 	type ModelElement,
 	type ViewContainerElement,
 	type ViewDocumentMouseDownEvent,
@@ -255,7 +255,7 @@ export class WidgetResize extends Plugin {
 	/**
 	 * @param domEventData Native DOM event.
 	 */
-	private _mouseDownListener( event: EventInfo, domEventData: ObserverDomEventData ) {
+	private _mouseDownListener( event: EventInfo, domEventData: ViewDocumentDomEventData ) {
 		const resizeHandle = domEventData.domTarget;
 
 		if ( !Resizer.isResizeHandle( resizeHandle ) ) {

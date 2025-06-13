@@ -20,7 +20,7 @@ import {
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ObserverDomEventData
+	type ViewDocumentDomEventData
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -352,7 +352,7 @@ export class DragDrop extends Plugin {
 				return;
 			}
 
-			const { clientX, clientY } = ( data as ObserverDomEventData<DragEvent> ).domEvent;
+			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 
 			dragDropTarget.updateDropMarker(
 				data.target,
@@ -397,7 +397,7 @@ export class DragDrop extends Plugin {
 				return;
 			}
 
-			const { clientX, clientY } = ( data as ObserverDomEventData<DragEvent> ).domEvent;
+			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 			const targetRange = dragDropTarget.getFinalDropRange(
 				data.target,
 				data.targetRanges,

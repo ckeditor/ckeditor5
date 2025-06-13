@@ -23,7 +23,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Differ,
-	ObserverDomEventData,
+	ViewDocumentDomEventData,
 	DowncastInsertEvent,
 	ViewDowncastWriter,
 	ModelElement,
@@ -124,7 +124,7 @@ export class TableColumnResizeEditing extends Plugin {
 	/**
 	 * Starting mouse position data used to add a threshold to the resizing process.
 	 */
-	private _initialMouseEventData: ObserverDomEventData | null = null;
+	private _initialMouseEventData: ViewDocumentDomEventData | null = null;
 
 	/**
 	 * @inheritDoc
@@ -542,7 +542,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param eventInfo An object containing information about the fired event.
 	 * @param domEventData The data related to the DOM event.
 	 */
-	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: ObserverDomEventData ) {
+	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData ) {
 		const target = domEventData.target;
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
@@ -563,7 +563,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param eventInfo An object containing information about the fired event.
 	 * @param domEventData The data related to the DOM event.
 	 */
-	private _onMouseOutHandler( eventInfo: EventInfo, domEventData: ObserverDomEventData ) {
+	private _onMouseOutHandler( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData ) {
 		const target = domEventData.target;
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
@@ -591,7 +591,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param eventInfo An object containing information about the fired event.
 	 * @param domEventData The data related to the DOM event.
 	 */
-	private _onMouseDownHandler( eventInfo: EventInfo, domEventData: ObserverDomEventData ) {
+	private _onMouseDownHandler( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData ) {
 		const target = domEventData.target;
 
 		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
@@ -905,7 +905,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param columnWidths The current widths of the columns.
 	 * @returns The data needed for the resizing process.
 	 */
-	private _getResizingData( domEventData: ObserverDomEventData, columnWidths: Array<number> ): ResizingData {
+	private _getResizingData( domEventData: ViewDocumentDomEventData, columnWidths: Array<number> ): ResizingData {
 		const editor = this.editor;
 
 		const columnPosition = ( domEventData.domEvent as Event & { clientX: number } ).clientX;

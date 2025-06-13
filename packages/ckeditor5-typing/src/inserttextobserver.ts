@@ -10,7 +10,7 @@
 import { env, EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import {
-	ObserverDomEventData,
+	ViewDocumentDomEventData,
 	Observer,
 	FocusObserver,
 	type EditingView,
@@ -83,7 +83,7 @@ export class InsertTextObserver extends Observer {
 
 			const eventInfo = new EventInfo( viewDocument, 'insertText' );
 
-			viewDocument.fire( eventInfo, new ObserverDomEventData( view, domEvent, {
+			viewDocument.fire( eventInfo, new ViewDocumentDomEventData( view, domEvent, {
 				text,
 				selection: view.createSelection( targetRanges ),
 				isComposing
@@ -126,7 +126,7 @@ export class InsertTextObserver extends Observer {
 				// 2. The last moment before it's locked is the `compositionstart` event.
 				// 3. The `SelectionObserver` is listening for `compositionstart` event and immediately converts
 				//    the selection. Handle this at the low priority so after the rendering is blocked.
-				viewDocument.fire( 'insertText', new ObserverDomEventData( view, domEvent, {
+				viewDocument.fire( 'insertText', new ViewDocumentDomEventData( view, domEvent, {
 					text: data,
 					isComposing: true
 				} ) );
@@ -163,7 +163,7 @@ export type ViewDocumentInsertTextEvent = {
 	args: [ data: InsertTextEventData ];
 };
 
-export interface InsertTextEventData extends ObserverDomEventData {
+export interface InsertTextEventData extends ViewDocumentDomEventData {
 
 	/**
 	 *  The text to be inserted.

@@ -259,12 +259,12 @@ export {
 	KeyObserver,
 	type ViewDocumentKeyDownEvent,
 	type ViewDocumentKeyUpEvent,
-	type KeyObserverEventData
+	type ViewDocumentKeyEventData
 } from './view/observer/keyobserver.js';
 
 export {
 	MutationObserver,
-	type MutationObserverEventData,
+	type ViewDocumentMutationEventData,
 	type ObserverMutationData
 } from './view/observer/mutationobserver.js';
 
@@ -273,8 +273,12 @@ export {
 	type ViewDocumentSelectionEventData
 } from './view/observer/selectionobserver.js';
 
-export { CompositionObserver, type ObserverCompositionEventData } from './view/observer/compositionobserver.js';
-export { InputObserver, type InputObserverEventData, type ViewDocumentInputEvent } from './view/observer/inputobserver.js';
+export { CompositionObserver, type ViewDocumentCompositionEventData } from './view/observer/compositionobserver.js';
+export {
+	InputObserver,
+	type ViewDocumentInputEventData,
+	type ViewDocumentInputEvent
+} from './view/observer/inputobserver.js';
 
 export {
 	FocusObserver,
@@ -298,7 +302,7 @@ export {
 } from './view/matcher.js';
 
 export { BubblingEventInfo, type BubblingEventPhase } from './view/observer/bubblingeventinfo.js';
-export { ObserverDomEventData } from './view/observer/domeventdata.js';
+export { ViewDocumentDomEventData as ViewDocumentDomEventData } from './view/observer/domeventdata.js';
 
 // View / Events.
 export {

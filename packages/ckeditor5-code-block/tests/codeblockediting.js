@@ -15,7 +15,7 @@ import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { DragDrop } from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
@@ -808,7 +808,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		function getEvent( data = {} ) {
-			return new ObserverDomEventData( viewDoc, {
+			return new ViewDocumentDomEventData( viewDoc, {
 				preventDefault: sinon.spy()
 			}, data );
 		}

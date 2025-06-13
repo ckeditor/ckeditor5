@@ -14,7 +14,7 @@ import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/itali
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
@@ -1871,7 +1871,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 
-				view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+				view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 					preventDefault: () => {
 					}
 				}, {
@@ -1894,7 +1894,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 
-				view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+				view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 					preventDefault: () => {
 					}
 				}, {
@@ -2148,7 +2148,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 
-				view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+				view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 					preventDefault: () => {
 					}
 				}, {
@@ -2170,7 +2170,7 @@ describe( 'LinkEditing', () => {
 					'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 				);
 
-				view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+				view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 					preventDefault: () => {
 					}
 				}, {
@@ -2274,7 +2274,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2283,7 +2283,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2309,7 +2309,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'initial "linkIsFoo" state' ).to.equal( false );
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2320,7 +2320,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkIsFoo' ), 'removing space after the link ("linkIsFoo")' ).to.equal( false );
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2347,7 +2347,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2356,7 +2356,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2372,7 +2372,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2381,7 +2381,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2397,14 +2397,14 @@ describe( 'LinkEditing', () => {
 		it( 'should do nothing if there is no `linkHref` attribute', () => {
 			_setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
 			} ) );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -2419,7 +2419,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'forward',

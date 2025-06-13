@@ -21,7 +21,7 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
@@ -59,7 +59,7 @@ describe( 'ListEditing integrations: enter key', () => {
 		stubUid();
 
 		eventInfo = new EventInfo( view.document, 'enter' );
-		domEventData = new ObserverDomEventData( view.document, {
+		domEventData = new ViewDocumentDomEventData( view.document, {
 			preventDefault: sinon.spy()
 		} );
 

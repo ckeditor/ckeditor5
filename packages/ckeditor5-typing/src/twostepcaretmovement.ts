@@ -16,7 +16,7 @@ import {
 	TouchObserver,
 	type ModelDocumentSelection,
 	type ModelDocumentSelectionChangeRangeEvent,
-	type ObserverDomEventData,
+	type ViewDocumentDomEventData,
 	type Model,
 	type ModelPosition,
 	type ViewDocumentArrowKeyEvent,
@@ -298,7 +298,7 @@ export class TwoStepCaretMovement extends Plugin {
 	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement.
 	 */
-	public _handleForwardMovement( eventData?: ObserverDomEventData ): boolean {
+	public _handleForwardMovement( eventData?: ViewDocumentDomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -368,7 +368,7 @@ export class TwoStepCaretMovement extends Plugin {
 	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement
 	 */
-	public _handleBackwardMovement( eventData?: ObserverDomEventData ): boolean {
+	public _handleBackwardMovement( eventData?: ViewDocumentDomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -749,7 +749,7 @@ function clearSelectionAttributes( model: Model, attributes: Set<string> ) {
  *
  * @alias data.preventDefault
  */
-function preventCaretMovement( data: ObserverDomEventData ) {
+function preventCaretMovement( data: ViewDocumentDomEventData ) {
 	data.preventDefault();
 }
 

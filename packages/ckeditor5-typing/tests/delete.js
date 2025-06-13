@@ -13,7 +13,7 @@ import { TodoList } from '@ckeditor/ckeditor5-list/src/todolist.js';
 import { List } from '@ckeditor/ckeditor5-list/src/list.js';
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
@@ -113,7 +113,7 @@ describe( 'Delete feature', () => {
 		const viewDocument = editor.editing.view.document;
 		const domEvt = getDomEvent();
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, domEvt, {
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, domEvt, {
 			direction: 'forward',
 			unit: 'character',
 			sequence: 1
@@ -122,7 +122,7 @@ describe( 'Delete feature', () => {
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithMatch( 'deleteForward', { unit: 'character', sequence: 1 } ) ).to.be.true;
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'character',
 			sequence: 5
@@ -155,7 +155,7 @@ describe( 'Delete feature', () => {
 
 		const viewSelection = view.createSelection( view.createRangeIn( viewDocument.getRoot() ) );
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, domEvt, {
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, domEvt, {
 			direction: 'backward',
 			unit: 'selection',
 			sequence: 1,
@@ -176,7 +176,7 @@ describe( 'Delete feature', () => {
 		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 		const executeSpy = editor.execute = sinon.spy();
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'character'
 		} ) );
@@ -339,7 +339,7 @@ describe( 'Delete using the beforeinput event', () => {
 		const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		const scrollSpy = testUtils.sinon.spy( view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'word',
 			sequence: 42,
@@ -352,7 +352,7 @@ describe( 'Delete using the beforeinput event', () => {
 
 	describe( 'for "codePoint" and "character" delete units', () => {
 		it( 'should always use the #unit despite #selectionToRemove available next to "codePoint" (non-Android)', () => {
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'codePoint',
 				sequence: 3,
@@ -370,7 +370,7 @@ describe( 'Delete using the beforeinput event', () => {
 		it( 'should use the #selectionToRemove for the "codePoint" unit on Android', () => {
 			testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'selection',
 				sequence: 3,
@@ -385,7 +385,7 @@ describe( 'Delete using the beforeinput event', () => {
 		} );
 
 		it( 'should always use the #unit despite #selectionToRemove available next to "character" (non-Android)', () => {
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'forward',
 				unit: 'character',
 				sequence: 5,
@@ -403,7 +403,7 @@ describe( 'Delete using the beforeinput event', () => {
 		it( 'should always use the #unit despite #selectionToRemove available next to "character" (Android)', () => {
 			testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'forward',
 				unit: 'character',
 				sequence: 5,
@@ -441,21 +441,21 @@ describe( 'Delete using the beforeinput event', () => {
 				editor.model.createPositionAt( modelParagraph, 1 )
 			);
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'word',
 				sequence: 1,
 				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 )
 			} ) );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'forward',
 				unit: 'selection',
 				sequence: 1,
 				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
 			} ) );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'forward',
 				sequence: 1,
 				selectionToRemove: view.createSelection( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 0 )
@@ -492,12 +492,12 @@ describe( 'Delete using the beforeinput event', () => {
 		it( 'should respect the #direction passed from the DeleteObserver observer', () => {
 			const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'forward',
 				selectionToRemove: view.createSelection( viewFooText, 2 )
 			} ) );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				selectionToRemove: view.createSelection( viewFooText, 2 )
 			} ) );
@@ -510,7 +510,7 @@ describe( 'Delete using the beforeinput event', () => {
 		it( 'should respect the #sequence passed from the DeleteObserver observer', () => {
 			const viewFooText = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'word',
 				sequence: 42,
@@ -565,7 +565,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 
 		plugin.requestUndoOnBackspace();
 
-		viewDocument.fire( event, new ObserverDomEventData( viewDocument, domEvt, deleteEventEventData ) );
+		viewDocument.fire( event, new ViewDocumentDomEventData( viewDocument, domEvt, deleteEventEventData ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithMatch( 'undo' ) ).to.be.true;
@@ -573,7 +573,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 		expect( event.stop.called ).to.be.true;
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
-		viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
 
 		expect( spy.calledTwice ).to.be.true;
 		expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
@@ -603,7 +603,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 
 				plugin.requestUndoOnBackspace();
 
-				viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), eventData ) );
+				viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), eventData ) );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
@@ -614,7 +614,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 		it( 'if requestUndoOnBackspace() hasn\'t been called', () => {
 			const spy = editor.execute = sinon.spy();
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
@@ -632,7 +632,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 
 			plugin.requestUndoOnBackspace();
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				direction: 'backward',
 				unit: 'word',
 				sequence: 1,
@@ -651,7 +651,7 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 			plugin.requestUndoOnBackspace();
 
 			modelDocument.fire( 'change', new Batch() );
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
@@ -676,7 +676,7 @@ function clickBackspace( editor, metaKey = false ) {
 	const domRange = view.domConverter.viewRangeToDom( viewRange );
 
 	// First fire keydown event.
-	viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, keyEventData, keyEventData ) );
+	viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, keyEventData, keyEventData ) );
 
 	// Then fire beforeinput if it's not suppressed.
 	const preventedKeyDown = keyEventData.preventDefault.called;

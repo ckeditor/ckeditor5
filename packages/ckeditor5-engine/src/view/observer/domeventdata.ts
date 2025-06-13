@@ -20,7 +20,7 @@ import { type View } from '../view.js';
  *
  * @typeParam TEvent The type of DOM Event that this class represents.
  */
-export class ObserverDomEventData<TEvent extends Event = Event> {
+export class ViewDocumentDomEventData<TEvent extends Event = Event> {
 	/**
 	 * Instance of the view controller.
 	 */

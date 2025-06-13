@@ -8,7 +8,7 @@
  */
 
 import { Observer } from './observer.js';
-import { ObserverDomEventData } from './domeventdata.js';
+import { ViewDocumentDomEventData } from './domeventdata.js';
 
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
@@ -99,11 +99,11 @@ export abstract class DomEventObserver<
 	 * @param eventType The event type (name).
 	 * @param domEvent The DOM event.
 	 * @param additionalData The additional data which should extend the
-	 * {@link module:engine/view/observer/domeventdata~ObserverDomEventData event data} object.
+	 * {@link module:engine/view/observer/domeventdata~ViewDocumentDomEventData event data} object.
 	 */
 	public override fire( eventType: string | EventInfo, domEvent: Event, additionalData?: AdditionalData ): void {
 		if ( this.isEnabled ) {
-			this.document.fire( eventType, new ObserverDomEventData( this.view, domEvent, additionalData ) );
+			this.document.fire( eventType, new ViewDocumentDomEventData( this.view, domEvent, additionalData ) );
 		}
 	}
 }

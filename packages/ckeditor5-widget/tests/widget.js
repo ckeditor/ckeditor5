@@ -12,7 +12,7 @@ import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
 import { MouseObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver.js';
 import { toWidget } from '../src/utils.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
@@ -199,7 +199,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			preventDefault: sinon.spy()
 		} );
@@ -226,7 +226,7 @@ describe( 'Widget', () => {
 
 		nestedView.parent = null;
 
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( nestedView ),
 			preventDefault: sinon.spy()
 		} );
@@ -250,7 +250,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			preventDefault: sinon.spy()
 		} );
@@ -278,7 +278,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<editable><widget></widget></editable>' );
 
 		const editableView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
 			preventDefault: sinon.spy()
 		} );
@@ -305,7 +305,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<editable><widget></widget></editable>' );
 
 		const editableView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
 			preventDefault: sinon.spy()
 		} );
@@ -332,7 +332,7 @@ describe( 'Widget', () => {
 		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		const target = view.domConverter.mapViewToDom( widgetView );
 
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target,
 			preventDefault: sinon.spy()
 		} );
@@ -373,7 +373,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			preventDefault: sinon.spy()
 		} );
@@ -403,7 +403,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			preventDefault: sinon.spy()
 		} );
@@ -431,7 +431,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph><widget>ABC</widget>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			preventDefault: sinon.spy()
 		} );
@@ -461,7 +461,7 @@ describe( 'Widget', () => {
 		const parentView = viewDocument.getRoot().getChild( 0 );
 		const widgetView = parentView.getChild( 0 );
 
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
 			preventDefault: sinon.spy()
 		} );
@@ -493,7 +493,7 @@ describe( 'Widget', () => {
 		const parentView = viewDocument.getRoot().getChild( 0 );
 		const widgetView = parentView.getChild( 0 );
 
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
 			preventDefault: sinon.spy()
 		} );
@@ -522,7 +522,7 @@ describe( 'Widget', () => {
 	it( 'should create selection over clicked widget', () => {
 		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			preventDefault: sinon.spy()
 		} );
@@ -537,7 +537,7 @@ describe( 'Widget', () => {
 
 		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			preventDefault: sinon.spy()
 		} );
@@ -554,7 +554,7 @@ describe( 'Widget', () => {
 		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewB = viewDiv.getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewB ),
 			preventDefault: sinon.spy()
 		} );
@@ -567,7 +567,7 @@ describe( 'Widget', () => {
 	it( 'should do nothing if clicked in non-widget element', () => {
 		_setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		const viewP = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewP ),
 			preventDefault: sinon.spy()
 		} );
@@ -582,7 +582,7 @@ describe( 'Widget', () => {
 	it( 'should not focus editable if already is focused', () => {
 		_setModelData( model, '<widget></widget>' );
 		const widget = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = new ObserverDomEventData( view, {
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( widget ),
 			preventDefault: sinon.spy()
 		} );
@@ -808,7 +808,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -834,7 +834,7 @@ describe( 'Widget', () => {
 			const paragraph = viewRoot.getChild( 1 );
 			const bold = paragraph.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( bold ),
 				preventDefault,
 				detail: 3
@@ -860,7 +860,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -887,7 +887,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -914,7 +914,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -943,7 +943,7 @@ describe( 'Widget', () => {
 			const paragraph = blockQuote.getChild( 0 );
 			const preventDefault = sinon.spy();
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -970,7 +970,7 @@ describe( 'Widget', () => {
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -997,7 +997,7 @@ describe( 'Widget', () => {
 			const paragraph = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
 				detail: 3
@@ -1026,7 +1026,7 @@ describe( 'Widget', () => {
 			const inline = paragraph.getChild( 1 );
 			const preventDefault = sinon.spy();
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( inline ),
 				preventDefault,
 				detail: 3
@@ -1054,7 +1054,7 @@ describe( 'Widget', () => {
 			const widget = viewRoot.getChild( 1 );
 			const nested = widget.getChild( 0 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( nested ),
 				preventDefault,
 				detail: 3
@@ -1081,7 +1081,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const widget = viewRoot.getChild( 1 );
 			const preventDefault = sinon.spy();
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( widget ),
 				preventDefault,
 				detail: 3
@@ -1791,7 +1791,7 @@ describe( 'Widget', () => {
 				_setModelData( model, data );
 
 				for ( const action of actions ) {
-					viewDocument.fire( 'keydown', new ObserverDomEventData(
+					viewDocument.fire( 'keydown', new ViewDocumentDomEventData(
 						viewDocument,
 						{
 							target: document.createElement( 'div' ),
@@ -1821,7 +1821,7 @@ describe( 'Widget', () => {
 				_setModelData( model, input );
 				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 
-				viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, {
+				viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
 					preventDefault: () => {}
 				}, {
 					direction,
@@ -2032,7 +2032,7 @@ describe( 'Widget', () => {
 
 			viewDocument.on( 'delete', deleteSpy );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: preventDefaultSpy
 			}, {
 				direction: 'forward',
@@ -2185,7 +2185,7 @@ describe( 'Widget', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'backward',
@@ -2215,7 +2215,7 @@ describe( 'Widget', () => {
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
-			viewDocument.fire( 'delete', new ObserverDomEventData( viewDocument, {
+			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'forward',
@@ -2293,7 +2293,7 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
 			} );
@@ -2309,7 +2309,7 @@ describe( 'Widget', () => {
 			// The top-outer widget.
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
 			} );
@@ -2350,7 +2350,7 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
 			} );
@@ -2400,7 +2400,7 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
 			} );
@@ -2435,7 +2435,7 @@ describe( 'Widget', () => {
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				preventDefault: sinon.spy()
 			} );
@@ -2478,7 +2478,7 @@ describe( 'Widget', () => {
 
 			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( widgetInEditable ),
 				preventDefault: sinon.spy()
 			} );
@@ -2513,7 +2513,7 @@ describe( 'Widget', () => {
 
 			const target = view.domConverter.mapViewToDom( viewWidgetSelectionHandle );
 
-			const domEventDataMock = new ObserverDomEventData( view, {
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target,
 				preventDefault: sinon.spy()
 			} );

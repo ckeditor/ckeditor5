@@ -24,7 +24,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	ModelDocumentFragment,
 	ModelDocumentSelection,
-	ObserverDomEventData,
+	ViewDocumentDomEventData,
 	ModelElement,
 	ModelItem,
 	Model,
@@ -132,7 +132,7 @@ export class TableClipboard extends Plugin {
 	 * @param evt An object containing information about the handled event.
 	 * @param data Clipboard event data.
 	 */
-	private _onCopyCut( evt: EventInfo<'copy' | 'cut'>, data: ObserverDomEventData<ClipboardEvent> & ClipboardEventData ) {
+	private _onCopyCut( evt: EventInfo<'copy' | 'cut'>, data: ViewDocumentDomEventData<ClipboardEvent> & ClipboardEventData ) {
 		const view = this.editor.editing.view;
 		const tableSelection = this.editor.plugins.get( TableSelection );
 		const clipboardMarkersUtils = this.editor.plugins.get( ClipboardMarkersUtils );

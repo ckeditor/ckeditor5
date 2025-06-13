@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ObserverDomEventData } from '../../../src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '../../../src/view/observer/domeventdata.js';
 import { View } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-describe( 'ObserverDomEventData', () => {
+describe( 'ViewDocumentDomEventData', () => {
 	let view, viewDocument, viewBody, domRoot;
 
 	beforeEach( () => {
@@ -29,7 +29,7 @@ describe( 'ObserverDomEventData', () => {
 	describe( 'constructor()', () => {
 		it( 'sets properties', () => {
 			const domEvt = { target: document.body };
-			const data = new ObserverDomEventData( view, domEvt, { foo: 1, bar: true } );
+			const data = new ViewDocumentDomEventData( view, domEvt, { foo: 1, bar: true } );
 
 			expect( data ).to.have.property( 'view', view );
 			expect( data ).to.have.property( 'document', viewDocument );
@@ -44,7 +44,7 @@ describe( 'ObserverDomEventData', () => {
 	describe( 'target', () => {
 		it( 'returns bound element', () => {
 			const domEvt = { target: document.body };
-			const data = new ObserverDomEventData( view, domEvt );
+			const data = new ViewDocumentDomEventData( view, domEvt );
 
 			expect( data ).to.have.property( 'target', viewBody );
 		} );
@@ -53,7 +53,7 @@ describe( 'ObserverDomEventData', () => {
 	describe( 'preventDefault', () => {
 		it( 'executes native preventDefault()', () => {
 			const domEvt = { target: document.body, preventDefault: sinon.spy() };
-			const data = new ObserverDomEventData( viewDocument, domEvt );
+			const data = new ViewDocumentDomEventData( viewDocument, domEvt );
 
 			data.preventDefault();
 
@@ -64,7 +64,7 @@ describe( 'ObserverDomEventData', () => {
 	describe( 'stopPropagation', () => {
 		it( 'executes native stopPropagation()', () => {
 			const domEvt = { target: document.body, stopPropagation: sinon.spy() };
-			const data = new ObserverDomEventData( viewDocument, domEvt );
+			const data = new ViewDocumentDomEventData( viewDocument, domEvt );
 
 			data.stopPropagation();
 

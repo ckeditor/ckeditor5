@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
 import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
@@ -1118,7 +1118,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1127,7 +1127,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing space after the link' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1143,7 +1143,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1160,7 +1160,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1171,7 +1171,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">Bar</$text>[]<$text a="2">ar</$text></paragraph>' );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1188,7 +1188,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1197,7 +1197,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1213,7 +1213,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1222,7 +1222,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing space after the link' ).to.equal( true );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1237,14 +1237,14 @@ describe( 'TwoStepCaretMovement', () => {
 			model.schema.extend( '$text', { allowAttributes: 'bold' } );
 			_setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
 				selectionToRemove: view.document.selection
 			} ) );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'backward',
@@ -1259,7 +1259,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( false );
 
-			view.document.fire( 'delete', new ObserverDomEventData( view.document, {
+			view.document.fire( 'delete', new ViewDocumentDomEventData( view.document, {
 				preventDefault: () => {}
 			}, {
 				direction: 'forward',
@@ -1432,7 +1432,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 	function fireKeyDownEvent( options ) {
 		const eventInfo = new EventInfo( view.document, 'keydown' );
-		const eventData = new ObserverDomEventData( view.document, {
+		const eventData = new ViewDocumentDomEventData( view.document, {
 			target: document.body
 		}, options );
 

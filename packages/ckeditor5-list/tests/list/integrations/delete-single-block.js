@@ -16,7 +16,7 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
@@ -122,7 +122,7 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 
 	describe( 'backspace (backward)', () => {
 		beforeEach( () => {
-			domEventData = new ObserverDomEventData( view, {
+			domEventData = new ViewDocumentDomEventData( view, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'backward',
@@ -1566,7 +1566,7 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 
 	describe( 'delete (forward)', () => {
 		beforeEach( () => {
-			domEventData = new ObserverDomEventData( view, {
+			domEventData = new ViewDocumentDomEventData( view, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'forward',

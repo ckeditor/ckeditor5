@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type ObserverDomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 import { type ViewRange } from '../range.js';
 import { ViewDataTransfer } from '../datatransfer.js';
 import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
@@ -289,13 +289,13 @@ function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
  */
 export type ViewDocumentInputEvent = {
 	name: 'beforeinput';
-	args: [ data: InputObserverEventData ];
+	args: [ data: ViewDocumentInputEventData ];
 };
 
 /**
  * The value of the {@link ~ViewDocumentInputEvent} event.
  */
-export interface InputObserverEventData extends ObserverDomEventData<InputEvent> {
+export interface ViewDocumentInputEventData extends ViewDocumentDomEventData<InputEvent> {
 
 	/**
 	 * The type of the input event (e.g. "insertText" or "deleteWordBackward"). Corresponds to native `InputEvent#inputType`.

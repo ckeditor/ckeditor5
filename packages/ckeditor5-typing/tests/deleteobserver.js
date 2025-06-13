@@ -6,7 +6,7 @@
 import { DeleteObserver } from '../src/deleteobserver.js';
 
 import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -65,7 +65,7 @@ describe( 'Delete', () => {
 
 			// Simulate that the user keeps pressing the "Delete" key.
 			for ( let i = 0; i < 5; ++i ) {
-				viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, getDomEvent(), {
+				viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
 
@@ -85,7 +85,7 @@ describe( 'Delete', () => {
 		it( 'should reset the sequence on keyup event', () => {
 			// Simulate that the user keeps pressing the "Delete" key.
 			for ( let i = 0; i < 5; ++i ) {
-				viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, getDomEvent(), {
+				viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
 
@@ -94,11 +94,11 @@ describe( 'Delete', () => {
 				} );
 			}
 
-			viewDocument.fire( 'keyup', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'keyup', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
 

@@ -20,7 +20,7 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListEditing integrations: tab key', () => {
 	const blocksChangedByCommands = [];
@@ -51,12 +51,12 @@ describe( 'ListEditing integrations: tab key', () => {
 
 		eventInfo = new EventInfo( view.document, 'tab' );
 
-		tabDomEventData = new ObserverDomEventData( view.document, {
+		tabDomEventData = new ViewDocumentDomEventData( view.document, {
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		} );
 
-		shiftTabDomEventData = new ObserverDomEventData( view.document, {
+		shiftTabDomEventData = new ViewDocumentDomEventData( view.document, {
 			preventDefault: sinon.spy(),
 			stopPropagation: sinon.spy()
 		}, { shiftKey: true } );
@@ -1602,7 +1602,7 @@ describe( 'ListEditing integrations: tab key', () => {
 
 	// @param {Iterable.<String>} input
 	// @param {Iterable.<String>} expected
-	// @param {module:engine/view/observer/domeventdata~ObserverDomEventData} domEventData
+	// @param {module:engine/view/observer/domeventdata~ViewDocumentDomEventData} domEventData
 	// @param {Boolean|Object.<String,Boolean>} eventStopped Boolean when preventDefault() and stop() were called/not called together.
 	// Object, when mixed behavior was expected.
 	// @param {Object.<String,Number>} executedCommands Numbers of command executions.

@@ -17,7 +17,7 @@ import { TableClipboard } from '../src/tableclipboard.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { assertSelectedCells, modelTable } from './_utils/utils.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
@@ -41,7 +41,7 @@ describe( 'TableSelection - integration', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const domEventData = new ObserverDomEventData( viewDocument, {
+			const domEventData = new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'backward',
@@ -63,7 +63,7 @@ describe( 'TableSelection - integration', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const domEventData = new ObserverDomEventData( viewDocument, {
+			const domEventData = new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'forward',
@@ -86,7 +86,7 @@ describe( 'TableSelection - integration', () => {
 				[ '31', '32', '33' ]
 			] ) );
 
-			const domEventData = new ObserverDomEventData( viewDocument, {
+			const domEventData = new ViewDocumentDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'backward',

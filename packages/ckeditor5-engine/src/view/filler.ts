@@ -5,7 +5,7 @@
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 import { type View } from './view.js';
-import { type ObserverDomEventData } from './observer/domeventdata.js';
+import { type ViewDocumentDomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
 /**
@@ -167,7 +167,7 @@ export function injectQuirksHandling( view: View ): void {
 /**
  * Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
  */
-function jumpOverInlineFiller( evt: unknown, data: ObserverDomEventData & KeystrokeInfo ) {
+function jumpOverInlineFiller( evt: unknown, data: ViewDocumentDomEventData & KeystrokeInfo ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 

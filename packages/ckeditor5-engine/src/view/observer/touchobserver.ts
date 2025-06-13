@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type ObserverDomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 
 /**
  * Touch events observer.
@@ -44,7 +44,7 @@ export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 
  */
 export type ViewDocumentTouchStartEvent = {
 	name: 'touchstart';
-	args: [ data: ObserverDomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };
 
 /**
@@ -61,7 +61,7 @@ export type ViewDocumentTouchStartEvent = {
  */
 export type ViewDocumentTouchEndEvent = {
 	name: 'touchend';
-	args: [ data: ObserverDomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };
 
 /**
@@ -78,5 +78,5 @@ export type ViewDocumentTouchEndEvent = {
  */
 export type ViewDocumentTouchMoveEvent = {
 	name: 'touchmove';
-	args: [ data: ObserverDomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };

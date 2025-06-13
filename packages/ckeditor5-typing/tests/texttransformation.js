@@ -13,7 +13,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -215,7 +215,7 @@ describe( 'Text transformation feature', () => {
 
 		it( 'can undo transformation by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new ObserverDomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

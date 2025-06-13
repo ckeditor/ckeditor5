@@ -11,7 +11,7 @@ import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -371,7 +371,7 @@ describe( 'Mention feature - integration', () => {
 				writer.setSelection( paragraph, 0 );
 			} );
 
-			const deleteEvent = new ObserverDomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

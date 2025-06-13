@@ -36,7 +36,7 @@ import {
 import type {
 	BubblingEventInfo,
 	ModelDocumentChangeEvent,
-	ObserverDomEventData,
+	ViewDocumentDomEventData,
 	DowncastInsertEvent,
 	DowncastSelectionEvent,
 	ViewDowncastWriter,
@@ -419,7 +419,7 @@ export class WidgetTypeAround extends Plugin {
 	 * plugin that is responsible for the regular keyboard navigation near/across all widgets (that
 	 * includes inline widgets, which are ignored by the widget type around plugin).
 	 */
-	private _handleArrowKeyPress( evt: BubblingEventInfo<'arrowKey'>, domEventData: ObserverDomEventData & KeystrokeInfo ) {
+	private _handleArrowKeyPress( evt: BubblingEventInfo<'arrowKey'>, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const modelSelection = model.document.selection;
