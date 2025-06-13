@@ -47,7 +47,7 @@ For information about setting up and using the endpoint itself, see the {TODO: l
 
 ### Getting editor data
 
-The most basic action you can perform is getting the editor's data. We use {@link module:core/editor/editor~Editor `editor`} for that, as it is a {@link getting-started/setup/editor-lifecycle globally available variable}.
+The most basic action you can perform is getting the editor's data. We use {@link module:core/editor/editor~Editor `editor`} for that, as it is a make a globally available variable by the Cloud environment.
 
 ```js
 // Get the editor data.
