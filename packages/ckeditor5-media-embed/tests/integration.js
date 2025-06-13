@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
+import { enableViewPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
 
 describe( 'MediaEmbed integration', () => {
 	let element, clock;
@@ -33,7 +33,7 @@ describe( 'MediaEmbed integration', () => {
 			const editingRoot = editor.editing.view.document.getRoot();
 
 			editingRoot.placeholder = 'foo';
-			enablePlaceholder( {
+			enableViewPlaceholder( {
 				view: editor.editing.view,
 				element: editingRoot,
 				isDirectHost: false

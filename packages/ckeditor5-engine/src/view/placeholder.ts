@@ -28,7 +28,7 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  *
  * To change the placeholder text, change value of the `placeholder` property in the provided `element`.
  *
- * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
+ * To disable the placeholder, use {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} helper.
  *
  * @param options Configuration options of the placeholder.
  * @param options.view Editing view instance.
@@ -75,7 +75,7 @@ export function enableViewPlaceholder( { view, element, text, isDirectHost = tru
 	}
 
 	if ( text ) {
-		showPlaceholderTextDeprecationWarning();
+		showViewPlaceholderTextDeprecationWarning();
 	}
 
 	function setPlaceholder( text: string ) {
@@ -97,7 +97,7 @@ export function enableViewPlaceholder( { view, element, text, isDirectHost = tru
 /**
  * Disables the placeholder functionality from a given element.
  *
- * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
+ * See {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} to learn more.
  */
 export function disableViewPlaceholder( view: View, element: ViewElement ): void {
 	const doc = element.document;
@@ -122,13 +122,13 @@ export function disableViewPlaceholder( view: View, element: ViewElement ): void
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} and
+ * {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} for full
  * placeholder functionality.
  *
  * **Note**: This helper will blindly show the placeholder directly in the root editable element if
  * one is passed, which could result in a visual clash if the editable element has some children
- * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+ * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`}
  * in that case or make sure the correct element is passed to the helper.
  *
  * @returns `true`, if any changes were made to the `element`.
@@ -148,8 +148,8 @@ export function showViewPlaceholder( writer: ViewDowncastWriter, element: ViewEl
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} and
+ * {@link module:engine/view/placeholder~disableViewPlaceholder `disableViewPlaceholder()`} for full
  * placeholder functionality.
  *
  * @returns `true`, if any changes were made to the `element`.
@@ -171,7 +171,7 @@ export function hideViewPlaceholder( writer: ViewDowncastWriter, element: ViewEl
  * root editable element if one is passed, which may not be the expected result. If an element can
  * host other elements (not just text), most likely one of its children should be checked instead
  * because it will be the final host for the placeholder. Use
- * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
+ * {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
  * @param element Element that holds the placeholder.
@@ -324,18 +324,18 @@ function getChildPlaceholderHostSubstitute( parent: ViewElement ): ViewElement |
 /**
  * Displays a deprecation warning message in the console, but only once per page load.
  */
-function showPlaceholderTextDeprecationWarning() {
+function showViewPlaceholderTextDeprecationWarning() {
 	if ( !hasDisplayedPlaceholderDeprecationWarning ) {
 		/**
-		 * The "text" option in the {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
+		 * The "text" option in the {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`}
 		 * function is deprecated and will be removed soon.
 		 *
 		 * See the {@glink updating/guides/update-to-39#view-element-placeholder Migration to v39} guide for
 		 * more information on how to apply this change.
 		 *
-		 * @error enableplaceholder-deprecated-text-option
+		 * @error enableViewPlaceholder-deprecated-text-option
 		 */
-		logWarning( 'enableplaceholder-deprecated-text-option' );
+		logWarning( 'enableViewPlaceholder-deprecated-text-option' );
 	}
 
 	hasDisplayedPlaceholderDeprecationWarning = true;

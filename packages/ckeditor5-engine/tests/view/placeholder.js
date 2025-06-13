@@ -26,7 +26,7 @@ describe( 'placeholder', () => {
 		viewDocument.isFocused = true;
 	} );
 
-	describe( 'enablePlaceholder', () => {
+	describe( 'enableViewPlaceholder', () => {
 		it( 'should attach proper CSS class and data attribute', () => {
 			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
@@ -437,7 +437,7 @@ describe( 'placeholder', () => {
 		} );
 	} );
 
-	describe( 'disablePlaceholder', () => {
+	describe( 'disableViewPlaceholder', () => {
 		it( 'should remove placeholder from element', () => {
 			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
@@ -488,7 +488,7 @@ describe( 'placeholder', () => {
 		} );
 	} );
 
-	describe( 'showPlaceholder', () => {
+	describe( 'showViewPlaceholder', () => {
 		it( 'should add the ck-placholder class if an element does not have it', () => {
 			_setViewData( view, '<div></div>' );
 			const element = viewRoot.getChild( 0 );
@@ -516,7 +516,7 @@ describe( 'placeholder', () => {
 		} );
 	} );
 
-	describe( 'hidePlaceholder', () => {
+	describe( 'hideViewPlaceholder', () => {
 		it( 'should remove the ck-placholder class if an element has it', () => {
 			_setViewData( view, '<div class="ck-placeholder"></div>' );
 			const element = viewRoot.getChild( 0 );
@@ -544,7 +544,7 @@ describe( 'placeholder', () => {
 		} );
 	} );
 
-	describe( 'needsPlaceholder', () => {
+	describe( 'needsViewPlaceholder', () => {
 		it( 'should return false if element was removed from the document', () => {
 			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
@@ -660,7 +660,7 @@ describe( 'placeholder', () => {
 			} );
 
 			sinon.assert.calledOnce( console.warn );
-			expect( console.warn.calledWith( sinon.match( /^enableplaceholder-deprecated-text-option/ ) ) ).to.be.true;
+			expect( console.warn.calledWith( sinon.match( /^enableViewPlaceholder-deprecated-text-option/ ) ) ).to.be.true;
 		} );
 
 		it( 'should set placeholder using "text" argument', () => {

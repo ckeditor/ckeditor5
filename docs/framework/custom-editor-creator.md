@@ -120,7 +120,7 @@ The `*EditorUI` class is the main UI class that initializes UI components (the m
 
 <code-switcher>
 ```js
-import { EditorUI, enablePlaceholder } from 'ckeditor5';
+import { EditorUI, enableViewPlaceholder } from 'ckeditor5';
 
 /**
  * The multi-root editor UI class.
@@ -281,7 +281,7 @@ class MultirootEditorUI extends EditorUI {
 			if ( placeholderText ) {
 				editingRoot.placeholder = placeholderText;
 
-				enablePlaceholder( {
+				enableViewPlaceholder( {
 					view: editingView,
 					element: editingRoot,
 					isDirectHost: false,
