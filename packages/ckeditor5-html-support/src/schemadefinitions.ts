@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
+import type { HtmlSupportDataSchemaBlockElementDefinition, HtmlSupportDataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
  * @module html-support/schemadefinitions
@@ -538,7 +538,7 @@ export const defaultConfig = {
 				inheritAllFrom: '$blockObject'
 			}
 		}
-	] as Array<DataSchemaBlockElementDefinition>,
+	] as Array<HtmlSupportDataSchemaBlockElementDefinition>,
 
 	inline: [
 		// Existing features (attribute set on an existing model element).
@@ -986,5 +986,5 @@ export const defaultConfig = {
 				isInline: true
 			}
 		}
-	] as Array<DataSchemaInlineElementDefinition>
+	] as Array<HtmlSupportDataSchemaInlineElementDefinition>
 };
