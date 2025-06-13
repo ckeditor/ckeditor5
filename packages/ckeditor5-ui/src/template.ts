@@ -859,7 +859,7 @@ export class Template extends /* #__PURE__ */ EmitterMixin() {
 	}
 }
 
-type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
+export type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
 	[ NamespacedValue<Array<TemplateSimpleValue | TemplateBinding>> ];
 
 /**

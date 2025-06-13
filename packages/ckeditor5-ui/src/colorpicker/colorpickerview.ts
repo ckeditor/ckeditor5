@@ -349,7 +349,7 @@ function convertColorToCommonHexFormat( inputColor: string ): string {
 }
 
 // View abstraction over pointer in color picker.
-class SliderView extends View {
+export class SliderView extends View {
 	/**
 	 * @param element HTML element of slider in color picker.
 	 */
@@ -389,7 +389,7 @@ class HashView extends View {
 // it will become a component in `ckeditor5-ui`.
 //
 // @private
-class ColorPickerInputRowView extends View {
+export class ColorPickerInputRowView extends View {
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
 	 */

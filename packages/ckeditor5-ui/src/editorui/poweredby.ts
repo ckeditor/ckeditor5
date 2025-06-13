@@ -17,7 +17,7 @@ import type { Editor, UiConfig } from '@ckeditor/ckeditor5-core';
 
 const DEFAULT_LABEL = 'Powered by';
 
-type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
+export type PoweredByConfig = Required<UiConfig>[ 'poweredBy' ];
 
 /**
  * A helper that enables the "powered by" feature in the editor and renders a link to the project's
