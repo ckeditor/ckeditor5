@@ -705,7 +705,7 @@ export class ViewDomConverter {
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items. For
 	 * {@link module:engine/view/filler fillers} `null` will be returned.
-	 * For all DOM elements rendered by {@link module:engine/view/uielement~UIElement} that UIElement will be returned.
+	 * For all DOM elements rendered by {@link module:engine/view/uielement~ViewUIElement} that UIElement will be returned.
 	 *
 	 * @param domNode DOM node or document fragment to transform.
 	 * @param options Conversion options.
@@ -713,7 +713,7 @@ export class ViewDomConverter {
 	 * @param options.withChildren If `true`, node's and document fragment's children will be converted too. True by default.
 	 * @param options.keepOriginalCase If `false`, node's tag name will be converted to lower case. False by default.
 	 * @param options.skipComments If `false`, comment nodes will be converted to `$comment`
-	 * {@link module:engine/view/uielement~UIElement view UI elements}. False by default.
+	 * {@link module:engine/view/uielement~ViewUIElement view UI elements}. False by default.
 	 * @returns Converted node or document fragment or `null` if DOM node is a {@link module:engine/view/filler filler}
 	 * or the given node is an empty text node.
 	 */
@@ -877,7 +877,7 @@ export class ViewDomConverter {
 	 * If the position is inside a {@link module:engine/view/filler filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.
 	 *
-	 * If the position is inside DOM element rendered by {@link module:engine/view/uielement~UIElement}
+	 * If the position is inside DOM element rendered by {@link module:engine/view/uielement~ViewUIElement}
 	 * that position will be converted to view position before that UIElement.
 	 *
 	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
@@ -953,7 +953,7 @@ export class ViewDomConverter {
 	 * document fragment. If there is no view item {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
 	 *
-	 * For all DOM elements rendered by a {@link module:engine/view/uielement~UIElement} or
+	 * For all DOM elements rendered by a {@link module:engine/view/uielement~ViewUIElement} or
 	 * a {@link module:engine/view/rawelement~ViewRawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * @param domElementOrDocumentFragment DOM element or document fragment.
@@ -976,7 +976,7 @@ export class ViewDomConverter {
 	 * {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
-	 * For all text nodes rendered by a {@link module:engine/view/uielement~UIElement} or
+	 * For all text nodes rendered by a {@link module:engine/view/uielement~ViewUIElement} or
 	 * a {@link module:engine/view/rawelement~ViewRawElement}, the parent `UIElement` or `RawElement` will be returned.
 	 *
 	 * Otherwise `null` is returned.
@@ -1268,7 +1268,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Returns a parent {@link module:engine/view/uielement~UIElement} or {@link module:engine/view/rawelement~ViewRawElement}
+	 * Returns a parent {@link module:engine/view/uielement~ViewUIElement} or {@link module:engine/view/rawelement~ViewRawElement}
 	 * that hosts the provided DOM node. Returns `null` if there is no such parent.
 	 */
 	public getHostViewElement( domNode: DomNode ): ViewUIElement | ViewRawElement | null {
@@ -1295,7 +1295,7 @@ export class ViewDomConverter {
 	 * The following places are considered as incorrect for selection boundaries:
 	 *
 	 * * before or in the middle of an inline filler sequence,
-	 * * inside a DOM element which represents {@link module:engine/view/uielement~UIElement a view UI element},
+	 * * inside a DOM element which represents {@link module:engine/view/uielement~ViewUIElement a view UI element},
 	 * * inside a DOM element which represents {@link module:engine/view/rawelement~ViewRawElement a view raw element}.
 	 *
 	 * @param domSelection The DOM selection object to be checked.

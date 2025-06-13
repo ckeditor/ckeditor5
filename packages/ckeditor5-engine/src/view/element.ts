@@ -34,7 +34,7 @@ import { ViewTokenList } from './tokenlist.js';
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
  * in order to create a {@link module:engine/view/emptyelement~ViewEmptyElement}.
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}
- * in order to create a {@link module:engine/view/uielement~UIElement}.
+ * in order to create a {@link module:engine/view/uielement~ViewUIElement}.
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}
  * in order to create a {@link module:engine/view/editableelement~ViewEditableElement}.
  *

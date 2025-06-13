@@ -37,7 +37,7 @@ import { type ModelText } from '../model/text.js';
 import { type ViewDowncastWriter } from '../view/downcastwriter.js';
 import { type ViewElementDefinition } from '../view/elementdefinition.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
-import { type UIElement } from '../view/uielement.js';
+import { type ViewUIElement } from '../view/uielement.js';
 import { type ViewElement } from '../view/element.js';
 import { type ViewNode } from '../view/node.js';
 import { type ViewPosition } from '../view/position.js';
@@ -599,7 +599,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as a parameters and should return an instance of the
-	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
+	 * {@link module:engine/view/uielement~ViewUIElement view UI element}. The `data` object and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
 	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` for
@@ -1281,7 +1281,7 @@ export function insertStructure( elementCreator: DowncastStructureCreatorFunctio
 
 /**
  * Function factory that creates a converter which converts marker adding change to the
- * {@link module:engine/view/uielement~UIElement view UI element}.
+ * {@link module:engine/view/uielement~ViewUIElement view UI element}.
  *
  * The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
  * In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
@@ -1349,7 +1349,7 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 }
 
 /**
- * Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~UIElement UI element}
+ * Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~ViewUIElement UI element}
  * based on marker remove change.
  *
  * This converter unbinds elements from the marker name.
@@ -2958,7 +2958,7 @@ export type DowncastMarkerElementCreatorFunction = (
 		isOpening?: boolean;
 	},
 	conversionApi: DowncastConversionApi
-) => UIElement | null;
+) => ViewUIElement | null;
 
 export type DowncastHighlightDescriptorCreatorFunction = (
 	data: {

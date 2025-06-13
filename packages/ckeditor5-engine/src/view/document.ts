@@ -134,7 +134,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * The types of changes which should be safe:
 	 *
 	 * * adding or removing attribute from elements,
-	 * * changes inside of {@link module:engine/view/uielement~UIElement UI elements},
+	 * * changes inside of {@link module:engine/view/uielement~ViewUIElement UI elements},
 	 * * {@link module:engine/controller/editingcontroller~EditingController#reconvertItem marking some of the model elements to be
 	 * re-converted}.
 	 *

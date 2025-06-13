@@ -27,7 +27,7 @@ type DomElement = globalThis.HTMLElement;
  * in the editor content without, for instance, worrying about compatibility with other editor features.
  * Raw elements are a perfect tool for integration with external frameworks and data sources.
  *
- * Unlike {@link module:engine/view/uielement~UIElement UI elements}, raw elements act like real editor
+ * Unlike {@link module:engine/view/uielement~ViewUIElement UI elements}, raw elements act like real editor
  * content (similar to {@link module:engine/view/containerelement~ViewContainerElement} or
  * {@link module:engine/view/emptyelement~ViewEmptyElement}), they are considered by the editor selection and
  * {@link module:widget/utils~toWidget they can work as widgets}.

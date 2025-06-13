@@ -18,7 +18,7 @@ import { type ViewRootEditableElement } from './rooteditableelement.js';
 import { type ViewSelection } from './selection.js';
 import { type ViewText } from './text.js';
 import { type ViewTextProxy } from './textproxy.js';
-import { type UIElement } from './uielement.js';
+import { type ViewUIElement } from './uielement.js';
 
 /**
  * @module engine/view/typecheckable
@@ -64,7 +64,7 @@ export abstract class ViewTypeCheckable {
 		ViewEmptyElement |
 		ViewRawElement |
 		ViewRootEditableElement |
-		UIElement
+		ViewUIElement
 	);
 
 	/**
@@ -98,7 +98,7 @@ export abstract class ViewTypeCheckable {
 		ViewEmptyElement |
 		ViewRawElement |
 		ViewRootEditableElement |
-		UIElement
+		ViewUIElement
 	);
 
 	/**
@@ -272,7 +272,7 @@ export abstract class ViewTypeCheckable {
 	public is( type: 'rootElement' | 'view:rootElement' ): this is ViewRootEditableElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/uielement~UIElement}.
+	 * Checks whether this object is of type {@link module:engine/view/uielement~ViewUIElement}.
 	 *
 	 * ```ts
 	 * uiElement.is( 'uiElement' ); // -> true
@@ -287,7 +287,7 @@ export abstract class ViewTypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an ui element, you can also check its
-	 * {@link module:engine/view/uielement~UIElement#name name}:
+	 * {@link module:engine/view/uielement~ViewUIElement#name name}:
 	 *
 	 * ```ts
 	 * uiElement.is( 'element', 'span' ); // -> true if this is a span ui element
@@ -297,7 +297,7 @@ export abstract class ViewTypeCheckable {
 	 *
 	 * @label UI_ELEMENT
 	 */
-	public is( type: 'uiElement' | 'view:uiElement' ): this is UIElement;
+	public is( type: 'uiElement' | 'view:uiElement' ): this is ViewUIElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/text~ViewText}.
@@ -432,7 +432,7 @@ export abstract class ViewTypeCheckable {
 		ViewEmptyElement |
 		ViewRawElement |
 		ViewRootEditableElement |
-		UIElement
+		ViewUIElement
 	) & { name: N };
 
 	/**
@@ -488,11 +488,11 @@ export abstract class ViewTypeCheckable {
 	public is<N extends string>( type: 'rootElement' | 'view:rootElement', name: N ): this is ViewRootEditableElement & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/uielement~UIElement} and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/uielement~ViewUIElement} and has the specified `name`.
 	 *
 	 * @label UI_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'uiElement' | 'view:uiElement', name: N ): this is UIElement & { name: N };
+	public is<N extends string>( type: 'uiElement' | 'view:uiElement', name: N ): this is ViewUIElement & { name: N };
 
 	/* istanbul ignore next -- @preserve */
 	public is(): boolean {

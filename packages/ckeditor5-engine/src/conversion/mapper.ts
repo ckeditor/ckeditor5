@@ -306,7 +306,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Gets the corresponding model element.
 	 *
-	 * **Note:** {@link module:engine/view/uielement~UIElement} does not have corresponding element in model.
+	 * **Note:** {@link module:engine/view/uielement~ViewUIElement} does not have corresponding element in model.
 	 *
 	 * @label ELEMENT
 	 * @param viewElement View element.
@@ -559,7 +559,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * evaluate the model length (`viewNode` is used as first and only parameter passed to the callback),
 	 * * length of a {@link module:engine/view/text~ViewText text node} is equal to the length of its
 	 * {@link module:engine/view/text~ViewText#data data},
-	 * * length of a {@link module:engine/view/uielement~UIElement ui element} is equal to 0,
+	 * * length of a {@link module:engine/view/uielement~ViewUIElement ui element} is equal to 0,
 	 * * length of a mapped {@link module:engine/view/element~ViewElement element} is equal to 1,
 	 * * length of a non-mapped {@link module:engine/view/element~ViewElement element} is equal to the length of its children.
 	 *

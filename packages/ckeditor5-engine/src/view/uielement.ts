@@ -39,7 +39,7 @@ type DomElement = globalThis.HTMLElement;
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
-export class UIElement extends ViewElement {
+export class ViewUIElement extends ViewElement {
 	/**
 	 * Creates new instance of UIElement.
 	 *
@@ -74,7 +74,7 @@ export class UIElement extends ViewElement {
 	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
 		if ( items && ( items instanceof ViewNode || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
-			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
+			 * Cannot add children to {@link module:engine/view/uielement~ViewUIElement}.
 			 *
 			 * @error view-uielement-cannot-add
 			 */
@@ -85,7 +85,7 @@ export class UIElement extends ViewElement {
 	}
 
 	/**
-	 * Renders this {@link module:engine/view/uielement~UIElement} to DOM. This method is called by
+	 * Renders this {@link module:engine/view/uielement~ViewUIElement} to DOM. This method is called by
 	 * {@link module:engine/view/domconverter~DomConverter}.
 	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
 	 *
@@ -131,7 +131,7 @@ export class UIElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-UIElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewUIElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'uiElement' || type === 'view:uiElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -144,8 +144,6 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
 		);
 	}
 };
-
-export { UIElement as ViewUIElement };
 
 /**
  * This function injects UI element handling to the given {@link module:engine/view/document~ViewDocument document}.

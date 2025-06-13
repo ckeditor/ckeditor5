@@ -247,7 +247,7 @@ function getFillerOffset( this: ViewAttributeElement ): number | null {
 }
 
 /**
- * Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
+ * Returns total count of children that are not {@link module:engine/view/uielement~ViewUIElement UIElements}.
  */
 function nonUiChildrenCount( element: ViewElement | ViewDocumentFragment ): number {
 	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;

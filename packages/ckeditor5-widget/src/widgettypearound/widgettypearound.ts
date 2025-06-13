@@ -247,7 +247,7 @@ export class WidgetTypeAround extends Plugin {
 	 * Creates a listener in the editing conversion pipeline that injects the widget type around
 	 * UI into every single widget instance created in the editor.
 	 *
-	 * The UI is delivered as a {@link module:engine/view/uielement~UIElement}
+	 * The UI is delivered as a {@link module:engine/view/uielement~ViewUIElement}
 	 * wrapper which renders DOM buttons that users can use to insert paragraphs.
 	 */
 	private _enableTypeAroundUIInjection() {

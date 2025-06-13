@@ -229,7 +229,7 @@ function _showCompleteIcon( viewFigure: ViewContainerElement, writer: ViewDownca
 }
 
 /**
- * Create progress bar element using {@link module:engine/view/uielement~UIElement}.
+ * Create progress bar element using {@link module:engine/view/uielement~ViewUIElement}.
  */
 function _createProgressBar( writer: ViewDowncastWriter ): ViewUIElement {
 	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
@@ -240,7 +240,7 @@ function _createProgressBar( writer: ViewDowncastWriter ): ViewUIElement {
 }
 
 /**
- * Create placeholder element using {@link module:engine/view/uielement~UIElement}.
+ * Create placeholder element using {@link module:engine/view/uielement~ViewUIElement}.
  */
 function _createPlaceholder( writer: ViewDowncastWriter ): ViewUIElement {
 	const placeholder = writer.createUIElement( 'div', { class: 'ck-upload-placeholder-loader' } );
@@ -251,7 +251,7 @@ function _createPlaceholder( writer: ViewDowncastWriter ): ViewUIElement {
 }
 
 /**
- * Returns {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
+ * Returns {@link module:engine/view/uielement~ViewUIElement} of given unique property from image figure element.
  * Returns `undefined` if element is not found.
  */
 function _getUIElement( imageFigure: ViewElement, uniqueProperty: string ): ViewUIElement | undefined {
@@ -263,7 +263,7 @@ function _getUIElement( imageFigure: ViewElement, uniqueProperty: string ): View
 }
 
 /**
- * Removes {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
+ * Removes {@link module:engine/view/uielement~ViewUIElement} of given unique property from image figure element.
  */
 function _removeUIElement( viewFigure: ViewContainerElement, writer: ViewDowncastWriter, uniqueProperty: string ) {
 	const element = _getUIElement( viewFigure, uniqueProperty );

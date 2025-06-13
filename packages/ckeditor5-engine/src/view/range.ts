@@ -104,7 +104,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	 *
 	 * - `<p>` have type of {@link module:engine/view/containerelement~ViewContainerElement},
 	 * - `<b>` have type of {@link module:engine/view/attributeelement~ViewAttributeElement},
-	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 * - `<span>` have type of {@link module:engine/view/uielement~ViewUIElement}.
 	 *
 	 * @returns Enlarged range.
 	 */
@@ -139,7 +139,7 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	 *
 	 * - `<p>` have type of {@link module:engine/view/containerelement~ViewContainerElement},
 	 * - `<b>` have type of {@link module:engine/view/attributeelement~ViewAttributeElement},
-	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 * - `<span>` have type of {@link module:engine/view/uielement~ViewUIElement}.
 	 *
 	 * @returns Shrunk range.
 	 */

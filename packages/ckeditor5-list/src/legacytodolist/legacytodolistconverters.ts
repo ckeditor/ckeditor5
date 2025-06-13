@@ -26,7 +26,7 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
 /**
  * A model-to-view converter for the `listItem` model element insertion.
  *
- * It converts the `listItem` model element to an unordered list with a {@link module:engine/view/uielement~UIElement checkbox element}
+ * It converts the `listItem` model element to an unordered list with a {@link module:engine/view/uielement~ViewUIElement checkbox element}
  * at the beginning of each list item. It also merges the list with surrounding lists (if available).
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
@@ -178,7 +178,7 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  * A model-to-view converter for the `listType` attribute change on the `listItem` model element.
  *
  * This change means that the `<li>` element parent changes to `<ul class="todo-list">` and a
- * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
+ * {@link module:engine/view/uielement~ViewUIElement checkbox UI element} is added at the beginning
  * of the list item element (or vice versa).
  *
  * This converter is preceded by {@link module:list/legacylist/legacyconverters~modelViewChangeType} and followed by
@@ -239,7 +239,7 @@ export function modelViewChangeType(
 /**
  * A model-to-view converter for the `todoListChecked` attribute change on the `listItem` model element.
  *
- * It marks the {@link module:engine/view/uielement~UIElement checkbox UI element} as checked.
+ * It marks the {@link module:engine/view/uielement~ViewUIElement checkbox UI element} as checked.
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *

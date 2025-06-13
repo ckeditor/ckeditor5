@@ -22,7 +22,7 @@ import { ViewPosition } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewEmptyElement } from '../view/emptyelement.js';
-import { UIElement } from '../view/uielement.js';
+import { ViewUIElement } from '../view/uielement.js';
 import { ViewRawElement } from '../view/rawelement.js';
 import { StylesProcessor } from '../view/stylesmap.js';
 
@@ -38,7 +38,7 @@ const allowedTypes = {
 	'container': ViewContainerElement,
 	'attribute': ViewAttributeElement,
 	'empty': ViewEmptyElement,
-	'ui': UIElement,
+	'ui': ViewUIElement,
 	'raw': ViewRawElement
 };
 // Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf ViewDomConverter.setContentOf}
@@ -62,7 +62,7 @@ const domConverterStub: ViewDomConverter = {
  * @param options.showPriority When set to `true`, the attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param options.renderUIElements When set to `true`, the inner content of each
- * {@link module:engine/view/uielement~UIElement} will be printed.
+ * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
  * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
@@ -233,7 +233,7 @@ _setViewData._parse = _parseView;
  * presented for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ViewContainerElement container elements}
  * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements}
- * and {@link module:engine/view/uielement~UIElement UI elements}:
+ * and {@link module:engine/view/uielement~ViewUIElement UI elements}:
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'b' );
@@ -280,7 +280,7 @@ _setViewData._parse = _parseView;
  * @param options.sameSelectionCharacters When set to `true`, the selection inside the text will be marked as
  *  `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both will be marked as `[` and `]` only.
  * @param options.renderUIElements When set to `true`, the inner content of each
- * {@link module:engine/view/uielement~UIElement} will be printed.
+ * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
  * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
@@ -718,7 +718,7 @@ class ViewStringify {
 	 * @param options.sameSelectionCharacters When set to `true`, the selection inside the text is marked as
 	 * `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both are marked as `[` and `]`.
 	 * @param options.renderUIElements When set to `true`, the inner content of each
-	 * {@link module:engine/view/uielement~UIElement} will be printed.
+	 * {@link module:engine/view/uielement~ViewUIElement} will be printed.
 	 * @param options.renderRawElements When set to `true`, the inner content of each
 	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
@@ -942,7 +942,7 @@ class ViewStringify {
 	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
 	 * * 'container' for {@link module:engine/view/containerelement~ViewContainerElement container elements},
 	 * * 'empty' for {@link module:engine/view/emptyelement~ViewEmptyElement empty elements},
-	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
+	 * * 'ui' for {@link module:engine/view/uielement~ViewUIElement UI elements},
 	 * * 'raw' for {@link module:engine/view/rawelement~ViewRawElement raw elements},
 	 * * an empty string when the current configuration is preventing showing elements' types.
 	 */
@@ -1024,7 +1024,7 @@ class ViewStringify {
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ViewContainerElement container elements},
  * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements} or
- * {@link module:engine/view/uielement~UIElement UI elements}.
+ * {@link module:engine/view/uielement~ViewUIElement UI elements}.
  * It converts the whole tree starting from the `rootNode`. The conversion is based on element names.
  * See the `_convertElement` method for more details.
  *
@@ -1065,7 +1065,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
- * {@link module:engine/view/uielement~UIElement UI element}.
+ * {@link module:engine/view/uielement~ViewUIElement UI element}.
  * If the element's name is in the format of `attribute:b`, it will be converted to
  * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} with a priority of 11.
  * Additionally, attribute elements may have specified priority (for example `view-priority="11"`) and/or
@@ -1075,7 +1075,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * If the element's name is in the format of `empty:img`, it will be converted to
  * an {@link module:engine/view/emptyelement~ViewEmptyElement empty element}.
  * If the element's name is in the format of `ui:span`, it will be converted to
- * a {@link module:engine/view/uielement~UIElement UI element}.
+ * a {@link module:engine/view/uielement~ViewUIElement UI element}.
  * If the element's name does not contain any additional information, a {@link module:engine/view/element~ViewElement view Element} will be
  * returned.
  *
@@ -1110,7 +1110,7 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
  * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
- * {@link module:engine/view/uielement~UIElement UI element}.
+ * {@link module:engine/view/uielement~ViewUIElement UI element}.
  * The name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
  * `attribute:span`, `empty:img`, `ui:span`);
  *

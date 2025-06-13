@@ -18,7 +18,7 @@ import {
 import { ViewContainerElement } from './containerelement.js';
 import { ViewAttributeElement } from './attributeelement.js';
 import { ViewEmptyElement } from './emptyelement.js';
-import { UIElement } from './uielement.js';
+import { ViewUIElement } from './uielement.js';
 import { ViewRawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { ViewDocumentFragment } from './documentfragment.js';
@@ -422,7 +422,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/uielement~UIElement}.
+	 * Creates a new {@link module:engine/view/uielement~ViewUIElement}.
 	 *
 	 * ```ts
 	 * writer.createUIElement( 'span' );
@@ -453,9 +453,9 @@ export class ViewDowncastWriter {
 	public createUIElement(
 		name: string,
 		attributes?: ViewElementAttributes,
-		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: ViewDomConverter ) => DomElement
-	): UIElement {
-		const uiElement = new UIElement( this.document, name, attributes );
+		renderFunction?: ( this: ViewUIElement, domDocument: DomDocument, domConverter: ViewDomConverter ) => DomElement
+	): ViewUIElement {
+		const uiElement = new ViewUIElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			uiElement.render = renderFunction;
@@ -728,7 +728,7 @@ export class ViewDowncastWriter {
 	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws the `view-writer-cannot-break-ui-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when trying to break attributes inside a {@link module:engine/view/uielement~UIElement UIElement}.
+	 * when trying to break attributes inside a {@link module:engine/view/uielement~ViewUIElement UIElement}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
 	 * @see module:engine/view/containerelement~ViewContainerElement
@@ -942,7 +942,7 @@ export class ViewDowncastWriter {
 	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
 	 * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElements},
 	 * {@link module:engine/view/rawelement~ViewRawElement RawElements} or
-	 * {@link module:engine/view/uielement~UIElement UIElements}.
+	 * {@link module:engine/view/uielement~ViewUIElement UIElements}.
 	 *
 	 * @param position Insertion position.
 	 * @param nodes Node or nodes to insert.
@@ -1862,7 +1862,7 @@ export class ViewDowncastWriter {
 	 * is placed inside {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
-	 * is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
+	 * is placed inside {@link module:engine/view/uielement~ViewUIElement UIElement}.
 	 *
 	 * @param position Position where to break attributes.
 	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
@@ -2189,7 +2189,7 @@ function mergeTextNodes( t1: ViewText, t2: ViewText ): ViewPosition {
 	return new ViewPosition( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ ViewText, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, UIElement ];
+const validNodesToInsert = [ ViewText, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, ViewUIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.
@@ -2209,7 +2209,7 @@ function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDoc
 			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
 			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
 			 * * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement},
-			 * * {@link module:engine/view/uielement~UIElement UIElement},
+			 * * {@link module:engine/view/uielement~ViewUIElement UIElement},
 			 * * {@link module:engine/view/rawelement~ViewRawElement RawElement},
 			 * * {@link module:engine/view/text~ViewText Text}.
 			 *
