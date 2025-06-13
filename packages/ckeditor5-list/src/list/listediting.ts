@@ -968,7 +968,6 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
  *
  * It allows triggering a re-wrapping of a list item.
  *
- * @internal
  * @eventName ~ListEditing#postFixer
  * @param listHead The head element of a list.
  * @param writer The writer to do changes with.
