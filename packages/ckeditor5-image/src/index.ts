@@ -30,7 +30,14 @@ export { ImageTextAlternativeEditing } from './imagetextalternative/imagetextalt
 export { ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui.js';
 export { ImageToolbar } from './imagetoolbar.js';
 export { ImageUpload } from './imageupload.js';
-export { ImageUploadEditing, type ImageUploadCompleteEvent, type ImageUploadCompleteData } from './imageupload/imageuploadediting.js';
+
+export {
+	ImageUploadEditing,
+	isHtmlInDataTransfer,
+	type ImageUploadCompleteEvent,
+	type ImageUploadCompleteData
+} from './imageupload/imageuploadediting.js';
+
 export { ImageUploadProgress } from './imageupload/imageuploadprogress.js';
 export { ImageUploadUI } from './imageupload/imageuploadui.js';
 export { PictureEditing } from './pictureediting.js';
