@@ -32,7 +32,7 @@ import { type ViewRange } from './range.js';
  *
  * It is similar to {@link module:engine/view/selection~ViewSelection} but
  * it has a read-only API and can be modified only by the writer available in
- * the {@link module:engine/view/view~View#change `View#change()`} block
+ * the {@link module:engine/view/view~EditingView#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
 export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
@@ -371,7 +371,8 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 	/**
 	 * Moves {@link #focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * The location can be specified in the same form as
+	 * {@link module:engine/view/view~EditingView#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
 	 * @internal

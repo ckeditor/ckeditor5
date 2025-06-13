@@ -10,7 +10,7 @@
 import { Observer } from './observer.js';
 import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver.js';
 import { ViewSelection } from '../selection.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import type {
 	ViewDocumentSelectionChangeEvent,
 	ViewDocumentSelectionChangeDoneEvent,
@@ -35,7 +35,7 @@ export class FakeSelectionObserver extends Observer {
 	/**
 	 * Creates new FakeSelectionObserver instance.
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this._fireSelectionChangeDoneDebounced = debounce( data => {

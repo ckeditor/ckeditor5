@@ -24,7 +24,7 @@ import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } 
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
- * * {@link module:engine/view/view~View}
+ * * {@link module:engine/view/view~EditingView}
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~ViewUpcastWriter}
  */
@@ -313,7 +313,7 @@ export class ViewPosition extends ViewTypeCheckable {
 				return this._createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
 				/**
-				 * {@link module:engine/view/view~View#createPositionAt `View#createPositionAt()`}
+				 * {@link module:engine/view/view~EditingView#createPositionAt `View#createPositionAt()`}
 				 * requires the offset to be specified when the first parameter is a view item.
 				 *
 				 * @error view-createpositionat-offset-required

@@ -13,7 +13,7 @@ import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
 import { type ViewDomConverter } from '../domconverter.js';
 import { type ViewSelection } from '../selection.js';
@@ -31,7 +31,7 @@ type DomSelection = globalThis.Selection;
  *
  * This observer also manages the {@link module:engine/view/document~ViewDocument#isSelecting} property of the view document.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class SelectionObserver extends Observer {
 	/**
@@ -54,7 +54,7 @@ export class SelectionObserver extends Observer {
 	public readonly selection: ViewDocumentSelection;
 
 	/**
-	 * Reference to the {@link module:engine/view/view~View#domConverter}.
+	 * Reference to the {@link module:engine/view/view~EditingView#domConverter}.
 	 */
 	public readonly domConverter: ViewDomConverter;
 
@@ -94,7 +94,7 @@ export class SelectionObserver extends Observer {
 	 */
 	private _pendingSelectionChange = new Set<Document>();
 
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.mutationObserver = view.getObserver( MutationObserver );
@@ -399,7 +399,7 @@ export type ViewDocumentSelectionEventData = {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @eventName module:engine/view/document~ViewDocument#selectionChange
@@ -415,7 +415,7 @@ export type ViewDocumentSelectionChangeEvent = {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @eventName module:engine/view/document~ViewDocument#selectionChangeDone

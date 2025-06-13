@@ -18,7 +18,7 @@ import { DomEventObserver, type ViewDocumentDomEventData } from 'ckeditor5/src/e
  * - `'mouseleave'`
  *
  * Note that this observer is disabled by default. To enable this observer, it needs to be added to
- * {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * The observer is registered by the {@link module:table/tableselection~TableSelection} plugin.
  *
@@ -44,7 +44,7 @@ export class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mousele
  *
  * Note that this event is not available by default. To make it available,
  * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
- * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * to {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
  * @eventName module:engine/view/document~ViewDocument#mousemove
@@ -62,7 +62,7 @@ export type ViewDocumentMouseMoveEvent = {
  *
  * Note that this event is not available by default. To make it available,
  * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
- * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * to {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
  * @eventName module:engine/view/document~ViewDocument#mouseleave

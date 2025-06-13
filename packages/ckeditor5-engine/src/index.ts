@@ -219,7 +219,14 @@ export type { ModelSelectionChangeRangeEvent as SelectionChangeRangeEvent } from
 export { ViewDataTransfer, type ViewDropEffect, type ViewEffectAllowed } from './view/datatransfer.js';
 export { ViewDomConverter, type BlockFillerMode } from './view/domconverter.js';
 export { ViewRenderer } from './view/renderer.js';
-export { EditingView } from './view/view.js';
+export {
+	EditingView,
+	type ViewRenderEvent,
+	type ViewScrollToTheSelectionEvent,
+	type ViewScrollToTheSelectionEventData,
+	type AlwaysRegisteredViewObservers
+} from './view/view.js';
+
 export { ViewDocument, type ViewDocumentPostFixer, type ViewDocumentChangeType } from './view/document.js';
 export { ViewText } from './view/text.js';
 export { ViewTextProxy } from './view/textproxy.js';
@@ -356,7 +363,6 @@ export type {
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver.js';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver.js';
 export type { ViewDocumentSelectionChangeEvent, ViewDocumentSelectionChangeDoneEvent } from './view/observer/selectionobserver.js';
-export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view.js';
 
 // View / Styles.
 export {

@@ -4,7 +4,7 @@
  */
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
-import { type View } from './view.js';
+import { type EditingView } from './view.js';
 import { type ViewDocumentDomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
@@ -160,7 +160,7 @@ export function getDataWithoutFiller( domText: Text | string ): string {
  * @param view View controller instance we should inject quirks handling on.
  * @internal
  */
-export function injectQuirksHandling( view: View ): void {
+export function injectQuirksHandling( view: EditingView ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 

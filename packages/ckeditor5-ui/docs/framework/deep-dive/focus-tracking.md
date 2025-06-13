@@ -73,7 +73,7 @@ To spice things up even more, you should also know `isFocused` will change when 
 
 The simplest way to focus the editor is to call the {@link module:core/editor/editor~Editor#focus `editor.focus()`} method.
 
-However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
+However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~EditingView#focus `focus()`} method of the editing view:
 
 ```js
 editor.editing.view.focus();

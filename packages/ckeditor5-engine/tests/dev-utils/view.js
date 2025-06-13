@@ -83,7 +83,7 @@ describe( 'view test utils', () => {
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
 					_getViewData( { invalid: 'view' } );
-				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~EditingView.' );
 			} );
 		} );
 
@@ -128,7 +128,7 @@ describe( 'view test utils', () => {
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
 					_setViewData( { invalid: 'view' } );
-				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~EditingView.' );
 			} );
 		} );
 	} );

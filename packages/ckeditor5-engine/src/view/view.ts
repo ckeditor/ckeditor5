@@ -57,7 +57,7 @@ type DomRange = globalThis.Range;
  * abstraction over the DOM structure and events and hide all browsers quirks.
  *
  * View controller renders view document to DOM whenever view structure changes. To determine when view can be rendered,
- * all changes need to be done using the {@link module:engine/view/view~View#change} method, using
+ * all changes need to be done using the {@link module:engine/view/view~EditingView#change} method, using
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter}:
  *
  * ```ts
@@ -79,12 +79,12 @@ type DomRange = globalThis.Range;
  * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
- * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
+ * This class also {@link module:engine/view/view~EditingView#attachDomRoot binds the DOM and the view elements}.
  *
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
  * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter ViewDomConverter} instead.
  */
-export class View extends /* #__PURE__ */ ObservableMixin() {
+export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Instance of the {@link module:engine/view/document~ViewDocument} associated with this view controller.
 	 */
@@ -92,7 +92,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
-	 * {@link module:engine/view/view~View#_renderer renderer}
+	 * {@link module:engine/view/view~EditingView#_renderer renderer}
 	 * and {@link module:engine/view/observer/observer~Observer observers}.
 	 */
 	public readonly domConverter: ViewDomConverter;
@@ -125,8 +125,8 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
-	 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
-	 * the view is destroyed ({@link module:engine/view/view~View#detachDomRoot}), they can be easily restored.
+	 * is {@link module:engine/view/view~EditingView#attachDomRoot attached} to the view so later on, when
+	 * the view is destroyed ({@link module:engine/view/view~EditingView#detachDomRoot}), they can be easily restored.
 	 * This way, the DOM element can go back to the (clean) state as if the editing view never used it.
 	 */
 	private readonly _initialDomRootAttributes: WeakMap<HTMLElement, Record<string, string>> = new WeakMap();
@@ -181,7 +181,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 		this._writer = new ViewDowncastWriter( this.document );
 
 		// Add default observers.
-		// Make sure that this list matches AlwaysRegisteredObservers type.
+		// Make sure that this list matches AlwaysRegisteredViewObservers type.
 		this.addObserver( MutationObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( SelectionObserver );
@@ -395,7 +395,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	public getObserver<T extends ObserverConstructor>( ObserverConstructor: T ):
-	T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
+	T extends AlwaysRegisteredViewObservers ? InstanceType<T> : InstanceType<T> | undefined;
 
 	/**
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
@@ -429,7 +429,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * Scrolls the page viewport and {@link #domRoots} with their ancestors to reveal the
 	 * caret, **if not already visible to the user**.
 	 *
-	 * **Note**: Calling this method fires the {@link module:engine/view/view~ViewScrollToTheSelectionEvent} event that
+	 * **Note**: Calling this method fires the {@link module:engine/view/view~EditingViewScrollToTheSelectionEvent} event that
 	 * allows custom behaviors.
 	 *
 	 * @param options Additional configuration of the scrolling behavior.
@@ -530,7 +530,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * When the outermost change block is done and rendering to the DOM is over the
-	 * {@link module:engine/view/view~View#event:render `View#render`} event is fired.
+	 * {@link module:engine/view/view~EditingView#event:render `View#render`} event is fired.
 	 *
 	 * This method throws a `applying-view-changes-on-rendering` error when
 	 * the change block is used after rendering to the DOM has started.
@@ -545,10 +545,10 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} during rendering
-			 * process,
-			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} inside of
-			 *   {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixer function}.
+			 * * calling {@link module:engine/view/view~EditingView#change} or {@link module:engine/view/view~EditingView#forceRender}
+			 * during rendering process,
+			 * * calling {@link module:engine/view/view~EditingView#change} or {@link module:engine/view/view~EditingView#forceRender}
+			 * inside of {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
 			 */
@@ -811,10 +811,8 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 }
 
-export { View as EditingView };
-
 /**
- * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
+ * Fired after a topmost {@link module:engine/view/view~EditingView#change change block} and all
  * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers} are executed.
  *
  * Actual rendering is performed as a first listener on 'normal' priority.
@@ -837,10 +835,10 @@ export type ViewRenderEvent = {
 };
 
 /**
- * An event fired at the moment of {@link module:engine/view/view~View#scrollToTheSelection} being called. It
+ * An event fired at the moment of {@link module:engine/view/view~EditingView#scrollToTheSelection} being called. It
  * carries two objects in its payload (`args`):
  *
- * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
+ * * The first argument is the {@link module:engine/view/view~EditingViewScrollToTheSelectionEventData object containing data} that gets
  *   passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listener modifies it, it can
  *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`).
  * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
@@ -853,13 +851,13 @@ export type ViewScrollToTheSelectionEvent = {
 	name: 'scrollToTheSelection';
 	args: [
 		ViewScrollToTheSelectionEventData,
-		Parameters<View[ 'scrollToTheSelection' ]>[ 0 ]
+		Parameters<EditingView[ 'scrollToTheSelection' ]>[ 0 ]
 	];
 };
 
 /**
  * An object passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper while calling
- * {@link module:engine/view/view~View#scrollToTheSelection}.
+ * {@link module:engine/view/view~EditingView#scrollToTheSelection}.
  */
 export type ViewScrollToTheSelectionEventData = {
 	target: DomRange;
@@ -872,7 +870,7 @@ export type ViewScrollToTheSelectionEventData = {
 /**
  * Observers that are always registered.
  */
-export type AlwaysRegisteredObservers =
+export type AlwaysRegisteredViewObservers =
 	| typeof MutationObserver
 	| typeof FocusObserver
 	| typeof SelectionObserver

@@ -9,7 +9,7 @@
 
 import { Observer } from './observer.js';
 import { BubblingEventInfo } from './bubblingeventinfo.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import type { ViewDocumentKeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
@@ -18,13 +18,13 @@ import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 /**
  * Arrow keys observer introduces the {@link module:engine/view/document~ViewDocument#event:arrowKey `Document#arrowKey`} event.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class ArrowKeysObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.document.on<ViewDocumentKeyDownEvent>( 'keydown', ( event, data ) => {
@@ -57,7 +57,7 @@ export class ArrowKeysObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  *
  * Note that because {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @eventName module:engine/view/document~ViewDocument#arrowKey
  * @param data

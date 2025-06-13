@@ -12,7 +12,7 @@ import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'es-toolkit/compat';
 
 import { type ViewDomConverter } from '../domconverter.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import { type ViewElement } from '../element.js';
 import { type ViewNode } from '../node.js';
 import { type ViewText } from '../text.js';
@@ -29,11 +29,11 @@ import type { ViewDocumentChangeType } from '../document.js';
  * "to be rendered" and the {@link module:engine/view/renderer~ViewRenderer#render `render()`} method is called,
  * all changes are reverted in the DOM (the DOM is synced with the editor's view structure).
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class MutationObserver extends Observer {
 	/**
-	 * Reference to the {@link module:engine/view/view~View#domConverter}.
+	 * Reference to the {@link module:engine/view/view~EditingView#domConverter}.
 	 */
 	public readonly domConverter: ViewDomConverter;
 
@@ -55,7 +55,7 @@ export class MutationObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this._config = {
@@ -279,7 +279,7 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  * Event fired on DOM mutations detected.
  *
  * This event is introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver} and available
- * by default in all editor instances (attached by {@link module:engine/view/view~View}).
+ * by default in all editor instances (attached by {@link module:engine/view/view~EditingView}).
  *
  * @eventName module:engine/view/document~ViewDocument#mutations
  * @param data Event data containing detailed information about the event.

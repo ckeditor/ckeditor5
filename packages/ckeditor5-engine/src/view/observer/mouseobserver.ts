@@ -14,7 +14,7 @@ import { type ViewDocumentDomEventData } from './domeventdata.js';
  * Mouse events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} by {@link module:engine/view/view~EditingView#addObserver} method.
  */
 export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'mouseover' | 'mouseout'> {
 	/**
@@ -36,7 +36,7 @@ export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'm
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @eventName module:engine/view/document~ViewDocument#mousedown
@@ -53,7 +53,7 @@ export type ViewDocumentMouseDownEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @eventName module:engine/view/document~ViewDocument#mouseup
@@ -70,7 +70,7 @@ export type ViewDocumentMouseUpEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @eventName module:engine/view/document~ViewDocument#mouseover
@@ -87,7 +87,7 @@ export type ViewDocumentMouseOverEvent = {
  * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/mouseobserver~MouseObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @eventName module:engine/view/document~ViewDocument#mouseout

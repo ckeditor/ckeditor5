@@ -11,7 +11,7 @@ import { extend } from 'es-toolkit/compat';
 
 import { type ViewDocument } from '../document.js';
 import { type ViewElement } from '../element.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 
 /**
  * Information about a DOM event in context of the {@link module:engine/view/document~ViewDocument}.
@@ -24,7 +24,7 @@ export class ViewDocumentDomEventData<TEvent extends Event = Event> {
 	/**
 	 * Instance of the view controller.
 	 */
-	public readonly view: View;
+	public readonly view: EditingView;
 
 	/**
 	 * The instance of the document.
@@ -46,7 +46,7 @@ export class ViewDocumentDomEventData<TEvent extends Event = Event> {
 	 * @param domEvent The DOM event.
 	 * @param additionalData Additional properties that the instance should contain.
 	 */
-	constructor( view: View, domEvent: TEvent, additionalData?: object ) {
+	constructor( view: EditingView, domEvent: TEvent, additionalData?: object ) {
 		this.view = view;
 		this.document = view.document;
 		this.domEvent = domEvent;

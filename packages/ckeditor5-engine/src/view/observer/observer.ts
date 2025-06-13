@@ -10,7 +10,7 @@
 import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from '../document.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 
 /**
  * Abstract base observer class. Observers are classes which listen to DOM events, do the preliminary
@@ -22,7 +22,7 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * An instance of the view controller.
 	 */
-	public readonly view: View;
+	public readonly view: EditingView;
 
 	/**
 	 * A reference to the {@link module:engine/view/document~ViewDocument} object.
@@ -37,7 +37,7 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * Creates an instance of the observer.
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super();
 
 		this.view = view;
@@ -53,7 +53,7 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 
 	/**
 	 * Enables the observer. This method is called when the observer is registered to the
-	 * {@link module:engine/view/view~View} and after {@link module:engine/view/view~View#forceRender rendering}
+	 * {@link module:engine/view/view~EditingView} and after {@link module:engine/view/view~EditingView#forceRender rendering}
 	 * (all observers are {@link #disable disabled} before rendering).
 	 *
 	 * A typical use case for disabling observers is that mutation observers need to be disabled for the rendering.
@@ -67,7 +67,7 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 
 	/**
 	 * Disables the observer. This method is called before
-	 * {@link module:engine/view/view~View#forceRender rendering} to prevent firing events during rendering.
+	 * {@link module:engine/view/view~EditingView#forceRender rendering} to prevent firing events during rendering.
 	 *
 	 * @see module:engine/view/observer/observer~Observer#enable
 	 */
@@ -124,4 +124,4 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 /**
  * The constructor of {@link ~Observer} subclass.
  */
-export type ObserverConstructor = new ( view: View ) => Observer;
+export type ObserverConstructor = new ( view: EditingView ) => Observer;

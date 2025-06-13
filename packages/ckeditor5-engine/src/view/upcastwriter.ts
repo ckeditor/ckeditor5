@@ -35,7 +35,7 @@ import { type ViewNode } from './node.js';
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  *
- * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
+ * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~EditingView#change `View#change()`} block,
  * `ViewUpcastWriter` can be created wherever you need it:
  *
  * ```ts

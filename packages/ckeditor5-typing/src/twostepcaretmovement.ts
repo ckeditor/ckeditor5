@@ -292,7 +292,7 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * Updates the document selection and the view according to the two–step caret movement state
-	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~EditingView}.
 	 *
 	 * @internal
 	 * @param eventData Data of the key press.
@@ -362,7 +362,7 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * Updates the document selection and the view according to the two–step caret movement state
-	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~EditingView}.
 	 *
 	 * @internal
 	 * @param eventData Data of the key press.

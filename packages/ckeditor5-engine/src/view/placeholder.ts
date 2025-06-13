@@ -13,7 +13,7 @@ import { type ViewDocument } from './document.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
-import { type View } from './view.js';
+import { type EditingView } from './view.js';
 
 import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
@@ -42,7 +42,7 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  * @param options.keepOnFocus If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enableViewPlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
-	view: View;
+	view: EditingView;
 	element: PlaceholderableViewElement | ViewEditableElement;
 	isDirectHost?: boolean;
 	text?: string;
@@ -99,7 +99,7 @@ export function enableViewPlaceholder( { view, element, text, isDirectHost = tru
  *
  * See {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} to learn more.
  */
-export function disableViewPlaceholder( view: View, element: ViewElement ): void {
+export function disableViewPlaceholder( view: EditingView, element: ViewElement ): void {
 	const doc = element.document;
 
 	if ( !documentPlaceholders.has( doc ) ) {

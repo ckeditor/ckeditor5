@@ -19,7 +19,7 @@ import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 /**
  * Observer for events connected with data input.
  *
- * **Note**: This observer is attached by {@link module:engine/view/view~View} and available by default in all
+ * **Note**: This observer is attached by {@link module:engine/view/view~EditingView} and available by default in all
  * editor instances.
  */
 export class InputObserver extends DomEventObserver<'beforeinput'> {
@@ -281,7 +281,7 @@ function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
  * Fired before the web browser inputs, deletes, or formats some data.
  *
  * This event is introduced by {@link module:engine/view/observer/inputobserver~InputObserver} and available
- * by default in all editor instances (attached by {@link module:engine/view/view~View}).
+ * by default in all editor instances (attached by {@link module:engine/view/view~EditingView}).
  *
  * @see module:engine/view/observer/inputobserver~InputObserver
  * @eventName module:engine/view/document~ViewDocument#beforeinput

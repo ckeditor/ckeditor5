@@ -19,7 +19,7 @@ import { ModelSelection } from '../model/selection.js';
 import { ModelDocumentFragment } from '../model/documentfragment.js';
 import { ModelDocumentSelection } from '../model/documentselection.js';
 
-import { View } from '../view/view.js';
+import { EditingView } from '../view/view.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
 
@@ -274,7 +274,7 @@ export function _stringifyModel(
 	// Set up conversion.
 	// Create a temporary view controller.
 	const stylesProcessor = new StylesProcessor();
-	const view = new View( stylesProcessor );
+	const view = new EditingView( stylesProcessor );
 	const viewDocument = view.document;
 	const viewRoot = new ViewRootEditableElement( viewDocument, 'div' );
 

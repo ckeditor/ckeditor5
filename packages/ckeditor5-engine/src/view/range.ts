@@ -21,7 +21,7 @@ import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } 
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
- * * {@link module:engine/view/view~View}
+ * * {@link module:engine/view/view~EditingView}
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~ViewUpcastWriter}
  */

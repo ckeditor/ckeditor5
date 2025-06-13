@@ -11,7 +11,7 @@ import { ViewElement, type ViewElementAttributes } from './element.js';
 import { ViewNode } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import { type View } from './view.js';
+import { type EditingView } from './view.js';
 import { type ViewDocument } from './document.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type ViewItem } from './item.js';
@@ -155,7 +155,7 @@ ViewUIElement.prototype.is = function( type: string, name?: string ): boolean {
  * @param view View controller to which the quirks handling will be injected.
  * @internal
  */
-export function injectUiElementHandling( view: View ): void {
+export function injectUiElementHandling( view: EditingView ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( evt, data ) =>
 		jumpOverUiElement( evt, data, view.domConverter ), { priority: 'low' } );
 }

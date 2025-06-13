@@ -30,7 +30,7 @@ import { type ViewEditableElement } from './editableelement.js';
  *
  * New selection instances can be created via the constructor or one these methods:
  *
- * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+ * * {@link module:engine/view/view~EditingView#createSelection `View#createSelection()`},
  * * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createSelection `UpcastWriter#createSelection()`}.
  *
  * A selection can consist of {@link module:engine/view/range~ViewRange ranges} that can be set by using
@@ -62,7 +62,7 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	 *
 	 * **Note**: The selection constructor is available as a factory method:
 	 *
-	 * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+	 * * {@link module:engine/view/view~EditingView#createSelection `View#createSelection()`},
 	 * * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createSelection `UpcastWriter#createSelection()`}.
 	 *
 	 * ```ts
@@ -541,7 +541,8 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	/**
 	 * Moves {@link #focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * The location can be specified in the same form as
+	 * {@link module:engine/view/view~EditingView#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
 	 * @fires change

@@ -42,7 +42,7 @@ type DomElement = globalThis.HTMLElement;
  * It provides a set of methods used to manipulate view nodes.
  *
  * Do not create an instance of this writer manually. To modify a view structure, use
- * the {@link module:engine/view/view~View#change `View#change()`} block.
+ * the {@link module:engine/view/view~EditingView#change `View#change()`} block.
  *
  * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
  * To work with ordinary views (e.g. parsed from a pasted content) use the
@@ -184,7 +184,8 @@ export class ViewDowncastWriter {
 	/**
 	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * The location can be specified in the same form as
+	 * {@link module:engine/view/view~EditingView#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
 	 * @param itemOrPosition

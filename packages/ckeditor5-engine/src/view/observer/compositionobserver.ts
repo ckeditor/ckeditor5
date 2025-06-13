@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import { type ViewDocumentDomEventData } from './domeventdata.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -18,7 +18,7 @@ import { type ViewDocumentDomEventData } from './domeventdata.js';
  * {@link module:engine/view/document~ViewDocument#event:compositionupdate compositionupdate} and
  * {@link module:engine/view/document~ViewDocument#event:compositionend compositionend} events observer.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class CompositionObserver extends DomEventObserver<'compositionstart' | 'compositionupdate' | 'compositionend'> {
 	/**
@@ -29,7 +29,7 @@ export class CompositionObserver extends DomEventObserver<'compositionstart' | '
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const document = this.document;
@@ -86,7 +86,7 @@ export interface ViewDocumentCompositionEventData extends ViewDocumentDomEventDa
  * Introduced by {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
  *
  * Note that because {@link module:engine/view/observer/compositionobserver~CompositionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
  * @eventName module:engine/view/document~ViewDocument#compositionstart
@@ -103,7 +103,7 @@ export type ViewDocumentCompositionStartEvent = {
  * Introduced by {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
  *
  * Note that because {@link module:engine/view/observer/compositionobserver~CompositionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
  * @eventName module:engine/view/document~ViewDocument#compositionupdate
@@ -120,7 +120,7 @@ export type ViewDocumentCompositionUpdateEvent = {
  * Introduced by {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
  *
  * Note that because {@link module:engine/view/observer/compositionobserver~CompositionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
  * @eventName module:engine/view/document~ViewDocument#compositionend

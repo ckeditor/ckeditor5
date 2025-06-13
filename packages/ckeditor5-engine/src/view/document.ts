@@ -124,7 +124,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * to the DOM.
 	 *
 	 * Post-fixers are executed right after all changes from the outermost change block were applied but
-	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
+	 * before the {@link module:engine/view/view~EditingView#event:render render event} is fired. If a post-fixer callback made
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
@@ -164,10 +164,10 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * That is because adding a post-fixer does not execute it.
 	 * The post-fixer will be executed as soon as any change in the document needs to cause its rendering.
 	 * If you want to re-render the editor's view after registering the post-fixer then you should do it manually by calling
-	 * {@link module:engine/view/view~View#forceRender `view.forceRender()`}.
+	 * {@link module:engine/view/view~EditingView#forceRender `view.forceRender()`}.
 	 *
 	 * If you need to register a callback which is executed when DOM elements are already updated,
-	 * use {@link module:engine/view/view~View#event:render render event}.
+	 * use {@link module:engine/view/view~EditingView#event:render render event}.
 	 */
 	public registerPostFixer( postFixer: ViewDocumentPostFixer ): void {
 		this._postFixers.add( postFixer );
@@ -225,7 +225,7 @@ export type ViewDocumentChangeType = 'children' | 'attributes' | 'text';
 
 /**
  * Event fired whenever document content layout changes. It is fired whenever content is
- * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
+ * {@link module:engine/view/view~EditingView#event:render rendered}, but should be also fired by observers in case of
  * other actions which may change layout, for instance when image loads.
  *
  * @eventName ~Document#layoutChanged

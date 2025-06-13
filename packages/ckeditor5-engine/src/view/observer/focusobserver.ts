@@ -9,7 +9,7 @@
 
 import { DomEventObserver } from './domeventobserver.js';
 import { type ViewDocumentDomEventData } from './domeventdata.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -20,7 +20,7 @@ import type { ViewDocumentInputEvent } from './inputobserver.js';
  * Focus observer handle also {@link module:engine/view/rooteditableelement~ViewRootEditableElement#isFocused isFocused} property of the
  * {@link module:engine/view/rooteditableelement~ViewRootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
@@ -43,7 +43,7 @@ export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.useCapture = true;
@@ -203,7 +203,7 @@ export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @eventName module:engine/view/document~ViewDocument#focus
@@ -220,7 +220,7 @@ export type ViewDocumentFocusEvent = {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @eventName module:engine/view/document~ViewDocument#blur

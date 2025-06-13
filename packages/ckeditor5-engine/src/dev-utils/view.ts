@@ -11,7 +11,7 @@
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
 
-import { View } from '../view/view.js';
+import { EditingView } from '../view/view.js';
 import { ViewDocument } from '../view/document.js';
 import { ViewDocumentFragment } from '../view/documentfragment.js';
 import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
@@ -71,7 +71,7 @@ const domConverterStub: ViewDomConverter = {
  * @returns The stringified data.
  */
 export function _getViewData(
-	view: View,
+	view: EditingView,
 	options: {
 		withoutSelection?: boolean;
 		rootName?: string;
@@ -83,8 +83,8 @@ export function _getViewData(
 		skipListItemIds?: boolean;
 	} = {}
 ): string {
-	if ( !( view instanceof View ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
+	if ( !( view instanceof EditingView ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
 	}
 
 	const document = view.document;
@@ -117,12 +117,12 @@ _getViewData._stringify = _stringifyView;
  * the default `main` name will be used.
  */
 export function _setViewData(
-	view: View,
+	view: EditingView,
 	data: string,
 	options: { rootName?: string } = {}
 ): void {
-	if ( !( view instanceof View ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
+	if ( !( view instanceof EditingView ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
 	}
 
 	const document = view.document;

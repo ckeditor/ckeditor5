@@ -14,7 +14,7 @@ import { type ViewDocumentDomEventData } from './domeventdata.js';
  * Touch events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} by {@link module:engine/view/view~EditingView#addObserver} method.
  */
 export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 'touchmove'> {
 	/**
@@ -36,7 +36,7 @@ export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
  * @eventName module:engine/view/document~ViewDocument#touchstart
@@ -53,7 +53,7 @@ export type ViewDocumentTouchStartEvent = {
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
  * @eventName module:engine/view/document~ViewDocument#touchend
@@ -70,7 +70,7 @@ export type ViewDocumentTouchEndEvent = {
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
  * @eventName module:engine/view/document~ViewDocument#touchmove

@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
-import { View } from '../view/view.js';
+import { EditingView } from '../view/view.js';
 import { Mapper } from '../conversion/mapper.js';
 import {
 	DowncastDispatcher,
@@ -64,7 +64,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Editing view controller.
 	 */
-	public readonly view: View;
+	public readonly view: EditingView;
 
 	/**
 	 * A mapper that describes the model-view binding.
@@ -86,7 +86,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 		super();
 
 		this.model = model;
-		this.view = new View( stylesProcessor );
+		this.view = new EditingView( stylesProcessor );
 		this.mapper = new Mapper();
 
 		this.downcastDispatcher = new DowncastDispatcher( {
@@ -255,7 +255,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
  *
  * This is using the same logic as the selection post-fixer.
  */
-function fixTargetRanges( mapper: Mapper, schema: ModelSchema, view: View ): GetCallback<ViewDocumentInputEvent> {
+function fixTargetRanges( mapper: Mapper, schema: ModelSchema, view: EditingView ): GetCallback<ViewDocumentInputEvent> {
 	return ( evt, data ) => {
 		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
 		// could be properly mapped to view and model because the DOM and view tree drifted apart.

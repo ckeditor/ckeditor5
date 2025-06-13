@@ -313,7 +313,7 @@ class MultirootEditorUIView extends EditorUIView {
 	* Creates an instance of the multi-root editor UI view.
 	*
 	* @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	* @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
+	* @param {module:engine/view/view~EditingView} editingView The editing view instance this view is related to.
 	* @param {Object.<String,HTMLElement>} editableElements The list of editable elements, containing name and html element
 	* for each editable.
 	*/
