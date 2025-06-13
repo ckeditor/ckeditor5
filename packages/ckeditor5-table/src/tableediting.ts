@@ -42,7 +42,7 @@ export class TableEditing extends Plugin {
 	/**
 	 * Handlers for creating additional slots in the table.
 	 */
-	private _additionalSlots: Array<AdditionalSlot>;
+	private _additionalSlots: Array<TableConversionAdditionalSlot>;
 
 	/**
 	 * @inheritDoc
@@ -219,7 +219,7 @@ export class TableEditing extends Plugin {
 	/**
 	 * Registers downcast handler for the additional table slot.
 	 */
-	public registerAdditionalSlot( slotHandler: AdditionalSlot ): void {
+	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
 	}
 }
@@ -290,7 +290,7 @@ function upcastCellSpan( type: string ) {
  * </table>
  * ```
  */
-export interface AdditionalSlot {
+export interface TableConversionAdditionalSlot {
 
 	/**
 	 * Filter for elements that should be placed inside given slot.

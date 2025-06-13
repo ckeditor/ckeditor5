@@ -9,18 +9,22 @@
 
 export { PlainTableOutput } from './plaintableoutput.js';
 export { Table } from './table.js';
-export { TableEditing } from './tableediting.js';
+export { TableWalker, type TableSlot, type TableWalkerOptions } from './tablewalker.js';
+export { TableEditing, type TableConversionAdditionalSlot } from './tableediting.js';
 export { TableUI } from './tableui.js';
 export { TableToolbar } from './tabletoolbar.js';
 export { TableCellProperties } from './tablecellproperties.js';
 export { TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting.js';
 export { TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
+export { TableCellPropertiesView, type TableCellPropertiesViewOptions } from './tablecellproperties/ui/tablecellpropertiesview.js';
 export { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 export { TableLayout } from './tablelayout.js';
 export { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
+export { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 export { TableProperties } from './tableproperties.js';
 export { TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
 export { TablePropertiesUI } from './tableproperties/tablepropertiesui.js';
+export { TablePropertiesView, type TablePropertiesViewOptions } from './tableproperties/ui/tablepropertiesview.js';
 export { TableCaption } from './tablecaption.js';
 export { TableCaptionEditing } from './tablecaption/tablecaptionediting.js';
 export { TableCaptionUI } from './tablecaption/tablecaptionui.js';
@@ -28,9 +32,10 @@ export { TableClipboard } from './tableclipboard.js';
 export { TableMouse } from './tablemouse.js';
 export { TableKeyboard } from './tablekeyboard.js';
 export { TableSelection } from './tableselection.js';
-export { TableUtils } from './tableutils.js';
+export { TableUtils, type TableIndexesObject } from './tableutils.js';
 export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
+export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
 
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -55,6 +60,7 @@ export { TableCellHeightCommand } from './tablecellproperties/commands/tablecell
 export { TableCellHorizontalAlignmentCommand } from './tablecellproperties/commands/tablecellhorizontalalignmentcommand.js';
 export { TableCellPaddingCommand } from './tablecellproperties/commands/tablecellpaddingcommand.js';
 export { TableCellVerticalAlignmentCommand } from './tablecellproperties/commands/tablecellverticalalignmentcommand.js';
+export { TableCellPropertyCommand } from './tablecellproperties/commands/tablecellpropertycommand.js';
 export { TableCellWidthCommand } from './tablecellwidth/commands/tablecellwidthcommand.js';
 export { TableAlignmentCommand } from './tableproperties/commands/tablealignmentcommand.js';
 export { TableBackgroundColorCommand } from './tableproperties/commands/tablebackgroundcolorcommand.js';
@@ -63,6 +69,20 @@ export { TableBorderStyleCommand } from './tableproperties/commands/tableborders
 export { TableBorderWidthCommand } from './tableproperties/commands/tableborderwidthcommand.js';
 export { TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
+export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
+
+export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent } from './tablemouse/mouseeventsobserver.js';
+
+export type {
+	TableConfig,
+	TablePropertiesConfig,
+	TablePropertiesOptions,
+	TableCellPropertiesConfig,
+	TableColorConfig,
+	TableCellPropertiesOptions,
+	TableLayoutConfig,
+	TableType
+} from './tableconfig.js';
 
 // Internal exports.
 export {
@@ -183,7 +203,5 @@ export {
 	getSelectedTableWidget as _getSelectedTableWidget,
 	getTableWidgetAncestor as _getTableWidgetAncestor
 } from './utils/ui/widget.js';
-
-export type { TableConfig } from './tableconfig.js';
 
 import './augmentation.js';
