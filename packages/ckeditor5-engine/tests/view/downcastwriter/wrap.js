@@ -12,8 +12,8 @@ import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
-import { Position } from '../../../src/view/position.js';
-import { Range } from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { Text } from '../../../src/view/text.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
@@ -65,9 +65,9 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw error when element is not instance of ViewAttributeElement', () => {
 				const container = new ViewContainerElement( document, 'p', null, new Text( 'foo' ) );
-				const range = new Range(
-					new Position( container, 0 ),
-					new Position( container, 1 )
+				const range = new ViewRange(
+					new ViewPosition( container, 0 ),
+					new ViewPosition( container, 1 )
 				);
 				const b = new ViewElement( document, 'b' );
 
@@ -79,9 +79,9 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw error when range placed in two containers', () => {
 				const container1 = new ViewContainerElement( document, 'p' );
 				const container2 = new ViewContainerElement( document, 'p' );
-				const range = new Range(
-					new Position( container1, 0 ),
-					new Position( container2, 1 )
+				const range = new ViewRange(
+					new ViewPosition( container1, 0 ),
+					new ViewPosition( container2, 1 )
 				);
 				const b = new ViewAttributeElement( document, 'b' );
 
@@ -95,7 +95,7 @@ describe( 'DowncastWriter', () => {
 				const b = new ViewAttributeElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
-					writer.wrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
+					writer.wrap( ViewRange._createFromParentsAndOffsets( el, 0, el, 0 ), b );
 				}, 'view-writer-invalid-range-container', document );
 			} );
 
@@ -398,7 +398,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if range is inside ViewEmptyElement', () => {
 				const emptyElement = new ViewEmptyElement( document, 'img' );
 				const container = new ViewContainerElement( document, 'p', null, emptyElement );
-				const range = Range._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
+				const range = ViewRange._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new ViewAttributeElement( document, 'b' ) );
@@ -416,7 +416,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if range is inside UIElement', () => {
 				const uiElement = new UIElement( document, 'span' );
 				const container = new ViewContainerElement( document, 'p', null, uiElement );
-				const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 1 );
+				const range = ViewRange._createFromParentsAndOffsets( uiElement, 0, container, 1 );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new ViewAttributeElement( document, 'b' ) );
@@ -434,7 +434,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if a range is inside a RawElement', () => {
 				const rawElement = new RawElement( document, 'span' );
 				const container = new ViewContainerElement( document, 'p', null, rawElement );
-				const range = Range._createFromParentsAndOffsets( rawElement, 0, container, 1 );
+				const range = ViewRange._createFromParentsAndOffsets( rawElement, 0, container, 1 );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, new ViewAttributeElement( document, 'b' ) );
@@ -446,7 +446,7 @@ describe( 'DowncastWriter', () => {
 				const container = new ViewContainerElement( document, 'p', null, [ 'foo', element, 'bar' ] );
 
 				const wrapAttribute = new ViewAttributeElement( document, 'b' );
-				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
+				const range = ViewRange._createFromParentsAndOffsets( container, 0, container, 3 );
 				const newRange = writer.wrap( range, wrapAttribute );
 
 				expect(
@@ -587,11 +587,11 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw error when element is not instance of ViewAttributeElement', () => {
 				const container = new ViewContainerElement( document, 'p', null, new Text( 'foo' ) );
-				const position = new Position( container, 0 );
+				const position = new ViewPosition( container, 0 );
 				const b = new ViewElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
-					writer.wrap( new Range( position ), b );
+					writer.wrap( new ViewRange( position ), b );
 				}, 'view-writer-wrap-invalid-attribute', document );
 			} );
 

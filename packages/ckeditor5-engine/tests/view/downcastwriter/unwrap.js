@@ -10,8 +10,8 @@ import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
-import { Position } from '../../../src/view/position.js';
-import { Range } from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { Text } from '../../../src/view/text.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
@@ -61,9 +61,9 @@ describe( 'DowncastWriter', () => {
 				document, 'p', null, new ViewAttributeElement( document, 'b', null, new Text( 'foo' ) )
 			);
 
-			const range = new Range(
-				new Position( container, 0 ),
-				new Position( container, 1 )
+			const range = new ViewRange(
+				new ViewPosition( container, 0 ),
+				new ViewPosition( container, 1 )
 			);
 			const b = new ViewElement( document, 'b' );
 
@@ -75,9 +75,9 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw error when range placed in two containers', () => {
 			const container1 = new ViewContainerElement( document, 'p' );
 			const container2 = new ViewContainerElement( document, 'p' );
-			const range = new Range(
-				new Position( container1, 0 ),
-				new Position( container2, 1 )
+			const range = new ViewRange(
+				new ViewPosition( container1, 0 ),
+				new ViewPosition( container2, 1 )
 			);
 			const b = new ViewAttributeElement( document, 'b' );
 
@@ -91,7 +91,7 @@ describe( 'DowncastWriter', () => {
 			const b = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
-				writer.unwrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
+				writer.unwrap( ViewRange._createFromParentsAndOffsets( el, 0, el, 0 ), b );
 			}, 'view-writer-invalid-range-container', document );
 		} );
 
@@ -440,7 +440,7 @@ describe( 'DowncastWriter', () => {
 			const empty = new ViewEmptyElement( document, 'img' );
 			const attribute = new ViewAttributeElement( document, 'b' );
 			const container = new ViewContainerElement( document, 'p', null, [ empty, attribute ] );
-			const range = Range._createFromParentsAndOffsets( empty, 0, container, 2 );
+			const range = ViewRange._createFromParentsAndOffsets( empty, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
@@ -459,7 +459,7 @@ describe( 'DowncastWriter', () => {
 			const uiElement = new UIElement( document, 'span' );
 			const attribute = new ViewAttributeElement( document, 'b' );
 			const container = new ViewContainerElement( document, 'p', null, [ uiElement, attribute ] );
-			const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 2 );
+			const range = ViewRange._createFromParentsAndOffsets( uiElement, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
@@ -478,7 +478,7 @@ describe( 'DowncastWriter', () => {
 			const rawElement = new RawElement( document, 'span' );
 			const attribute = new ViewAttributeElement( document, 'b' );
 			const container = new ViewContainerElement( document, 'p', null, [ rawElement, attribute ] );
-			const range = Range._createFromParentsAndOffsets( rawElement, 0, container, 2 );
+			const range = ViewRange._createFromParentsAndOffsets( rawElement, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, attribute );
@@ -491,7 +491,7 @@ describe( 'DowncastWriter', () => {
 			const container = writer.createContainerElement( 'div' );
 
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
-			writer.unwrap( Range._createOn( attribute ), unwrapper );
+			writer.unwrap( ViewRange._createOn( attribute ), unwrapper );
 
 			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
 		} );

@@ -337,7 +337,7 @@ export interface ViewDocumentInputEventData extends ViewDocumentDomEventData<Inp
 	readonly isComposing: boolean;
 
 	/**
-	 * Editing {@link module:engine/view/range~Range view ranges} corresponding to DOM ranges provided by the web browser
+	 * Editing {@link module:engine/view/range~ViewRange view ranges} corresponding to DOM ranges provided by the web browser
 	 * (as returned by `InputEvent#getTargetRanges()`).
 	 */
 	readonly targetRanges: Array<ViewRange>;

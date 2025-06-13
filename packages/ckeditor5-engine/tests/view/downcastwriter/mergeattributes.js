@@ -6,7 +6,7 @@
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Text } from '../../../src/view/text.js';
-import { Position } from '../../../src/view/position.js';
+import { ViewPosition } from '../../../src/view/position.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -68,7 +68,7 @@ describe( 'DowncastWriter', () => {
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
 			const p = new ViewContainerElement( document, 'p', null, [ t1, t2 ] );
-			const position = new Position( p, 1 );
+			const position = new ViewPosition( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );
 			expect( _stringifyView( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );

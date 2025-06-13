@@ -11,8 +11,8 @@ import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
-import { Range } from '../../../src/view/range.js';
-import { Position } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -158,7 +158,7 @@ describe( 'DowncastWriter', () => {
 				const p2 = new ViewContainerElement( document, 'p' );
 
 				expectToThrowCKEditorError( () => {
-					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+					writer.breakAttributes( ViewRange._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 				}, 'view-writer-invalid-range-container', document );
 			} );
 
@@ -166,7 +166,7 @@ describe( 'DowncastWriter', () => {
 				const el = new ViewAttributeElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
-					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
+					writer.breakAttributes( ViewRange._createFromParentsAndOffsets( el, 0, el, 0 ) );
 				}, 'view-writer-invalid-range-container', document );
 			} );
 
@@ -245,7 +245,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if breaking inside ViewEmptyElement #1', () => {
 				const img = new ViewEmptyElement( document, 'img' );
 				new ViewContainerElement( document, 'p', null, img ); // eslint-disable-line no-new
-				const position = new Position( img, 0 );
+				const position = new ViewPosition( img, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
@@ -256,7 +256,7 @@ describe( 'DowncastWriter', () => {
 				const img = new ViewEmptyElement( document, 'img' );
 				const b = new ViewAttributeElement( document, 'b' );
 				new ViewContainerElement( document, 'p', null, [ img, b ] ); // eslint-disable-line no-new
-				const range = Range._createFromParentsAndOffsets( img, 0, b, 0 );
+				const range = ViewRange._createFromParentsAndOffsets( img, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
@@ -266,7 +266,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if breaking inside UIElement #1', () => {
 				const span = new UIElement( document, 'span' );
 				new ViewContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
-				const position = new Position( span, 0 );
+				const position = new ViewPosition( span, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
@@ -277,7 +277,7 @@ describe( 'DowncastWriter', () => {
 				const span = new UIElement( document, 'span' );
 				const b = new ViewAttributeElement( document, 'b' );
 				new ViewContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
-				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
+				const range = ViewRange._createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );
@@ -287,7 +287,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if breaking inside a RawElement #1', () => {
 				const span = new RawElement( document, 'span' );
 				new ViewContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
-				const position = new Position( span, 0 );
+				const position = new ViewPosition( span, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( position );
@@ -298,7 +298,7 @@ describe( 'DowncastWriter', () => {
 				const span = new RawElement( document, 'span' );
 				const b = new ViewAttributeElement( document, 'b' );
 				new ViewContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
-				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
+				const range = ViewRange._createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( range );

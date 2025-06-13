@@ -605,7 +605,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Converts view {@link module:engine/view/range~Range} to DOM range.
+	 * Converts view {@link module:engine/view/range~ViewRange} to DOM range.
 	 * Inline and block {@link module:engine/view/filler fillers} are handled during the conversion.
 	 *
 	 * @param viewRange View range.
@@ -854,7 +854,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Converts DOM Range to view {@link module:engine/view/range~Range}.
+	 * Converts DOM Range to view {@link module:engine/view/range~ViewRange}.
 	 * If the start or end position cannot be converted `null` is returned.
 	 *
 	 * @param domRange DOM range.

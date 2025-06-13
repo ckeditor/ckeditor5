@@ -25,7 +25,7 @@ import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './tree
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
+export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Start position.
 	 */
@@ -74,8 +74,8 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns whether this range is flat, that is if {@link module:engine/view/range~Range#start start} position and
-	 * {@link module:engine/view/range~Range#end end} position are in the same
+	 * Returns whether this range is flat, that is if {@link module:engine/view/range~ViewRange#start start} position and
+	 * {@link module:engine/view/range~ViewRange#end end} position are in the same
 	 * {@link module:engine/view/position~ViewPosition#parent parent}.
 	 */
 	public get isFlat(): boolean {
@@ -108,7 +108,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @returns Enlarged range.
 	 */
-	public getEnlarged(): Range {
+	public getEnlarged(): ViewRange {
 		let start = this.start.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
 		let end = this.end.getLastMatchingPosition( enlargeTrimSkip );
 
@@ -121,7 +121,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 			end = ViewPosition._createAfter( end.parent );
 		}
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -143,11 +143,11 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @returns Shrunk range.
 	 */
-	public getTrimmed(): Range {
+	public getTrimmed(): ViewRange {
 		let start = this.start.getLastMatchingPosition( enlargeTrimSkip );
 
 		if ( start.isAfter( this.end ) || start.isEqual( this.end ) ) {
-			return new Range( start, start );
+			return new ViewRange( start, start );
 		}
 
 		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
@@ -163,7 +163,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 			end = new ViewPosition( nodeBeforeEnd, nodeBeforeEnd.data.length );
 		}
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -172,7 +172,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param otherRange Range to compare with.
 	 * @returns `true` if ranges are equal, `false` otherwise
 	 */
-	public isEqual( otherRange: Range ): boolean {
+	public isEqual( otherRange: ViewRange ): boolean {
 		return this == otherRange || ( this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end ) );
 	}
 
@@ -187,16 +187,16 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Checks whether this range contains given {@link module:engine/view/range~Range range}.
+	 * Checks whether this range contains given {@link module:engine/view/range~ViewRange range}.
 	 *
 	 * @param otherRange Range to check.
 	 * @param loose Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
 	 * start or end at the same position as this range boundaries. If the check is loose (`true`), compared range can start, end or
 	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
-	 * @returns `true` if given {@link module:engine/view/range~Range range} boundaries are contained by this range, `false`
+	 * @returns `true` if given {@link module:engine/view/range~ViewRange range} boundaries are contained by this range, `false`
 	 * otherwise.
 	 */
-	public containsRange( otherRange: Range, loose: boolean = false ): boolean {
+	public containsRange( otherRange: ViewRange, loose: boolean = false ): boolean {
 		if ( otherRange.isCollapsed ) {
 			loose = false;
 		}
@@ -208,9 +208,9 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Computes which part(s) of this {@link module:engine/view/range~Range range} is not a part of given
-	 * {@link module:engine/view/range~Range range}.
-	 * Returned array contains zero, one or two {@link module:engine/view/range~Range ranges}.
+	 * Computes which part(s) of this {@link module:engine/view/range~ViewRange range} is not a part of given
+	 * {@link module:engine/view/range~ViewRange range}.
+	 * Returned array contains zero, one or two {@link module:engine/view/range~ViewRange ranges}.
 	 *
 	 * Examples:
 	 *
@@ -240,8 +240,8 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param otherRange Range to differentiate against.
 	 * @returns The difference between ranges.
 	 */
-	public getDifference( otherRange: Range ): Array<Range> {
-		const ranges: Array<Range> = [];
+	public getDifference( otherRange: ViewRange ): Array<ViewRange> {
+		const ranges: Array<ViewRange> = [];
 
 		if ( this.isIntersecting( otherRange ) ) {
 			// Ranges intersect.
@@ -249,13 +249,13 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 			if ( this.containsPosition( otherRange.start ) ) {
 				// Given range start is inside this range. This means that we have to
 				// add shrunken range - from the start to the middle of this range.
-				ranges.push( new Range( this.start, otherRange.start ) );
+				ranges.push( new ViewRange( this.start, otherRange.start ) );
 			}
 
 			if ( this.containsPosition( otherRange.end ) ) {
 				// Given range end is inside this range. This means that we have to
 				// add shrunken range - from the middle of this range to the end.
-				ranges.push( new Range( otherRange.end, this.end ) );
+				ranges.push( new ViewRange( otherRange.end, this.end ) );
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
@@ -266,7 +266,8 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns an intersection of this {@link module:engine/view/range~Range range} and given {@link module:engine/view/range~Range range}.
+	 * Returns an intersection of this {@link module:engine/view/range~ViewRange range}
+	 * and given {@link module:engine/view/range~ViewRange range}.
 	 * Intersection is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -288,7 +289,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param otherRange Range to check for intersection.
 	 * @returns A common part of given ranges or `null` if ranges have no common part.
 	 */
-	public getIntersection( otherRange: Range ): Range | null {
+	public getIntersection( otherRange: ViewRange ): ViewRange | null {
 		if ( this.isIntersecting( otherRange ) ) {
 			// Ranges intersect, so a common range will be returned.
 			// At most, it will be same as this range.
@@ -307,7 +308,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 				commonRangeEnd = otherRange.end;
 			}
 
-			return new Range( commonRangeStart, commonRangeEnd );
+			return new ViewRange( commonRangeStart, commonRangeEnd );
 		}
 
 		// Ranges do not intersect, so they do not have common part.
@@ -373,8 +374,8 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Clones this range.
 	 */
-	public clone(): Range {
-		return new Range( this.start, this.end );
+	public clone(): ViewRange {
+		return new ViewRange( this.start, this.end );
 	}
 
 	/**
@@ -431,7 +432,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param otherRange Range to compare with.
 	 * @returns True if ranges intersect.
 	 */
-	public isIntersecting( otherRange: Range ): boolean {
+	public isIntersecting( otherRange: ViewRange ): boolean {
 		return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
 	}
 
@@ -450,7 +451,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 		startOffset: number,
 		endElement: ViewElement | ViewDocumentFragment,
 		endOffset: number
-	): Range {
+	): ViewRange {
 		return new this(
 			new ViewPosition( startElement, startOffset ),
 			new ViewPosition( endElement, endOffset )
@@ -465,7 +466,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param position Beginning of the range.
 	 * @param shift How long the range should be.
 	 */
-	public static _createFromPositionAndShift( position: ViewPosition, shift: number ): Range {
+	public static _createFromPositionAndShift( position: ViewPosition, shift: number ): ViewRange {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -479,7 +480,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: ViewElement | ViewDocumentFragment ): Range {
+	public static _createIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
 		return this._createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 
@@ -488,7 +489,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @internal
 	 */
-	public static _createOn( item: ViewItem ): Range {
+	public static _createOn( item: ViewItem ): ViewRange {
 		const size = item.is( '$textProxy' ) ? item.offsetSize : 1;
 
 		return this._createFromPositionAndShift( ViewPosition._createBefore( item ), size );
@@ -497,11 +498,9 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Range.prototype.is = function( type: string ): boolean {
+ViewRange.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'view:range';
 };
-
-export { Range as ViewRange };
 
 /**
  * Function used by getEnlarged and getTrimmed methods.

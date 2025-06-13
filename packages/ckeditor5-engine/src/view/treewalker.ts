@@ -13,7 +13,7 @@ import { TextProxy } from './textproxy.js';
 import { ViewPosition } from './position.js';
 import { type ViewItem } from './item.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type Range } from './range.js';
+import { type ViewRange } from './range.js';
 import { type ViewNode } from './node.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -35,7 +35,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 *
 	 * If boundaries are not defined they are set before first and after last child of the root node.
 	 */
-	public readonly boundaries: Range | null;
+	public readonly boundaries: ViewRange | null;
 
 	/**
 	 * Flag indicating whether all characters from {@link module:engine/view/text~Text} should be returned as one
@@ -549,7 +549,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Range to define boundaries of the iterator.
 	 */
-	boundaries?: Range | null;
+	boundaries?: ViewRange | null;
 
 	/**
 	 * Starting position.

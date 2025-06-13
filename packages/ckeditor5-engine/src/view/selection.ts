@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { Range } from './range.js';
+import { ViewRange } from './range.js';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
 import { ViewNode } from './node.js';
 import { ViewDocumentSelection } from './documentselection.js';
@@ -33,14 +33,14 @@ import { type ViewEditableElement } from './editableelement.js';
  * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
  * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
  *
- * A selection can consist of {@link module:engine/view/range~Range ranges} that can be set by using
+ * A selection can consist of {@link module:engine/view/range~ViewRange ranges} that can be set by using
  * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
 export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Stores all ranges that are selected.
 	 */
-	private _ranges: Array<Range>;
+	private _ranges: Array<ViewRange>;
 
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
@@ -234,7 +234,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 */
-	public* getRanges(): IterableIterator<Range> {
+	public* getRanges(): IterableIterator<ViewRange> {
 		for ( const range of this._ranges ) {
 			yield range.clone();
 		}
@@ -242,11 +242,12 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns copy of the first range in the selection. First range is the one which
-	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~ViewPosition#isBefore is before} start
+	 * {@link module:engine/view/range~ViewRange#start start} position
+	 * {@link module:engine/view/position~ViewPosition#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ViewRange | null {
 		let first = null;
 
 		for ( const range of this._ranges ) {
@@ -259,11 +260,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
+	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~ViewRange#end end}
 	 * position {@link module:engine/view/position~ViewPosition#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ViewRange | null {
 		let last = null;
 
 		for ( const range of this._ranges ) {
@@ -343,7 +344,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
-	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
+	 * number of ranges, and all {@link module:engine/view/range~ViewRange#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
 	 * @param otherSelection Selection to compare with.
@@ -493,11 +494,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		} else if ( selectable instanceof Selection || selectable instanceof ViewDocumentSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
-		} else if ( selectable instanceof Range ) {
+		} else if ( selectable instanceof ViewRange ) {
 			this._setRanges( [ selectable ], options && options.backward );
 			this._setFakeOptions( options );
 		} else if ( selectable instanceof ViewPosition ) {
-			this._setRanges( [ new Range( selectable ) ] );
+			this._setRanges( [ new ViewRange( selectable ) ] );
 			this._setFakeOptions( options );
 		} else if ( selectable instanceof ViewNode ) {
 			const backward = !!options && !!options.backward;
@@ -511,11 +512,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 				 */
 				throw new CKEditorError( 'view-selection-setto-required-second-parameter', this );
 			} else if ( placeOrOffset == 'in' ) {
-				range = Range._createIn( selectable as ViewElement );
+				range = ViewRange._createIn( selectable as ViewElement );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range._createOn( selectable );
+				range = ViewRange._createOn( selectable );
 			} else {
-				range = new Range( ViewPosition._createAt( selectable, placeOrOffset ) );
+				range = new ViewRange( ViewPosition._createAt( selectable, placeOrOffset ) );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -567,9 +568,9 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		this._ranges.pop();
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this._addRange( new Range( newFocus, anchor ), true );
+			this._addRange( new ViewRange( newFocus, anchor ), true );
 		} else {
-			this._addRange( new Range( anchor, newFocus ) );
+			this._addRange( new ViewRange( anchor, newFocus ) );
 		}
 
 		this.fire<ViewSelectionChangeEvent>( 'change' );
@@ -584,7 +585,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param isLastBackward Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
-	private _setRanges( newRanges: Iterable<Range>, isLastBackward: boolean = false ) {
+	private _setRanges( newRanges: Iterable<ViewRange>, isLastBackward: boolean = false ) {
 		// New ranges should be copied to prevent removing them by setting them to `[]` first.
 		// Only applies to situations when selection is set to the same selection or same selection's ranges.
 		newRanges = Array.from( newRanges );
@@ -616,17 +617,17 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * selection instance and you can safely operate on it.
 	 *
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
-	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
+	 * {@link module:engine/view/range~ViewRange#start start} to {@link module:engine/view/range~ViewRange#end end}
+	 * or from {@link module:engine/view/range~ViewRange#end end} to {@link module:engine/view/range~ViewRange#start start}.
 	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 */
-	private _addRange( range: Range, isBackward: boolean = false ): void {
-		if ( !( range instanceof Range ) ) {
+	private _addRange( range: ViewRange, isBackward: boolean = false ): void {
+		if ( !( range instanceof ViewRange ) ) {
 			/**
-			 * Selection range set to an object that is not an instance of {@link module:engine/view/range~Range}.
+			 * Selection range set to an object that is not an instance of {@link module:engine/view/range~ViewRange}.
 			 *
 			 * @error view-selection-add-range-not-range
 			 */
@@ -646,15 +647,15 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in selection instance.
 	 */
-	private _pushRange( range: Range ): void {
+	private _pushRange( range: ViewRange ): void {
 		for ( const storedRange of this._ranges ) {
 			if ( range.isIntersecting( storedRange ) ) {
 				/**
 				 * Trying to add a range that intersects with another range from selection.
 				 *
 				 * @error view-selection-range-intersects
-				 * @param {module:engine/view/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/view/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 * @param {module:engine/view/range~ViewRange} addedRange Range that was added to the selection.
+				 * @param {module:engine/view/range~ViewRange} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'view-selection-range-intersects',
@@ -664,7 +665,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			}
 		}
 
-		this._ranges.push( new Range( range.start, range.end ) );
+		this._ranges.push( new ViewRange( range.start, range.end ) );
 	}
 }
 
@@ -717,4 +718,4 @@ export type ViewSelectionChangeEvent = {
  *
  * See also {@link module:engine/view/selection~Selection#setTo}
  */
-export type Selectable = Selection | ViewDocumentSelection | ViewPosition | Iterable<Range> | Range | ViewNode | null;
+export type Selectable = Selection | ViewDocumentSelection | ViewPosition | Iterable<ViewRange> | ViewRange | ViewNode | null;

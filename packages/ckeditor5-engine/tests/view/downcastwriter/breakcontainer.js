@@ -7,7 +7,7 @@ import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { Position } from '../../../src/view/position.js';
+import { ViewPosition } from '../../../src/view/position.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -95,7 +95,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if position parent is root', () => {
 			const element = new ViewContainerElement( document, 'div' );
-			const position = Position._createAt( element, 0 );
+			const position = ViewPosition._createAt( element, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.breakContainer( position );

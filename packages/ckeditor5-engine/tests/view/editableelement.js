@@ -6,7 +6,7 @@
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
 import { ViewEditableElement } from '../../src/view/editableelement.js';
-import { Range } from '../../src/view/range.js';
+import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -81,8 +81,8 @@ describe( 'ViewEditableElement', () => {
 		} );
 
 		it( 'should change isFocused when selection changes', () => {
-			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = ViewRange._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = ViewRange._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
@@ -96,8 +96,8 @@ describe( 'ViewEditableElement', () => {
 		} );
 
 		it( 'should change isFocused when document.isFocus changes', () => {
-			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = ViewRange._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = ViewRange._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 

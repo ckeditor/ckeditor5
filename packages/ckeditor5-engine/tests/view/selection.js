@@ -5,11 +5,11 @@
 
 import { Selection } from '../../src/view/selection.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
-import { Range } from '../../src/view/range.js';
+import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
-import { Position } from '../../src/view/position.js';
+import { ViewPosition } from '../../src/view/position.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { createViewRoot } from './_utils/createroot.js';
@@ -31,9 +31,9 @@ describe( 'Selection', () => {
 
 		selection = new Selection();
 
-		range1 = Range._createFromParentsAndOffsets( text, 5, text, 10 );
-		range2 = Range._createFromParentsAndOffsets( text, 1, text, 2 );
-		range3 = Range._createFromParentsAndOffsets( text, 12, text, 14 );
+		range1 = ViewRange._createFromParentsAndOffsets( text, 5, text, 10 );
+		range2 = ViewRange._createFromParentsAndOffsets( text, 1, text, 2 );
+		range3 = ViewRange._createFromParentsAndOffsets( text, 12, text, 14 );
 	} );
 
 	describe( 'constructor()', () => {
@@ -115,7 +115,7 @@ describe( 'Selection', () => {
 
 		it( 'should throw an error when ranges intersects', () => {
 			const text = el.getChild( 0 );
-			const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
+			const range2 = ViewRange._createFromParentsAndOffsets( text, 7, text, 15 );
 
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
@@ -195,7 +195,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position._createAt( el, 'end' );
+			const endPos = ViewPosition._createAt( el, 'end' );
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
@@ -203,8 +203,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
 
 			selection.setTo( startPos );
 
@@ -215,8 +215,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 0 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 0 );
 
 			selection.setTo( startPos );
 
@@ -228,11 +228,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing non-collapsed selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
-			const newEndPos = Position._createAt( el, 3 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
+			const newEndPos = ViewPosition._createAt( el, 3 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ViewRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -241,11 +241,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
-			const newEndPos = Position._createAt( el, 0 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
+			const newEndPos = ViewPosition._createAt( el, 0 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ViewRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -255,11 +255,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing backward selection a forward selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
-			const newEndPos = Position._createAt( el, 3 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
+			const newEndPos = ViewPosition._createAt( el, 3 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ViewRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -269,11 +269,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing backward selection', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
-			const newEndPos = Position._createAt( el, 0 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
+			const newEndPos = ViewPosition._createAt( el, 0 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ViewRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -284,16 +284,16 @@ describe( 'Selection', () => {
 
 		it( 'modifies only the last range', () => {
 			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
-			const startPos1 = Position._createAt( el, 4 );
-			const endPos1 = Position._createAt( el, 5 );
-			const startPos2 = Position._createAt( el, 1 );
-			const endPos2 = Position._createAt( el, 2 );
+			const startPos1 = ViewPosition._createAt( el, 4 );
+			const endPos1 = ViewPosition._createAt( el, 5 );
+			const startPos2 = ViewPosition._createAt( el, 1 );
+			const endPos2 = ViewPosition._createAt( el, 2 );
 
-			const newEndPos = Position._createAt( el, 0 );
+			const newEndPos = ViewPosition._createAt( el, 0 );
 
 			selection.setTo( [
-				new Range( startPos1, endPos1 ),
-				new Range( startPos2, endPos2 )
+				new ViewRange( startPos1, endPos1 ),
+				new ViewRange( startPos2, endPos2 )
 			] );
 
 			selection.setFocus( newEndPos );
@@ -310,10 +310,10 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'collapses the selection when extending to the anchor', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
+			const startPos = ViewPosition._createAt( el, 1 );
+			const endPos = ViewPosition._createAt( el, 2 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ViewRange( startPos, endPos ) );
 
 			selection.setFocus( startPos );
 
@@ -324,22 +324,22 @@ describe( 'Selection', () => {
 
 	describe( 'isCollapsed', () => {
 		it( 'should return true when there is single collapsed range', () => {
-			const range = Range._createFromParentsAndOffsets( el, 5, el, 5 );
+			const range = ViewRange._createFromParentsAndOffsets( el, 5, el, 5 );
 			selection.setTo( range );
 
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should return false when there are multiple ranges', () => {
-			const range1 = Range._createFromParentsAndOffsets( el, 5, el, 5 );
-			const range2 = Range._createFromParentsAndOffsets( el, 15, el, 15 );
+			const range1 = ViewRange._createFromParentsAndOffsets( el, 5, el, 5 );
+			const range2 = ViewRange._createFromParentsAndOffsets( el, 15, el, 15 );
 			selection.setTo( [ range1, range2 ] );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
 
 		it( 'should return false when there is not collapsed range', () => {
-			const range = Range._createFromParentsAndOffsets( el, 15, el, 16 );
+			const range = ViewRange._createFromParentsAndOffsets( el, 15, el, 16 );
 			selection.setTo( range );
 
 			expect( selection.isCollapsed ).to.be.false;
@@ -362,8 +362,8 @@ describe( 'Selection', () => {
 
 	describe( 'isBackward', () => {
 		it( 'is defined by the last added range', () => {
-			const range1 = Range._createFromParentsAndOffsets( el, 5, el, 10 );
-			const range2 = Range._createFromParentsAndOffsets( el, 15, el, 16 );
+			const range1 = ViewRange._createFromParentsAndOffsets( el, 5, el, 10 );
+			const range2 = ViewRange._createFromParentsAndOffsets( el, 15, el, 16 );
 
 			selection.setTo( range1, { backward: true } );
 			expect( selection ).to.have.property( 'isBackward', true );
@@ -373,7 +373,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'is false when last range is collapsed', () => {
-			const range = Range._createFromParentsAndOffsets( el, 5, el, 5 );
+			const range = ViewRange._createFromParentsAndOffsets( el, 5, el, 5 );
 
 			selection.setTo( range, { backward: true } );
 
@@ -576,10 +576,10 @@ describe( 'Selection', () => {
 			const span2 = p2.getChild( 0 );
 
 			// <p>[<span>{]</span>}</p><p>[<span>{xx}</span>]</p>
-			const rangeA1 = Range._createFromParentsAndOffsets( p1, 0, span1, 0 );
-			const rangeB1 = Range._createFromParentsAndOffsets( span1, 0, p1, 1 );
-			const rangeA2 = Range._createFromParentsAndOffsets( p2, 0, p2, 1 );
-			const rangeB2 = Range._createFromParentsAndOffsets( span2, 0, span2, 1 );
+			const rangeA1 = ViewRange._createFromParentsAndOffsets( p1, 0, span1, 0 );
+			const rangeB1 = ViewRange._createFromParentsAndOffsets( span1, 0, p1, 1 );
+			const rangeA2 = ViewRange._createFromParentsAndOffsets( p2, 0, p2, 1 );
+			const rangeB2 = ViewRange._createFromParentsAndOffsets( span2, 0, span2, 1 );
 
 			selection.setTo( [ rangeA1, rangeA2 ] );
 
@@ -696,7 +696,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should collapse selection at position', () => {
-				const position = new Position( el, 4 );
+				const position = new ViewPosition( el, 4 );
 
 				selection.setTo( position );
 				const range = selection.getFirstRange();
@@ -882,7 +882,7 @@ describe( 'Selection', () => {
 
 			it( 'should throw when range is intersecting with already added range', () => {
 				const text = el.getChild( 0 );
-				const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
+				const range2 = ViewRange._createFromParentsAndOffsets( text, 7, text, 15 );
 
 				expectToThrowCKEditorError( () => {
 					selection.setTo( [ range1, range2 ] );
@@ -955,7 +955,7 @@ describe( 'Selection', () => {
 			const element = new ViewElement( viewDocument, 'p' );
 			root._appendChild( element );
 
-			selection.setTo( Range._createFromParentsAndOffsets( element, 0, element, 0 ) );
+			selection.setTo( ViewRange._createFromParentsAndOffsets( element, 0, element, 0 ) );
 
 			expect( selection.editableElement ).to.equal( root );
 		} );

@@ -23,7 +23,7 @@ import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
 import { type ViewItem } from './item.js';
 import type { ViewPosition, ViewPositionOffset } from './position.js';
-import { type Range } from './range.js';
+import { type ViewRange } from './range.js';
 
 /**
  * Class representing the document selection in the view.
@@ -220,33 +220,34 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @internal
 	 */
-	public get _ranges(): Array<Range> {
+	public get _ranges(): Array<ViewRange> {
 		return ( this._selection as any )._ranges;
 	}
 
 	/**
 	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 */
-	public* getRanges(): IterableIterator<Range> {
+	public* getRanges(): IterableIterator<ViewRange> {
 		yield* this._selection.getRanges();
 	}
 
 	/**
 	 * Returns copy of the first range in the selection. First range is the one which
-	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~ViewPosition#isBefore is before} start
+	 * {@link module:engine/view/range~ViewRange#start start} position
+	 * {@link module:engine/view/position~ViewPosition#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ViewRange | null {
 		return this._selection.getFirstRange();
 	}
 
 	/**
-	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
+	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~ViewRange#end end}
 	 * position {@link module:engine/view/position~ViewPosition#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ViewRange | null {
 		return this._selection.getLastRange();
 	}
 
@@ -290,7 +291,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
-	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
+	 * number of ranges, and all {@link module:engine/view/range~ViewRange#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
 	 * @param otherSelection Selection to compare with.

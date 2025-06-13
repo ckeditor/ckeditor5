@@ -10,7 +10,7 @@
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import { type ViewDocument } from '../document.js';
 import { type ViewNode } from '../node.js';
-import { type Range } from '../range.js';
+import { type ViewRange } from '../range.js';
 
 /**
  * The event object passed to bubbling event callbacks. It is used to provide information about the event as well as a tool to
@@ -20,7 +20,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	/**
 	 * The view range that the bubbling should start from.
 	 */
-	public readonly startRange: Range;
+	public readonly startRange: ViewRange;
 
 	/**
 	 * The current event phase.
@@ -37,7 +37,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	 * @param name The event name.
 	 * @param startRange The view range that the bubbling should start from.
 	 */
-	constructor( source: object, name: TName, startRange: Range ) {
+	constructor( source: object, name: TName, startRange: ViewRange ) {
 		super( source, name );
 
 		this.startRange = startRange;

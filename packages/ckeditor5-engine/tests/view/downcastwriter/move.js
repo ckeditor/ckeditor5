@@ -11,8 +11,8 @@ import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
-import { Range } from '../../../src/view/range.js';
-import { Position } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
 
 import { ViewDocument } from '../../../src/view/document.js';
 import { Mapper } from '../../../src/conversion/mapper.js';
@@ -124,7 +124,7 @@ describe( 'DowncastWriter', () => {
 				'<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>'
 			);
 
-			const newRange = writer.move( selection.getFirstRange(), Position._createAt( view, 2 ) );
+			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
 			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal( expectedView );
@@ -136,7 +136,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			const viewText = view.getChild( 3 );
-			const newRange = writer.move( selection.getFirstRange(), Position._createAt( viewText, 1 ) );
+			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( viewText, 1 ) );
 
 			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
@@ -155,11 +155,11 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to ViewEmptyElement', () => {
 			const srcAttribute = new ViewAttributeElement( document, 'b' );
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstEmpty = new ViewEmptyElement( document, 'img' );
 			new ViewContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstEmpty, 0 );
+			const dstPosition = new ViewPosition( dstEmpty, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -178,11 +178,11 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to UIElement', () => {
 			const srcAttribute = new ViewAttributeElement( document, 'b' );
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstUI = new UIElement( document, 'span' );
 			new ViewContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstUI, 0 );
+			const dstPosition = new ViewPosition( dstUI, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -201,11 +201,11 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to a RawElement', () => {
 			const srcAttribute = new ViewAttributeElement( document, 'b' );
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstRawElement = new RawElement( document, 'span' );
 			new ViewContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstRawElement, 0 );
+			const dstPosition = new ViewPosition( dstRawElement, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -227,7 +227,7 @@ describe( 'DowncastWriter', () => {
 			const attrElemB = new ViewAttributeElement( document, 'span' );
 			attrElemB._id = 'foo';
 
-			writer.insert( new Position( srcContainer, 0 ), [ attrElemA, attrElemB ] );
+			writer.insert( new ViewPosition( srcContainer, 0 ), [ attrElemA, attrElemB ] );
 
 			mapper.bindElementToMarker( attrElemA, 'foo' );
 
@@ -237,7 +237,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 
-			writer.move( writer.createRangeOn( attrElemB ), new Position( dstContainer, 0 ) );
+			writer.move( writer.createRangeOn( attrElemB ), new ViewPosition( dstContainer, 0 ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 		} );

@@ -12,7 +12,7 @@ import { type ViewElement } from './element.js';
 import { type ViewEmptyElement } from './emptyelement.js';
 import { type ViewNode } from './node.js';
 import { type ViewPosition } from './position.js';
-import { type Range } from './range.js';
+import { type ViewRange } from './range.js';
 import { type RawElement } from './rawelement.js';
 import { type RootEditableElement } from './rooteditableelement.js';
 import { type Selection } from './selection.js';
@@ -369,7 +369,7 @@ export abstract class TypeCheckable {
 	public is( type: 'position' | 'view:position' ): this is ViewPosition;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/range~Range}.
+	 * Checks whether this object is of type {@link module:engine/view/range~ViewRange}.
 	 *
 	 * ```ts
 	 * range.is( 'range' ); // -> true
@@ -382,7 +382,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label RANGE
 	 */
-	public is( type: 'range' | 'view:range' ): this is Range;
+	public is( type: 'range' | 'view:range' ): this is ViewRange;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/selection~Selection} or

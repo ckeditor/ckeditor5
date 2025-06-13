@@ -4,7 +4,7 @@
  */
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
-import { Range } from '../../../src/view/range.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -43,7 +43,7 @@ describe( 'DowncastWriter', () => {
 			const p2 = new ViewContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
-				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.clear( ViewRange._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			}, 'view-writer-invalid-range-container', document );
 		} );
 
@@ -51,7 +51,7 @@ describe( 'DowncastWriter', () => {
 			const el = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
-				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.clear( ViewRange._createFromParentsAndOffsets( el, 0, el, 0 ) );
 			}, 'view-writer-invalid-range-container', document );
 		} );
 

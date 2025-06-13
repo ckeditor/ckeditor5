@@ -12,7 +12,7 @@ import { ViewDowncastWriter } from './downcastwriter.js';
 import { Renderer } from './renderer.js';
 import { ViewDomConverter } from './domconverter.js';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
-import { Range } from './range.js';
+import { ViewRange } from './range.js';
 import {
 	Selection,
 	type PlaceOrOffset,
@@ -663,15 +663,15 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: ViewPosition, end?: ViewPosition | null ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end?: ViewPosition | null ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: ViewItem ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
@@ -680,8 +680,8 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: ViewElement ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**

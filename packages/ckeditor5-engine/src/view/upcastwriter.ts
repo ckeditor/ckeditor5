@@ -12,7 +12,7 @@ import { ViewElement, type ViewElementAttributes } from './element.js';
 import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import { ViewPosition, type ViewPositionOffset } from './position.js';
-import { Range } from './range.js';
+import { ViewRange } from './range.js';
 import {
 	Selection,
 	type PlaceOrOffset,
@@ -427,15 +427,15 @@ export class UpcastWriter {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: ViewPosition, end: ViewPosition ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end: ViewPosition ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: ViewItem ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
@@ -444,8 +444,8 @@ export class UpcastWriter {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: ViewElement | ViewDocumentFragment ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**

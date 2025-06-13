@@ -17,7 +17,7 @@ import { ViewDocumentFragment } from '../view/documentfragment.js';
 import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
 import { ViewElement } from '../view/element.js';
 import { ViewDocumentSelection } from '../view/documentselection.js';
-import { Range } from '../view/range.js';
+import { ViewRange } from '../view/range.js';
 import { ViewPosition } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ViewContainerElement } from '../view/containerelement.js';
@@ -214,7 +214,7 @@ _setViewData._parse = _parseView;
  * stringify( text, selection ); // '{f}oo{ba}r'
  * ```
  *
- * A {@link module:engine/view/range~Range range} or {@link module:engine/view/position~ViewPosition position} instance can be provided
+ * A {@link module:engine/view/range~ViewRange range} or {@link module:engine/view/position~ViewPosition position} instance can be provided
  * instead of the {@link module:engine/view/documentselection~DocumentSelection selection} instance. If a range instance
  * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
  * be converted to a selection containing one range collapsed at this position.
@@ -290,7 +290,7 @@ _setViewData._parse = _parseView;
  */
 export function _stringifyView(
 	node: ViewNode | ViewDocumentFragment,
-	selectionOrPositionOrRange: ViewDocumentSelection | ViewPosition | Range | null = null,
+	selectionOrPositionOrRange: ViewDocumentSelection | ViewPosition | ViewRange | null = null,
 	options: {
 		showType?: boolean;
 		showPriority?: boolean;
@@ -307,7 +307,7 @@ export function _stringifyView(
 
 	if (
 		selectionOrPositionOrRange instanceof ViewPosition ||
-		selectionOrPositionOrRange instanceof Range
+		selectionOrPositionOrRange instanceof ViewRange
 	) {
 		selection = new ViewDocumentSelection( selectionOrPositionOrRange );
 	} else {
@@ -340,7 +340,7 @@ export function _stringifyView(
  * _parseView( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
  * ```
  *
- * The method can _parseView multiple {@link module:engine/view/range~Range ranges} provided in string data and return a
+ * The method can _parseView multiple {@link module:engine/view/range~ViewRange ranges} provided in string data and return a
  * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
  * {@link module:engine/view/text~Text text} nodes should be marked using `{` and `}` brackets:
  *
@@ -504,7 +504,7 @@ class RangeParser {
 	 * as the first.
 	 * @returns An array with ranges found.
 	 */
-	public _parseView( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<Range> {
+	public _parseView( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<ViewRange> {
 		this._positions = [];
 
 		// Remove all range brackets from view nodes and save their positions.
@@ -635,7 +635,7 @@ class RangeParser {
 	 * @param rangesOrder An array with new range order.
 	 * @returns Sorted ranges array.
 	 */
-	private _sortRanges( ranges: Array<Range>, rangesOrder: Array<number> ): Array<Range> {
+	private _sortRanges( ranges: Array<ViewRange>, rangesOrder: Array<number> ): Array<ViewRange> {
 		const sortedRanges = [];
 		let index = 0;
 
@@ -654,7 +654,7 @@ class RangeParser {
 	/**
 	 * Uses all found bracket positions to create ranges from them.
 	 */
-	private _createRanges(): Array<Range> {
+	private _createRanges(): Array<ViewRange> {
 		const ranges = [];
 		let range = null;
 
@@ -671,7 +671,7 @@ class RangeParser {
 			}
 
 			if ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) {
-				range = new Range( item.position, item.position );
+				range = new ViewRange( item.position, item.position );
 			} else {
 				( range as any ).end = item.position;
 				ranges.push( range! );
@@ -694,7 +694,7 @@ class RangeParser {
 class ViewStringify {
 	public root: ViewNode | ViewDocumentFragment;
 	public selection: ViewDocumentSelection | null;
-	public ranges: Array<Range>;
+	public ranges: Array<ViewRange>;
 	public showType: boolean;
 	public showPriority: boolean;
 	public showAttributeElementId: boolean;
@@ -826,8 +826,8 @@ class ViewStringify {
 
 	/**
 	 * Checks if a given {@link module:engine/view/element~ViewElement element} has
-	 * a {@link module:engine/view/range~Range#start range start}
-	 * or a {@link module:engine/view/range~Range#start range end} placed at a given offset and returns its string representation.
+	 * a {@link module:engine/view/range~ViewRange#start range start}
+	 * or a {@link module:engine/view/range~ViewRange#start range end} placed at a given offset and returns its string representation.
 	 */
 	private _stringifyElementRanges( element: ViewElement | ViewDocumentFragment, offset: number ): string {
 		let start = '';
@@ -853,8 +853,8 @@ class ViewStringify {
 
 	/**
 	 * Checks if a given {@link module:engine/view/element~ViewElement Text node} has a
-	 * {@link module:engine/view/range~Range#start range start} or a
-	 * {@link module:engine/view/range~Range#start range end} placed somewhere inside. Returns a string representation of text
+	 * {@link module:engine/view/range~ViewRange#start range start} or a
+	 * {@link module:engine/view/range~ViewRange#start range end} placed somewhere inside. Returns a string representation of text
 	 * with range delimiters placed inside.
 	 */
 	private _stringifyTextRanges( node: ViewText ): string {

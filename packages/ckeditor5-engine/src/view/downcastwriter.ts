@@ -8,7 +8,7 @@
  */
 
 import { ViewPosition, type ViewPositionOffset } from './position.js';
-import { Range } from './range.js';
+import { ViewRange } from './range.js';
 import {
 	Selection,
 	type PlaceOrOffset,
@@ -721,8 +721,8 @@ export class ViewDowncastWriter {
 	 * `breakContainer()` assumes that a given `position` is directly in the container element and breaks that container element.
 	 *
 	 * Throws the `view-writer-invalid-range-container` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when the {@link module:engine/view/range~Range#start start}
-	 * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
+	 * when the {@link module:engine/view/range~ViewRange#start start}
+	 * and {@link module:engine/view/range~ViewRange#end end} positions of a passed range are not placed inside same parent container.
 	 *
 	 * Throws the `view-writer-cannot-break-empty-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
@@ -736,7 +736,7 @@ export class ViewDowncastWriter {
 	 * @param positionOrRange The position where to break attribute elements.
 	 * @returns The new position or range, after breaking the attribute elements.
 	 */
-	public breakAttributes( positionOrRange: ViewPosition | Range ): ViewPosition | Range {
+	public breakAttributes( positionOrRange: ViewPosition | ViewRange ): ViewPosition | ViewRange {
 		if ( positionOrRange instanceof ViewPosition ) {
 			return this._breakAttributes( positionOrRange );
 		} else {
@@ -797,7 +797,7 @@ export class ViewDowncastWriter {
 
 			this.insert( ViewPosition._createAfter( element ), newElement as any );
 
-			const sourceRange = new Range( position, ViewPosition._createAt( element, 'end' ) );
+			const sourceRange = new ViewRange( position, ViewPosition._createAt( element, 'end' ) );
 			const targetPosition = new ViewPosition( newElement, 0 );
 
 			this.move( sourceRange, targetPosition );
@@ -924,8 +924,8 @@ export class ViewDowncastWriter {
 		const lastChild = prev.getChild( prev.childCount - 1 );
 		const newPosition = lastChild instanceof Text ? ViewPosition._createAt( lastChild, 'end' ) : ViewPosition._createAt( prev, 'end' );
 
-		this.move( Range._createIn( next ), ViewPosition._createAt( prev, 'end' ) );
-		this.remove( Range._createOn( next ) );
+		this.move( ViewRange._createIn( next ), ViewPosition._createAt( prev, 'end' ) );
+		this.remove( ViewRange._createOn( next ) );
 
 		return newPosition;
 	}
@@ -946,7 +946,7 @@ export class ViewDowncastWriter {
 	 * @param nodes Node or nodes to insert.
 	 * @returns Range around inserted nodes.
 	 */
-	public insert( position: ViewPosition, nodes: ViewNode | Iterable<ViewNode> ): Range {
+	public insert( position: ViewPosition, nodes: ViewNode | Iterable<ViewNode> ): ViewRange {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, ViewEmptyElements, UIElements or Text.
@@ -990,26 +990,26 @@ export class ViewDowncastWriter {
 
 		// When no nodes were inserted - return collapsed range.
 		if ( !start ) {
-			return new Range( position );
+			return new ViewRange( position );
 		}
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Removes provided range from the container.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param rangeOrItem Range to remove from container
 	 * or an {@link module:engine/view/item~Item item} to remove. If range is provided, after removing, it will be updated
 	 * to a collapsed range showing the new position.
 	 * @returns Document fragment containing removed nodes.
 	 */
-	public remove( rangeOrItem: Range | ViewItem ): ViewDocumentFragment {
-		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
+	public remove( rangeOrItem: ViewRange | ViewItem ): ViewDocumentFragment {
+		const range = rangeOrItem instanceof ViewRange ? rangeOrItem : ViewRange._createOn( rangeOrItem );
 
 		validateRangeContainer( range, this.document );
 
@@ -1044,13 +1044,13 @@ export class ViewDowncastWriter {
 	 * Removes matching elements from given range.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param range Range to clear.
 	 * @param element Element to remove.
 	 */
-	public clear( range: Range, element: ViewElement ): void {
+	public clear( range: ViewRange, element: ViewElement ): void {
 		validateRangeContainer( range, this.document );
 
 		// Create walker on given range.
@@ -1068,7 +1068,7 @@ export class ViewDowncastWriter {
 			// When current item matches to the given element.
 			if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 				// Create range on this element.
-				rangeToRemove = Range._createOn( item );
+				rangeToRemove = ViewRange._createOn( item );
 				// When range starts inside Text or TextProxy element.
 			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( '$textProxy' ) ) {
 				// We need to check if parent of this text matches to given element.
@@ -1078,7 +1078,7 @@ export class ViewDowncastWriter {
 
 				// If it is then create range inside this element.
 				if ( parentElement ) {
-					rangeToRemove = Range._createIn( parentElement as ViewElement );
+					rangeToRemove = ViewRange._createIn( parentElement as ViewElement );
 				}
 			}
 
@@ -1103,15 +1103,15 @@ export class ViewDowncastWriter {
 	 * Moves nodes from provided range to target position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param sourceRange Range containing nodes to move.
 	 * @param targetPosition Position to insert.
 	 * @returns Range in target container. Inserted nodes are placed between
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end} positions.
 	 */
-	public move( sourceRange: Range, targetPosition: ViewPosition ): Range {
+	public move( sourceRange: ViewRange, targetPosition: ViewPosition ): ViewRange {
 		let nodes;
 
 		if ( targetPosition.isAfter( sourceRange.end ) ) {
@@ -1140,8 +1140,8 @@ export class ViewDowncastWriter {
 	 * will be moved to the inside of the wrapped attribute element.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
-	 * when {@link module:engine/view/range~Range#start}
-	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+	 * when {@link module:engine/view/range~ViewRange#start}
+	 * and {@link module:engine/view/range~ViewRange#end} positions are not placed inside same parent container.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
 	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
@@ -1153,7 +1153,7 @@ export class ViewDowncastWriter {
 	 * @param attribute Attribute element to use as wrapper.
 	 * @returns range Range after wrapping, spanning over wrapping attribute element.
 	 */
-	public wrap( range: Range, attribute: ViewAttributeElement ): Range {
+	public wrap( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
 		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			throw new CKEditorError(
 				'view-writer-wrap-invalid-attribute',
@@ -1182,7 +1182,7 @@ export class ViewDowncastWriter {
 				this.setSelection( position );
 			}
 
-			return new Range( position );
+			return new ViewRange( position );
 		}
 	}
 
@@ -1190,10 +1190,10 @@ export class ViewDowncastWriter {
 	 * Unwraps nodes within provided range from attribute element.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 */
-	public unwrap( range: Range, attribute: ViewAttributeElement ): Range {
+	public unwrap( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
 		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			/**
 			 * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap `DowncastWriter#unwrap()`}
@@ -1231,7 +1231,7 @@ export class ViewDowncastWriter {
 
 		const end = this.mergeAttributes( newRange.end );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -1251,8 +1251,8 @@ export class ViewDowncastWriter {
 		const newElement = new ViewContainerElement( this.document, newName, viewElement.getAttributes() );
 
 		this.insert( ViewPosition._createAfter( viewElement ), newElement );
-		this.move( Range._createIn( viewElement ), ViewPosition._createAt( newElement, 0 ) );
-		this.remove( Range._createOn( viewElement ) );
+		this.move( ViewRange._createIn( viewElement ), ViewPosition._createAt( newElement, 0 ) );
+		this.remove( ViewRange._createOn( viewElement ) );
 
 		return newElement;
 	}
@@ -1320,15 +1320,15 @@ export class ViewDowncastWriter {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: ViewPosition, end?: ViewPosition | null ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end?: ViewPosition | null ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: ViewItem ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
@@ -1337,8 +1337,8 @@ export class ViewDowncastWriter {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: ViewElement | ViewDocumentFragment ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**
@@ -1511,7 +1511,7 @@ export class ViewDowncastWriter {
 	 * @param breakAttributes Whether attributes should be broken.
 	 * @returns Range around inserted nodes.
 	 */
-	private _insertNodes( position: ViewPosition, nodes: Iterable<ViewNode>, breakAttributes: boolean ): Range {
+	private _insertNodes( position: ViewPosition, nodes: Iterable<ViewNode>, breakAttributes: boolean ): ViewRange {
 		let parentElement;
 
 		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
@@ -1558,7 +1558,7 @@ export class ViewDowncastWriter {
 
 		const end = this.mergeAttributes( endPosition );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -1637,7 +1637,7 @@ export class ViewDowncastWriter {
 			}
 		}
 
-		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return ViewRange._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1740,7 +1740,7 @@ export class ViewDowncastWriter {
 			}
 		}
 
-		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return ViewRange._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1752,7 +1752,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @returns New range after wrapping, spanning over wrapping attribute element.
 	 */
-	private _wrapRange( range: Range, attribute: ViewAttributeElement ): Range {
+	private _wrapRange( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
 		const parentContainer = breakStart.parent as ViewElement;
@@ -1769,7 +1769,7 @@ export class ViewDowncastWriter {
 		}
 		const end = this.mergeAttributes( newRange.end );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -1801,7 +1801,7 @@ export class ViewDowncastWriter {
 		( position.parent as ViewElement )._insertChild( position.offset, fakeElement );
 
 		// Range around inserted fake attribute element.
-		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+		const wrapRange = new ViewRange( position, position.getShiftedBy( 1 ) );
 
 		// Wrap fake element with attribute (it will also merge if possible).
 		this.wrap( wrapRange, attribute );
@@ -1830,7 +1830,7 @@ export class ViewDowncastWriter {
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
 	 * @returns New range with located at break positions.
 	 */
-	private _breakAttributesRange( range: Range, forceSplitText: boolean = false ) {
+	private _breakAttributesRange( range: ViewRange, forceSplitText: boolean = false ) {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
 
@@ -1840,7 +1840,7 @@ export class ViewDowncastWriter {
 		if ( range.isCollapsed ) {
 			const position = this._breakAttributes( range.start, forceSplitText );
 
-			return new Range( position, position );
+			return new ViewRange( position, position );
 		}
 
 		const breakEnd = this._breakAttributes( rangeEnd, forceSplitText );
@@ -1850,7 +1850,7 @@ export class ViewDowncastWriter {
 		// Calculate new break end offset.
 		breakEnd.offset += ( breakEnd.parent as ViewElement ).childCount - count;
 
-		return new Range( breakStart, breakEnd );
+		return new ViewRange( breakStart, breakEnd );
 	}
 
 	/**
@@ -2232,11 +2232,11 @@ function isContainerOrFragment( node: ViewNode | ViewDocumentFragment ): boolean
 }
 
 /**
- * Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
- * inside same {@link module:engine/view/containerelement~ViewContainerElement container element}.
+ * Checks if {@link module:engine/view/range~ViewRange#start range start} and {@link module:engine/view/range~ViewRange#end range end}
+ * are placed inside same {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
  */
-function validateRangeContainer( range: Range, errorContext: ViewDocument ) {
+function validateRangeContainer( range: ViewRange, errorContext: ViewDocument ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
@@ -2244,8 +2244,8 @@ function validateRangeContainer( range: Range, errorContext: ViewDocument ) {
 		/**
 		 * The container of the given range is invalid.
 		 *
-		 * This may happen if {@link module:engine/view/range~Range#start range start} and
-		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside the same container element or
+		 * This may happen if {@link module:engine/view/range~ViewRange#start range start} and
+		 * {@link module:engine/view/range~ViewRange#end range end} positions are not placed inside the same container element or
 		 * a parent container for these positions cannot be found.
 		 *
 		 * Methods like {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#remove()`},

@@ -25,7 +25,7 @@ import {
 import { BubblingEventInfo, type BubblingEventPhase } from './bubblingeventinfo.js';
 import { type ViewDocument } from '../document.js';
 import { type ViewNode } from '../node.js';
-import { type Range } from '../range.js';
+import { type ViewRange } from '../range.js';
 import { type ViewElement } from '../element.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
 
@@ -227,7 +227,7 @@ function getBubblingContexts( source: { [ x: string ]: any; [ contextsSymbol ]?:
 /**
  * Returns the deeper parent element for the range.
  */
-function getDeeperRangeParent( range: Range ): ViewNode | null {
+function getDeeperRangeParent( range: ViewRange ): ViewNode | null {
 	if ( !range ) {
 		return null;
 	}

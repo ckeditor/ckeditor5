@@ -5,7 +5,7 @@
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { Range } from '../../../src/view/range.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -49,7 +49,7 @@ describe( 'DowncastWriter', () => {
 			const p2 = new ViewContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
-				writer.remove( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.remove( ViewRange._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			}, 'view-writer-invalid-range-container', document );
 		} );
 
@@ -57,13 +57,13 @@ describe( 'DowncastWriter', () => {
 			const el = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
-				writer.remove( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.remove( ViewRange._createFromParentsAndOffsets( el, 0, el, 0 ) );
 			}, 'view-writer-invalid-range-container', document );
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
 			const p = new ViewContainerElement( document, 'p' );
-			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
+			const range = ViewRange._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
 			expect( fragment ).to.be.instanceof( ViewDocumentFragment );
@@ -135,7 +135,7 @@ describe( 'DowncastWriter', () => {
 			const emptyElement = new ViewEmptyElement( document, 'img' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
-			const range = Range._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
+			const range = ViewRange._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( range );
@@ -154,7 +154,7 @@ describe( 'DowncastWriter', () => {
 			const uiElement = new UIElement( document, 'span' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
-			const range = Range._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
+			const range = ViewRange._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( range );
@@ -173,7 +173,7 @@ describe( 'DowncastWriter', () => {
 			const rawElement = new RawElement( document, 'span' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ rawElement, attributeElement ] ); // eslint-disable-line no-new
-			const range = Range._createFromParentsAndOffsets( rawElement, 0, attributeElement, 0 );
+			const range = ViewRange._createFromParentsAndOffsets( rawElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( range );
