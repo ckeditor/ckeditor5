@@ -11,7 +11,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewEmptyElement } from '../../src/view/emptyelement.js';
-import { UIElement } from '../../src/view/uielement.js';
+import { ViewUIElement } from '../../src/view/uielement.js';
 import { ViewRawElement } from '../../src/view/rawelement.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
@@ -374,14 +374,14 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should stringify UIElement', () => {
-			const span = new UIElement( viewDocument, 'span' );
+			const span = new ViewUIElement( viewDocument, 'span' );
 			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
 
 		it( 'should not stringify inner UIElement content (renderUIElements=false)', () => {
-			const span = new UIElement( viewDocument, 'span' );
+			const span = new ViewUIElement( viewDocument, 'span' );
 
 			span.render = function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
@@ -397,7 +397,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should stringify UIElement, (renderUIElements=true)', () => {
-			const span = new UIElement( viewDocument, 'span' );
+			const span = new ViewUIElement( viewDocument, 'span' );
 
 			span.render = function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
@@ -794,7 +794,7 @@ describe( 'view test utils', () => {
 		it( 'should parse a UIElement', () => {
 			const parsed = _parseView( '<ui:span></ui:span>' );
 
-			expect( parsed ).to.be.instanceof( UIElement );
+			expect( parsed ).to.be.instanceof( ViewUIElement );
 		} );
 
 		it( 'should parse a RawElement', () => {
