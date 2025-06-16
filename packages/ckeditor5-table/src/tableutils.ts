@@ -28,7 +28,7 @@ type Cell = { cell: ModelElement; rowspan: number };
 type CellsToMove = Map<number, Cell>;
 type CellsToTrim = Array<Cell>;
 
-type IndexesObject = { first: number; last: number };
+export type TableIndexesObject = { first: number; last: number };
 
 /**
  * The table utilities plugin.
@@ -936,7 +936,7 @@ export class TableUtils extends Plugin {
 	 *
 	 * @returns Returns an object with the `first` and `last` table row indexes.
 	 */
-	public getRowIndexes( tableCells: Array<ModelElement> ): IndexesObject {
+	public getRowIndexes( tableCells: Array<ModelElement> ): TableIndexesObject {
 		const indexes = tableCells.map( cell => ( cell.parent as ModelElement ).index! );
 
 		return this._getFirstLastIndexesObject( indexes );
@@ -955,7 +955,7 @@ export class TableUtils extends Plugin {
 	 *
 	 * @returns Returns an object with the `first` and `last` table column indexes.
 	 */
-	public getColumnIndexes( tableCells: Array<ModelElement> ): IndexesObject {
+	public getColumnIndexes( tableCells: Array<ModelElement> ): TableIndexesObject {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 		const tableMap = [ ...new TableWalker( table ) ];
 
@@ -1040,7 +1040,7 @@ export class TableUtils extends Plugin {
 	/**
 	 * Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
 	 */
-	private _getFirstLastIndexesObject( indexes: Array<number> ): IndexesObject {
+	private _getFirstLastIndexesObject( indexes: Array<number> ): TableIndexesObject {
 		const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
 
 		const first = allIndexesSorted[ 0 ];
@@ -1086,7 +1086,7 @@ export class TableUtils extends Plugin {
 	/**
 	 * Unified check if table rows/columns indexes are in the same heading/body section.
 	 */
-	private _areIndexesInSameSection( { first, last }: IndexesObject, headingSectionSize: number ): boolean {
+	private _areIndexesInSameSection( { first, last }: TableIndexesObject, headingSectionSize: number ): boolean {
 		const firstCellIsInHeading = first < headingSectionSize;
 		const lastCellIsInHeading = last < headingSectionSize;
 
@@ -1153,7 +1153,7 @@ function breakSpanEvenly( span: number, numberOfCells: number ): { newCellsSpan:
 /**
  * Updates heading columns attribute if removing a row from head section.
  */
-function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: IndexesObject, writer: ModelWriter ) {
+function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: TableIndexesObject, writer: ModelWriter ) {
 	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
@@ -1167,7 +1167,7 @@ function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: Indexe
 /**
  * Calculates a new heading rows value for removing rows from heading section.
  */
-function updateHeadingRows( table: ModelElement, { first, last }: IndexesObject, writer: ModelWriter ) {
+function updateHeadingRows( table: ModelElement, { first, last }: TableIndexesObject, writer: ModelWriter ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	if ( first < headingRows ) {
@@ -1200,7 +1200,7 @@ function updateHeadingRows( table: ModelElement, { first, last }: IndexesObject,
  * - cells to trim: '02', '03' & '04'.
  * - cells to move: '21' & '32'.
  */
-function getCellsToMoveAndTrimOnRemoveRow( table: ModelElement, { first, last }: IndexesObject ) {
+function getCellsToMoveAndTrimOnRemoveRow( table: ModelElement, { first, last }: TableIndexesObject ) {
 	const cellsToMove: CellsToMove = new Map();
 	const cellsToTrim: CellsToTrim = [];
 
