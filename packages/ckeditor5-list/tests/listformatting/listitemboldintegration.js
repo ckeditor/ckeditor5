@@ -367,6 +367,22 @@ describe( 'ListItemBoldIntegration', () => {
 			);
 		} );
 
+		it( 'should upcast class in <li> to listItemBold attribute if text is formatted using font-weight numeric value', () => {
+			editor.setData(
+				'<ul>' +
+					'<li class="ck-bold">' +
+						'<span style="font-weight:600;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listType="bulleted">' +
+					'<$text bold="true">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
 		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
 				'<ul class="ck-bold;">' +
