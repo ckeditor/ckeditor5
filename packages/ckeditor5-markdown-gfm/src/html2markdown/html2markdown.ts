@@ -57,26 +57,12 @@ export class MarkdownGfmHtmlToMd {
 		}, {} as Record<string, MdastHandle> );
 	}
 
-	/**
-	 * Removes `<label>` element from TODO lists, so that `<input>` and `text` are direct children of `<li>`.
-	 */
-	private _removeLabelFromCheckboxes(): ReturnType<Plugin> {
-		return function( tree ) {
-			visit( tree, 'element', ( node: any, index: number, parent: any ) => {
-				if ( node.tagName === 'label' && parent.tagName === 'li' ) {
-					parent.children[ index ] = node.children[ 0 ];
-					parent.children.splice( index + 1, 1, ...node.children );
-				}
-			} );
-		};
-	}
-
 	private _buildProcessor() {
 		this._processor = unified()
 			// Parse HTML to an abstract syntax tree (AST).
 			.use( rehypeParse )
 			// Removes `<label>` element from TODO lists.
-			.use( this._removeLabelFromCheckboxes )
+			.use( removeLabelFromCheckboxes )
 			// Turns HTML syntax tree to markdown syntax tree.
 			.use( rehypeRemark, {
 				// Keeps allowed HTML tags.
@@ -98,4 +84,18 @@ export class MarkdownGfmHtmlToMd {
 				}
 			} );
 	}
+}
+
+/**
+ * Removes `<label>` element from TODO lists, so that `<input>` and `text` are direct children of `<li>`.
+ */
+function removeLabelFromCheckboxes(): ReturnType<Plugin> {
+	return function( tree ) {
+		visit( tree, 'element', ( node: any, index: number, parent: any ) => {
+			if ( node.tagName === 'label' && parent.tagName === 'li' ) {
+				parent.children[ index ] = node.children[ 0 ];
+				parent.children.splice( index + 1, 1, ...node.children );
+			}
+		} );
+	};
 }

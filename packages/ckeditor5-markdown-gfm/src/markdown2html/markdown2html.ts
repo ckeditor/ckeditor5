@@ -16,7 +16,7 @@ import rehypeStringify from 'rehype-dom-stringify';
 import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
 import { fromDom } from 'hast-util-from-dom';
-import type { Element, Root, RootContent } from 'hast';
+import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
@@ -37,7 +37,7 @@ export class MarkdownGfmMdToHtml {
 			// Handles HTML embedded in Markdown.
 			.use( rehypeDomRaw )
 			// Removes classes from list elements.
-			.use( this._deleteClassesFromToDoLists )
+			.use( deleteClassesFromToDoLists )
 			// Serializes HTML syntax tree
 			.use( rehypeStringify );
 	}
@@ -48,19 +48,19 @@ export class MarkdownGfmMdToHtml {
 			.toString()
 			.replaceAll( '\n</code>', '</code>' );
 	}
+}
 
-	/**
+/**
 	 * Removes default classes added to `<ul>`, `<ol>`, and `<li>` elements.
 	 */
-	private _deleteClassesFromToDoLists(): ReturnType<Plugin> {
-		return function( tree ) {
-			visit( tree, 'element', ( node: any ) => {
-				if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
-					delete node.properties.className;
-				}
-			} );
-		};
-	}
+function deleteClassesFromToDoLists(): ReturnType<Plugin> {
+	return ( tree: Node ): void => {
+		visit( tree, 'element', ( node: Element ) => {
+			if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
+				delete node.properties.className;
+			}
+		} );
+	};
 }
 
 /**
@@ -74,9 +74,10 @@ export class MarkdownGfmMdToHtml {
  * 3. Converts each parsed DOM node back into HAST nodes.
  * 4. Replaces the original children with the newly created HAST nodes.
  */
-function rehypeDomRaw() {
-	return ( tree: Root ): void => {
-		visit( tree, [ 'root', 'element' ], node => {
+function rehypeDomRaw(): ReturnType<Plugin> {
+	return ( tree: Node ): void => {
+		visit( tree, [ 'root', 'element' ], ( node: Node | Element ) => {
+			/* istanbul ignore next -- @preserve */
 			if ( !isNodeRootOrElement( node ) ) {
 				return;
 			}
