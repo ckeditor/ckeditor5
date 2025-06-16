@@ -756,7 +756,7 @@ export type EditorUIReadyEvent = {
 /**
  * Fired whenever the UI (all related components) should be refreshed.
  *
- * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
+ * **Note:**: The event is fired after each {@link module:engine/view/document~ViewDocument#event:layoutChanged}.
  * It can also be fired manually via the {@link module:ui/editorui/editorui~EditorUI#update} method.
  *
  * @eventName ~EditorUI#update

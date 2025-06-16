@@ -19,7 +19,7 @@ import { TableCellVerticalAlignmentCommand } from '../../src/tablecellproperties
 import { TableCellPaddingCommand } from '../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
 import { TableCellBackgroundColorCommand } from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table cell properties', () => {
@@ -283,7 +283,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +
@@ -702,7 +702,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +
@@ -963,7 +963,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +
@@ -1035,7 +1035,7 @@ describe( 'table cell properties', () => {
 
 						model = editor.model;
 
-						setModelData(
+						_setModelData(
 							model,
 							'<table headingRows="0" headingColumns="0">' +
 								'<tableRow>' +
@@ -1215,7 +1215,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +
@@ -1278,7 +1278,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +
@@ -1438,7 +1438,7 @@ describe( 'table cell properties', () => {
 				let tableCell;
 
 				beforeEach( () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table headingRows="0" headingColumns="0">' +
 							'<tableRow>' +

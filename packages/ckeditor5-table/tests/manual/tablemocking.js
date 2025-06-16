@@ -6,7 +6,7 @@
 import { createTableAsciiArt, modelTable, prepareModelTableInput, prettyFormatModelTableInput } from '../_utils/utils.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { diffString } from 'json-diff';
 import { debounce } from 'es-toolkit/compat';
@@ -45,7 +45,7 @@ ClassicEditor
 			const inputModelData = parseModelData( modelData.value );
 
 			if ( inputModelData ) {
-				const element = setModelData._parse( modelTable( inputModelData ), editor.model.schema );
+				const element = _setModelData._parse( modelTable( inputModelData ), editor.model.schema );
 
 				editor.model.change( writer => {
 					editor.model.insertContent( element, table ? editor.model.createRangeOn( table ) : null );

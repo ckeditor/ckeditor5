@@ -172,7 +172,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * Note: Certain typing-oriented keystrokes (like <kbd>Backspace</kbd> or <kbd>Enter</kbd>) are handled
 	 * by a low-level mechanism and trying to listen to them via the keystroke handler will not work reliably.
 	 * To handle these specific keystrokes, see the events fired by the
-	 * {@link module:engine/view/document~Document editing view document} (`editor.editing.view.document`).
+	 * {@link module:engine/view/document~ViewDocument editing view document} (`editor.editing.view.document`).
 	 */
 	public readonly keystrokes: EditingKeystrokeHandler;
 
@@ -889,7 +889,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	 * Focuses the editor.
 	 *
 	 * **Note** To explicitly focus the editing area of the editor, use the
-	 * {@link module:engine/view/view~View#focus `editor.editing.view.focus()`} method of the editing view.
+	 * {@link module:engine/view/view~EditingView#focus `editor.editing.view.focus()`} method of the editing view.
 	 *
 	 * Check out the {@glink framework/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor UI} section
 	 * of the {@glink framework/deep-dive/ui/focus-tracking Deep dive into focus tracking} guide to learn more.

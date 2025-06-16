@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ContainerElement } from '../../src/view/containerelement.js';
-import { EditableElement } from '../../src/view/editableelement.js';
-import { RootEditableElement } from '../../src/view/rooteditableelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
@@ -18,10 +18,10 @@ describe( 'RootEditableElement', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create an element with default root name', () => {
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 
-			expect( root ).to.be.instanceof( EditableElement );
-			expect( root ).to.be.instanceof( ContainerElement );
+			expect( root ).to.be.instanceof( ViewEditableElement );
+			expect( root ).to.be.instanceof( ViewContainerElement );
 
 			expect( root.rootName ).to.equal( 'main' );
 			expect( root.name ).to.equal( 'div' );
@@ -31,7 +31,7 @@ describe( 'RootEditableElement', () => {
 		} );
 
 		it( 'should create an element with custom root name', () => {
-			const root = new RootEditableElement( document, 'h1' );
+			const root = new ViewRootEditableElement( document, 'h1' );
 			root.rootName = 'header';
 
 			expect( root.rootName ).to.equal( 'header' );
@@ -46,7 +46,7 @@ describe( 'RootEditableElement', () => {
 		let el;
 
 		before( () => {
-			el = new RootEditableElement( document, 'div' );
+			el = new ViewRootEditableElement( document, 'div' );
 		} );
 
 		it( 'should return true for rootElement/containerElement/editable/element, also with correct name and element name', () => {
@@ -94,7 +94,7 @@ describe( 'RootEditableElement', () => {
 
 	describe( '_name', () => {
 		it( 'should set new name to element', () => {
-			const el = new RootEditableElement( document, '$root' );
+			const el = new ViewRootEditableElement( document, '$root' );
 
 			expect( el.name ).to.equal( '$root' );
 
@@ -105,7 +105,7 @@ describe( 'RootEditableElement', () => {
 	} );
 
 	it( 'should be cloned properly', () => {
-		const root = new RootEditableElement( document, 'h1' );
+		const root = new ViewRootEditableElement( document, 'h1' );
 		root.rootName = 'header';
 
 		const newRoot = root._clone();

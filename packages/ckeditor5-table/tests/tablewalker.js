@@ -6,7 +6,7 @@
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import { setData, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableWalker } from '../src/tablewalker.js';
 import { TableEditing } from '../src/tableediting.js';
@@ -29,7 +29,7 @@ describe( 'TableWalker', () => {
 		// Accept either a table of cells or a HTML-like string describing model.
 		const modelData = Array.isArray( tableData ) ? modelTable( tableData ) : tableData;
 
-		setData( model, modelData );
+		_setModelData( model, modelData );
 
 		const walker = new TableWalker( root.getChild( 0 ), options );
 
@@ -169,7 +169,7 @@ describe( 'TableWalker', () => {
 				'</tableRow>' +
 			'</table>';
 
-		const parsed = parse( modelTable, model.schema );
+		const parsed = _parseModel( modelTable, model.schema );
 
 		// We don't want post-fixers to be applied here, as the TableWalker can be used inside them,
 		// when the structure of the table is not yet corrected.
@@ -196,7 +196,7 @@ describe( 'TableWalker', () => {
 
 	it( 'does not cause the "RangeError: Maximum call stack size exceeded" error when handling big tables. ', () => {
 		const data = Array( 3000 ).fill( [ '1', 'Example content', '3' ] );
-		const table = parse(
+		const table = _parseModel(
 			modelTable( data ),
 			model.schema
 		);
@@ -217,7 +217,7 @@ describe( 'TableWalker', () => {
 			...Array( 999 ).fill( [ '1', '3' ] )
 		];
 
-		const table = parse(
+		const table = _parseModel(
 			modelTable( data ),
 			model.schema
 		);
@@ -713,7 +713,7 @@ describe( 'TableWalker', () => {
 	} );
 
 	it.skip( 'should throw error if walker value old api used', () => {
-		setData( model, modelTable( [
+		_setModelData( model, modelTable( [
 			[ 'a' ]
 		] ) );
 

@@ -242,7 +242,7 @@ Note that the `value` property of the command has also been "renamed" in the bin
 
 ### Binding with multiple observables
 
-The binding can include more than one observable, combining multiple properties in a custom callback function. Let's create a button that gets enabled only when the `command` is enabled and the {@link module:engine/view/document~Document editing document} (also an `Observable`) is focused:
+The binding can include more than one observable, combining multiple properties in a custom callback function. Let's create a button that gets enabled only when the `command` is enabled and the {@link module:engine/view/document~ViewDocument editing document} (also an `Observable`) is focused:
 
 ```js
 const button = new Button();

@@ -629,7 +629,7 @@ export type ToolbarViewGroupedItemsUpdateEvent = {
  * An inner block of the {@link module:ui/toolbar/toolbarview~ToolbarView} hosting its
  * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
  */
-class ItemsView extends View {
+export class ItemsView extends View {
 	/**
 	 * A collection of items (buttons, dropdowns, etc.).
 	 */

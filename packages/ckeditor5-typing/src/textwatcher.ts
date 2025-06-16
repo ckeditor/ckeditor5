@@ -13,9 +13,9 @@ import { getLastTextLine } from './utils/getlasttextline.js';
 import type {
 	Batch,
 	Model,
-	Range,
-	DocumentChangeEvent,
-	DocumentSelectionChangeEvent
+	ModelRange,
+	ModelDocumentChangeEvent,
+	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -103,7 +103,7 @@ export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 		const model = this.model;
 		const document = model.document;
 
-		this.listenTo<DocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
+		this.listenTo<ModelDocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -122,7 +122,7 @@ export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		this.listenTo<DocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
+		this.listenTo<ModelDocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
 			if ( batch.isUndo || !batch.isLocal ) {
 				return;
 			}
@@ -175,7 +175,7 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
 	name: 'matched' | 'matched:data' | 'matched:selection';
 	args: [ {
 		text: string;
-		range: Range;
+		range: ModelRange;
 		batch?: Batch;
 	} & TCallbackResult ];
 };
@@ -202,7 +202,7 @@ export interface TextWatcherMatchedTypingDataEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 
 	batch: Batch;
 }
@@ -229,7 +229,7 @@ export interface TextWatcherMatchedTypingSelectionEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 }
 
 /**

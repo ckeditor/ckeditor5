@@ -23,7 +23,7 @@ import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/token
 
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { CKBoxUtils } from '../src/ckboxutils.js';
 
 const BASE64_SAMPLE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
@@ -1192,7 +1192,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			await new Promise( resolve => {
 				editor.model.document.once( 'change', () => {
-					expect( getData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						`[<imageBlock ckboxImageId="id" src="${ imgPath }" uploadId="${ loader.id }" uploadStatus="complete">` +
 						'</imageBlock>]'
 					);
@@ -1262,7 +1262,7 @@ describe( 'CKBoxUploadAdapter', () => {
 
 			await new Promise( resolve => {
 				editor.model.document.once( 'change', () => {
-					expect( getData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						`[<imageBlock src="${ imgPath }" uploadId="${ loader.id }" uploadStatus="complete"></imageBlock>]`
 					);
 

@@ -17,9 +17,9 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent,
-	type Element,
-	type Item
+	type ModelDocumentSelectionChangeAttributeEvent,
+	type ModelElement,
+	type ModelItem
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -485,7 +485,7 @@ export class DataFilter extends Plugin {
 			return changed;
 		} );
 
-		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+		this.listenTo<ModelDocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
 			const removeAttributes = new Set<string>();
 			const coupledAttributes = this._getCoupledAttributesMap();
 
@@ -764,7 +764,7 @@ export class DataFilter extends Plugin {
 			} );
 
 			// Helper function to check if an element has any HTML attributes.
-			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
+			const hasHtmlAttributes = ( element: ModelElement | ModelItem ): boolean =>
 				Array
 					.from( element.getAttributeKeys() )
 					.some( key => key.startsWith( 'html' ) );
@@ -773,7 +773,7 @@ export class DataFilter extends Plugin {
 			// See: https://github.com/ckeditor/ckeditor5/issues/18089
 			editor.model.document.registerPostFixer( writer => {
 				const changes = editor.model.document.differ.getChanges();
-				const elementsToRemove = new Set<Element>();
+				const elementsToRemove = new Set<ModelElement>();
 
 				for ( const change of changes ) {
 					if ( change.type === 'remove' ) {

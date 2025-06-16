@@ -11,7 +11,7 @@ import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListSplitCommand', () => {
 	let editor, command, model, doc, root;
@@ -51,7 +51,7 @@ describe( 'ListSplitCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if selection is not in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[]'
 				] ) );
 
@@ -59,7 +59,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be false if selection is not collapsed in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  [b]'
 				] ) );
@@ -68,7 +68,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be false if selection is in the first block of a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a[]'
 				] ) );
 
@@ -76,35 +76,35 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be true if selection is collapsed in a non-first block of a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []'
 				] ) );
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b[]'
 				] ) );
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []b'
 				] ) );
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b[]c'
 				] ) );
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b[]c',
 					'  d'
@@ -116,7 +116,7 @@ describe( 'ListSplitCommand', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []'
 				] ) );
@@ -131,14 +131,14 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (two blocks in total)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []'
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'* [] {id:a00}'
 				] ) );
@@ -149,7 +149,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (three blocks in total)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  []'
@@ -157,7 +157,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}'
@@ -169,7 +169,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in an empty last block (followed by a list item)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  []',
@@ -178,7 +178,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'* [] {id:a00}',
@@ -191,7 +191,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure (last block of the list item)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -200,7 +200,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -213,7 +213,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure (middle block of the list item)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -223,7 +223,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -238,7 +238,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -250,7 +250,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -279,7 +279,7 @@ describe( 'ListSplitCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if selection is not in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[]'
 				] ) );
 
@@ -287,7 +287,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be false if selection is not collapsed in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  [b]'
 				] ) );
@@ -296,7 +296,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be false if selection is in the first empty block of a list item not followed by another block', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []'
 				] ) );
 
@@ -304,7 +304,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be false if selection is in the first block of a list item not followed by another block', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a[]'
 				] ) );
 
@@ -312,14 +312,14 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should be true if selection is collapsed in a block followed by another block in the same list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []',
 					'  a'
 				] ) );
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []',
 					'  b'
@@ -327,7 +327,7 @@ describe( 'ListSplitCommand', () => {
 
 				expect( command.isEnabled ).to.be.true;
 
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b[]c',
 					'  d'
@@ -339,7 +339,7 @@ describe( 'ListSplitCommand', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []',
 					'  a'
 				] ) );
@@ -354,14 +354,14 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in an empty first block followed by another', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []',
 					'  a'
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* []',
 					'* a {id:a00}'
 				] ) );
@@ -372,7 +372,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in a middle block of the list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []',
 					'  c'
@@ -380,7 +380,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}'
@@ -392,7 +392,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item when the selection in a middle block of the list item (followed by another)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  []',
 					'  c',
@@ -401,7 +401,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  []',
 					'* c {id:a00}',
@@ -414,7 +414,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * a[]',
@@ -423,7 +423,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * a[]',
@@ -436,7 +436,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure (middle block of the list item)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -446,7 +446,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -460,7 +460,7 @@ describe( 'ListSplitCommand', () => {
 			} );
 
 			it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* a',
 					'  b',
 					'  * c',
@@ -472,7 +472,7 @@ describe( 'ListSplitCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a',
 					'  b',
 					'  * c',

@@ -4,7 +4,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { DocumentSelection, Marker, Position, Range } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange } from 'ckeditor5/src/engine.js';
 
 /**
  * @module restricted-editing/restrictededitingmode/utils
@@ -17,7 +17,7 @@ import type { DocumentSelection, Marker, Position, Range } from 'ckeditor5/src/e
  *
  * @internal
  */
-export function getMarkerAtPosition( editor: Editor, position: Position ): Marker | undefined {
+export function getMarkerAtPosition( editor: Editor, position: ModelPosition ): Marker | undefined {
 	for ( const marker of editor.model.markers ) {
 		const markerRange = marker.getRange();
 
@@ -34,7 +34,7 @@ export function getMarkerAtPosition( editor: Editor, position: Position ): Marke
  *
  * @internal
  */
-export function isPositionInRangeBoundaries( range: Range, position: Position ): boolean {
+export function isPositionInRangeBoundaries( range: ModelRange, position: ModelPosition ): boolean {
 	return (
 		range.containsPosition( position ) ||
 		range.end.isEqual( position ) ||
@@ -54,7 +54,7 @@ export function isPositionInRangeBoundaries( range: Range, position: Position ):
  *
  * @internal
  */
-export function isSelectionInMarker( selection: DocumentSelection, marker?: Marker ): boolean {
+export function isSelectionInMarker( selection: ModelDocumentSelection, marker?: Marker ): boolean {
 	if ( !marker ) {
 		return false;
 	}

@@ -12,12 +12,12 @@ import {
 	type Editor
 } from 'ckeditor5/src/core.js';
 import type {
-	Schema,
-	Writer,
+	ModelSchema,
+	ModelWriter,
 	ViewElement,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
-	DocumentSelectionChangeAttributeEvent
+	ModelDocumentSelectionChangeAttributeEvent
 } from 'ckeditor5/src/engine.js';
 import {
 	Input,
@@ -32,7 +32,7 @@ import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
 import { LinkCommand } from './linkcommand.js';
 import { UnlinkCommand } from './unlinkcommand.js';
-import { ManualDecorator } from './utils/manualdecorator.js';
+import { LinkManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
 	ensureSafeUrl,
@@ -151,7 +151,7 @@ export class LinkEditing extends Plugin {
 		// Handle link following by CTRL+click or ALT+ENTER
 		this._enableLinkOpen();
 
-		// Clears the DocumentSelection decorator attributes if the selection is no longer in a link (for example while using 2-SCM).
+		// Clears the ModelDocumentSelection decorator attributes if the selection is no longer in a link (for example while using 2-SCM).
 		this._enableSelectionAttributesFixer();
 
 		// Handle adding default protocol to pasted links.
@@ -206,11 +206,11 @@ export class LinkEditing extends Plugin {
 
 	/**
 	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorManualDefinition manual decorators},
-	 * transforms them into {@link module:link/utils/manualdecorator~ManualDecorator} instances and stores them in the
+	 * transforms them into {@link module:link/utils/manualdecorator~LinkManualDecorator} instances and stores them in the
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attribute-to-element}
-	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}
+	 * converter for each manual decorator and extends the {@link module:engine/model/schema~ModelSchema model's schema}
 	 * with adequate model attributes.
 	 */
 	private _enableManualDecorators( manualDecoratorDefinitions: Array<NormalizedLinkDecoratorManualDefinition> ): void {
@@ -226,7 +226,7 @@ export class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorDefinition.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			const decorator = new ManualDecorator( decoratorDefinition );
+			const decorator = new LinkManualDecorator( decoratorDefinition );
 
 			manualDecorators.add( decorator );
 
@@ -269,8 +269,8 @@ export class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches handlers for {@link module:engine/view/document~Document#event:enter} and
-	 * {@link module:engine/view/document~Document#event:click} to enable link following.
+	 * Attaches handlers for {@link module:engine/view/document~ViewDocument#event:enter} and
+	 * {@link module:engine/view/document~ViewDocument#event:click} to enable link following.
 	 */
 	private _enableLinkOpen(): void {
 		const editor = this.editor;
@@ -329,7 +329,7 @@ export class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Watches the DocumentSelection attribute changes and removes link decorator attributes when the linkHref attribute is removed.
+	 * Watches the ModelDocumentSelection attribute changes and removes link decorator attributes when the linkHref attribute is removed.
 	 *
 	 * This is to ensure that there is no left-over link decorator attributes on the document selection that is no longer in a link.
 	 */
@@ -338,7 +338,7 @@ export class LinkEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 
-		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+		this.listenTo<ModelDocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
 			if ( !attributeKeys.includes( 'linkHref' ) || selection.hasAttribute( 'linkHref' ) ) {
 				return;
 			}
@@ -389,7 +389,7 @@ type LinkOpener = ( url: string ) => boolean;
  * All link-related model attributes start with "link". That includes not only "linkHref"
  * but also all decorator attributes (they have dynamic names), or even custom plugins.
  */
-function removeLinkAttributesFromSelection( writer: Writer, linkAttributes: Array<string> ): void {
+function removeLinkAttributesFromSelection( writer: ModelWriter, linkAttributes: Array<string> ): void {
 	writer.removeSelectionAttribute( 'linkHref' );
 
 	for ( const attribute of linkAttributes ) {
@@ -400,7 +400,7 @@ function removeLinkAttributesFromSelection( writer: Writer, linkAttributes: Arra
 /**
  * Returns an array containing names of the attributes allowed on `$text` that describes the link item.
  */
-function getLinkAttributesAllowedOnText( schema: Schema ): Array<string> {
+function getLinkAttributesAllowedOnText( schema: ModelSchema ): Array<string> {
 	const textAttributes = schema.getDefinition( '$text' )!.allowAttributes;
 
 	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );

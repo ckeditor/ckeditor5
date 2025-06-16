@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import { StyleEditing } from '@ckeditor/ckeditor5-style/src/styleediting.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 describe( 'bug #14683', () => {
@@ -40,12 +40,12 @@ describe( 'bug #14683', () => {
 	} );
 
 	it( 'should not copy additional attributes for the link element after pressing Enter', () => {
-		setData( model, '<paragraph><$text linkHref="example.com">foo[]</$text></paragraph>' );
+		_setModelData( model, '<paragraph><$text linkHref="example.com">foo[]</$text></paragraph>' );
 
 		editor.commands.get( 'style' ).execute( { styleName: 'Button' } );
 		editor.commands.get( 'enter' ).execute();
 
-		expect( getData( model ) ).to.equal(
+		expect( _getModelData( model ) ).to.equal(
 			'<paragraph><$text htmlA="{"classes":["button"]}" linkHref="example.com">foo</$text></paragraph>' +
 			'<paragraph>[]</paragraph>'
 		);

@@ -11,7 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Position } from '../../../src/view/position.js';
+import { ViewPosition } from '../../../src/view/position.js';
 
 function createEndingUIElement( writer ) {
 	const element = writer.createUIElement( 'span', null, function( domDocument ) {
@@ -65,10 +65,10 @@ ClassicEditor
 		const viewText2 = viewRoot.getChild( 1 ).getChild( 0 );
 
 		view.change( writer => {
-			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText2, 0 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText2, 6 ), createMiddleUIElement( writer ) );
 		} );
 
 		document.querySelector( '#insert-ui-element' ).addEventListener( 'click', () => {

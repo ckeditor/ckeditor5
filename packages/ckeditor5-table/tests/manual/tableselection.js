@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Table } from '../../src/table.js';
 import { TableToolbar } from '../../src/tabletoolbar.js';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { TableClipboard } from '../../src/tableclipboard.js';
 import { TableProperties } from '../../src/tableproperties.js';
@@ -52,7 +52,7 @@ function createEditor( target, inspectorName ) {
 const modelDiv = document.querySelector( '#model' );
 
 function printModelContents( editor ) {
-	modelDiv.innerHTML = formatTable( getData( editor.model ) )
+	modelDiv.innerHTML = formatTable( _getModelData( editor.model ) )
 		.replace( /</g, '&lt;' )
 		.replace( />/g, '&gt;' )
 		.replace( /\n/g, '<br>' )

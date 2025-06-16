@@ -473,7 +473,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
@@ -524,7 +524,7 @@ describe( 'ImageElementSupport', () => {
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<img src="/assets/sample.png"></img>' +
 		// 			'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -1062,7 +1062,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<a class="bar baz foo" data-link="xxx" href="www.example.com" style="color:green">' +
@@ -1122,7 +1122,7 @@ describe( 'ImageElementSupport', () => {
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<img src="/assets/sample.png"></img>' +
@@ -1597,7 +1597,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected foobar image" contenteditable="false" data-figure="zzz"' +
 		// 				' style="font-size:12px;text-align:center">' +
 		// 			'<img class="bar baz" data-image="xyz" src="/assets/sample.png" style="background-color:blue;color:red"></img>' +
@@ -1660,7 +1660,7 @@ describe( 'ImageElementSupport', () => {
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 		// 			'<img src="/assets/sample.png"></img>' +
 		// 			'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
@@ -1976,7 +1976,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 	// 	'<p data-paragraph="paragraph">' +
 		// 	// 		'<span class="ck-widget image-inline" contenteditable="false">' +
 		// 	// 			'<img src="/assets/sample.png" class="bar baz" style="background-color:blue;color:red;" data-image="xxx"></img>' +
@@ -2027,7 +2027,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<span class="ck-widget image-inline" contenteditable="false">' +
 		// 				'<img src="/assets/sample.png"></img>' +
@@ -2372,7 +2372,7 @@ describe( 'ImageElementSupport', () => {
 
 		// 	// TODO: this should pass, but image attributes are incorrectly applied to the span in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 	// 	'<p data-paragraph="paragraph">' +
 		// 	// 		'<span class="foo" data-link="zzz" href="www.example.com" style="background:red;color:pink">' +
 		// 	// 			'<span class="ck-widget image-inline" contenteditable="false">' +
@@ -2433,7 +2433,7 @@ describe( 'ImageElementSupport', () => {
 		// 		}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<p data-paragraph="paragraph">' +
 		// 			'<a href="www.example.com">' +
 		// 				'<span class="ck-widget image-inline" contenteditable="false">' +

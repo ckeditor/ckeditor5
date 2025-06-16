@@ -5,9 +5,9 @@
 
 import { ClipboardObserver } from '../src/clipboardobserver.js';
 
-import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
-import { DowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -17,9 +17,9 @@ describe( 'ClipboardObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View();
+		view = new EditingView();
 		doc = view.document;
-		writer = new DowncastWriter( doc );
+		writer = new ViewDowncastWriter( doc );
 		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
@@ -65,7 +65,7 @@ describe( 'ClipboardObserver', () => {
 
 			expect( data.domTarget ).to.equal( targetElement );
 
-			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			expect( data.dataTransfer ).to.be.instanceOf( ViewDataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 
 			expect( preventDefaultSpy.calledOnce ).to.be.true;
@@ -93,7 +93,7 @@ describe( 'ClipboardObserver', () => {
 
 			expect( data.domTarget ).to.equal( targetElement );
 
-			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			expect( data.dataTransfer ).to.be.instanceOf( ViewDataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 
 			expect( data.dropRange ).to.be.null;
@@ -184,7 +184,7 @@ describe( 'ClipboardObserver', () => {
 
 	describe( 'clipboardInput event', () => {
 		it( 'should be fired on paste', () => {
-			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+			const dataTransfer = new ViewDataTransfer( mockDomDataTransfer() );
 			const normalPrioritySpy = sinon.spy();
 
 			doc.on( 'clipboardInput', eventSpy );
@@ -207,7 +207,7 @@ describe( 'ClipboardObserver', () => {
 		} );
 
 		it( 'should be fired on drop', () => {
-			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+			const dataTransfer = new ViewDataTransfer( mockDomDataTransfer() );
 			const normalPrioritySpy = sinon.spy();
 
 			doc.on( 'clipboardInput', eventSpy );
@@ -233,7 +233,7 @@ describe( 'ClipboardObserver', () => {
 
 		// https://github.com/ckeditor/ckeditor5-upload/issues/92
 		it( 'should stop propagation of the original event if handled by the editor', () => {
-			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+			const dataTransfer = new ViewDataTransfer( mockDomDataTransfer() );
 
 			doc.fire( 'drop', {
 				dataTransfer,
@@ -262,7 +262,7 @@ describe( 'ClipboardObserver', () => {
 
 	describe( 'dragging event', () => {
 		it( 'should be fired on dragover', () => {
-			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+			const dataTransfer = new ViewDataTransfer( mockDomDataTransfer() );
 			const normalPrioritySpy = sinon.spy();
 
 			doc.on( 'dragging', eventSpy );
@@ -333,7 +333,7 @@ describe( 'ClipboardObserver', () => {
 
 			expect( data.domTarget ).to.equal( targetElement );
 
-			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			expect( data.dataTransfer ).to.be.instanceOf( ViewDataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 
 			expect( data.dropRange ).to.be.null;

@@ -11,7 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Image } from '../../src/image.js';
@@ -87,7 +87,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should be false if image is not selected', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>[foo]</paragraph>' +
 				'<imageBlock></imageBlock>'
 			);
@@ -102,7 +102,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should be true if block image is selected', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
 				'[<imageBlock></imageBlock>]'
 			);
@@ -111,7 +111,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should change on selection change', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo[]</paragraph>' +
 				'<imageBlock></imageBlock>'
 			);

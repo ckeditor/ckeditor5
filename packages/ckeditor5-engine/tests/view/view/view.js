@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { Observer } from '../../../src/view/observer/observer.js';
 import { KeyObserver } from '../../../src/view/observer/keyobserver.js';
 import { TabObserver } from '../../../src/view/observer/tabobserver.js';
@@ -46,7 +46,7 @@ describe( 'view', () => {
 
 		document.body.appendChild( domRoot );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 
 		ObserverMock = class extends Observer {
@@ -159,7 +159,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 
@@ -338,7 +338,7 @@ describe( 'view', () => {
 			// The variable will be overwritten.
 			view.destroy();
 
-			view = new View( new StylesProcessor() );
+			view = new EditingView( new StylesProcessor() );
 			viewDocument = view.document;
 			view._renderer.render = sinon.spy();
 		} );
@@ -936,7 +936,7 @@ describe( 'view', () => {
 				createElement( document, 'p' )
 			] );
 
-			const view = new View( new StylesProcessor() );
+			const view = new EditingView( new StylesProcessor() );
 			const viewDocument = view.document;
 
 			createViewRoot( viewDocument, 'div', 'main' );
@@ -953,7 +953,7 @@ describe( 'view', () => {
 		it( 'should render changes in the Document', () => {
 			const domDiv = document.createElement( 'div' );
 
-			const view = new View( new StylesProcessor() );
+			const view = new EditingView( new StylesProcessor() );
 			const viewDocument = view.document;
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
@@ -970,7 +970,7 @@ describe( 'view', () => {
 		it( 'should render attribute changes', () => {
 			const domRoot = document.createElement( 'div' );
 
-			const view = new View( new StylesProcessor() );
+			const view = new EditingView( new StylesProcessor() );
 			const viewDocument = view.document;
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
@@ -1003,7 +1003,7 @@ describe( 'view', () => {
 				document.body.appendChild( domDiv );
 				document.body.appendChild( domOtherDiv );
 
-				view = new View( new StylesProcessor() );
+				view = new EditingView( new StylesProcessor() );
 				viewDocument = view.document;
 
 				createViewRoot( viewDocument, 'div', 'main' );
@@ -1083,7 +1083,7 @@ describe( 'view', () => {
 		it( 'should revert unexpected DOM changes', () => {
 			const domDiv = document.createElement( 'div' );
 
-			const view = new View( new StylesProcessor() );
+			const view = new EditingView( new StylesProcessor() );
 			const viewDocument = view.document;
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );

@@ -4,10 +4,10 @@
  */
 
 import { MarkerCollection } from '../../src/model/markercollection.js';
-import { Position } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
-import { LiveRange } from '../../src/model/liverange.js';
-import { Text } from '../../src/model/text.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
+import { ModelText } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -21,8 +21,8 @@ describe( 'MarkerCollection', () => {
 		markers = new MarkerCollection();
 
 		root = doc.createRoot();
-		range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
-		range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 2 ) );
+		range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
+		range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 2 ) );
 	} );
 
 	describe( 'iterator', () => {
@@ -288,7 +288,7 @@ describe( 'MarkerCollection', () => {
 			markers._set( 'a', range );
 			const markerB = markers._set( 'b', range2 );
 
-			const result = Array.from( markers.getMarkersAtPosition( Position._createAt( root, 1 ) ) );
+			const result = Array.from( markers.getMarkersAtPosition( ModelPosition._createAt( root, 1 ) ) );
 
 			expect( result ).to.deep.equal( [ markerB ] );
 		} );
@@ -324,9 +324,9 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should provide API that returns up-to-date marker range parameters', () => {
-		root._appendChild( new Text( 'foo' ) );
+		root._appendChild( new ModelText( 'foo' ) );
 
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		expect( marker.getRange().isEqual( range ) ).to.be.true;
@@ -337,7 +337,7 @@ describe( 'Marker', () => {
 			writer.insertText( 'abc', root );
 		} );
 
-		const updatedRange = new Range( Position._createAt( root, 4 ), Position._createAt( root, 5 ) );
+		const updatedRange = new ModelRange( ModelPosition._createAt( root, 4 ), ModelPosition._createAt( root, 5 ) );
 
 		expect( marker.getRange().isEqual( updatedRange ) ).to.be.true;
 		expect( marker.getStart().isEqual( updatedRange.start ) ).to.be.true;
@@ -345,7 +345,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should throw when using the API if marker was removed from markers collection', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		model.markers._remove( 'name' );
@@ -372,7 +372,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should attach live range to marker', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		const eventRange = sinon.spy();
@@ -389,7 +389,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should detach live range from marker', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 		const liveRange = marker._liveRange;
 
@@ -411,10 +411,10 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should reattach live range to marker', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 		const oldLiveRange = marker._liveRange;
-		const newLiveRange = new LiveRange( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+		const newLiveRange = new ModelLiveRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();
@@ -440,7 +440,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should change managedUsingOperations flag', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range, false );
 
 		expect( marker.managedUsingOperations ).to.be.false;
@@ -455,7 +455,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should change affectsData flag', () => {
-		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range, false, false );
 
 		expect( marker.affectsData ).to.be.false;
@@ -473,7 +473,7 @@ describe( 'Marker', () => {
 		let marker;
 
 		beforeEach( () => {
-			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 			marker = model.markers._set( 'name', range );
 		} );
 

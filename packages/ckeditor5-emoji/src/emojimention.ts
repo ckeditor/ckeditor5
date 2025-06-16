@@ -10,7 +10,7 @@
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
-import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
+import type { MentionFeed, MentionFeedObjectItem, MentionItemRenderer } from '@ckeditor/ckeditor5-mention';
 
 import { EmojiRepository } from './emojirepository.js';
 import { type EmojiPicker } from './emojipicker.js';
@@ -152,7 +152,7 @@ export class EmojiMention extends Plugin {
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
 	 */
-	private _customItemRendererFactory( t: LocaleTranslate ): ItemRenderer {
+	private _customItemRendererFactory( t: LocaleTranslate ): MentionItemRenderer {
 		return ( item: MentionFeedObjectItem ) => {
 			const itemElement = document.createElement( 'button' );
 

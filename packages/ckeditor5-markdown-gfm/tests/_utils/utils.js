@@ -4,7 +4,7 @@
  */
 
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -17,7 +17,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.j
  * @param {Object} [options] Additional options.
  * @param {Function} [options.setup] A function that receives the data processor instance before its execution.
  * markdown string (which will be used if this parameter is not provided).
- * @returns {module:engine/view/documentfragment~DocumentFragment}
+ * @returns {module:engine/view/documentfragment~ViewDocumentFragment}
  */
 export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
@@ -29,7 +29,7 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	}
 	const viewFragment = dataProcessor.toView( markdown );
 
-	const html = cleanHtml( stringify( viewFragment ) );
+	const html = cleanHtml( _stringifyView( viewFragment ) );
 
 	// Check if view has correct data.
 	expect( html ).to.equal( viewString );

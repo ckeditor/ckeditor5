@@ -7,31 +7,31 @@
  * @module engine/view/downcastwriter
  */
 
-import { Position, type PositionOffset } from './position.js';
-import { Range } from './range.js';
+import { ViewPosition, type ViewPositionOffset } from './position.js';
+import { ViewRange } from './range.js';
 import {
-	Selection,
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions
 } from './selection.js';
-import { ContainerElement } from './containerelement.js';
-import { AttributeElement } from './attributeelement.js';
-import { EmptyElement } from './emptyelement.js';
-import { UIElement } from './uielement.js';
-import { RawElement } from './rawelement.js';
+import { ViewContainerElement } from './containerelement.js';
+import { ViewAttributeElement } from './attributeelement.js';
+import { ViewEmptyElement } from './emptyelement.js';
+import { ViewUIElement } from './uielement.js';
+import { ViewRawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import { DocumentFragment } from './documentfragment.js';
-import { Text } from './text.js';
-import { EditableElement } from './editableelement.js';
+import { ViewDocumentFragment } from './documentfragment.js';
+import { ViewText } from './text.js';
+import { ViewEditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
-import { type Document } from './document.js';
-import { type Node } from './node.js';
-import type { Element, ElementAttributes } from './element.js';
-import { type DomConverter } from './domconverter.js';
-import { type Item } from './item.js';
-import type { SlotFilter } from '../conversion/downcasthelpers.js';
+import { type ViewDocument } from './document.js';
+import { type ViewNode } from './node.js';
+import type { ViewElement, ViewElementAttributes } from './element.js';
+import { type ViewDomConverter } from './domconverter.js';
+import { type ViewItem } from './item.js';
+import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -42,42 +42,42 @@ type DomElement = globalThis.HTMLElement;
  * It provides a set of methods used to manipulate view nodes.
  *
  * Do not create an instance of this writer manually. To modify a view structure, use
- * the {@link module:engine/view/view~View#change `View#change()`} block.
+ * the {@link module:engine/view/view~EditingView#change `View#change()`} block.
  *
- * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
+ * The `ViewDowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
  * To work with ordinary views (e.g. parsed from a pasted content) use the
- * {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ * {@link module:engine/view/upcastwriter~ViewUpcastWriter upcast writer}.
  *
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  */
-export class DowncastWriter {
+export class ViewDowncastWriter {
 	/**
 	 * The view document instance in which this writer operates.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
-	 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~AttributeElement#id id}.
-	 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~AttributeElement}s.
+	 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~ViewAttributeElement#id id}.
+	 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~ViewAttributeElement}s.
 	 */
-	private readonly _cloneGroups = new Map<string | number, Set<AttributeElement>>();
+	private readonly _cloneGroups = new Map<string | number, Set<ViewAttributeElement>>();
 
 	/**
 	 * The slot factory used by the `elementToStructure` downcast helper.
 	 */
-	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => Element ) | null = null;
+	private _slotFactory: ( ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => ViewElement ) | null = null;
 
 	/**
 	 * @param document The view document instance.
 	 */
-	constructor( document: Document ) {
+	constructor( document: ViewDocument ) {
 		this.document = document;
 	}
 
 	/**
-	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
+	 * Sets {@link module:engine/view/documentselection~ViewDocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * Usage:
 	 *
@@ -87,20 +87,20 @@ export class DowncastWriter {
 	 * writer.setSelection( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on the {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on the {@link module:engine/view/item~ViewItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'on' );
 	 * ```
 	 *
-	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `ViewDowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Sets selection as backward.
@@ -121,11 +121,11 @@ export class DowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
+	public setSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): void;
 
 	/**
-	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
+	 * Sets {@link module:engine/view/documentselection~ViewDocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *
 	 * Usage:
 	 *
@@ -154,7 +154,7 @@ export class DowncastWriter {
 	 * writer.setSelection( null );
 	 * ```
 	 *
-	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `ViewDowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Sets selection as backward.
@@ -175,37 +175,38 @@ export class DowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: SelectionOptions ): void;
+	public setSelection( selectable: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions ): void;
 
-	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public setSelection( ...args: Parameters<ViewSelection[ 'setTo' ]> ): void {
 		this.document.selection._setTo( ...args );
 	}
 
 	/**
-	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
+	 * Moves {@link module:engine/view/documentselection~ViewDocumentSelection#focus selection's focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * The location can be specified in the same form as
+	 * {@link module:engine/view/view~EditingView#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
-	public setSelectionFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public setSelectionFocus( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): void {
 		this.document.selection._setFocus( itemOrPosition, offset );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 * Creates a new {@link module:engine/view/documentfragment~ViewDocumentFragment} instance.
 	 *
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
-		return new DocumentFragment( this.document, children );
+	public createDocumentFragment( children?: ViewNode | Iterable<ViewNode> ): ViewDocumentFragment {
+		return new ViewDocumentFragment( this.document, children );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/text~Text text node}.
+	 * Creates a new {@link module:engine/view/text~ViewText text node}.
 	 *
 	 * ```ts
 	 * writer.createText( 'foo' );
@@ -214,12 +215,12 @@ export class DowncastWriter {
 	 * @param data The text's data.
 	 * @returns The created text node.
 	 */
-	public createText( data: string ): Text {
-		return new Text( this.document, data );
+	public createText( data: string ): ViewText {
+		return new ViewText( this.document, data );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/attributeelement~AttributeElement}.
+	 * Creates a new {@link module:engine/view/attributeelement~ViewAttributeElement}.
 	 *
 	 * ```ts
 	 * writer.createAttributeElement( 'strong' );
@@ -235,22 +236,22 @@ export class DowncastWriter {
 	 * @param name Name of the element.
 	 * @param attributes Element's attributes.
 	 * @param options Element's options.
-	 * @param options.priority Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
-	 * @param options.id Element's {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 * @param options.priority Element's {@link module:engine/view/attributeelement~ViewAttributeElement#priority priority}.
+	 * @param options.id Element's {@link module:engine/view/attributeelement~ViewAttributeElement#id id}.
 	 * @param options.renderUnsafeAttributes A list of attribute names that should be rendered in the editing
 	 * pipeline even though they would normally be filtered out by unsafe attribute detection mechanisms.
 	 * @returns Created element.
 	 */
 	public createAttributeElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			priority?: number;
 			id?: number | string;
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): AttributeElement {
-		const attributeElement = new AttributeElement( this.document, name, attributes );
+	): ViewAttributeElement {
+		const attributeElement = new ViewAttributeElement( this.document, name, attributes );
 
 		if ( typeof options.priority === 'number' ) {
 			attributeElement._priority = options.priority;
@@ -268,7 +269,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/containerelement~ContainerElement}.
+	 * Creates a new {@link module:engine/view/containerelement~ViewContainerElement}.
 	 *
 	 * ```ts
 	 * writer.createContainerElement( 'p' );
@@ -296,12 +297,12 @@ export class DowncastWriter {
 	 */
 	public createContainerElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options?: { renderUnsafeAttributes?: Array<string> }
-	): ContainerElement;
+	): ViewContainerElement;
 
 	/**
-	 * Creates a new {@link module:engine/view/containerelement~ContainerElement} with children.
+	 * Creates a new {@link module:engine/view/containerelement~ViewContainerElement} with children.
 	 *
 	 * ```ts
 	 * // Create element with children.
@@ -329,18 +330,18 @@ export class DowncastWriter {
 	 */
 	public createContainerElement(
 		name: string,
-		attributes: ElementAttributes,
-		children: Node | Iterable<Node>,
+		attributes: ViewElementAttributes,
+		children: ViewNode | Iterable<ViewNode>,
 		options?: { renderUnsafeAttributes?: Array<string> }
-	): ContainerElement;
+	): ViewContainerElement;
 
 	public createContainerElement(
 		name: string,
-		attributes?: ElementAttributes,
-		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
+		attributes?: ViewElementAttributes,
+		childrenOrOptions: ViewNode | Iterable<ViewNode> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
-	): ContainerElement {
-		let children: Node | Iterable<Node> | undefined = undefined;
+	): ViewContainerElement {
+		let children: ViewNode | Iterable<ViewNode> | undefined = undefined;
 
 		if ( isPlainObject( childrenOrOptions ) ) {
 			options = childrenOrOptions as { renderUnsafeAttributes?: Array<string> };
@@ -348,7 +349,7 @@ export class DowncastWriter {
 			children = childrenOrOptions;
 		}
 
-		const containerElement = new ContainerElement( this.document, name, attributes, children );
+		const containerElement = new ViewContainerElement( this.document, name, attributes, children );
 		if ( options.renderUnsafeAttributes ) {
 			containerElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
@@ -357,7 +358,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/editableelement~EditableElement}.
+	 * Creates a new {@link module:engine/view/editableelement~ViewEditableElement}.
 	 *
 	 * ```ts
 	 * writer.createEditableElement( 'div' );
@@ -376,12 +377,12 @@ export class DowncastWriter {
 	 */
 	public createEditableElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): EditableElement {
-		const editableElement = new EditableElement( this.document, name, attributes );
+	): ViewEditableElement {
+		const editableElement = new ViewEditableElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
 			editableElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
@@ -391,7 +392,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/emptyelement~EmptyElement}.
+	 * Creates a new {@link module:engine/view/emptyelement~ViewEmptyElement}.
 	 *
 	 * ```ts
 	 * writer.createEmptyElement( 'img' );
@@ -407,12 +408,12 @@ export class DowncastWriter {
 	 */
 	public createEmptyElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): EmptyElement {
-		const emptyElement = new EmptyElement( this.document, name, attributes );
+	): ViewEmptyElement {
+		const emptyElement = new ViewEmptyElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
 			emptyElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
@@ -422,7 +423,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/uielement~UIElement}.
+	 * Creates a new {@link module:engine/view/uielement~ViewUIElement}.
 	 *
 	 * ```ts
 	 * writer.createUIElement( 'span' );
@@ -452,10 +453,10 @@ export class DowncastWriter {
 	 */
 	public createUIElement(
 		name: string,
-		attributes?: ElementAttributes,
-		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: DomConverter ) => DomElement
-	): UIElement {
-		const uiElement = new UIElement( this.document, name, attributes );
+		attributes?: ViewElementAttributes,
+		renderFunction?: ( this: ViewUIElement, domDocument: DomDocument, domConverter: ViewDomConverter ) => DomElement
+	): ViewUIElement {
+		const uiElement = new ViewUIElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			uiElement.render = renderFunction;
@@ -465,7 +466,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/rawelement~RawElement}.
+	 * Creates a new {@link module:engine/view/rawelement~ViewRawElement}.
 	 *
 	 * ```ts
 	 * writer.createRawElement( 'span', { id: 'foo-1234' }, function( domElement ) {
@@ -479,7 +480,7 @@ export class DowncastWriter {
 	 * Raw elements are a perfect tool for integration with external frameworks and data sources.
 	 *
 	 * Unlike {@link #createUIElement UI elements}, raw elements act like "real" editor content (similar to
-	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
+	 * {@link module:engine/view/containerelement~ViewContainerElement} or {@link module:engine/view/emptyelement~ViewEmptyElement}),
 	 * and they are considered by the editor selection.
 	 *
 	 * You should not use raw elements to render the UI in the editor content. Check out {@link #createUIElement `#createUIElement()`}
@@ -495,13 +496,13 @@ export class DowncastWriter {
 	 */
 	public createRawElement(
 		name: string,
-		attributes?: ElementAttributes,
-		renderFunction?: ( domElement: DomElement, domConverter: DomConverter ) => void,
+		attributes?: ViewElementAttributes,
+		renderFunction?: ( domElement: DomElement, domConverter: ViewDomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): RawElement {
-		const rawElement = new RawElement( this.document, name, attributes );
+	): ViewRawElement {
+		const rawElement = new ViewRawElement( this.document, name, attributes );
 
 		if ( renderFunction ) {
 			rawElement.render = renderFunction;
@@ -525,7 +526,7 @@ export class DowncastWriter {
 	 * @param value The attribute value.
 	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void;
+	public setAttribute( key: string, value: unknown, element: ViewElement ): void;
 
 	/**
 	 * Adds or overwrites the element's attribute with a specified key and value.
@@ -542,18 +543,18 @@ export class DowncastWriter {
 	 * @param overwrite Whether tokenized attribute should overwrite the attribute value or just add a token.
 	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, overwrite: boolean, element: Element ): void;
+	public setAttribute( key: string, value: unknown, overwrite: boolean, element: ViewElement ): void;
 
 	public setAttribute(
 		key: string,
 		value: unknown,
-		elementOrOverwrite: Element | boolean,
-		element?: Element
+		elementOrOverwrite: ViewElement | boolean,
+		element?: ViewElement
 	): void {
 		if ( element !== undefined ) {
 			element._setAttribute( key, value, elementOrOverwrite as boolean );
 		} else {
-			( elementOrOverwrite as Element )._setAttribute( key, value );
+			( elementOrOverwrite as ViewElement )._setAttribute( key, value );
 		}
 	}
 
@@ -567,7 +568,7 @@ export class DowncastWriter {
 	 * @param key Attribute key.
 	 * @param element The element to remove an attribute of.
 	 */
-	public removeAttribute( key: string, element: Element ): void;
+	public removeAttribute( key: string, element: ViewElement ): void;
 
 	/**
 	 * Removes specified tokens from an attribute value (for example class names, style properties).
@@ -581,13 +582,13 @@ export class DowncastWriter {
 	 * @param tokens Tokens to partly remove from attribute value. For example class names or style property names.
 	 * @param element The element to remove an attribute of.
 	 */
-	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: Element ): void;
+	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: ViewElement ): void;
 
-	public removeAttribute( key: string, elementOrTokens: Element | ArrayOrItem<string>, element?: Element ): void {
+	public removeAttribute( key: string, elementOrTokens: ViewElement | ArrayOrItem<string>, element?: ViewElement ): void {
 		if ( element !== undefined ) {
 			element._removeAttribute( key, elementOrTokens as ArrayOrItem<string> );
 		} else {
-			( elementOrTokens as Element )._removeAttribute( key );
+			( elementOrTokens as ViewElement )._removeAttribute( key );
 		}
 	}
 
@@ -599,7 +600,7 @@ export class DowncastWriter {
 	 * writer.addClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 */
-	public addClass( className: string | Array<string>, element: Element ): void {
+	public addClass( className: string | Array<string>, element: ViewElement ): void {
 		element._addClass( className );
 	}
 
@@ -611,7 +612,7 @@ export class DowncastWriter {
 	 * writer.removeClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 */
-	public removeClass( className: string | Array<string>, element: Element ): void {
+	public removeClass( className: string | Array<string>, element: ViewElement ): void {
 		element._removeClass( className );
 	}
 
@@ -631,7 +632,7 @@ export class DowncastWriter {
 	 * @param value Value to set.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: string, value: string, element: Element ): void;
+	public setStyle( property: string, value: string, element: ViewElement ): void;
 
 	/**
 	 * Adds many styles to the element.
@@ -651,16 +652,16 @@ export class DowncastWriter {
 	 * @param property Object with key - value pairs.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: Record<string, string>, element: Element ): void;
+	public setStyle( property: Record<string, string>, element: ViewElement ): void;
 
 	public setStyle(
 		property: string | Record<string, string>,
-		value: string | Element,
-		element?: Element
+		value: string | ViewElement,
+		element?: ViewElement
 	): void
 	{
 		if ( isPlainObject( property ) && element === undefined ) {
-			( value as Element )._setStyle( property as Record<string, string> );
+			( value as ViewElement )._setStyle( property as Record<string, string> );
 		} else {
 			element!._setStyle( property as string, value as string );
 		}
@@ -678,7 +679,7 @@ export class DowncastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 */
-	public removeStyle( property: string | Array<string>, element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: ViewElement ): void {
 		element._removeStyle( property );
 	}
 
@@ -686,7 +687,7 @@ export class DowncastWriter {
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: ViewElement | ViewDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -695,7 +696,7 @@ export class DowncastWriter {
 	 *
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: ViewElement | ViewDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
@@ -712,32 +713,32 @@ export class DowncastWriter {
 	 * <p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
 	 * ```
 	 *
-	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+	 * **Note:** {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment} is treated like a container.
 	 *
-	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of a given `position`,
-	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
+	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that a given `position` is directly in the container element and breaks that container element.
 	 *
 	 * Throws the `view-writer-invalid-range-container` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when the {@link module:engine/view/range~Range#start start}
-	 * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
+	 * when the {@link module:engine/view/range~ViewRange#start start}
+	 * and {@link module:engine/view/range~ViewRange#end end} positions of a passed range are not placed inside same parent container.
 	 *
 	 * Throws the `view-writer-cannot-break-empty-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws the `view-writer-cannot-break-ui-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when trying to break attributes inside a {@link module:engine/view/uielement~UIElement UIElement}.
+	 * when trying to break attributes inside a {@link module:engine/view/uielement~ViewUIElement UIElement}.
 	 *
-	 * @see module:engine/view/attributeelement~AttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
+	 * @see module:engine/view/attributeelement~ViewAttributeElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer
 	 * @param positionOrRange The position where to break attribute elements.
 	 * @returns The new position or range, after breaking the attribute elements.
 	 */
-	public breakAttributes( positionOrRange: Position | Range ): Position | Range {
-		if ( positionOrRange instanceof Position ) {
+	public breakAttributes( positionOrRange: ViewPosition | ViewRange ): ViewPosition | ViewRange {
+		if ( positionOrRange instanceof ViewPosition ) {
 			return this._breakAttributes( positionOrRange );
 		} else {
 			return this._breakAttributesRange( positionOrRange );
@@ -745,7 +746,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Breaks a {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position.
+	 * Breaks a {@link module:engine/view/containerelement~ViewContainerElement container view element} into two, at the given position.
 	 * The position has to be directly inside the container element and cannot be in the root. It does not break the conrainer view element
 	 * if the position is at the beginning or at the end of its parent element.
 	 *
@@ -756,20 +757,20 @@ export class DowncastWriter {
 	 * <p>foobar^</p> -> <p>foobar</p>^
 	 * ```
 	 *
-	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of a given `position`,
-	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
+	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that the given `position` is directly in the container element and breaks that container element.
 	 *
-	 * @see module:engine/view/attributeelement~AttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
+	 * @see module:engine/view/attributeelement~ViewAttributeElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes
 	 * @param position The position where to break the element.
 	 * @returns The position between broken elements. If an element has not been broken,
 	 * the returned position is placed either before or after it.
 	 */
-	public breakContainer( position: Position ): Position {
+	public breakContainer( position: ViewPosition ): ViewPosition {
 		const element = position.parent;
 
 		if ( !( element.is( 'containerElement' ) ) ) {
@@ -791,24 +792,24 @@ export class DowncastWriter {
 		}
 
 		if ( position.isAtStart ) {
-			return Position._createBefore( element );
+			return ViewPosition._createBefore( element );
 		} else if ( !position.isAtEnd ) {
 			const newElement = element._clone( false );
 
-			this.insert( Position._createAfter( element ), newElement as any );
+			this.insert( ViewPosition._createAfter( element ), newElement as any );
 
-			const sourceRange = new Range( position, Position._createAt( element, 'end' ) );
-			const targetPosition = new Position( newElement, 0 );
+			const sourceRange = new ViewRange( position, ViewPosition._createAt( element, 'end' ) );
+			const targetPosition = new ViewPosition( newElement, 0 );
 
 			this.move( sourceRange, targetPosition );
 		}
 
-		return Position._createAfter( element );
+		return ViewPosition._createAfter( element );
 	}
 
 	/**
-	 * Merges {@link module:engine/view/attributeelement~AttributeElement attribute elements}. It also merges text nodes if needed.
-	 * Only {@link module:engine/view/attributeelement~AttributeElement#isSimilar similar} attribute elements can be merged.
+	 * Merges {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements}. It also merges text nodes if needed.
+	 * Only {@link module:engine/view/attributeelement~ViewAttributeElement#isSimilar similar} attribute elements can be merged.
 	 *
 	 * In following examples `<p>` is a container and `<b>` is an attribute element:
 	 *
@@ -825,18 +826,19 @@ export class DowncastWriter {
 	 * <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
 	 * ```
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
-	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
+	 * {@link module:engine/view/text~ViewText text nodes} while `mergeContainer` merges two
+	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
-	 * @see module:engine/view/attributeelement~AttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeContainers
+	 * @see module:engine/view/attributeelement~ViewAttributeElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
-	public mergeAttributes( position: Position ): Position {
+	public mergeAttributes( position: ViewPosition ): ViewPosition {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
 
@@ -853,11 +855,11 @@ export class DowncastWriter {
 			positionParent._remove();
 			this._removeFromClonedElementsGroup( positionParent );
 
-			return this.mergeAttributes( new Position( parent!, offset! ) );
+			return this.mergeAttributes( new ViewPosition( parent!, offset! ) );
 		}
 
-		const nodeBefore = ( positionParent as Element ).getChild( positionOffset - 1 );
-		const nodeAfter = ( positionParent as Element ).getChild( positionOffset );
+		const nodeBefore = ( positionParent as ViewElement ).getChild( positionOffset - 1 );
+		const nodeAfter = ( positionParent as ViewElement ).getChild( positionOffset );
 
 		// Position should be placed between two nodes.
 		if ( !nodeBefore || !nodeAfter ) {
@@ -879,33 +881,35 @@ export class DowncastWriter {
 
 			// New position is located inside the first node, before new nodes.
 			// Call this method recursively to merge again if needed.
-			return this.mergeAttributes( new Position( nodeBefore, count ) );
+			return this.mergeAttributes( new ViewPosition( nodeBefore, count ) );
 		}
 
 		return position;
 	}
 
 	/**
-	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
-	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
+	 * Merges two {@link module:engine/view/containerelement~ViewContainerElement container elements} that are
+	 * before and after given position. Precisely, the element after the position is removed and it's contents are
+	 * moved to element before the position.
 	 *
 	 * ```html
 	 * <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
 	 * <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
 	 * ```
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
-	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
+	 * {@link module:engine/view/text~ViewText text nodes} while `mergeContainer` merges two
+	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
-	 * @see module:engine/view/attributeelement~AttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeAttributes
+	 * @see module:engine/view/attributeelement~ViewAttributeElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
-	public mergeContainers( position: Position ): Position {
+	public mergeContainers( position: ViewPosition ): ViewPosition {
 		const prev = position.nodeBefore;
 		const next = position.nodeAfter;
 
@@ -919,10 +923,12 @@ export class DowncastWriter {
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
-		const newPosition = lastChild instanceof Text ? Position._createAt( lastChild, 'end' ) : Position._createAt( prev, 'end' );
+		const newPosition = lastChild instanceof ViewText ?
+			ViewPosition._createAt( lastChild, 'end' ) :
+			ViewPosition._createAt( prev, 'end' );
 
-		this.move( Range._createIn( next ), Position._createAt( prev, 'end' ) );
-		this.remove( Range._createOn( next ) );
+		this.move( ViewRange._createIn( next ), ViewPosition._createAt( prev, 'end' ) );
+		this.remove( ViewRange._createOn( next ) );
 
 		return newPosition;
 	}
@@ -932,29 +938,31 @@ export class DowncastWriter {
 	 * and merging them afterwards.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
-	 * contains instances that are not {@link module:engine/view/text~Text Texts},
-	 * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
-	 * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
-	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
-	 * {@link module:engine/view/rawelement~RawElement RawElements} or
-	 * {@link module:engine/view/uielement~UIElement UIElements}.
+	 * contains instances that are not {@link module:engine/view/text~ViewText Texts},
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElements},
+	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
+	 * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElements},
+	 * {@link module:engine/view/rawelement~ViewRawElement RawElements} or
+	 * {@link module:engine/view/uielement~ViewUIElement UIElements}.
 	 *
 	 * @param position Insertion position.
 	 * @param nodes Node or nodes to insert.
 	 * @returns Range around inserted nodes.
 	 */
-	public insert( position: Position, nodes: Node | Iterable<Node> ): Range {
+	public insert( position: ViewPosition, nodes: ViewNode | Iterable<ViewNode> ): ViewRange {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
+		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, ViewEmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		// Group nodes in batches of nodes that require or do not require breaking an AttributeElements.
-		const nodeGroups = ( nodes as Array<Node> ).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<Node> }>, node ) => {
+		// Group nodes in batches of nodes that require or do not require breaking an ViewAttributeElements.
+		const nodeGroups = (
+			nodes as Array<ViewNode>
+		).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<ViewNode> }>, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
 
 			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
-			// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+			// can't have an attribute in model and won't get wrapped with an ViewAttributeElement while down-casted.
 			const breakAttributes = !node.is( 'uiElement' );
 
 			if ( !lastGroup || lastGroup.breakAttributes != breakAttributes ) {
@@ -985,37 +993,37 @@ export class DowncastWriter {
 
 		// When no nodes were inserted - return collapsed range.
 		if ( !start ) {
-			return new Range( position );
+			return new ViewRange( position );
 		}
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Removes provided range from the container.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param rangeOrItem Range to remove from container
-	 * or an {@link module:engine/view/item~Item item} to remove. If range is provided, after removing, it will be updated
+	 * or an {@link module:engine/view/item~ViewItem item} to remove. If range is provided, after removing, it will be updated
 	 * to a collapsed range showing the new position.
 	 * @returns Document fragment containing removed nodes.
 	 */
-	public remove( rangeOrItem: Range | Item ): DocumentFragment {
-		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
+	public remove( rangeOrItem: ViewRange | ViewItem ): ViewDocumentFragment {
+		const range = rangeOrItem instanceof ViewRange ? rangeOrItem : ViewRange._createOn( rangeOrItem );
 
 		validateRangeContainer( range, this.document );
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
-			return new DocumentFragment( this.document );
+			return new ViewDocumentFragment( this.document );
 		}
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		const count = breakEnd.offset - breakStart.offset;
 
@@ -1032,20 +1040,20 @@ export class DowncastWriter {
 		( range as any ).end = mergePosition.clone();
 
 		// Return removed nodes.
-		return new DocumentFragment( this.document, removed );
+		return new ViewDocumentFragment( this.document, removed );
 	}
 
 	/**
 	 * Removes matching elements from given range.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param range Range to clear.
 	 * @param element Element to remove.
 	 */
-	public clear( range: Range, element: Element ): void {
+	public clear( range: ViewRange, element: ViewElement ): void {
 		validateRangeContainer( range, this.document );
 
 		// Create walker on given range.
@@ -1063,7 +1071,7 @@ export class DowncastWriter {
 			// When current item matches to the given element.
 			if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 				// Create range on this element.
-				rangeToRemove = Range._createOn( item );
+				rangeToRemove = ViewRange._createOn( item );
 				// When range starts inside Text or TextProxy element.
 			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( '$textProxy' ) ) {
 				// We need to check if parent of this text matches to given element.
@@ -1073,7 +1081,7 @@ export class DowncastWriter {
 
 				// If it is then create range inside this element.
 				if ( parentElement ) {
-					rangeToRemove = Range._createIn( parentElement as Element );
+					rangeToRemove = ViewRange._createIn( parentElement as ViewElement );
 				}
 			}
 
@@ -1098,21 +1106,21 @@ export class DowncastWriter {
 	 * Moves nodes from provided range to target position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 *
 	 * @param sourceRange Range containing nodes to move.
 	 * @param targetPosition Position to insert.
 	 * @returns Range in target container. Inserted nodes are placed between
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end} positions.
 	 */
-	public move( sourceRange: Range, targetPosition: Position ): Range {
+	public move( sourceRange: ViewRange, targetPosition: ViewPosition ): ViewRange {
 		let nodes;
 
 		if ( targetPosition.isAfter( sourceRange.end ) ) {
 			targetPosition = this._breakAttributes( targetPosition, true );
 
-			const parent = targetPosition.parent as Element;
+			const parent = targetPosition.parent as ViewElement;
 			const countBefore = parent.childCount;
 
 			sourceRange = this._breakAttributesRange( sourceRange, true );
@@ -1128,18 +1136,18 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
 	 *
 	 * If a collapsed range was passed and is same as selection, the selection
 	 * will be moved to the inside of the wrapped attribute element.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
-	 * when {@link module:engine/view/range~Range#start}
-	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+	 * when {@link module:engine/view/range~ViewRange#start}
+	 * and {@link module:engine/view/range~ViewRange#end} positions are not placed inside same parent container.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
 	 * is collapsed and different than view selection.
@@ -1148,8 +1156,8 @@ export class DowncastWriter {
 	 * @param attribute Attribute element to use as wrapper.
 	 * @returns range Range after wrapping, spanning over wrapping attribute element.
 	 */
-	public wrap( range: Range, attribute: AttributeElement ): Range {
-		if ( !( attribute instanceof AttributeElement ) ) {
+	public wrap( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
+		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			throw new CKEditorError(
 				'view-writer-wrap-invalid-attribute',
 				this.document
@@ -1177,7 +1185,7 @@ export class DowncastWriter {
 				this.setSelection( position );
 			}
 
-			return new Range( position );
+			return new ViewRange( position );
 		}
 	}
 
@@ -1185,14 +1193,14 @@ export class DowncastWriter {
 	 * Unwraps nodes within provided range from attribute element.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
-	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
-	 * same parent container.
+	 * {@link module:engine/view/range~ViewRange#start start} and {@link module:engine/view/range~ViewRange#end end}
+	 * positions are not placed inside same parent container.
 	 */
-	public unwrap( range: Range, attribute: AttributeElement ): Range {
-		if ( !( attribute instanceof AttributeElement ) ) {
+	public unwrap( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
+		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			/**
-			 * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#unwrap `DowncastWriter#unwrap()`}
-			 * must be an instance of {@link module:engine/view/attributeelement~AttributeElement `AttributeElement`}.
+			 * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap `ViewDowncastWriter#unwrap()`}
+			 * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
 			 *
 			 * @error view-writer-unwrap-invalid-attribute
 			 */
@@ -1211,7 +1219,7 @@ export class DowncastWriter {
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		// Unwrap children located between break points.
 		const newRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
@@ -1226,13 +1234,13 @@ export class DowncastWriter {
 
 		const end = this.mergeAttributes( newRange.end );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
-	 * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~Position positions} which
-	 * has renamed element as {@link module:engine/view/position~Position#parent a parent}.
+	 * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~ViewPosition positions}
+	 * which has renamed element as {@link module:engine/view/position~ViewPosition#parent a parent}.
 	 *
 	 * New element has to be created because `Element#tagName` property in DOM is readonly.
 	 *
@@ -1242,12 +1250,12 @@ export class DowncastWriter {
 	 * @param viewElement Element to be renamed.
 	 * @returns Element created due to rename.
 	 */
-	public rename( newName: string, viewElement: ContainerElement ): ContainerElement {
-		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
+	public rename( newName: string, viewElement: ViewContainerElement ): ViewContainerElement {
+		const newElement = new ViewContainerElement( this.document, newName, viewElement.getAttributes() );
 
-		this.insert( Position._createAfter( viewElement ), newElement );
-		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
-		this.remove( Range._createOn( viewElement ) );
+		this.insert( ViewPosition._createAfter( viewElement ), newElement );
+		this.move( ViewRange._createIn( viewElement ), ViewPosition._createAt( newElement, 0 ) );
+		this.remove( ViewRange._createOn( viewElement ) );
 
 		return newElement;
 	}
@@ -1255,8 +1263,8 @@ export class DowncastWriter {
 	/**
 	 * Cleans up memory by removing obsolete cloned elements group from the writer.
 	 *
-	 * Should be used whenever all {@link module:engine/view/attributeelement~AttributeElement attribute elements}
-	 * with the same {@link module:engine/view/attributeelement~AttributeElement#id id} are going to be removed from the view and
+	 * Should be used whenever all {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements}
+	 * with the same {@link module:engine/view/attributeelement~ViewAttributeElement#id id} are going to be removed from the view and
 	 * the group will no longer be needed.
 	 *
 	 * Cloned elements group are not removed automatically in case if the group is still needed after all its elements
@@ -1273,20 +1281,20 @@ export class DowncastWriter {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/view/position~Position position},
+	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
-		return Position._createAt( itemOrPosition, offset );
+	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
+		return ViewPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
@@ -1294,8 +1302,8 @@ export class DowncastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
-		return Position._createAfter( item );
+	public createPositionAfter( item: ViewItem ): ViewPosition {
+		return ViewPosition._createAfter( item );
 	}
 
 	/**
@@ -1303,52 +1311,52 @@ export class DowncastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
-		return Position._createBefore( item );
+	public createPositionBefore( item: ViewItem ): ViewPosition {
+		return ViewPosition._createBefore( item );
 	}
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates its own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates its own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end?: Position | null ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end?: ViewPosition | null ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
 	 * const paragraph = writer.createContainerElement( 'p' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
@@ -1376,10 +1384,10 @@ export class DowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): ViewSelection;
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -1428,10 +1436,10 @@ export class DowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, option?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<ViewSelectable, ViewNode>, option?: ViewSelectionOptions ): ViewSelection;
 
-	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
-		return new Selection( ...args );
+	public createSelection( ...args: ConstructorParameters<typeof ViewSelection> ): ViewSelection {
+		return new ViewSelection( ...args );
 	}
 
 	/**
@@ -1463,7 +1471,7 @@ export class DowncastWriter {
 	 * @returns The slot element to be placed in to the view structure while processing
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
 	 */
-	public createSlot( modeOrFilter: 'children' | SlotFilter = 'children' ): Element {
+	public createSlot( modeOrFilter: 'children' | DowncastSlotFilter = 'children' ): ViewElement {
 		if ( !this._slotFactory ) {
 			/**
 			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.
@@ -1482,7 +1490,9 @@ export class DowncastWriter {
 	 * @internal
 	 * @param slotFactory The slot factory.
 	 */
-	public _registerSlotFactory( slotFactory: ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => Element ): void {
+	public _registerSlotFactory(
+		slotFactory: ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => ViewElement
+	): void {
 		this._slotFactory = slotFactory;
 	}
 
@@ -1504,11 +1514,11 @@ export class DowncastWriter {
 	 * @param breakAttributes Whether attributes should be broken.
 	 * @returns Range around inserted nodes.
 	 */
-	private _insertNodes( position: Position, nodes: Iterable<Node>, breakAttributes: boolean ): Range {
+	private _insertNodes( position: ViewPosition, nodes: Iterable<ViewNode>, breakAttributes: boolean ): ViewRange {
 		let parentElement;
 
 		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
-		// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+		// can't have an attribute in model and won't get wrapped with an ViewAttributeElement while down-casted.
 		if ( breakAttributes ) {
 			parentElement = getParentContainer( position );
 		} else {
@@ -1535,7 +1545,7 @@ export class DowncastWriter {
 			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
 		}
 
-		const length = ( parentElement as Element | DocumentFragment )._insertChild( insertionPosition.offset, nodes );
+		const length = ( parentElement as ViewElement | ViewDocumentFragment )._insertChild( insertionPosition.offset, nodes );
 
 		for ( const node of nodes ) {
 			this._addToClonedElementsGroup( node );
@@ -1551,16 +1561,16 @@ export class DowncastWriter {
 
 		const end = this.mergeAttributes( endPosition );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
 	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 */
-	private _wrapChildren( parent: Element, startOffset: number, endOffset: number, wrapElement: AttributeElement ) {
+	private _wrapChildren( parent: ViewElement, startOffset: number, endOffset: number, wrapElement: ViewAttributeElement ) {
 		let i = startOffset;
-		const wrapPositions: Array<Position> = [];
+		const wrapPositions: Array<ViewPosition> = [];
 
 		while ( i < endOffset ) {
 			const child = parent.getChild( i )!;
@@ -1577,7 +1587,7 @@ export class DowncastWriter {
 			//
 			if ( isAttribute && child._canMergeAttributesFrom( wrapElement ) ) {
 				child._mergeAttributesFrom( wrapElement );
-				wrapPositions.push( new Position( parent, i ) );
+				wrapPositions.push( new ViewPosition( parent, i ) );
 			}
 			//
 			// Wrap the child if it is not an attribute element or if it is an attribute element that should be inside
@@ -1596,7 +1606,7 @@ export class DowncastWriter {
 				parent._insertChild( i, newAttribute );
 				this._addToClonedElementsGroup( newAttribute );
 
-				wrapPositions.push( new Position( parent, i ) );
+				wrapPositions.push( new ViewPosition( parent, i ) );
 			}
 			//
 			// If other nested attribute is found and it wasn't wrapped (see above), continue wrapping inside it.
@@ -1630,16 +1640,16 @@ export class DowncastWriter {
 			}
 		}
 
-		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return ViewRange._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
 	 * Unwraps children from provided `unwrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be unwrapped.
 	 */
-	private _unwrapChildren( parent: Element, startOffset: number, endOffset: number, unwrapElement: AttributeElement ) {
+	private _unwrapChildren( parent: ViewElement, startOffset: number, endOffset: number, unwrapElement: ViewAttributeElement ) {
 		let i = startOffset;
-		const unwrapPositions: Array<Position> = [];
+		const unwrapPositions: Array<ViewPosition> = [];
 
 		// Iterate over each element between provided offsets inside parent.
 		// We don't use tree walker or range iterator because we will be removing and merging potentially multiple nodes,
@@ -1673,8 +1683,8 @@ export class DowncastWriter {
 
 				// Save start and end position of moved items.
 				unwrapPositions.push(
-					new Position( parent, i ),
-					new Position( parent, i + count )
+					new ViewPosition( parent, i ),
+					new ViewPosition( parent, i + count )
 				);
 
 				// Skip elements that were unwrapped. Assuming there won't be another element to unwrap in child elements.
@@ -1694,8 +1704,8 @@ export class DowncastWriter {
 			if ( child._canSubtractAttributesOf( unwrapElement ) ) {
 				child._subtractAttributesOf( unwrapElement );
 				unwrapPositions.push(
-					new Position( parent, i ),
-					new Position( parent, i + 1 )
+					new ViewPosition( parent, i ),
+					new ViewPosition( parent, i + 1 )
 				);
 
 				i++;
@@ -1733,7 +1743,7 @@ export class DowncastWriter {
 			}
 		}
 
-		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return ViewRange._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1741,14 +1751,14 @@ export class DowncastWriter {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * @returns New range after wrapping, spanning over wrapping attribute element.
 	 */
-	private _wrapRange( range: Range, attribute: AttributeElement ): Range {
+	private _wrapRange( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		// Wrap all children with attribute.
 		const newRange = this._wrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
@@ -1762,7 +1772,7 @@ export class DowncastWriter {
 		}
 		const end = this.mergeAttributes( newRange.end );
 
-		return new Range( start, end );
+		return new ViewRange( start, end );
 	}
 
 	/**
@@ -1770,11 +1780,11 @@ export class DowncastWriter {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * @returns New position after wrapping.
 	 */
-	private _wrapPosition( position: Position, attribute: AttributeElement ): Position {
+	private _wrapPosition( position: ViewPosition, attribute: ViewAttributeElement ): ViewPosition {
 		// Return same position when trying to wrap with attribute similar to position parent.
 		if ( attribute.isSimilar( position.parent as any ) ) {
 			return movePositionToTextNode( position.clone() );
@@ -1791,16 +1801,16 @@ export class DowncastWriter {
 		fakeElement.isSimilar = () => false;
 
 		// Insert fake element in position location.
-		( position.parent as Element )._insertChild( position.offset, fakeElement );
+		( position.parent as ViewElement )._insertChild( position.offset, fakeElement );
 
 		// Range around inserted fake attribute element.
-		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
+		const wrapRange = new ViewRange( position, position.getShiftedBy( 1 ) );
 
 		// Wrap fake element with attribute (it will also merge if possible).
 		this.wrap( wrapRange, attribute );
 
 		// Remove fake element and place new position there.
-		const newPosition = new Position( fakeElement.parent!, fakeElement.index! );
+		const newPosition = new ViewPosition( fakeElement.parent!, fakeElement.index! );
 		fakeElement._remove();
 
 		// If position is placed between text nodes - merge them and return position inside.
@@ -1816,14 +1826,14 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
+	 * Helper function used by other `ViewDowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
 	 *
 	 * @param range Range which `start` and `end` positions will be used to break attributes.
 	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
 	 * @returns New range with located at break positions.
 	 */
-	private _breakAttributesRange( range: Range, forceSplitText: boolean = false ) {
+	private _breakAttributesRange( range: ViewRange, forceSplitText: boolean = false ) {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
 
@@ -1833,44 +1843,44 @@ export class DowncastWriter {
 		if ( range.isCollapsed ) {
 			const position = this._breakAttributes( range.start, forceSplitText );
 
-			return new Range( position, position );
+			return new ViewRange( position, position );
 		}
 
 		const breakEnd = this._breakAttributes( rangeEnd, forceSplitText );
-		const count = ( breakEnd.parent as Element ).childCount;
+		const count = ( breakEnd.parent as ViewElement ).childCount;
 		const breakStart = this._breakAttributes( rangeStart, forceSplitText );
 
 		// Calculate new break end offset.
-		breakEnd.offset += ( breakEnd.parent as Element ).childCount - count;
+		breakEnd.offset += ( breakEnd.parent as ViewElement ).childCount - count;
 
-		return new Range( breakStart, breakEnd );
+		return new ViewRange( breakStart, breakEnd );
 	}
 
 	/**
-	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at given position.
+	 * Helper function used by other `ViewDowncastWriter` methods. Breaks attribute elements at given position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
-	 * is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 * is placed inside {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
-	 * is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
+	 * is placed inside {@link module:engine/view/uielement~ViewUIElement UIElement}.
 	 *
 	 * @param position Position where to break attributes.
 	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
 	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
 	 * @returns New position after breaking the attributes.
 	 */
-	private _breakAttributes( position: Position, forceSplitText: boolean = false ): Position {
+	private _breakAttributes( position: ViewPosition, forceSplitText: boolean = false ): ViewPosition {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
 
-		// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
+		// If position is placed inside ViewEmptyElement - throw an exception as we cannot break inside.
 		if ( position.parent.is( 'emptyElement' ) ) {
 			/**
 			 * Cannot break an `EmptyElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-empty-element
@@ -1884,7 +1894,7 @@ export class DowncastWriter {
 			 * Cannot break a `UIElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-ui-element
@@ -1898,7 +1908,7 @@ export class DowncastWriter {
 			 * Cannot break a `RawElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-raw-element
@@ -1927,7 +1937,7 @@ export class DowncastWriter {
 		// <p>foo<b><u>bar</u>[]</b></p>
 		// <p>foo<b><u>bar</u></b>[]</p>
 		if ( positionOffset == length ) {
-			const newPosition = new Position( positionParent.parent as any, ( positionParent as any ).index + 1 );
+			const newPosition = new ViewPosition( positionParent.parent as any, ( positionParent as any ).index + 1 );
 
 			return this._breakAttributes( newPosition, forceSplitText );
 		} else {
@@ -1935,7 +1945,7 @@ export class DowncastWriter {
 			// <p>foo<b>[]<u>bar</u></b></p>
 			// <p>foo{}<b><u>bar</u></b></p>
 			if ( positionOffset === 0 ) {
-				const newPosition = new Position( positionParent.parent as Element, ( positionParent as any ).index );
+				const newPosition = new ViewPosition( positionParent.parent as ViewElement, ( positionParent as any ).index );
 
 				return this._breakAttributes( newPosition, forceSplitText );
 			}
@@ -1961,7 +1971,7 @@ export class DowncastWriter {
 				clonedNode._appendChild( nodesToMove );
 
 				// Create new position to work on.
-				const newPosition = new Position( ( positionParent as any ).parent, offsetAfter );
+				const newPosition = new ViewPosition( ( positionParent as any ).parent, offsetAfter );
 
 				return this._breakAttributes( newPosition, forceSplitText );
 			}
@@ -1969,17 +1979,17 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Stores the information that an {@link module:engine/view/attributeelement~AttributeElement attribute element} was
+	 * Stores the information that an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} was
 	 * added to the tree. Saves the reference to the group in the given element and updates the group, so other elements
 	 * from the group now keep a reference to the given attribute element.
 	 *
-	 * The clones group can be obtained using {@link module:engine/view/attributeelement~AttributeElement#getElementsWithSameId}.
+	 * The clones group can be obtained using {@link module:engine/view/attributeelement~ViewAttributeElement#getElementsWithSameId}.
 	 *
-	 * Does nothing if added element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 * Does nothing if added element has no {@link module:engine/view/attributeelement~ViewAttributeElement#id id}.
 	 *
 	 * @param element Attribute element to save.
 	 */
-	private _addToClonedElementsGroup( element: Node ): void {
+	private _addToClonedElementsGroup( element: ViewNode ): void {
 		// Add only if the element is in document tree.
 		if ( !element.root.is( 'rootElement' ) ) {
 			return;
@@ -2006,22 +2016,22 @@ export class DowncastWriter {
 			this._cloneGroups.set( id, group );
 		}
 
-		group.add( element as AttributeElement );
+		group.add( element as ViewAttributeElement );
 		( element as any )._clonesGroup = group;
 	}
 
 	/**
-	 * Removes all the information about the given {@link module:engine/view/attributeelement~AttributeElement attribute element}
+	 * Removes all the information about the given {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}
 	 * from its clones group.
 	 *
 	 * Keep in mind, that the element will still keep a reference to the group (but the group will not keep a reference to it).
 	 * This allows to reference the whole group even if the element was already removed from the tree.
 	 *
-	 * Does nothing if the element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 * Does nothing if the element has no {@link module:engine/view/attributeelement~ViewAttributeElement#id id}.
 	 *
 	 * @param element Attribute element to remove.
 	 */
-	private _removeFromClonedElementsGroup( element: Node ) {
+	private _removeFromClonedElementsGroup( element: ViewNode ) {
 		// Traverse the element's children recursively to find other attribute elements that also got removed.
 		// The loop is at the beginning so we can make fast returns later in the code.
 		if ( element.is( 'element' ) ) {
@@ -2042,35 +2052,33 @@ export class DowncastWriter {
 			return;
 		}
 
-		group.delete( element as AttributeElement );
+		group.delete( element as ViewAttributeElement );
 		// Not removing group from element on purpose!
 		// If other parts of code have reference to this element, they will be able to get references to other elements from the group.
 	}
 }
 
-export { DowncastWriter as ViewDowncastWriter };
-
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
-function _hasNonUiChildren( parent: Element ): boolean {
+function _hasNonUiChildren( parent: ViewElement ): boolean {
 	return Array.from( parent.getChildren() ).some( child => !child.is( 'uiElement' ) );
 }
 
 /**
- * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`}
- * must be an instance of {@link module:engine/view/attributeelement~AttributeElement `AttributeElement`}.
+ * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#wrap()`}
+ * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
  *
  * @error view-writer-wrap-invalid-attribute
  */
 
 /**
- * Returns first parent container of specified {@link module:engine/view/position~Position Position}.
+ * Returns first parent container of specified {@link module:engine/view/position~ViewPosition Position}.
  * Position's parent node is checked as first, then next parents are checked.
- * Note that {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+ * Note that {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment} is treated like a container.
  *
  * @param position Position used as a start point to locate parent container.
  * @returns Parent container element or `undefined` if container is not found.
  */
-function getParentContainer( position: Position ): ContainerElement | DocumentFragment | undefined {
+function getParentContainer( position: ViewPosition ): ViewContainerElement | ViewDocumentFragment | undefined {
 	let parent = position.parent;
 
 	while ( !isContainerOrFragment( parent ) ) {
@@ -2081,16 +2089,16 @@ function getParentContainer( position: Position ): ContainerElement | DocumentFr
 		parent = parent.parent as any;
 	}
 
-	return ( parent as ContainerElement | DocumentFragment );
+	return ( parent as ViewContainerElement | ViewDocumentFragment );
 }
 
 /**
- * Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
+ * Checks if first {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement} provided to the function
  * can be wrapped outside second element. It is done by comparing elements'
- * {@link module:engine/view/attributeelement~AttributeElement#priority priorities}, if both have same priority
- * {@link module:engine/view/element~Element#getIdentity identities} are compared.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement#priority priorities}, if both have same priority
+ * {@link module:engine/view/element~ViewElement#getIdentity identities} are compared.
  */
-function shouldABeOutsideB( a: AttributeElement, b: AttributeElement ): boolean {
+function shouldABeOutsideB( a: ViewAttributeElement, b: ViewAttributeElement ): boolean {
 	if ( a.priority < b.priority ) {
 		return true;
 	} else if ( a.priority > b.priority ) {
@@ -2113,17 +2121,17 @@ function shouldABeOutsideB( a: AttributeElement, b: AttributeElement ): boolean 
  * @returns Position located inside text node or same position if there is no text nodes
  * before or after position location.
  */
-function movePositionToTextNode( position: Position ): Position {
+function movePositionToTextNode( position: ViewPosition ): ViewPosition {
 	const nodeBefore = position.nodeBefore;
 
 	if ( nodeBefore && nodeBefore.is( '$text' ) ) {
-		return new Position( nodeBefore, nodeBefore.data.length );
+		return new ViewPosition( nodeBefore, nodeBefore.data.length );
 	}
 
 	const nodeAfter = position.nodeAfter;
 
 	if ( nodeAfter && nodeAfter.is( '$text' ) ) {
-		return new Position( nodeAfter, 0 );
+		return new ViewPosition( nodeAfter, 0 );
 	}
 
 	return position;
@@ -2141,29 +2149,29 @@ function movePositionToTextNode( position: Position ): Position {
  * @param position Position that need to be placed inside text node.
  * @returns New position after breaking text node.
  */
-function breakTextNode( position: Position ): Position {
-	if ( position.offset == ( position.parent as Text ).data.length ) {
-		return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+function breakTextNode( position: ViewPosition ): ViewPosition {
+	if ( position.offset == ( position.parent as ViewText ).data.length ) {
+		return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! + 1 );
 	}
 
 	if ( position.offset === 0 ) {
-		return new Position( position.parent.parent as any, ( position.parent as Text ).index! );
+		return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! );
 	}
 
 	// Get part of the text that need to be moved.
-	const textToMove = ( position.parent as Text ).data.slice( position.offset );
+	const textToMove = ( position.parent as ViewText ).data.slice( position.offset );
 
 	// Leave rest of the text in position's parent.
-	( position.parent as Text )._data = ( position.parent as Text ).data.slice( 0, position.offset );
+	( position.parent as ViewText )._data = ( position.parent as ViewText ).data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
 	( position.parent.parent as any )._insertChild(
-		( position.parent as Text ).index! + 1,
-		new Text( position.root.document, textToMove )
+		( position.parent as ViewText ).index! + 1,
+		new ViewText( position.root.document, textToMove )
 	);
 
 	// Return new position between two newly created text nodes.
-	return new Position( position.parent.parent as any, ( position.parent as Text ).index! + 1 );
+	return new ViewPosition( position.parent.parent as any, ( position.parent as ViewText ).index! + 1 );
 }
 
 /**
@@ -2173,16 +2181,16 @@ function breakTextNode( position: Position ): Position {
  * @param t2 Second text node to merge. This node will be removed after merging.
  * @returns Position after merging text nodes.
  */
-function mergeTextNodes( t1: Text, t2: Text ): Position {
+function mergeTextNodes( t1: ViewText, t2: ViewText ): ViewPosition {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
 	t1._data += t2.data;
 	t2._remove();
 
-	return new Position( t1, nodeBeforeLength );
+	return new ViewPosition( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, RawElement, UIElement ];
+const validNodesToInsert = [ ViewText, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, ViewRawElement, ViewUIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.
@@ -2190,21 +2198,21 @@ const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElem
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not supported ones (see error description for valid ones.
  */
-function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ): void {
+function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDocument ): void {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( validNode => node instanceof validNode ) ) {
 			/**
 			 * One of the nodes to be inserted is of an invalid type.
 			 *
-			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~DowncastWriter#insert `DowncastWriter#insert()`} should be
-			 * of the following types:
+			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~ViewDowncastWriter#insert `ViewDowncastWriter#insert()`}
+			 * should be of the following types:
 			 *
-			 * * {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-			 * * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
-			 * * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
-			 * * {@link module:engine/view/uielement~UIElement UIElement},
-			 * * {@link module:engine/view/rawelement~RawElement RawElement},
-			 * * {@link module:engine/view/text~Text Text}.
+			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
+			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
+			 * * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement},
+			 * * {@link module:engine/view/uielement~ViewUIElement UIElement},
+			 * * {@link module:engine/view/rawelement~ViewRawElement RawElement},
+			 * * {@link module:engine/view/text~ViewText Text}.
 			 *
 			 * @error view-writer-insert-invalid-node-type
 			 */
@@ -2212,26 +2220,26 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 		}
 
 		if ( !node.is( '$text' ) ) {
-			validateNodesToInsert( ( node as Element ).getChildren(), errorContext );
+			validateNodesToInsert( ( node as ViewElement ).getChildren(), errorContext );
 		}
 	}
 }
 
 /**
- * Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
+ * Checks if node is ViewContainerElement or DocumentFragment, because in most cases they should be treated the same way.
  *
- * @returns Returns `true` if node is instance of ContainerElement or DocumentFragment.
+ * @returns Returns `true` if node is instance of ViewContainerElement or DocumentFragment.
  */
-function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
+function isContainerOrFragment( node: ViewNode | ViewDocumentFragment ): boolean {
 	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );
 }
 
 /**
- * Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
- * inside same {@link module:engine/view/containerelement~ContainerElement container element}.
+ * Checks if {@link module:engine/view/range~ViewRange#start range start} and {@link module:engine/view/range~ViewRange#end range end}
+ * are placed inside same {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
  */
-function validateRangeContainer( range: Range, errorContext: Document ) {
+function validateRangeContainer( range: ViewRange, errorContext: ViewDocument ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
@@ -2239,14 +2247,14 @@ function validateRangeContainer( range: Range, errorContext: Document ) {
 		/**
 		 * The container of the given range is invalid.
 		 *
-		 * This may happen if {@link module:engine/view/range~Range#start range start} and
-		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside the same container element or
+		 * This may happen if {@link module:engine/view/range~ViewRange#start range start} and
+		 * {@link module:engine/view/range~ViewRange#end range end} positions are not placed inside the same container element or
 		 * a parent container for these positions cannot be found.
 		 *
-		 * Methods like {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#remove()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#clean()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
+		 * Methods like {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#remove()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#clean()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#wrap()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#unwrap()`} need to be called
 		 * on a range that has its start and end positions located in the same container element. Both positions can be
 		 * nested within other elements (e.g. an attribute element) but the closest container ancestor must be the same.
 		 *

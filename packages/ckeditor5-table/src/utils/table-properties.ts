@@ -7,7 +7,7 @@
  * @module table/utils/table-properties
  */
 
-import type { BoxSides } from 'ckeditor5/src/engine.js';
+import type { BoxStyleSides } from 'ckeditor5/src/engine.js';
 import { isObject } from 'es-toolkit/compat';
 
 /**
@@ -27,7 +27,7 @@ import { isObject } from 'es-toolkit/compat';
  *
  * @internal
  */
-export function getSingleValue( objectOrString: BoxSides | string | undefined ): string | undefined {
+export function getSingleValue( objectOrString: BoxStyleSides | string | undefined ): string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
 		return objectOrString;
 	}

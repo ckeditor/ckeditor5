@@ -17,13 +17,13 @@ import {
 import { UpcastHelpers } from './upcasthelpers.js';
 import {
 	DowncastHelpers,
-	type AttributeCreatorFunction,
-	type AttributeDescriptor
+	type DowncastAttributeCreatorFunction,
+	type DowncastAttributeDescriptor
 } from './downcasthelpers.js';
 
 import { type DowncastDispatcher } from './downcastdispatcher.js';
 import { type UpcastDispatcher } from './upcastdispatcher.js';
-import { type ElementDefinition } from '../view/elementdefinition.js';
+import { type ViewElementDefinition } from '../view/elementdefinition.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -303,8 +303,8 @@ export class Conversion {
 	 */
 	public elementToElement( definition: {
 		model: string;
-		view: ElementDefinition;
-		upcastAlso?: ArrayOrItem<ElementDefinition | MatcherPattern>;
+		view: ViewElementDefinition;
+		upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
 		converterPriority?: PriorityString;
 	} ): void {
 		// Set up downcast converter.
@@ -486,7 +486,7 @@ export class Conversion {
 				key: string;
 				name?: string;
 			};
-			view: ElementDefinition;
+			view: ViewElementDefinition;
 			upcastAlso?: ArrayOrItem<MatcherPattern>;
 			converterPriority?: PriorityString;
 		} | {
@@ -495,7 +495,7 @@ export class Conversion {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ElementDefinition>;
+			view: Record<TValues, ViewElementDefinition>;
 			upcastAlso?: Record<TValues, ArrayOrItem<MatcherPattern>>;
 			converterPriority?: PriorityString;
 		}
@@ -517,7 +517,7 @@ export class Conversion {
 	/**
 	 * Sets up converters between the model and the view that convert a model attribute to a view attribute (and vice versa). For example,
 	 * `<imageBlock src='foo.jpg'></imageBlock>` is converted to `<img src='foo.jpg'></img>` (the same attribute key and value).
-	 * This type of converters is intended to be used with {@link module:engine/model/element~Element model element} nodes.
+	 * This type of converters is intended to be used with {@link module:engine/model/element~ModelElement model element} nodes.
 	 * To convert the text attributes,
 	 * the {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement converter`}should be set up.
 	 *
@@ -631,8 +631,8 @@ export class Conversion {
 				key: string;
 				name?: string;
 			};
-			view: string | ( AttributeDescriptor & { name?: string } );
-			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
+			view: string | ( DowncastAttributeDescriptor & { name?: string } );
+			upcastAlso?: ArrayOrItem<string | ( DowncastAttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -640,8 +640,8 @@ export class Conversion {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ( AttributeDescriptor & { name?: string } )>;
-			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
+			view: Record<TValues, ( DowncastAttributeDescriptor & { name?: string } )>;
+			upcastAlso?: Record<TValues, ( DowncastAttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} ): void {
 		// Set up downcast converter.
@@ -717,7 +717,7 @@ function* _getUpcastDefinition( model: unknown, view: unknown, upcastAlso?: unkn
 	}
 }
 
-type ConversionType<T extends string> = T extends `${ string }Downcast`
+export type ConversionType<T extends string> = T extends `${ string }Downcast`
 	? DowncastHelpers
 	: T extends `${ string }Upcast`
 		? UpcastHelpers

@@ -14,11 +14,11 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import {
 	MouseObserver,
 	TouchObserver,
-	type DocumentSelection,
-	type DocumentSelectionChangeRangeEvent,
-	type DomEventData,
+	type ModelDocumentSelection,
+	type ModelDocumentSelectionChangeRangeEvent,
+	type ViewDocumentDomEventData,
 	type Model,
-	type Position,
+	type ModelPosition,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentSelectionChangeEvent,
@@ -160,14 +160,14 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * The current UID of the overridden gravity, as returned by
-	 * {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 * {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}.
 	 */
 	private _overrideUid: string | null;
 
 	/**
 	 * A flag indicating that the automatic gravity restoration should not happen upon the next
 	 * gravity restoration.
-	 * {@link module:engine/model/selection~Selection#event:change:range} event.
+	 * {@link module:engine/model/selection~ModelSelection#event:change:range} event.
 	 */
 
 	private _isNextGravityRestorationSkipped = false;
@@ -245,7 +245,7 @@ export class TwoStepCaretMovement extends Plugin {
 		}, { context: '$text', priority: 'highest' } );
 
 		// The automatic gravity restoration logic.
-		this.listenTo<DocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
+		this.listenTo<ModelDocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
 			// Skipping the automatic restoration is needed if the selection should change
 			// but the gravity must remain overridden afterwards. See the #handleBackwardMovement
 			// to learn more.
@@ -292,13 +292,13 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * Updates the document selection and the view according to the two–step caret movement state
-	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~EditingView}.
 	 *
 	 * @internal
 	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement.
 	 */
-	public _handleForwardMovement( eventData?: DomEventData ): boolean {
+	public _handleForwardMovement( eventData?: ViewDocumentDomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -362,13 +362,13 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * Updates the document selection and the view according to the two–step caret movement state
-	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~EditingView}.
 	 *
 	 * @internal
 	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement
 	 */
-	public _handleBackwardMovement( eventData?: DomEventData ): boolean {
+	public _handleBackwardMovement( eventData?: ViewDocumentDomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -484,8 +484,8 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Starts listening to {@link module:engine/view/document~Document#event:mousedown} and
-	 * {@link module:engine/view/document~Document#event:selectionChange} and puts the selection before/after a 2-step node
+	 * Starts listening to {@link module:engine/view/document~ViewDocument#event:mousedown} and
+	 * {@link module:engine/view/document~ViewDocument#event:selectionChange} and puts the selection before/after a 2-step node
 	 * if clicked at the beginning/ending of the 2-step node.
 	 *
 	 * The purpose of this action is to allow typing around the 2-step node directly after a click.
@@ -669,10 +669,10 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Overrides the gravity using the {@link module:engine/model/writer~Writer model writer}
+	 * Overrides the gravity using the {@link module:engine/model/writer~ModelWriter model writer}
 	 * and stores the information about this fact in the {@link #_overrideUid}.
 	 *
-	 * A shorthand for {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 * A shorthand for {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}.
 	 */
 	private _overrideGravity(): void {
 		this._overrideUid = this.editor.model.change( writer => {
@@ -681,9 +681,9 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Restores the gravity using the {@link module:engine/model/writer~Writer model writer}.
+	 * Restores the gravity using the {@link module:engine/model/writer~ModelWriter model writer}.
 	 *
-	 * A shorthand for {@link module:engine/model/writer~Writer#restoreSelectionGravity}.
+	 * A shorthand for {@link module:engine/model/writer~ModelWriter#restoreSelectionGravity}.
 	 */
 	private _restoreGravity(): void {
 		this.editor.model.change( writer => {
@@ -696,7 +696,7 @@ export class TwoStepCaretMovement extends Plugin {
 /**
  * Checks whether the selection has any of given attributes.
  */
-function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> ): boolean {
+function hasAnyAttribute( selection: ModelDocumentSelection, attributes: Set<string> ): boolean {
 	for ( const observedAttribute of attributes ) {
 		if ( selection.hasAttribute( observedAttribute ) ) {
 			return true;
@@ -709,9 +709,9 @@ function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> 
 /**
  * Applies the given attributes to the current selection using using the
  * values from the node before the current position. Uses
- * the {@link module:engine/model/writer~Writer model writer}.
+ * the {@link module:engine/model/writer~ModelWriter model writer}.
  */
-function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: Position ) {
+function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: ModelPosition ) {
 	const nodeBefore = position.nodeBefore;
 
 	model.change( writer => {
@@ -749,14 +749,14 @@ function clearSelectionAttributes( model: Model, attributes: Set<string> ) {
  *
  * @alias data.preventDefault
  */
-function preventCaretMovement( data: DomEventData ) {
+function preventCaretMovement( data: ViewDocumentDomEventData ) {
 	data.preventDefault();
 }
 
 /**
  * Checks whether the step before `isBetweenDifferentAttributes()`.
  */
-function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<string> ): boolean {
+function isStepAfterAnyAttributeBoundary( position: ModelPosition, attributes: Set<string> ): boolean {
 	const positionBefore = position.getShiftedBy( -1 );
 	return isBetweenDifferentAttributes( positionBefore, attributes );
 }
@@ -764,7 +764,7 @@ function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<st
 /**
  * Checks whether the given position is between different values of given attributes.
  */
-function isBetweenDifferentAttributes( position: Position, attributes: Set<string>, isStrict: boolean = false ): boolean {
+function isBetweenDifferentAttributes( position: ModelPosition, attributes: Set<string>, isStrict: boolean = false ): boolean {
 	const { nodeBefore, nodeAfter } = position;
 
 	for ( const observedAttribute of attributes ) {

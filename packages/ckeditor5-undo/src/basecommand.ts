@@ -10,11 +10,11 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
-	transformSets,
+	transformOperationSets,
 	type Batch,
 	type Operation,
 	type DataControllerSetEvent,
-	type Range,
+	type ModelRange,
 	NoOperation
 } from '@ckeditor/ckeditor5-engine';
 
@@ -26,9 +26,9 @@ export abstract class UndoRedoBaseCommand extends Command {
 	 * Stack of items stored by the command. These are pairs of:
 	 *
 	 * * {@link module:engine/model/batch~Batch batch} saved by the command,
-	 * * {@link module:engine/model/selection~Selection selection} state at the moment of saving the batch.
+	 * * {@link module:engine/model/selection~ModelSelection selection} state at the moment of saving the batch.
 	 */
-	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }> = [];
+	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<ModelRange>; isBackward: boolean } }> = [];
 
 	/**
 	 * Stores all batches that were created by this command.
@@ -91,7 +91,7 @@ export abstract class UndoRedoBaseCommand extends Command {
 	}
 
 	/**
-	 * Stores a batch in the command, together with the selection state of the {@link module:engine/model/document~Document document}
+	 * Stores a batch in the command, together with the selection state of the {@link module:engine/model/document~ModelDocument document}
 	 * created by the editor which this command is registered to.
 	 *
 	 * @param batch The batch to add.
@@ -117,14 +117,14 @@ export abstract class UndoRedoBaseCommand extends Command {
 	}
 
 	/**
-	 * Restores the {@link module:engine/model/document~Document#selection document selection} state after a batch was undone.
+	 * Restores the {@link module:engine/model/document~ModelDocument#selection document selection} state after a batch was undone.
 	 *
 	 * @param ranges Ranges to be restored.
 	 * @param isBackward A flag describing whether the restored range was selected forward or backward.
 	 * @param operations Operations which has been applied since selection has been stored.
 	 */
 	protected _restoreSelection(
-		ranges: Array<Range>,
+		ranges: Array<ModelRange>,
 		isBackward: boolean,
 		operations: Array<Operation>
 	): void {
@@ -132,7 +132,7 @@ export abstract class UndoRedoBaseCommand extends Command {
 		const document = model.document;
 
 		// This will keep the transformed selection ranges.
-		const selectionRanges: Array<Range> = [];
+		const selectionRanges: Array<ModelRange> = [];
 
 		// Transform all ranges from the restored selection.
 		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
@@ -192,7 +192,7 @@ export abstract class UndoRedoBaseCommand extends Command {
 			const nextBaseVersion = operationToUndo.baseVersion! + 1;
 			const historyOperations = Array.from( document.history.getOperations( nextBaseVersion ) );
 
-			const transformedSets = transformSets(
+			const transformedSets = transformOperationSets(
 				[ operationToUndo.getReversed() ],
 				historyOperations,
 				{
@@ -229,7 +229,7 @@ export abstract class UndoRedoBaseCommand extends Command {
  *
  * @param ranges Ranges to be normalized.
  */
-function normalizeRanges( ranges: Array<Range> ): void {
+function normalizeRanges( ranges: Array<ModelRange> ): void {
 	ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 	for ( let i = 1; i < ranges.length; i++ ) {
@@ -244,6 +244,6 @@ function normalizeRanges( ranges: Array<Range> ): void {
 	}
 }
 
-function isRangeContainedByAnyOtherRange( range: Range, ranges: Array<Range> ): boolean {
+function isRangeContainedByAnyOtherRange( range: ModelRange, ranges: Array<ModelRange> ): boolean {
 	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }

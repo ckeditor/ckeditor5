@@ -11,8 +11,8 @@ import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
-	Node,
+	ModelElement,
+	ModelNode,
 	UpcastDispatcher
 } from 'ckeditor5/src/engine.js';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
@@ -146,7 +146,7 @@ function viewToModelLinkImageAttributeConverter( dataFilter: DataFilter, editor:
 				return;
 			}
 
-			const modelImage: Node | null = data.modelCursor.parent as Node;
+			const modelImage: ModelNode | null = data.modelCursor.parent as ModelNode;
 
 			if ( !modelImage.is( 'element', 'imageBlock' ) ) {
 				return;
@@ -205,7 +205,7 @@ function modelToViewImageAttributeConverter() {
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 
 				updateViewAttributes(
 					conversionApi.writer,
@@ -222,7 +222,7 @@ function modelToViewImageAttributeConverter() {
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const containerElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
 				if ( viewElement ) {
@@ -242,7 +242,7 @@ function modelToViewImageAttributeConverter() {
 						return;
 					}
 
-					const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+					const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 					const viewElement = getDescendantElement( conversionApi.writer, containerElement!, 'a' )!;
 
 					setViewAttributes(
