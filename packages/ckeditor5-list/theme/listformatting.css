@@ -12,3 +12,7 @@
 		font-style: initial;
 	}
 }
+
+.ck-content .ck-bold {
+	font-weight: bold;
+}
