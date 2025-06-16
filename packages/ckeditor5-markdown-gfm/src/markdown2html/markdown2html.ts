@@ -21,7 +21,7 @@ import type { Element, Root } from 'hast';
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
  */
-export class MarkdownToHtml {
+export class MarkdownGfmMdToHtml {
 	private _processor;
 
 	constructor() {
@@ -37,7 +37,7 @@ export class MarkdownToHtml {
 			// Handles HTML embedded in Markdown.
 			.use( rehypeDomRaw )
 			// Removes classes from list elements.
-			.use( this.deleteClassesFromToDoLists )
+			.use( this._deleteClassesFromToDoLists )
 			// Serializes HTML syntax tree
 			.use( rehypeStringify );
 	}
@@ -52,7 +52,7 @@ export class MarkdownToHtml {
 	/**
 	 * Removes default classes added to `<ul>`, `<ol>`, and `<li>` elements.
 	 */
-	private deleteClassesFromToDoLists(): ReturnType<Plugin> {
+	private _deleteClassesFromToDoLists(): ReturnType<Plugin> {
 		return function( tree ) {
 			visit( tree, 'element', ( node: any ) => {
 				if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
@@ -74,7 +74,7 @@ export class MarkdownToHtml {
  * 3. Converts each parsed DOM node back into HAST nodes.
  * 4. Replaces the original children with the newly created HAST nodes.
  */
-export default function rehypeDomRaw() {
+function rehypeDomRaw() {
 	return ( tree: Root ): void => {
 		visit( tree, [ 'root', 'element' ], node => {
 			if ( !isNodeRootOrElement( node ) ) {

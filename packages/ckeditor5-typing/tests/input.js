@@ -7,13 +7,13 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
 import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 import { Input } from '../src/input.js';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
@@ -143,7 +143,7 @@ describe( 'Input', () => {
 			} );
 
 			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
-				setModelData( editor.model, '[<widget></widget>]' );
+				_setModelData( editor.model, '[<widget></widget>]' );
 
 				const spy = sinon.spy();
 
@@ -264,7 +264,7 @@ describe( 'Input', () => {
 
 				expect( modelSelection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
 
-				viewDocument.fire( 'compositionend', new DomEventData( view, {
+				viewDocument.fire( 'compositionend', new ViewDocumentDomEventData( view, {
 					preventDefault() {}
 				}, {
 					data: 'bar'
@@ -379,7 +379,7 @@ describe( 'Input', () => {
 					sinon.assert.calledOnce( typingQueuePushSpy );
 					sinon.assert.notCalled( typingQueueFlushSpy );
 
-					viewDocument.fire( 'beforeinput', new DomEventData( view, {
+					viewDocument.fire( 'beforeinput', new ViewDocumentDomEventData( view, {
 						target: view.getDomRoot(),
 						preventDefault: () => {}
 					}, {
@@ -402,7 +402,7 @@ describe( 'Input', () => {
 					editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 					// Verify initial model state.
-					expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 					const composition = compositionHelper( editor, 1 );
 
@@ -419,7 +419,7 @@ describe( 'Input', () => {
 					expect( typingQueueFlushSpy.firstCall.args[ 0 ] ).to.equal( 'next beforeinput' );
 					expect( typingQueueFlushSpy.secondCall.args[ 0 ] ).to.equal( 'mutations' );
 
-					expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+					expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 				} );
 			} );
 		} );
@@ -436,7 +436,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -447,7 +447,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -459,7 +459,7 @@ describe( 'Input', () => {
 				// DOM text node is already the proper one so no changes are required.
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only once when needed', () => {
@@ -469,7 +469,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -477,11 +477,11 @@ describe( 'Input', () => {
 				composition.start();
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
 				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -493,7 +493,7 @@ describe( 'Input', () => {
 				// DOM text node requires NBSP vs space fixing.
 				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
 		} );
@@ -819,7 +819,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -831,7 +831,7 @@ describe( 'Input', () => {
 				composition.update( 'a', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooa[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooa[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -841,7 +841,7 @@ describe( 'Input', () => {
 				composition.update( 'b', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooab[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooab[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -851,7 +851,7 @@ describe( 'Input', () => {
 				composition.update( 'c', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -865,7 +865,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only when needed', () => {
@@ -875,7 +875,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -886,7 +886,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -900,7 +900,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should render the DOM on composition end only once when needed', () => {
@@ -910,7 +910,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -918,11 +918,11 @@ describe( 'Input', () => {
 				composition.start();
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
 				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
@@ -939,7 +939,7 @@ describe( 'Input', () => {
 				sinon.assert.calledOnce( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo  abc[]</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo &nbsp;abc</p>' );
 			} );
 
@@ -950,7 +950,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -961,7 +961,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -985,7 +985,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should not fire mutations for removed elements (after composition end)', () => {
@@ -995,7 +995,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1006,7 +1006,7 @@ describe( 'Input', () => {
 				composition.update( 'abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1033,7 +1033,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated', () => {
@@ -1043,7 +1043,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1056,7 +1056,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1064,7 +1064,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1078,7 +1078,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated inside an attribute element', () => {
@@ -1091,7 +1091,7 @@ describe( 'Input', () => {
 				} );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1104,7 +1104,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1112,7 +1112,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1126,7 +1126,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
 
 			it( 'should apply changes to model after composed DOM node mutated inside an attribute element (mutations on bold)', () => {
@@ -1139,7 +1139,7 @@ describe( 'Input', () => {
 				} );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1152,7 +1152,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1166,7 +1166,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1180,7 +1180,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">fooabc[]</$text></paragraph>' );
 			} );
 
 			it( 'should apply changes to model after a timeout before DOM mutations', async () => {
@@ -1191,7 +1191,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1204,14 +1204,14 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
 				await clock.tickAsync( 100 );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1228,7 +1228,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should apply changes to the model in the position adjusted by other model changes', () => {
@@ -1238,7 +1238,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1251,7 +1251,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1263,7 +1263,7 @@ describe( 'Input', () => {
 				composition.modifyDom( 'abc', viewRange );
 
 				// Changes are immediately applied to the model.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
@@ -1277,7 +1277,7 @@ describe( 'Input', () => {
 				sinon.assert.notCalled( rendererUpdateTextNodeSpy );
 				rendererUpdateTextNodeSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph></paragraph><paragraph>fooabc[]</paragraph>' );
 			} );
 
 			it( 'should commit composition into replaced element', () => {
@@ -1287,7 +1287,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1300,7 +1300,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1315,7 +1315,7 @@ describe( 'Input', () => {
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				insertTextCommandSpy.resetHistory();
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>abc[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>abc[]</paragraph>' );
 			} );
 
 			it( 'should destroy composition queue on editor destroy', async () => {
@@ -1325,7 +1325,7 @@ describe( 'Input', () => {
 				editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
 
 				// Verify initial model state.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				const composition = compositionHelper( editor );
 
@@ -1338,7 +1338,7 @@ describe( 'Input', () => {
 				composition.fireBeforeInputEvent( 'abc', viewRange );
 
 				// Changes are not applied to the model before the DOM got modified by IME.
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
@@ -1385,7 +1385,7 @@ describe( 'Input', () => {
 			fireBeforeInputEvent( data, range, inputType = 'insertCompositionText', isComposing = true ) {
 				const preventDefaultSpy = sinon.spy();
 
-				viewDocument.fire( 'beforeinput', new DomEventData( view, {
+				viewDocument.fire( 'beforeinput', new ViewDocumentDomEventData( view, {
 					target: view.getDomRoot()
 				}, {
 					data: data.replace( /\u00A0/g, ' ' ),
@@ -1426,7 +1426,7 @@ describe( 'Input', () => {
 
 				viewDocument.fire(
 					'compositionend',
-					new DomEventData( view, {
+					new ViewDocumentDomEventData( view, {
 						preventDefault: sinon.spy()
 					}, {
 						data

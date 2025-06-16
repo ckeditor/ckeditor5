@@ -11,7 +11,7 @@ In this tutorial, you will learn how to implement an inline widget. You will bui
 <info-box warning>
 	**We have an official implementation of this feature!**
 
-	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options. 
+	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options.
 </info-box>
 
 First, you will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
@@ -125,7 +125,7 @@ At this point, you can run the development server and see in the browser console
 
 ## The model and the view layers
 
-The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined} as an inline (text-like) element so it will be inserted into other editor blocks, like `<paragraph>`, that allow text. The placeholder will have a `name` attribute. This means that the model containing some text and a placeholder will look like this:
+The placeholder feature will be {@link module:engine/model/schema~ModelSchemaItemDefinition defined} as an inline (text-like) element so it will be inserted into other editor blocks, like `<paragraph>`, that allow text. The placeholder will have a `name` attribute. This means that the model containing some text and a placeholder will look like this:
 
 ```html
 <paragraph>
@@ -444,7 +444,7 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 
 import {
 	Plugin,
-	ViewModel,
+	UIModel,
 	addListToDropdown,
 	createDropdown,
 	Collection
@@ -493,7 +493,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				commandParam: name,
 				label: name,
 				withText: true

@@ -20,17 +20,17 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type {
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	Model,
-	Position,
-	Range,
-	Writer
+	ModelPosition,
+	ModelRange,
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 import type { Delete, LastTextLineData } from 'ckeditor5/src/typing.js';
 
 import { type Autoformat } from './autoformat.js';
 
-export type TestCallback = ( text: string ) => {
+export type AutoformatTestCallback = ( text: string ) => {
 	remove: Array<Array<number>>;
 	format: Array<Array<number>>;
 };
@@ -39,7 +39,7 @@ export type TestCallback = ( text: string ) => {
  * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
  *
  * It formats the matched text by applying the given model attribute or by running the provided formatting callback.
- * On every {@link module:engine/model/document~Document#event:change:data data change} in the model document
+ * On every {@link module:engine/model/document~ModelDocument#event:change:data data change} in the model document
  * the autoformatting engine checks the text on the left of the selection
  * and executes the provided action if the text matches given criteria (regular expression or callback).
  *
@@ -95,11 +95,11 @@ export type TestCallback = ( text: string ) => {
 export function inlineAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
-	testRegexpOrCallback: RegExp | TestCallback,
-	formatCallback: ( writer: Writer, rangesToFormat: Array<Range> ) => boolean | undefined
+	testRegexpOrCallback: RegExp | AutoformatTestCallback,
+	formatCallback: ( writer: ModelWriter, rangesToFormat: Array<ModelRange> ) => boolean | undefined
 ): void {
 	let regExp: RegExp;
-	let testCallback: TestCallback | undefined;
+	let testCallback: AutoformatTestCallback | undefined;
 
 	if ( testRegexpOrCallback instanceof RegExp ) {
 		regExp = testRegexpOrCallback;
@@ -152,7 +152,7 @@ export function inlineAutoformatEditing(
 		};
 	} );
 
-	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<ModelDocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}
@@ -212,7 +212,7 @@ export function inlineAutoformatEditing(
  * Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
  * inside provided block.
  */
-function testOutputToRanges( start: Position, arrays: Array<Array<number>>, model: Model ) {
+function testOutputToRanges( start: ModelPosition, arrays: Array<Array<number>>, model: Model ) {
 	return arrays
 		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
 		.map( array => {
@@ -225,7 +225,7 @@ function testOutputToRanges( start: Position, arrays: Array<Array<number>>, mode
  * It is similar to {@link module:typing/utils/getlasttextline.getLastTextLine `getLastTextLine()`},
  * but it ignores any text before the last `code`.
  */
-function getTextAfterCode( range: Range, model: Model ): LastTextLineData {
+function getTextAfterCode( range: ModelRange, model: Model ): LastTextLineData {
 	let start = range.start;
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {

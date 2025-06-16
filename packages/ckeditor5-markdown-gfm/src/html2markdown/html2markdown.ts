@@ -17,7 +17,7 @@ import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
 import type { Handle as MdastHandle } from 'hast-util-to-mdast';
 
-export class HtmlToMarkdown {
+export class MarkdownGfmHtmlToMd {
 	private _processor: any;
 	private _keepRawTags: Array<string> = [];
 
@@ -40,7 +40,7 @@ export class HtmlToMarkdown {
 	/**
 	 * Returns handlers for raw HTML tags that should be kept in the Markdown output.
 	 */
-	private getRawTagsHandlers(): Record<string, MdastHandle> {
+	private _getRawTagsHandlers(): Record<string, MdastHandle> {
 		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
 			handlers[ tagName ] = ( state: any, node: any ) => {
 				const result = {
@@ -60,7 +60,7 @@ export class HtmlToMarkdown {
 	/**
 	 * Removes `<label>` element from TODO lists, so that `<input>` and `text` are direct children of `<li>`.
 	 */
-	private removeLabelFromCheckboxes(): ReturnType<Plugin> {
+	private _removeLabelFromCheckboxes(): ReturnType<Plugin> {
 		return function( tree ) {
 			visit( tree, 'element', ( node: any, index: number, parent: any ) => {
 				if ( node.tagName === 'label' && parent.tagName === 'li' ) {
@@ -76,11 +76,11 @@ export class HtmlToMarkdown {
 			// Parse HTML to an abstract syntax tree (AST).
 			.use( rehypeParse )
 			// Removes `<label>` element from TODO lists.
-			.use( this.removeLabelFromCheckboxes )
+			.use( this._removeLabelFromCheckboxes )
 			// Turns HTML syntax tree to markdown syntax tree.
 			.use( rehypeRemark, {
 				// Keeps allowed HTML tags.
-				handlers: this.getRawTagsHandlers()
+				handlers: this._getRawTagsHandlers()
 			} )
 			// Adds support for GitHub Flavored Markdown (GFM).
 			.use( remarkGfm, {

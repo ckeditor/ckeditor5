@@ -10,7 +10,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservi
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
@@ -121,11 +121,11 @@ describe( 'CKBoxImageEditUI', () => {
 
 			expect( button.isEnabled ).to.be.false;
 
-			setModelData( model, '[<paragraph>Foo</paragraph>]' );
+			_setModelData( model, '[<paragraph>Foo</paragraph>]' );
 
 			expect( button.isEnabled ).to.be.false;
 
-			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 			expect( button.isEnabled ).to.be.true;
 		} );
@@ -137,11 +137,11 @@ describe( 'CKBoxImageEditUI', () => {
 
 			editor.commands.get( 'ckboxImageEdit' ).value = true;
 
-			setModelData( model, '[<paragraph>Foo</paragraph>]' );
+			_setModelData( model, '[<paragraph>Foo</paragraph>]' );
 
 			expect( button.isOn ).to.be.false;
 
-			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 			command.execute();
 

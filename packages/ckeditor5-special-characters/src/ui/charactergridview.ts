@@ -25,6 +25,8 @@ import '../../theme/charactergrid.css';
 /**
  * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
+ *
+ * @internal
  */
 export class CharacterGridView extends View<HTMLDivElement> {
 	/**
@@ -118,15 +120,15 @@ export class CharacterGridView extends View<HTMLDivElement> {
 		} );
 
 		tile.on( 'mouseover', () => {
-			this.fire<CharacterGridViewTileHoverEvent>( 'tileHover', { name, character } );
+			this.fire<SpecialCharactersGridViewTileHoverEvent>( 'tileHover', { name, character } );
 		} );
 
 		tile.on( 'focus', () => {
-			this.fire<CharacterGridViewTileFocusEvent>( 'tileFocus', { name, character } );
+			this.fire<SpecialCharactersGridViewTileFocusEvent>( 'tileFocus', { name, character } );
 		} );
 
 		tile.on( 'execute', () => {
-			this.fire<CharacterGridViewExecuteEvent>( 'execute', { name, character } );
+			this.fire<SpecialCharactersGridViewExecuteEvent>( 'execute', { name, character } );
 		} );
 
 		return tile;
@@ -181,9 +183,9 @@ export class CharacterGridView extends View<HTMLDivElement> {
  * @eventName ~CharacterGridView#execute
  * @param data Additional information about the event.
  */
-export type CharacterGridViewExecuteEvent = {
+export type SpecialCharactersGridViewExecuteEvent = {
 	name: 'execute';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: SpecialCharactersGridViewEventData ];
 };
 
 /**
@@ -193,9 +195,9 @@ export type CharacterGridViewExecuteEvent = {
  * @eventName ~CharacterGridView#tileHover
  * @param data Additional information about the event.
  */
-export type CharacterGridViewTileHoverEvent = {
+export type SpecialCharactersGridViewTileHoverEvent = {
 	name: 'tileHover';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: SpecialCharactersGridViewEventData ];
 };
 
 /**
@@ -204,12 +206,12 @@ export type CharacterGridViewTileHoverEvent = {
  * @eventName ~CharacterGridView#tileFocus
  * @param data Additional information about the event.
  */
-export type CharacterGridViewTileFocusEvent = {
+export type SpecialCharactersGridViewTileFocusEvent = {
 	name: 'tileFocus';
-	args: [ data: CharacterGridViewEventData ];
+	args: [ data: SpecialCharactersGridViewEventData ];
 };
 
-export interface CharacterGridViewEventData {
+export interface SpecialCharactersGridViewEventData {
 
 	/**
 	 * The name of the tile that caused the event (e.g. "greek small letter epsilon").

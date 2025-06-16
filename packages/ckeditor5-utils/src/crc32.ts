@@ -77,4 +77,4 @@ export function crc32( inputData: CRCData ): string {
  */
 export type CRCData = CRCValue | Array<CRCValue>;
 
-type CRCValue = string | number | boolean | Array<string>;
+export type CRCValue = string | number | boolean | Array<string>;

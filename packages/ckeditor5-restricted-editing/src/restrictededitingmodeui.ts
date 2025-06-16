@@ -10,7 +10,7 @@
 import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import { IconContentLock } from 'ckeditor5/src/icons.js';
 import {
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	MenuBarMenuListItemButtonView,
@@ -144,7 +144,7 @@ export class RestrictedEditingModeUI extends Plugin {
 		const command: Command = editor.commands.get( commandName )!;
 		const definition: ListDropdownItemDefinition = {
 			type: 'button' as const,
-			model: new ViewModel( {
+			model: new UIModel( {
 				label,
 				withText: true,
 				keystroke,

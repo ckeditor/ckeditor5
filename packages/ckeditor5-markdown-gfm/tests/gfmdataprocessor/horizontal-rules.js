@@ -5,7 +5,7 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	// Horizontal rules are always rendered by GitHub as <hr> and normalized when converting
 	// back to ---.
 	describe( 'horizontal rules', () => {

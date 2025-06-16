@@ -20,6 +20,7 @@
 
  * @param dimension Unsafe string with dimension.
  * @returns Parsed dimension with extracted numeric value and units.
+ * @internal
  */
 export function tryParseDimensionWithUnit( dimension: string | null | undefined ): DimensionWithUnit | null {
 	if ( !dimension ) {
@@ -45,6 +46,7 @@ export function tryParseDimensionWithUnit( dimension: string | null | undefined 
  * @param parentDimensionPx	Dimension of parent element that contains measured element.
  * @param dimension Measured element dimension.
  * @returns Casted dimension.
+ * @internal
  */
 export function tryCastDimensionsToUnit( parentDimensionPx: number, dimension: DimensionWithUnit, targetUnit: string ): DimensionWithUnit {
 	// "%" -> "px" conversion

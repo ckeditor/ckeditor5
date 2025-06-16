@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { GFMDataProcessor } from '../../src/gfmdataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 /**
- * Tests GFMDataProcessor.
+ * Tests MarkdownGfmDataProcessor.
  *
  * @param {String} markdown Markdown to be processed to view.
  * @param {String} viewString Expected view structure.
@@ -17,18 +17,19 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.j
  * @param {Object} [options] Additional options.
  * @param {Function} [options.setup] A function that receives the data processor instance before its execution.
  * markdown string (which will be used if this parameter is not provided).
- * @returns {module:engine/view/documentfragment~DocumentFragment}
+ * @returns {module:engine/view/documentfragment~ViewDocumentFragment}
  */
 export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
-	const dataProcessor = new GFMDataProcessor( viewDocument );
+
+	const dataProcessor = new MarkdownGfmDataProcessor( viewDocument );
 
 	if ( options && options.setup ) {
 		options.setup( dataProcessor );
 	}
 
 	const viewFragment = dataProcessor.toView( markdown );
-	const html = cleanHtml( stringify( viewFragment ) );
+	const html = cleanHtml( _stringifyView( viewFragment ) );
 
 	// Check if view has correct data.
 	expect( JSON.stringify( html ) ).to.equal( JSON.stringify( viewString ) );

@@ -8,12 +8,12 @@
  */
 
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
-import type { ElementAttributeValue } from './element.js';
+import type { ViewElementAttributeValue } from './element.js';
 
 /**
  * Token list. Allows handling (adding, removing, retrieving) a set of tokens (for example class names).
  */
-export class TokenList implements ElementAttributeValue {
+export class ViewTokenList implements ViewElementAttributeValue {
 	/**
 	 * The set of tokens.
 	 */
@@ -99,7 +99,7 @@ export class TokenList implements ElementAttributeValue {
 	/**
 	 * Returns `true` if both attributes have the same tokens.
 	 */
-	public isSimilar( other: TokenList ): boolean {
+	public isSimilar( other: ViewTokenList ): boolean {
 		if ( this.size !== other.size ) {
 			return false;
 		}
@@ -179,11 +179,11 @@ export class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute
+	 * Used by {@link module:engine/view/element~ViewElement#_canMergeAttributesFrom} to verify if the given attribute
 	 * can be merged without conflicts into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while downcasting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other `AttributeElement`.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while downcasting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other `AttributeElement`.
 	 *
 	 * @internal
 	 */
@@ -192,14 +192,14 @@ export class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 * Used by {@link module:engine/view/element~ViewElement#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 */
-	public _mergeFrom( other: TokenList ): void {
+	public _mergeFrom( other: ViewTokenList ): void {
 		for ( const token of other._set.keys() ) {
 			if ( !this._set.has( token ) ) {
 				this._set.add( token );
@@ -208,15 +208,15 @@ export class TokenList implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_canSubtractAttributesOf} to verify if the given attribute
+	 * Used by {@link module:engine/view/element~ViewElement#_canSubtractAttributesOf} to verify if the given attribute
 	 * can be fully subtracted from the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
 	 */
-	public _isMatching( other: TokenList ): boolean {
+	public _isMatching( other: ViewTokenList ): boolean {
 		for ( const name of other._set.keys() ) {
 			if ( !this._set.has( name ) ) {
 				return false;

@@ -12,7 +12,7 @@ import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListCommand (multiBlock=false)', () => {
 	let editor, command, model, root, changedBlocks;
@@ -54,7 +54,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'constructor()', () => {
 			it( 'should create list command with given type and value set to false', () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				expect( command.type ).to.equal( 'bulleted' );
 				expect( command.value ).to.be.false;
@@ -63,7 +63,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'0[]',
 					'* 1'
 				] ) );
@@ -72,7 +72,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# 0[]',
 					'# 1'
 				] ) );
@@ -81,7 +81,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list after list)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* [0',
 					'1]'
 				] ) );
@@ -90,7 +90,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list before list)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[0',
 					'* 1]'
 				] ) );
@@ -99,7 +99,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list between lists)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* [0',
 					'1',
 					'* 2]'
@@ -109,7 +109,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a same type list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* [0',
 					'# 1]'
 				] ) );
@@ -118,7 +118,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0[]',
 					'* 1'
 				] ) );
@@ -127,7 +127,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if first position in selection is in a following block of the list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  1[]'
 				] ) );
@@ -138,12 +138,12 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
-				setData( model, modelList( [ '* [a]' ] ) );
+				_setModelData( model, modelList( [ '* [a]' ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
-				setData( model, '<paragraph>[a]</paragraph>' );
+				_setModelData( model, '<paragraph>[a]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
@@ -151,7 +151,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'<paragraph>[a</paragraph>' +
 					'<block></block>]'
 				);
@@ -163,7 +163,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'[<block></block>' +
 					'<paragraph>b]</paragraph>'
 				);
@@ -175,7 +175,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'[<block></block>]' +
 					'<paragraph>b</paragraph>'
 				);
@@ -186,7 +186,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				setData( model, '<paragraph>[0]</paragraph>' );
+				_setModelData( model, '<paragraph>[0]</paragraph>' );
 
 				model.change( writer => {
 					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
@@ -199,49 +199,49 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'options.forceValue', () => {
 				it( 'should force converting into the list if the `options.forceValue` is set to `true`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[]o'
 					] ) );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 				} );
 
 				it( 'should not modify list item if not needed if the list if the `options.forceValue` is set to `true`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* fo[]o'
 					] ) );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 				} );
 
 				it( 'should force converting into the paragraph if the `options.forceValue` is set to `false`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* fo[]o'
 					] ) );
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
 
 				it( 'should not modify list item if not needed if the `options.forceValue` is set to `false`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[]o'
 					] ) );
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -249,11 +249,11 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'when turning on', () => {
 				it( 'should turn the closest block into a list item', () => {
-					setData( model, '<paragraph>fo[]o</paragraph>' );
+					_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* fo[]o {id:a00}'
 					] ) );
 
@@ -263,13 +263,13 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should change the type of an existing (closest) list item', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# fo[]o'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* fo[]o'
 					] ) );
 
@@ -279,14 +279,14 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should make a list items from multiple paragraphs', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[o',
 						'ba]r'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* fo[o {id:a00}',
 						'* ba]r {id:a01}'
 					] ) );
@@ -299,7 +299,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should make a list items from multiple paragraphs mixed with list items', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'a',
 						'[b',
 						'* c',
@@ -309,7 +309,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'a',
 						'* [b {id:a00}',
 						'* c',
@@ -325,7 +325,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should not change type of nested list if parent is selected', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# [a',
 						'# b]',
 						'  # c',
@@ -334,7 +334,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* [a',
 						'* b]',
 						'  # c',
@@ -349,7 +349,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should change the type of the whole list if the selection is collapsed (bulleted lists at the boundaries)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* a',
 						'# b[]',
 						'  # c',
@@ -359,7 +359,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* a',
 						'* b[]',
 						'  # c',
@@ -377,13 +377,13 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'when turning off', () => {
 				it( 'should strip the list attributes from the closest list item (single list item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* fo[]o'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -394,7 +394,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in first item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* f[]oo',
 						'* bar',
 						'* baz'
@@ -402,7 +402,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'f[]oo',
 						'* bar',
 						'* baz'
@@ -415,7 +415,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the middle item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* foo',
 						'* b[]ar',
 						'* baz'
@@ -423,7 +423,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* foo',
 						'b[]ar',
 						'* baz'
@@ -436,7 +436,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the last item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* foo',
 						'* bar',
 						'* b[]az'
@@ -444,7 +444,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* foo',
 						'* bar',
 						'b[]az'
@@ -458,7 +458,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 				describe( 'with nested lists inside', () => {
 					it( 'should strip the list attributes from the closest item and decrease indent of children (first item)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* f[]oo',
 							'  * bar',
 							'  * baz',
@@ -467,7 +467,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'f[]oo',
 							'* bar',
 							'* baz',
@@ -484,7 +484,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the closest item and decrease indent of children (middle item)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* foo',
 							'* b[]ar',
 							'  * baz',
@@ -493,7 +493,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* foo',
 							'b[]ar',
 							'* baz',
@@ -510,7 +510,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
 						/* eslint-disable @stylistic/no-multi-spaces */
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'0',
 							'* 1',
 							'  * 2',
@@ -531,7 +531,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'0',
 							'* 1',
 							'  * 2',
@@ -582,7 +582,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'constructor()', () => {
 			it( 'should create list command with given type and value set to false', () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				expect( command.type ).to.equal( 'numbered' );
 				expect( command.value ).to.be.false;
@@ -591,7 +591,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'0[]',
 					'# 1'
 				] ) );
@@ -600,7 +600,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0[]',
 					'* 1'
 				] ) );
@@ -609,7 +609,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list after list)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# [0',
 					'1]'
 				] ) );
@@ -618,7 +618,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list before list)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[0',
 					'# 1]'
 				] ) );
@@ -627,7 +627,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a list item (non-list between lists)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# [0',
 					'1',
 					'# 2]'
@@ -637,7 +637,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if any of selected blocks is not a same type list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# [0',
 					'* 1]'
 				] ) );
@@ -646,7 +646,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# 0[]',
 					'# 1'
 				] ) );
@@ -655,7 +655,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if first position in selection is in a following block of the list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# 0',
 					'  1[]'
 				] ) );
@@ -666,12 +666,12 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
-				setData( model, modelList( [ '# [a]' ] ) );
+				_setModelData( model, modelList( [ '# [a]' ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
-				setData( model, '<paragraph>[a]</paragraph>' );
+				_setModelData( model, '<paragraph>[a]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
@@ -679,7 +679,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'<paragraph>[a</paragraph>' +
 					'<block></block>]'
 				);
@@ -691,7 +691,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'[<block></block>' +
 					'<paragraph>b]</paragraph>'
 				);
@@ -703,7 +703,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
-				setData( model,
+				_setModelData( model,
 					'[<block></block>]' +
 					'<paragraph>b</paragraph>'
 				);
@@ -714,7 +714,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				setData( model, '<paragraph>[0]</paragraph>' );
+				_setModelData( model, '<paragraph>[0]</paragraph>' );
 
 				model.change( writer => {
 					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
@@ -727,49 +727,49 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'options.forceValue', () => {
 				it( 'should force converting into the list if the `options.forceValue` is set to `true`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[]o'
 					] ) );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 				} );
 
 				it( 'should not modify list item if not needed if the list if the `options.forceValue` is set to `true`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# fo[]o'
 					] ) );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 				} );
 
 				it( 'should force converting into the paragraph if the `options.forceValue` is set to `false`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# fo[]o'
 					] ) );
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
 
 				it( 'should not modify list item if not needed if the `options.forceValue` is set to `false`', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[]o'
 					] ) );
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 				} );
@@ -777,11 +777,11 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'when turning on', () => {
 				it( 'should turn the closest block into a list item', () => {
-					setData( model, '<paragraph>fo[]o</paragraph>' );
+					_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# fo[]o {id:a00}'
 					] ) );
 
@@ -791,13 +791,13 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should change the type of an existing (closest) list item', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* fo[]o'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# fo[]o'
 					] ) );
 
@@ -807,14 +807,14 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should make a list items from multiple paragraphs', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'fo[o',
 						'ba]r'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# fo[o {id:a00}',
 						'# ba]r {id:a01}'
 					] ) );
@@ -827,7 +827,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should make a list items from multiple paragraphs mixed with list items', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'a',
 						'[b',
 						'# c',
@@ -837,7 +837,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'a',
 						'# [b {id:a00}',
 						'# c',
@@ -853,7 +853,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should not change type of nested list if parent is selected', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* [a',
 						'* b]',
 						'  * c',
@@ -862,7 +862,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# [a',
 						'# b]',
 						'  * c',
@@ -877,7 +877,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should change the type of the whole list if the selection is collapsed (bulleted lists at the boundaries)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# a',
 						'* b[]',
 						'  * c',
@@ -887,7 +887,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# a',
 						'# b[]',
 						'  * c',
@@ -905,13 +905,13 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 			describe( 'when turning off', () => {
 				it( 'should strip the list attributes from the closest list item (single list item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# fo[]o'
 					] ) );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'fo[]o'
 					] ) );
 
@@ -922,7 +922,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in first item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# f[]oo',
 						'# bar',
 						'# baz'
@@ -930,7 +930,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'f[]oo',
 						'# bar',
 						'# baz'
@@ -943,7 +943,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the middle item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# foo',
 						'# b[]ar',
 						'# baz'
@@ -951,7 +951,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# foo',
 						'b[]ar',
 						'# baz'
@@ -964,7 +964,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the last item)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# foo',
 						'# bar',
 						'# b[]az'
@@ -972,7 +972,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# foo',
 						'# bar',
 						'b[]az'
@@ -986,7 +986,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 				describe( 'with nested lists inside', () => {
 					it( 'should strip the list attributes from the closest item and decrease indent of children (first item)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'# f[]oo',
 							'  # bar',
 							'  # baz',
@@ -995,7 +995,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'f[]oo',
 							'# bar',
 							'# baz',
@@ -1012,7 +1012,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the closest item and decrease indent of children (middle item)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'# foo',
 							'# b[]ar',
 							'  # baz',
@@ -1021,7 +1021,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'# foo',
 							'b[]ar',
 							'# baz',
@@ -1038,7 +1038,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
 						/* eslint-disable @stylistic/no-multi-spaces */
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'0',
 							'# 1',
 							'  # 2',
@@ -1059,7 +1059,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'0',
 							'# 1',
 							'  # 2',

@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 
@@ -41,7 +41,7 @@ describe( 'IndentBlock - integration', () => {
 			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
 
 			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p style="margin-left:50px">foo</p>' );
 		} );
 	} );
@@ -66,7 +66,7 @@ describe( 'IndentBlock - integration', () => {
 			expect( paragraph.getAttribute( 'blockIndent' ) ).to.equal( '50px' );
 
 			expect( editor.getData() ).to.equal( '<p style="margin-left:50px;">foo</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p style="margin-left:50px">foo</p>' );
 		} );
 	} );
@@ -109,7 +109,7 @@ describe( 'IndentBlock - integration', () => {
 			expect( customHeading.getAttribute( 'blockIndent' ) ).to.equal( '150px' );
 
 			expect( editor.getData() ).to.equal( '<h2 class="fancy" style="margin-left:150px;">foo</h2>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<h2 class="fancy" style="margin-left:150px">foo</h2>' );
 		} );
 	} );

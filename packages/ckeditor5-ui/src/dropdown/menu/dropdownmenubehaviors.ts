@@ -16,6 +16,9 @@ import { type DropdownMenuRootListView } from './dropdownmenurootlistview.js';
 
 import { DropdownMenuListItemView } from './dropdownmenulistitemview.js';
 
+/**
+ * @internal
+ */
 export const DropdownRootMenuBehaviors = {
 	/**
 	 * Move focus to a menu item on mouse hover. If it is a button to open a nested menu, open that menu.
@@ -59,6 +62,9 @@ export const DropdownRootMenuBehaviors = {
 	}
 };
 
+/**
+ * @internal
+ */
 export const DropdownMenuBehaviors = {
 	/**
 	 * Open the menu on the right arrow key press (left, in RTL mode). This allows for navigating to sub-menus using the keyboard.

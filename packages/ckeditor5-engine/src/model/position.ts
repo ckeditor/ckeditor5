@@ -7,62 +7,62 @@
  * @module engine/model/position
  */
 
-import { TypeCheckable } from './typecheckable.js';
-import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { ModelTypeCheckable } from './typecheckable.js';
+import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Operation } from './operation/operation.js';
 import { type SplitOperation } from './operation/splitoperation.js';
-import { type Text } from './text.js';
+import { type ModelText } from './text.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a position in the model tree.
  *
- * A position is represented by its {@link module:engine/model/position~Position#root} and
- * a {@link module:engine/model/position~Position#path} in that root.
+ * A position is represented by its {@link module:engine/model/position~ModelPosition#root} and
+ * a {@link module:engine/model/position~ModelPosition#path} in that root.
  *
  * You can create position instances via its constructor or the `createPosition*()` factory methods of
- * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~ModelWriter}.
  *
  * **Note:** Position is based on offsets, not indexes. This means that a position between two text nodes
- * `foo` and `bar` has offset `3`, not `1`. See {@link module:engine/model/position~Position#path} for more information.
+ * `foo` and `bar` has offset `3`, not `1`. See {@link module:engine/model/position~ModelPosition#path} for more information.
  *
- * Since a position in the model is represented by a {@link module:engine/model/position~Position#root position root} and
- * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing places.
+ * Since a position in the model is represented by a {@link module:engine/model/position~ModelPosition#root position root} and
+ * {@link module:engine/model/position~ModelPosition#path position path} it is possible to create positions placed in non-existing places.
  * This requirement is important for operational transformation algorithms.
  *
  * Also, {@link module:engine/model/operation/operation~Operation operations}
- * kept in the {@link module:engine/model/document~Document#history document history}
+ * kept in the {@link module:engine/model/document~ModelDocument#history document history}
  * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
  * after the document has changed.
  *
- * When changes are applied to the model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
+ * When changes are applied to the model, it may also happen that {@link module:engine/model/position~ModelPosition#parent position parent}
  * will change even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
- * {@link module:engine/model/position~Position#parent} and some other properties and methods will throw errors.
+ * {@link module:engine/model/position~ModelPosition#parent} and some other properties and methods will throw errors.
  *
  * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  */
-export class Position extends TypeCheckable {
+export class ModelPosition extends ModelTypeCheckable {
 	/**
 	 * Root of the position path.
 	 */
-	public readonly root: Element | DocumentFragment;
+	public readonly root: ModelElement | ModelDocumentFragment;
 
 	/**
 	 * Position of the node in the tree. **Path contains offsets, not indexes.**
 	 *
-	 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
-	 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
-	 * {@link module:engine/model/node~Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+	 * Position can be placed before, after or in a {@link module:engine/model/node~ModelNode node} if that node has
+	 * {@link module:engine/model/node~ModelNode#offsetSize} greater than `1`. Items in position path are
+	 * {@link module:engine/model/node~ModelNode#startOffset starting offsets} of position ancestors, starting from direct root children,
 	 * down to the position offset in it's parent.
 	 *
 	 * ```
@@ -75,7 +75,7 @@ export class Position extends TypeCheckable {
 	 *        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
 	 * ```
 	 *
-	 * `foo` and `bar` are representing {@link module:engine/model/text~Text text nodes}. Since text nodes has offset size
+	 * `foo` and `bar` are representing {@link module:engine/model/text~ModelText text nodes}. Since text nodes has offset size
 	 * greater than `1` you can place position offset between their start and end:
 	 *
 	 * ```
@@ -91,21 +91,21 @@ export class Position extends TypeCheckable {
 	public readonly path: ReadonlyArray<number>;
 
 	/**
-	 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
-	public stickiness: PositionStickiness;
+	public stickiness: ModelPositionStickiness;
 
 	/**
 	 * Creates a position.
 	 *
 	 * @param root Root of the position.
-	 * @param path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
+	 * @param stickiness Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
 	constructor(
-		root: Element | DocumentFragment,
+		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness: PositionStickiness = 'toNone'
+		stickiness: ModelPositionStickiness = 'toNone'
 	) {
 		super();
 
@@ -151,8 +151,8 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Offset at which this position is located in its {@link module:engine/model/position~Position#parent parent}. It is equal
-	 * to the last item in position {@link module:engine/model/position~Position#path path}.
+	 * Offset at which this position is located in its {@link module:engine/model/position~ModelPosition#parent parent}. It is equal
+	 * to the last item in position {@link module:engine/model/position~ModelPosition#path path}.
 	 *
 	 * @type {Number}
 	 */
@@ -168,12 +168,12 @@ export class Position extends TypeCheckable {
 	 * Parent element of this position.
 	 *
 	 * Keep in mind that `parent` value is calculated when the property is accessed.
-	 * If {@link module:engine/model/position~Position#path position path}
+	 * If {@link module:engine/model/position~ModelPosition#path position path}
 	 * leads to a non-existing element, `parent` property will throw error.
 	 *
 	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 */
-	public get parent(): Element | DocumentFragment {
+	public get parent(): ModelElement | ModelDocumentFragment {
 		let parent: any = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
@@ -185,15 +185,16 @@ export class Position extends TypeCheckable {
 				 * a correct place in the tree and hence, some of its methods and getters cannot work correctly.
 				 *
 				 * **Note**: Unlike DOM and view positions, in the model, the
-				 * {@link module:engine/model/position~Position#parent position's parent} is always an element or a document fragment.
-				 * The last offset in the {@link module:engine/model/position~Position#path position's path} is the point in this element
+				 * {@link module:engine/model/position~ModelPosition#parent position's parent} is always an element or a document fragment.
+				 * The last offset in the
+				 * {@link module:engine/model/position~ModelPosition#path position's path} is the point in this element
 				 * where this position points.
 				 *
 				 * Read more about model positions and offsets in
 				 * the {@glink framework/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
 				 *
 				 * @error model-position-path-incorrect
-				 * @param {module:engine/model/position~Position} position The incorrect position.
+				 * @param {module:engine/model/position~ModelPosition} position The incorrect position.
 				 */
 				throw new CKEditorError( 'model-position-path-incorrect', this, { position: this } );
 			}
@@ -207,8 +208,8 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Position {@link module:engine/model/position~Position#offset offset} converted to an index in position's parent node. It is
-	 * equal to the {@link module:engine/model/node~Node#index index} of a node after this position. If position is placed
+	 * Position {@link module:engine/model/position~ModelPosition#offset offset} converted to an index in position's parent node. It is
+	 * equal to the {@link module:engine/model/node~ModelNode#index index} of a node after this position. If position is placed
 	 * in text node, position index is equal to the index of that text node.
 	 */
 	public get index(): number {
@@ -216,17 +217,17 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Returns {@link module:engine/model/text~Text text node} instance in which this position is placed or `null` if this
+	 * Returns {@link module:engine/model/text~ModelText text node} instance in which this position is placed or `null` if this
 	 * position is not in a text node.
 	 */
-	public get textNode(): Text | null {
+	public get textNode(): ModelText | null {
 		return getTextNodeAtPosition( this, this.parent );
 	}
 
 	/**
 	 * Node directly after this position. Returns `null` if this position is at the end of its parent, or if it is in a text node.
 	 */
-	public get nodeAfter(): Node | null {
+	public get nodeAfter(): ModelNode | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
@@ -236,7 +237,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Node directly before this position. Returns `null` if this position is at the start of its parent, or if it is in a text node.
 	 */
-	public get nodeBefore(): Node | null {
+	public get nodeBefore(): ModelNode | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
@@ -244,14 +245,14 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Is `true` if position is at the beginning of its {@link module:engine/model/position~Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the beginning of its {@link module:engine/model/position~ModelPosition#parent parent}, `false` otherwise.
 	 */
 	public get isAtStart(): boolean {
 		return this.offset === 0;
 	}
 
 	/**
-	 * Is `true` if position is at the end of its {@link module:engine/model/position~Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the end of its {@link module:engine/model/position~ModelPosition#parent parent}, `false` otherwise.
 	 */
 	public get isAtEnd(): boolean {
 		return this.offset == this.parent.maxOffset;
@@ -283,7 +284,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 */
-	public compareWith( otherPosition: Position ): PositionRelation {
+	public compareWith( otherPosition: ModelPosition ): ModelPositionRelation {
 		if ( this.root != otherPosition.root ) {
 			return 'different';
 		}
@@ -307,7 +308,7 @@ export class Position extends TypeCheckable {
 
 	/**
 	 * Gets the farthest position which matches the callback using
-	 * {@link module:engine/model/treewalker~TreeWalker TreeWalker}.
+	 * {@link module:engine/model/treewalker~ModelTreeWalker TreeWalker}.
 	 *
 	 * For example:
 	 *
@@ -322,27 +323,27 @@ export class Position extends TypeCheckable {
 	 * // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~ModelTreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 *
 	 * @returns The position after the last item which matches the `skip` callback test.
 	 */
 	public getLastMatchingPosition(
-		skip: ( value: TreeWalkerValue ) => boolean,
-		options: TreeWalkerOptions = {}
-	): Position {
+		skip: ( value: ModelTreeWalkerValue ) => boolean,
+		options: ModelTreeWalkerOptions = {}
+	): ModelPosition {
 		options.startPosition = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 		treeWalker.skip( skip );
 
 		return treeWalker.position;
 	}
 
 	/**
-	 * Returns a path to this position's parent. Parent path is equal to position {@link module:engine/model/position~Position#path path}
-	 * but without the last item.
+	 * Returns a path to this position's parent. Parent path is equal to position
+	 * {@link module:engine/model/position~ModelPosition#path path} but without the last item.
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
@@ -357,7 +358,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Element | DocumentFragment> {
+	public getAncestors(): Array<ModelElement | ModelDocumentFragment> {
 		const parent = this.parent;
 
 		if ( parent.is( 'documentFragment' ) ) {
@@ -372,7 +373,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @param parentName The name of the parent element to find.
 	 */
-	public findAncestor( parentName: string ): Element | null {
+	public findAncestor( parentName: string ): ModelElement | null {
 		const parent = this.parent;
 
 		if ( parent.is( 'element' ) ) {
@@ -391,7 +392,7 @@ export class Position extends TypeCheckable {
 	 * @param position The second position.
 	 * @returns The common path.
 	 */
-	public getCommonPath( position: Position ): Array<number> {
+	public getCommonPath( position: ModelPosition ): Array<number> {
 		if ( this.root != position.root ) {
 			return [];
 		}
@@ -405,12 +406,12 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~ModelDocumentFragment}
 	 * which is a common ancestor of both positions. The {@link #root roots} of these two positions must be identical.
 	 *
 	 * @param position The second position.
 	 */
-	public getCommonAncestor( position: Position ): Element | DocumentFragment | null {
+	public getCommonAncestor( position: ModelPosition ): ModelElement | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 
@@ -432,7 +433,7 @@ export class Position extends TypeCheckable {
 	 * @param shift Offset shift. Can be a negative value.
 	 * @returns Shifted position.
 	 */
-	public getShiftedBy( shift: number ): Position {
+	public getShiftedBy( shift: number ): ModelPosition {
 		const shifted = this.clone();
 
 		const offset = shifted.offset + shift;
@@ -446,11 +447,11 @@ export class Position extends TypeCheckable {
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
-	 * @see module:engine/model/position~Position#isBefore
+	 * @see module:engine/model/position~ModelPosition#isBefore
 	 * @param  otherPosition Position to compare with.
 	 * @returns True if this position is after given position.
 	 */
-	public isAfter( otherPosition: Position ): boolean {
+	public isAfter( otherPosition: ModelPosition ): boolean {
 		return this.compareWith( otherPosition ) == 'after';
 	}
 
@@ -493,7 +494,7 @@ export class Position extends TypeCheckable {
 	 * @param otherPosition Position to compare with.
 	 * @returns True if this position is before given position.
 	 */
-	public isBefore( otherPosition: Position ): boolean {
+	public isBefore( otherPosition: ModelPosition ): boolean {
 		return this.compareWith( otherPosition ) == 'before';
 	}
 
@@ -505,7 +506,7 @@ export class Position extends TypeCheckable {
 	 * @param otherPosition Position to compare with.
 	 * @returns True if positions are same.
 	 */
-	public isEqual( otherPosition: Position ): boolean {
+	public isEqual( otherPosition: ModelPosition ): boolean {
 		return this.compareWith( otherPosition ) == 'same';
 	}
 
@@ -517,7 +518,7 @@ export class Position extends TypeCheckable {
 	 * @param otherPosition Position to compare with.
 	 * @returns True if positions touch.
 	 */
-	public isTouching( otherPosition: Position ): boolean {
+	public isTouching( otherPosition: ModelPosition ): boolean {
 		if ( this.root !== otherPosition.root ) {
 			return false;
 		}
@@ -569,7 +570,7 @@ export class Position extends TypeCheckable {
 	 * @param position Position to compare with.
 	 * @returns `true` if positions have the same parent, `false` otherwise.
 	 */
-	public hasSameParentAs( position: Position ): boolean {
+	public hasSameParentAs( position: ModelPosition ): boolean {
 		if ( this.root !== position.root ) {
 			return false;
 		}
@@ -585,7 +586,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * The new position's parameters are updated accordingly to the effect of the `operation`.
 	 *
-	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~Position#offset} will be
+	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~ModelPosition#offset} will be
 	 * increased by `n`. If the position was in a merged element, it will be accordingly moved to the new element, etc.
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
@@ -593,7 +594,7 @@ export class Position extends TypeCheckable {
 	 * @param operation Operation to transform by.
 	 * @returns Transformed position.
 	 */
-	public getTransformedByOperation( operation: Operation ): Position {
+	public getTransformedByOperation( operation: Operation ): ModelPosition {
 		let result;
 
 		switch ( operation.type ) {
@@ -612,7 +613,7 @@ export class Position extends TypeCheckable {
 				result = this._getTransformedByMergeOperation( operation as MergeOperation );
 				break;
 			default:
-				result = Position._createAt( this );
+				result = ModelPosition._createAt( this );
 				break;
 		}
 
@@ -624,7 +625,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @internal
 	 */
-	public _getTransformedByInsertOperation( operation: InsertOperation ): Position {
+	public _getTransformedByInsertOperation( operation: InsertOperation ): ModelPosition {
 		return this._getTransformedByInsertion( operation.position, operation.howMany );
 	}
 
@@ -633,7 +634,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @internal
 	 */
-	public _getTransformedByMoveOperation( operation: MoveOperation ): Position {
+	public _getTransformedByMoveOperation( operation: MoveOperation ): ModelPosition {
 		return this._getTransformedByMove( operation.sourcePosition, operation.targetPosition, operation.howMany );
 	}
 
@@ -642,7 +643,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @internal
 	 */
-	public _getTransformedBySplitOperation( operation: SplitOperation ): Position {
+	public _getTransformedBySplitOperation( operation: SplitOperation ): ModelPosition {
 		const movedRange = operation.movedRange;
 
 		const isContained = movedRange.containsPosition( this ) ||
@@ -664,7 +665,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @internal
 	 */
-	public _getTransformedByMergeOperation( operation: MergeOperation ): Position {
+	public _getTransformedByMergeOperation( operation: MergeOperation ): ModelPosition {
 		const movedRange = operation.movedRange;
 		const isContained = movedRange.containsPosition( this ) || movedRange.start.isEqual( this );
 
@@ -678,7 +679,7 @@ export class Position extends TypeCheckable {
 				pos = pos._getTransformedByDeletion( operation.deletionPosition, 1 )!;
 			}
 		} else if ( this.isEqual( operation.deletionPosition ) ) {
-			pos = Position._createAt( operation.deletionPosition );
+			pos = ModelPosition._createAt( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
 		}
@@ -695,8 +696,8 @@ export class Position extends TypeCheckable {
 	 * @param howMany How many nodes are removed.
 	 * @returns Transformed position or `null`.
 	 */
-	public _getTransformedByDeletion( deletePosition: Position, howMany: number ): Position | null {
-		const transformed = Position._createAt( this );
+	public _getTransformedByDeletion( deletePosition: ModelPosition, howMany: number ): ModelPosition | null {
+		const transformed = ModelPosition._createAt( this );
 
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
@@ -743,8 +744,8 @@ export class Position extends TypeCheckable {
 	 * @param howMany How many nodes are inserted.
 	 * @returns Transformed position.
 	 */
-	public _getTransformedByInsertion( insertPosition: Position, howMany: number ): Position {
-		const transformed = Position._createAt( this );
+	public _getTransformedByInsertion( insertPosition: ModelPosition, howMany: number ): ModelPosition {
+		const transformed = ModelPosition._createAt( this );
 
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
@@ -781,13 +782,13 @@ export class Position extends TypeCheckable {
 	 * @param howMany How many consecutive nodes to move, starting from `sourcePosition`.
 	 * @returns Transformed position.
 	 */
-	public _getTransformedByMove( sourcePosition: Position, targetPosition: Position, howMany: number ): Position {
+	public _getTransformedByMove( sourcePosition: ModelPosition, targetPosition: ModelPosition, howMany: number ): ModelPosition {
 		// Update target position, as it could be affected by nodes removal.
 		targetPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany )!;
 
 		if ( sourcePosition.isEqual( targetPosition ) ) {
 			// If `targetPosition` is equal to `sourcePosition` this isn't really any move. Just return position as it is.
-			return Position._createAt( this );
+			return ModelPosition._createAt( this );
 		}
 
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
@@ -838,11 +839,11 @@ export class Position extends TypeCheckable {
 	 * @param target Position where the range is moved.
 	 * @returns Combined position.
 	 */
-	public _getCombined( source: Position, target: Position ): Position {
+	public _getCombined( source: ModelPosition, target: ModelPosition ): ModelPosition {
 		const i = source.path.length - 1;
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
-		const combined = Position._createAt( target );
+		const combined = ModelPosition._createAt( target );
 		combined.stickiness = this.stickiness;
 
 		// Then we have to update the rest of the path.
@@ -878,27 +879,28 @@ export class Position extends TypeCheckable {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/model/position~Position position},
+	 * * a {@link module:engine/model/position~ModelPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 * * {@link module:engine/model/item~ModelItem model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
 	 * This method is a shortcut to other factory methods such as:
 	 *
-	 * * {@link module:engine/model/position~Position._createBefore},
-	 * * {@link module:engine/model/position~Position._createAfter}.
+	 * * {@link module:engine/model/position~ModelPosition._createBefore},
+	 * * {@link module:engine/model/position~ModelPosition._createAfter}.
 	 *
 	 * @internal
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
-	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter
+	 * is a {@link module:engine/model/item~ModelItem model item}.
+	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public static _createAt(
-		itemOrPosition: Item | Position | DocumentFragment,
-		offset?: PositionOffset,
-		stickiness: PositionStickiness = 'toNone'
-	): Position {
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
+		offset?: ModelPositionOffset,
+		stickiness: ModelPositionStickiness = 'toNone'
+	): ModelPosition {
 		if ( itemOrPosition.is( 'model:position' ) ) {
-			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
+			return new ModelPosition( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
 			const node = itemOrPosition;
 
@@ -939,19 +941,19 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position, after given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * @internal
 	 * @param item Item after which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createAfter( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createAfter( item: ModelItem | ModelDocumentFragment, stickiness?: ModelPositionStickiness ): ModelPosition {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position after a root element.
 			 *
 			 * @error model-position-after-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element..
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-after-root',
@@ -964,19 +966,19 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position, before the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * @internal
 	 * @param item Item before which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createBefore( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createBefore( item: ModelItem | ModelDocumentFragment, stickiness?: ModelPositionStickiness ): ModelPosition {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position before a root element.
 			 *
 			 * @error model-position-before-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element..
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-before-root',
@@ -995,9 +997,9 @@ export class Position extends TypeCheckable {
 	 * @param doc Document object that will be position owner.
 	 * @returns `Position` instance created using given plain object.
 	 */
-	public static fromJSON( json: any, doc: Document ): Position {
+	public static fromJSON( json: any, doc: ModelDocument ): ModelPosition {
 		if ( json.root === '$graveyard' ) {
-			const pos = new Position( doc.graveyard, json.path );
+			const pos = new ModelPosition( doc.graveyard, json.path );
 			pos.stickiness = json.stickiness;
 
 			return pos;
@@ -1017,7 +1019,7 @@ export class Position extends TypeCheckable {
 			);
 		}
 
-		return new Position( doc.getRoot( json.root )!, json.path, json.stickiness );
+		return new ModelPosition( doc.getRoot( json.root )!, json.path, json.stickiness );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -1031,22 +1033,20 @@ export class Position extends TypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Position.prototype.is = function( type: string ): boolean {
+ModelPosition.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'model:position';
 };
-
-export { Position as ModelPosition };
 
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  */
-export type PositionRelation = 'before' | 'after' | 'same' | 'different';
+export type ModelPositionRelation = 'before' | 'after' | 'same' | 'different';
 
 /**
  * Offset or one of the flags.
  */
-export type PositionOffset = number | 'before' | 'after' | 'end';
+export type ModelPositionOffset = number | 'before' | 'after' | 'end';
 
 /**
  * Represents how position is "sticking" with neighbour nodes. Used to define how position should be transformed (moved)
@@ -1076,15 +1076,15 @@ export type PositionOffset = number | 'before' | 'after' | 'end';
  * - sticks to previous node:  <p>f[oo]|</p><p>b^ar</p>  ->  <p>f</p><p>boo|ar</p>
  * ```
  */
-export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
+export type ModelPositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
 
 /**
  * Returns a text node at the given position.
  *
  * This is a helper function optimized to reuse the position parent instance for performance reasons.
  *
- * Normally, you should use {@link module:engine/model/position~Position#textNode `Position#textNode`}.
- * If you start hitting performance issues with {@link module:engine/model/position~Position#parent `Position#parent`}
+ * Normally, you should use {@link module:engine/model/position~ModelPosition#textNode `Position#textNode`}.
+ * If you start hitting performance issues with {@link module:engine/model/position~ModelPosition#parent `Position#parent`}
  * check if your algorithm does not access it multiple times (which can happen directly or indirectly via other position properties).
  *
  * See https://github.com/ckeditor/ckeditor5/issues/6579.
@@ -1096,8 +1096,9 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  *
  * @param position
  * @param positionParent The parent of the given position.
+ * @internal
  */
-export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
+export function getTextNodeAtPosition( position: ModelPosition, positionParent: ModelElement | ModelDocumentFragment ): ModelText | null {
 	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
@@ -1113,9 +1114,9 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * This is a helper function optimized to reuse the position parent instance and the calculation of the text node at the
  * specific position for performance reasons.
  *
- * Normally, you should use {@link module:engine/model/position~Position#nodeAfter `Position#nodeAfter`}.
- * If you start hitting performance issues with {@link module:engine/model/position~Position#parent `Position#parent`} and/or
- * {@link module:engine/model/position~Position#textNode `Position#textNode`}
+ * Normally, you should use {@link module:engine/model/position~ModelPosition#nodeAfter `Position#nodeAfter`}.
+ * If you start hitting performance issues with {@link module:engine/model/position~ModelPosition#parent `Position#parent`} and/or
+ * {@link module:engine/model/position~ModelPosition#textNode `Position#textNode`}
  * check if your algorithm does not access those properties multiple times
  * (which can happen directly or indirectly via other position properties).
  *
@@ -1129,12 +1130,13 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeAfterPosition(
-	position: Position,
-	positionParent: Element | DocumentFragment,
-	textNode: Text | null
-): Node | null {
+	position: ModelPosition,
+	positionParent: ModelElement | ModelDocumentFragment,
+	textNode: ModelText | null
+): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;
 	}
@@ -1155,12 +1157,13 @@ export function getNodeAfterPosition(
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeBeforePosition(
-	position: Position,
-	positionParent: Element | DocumentFragment,
-	textNode: Text | null
-): Node | null {
+	position: ModelPosition,
+	positionParent: ModelElement | ModelDocumentFragment,
+	textNode: ModelText | null
+): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;
 	}
@@ -1181,7 +1184,7 @@ export function getNodeBeforePosition(
  * @param right Position "on the right" (it is after `left`).
  * @param level Level on which the positions are different.
  */
-function checkTouchingBranch( left: Position, right: Position, level: number ): boolean {
+function checkTouchingBranch( left: ModelPosition, right: ModelPosition, level: number ): boolean {
 	if ( level + 1 === left.path.length ) {
 		// Left position does not have any more entries after the point where the positions differ.
 		// [ 2 ] vs [ 3 ]
@@ -1236,7 +1239,7 @@ function checkOnlyZeroes( arr: ReadonlyArray<number>, idx: number ): boolean {
  *
  * This is a helper function for `Position#isTouching()`.
  */
-function checkOnlyMaxOffset( pos: Position, level: number ): boolean {
+function checkOnlyMaxOffset( pos: ModelPosition, level: number ): boolean {
 	let parent = pos.parent;
 	let idx = pos.path.length - 1;
 	let add = 0;

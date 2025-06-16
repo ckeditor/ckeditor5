@@ -5,7 +5,7 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'tabs', () => {
 		it( 'should process list item with tabs', () => {
 			testDataProcessor(

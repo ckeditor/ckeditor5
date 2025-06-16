@@ -4,11 +4,11 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { Text } from '../../../src/model/text.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelText } from '../../../src/model/text.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
-import { Position } from '../../../src/model/position.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -25,7 +25,7 @@ describe( 'AttributeOperation', () => {
 	describe( 'type', () => {
 		it( 'should be addAttribute for adding attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				null,
 				'newValue',
@@ -37,7 +37,7 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should be removeAttribute for removing attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				'oldValue',
 				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
@@ -49,7 +49,7 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should be changeAttribute for removing attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				'oldValue',
 				'newValue',
@@ -61,11 +61,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {
-		root._insertChild( 0, new Text( 'bar' ) );
+		root._insertChild( 0, new ModelText( 'bar' ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'isNew',
 				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
 				true,
@@ -82,11 +82,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
-		root._insertChild( 0, new Text( 'x', { foo: true, bar: true } ) );
+		root._insertChild( 0, new ModelText( 'x', { foo: true, bar: true } ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'isNew',
 				null,
 				true,
@@ -103,11 +103,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute to the set of nodes', () => {
-		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChild( 0, new ModelText( 'bar', { isNew: false } ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'isNew',
 				false,
 				true,
@@ -124,11 +124,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
-		root._insertChild( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
+		root._insertChild( 0, new ModelText( 'x', { foo: true, x: 1, bar: true } ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'x',
 				1,
 				2,
@@ -145,11 +145,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should work correctly if old and new value are same', () => {
-		root._insertChild( 0, new Text( 'bar', { foo: 'bar' } ) );
+		root._insertChild( 0, new ModelText( 'bar', { foo: 'bar' } ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'foo',
 				'bar',
 				'bar',
@@ -164,11 +164,11 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should remove attribute', () => {
-		root._insertChild( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
+		root._insertChild( 0, new ModelText( 'x', { foo: true, x: true, bar: true } ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'x',
 				true,
 				null,
@@ -185,11 +185,11 @@ describe( 'AttributeOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should not throw for non-primitive attribute values', () => {
-			root._insertChild( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
+			root._insertChild( 0, new ModelText( 'x', { foo: [ 'bar', 'xyz' ] } ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					[ 'bar', 'xyz' ],
 					true,
@@ -201,11 +201,11 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-			root._insertChild( 0, new Text( 'x' ) );
+			root._insertChild( 0, new ModelText( 'x' ) );
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					true,
 					null,
@@ -217,11 +217,11 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should throw an error when one try to insert and the attribute already exists', () => {
-			root._insertChild( 0, new Text( 'x', { x: 1 } ) );
+			root._insertChild( 0, new ModelText( 'x', { x: 1 } ) );
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'x',
 					null,
 					2,
@@ -233,11 +233,11 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should not throw when attribute value is the same', () => {
-			root._insertChild( 0, new Text( 'x', { foo: true } ) );
+			root._insertChild( 0, new ModelText( 'x', { foo: true } ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					true,
 					true,
@@ -250,13 +250,13 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should throw for a non-flat range', () => {
 			root._insertChild( 0, [
-				new Element( 'paragraph', null, new Text( 'Foo' ) ),
-				new Element( 'paragraph', null, new Text( 'Bar' ) )
+				new ModelElement( 'paragraph', null, new ModelText( 'Foo' ) ),
+				new ModelElement( 'paragraph', null, new ModelText( 'Bar' ) )
 			] );
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 1, 1 ] ) ),
 					'x',
 					null,
 					2,
@@ -269,7 +269,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation as a reverse', () => {
-		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+		const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) );
 		const operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );
 		const reverse = operation.getReversed();
 
@@ -282,10 +282,10 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
-		root._insertChild( 0, new Text( 'bar' ) );
+		root._insertChild( 0, new ModelText( 'bar' ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'isNew',
 			null,
 			true,
@@ -303,10 +303,10 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
-		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChild( 0, new ModelText( 'bar', { isNew: false } ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'isNew',
 			false,
 			true,
@@ -325,10 +325,10 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
-		root._insertChild( 0, new Text( 'bar', { foo: true } ) );
+		root._insertChild( 0, new ModelText( 'bar', { foo: true } ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'foo',
 			true,
 			null,
@@ -347,7 +347,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
-		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		const baseVersion = doc.version;
 
 		const op = new AttributeOperation( range, 'foo', 'old', 'new', baseVersion );
@@ -369,12 +369,12 @@ describe( 'AttributeOperation', () => {
 		const attrA = { foo: 'a' };
 		const attrB = { foo: 'b' };
 
-		root._insertChild( 0, new Text( 'abc', attrA ) );
-		root._insertChild( 1, new Text( 'xyz', attrB ) );
+		root._insertChild( 0, new ModelText( 'abc', attrA ) );
+		root._insertChild( 1, new ModelText( 'xyz', attrB ) );
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
 				'foo',
 				'a',
 				'b',
@@ -388,7 +388,7 @@ describe( 'AttributeOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) );
 			const op = new AttributeOperation(
 				range,
 				'key',
@@ -414,7 +414,7 @@ describe( 'AttributeOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper AttributeOperation from json object', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) );
 			const op = new AttributeOperation(
 				range,
 				'key',

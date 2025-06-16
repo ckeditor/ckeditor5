@@ -8,9 +8,9 @@
  */
 
 import {
-	DomConverter,
+	ViewDomConverter,
 	ViewDocument,
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewNode
@@ -20,13 +20,14 @@ import {
  * Transforms `<br>` elements that are siblings to some block element into a paragraphs.
  *
  * @param documentFragment The view structure to be transformed.
+ * @internal
  */
 export function transformBlockBrsToParagraphs(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	const viewDocument = new ViewDocument( writer.document.stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+	const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 
 	const blockElements = domConverter.blockElements;
 	const inlineObjectElements = domConverter.inlineObjectElements;
@@ -68,7 +69,7 @@ export function transformBlockBrsToParagraphs(
 function findSibling(
 	viewElement: ViewElement,
 	direction: 'forward' | 'backward',
-	writer: UpcastWriter,
+	writer: ViewUpcastWriter,
 	{ blockElements, inlineObjectElements }: { blockElements: Array<string>; inlineObjectElements: Array<string> }
 ) {
 	let position = writer.createPositionAt( viewElement, direction == 'forward' ? 'after' : 'before' );

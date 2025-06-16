@@ -13,7 +13,7 @@ import { extend } from 'es-toolkit/compat';
 /**
  * The base MVC model class.
  */
-export class ViewModel extends /* #__PURE__ */ ObservableMixin() {
+export class UIModel extends /* #__PURE__ */ ObservableMixin() {
 	[ x: string ]: unknown;
 
 	/**

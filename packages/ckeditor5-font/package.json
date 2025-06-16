@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-undo": "45.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.2.0",
     "@ckeditor/ckeditor5-highlight": "45.2.0",
     "@ckeditor/ckeditor5-paragraph": "45.2.0",

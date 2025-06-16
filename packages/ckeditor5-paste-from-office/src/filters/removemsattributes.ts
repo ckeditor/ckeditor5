@@ -7,17 +7,18 @@
  * @module paste-from-office/filters/removemsattributes
  */
 
-import { UpcastWriter, type ViewDocumentFragment, type ViewElement } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocumentFragment, type ViewElement } from 'ckeditor5/src/engine.js';
 
 /**
  * Cleanup MS attributes like styles, attributes and elements.
  *
  * @param documentFragment element `data.content` obtained from clipboard.
+ * @internal
  */
 export function removeMSAttributes( documentFragment: ViewDocumentFragment ): void {
 	const elementsToUnwrap: Array<ViewElement> = [];
 
-	const writer = new UpcastWriter( documentFragment.document );
+	const writer = new ViewUpcastWriter( documentFragment.document );
 
 	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
 		if ( !item.is( 'element' ) ) {

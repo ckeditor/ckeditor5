@@ -32,6 +32,7 @@ import { type View } from '../view.js';
  * ```
  *
  * @param view View instance that defines the template.
+ * @internal
  */
 export function preventDefault( view: View ): ListenerBinding {
 	return view.bindTemplate.to( evt => {

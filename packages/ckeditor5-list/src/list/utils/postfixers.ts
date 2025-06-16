@@ -7,7 +7,7 @@
  * @module list/list/utils/postfixers
  */
 
-import type { Element, Position, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition, ModelWriter } from 'ckeditor5/src/engine.js';
 import { SiblingListBlocksIterator, type ListIteratorValue } from './listwalker.js';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
@@ -20,9 +20,9 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  * @param visited A set of elements that were already visited.
  */
 export function findAndAddListHeadToMap(
-	position: Position,
+	position: ModelPosition,
 	itemToListHead: Set<ListElement>,
-	visited: Set<Element>
+	visited: Set<ModelElement>
 ): void {
 	const previousNode = position.nodeBefore;
 
@@ -69,7 +69,7 @@ export function findAndAddListHeadToMap(
  */
 export function fixListIndents(
 	listNodes: Iterable<ListIteratorValue>,
-	writer: Writer
+	writer: ModelWriter
 ): boolean {
 	let maxIndent = 0; // Guards local sublist max indents that need fixing.
 	let prevIndent = -1; // Previous item indent.
@@ -123,7 +123,7 @@ export function fixListIndents(
 export function fixListItemIds(
 	listNodes: Iterable<ListIteratorValue>,
 	seenIds: Set<string>,
-	writer: Writer
+	writer: ModelWriter
 ): boolean {
 	const visited = new Set();
 	let applied = false;

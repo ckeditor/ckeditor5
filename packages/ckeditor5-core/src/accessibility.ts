@@ -11,6 +11,10 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { type Editor } from './editor/editor.js';
 
 const DEFAULT_CATEGORY_ID = 'contentEditing' as const;
+
+/**
+ * @internal
+ */
 export const DEFAULT_GROUP_ID = 'common' as const;
 
 /**
@@ -40,7 +44,7 @@ export class Accessibility {
 	 * * unless specified otherwise, new keystrokes are added into the `'contentEditing'` category and the `'common'`
 	 * keystroke group within that category while using the {@link #addKeystrokeInfos} method.
 	 */
-	public readonly keystrokeInfos: KeystrokeInfos = new Map();
+	public readonly keystrokeInfos: KeystrokeInfoDefinitions = new Map();
 
 	/**
 	 * The editor instance.
@@ -451,12 +455,12 @@ export interface AddKeystrokeInfosData {
 	keystrokes: Array<KeystrokeInfoDefinition>;
 }
 
-export type KeystrokeInfos = Map<string, KeystrokeInfoCategory>;
+export type KeystrokeInfoDefinitions = Map<string, KeystrokeInfoCategoryDefinition>;
 
 /**
  * A category of keystrokes in {@link module:core/accessibility~Accessibility#keystrokeInfos}.
  */
-export type KeystrokeInfoCategory = {
+export type KeystrokeInfoCategoryDefinition = {
 
 	/**
 	 * The unique id of the category.
@@ -476,13 +480,13 @@ export type KeystrokeInfoCategory = {
 	/**
 	 * Groups of keystrokes within the category.
 	 */
-	groups: Map<string, KeystrokeInfoGroup>;
+	groups: Map<string, KeystrokeInfoGroupDefinition>;
 };
 
 /**
  * A group of keystrokes in {@link module:core/accessibility~Accessibility#keystrokeInfos}.
  */
-export type KeystrokeInfoGroup = {
+export type KeystrokeInfoGroupDefinition = {
 
 	/**
 	 * The unique id of the group.

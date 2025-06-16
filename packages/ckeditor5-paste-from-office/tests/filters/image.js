@@ -6,9 +6,9 @@
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import { parseHtml } from '../../src/filters/parse.js';
+import { parsePasteOfficeHtml } from '../../src/filters/parse.js';
 import { replaceImagesSourceWithBase64, _convertHexToBase64 } from '../../src/filters/image.js';
 import { browserFixtures } from '../_data/image/index.js';
 
@@ -33,31 +33,31 @@ describe( 'PasteFromOffice - filters', () => {
 				it( 'should handle correctly empty RTF data', () => {
 					const input = '<p>Foo <img src="file://test.jpg" /></p>';
 					const rtfString = '';
-					const { body } = parseHtml( input );
+					const { body } = parsePasteOfficeHtml( input );
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
 				} );
 
 				it( 'should not change image with "http://" source', () => {
 					const input = '<p>Foo <img src="http://ckeditor.com/logo.jpg" /></p>';
 					const rtfString = browserFixtures.chrome.inputRtf.onlineOffline;
-					const { body } = parseHtml( input );
+					const { body } = parsePasteOfficeHtml( input );
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
 				} );
 
 				it( 'should not change image with "file://" source if not images in RTF data', () => {
 					const input = '<p>Foo <img src="file://test.jpg" /></p>';
 					const rtfString = '{\\rtf1\\adeflang1025\\ansi\\ansicpg1252\\uc1\\adeff31507}';
-					const { body } = parseHtml( input );
+					const { body } = parsePasteOfficeHtml( input );
 
 					replaceImagesSourceWithBase64( body, rtfString, editor.editing.model );
 
-					expect( stringifyView( body ) ).to.equal( normalizeHtml( input ) );
+					expect( _stringifyView( body ) ).to.equal( normalizeHtml( input ) );
 				} );
 			} );
 		} );

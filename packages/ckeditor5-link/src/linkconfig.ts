@@ -262,21 +262,21 @@ export interface LinkDecoratorAutomaticDefinition {
 	/**
 	 * Key-value pairs used as link attributes added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Attributes should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
 	 */
 	attributes?: Record<string, string>;
 
 	/**
 	 * Key-value pairs used as link styles added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Styles should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
 	 */
 	styles?: Record<string, string>;
 
 	/**
 	 * Class names used as link classes added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Classes should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
  	 */
 	classes?: ArrayOrItem<string>;
 }
@@ -316,21 +316,21 @@ export interface LinkDecoratorManualDefinition {
 	/**
 	 * Key-value pairs used as link attributes added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Attributes should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
 	 */
 	attributes?: Record<string, string>;
 
 	/**
 	 * Key-value pairs used as link styles added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Styles should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
 	 */
 	styles?: Record<string, string>;
 
 	/**
 	 * Class names used as link classes added to the output during the
 	 * {@glink framework/architecture/editing-engine#conversion downcasting}.
-	 * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+	 * Classes should follow the {@link module:engine/view/elementdefinition~ViewElementDefinition} syntax.
 	 */
 	classes?: ArrayOrItem<string>;
 

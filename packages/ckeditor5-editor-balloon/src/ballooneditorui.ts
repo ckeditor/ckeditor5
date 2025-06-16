@@ -16,7 +16,7 @@ import {
 	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 
 import { type BalloonEditorUIView } from './ballooneditoruiview.js';
 
@@ -123,7 +123,7 @@ export class BalloonEditorUI extends EditorUI {
 			}
 		}
 
-		enablePlaceholder( {
+		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
 			isDirectHost: false,

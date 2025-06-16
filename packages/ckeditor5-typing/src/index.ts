@@ -19,14 +19,23 @@ export type { TextTransformationConfig } from './typingconfig.js';
 export { inlineHighlight } from './utils/inlinehighlight.js';
 export { findAttributeRange, findAttributeRangeBound } from './utils/findattributerange.js';
 export { getLastTextLine, type LastTextLineData } from './utils/getlasttextline.js';
+export { TypingChangeBuffer } from './utils/changebuffer.js';
 
-export { InsertTextCommand, type InsertTextCommandExecuteEvent } from './inserttextcommand.js';
+export { InsertTextCommand, type InsertTextCommandExecuteEvent, type InsertTextCommandOptions } from './inserttextcommand.js';
 export { DeleteCommand } from './deletecommand.js';
 
-export type { TypingConfig } from './typingconfig.js';
+export { DeleteObserver as _DeleteObserver, type DeleteEventData } from './deleteobserver.js';
+
+export type { TypingConfig, TextTypingTransformationDescription } from './typingconfig.js';
 export type { ViewDocumentDeleteEvent } from './deleteobserver.js';
-export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver.js';
-export type { TextWatcherMatchedEvent } from './textwatcher.js';
-export type { TextWatcherMatchedDataEvent } from './textwatcher.js';
+export type { ViewDocumentInsertTextEvent, InsertTextEventData, InsertTextObserver } from './inserttextobserver.js';
+export type {
+	TextWatcherMatchedEvent,
+	TextWatcherMatchedDataEvent,
+	TextWatcherMatchedTypingDataEventData,
+	TextWatcherMatchedTypingSelectionEvent,
+	TextWatcherMatchedTypingSelectionEventData,
+	TextWatcherUnmatchedTypingEvent
+} from './textwatcher.js';
 
 import './augmentation.js';

@@ -5,11 +5,11 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'html', () => {
 		it( 'should keep html', () => {
 			testDataProcessor(
-				'test with <keep>html</keep> and <notkeep>not html</notkeep><!-- HTML comment -->',
+				'<div>Test</div>',
 
 				'<p>test with <keep>html</keep> and <notkeep>not html</notkeep></p>',
 

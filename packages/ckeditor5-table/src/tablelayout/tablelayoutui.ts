@@ -15,7 +15,7 @@ import {
 	MenuBarMenuView,
 	SplitButtonView,
 	DropdownButtonView,
-	ViewModel,
+	UIModel,
 	type ListDropdownButtonDefinition,
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
@@ -236,7 +236,7 @@ function createTableTypeDropdownItem(
 	type: TableType,
 	label: string
 ): ListDropdownButtonDefinition {
-	const model = new ViewModel( {
+	const model = new UIModel( {
 		label,
 		role: 'menuitemradio',
 		withText: true,

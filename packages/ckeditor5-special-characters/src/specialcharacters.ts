@@ -14,9 +14,9 @@ import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog }
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
 import {
 	CharacterGridView,
-	type CharacterGridViewExecuteEvent,
-	type CharacterGridViewTileFocusEvent,
-	type CharacterGridViewTileHoverEvent
+	type SpecialCharactersGridViewExecuteEvent,
+	type SpecialCharactersGridViewTileFocusEvent,
+	type SpecialCharactersGridViewTileHoverEvent
 } from './ui/charactergridview.js';
 import { CharacterInfoView } from './ui/characterinfoview.js';
 import { SpecialCharactersView } from './ui/specialcharactersview.js';
@@ -234,11 +234,11 @@ export class SpecialCharacters extends Plugin {
 		const gridView = new CharacterGridView( locale );
 		const infoView = new CharacterInfoView( locale );
 
-		gridView.on<CharacterGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
-		gridView.on<CharacterGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
@@ -300,7 +300,7 @@ export class SpecialCharacters extends Plugin {
 			infoView
 		);
 
-		gridView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewExecuteEvent>( 'execute', ( evt, data ) => {
 			editor.execute( 'insertText', { text: data.character } );
 		} );
 

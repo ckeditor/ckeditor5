@@ -8,13 +8,13 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Observer for events connected with pressing keyboard keys.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
 export class KeyObserver extends DomEventObserver<'keydown' | 'keyup', KeystrokeInfo & { keystroke: number }> {
 	/**
@@ -49,14 +49,14 @@ export class KeyObserver extends DomEventObserver<'keydown' | 'keyup', Keystroke
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
  * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName module:engine/view/document~Document#keydown
+ * @eventName module:engine/view/document~ViewDocument#keydown
  */
 export type ViewDocumentKeyDownEvent = {
 	name: 'keydown';
-	args: [ data: KeyEventData ];
+	args: [ data: ViewDocumentKeyEventData ];
 };
 
 /**
@@ -65,20 +65,20 @@ export type ViewDocumentKeyDownEvent = {
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
  * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName module:engine/view/document~Document#keyup
+ * @eventName module:engine/view/document~ViewDocument#keyup
  */
 export type ViewDocumentKeyUpEvent = {
 	name: 'keyup';
-	args: [ data: KeyEventData ];
+	args: [ data: ViewDocumentKeyEventData ];
 };
 
 /**
  * The value of both events - {@link ~ViewDocumentKeyDownEvent} and {@link ~ViewDocumentKeyUpEvent}.
  */
-export interface KeyEventData extends DomEventData<KeyboardEvent>, KeystrokeInfo {
+export interface ViewDocumentKeyEventData extends ViewDocumentDomEventData<KeyboardEvent>, KeystrokeInfo {
 
 	/**
 	 * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.

@@ -33,6 +33,8 @@ import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 /**
  * The TextAlternativeFormView class.
+ *
+ * @internal
  */
 export class TextAlternativeFormView extends View {
 	/**
@@ -253,6 +255,7 @@ export class TextAlternativeFormView extends View {
  * Fired when the form view is submitted.
  *
  * @eventName ~TextAlternativeFormView#submit
+ * @internal
  */
 export type TextAlternativeFormViewSubmitEvent = {
 	name: 'submit';
@@ -263,6 +266,7 @@ export type TextAlternativeFormViewSubmitEvent = {
  * Fired when the form view is canceled.
  *
  * @eventName ~TextAlternativeFormView#cancel
+ * @internal
  */
 export type TextAlternativeFormViewCancelEvent = {
 	name: 'cancel';

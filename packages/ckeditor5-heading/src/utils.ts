@@ -18,6 +18,8 @@ import type { HeadingOption } from './headingconfig.js';
  *
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
  * when the user configuration is defined because the editor does not exist yet.
+ *
+ * @internal
  */
 export function getLocalizedOptions( editor: Editor ): Array<HeadingOption> {
 	const t = editor.t;

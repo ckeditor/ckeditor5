@@ -6,7 +6,7 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -29,7 +29,7 @@ ClassicEditor
 
 		clipboard.on( 'inputTransformation', ( evt, data ) => {
 			console.log( '----- clipboardInput -----' );
-			console.log( 'stringify( data.dataTransfer )\n', stringifyView( data.content ) );
+			console.log( 'stringify( data.dataTransfer )\n', _stringifyView( data.content ) );
 		} );
 	} )
 	.catch( err => {

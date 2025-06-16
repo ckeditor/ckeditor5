@@ -18,6 +18,8 @@ import '../../theme/stylegrid.css';
 /**
  * A class representing a grid of styles ({@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}).
  * Allows users to select a style.
+ *
+ * @internal
  */
 export class StyleGridView extends View<HTMLDivElement> implements FocusableView {
 	/**

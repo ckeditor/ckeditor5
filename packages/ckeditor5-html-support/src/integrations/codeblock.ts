@@ -10,7 +10,7 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
@@ -21,7 +21,7 @@ import {
 	updateViewAttributes,
 	type GHSViewAttributes
 } from '../utils.js';
-import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.
@@ -58,7 +58,7 @@ export class CodeBlockElementSupport extends Plugin {
 
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:pre', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:pre', ( evt, definition ) => {
 			if ( definition.model !== 'codeBlock' ) {
 				return;
 			}
@@ -125,7 +125,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 			const viewPreElement = viewCodeElement.parent as ViewElement;
 
 			updateViewAttributes(
@@ -142,7 +142,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as Element );
+			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 
 			updateViewAttributes(
 				conversionApi.writer,

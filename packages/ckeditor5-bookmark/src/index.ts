@@ -12,7 +12,10 @@ export { BookmarkEditing } from './bookmarkediting.js';
 export { BookmarkUI } from './bookmarkui.js';
 export { InsertBookmarkCommand } from './insertbookmarkcommand.js';
 export { UpdateBookmarkCommand } from './updatebookmarkcommand.js';
+export { BookmarkFormView, type BookmarkFormValidatorCallback, type BookmarkFormViewCancelEvent } from './ui/bookmarkformview.js';
 
 export type { BookmarkConfig } from './bookmarkconfig.js';
+
+export { isBookmarkIdValid as _isBookmarkIdValid } from './utils.js';
 
 import './augmentation.js';

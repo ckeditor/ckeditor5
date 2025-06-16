@@ -11,7 +11,7 @@ import { type View } from '../view.js';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { DialogView, type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
-import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -169,7 +169,7 @@ export class Dialog extends Plugin {
 	private _initMultiRootIntegration() {
 		const model = this.editor.model;
 
-		model.document.on<DocumentChangeEvent>( 'change:data', () => {
+		model.document.on<ModelDocumentChangeEvent>( 'change:data', () => {
 			if ( !this.view ) {
 				return;
 			}

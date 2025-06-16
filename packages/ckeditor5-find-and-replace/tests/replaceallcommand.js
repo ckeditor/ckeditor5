@@ -4,7 +4,7 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
@@ -33,12 +33,12 @@ describe( 'ReplaceAllCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be enabled by default', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
@@ -51,7 +51,7 @@ describe( 'ReplaceAllCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should replace all text occurrences in the document', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
@@ -59,7 +59,7 @@ describe( 'ReplaceAllCommand', () => {
 		} );
 
 		it( 'should not change model if nothing was matched', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
 
 			editor.execute( 'replaceAll', 'new', 'baar' );
 
@@ -67,7 +67,7 @@ describe( 'ReplaceAllCommand', () => {
 		} );
 
 		it( 'should replace all passed results in the document', () => {
-			setData( model, '<paragraph>Foo bar [b]az</paragraph><paragraph>[Foo] bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar [b]az</paragraph><paragraph>[Foo] bar baz</paragraph>' );
 
 			const ranges = editor.model.document.selection.getRanges();
 			const results = new Collection();
@@ -94,7 +94,7 @@ describe( 'ReplaceAllCommand', () => {
 		} );
 
 		it( 'should work with empty document', () => {
-			setData( model, '' );
+			_setModelData( model, '' );
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
@@ -113,8 +113,8 @@ describe( 'ReplaceAllCommand', () => {
 			const multiRootEditor = await MultiRootEditor
 				.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
 
-			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
-			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+			_setModelData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+			_setModelData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
 
 			const { results } = multiRootEditor.execute( 'find', 'z' );
 
@@ -127,7 +127,7 @@ describe( 'ReplaceAllCommand', () => {
 		} );
 
 		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
-			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
+			_setModelData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
 
 			const { results } = editor.execute( 'find', 'oo' );
 
@@ -148,15 +148,17 @@ describe( 'ReplaceAllCommand', () => {
 				editor.execute( 'replaceAll', 'aa', results );
 			} );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
 
 			editor.execute( 'undo' );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 
 		it( 'should restore every text occurrences replaced by `replace all` in the document at one undo step', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+			_setModelData( model,
+				'<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>'
+			);
 
 			editor.execute( 'replaceAll', 'new', 'bar' );
 
@@ -179,8 +181,8 @@ describe( 'ReplaceAllCommand', () => {
 			const multiRootEditor = await MultiRootEditor
 				.create( { plugins: [ FindAndReplaceEditing, Paragraph, UndoEditing ] } );
 
-			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'main' } );
-			setData( multiRootEditor.model, '<paragraph>Ra baz baz</paragraph>', { rootName: 'second' } );
+			_setModelData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'main' } );
+			_setModelData( multiRootEditor.model, '<paragraph>Ra baz baz</paragraph>', { rootName: 'second' } );
 
 			const { results } = multiRootEditor.execute( 'find', 'z' );
 

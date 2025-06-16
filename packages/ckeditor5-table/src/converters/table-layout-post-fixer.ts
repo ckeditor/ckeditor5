@@ -8,11 +8,11 @@
  */
 
 import type {
-	Element,
+	ModelElement,
 	Model,
-	Writer,
-	DiffItem,
-	DiffItemAttribute
+	ModelWriter,
+	DifferItem,
+	DifferItemAttribute
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
@@ -234,6 +234,8 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js
  *   </tbody>
  * </table>
  * ```
+ *
+ * @internal
  */
 export function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
@@ -242,7 +244,7 @@ export function injectTableLayoutPostFixer( model: Model ): void {
 /**
  * The table layout post-fixer.
  */
-function tableLayoutPostFixer( writer: Writer, model: Model ) {
+function tableLayoutPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -251,10 +253,10 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
 	const analyzedTables = new Set();
 
 	for ( const entry of changes ) {
-		let table: Element | null = null;
+		let table: ModelElement | null = null;
 
 		if ( entry.type == 'insert' && entry.name == 'table' ) {
-			table = entry.position.nodeAfter as Element;
+			table = entry.position.nodeAfter as ModelElement;
 		}
 
 		// Fix table on adding/removing table cells and rows.
@@ -286,7 +288,7 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableCellsRowspan( table: Element, writer: Writer ) {
+function fixTableCellsRowspan( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	const cellsToTrim = findCellsToTrim( table );
@@ -309,7 +311,7 @@ function fixTableCellsRowspan( table: Element, writer: Writer ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableRowsSizes( table: Element, writer: Writer ) {
+function fixTableRowsSizes( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	const childrenLengths = getChildrenLengths( table );
@@ -368,7 +370,7 @@ function fixTableRowsSizes( table: Element, writer: Writer ) {
  * Searches for table cells that extend beyond the table section to which they belong to. It will return an array of objects
  * that stores table cells to be trimmed and the correct value of the `rowspan` attribute to set.
  */
-function findCellsToTrim( table: Element ) {
+function findCellsToTrim( table: ModelElement ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 	const maxRows = Array.from( table.getChildren() )
 		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
@@ -400,7 +402,7 @@ function findCellsToTrim( table: Element ) {
 /**
  * Returns an array with lengths of rows assigned to the corresponding row index.
  */
-function getChildrenLengths( table: Element ) {
+function getChildrenLengths( table: ModelElement ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
 	const lengths = new Array( table.childCount ).fill( 0 );
 
@@ -414,7 +416,7 @@ function getChildrenLengths( table: Element ) {
 /**
  * Checks if the differ entry for an attribute change is one of the table's attributes.
  */
-function isTableAttributeEntry( entry: DiffItem ): entry is DiffItemAttribute {
+function isTableAttributeEntry( entry: DifferItem ): entry is DifferItemAttribute {
 	if ( entry.type !== 'attribute' ) {
 		return false;
 	}

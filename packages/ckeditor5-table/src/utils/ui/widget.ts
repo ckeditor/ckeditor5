@@ -13,6 +13,8 @@ import { isWidget } from 'ckeditor5/src/widget.js';
 
 /**
  * Depending on the position of the selection either return the selected table or the table higher in the hierarchy.
+ *
+ * @internal
  */
 export function getSelectionAffectedTableWidget( selection: ViewDocumentSelection ): ViewElement | null {
 	const selectedTable = getSelectedTableWidget( selection );
@@ -26,6 +28,8 @@ export function getSelectionAffectedTableWidget( selection: ViewDocumentSelectio
 
 /**
  * Returns a table widget editing view element if one is selected.
+ *
+ * @internal
  */
 export function getSelectedTableWidget( selection: ViewDocumentSelection ): ViewElement | null {
 	const viewElement = selection.getSelectedElement();
@@ -39,6 +43,8 @@ export function getSelectedTableWidget( selection: ViewDocumentSelection ): View
 
 /**
  * Returns a table widget editing view element if one is among the selection's ancestors.
+ *
+ * @internal
  */
 export function getTableWidgetAncestor( selection: ViewDocumentSelection ): ViewElement | null {
 	const selectionPosition = selection.getFirstPosition();

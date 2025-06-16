@@ -12,7 +12,7 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpi
 import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '../../_utils/utils.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon.js';
@@ -60,7 +60,7 @@ describe( 'table utils', () => {
 						}
 					} );
 
-					setData( editor.model,
+					_setModelData( editor.model,
 						'<table><tableRow>' +
 						'<tableCell><paragraph>foo</paragraph></tableCell>' +
 						'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
@@ -89,7 +89,7 @@ describe( 'table utils', () => {
 				it( 'should not engage with no table is selected', () => {
 					const spy = sinon.spy( balloon, 'updatePosition' );
 
-					setData( editor.model, '<paragraph>foo</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 					repositionContextualBalloon( editor, 'cell' );
 					sinon.assert.notCalled( spy );
@@ -111,7 +111,7 @@ describe( 'table utils', () => {
 						}
 					} );
 
-					setData( editor.model,
+					_setModelData( editor.model,
 						'<table><tableRow>' +
 						'<tableCell><paragraph>foo</paragraph></tableCell>' +
 						'<tableCell><paragraph>[bar]</paragraph></tableCell>' +
@@ -149,7 +149,7 @@ describe( 'table utils', () => {
 						}
 					} );
 
-					setData( editor.model,
+					_setModelData( editor.model,
 						'[<table><tableRow>' +
 						'<tableCell><paragraph>foo</paragraph></tableCell>' +
 						'<tableCell><paragraph>bar</paragraph></tableCell>' +
@@ -176,7 +176,7 @@ describe( 'table utils', () => {
 				it( 'should not engage with no table is selected', () => {
 					const spy = sinon.spy( balloon, 'updatePosition' );
 
-					setData( editor.model, '<paragraph>foo</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 					repositionContextualBalloon( editor, 'table' );
 					sinon.assert.notCalled( spy );
@@ -188,7 +188,7 @@ describe( 'table utils', () => {
 			let modelRoot;
 
 			beforeEach( () => {
-				setData( editor.model, modelTable( [
+				_setModelData( editor.model, modelTable( [
 					[ '11[]', '12', '13' ],
 					[ '21', '22', '23' ],
 					[ '31', '32', '33' ]

@@ -2,6 +2,7 @@
 title: Restricted editing
 menu-title: Restricted editing
 meta-title: Restricted editing | CKEditor 5 Documentation
+meta-description: Enable restricted editing in CKEditor 5 to limit content changes to specific regions, ensuring control and document integrity.
 category: features
 ---
 

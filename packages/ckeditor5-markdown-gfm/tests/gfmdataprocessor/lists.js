@@ -4,12 +4,12 @@
  */
 
 import { testDataProcessor } from '../_utils/utils.js';
-import { GFMDataProcessor } from '../../src/gfmdataprocessor.js';
+import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'lists', () => {
 		it( 'should process tight asterisks', () => {
 			testDataProcessor(
@@ -371,7 +371,7 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should process the HTML produced by the todo list feature', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
 			const htmlDataProcessor = new HtmlDataProcessor( viewDocument );
-			const mdDataProcessor = new GFMDataProcessor( viewDocument );
+			const mdDataProcessor = new MarkdownGfmDataProcessor( viewDocument );
 
 			const viewFragment = htmlDataProcessor.toView(
 				'<ul class="todo-list">' +

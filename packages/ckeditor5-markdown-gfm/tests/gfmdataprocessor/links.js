@@ -5,7 +5,7 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'links', () => {
 		it( 'should autolink', () => {
 			testDataProcessor(

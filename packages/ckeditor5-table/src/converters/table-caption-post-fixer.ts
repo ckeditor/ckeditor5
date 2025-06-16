@@ -7,7 +7,7 @@
  * @module table/converters/table-caption-post-fixer
  */
 
-import type { Model, Writer, Element, Node } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table caption post-fixer into the model.
@@ -19,6 +19,8 @@ import type { Model, Writer, Element, Node } from 'ckeditor5/src/engine.js';
  *
  * * If there are many caption model element, they are merged into one model.
  * * A final, merged caption model is placed at the end of the table.
+ *
+ * @internal
  */
 export function injectTableCaptionPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCaptionPostFixer( writer, model ) );
@@ -27,7 +29,7 @@ export function injectTableCaptionPostFixer( model: Model ): void {
 /**
  * The table caption post-fixer.
  */
-function tableCaptionPostFixer( writer: Writer, model: Model ) {
+function tableCaptionPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 	let wasFixed = false;
 
@@ -39,9 +41,9 @@ function tableCaptionPostFixer( writer: Writer, model: Model ) {
 		const positionParent = entry.position.parent;
 
 		if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
-			const table = ( entry.name == 'table' ? entry.position.nodeAfter : positionParent ) as Element;
+			const table = ( entry.name == 'table' ? entry.position.nodeAfter : positionParent ) as ModelElement;
 			const captionsToMerge = Array.from( table.getChildren() )
-				.filter( ( child: Node ): child is Element => child.is( 'element', 'caption' ) );
+				.filter( ( child: ModelNode ): child is ModelElement => child.is( 'element', 'caption' ) );
 			const firstCaption = captionsToMerge.shift();
 
 			if ( !firstCaption ) {

@@ -10,8 +10,13 @@
 export { CloudServices } from './cloudservices.js';
 export { CloudServicesCore } from './cloudservicescore.js';
 export type { TokenUrl, CloudServicesConfig } from './cloudservicesconfig.js';
-export { Token, type InitializedToken } from './token/token.js';
+export { Token, type InitializedToken, type CloudServicesTokenOptions } from './token/token.js';
 export type { UploadGateway } from './uploadgateway/uploadgateway.js';
-export type { FileUploader } from './uploadgateway/fileuploader.js';
+
+export type {
+	FileUploader,
+	CloudServicesFileUploaderErrorEvent,
+	CloudServicesFileUploaderProgressErrorEvent
+} from './uploadgateway/fileuploader.js';
 
 import './augmentation.js';
