@@ -28,7 +28,7 @@ import { type ViewNode } from './node.js';
  * * this is a nested editable element (then use  {@link module:engine/view/editableelement~ViewEditableElement}).
  *
  * To create a new container element instance use the
- * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `ViewDowncastWriter#createContainerElement()`}
  * method.
  */
 export class ViewContainerElement extends ViewElement {

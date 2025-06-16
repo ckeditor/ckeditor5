@@ -33,7 +33,7 @@ import { type ViewRange } from './range.js';
  * It is similar to {@link module:engine/view/selection~ViewSelection} but
  * it has a read-only API and can be modified only by the writer available in
  * the {@link module:engine/view/view~EditingView#change `View#change()`} block
- * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `DowncastWriter#setSelection()`}).
+ * (so via {@link module:engine/view/downcastwriter~ViewDowncastWriter#setSelection `ViewDowncastWriter#setSelection()`}).
  */
 export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
 	/**

@@ -298,7 +298,7 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 
 The new syntax of the `model` property is available in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers. Refer to the respective API documentation for more details.
 
-### Improved API of `DowncastWriter#createContainerElement()`
+### Improved API of `ViewDowncastWriter#createContainerElement()`
 
 Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement} method:
 

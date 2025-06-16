@@ -315,7 +315,11 @@ export {
 } from './view/observer/focusobserver.js';
 
 export { ViewDowncastWriter } from './view/downcastwriter.js';
-export { ViewUpcastWriter } from './view/upcastwriter.js';
+export {
+	ViewUpcastWriter,
+	ViewUpcastWriter as UpcastWriter // TODO: Remove after MathType has been adjusted.
+} from './view/upcastwriter.js';
+
 export {
 	Matcher,
 	type MatcherPattern,

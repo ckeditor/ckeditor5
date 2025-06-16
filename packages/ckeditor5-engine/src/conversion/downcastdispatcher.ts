@@ -638,7 +638,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 	/**
 	 * Builds an instance of the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi} from a template and a given
-	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter `DowncastWriter`} and options object.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter `ViewDowncastWriter`} and options object.
 	 *
 	 * @param writer View writer that should be used to modify the view document.
 	 * @param refreshedItems A set of model elements that should not reuse their

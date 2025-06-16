@@ -15,9 +15,9 @@ import { type ViewDocument } from './document.js';
  * Tree view text node.
  *
  * The constructor of this class should not be used directly. To create a new text node instance
- * use the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createText `DowncastWriter#createText()`}
+ * use the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createText `ViewDowncastWriter#createText()`}
  * method when working on data downcasted from the model or the
- * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createText `UpcastWriter#createText()`}
+ * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createText `ViewUpcastWriter#createText()`}
  * method when working on non-semantic views.
  */
 export class ViewText extends ViewNode {

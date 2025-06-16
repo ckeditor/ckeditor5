@@ -22,7 +22,7 @@ import { type ViewNode } from './node.js';
  * Document fragment.
  *
  * To create a new document fragment instance use the
- * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
+ * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createDocumentFragment `ViewUpcastWriter#createDocumentFragment()`}
  * method.
  */
 export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) implements Iterable<ViewNode> {

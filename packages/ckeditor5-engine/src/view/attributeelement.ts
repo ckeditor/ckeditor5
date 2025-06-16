@@ -26,7 +26,7 @@ const DEFAULT_PRIORITY = 10;
  * {@link module:engine/view/emptyelement~ViewEmptyElement empty element}, etc) when developing a feature.
  *
  * To create a new attribute element instance use the
- * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `ViewDowncastWriter#createAttributeElement()`} method.
  */
 export class ViewAttributeElement extends ViewElement {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;

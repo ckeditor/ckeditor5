@@ -44,7 +44,7 @@ type DomElement = globalThis.HTMLElement;
  * Do not create an instance of this writer manually. To modify a view structure, use
  * the {@link module:engine/view/view~EditingView#change `View#change()`} block.
  *
- * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
+ * The `ViewDowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
  * To work with ordinary views (e.g. parsed from a pasted content) use the
  * {@link module:engine/view/upcastwriter~ViewUpcastWriter upcast writer}.
  *
@@ -100,7 +100,7 @@ export class ViewDowncastWriter {
 	 * writer.setSelection( paragraph, 'on' );
 	 * ```
 	 *
-	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `ViewDowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Sets selection as backward.
@@ -154,7 +154,7 @@ export class ViewDowncastWriter {
 	 * writer.setSelection( null );
 	 * ```
 	 *
-	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `ViewDowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Sets selection as backward.
@@ -1199,7 +1199,7 @@ export class ViewDowncastWriter {
 	public unwrap( range: ViewRange, attribute: ViewAttributeElement ): ViewRange {
 		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			/**
-			 * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap `DowncastWriter#unwrap()`}
+			 * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap `ViewDowncastWriter#unwrap()`}
 			 * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
 			 *
 			 * @error view-writer-unwrap-invalid-attribute
@@ -1826,7 +1826,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
+	 * Helper function used by other `ViewDowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
 	 *
 	 * @param range Range which `start` and `end` positions will be used to break attributes.
 	 * @param forceSplitText If set to `true`, will break text nodes even if they are directly in container element.
@@ -1857,7 +1857,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at given position.
+	 * Helper function used by other `ViewDowncastWriter` methods. Breaks attribute elements at given position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
 	 * is placed inside {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
@@ -1880,7 +1880,7 @@ export class ViewDowncastWriter {
 			 * Cannot break an `EmptyElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-empty-element
@@ -1894,7 +1894,7 @@ export class ViewDowncastWriter {
 			 * Cannot break a `UIElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-ui-element
@@ -1908,7 +1908,7 @@ export class ViewDowncastWriter {
 			 * Cannot break a `RawElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `ViewDowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-raw-element
@@ -2064,7 +2064,7 @@ function _hasNonUiChildren( parent: ViewElement ): boolean {
 }
 
 /**
- * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#wrap()`}
+ * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#wrap()`}
  * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
  *
  * @error view-writer-wrap-invalid-attribute
@@ -2204,7 +2204,7 @@ function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDoc
 			/**
 			 * One of the nodes to be inserted is of an invalid type.
 			 *
-			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~ViewDowncastWriter#insert `DowncastWriter#insert()`}
+			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~ViewDowncastWriter#insert `ViewDowncastWriter#insert()`}
 			 * should be of the following types:
 			 *
 			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
@@ -2251,10 +2251,10 @@ function validateRangeContainer( range: ViewRange, errorContext: ViewDocument ) 
 		 * {@link module:engine/view/range~ViewRange#end range end} positions are not placed inside the same container element or
 		 * a parent container for these positions cannot be found.
 		 *
-		 * Methods like {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#remove()`},
-		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#clean()`},
-		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#wrap()`},
-		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
+		 * Methods like {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#remove()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#clean()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#wrap()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `ViewDowncastWriter#unwrap()`} need to be called
 		 * on a range that has its start and end positions located in the same container element. Both positions can be
 		 * nested within other elements (e.g. an attribute element) but the closest container ancestor must be the same.
 		 *
