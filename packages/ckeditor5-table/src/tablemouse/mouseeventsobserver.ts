@@ -50,7 +50,7 @@ export class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mousele
  * @eventName module:engine/view/document~Document#mousemove
  * @param data Event data.
  */
-export type ViewDocumentMouseMoveEvent = {
+export type ViewDocumentTableMouseMoveEvent = {
 	name: 'mousemove';
 	args: [ data: DomEventData<MouseEvent> ];
 };
@@ -68,7 +68,7 @@ export type ViewDocumentMouseMoveEvent = {
  * @eventName module:engine/view/document~Document#mouseleave
  * @param data Event data.
  */
-export type ViewDocumentMouseLeaveEvent = {
+export type ViewDocumentTableMouseLeaveEvent = {
 	name: 'mouseleave';
 	args: [ data: DomEventData<MouseEvent> ];
 };
