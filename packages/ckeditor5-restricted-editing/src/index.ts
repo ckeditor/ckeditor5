@@ -10,8 +10,17 @@
 export { RestrictedEditingMode } from './restrictededitingmode.js';
 export { RestrictedEditingModeEditing } from './restrictededitingmodeediting.js';
 export { RestrictedEditingModeUI } from './restrictededitingmodeui.js';
-export { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
-export { RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand.js';
+
+export {
+	RestrictedEditingExceptionCommand,
+	type RestrictedEditingExceptionCommandParams
+} from './restrictededitingexceptioncommand.js';
+
+export {
+	RestrictedEditingModeNavigationCommand,
+	type RestrictedEditingModeNavigationDirection
+} from './restrictededitingmodenavigationcommand.js';
+
 export { StandardEditingMode } from './standardeditingmode.js';
 export { StandardEditingModeEditing } from './standardeditingmodeediting.js';
 export { StandardEditingModeUI } from './standardeditingmodeui.js';
