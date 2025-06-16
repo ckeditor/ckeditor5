@@ -8,10 +8,10 @@
  */
 
 import { BasicHtmlWriter } from './basichtmlwriter.js';
-import { DomConverter } from '../view/domconverter.js';
+import { ViewDomConverter } from '../view/domconverter.js';
 
 import { type DataProcessor } from './dataprocessor.js';
-import { type HtmlWriter } from './htmlwriter.js';
+import { type DataProcessorHtmlWriter } from './htmlwriter.js';
 import { type ViewDocument } from '../view/document.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
@@ -29,12 +29,12 @@ export class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * A DOM converter used to convert DOM elements to view elements.
 	 */
-	public domConverter: DomConverter;
+	public domConverter: ViewDomConverter;
 
 	/**
 	 * A basic HTML writer instance used to convert DOM elements to an HTML string.
 	 */
-	public htmlWriter: HtmlWriter;
+	public htmlWriter: DataProcessorHtmlWriter;
 
 	public skipComments: boolean = true;
 
@@ -45,12 +45,12 @@ export class HtmlDataProcessor implements DataProcessor {
 	 */
 	constructor( document: ViewDocument ) {
 		this.domParser = new DOMParser();
-		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
+		this.domConverter = new ViewDomConverter( document, { renderingMode: 'data' } );
 		this.htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
-	 * Converts a provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * Converts a provided {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}
 	 * to data format &ndash; in this case to an HTML string.
 	 *
 	 * @returns HTML string.
@@ -82,7 +82,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	 * and not processed during the conversion from the DOM to the view elements.
 	 *
 	 * The raw data can be later accessed by a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param pattern Pattern matching all view elements whose content should be treated as raw data.
 	 */

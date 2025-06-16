@@ -8,9 +8,9 @@
  */
 
 import type {
-	DocumentFragment,
-	DocumentSelection,
-	Element,
+	ModelDocumentFragment,
+	ModelDocumentSelection,
+	ModelElement,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -22,7 +22,7 @@ import { getSelectionAffectedTable } from '../utils/common.js';
  * @param modelElement Element to check if it is a table.
  * @internal
  */
-export function isTable( modelElement: Element | DocumentFragment | null ): boolean {
+export function isTable( modelElement: ModelElement | ModelDocumentFragment | null ): boolean {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }
 
@@ -32,7 +32,7 @@ export function isTable( modelElement: Element | DocumentFragment | null ): bool
  * @param tableModelElement Table element in which we will try to find a caption element.
  * @internal
  */
-export function getCaptionFromTableModelElement( tableModelElement: Element ): Element | null {
+export function getCaptionFromTableModelElement( tableModelElement: ModelElement ): ModelElement | null {
 	for ( const node of tableModelElement.getChildren() ) {
 		if ( node.is( 'element', 'caption' ) ) {
 			return node;
@@ -48,7 +48,7 @@ export function getCaptionFromTableModelElement( tableModelElement: Element ): E
  * @param selection The selection checked for caption presence.
  * @internal
  */
-export function getCaptionFromModelSelection( selection: DocumentSelection ): Element | null {
+export function getCaptionFromModelSelection( selection: ModelDocumentSelection ): ModelElement | null {
 	const tableElement = getSelectionAffectedTable( selection );
 
 	if ( !tableElement ) {

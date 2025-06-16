@@ -17,7 +17,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
@@ -59,8 +59,8 @@ describe( 'MultiRootEditor', () => {
 		it( 'creates specified roots', () => {
 			expect( editor.model.document.getRootNames() ).to.deep.equal( [ 'foo', 'bar' ] );
 
-			expect( editor.model.document.getRoot( 'foo' ) ).to.instanceof( RootElement );
-			expect( editor.model.document.getRoot( 'bar' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'foo' ) ).to.instanceof( ModelRootElement );
+			expect( editor.model.document.getRoot( 'bar' ) ).to.instanceof( ModelRootElement );
 		} );
 
 		describe( 'ui', () => {

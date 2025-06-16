@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent } from 'ckeditor5/src/clipboard.js';
-import { GFMDataProcessor } from './gfmdataprocessor.js';
+import { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
 import type { ViewDocumentKeyDownEvent } from 'ckeditor5/src/engine.js';
 
 const ALLOWED_MARKDOWN_FIRST_LEVEL_TAGS = [ 'SPAN', 'BR', 'PRE', 'CODE' ];
@@ -23,7 +23,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 	/**
 	 * @internal
 	 */
-	private _gfmDataProcessor: GFMDataProcessor;
+	private _gfmDataProcessor: MarkdownGfmDataProcessor;
 
 	/**
 	 * @inheritDoc
@@ -31,7 +31,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this._gfmDataProcessor = new GFMDataProcessor( editor.data.viewDocument );
+		this._gfmDataProcessor = new MarkdownGfmDataProcessor( editor.data.viewDocument );
 	}
 
 	/**

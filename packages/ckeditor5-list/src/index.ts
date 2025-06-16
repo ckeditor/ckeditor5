@@ -9,7 +9,16 @@
 
 // List.
 export { List } from './list.js';
-export { ListEditing, type ListEditingPostFixerEvent, type ListType } from './list/listediting.js';
+
+export {
+	ListEditing,
+	type ListEditingPostFixerEvent,
+	type ListType,
+	type AttributeDowncastStrategy,
+	type ItemMarkerDowncastStrategy,
+	type DowncastStrategy
+} from './list/listediting.js';
+
 export { ListUtils } from './list/listutils.js';
 export { ListUI } from './list/listui.js';
 export { ListIndentCommand } from './list/listindentcommand.js';
@@ -120,6 +129,8 @@ export { listPropertiesUpcastConverter as _listPropertiesUpcastConverter } from 
 export type { AttributeStrategy as _ListAttributeConversionStrategy } from './listproperties/listpropertiesediting.js';
 export {
 	ListPropertiesView as _ListPropertiesView,
+	type ListPropertiesViewListStartEvent,
+	type ListPropertiesViewListReversedEvent,
 	type StylesView as _ListPropertiesStylesView
 } from './listproperties/ui/listpropertiesview.js';
 
@@ -138,6 +149,7 @@ export { TodoList } from './todolist.js';
 export { TodoListUI } from './todolist/todolistui.js';
 export { TodoListEditing } from './todolist/todolistediting.js';
 export { CheckTodoListCommand } from './todolist/checktodolistcommand.js';
+export type { ViewDocumentTodoCheckboxChangeEvent } from './todolist/todocheckboxchangeobserver.js';
 
 // Internal exports for 'todolist' submodule
 export { TodoCheckboxChangeObserver as _TodoCheckboxChangeObserver } from './todolist/todocheckboxchangeobserver.js';
@@ -162,7 +174,16 @@ export { LegacyTodoListEditing } from './legacytodolist/legacytodolistediting.js
 export { LegacyCheckTodoListCommand } from './legacytodolist/legacychecktodolistcommand.js';
 
 // Other.
-export type { ListConfig, ListPropertiesConfig } from './listconfig.js';
+export type {
+	ListConfig,
+	ListPropertiesConfig,
+	ListPropertiesStyleConfig,
+	ListPropertiesStyleListType,
+	ListStyleTypesConfig,
+	NumberedListStyleType,
+	BulletedListStyleType
+} from './listconfig.js';
+
 export { AdjacentListsSupport } from './list/adjacentlistssupport.js';
 
 import './augmentation.js';

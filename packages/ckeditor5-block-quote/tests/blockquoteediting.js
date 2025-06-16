@@ -9,7 +9,7 @@ import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { BlockQuoteCommand } from '../src/blockquotecommand.js';
 
@@ -77,12 +77,12 @@ describe( 'BlockQuoteEditing', () => {
 
 		editor.setData( data );
 
-		expect( getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
+		expect( _getModelData( model ) ).to.equal( '<blockQuote><paragraph>[]x</paragraph></blockQuote>' );
 		expect( editor.getData() ).to.equal( data );
 	} );
 
 	it( 'adds a converter to the view pipeline', () => {
-		setModelData( model, '<blockQuote><paragraph>x</paragraph></blockQuote>' );
+		_setModelData( model, '<blockQuote><paragraph>x</paragraph></blockQuote>' );
 
 		expect( editor.getData() ).to.equal( '<blockquote><p>x</p></blockquote>' );
 	} );
@@ -102,13 +102,13 @@ describe( 'BlockQuoteEditing', () => {
 	} );
 
 	it( 'should remove empty blockQuote elements', () => {
-		setModelData( model, '<blockQuote></blockQuote><paragraph>Foo</paragraph>' );
+		_setModelData( model, '<blockQuote></blockQuote><paragraph>Foo</paragraph>' );
 
 		expect( editor.getData() ).to.equal( '<p>Foo</p>' );
 	} );
 
 	it( 'should remove blockQuotes which became empty', () => {
-		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+		_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
 		model.change( writer => {
 			const root = model.document.getRoot();
@@ -121,7 +121,7 @@ describe( 'BlockQuoteEditing', () => {
 	} );
 
 	it( 'should not unwrap a blockQuote if it was inserted into another blockQuote', () => {
-		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+		_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
 		model.change( writer => {
 			const root = model.document.getRoot();
@@ -137,7 +137,7 @@ describe( 'BlockQuoteEditing', () => {
 	} );
 
 	it( 'should not unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
-		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+		_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
 
 		model.change( writer => {
 			const root = model.document.getRoot();
@@ -150,7 +150,7 @@ describe( 'BlockQuoteEditing', () => {
 
 	it( 'postfixer should do nothing on attribute change', () => {
 		// This is strictly a 100% CC test.
-		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+		_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
 		model.change( writer => {
 			const root = model.document.getRoot();
@@ -174,7 +174,7 @@ describe( 'BlockQuoteEditing', () => {
 		} );
 
 		it( 'should unwrap a blockQuote if it was inserted into another blockQuote', () => {
-			setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
 			model.change( writer => {
 				const root = model.document.getRoot();
@@ -190,7 +190,7 @@ describe( 'BlockQuoteEditing', () => {
 		} );
 
 		it( 'should unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
-			setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const root = model.document.getRoot();

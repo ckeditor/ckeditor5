@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -117,7 +117,7 @@ describe( 'LinkImageUI', () => {
 			const imageWidget = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
 			const eventInfo = new EventInfo( imageWidget, 'click' );
-			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+			const domEventDataMock = new ViewDocumentDomEventData( viewDocument, eventInfo, data );
 
 			viewDocument.fire( 'click', domEventDataMock );
 
@@ -135,7 +135,7 @@ describe( 'LinkImageUI', () => {
 			const imageWidget = viewDocument.selection.getSelectedElement();
 			const data = fakeEventData();
 			const eventInfo = new EventInfo( imageWidget, 'click' );
-			const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+			const domEventDataMock = new ViewDocumentDomEventData( viewDocument, eventInfo, data );
 
 			viewDocument.fire( 'click', domEventDataMock );
 
@@ -163,7 +163,7 @@ describe( 'LinkImageUI', () => {
 				const imageWidget = viewDocument.selection.getSelectedElement();
 				const data = fakeEventData();
 				const eventInfo = new EventInfo( imageWidget, 'click' );
-				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+				const domEventDataMock = new ViewDocumentDomEventData( viewDocument, eventInfo, data );
 
 				viewDocument.fire( 'click', domEventDataMock );
 
@@ -183,7 +183,7 @@ describe( 'LinkImageUI', () => {
 				const imageWidget = viewDocument.selection.getSelectedElement();
 				const data = fakeEventData();
 				const eventInfo = new EventInfo( imageWidget, 'click' );
-				const domEventDataMock = new DomEventData( viewDocument, eventInfo, data );
+				const domEventDataMock = new ViewDocumentDomEventData( viewDocument, eventInfo, data );
 
 				viewDocument.fire( 'click', domEventDataMock );
 

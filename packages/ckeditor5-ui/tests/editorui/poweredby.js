@@ -10,7 +10,7 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceedit
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 import { EditorUI } from '../../src/editorui/editorui.js';
@@ -1067,7 +1067,7 @@ describe( 'PoweredBy', () => {
 			}
 		} );
 
-		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+		_setModelData( editor.model, '<heading2>foo[]bar</heading2>' );
 
 		focusEditor( editor );
 

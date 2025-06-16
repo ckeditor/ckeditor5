@@ -35,9 +35,9 @@ import {
 
 import {
 	Observer,
-	type DocumentSelection,
-	type DocumentSelectionChangeRangeEvent,
-	type Schema
+	type ModelDocumentSelection,
+	type ModelDocumentSelectionChangeRangeEvent,
+	type ModelSchema
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
@@ -162,7 +162,7 @@ export class BalloonToolbar extends Plugin {
 		} );
 
 		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
-		this.listenTo<DocumentSelectionChangeRangeEvent>( selection, 'change:range', ( evt, data ) => {
+		this.listenTo<ModelDocumentSelectionChangeRangeEvent>( selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange || selection.isCollapsed ) {
 				this.hide();
 			}
@@ -421,7 +421,7 @@ export class BalloonToolbar extends Plugin {
  * Returns "true" when the selection has multiple ranges and each range contains a selectable element
  * and nothing else.
  */
-function selectionContainsOnlyMultipleSelectables( selection: DocumentSelection, schema: Schema ) {
+function selectionContainsOnlyMultipleSelectables( selection: ModelDocumentSelection, schema: ModelSchema ) {
 	// It doesn't contain multiple objects if there is only one range.
 	if ( selection.rangeCount === 1 ) {
 		return false;

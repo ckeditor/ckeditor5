@@ -8,13 +8,20 @@
  */
 
 export { GeneralHtmlSupport } from './generalhtmlsupport.js';
-export { DataFilter, type DataFilterRegisterEvent } from './datafilter.js';
-export { DataSchema, type DataSchemaBlockElementDefinition } from './dataschema.js';
-export { HtmlComment } from './htmlcomment.js';
+export { DataFilter, type HtmlSupportDataFilterRegisterEvent } from './datafilter.js';
+
+export {
+	DataSchema,
+	type HtmlSupportDataSchemaBlockElementDefinition,
+	type HtmlSupportDataSchemaDefinition,
+	type HtmlSupportDataSchemaInlineElementDefinition
+} from './dataschema.js';
+
+export { HtmlComment, type HtmlCommentData } from './htmlcomment.js';
 export { FullPage } from './fullpage.js';
 export { HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
 export { EmptyBlock } from './emptyblock.js';
-export type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
+export type { GeneralHtmlSupportConfig, GHSFullPageConfig, GHSCssSanitizeOutput } from './generalhtmlsupportconfig.js';
 export type { CodeBlockElementSupport } from './integrations/codeblock.js';
 export type { CustomElementSupport } from './integrations/customelement.js';
 export type { ListElementSupport } from './integrations/list.js';
@@ -48,7 +55,8 @@ export {
 	mergeViewElementAttributes as _mergeHtmlSupportViewElementAttributes,
 	modifyGhsAttribute as _modifyHtmlSupportGhsAttribute,
 	toPascalCase as _toHtmlSupportPascalCase,
-	getHtmlAttributeName as _getHtmlSupportAttributeName
+	getHtmlAttributeName as _getHtmlSupportAttributeName,
+	type GHSViewAttributes
 } from './utils.js';
 
 import './augmentation.js';

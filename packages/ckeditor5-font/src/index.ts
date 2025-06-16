@@ -12,6 +12,7 @@ export { FontBackgroundColor } from './fontbackgroundcolor.js';
 export { FontColor } from './fontcolor.js';
 export { FontFamily } from './fontfamily.js';
 export { FontSize } from './fontsize.js';
+export { FontCommand } from './fontcommand.js';
 export { FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
 export { FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
 export { FontColorEditing } from './fontcolor/fontcolorediting.js';
@@ -24,6 +25,7 @@ export { FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackground
 export { FontColorCommand } from './fontcolor/fontcolorcommand.js';
 export { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
 export { FontSizeCommand } from './fontsize/fontsizecommand.js';
+export { FontColorUIBase } from './ui/colorui.js';
 
 export {
 	buildDefinition as _buildFontDefinition,
@@ -35,13 +37,15 @@ export {
 	type FONT_COLOR,
 	type FONT_FAMILY,
 	type FONT_SIZE,
-	type ColorSelectorDropdownView
+	type FontColorSelectorDropdownView
 } from './utils.js';
 
 export type {
 	FontColorConfig,
 	FontFamilyConfig,
-	FontSizeConfig
+	FontFamilyOption,
+	FontSizeConfig,
+	FontSizeOption
 } from './fontconfig.js';
 
 export { normalizeOptions as _normalizeFontFamilyOptions } from './fontfamily/utils.js';

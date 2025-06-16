@@ -14,7 +14,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
 import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Delete integration', () => {
 	let editor, model;
@@ -52,12 +52,12 @@ describe( 'Delete integration', () => {
 	} );
 
 	function assertOutput( output ) {
-		expect( getData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).to.equal( output );
 	}
 
 	describe( 'with undo', () => {
 		it( 'deletes characters (and group changes in batches) and rollbacks', () => {
-			setData( model, '<paragraph>123456789[]</paragraph>' );
+			_setModelData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -69,7 +69,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'deletes characters (and group changes in batches) and rollbacks - test step', () => {
-			setData( model, '<paragraph>123456789[]</paragraph>' );
+			_setModelData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -85,7 +85,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'deletes elements (and group changes in batches) and rollbacks', () => {
-			setData( model, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
+			_setModelData( model, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -97,7 +97,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks', () => {
-			setData( model, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
+			_setModelData( model, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -117,7 +117,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
-			setData( model, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
+			_setModelData( model, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
 
 			editor.execute( 'delete' );
 			editor.execute( 'delete' );
@@ -139,7 +139,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'should replace content with paragraph - if whole content is selected', () => {
-			setData( model, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
+			_setModelData( model, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -147,7 +147,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if not whole content is selected', () => {
-			setData( model, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
+			_setModelData( model, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -155,7 +155,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if selection was collapsed', () => {
-			setData( model, '<h1></h1><paragraph>[]</paragraph>' );
+			_setModelData( model, '<h1></h1><paragraph>[]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -187,7 +187,7 @@ describe( 'Delete integration', () => {
 		} );
 
 		it( 'should not throw an error if content with the image is being removed', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listType="numbered">OL List i[tem 1</listItem>' +
 				'<listItem listIndent="0" listType="numbered">OL List item 2</listItem>]' +
 				'<imageBlock alt="bar" imageStyle="side" src="/assets/sample.png"><caption>[Caption</caption></imageBlock>' +
@@ -207,7 +207,7 @@ describe( 'Delete integration', () => {
 
 	// See: https://github.com/ckeditor/ckeditor5/issues/1064
 	it( 'should remove entire word in a paragraph that contains the soft break', () => {
-		setData( model, '<paragraph>Foo.<softBreak></softBreak>Bar[]</paragraph>' );
+		_setModelData( model, '<paragraph>Foo.<softBreak></softBreak>Bar[]</paragraph>' );
 
 		editor.execute( 'delete', { unit: 'word' } );
 

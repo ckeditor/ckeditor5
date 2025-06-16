@@ -8,14 +8,14 @@
  */
 
 import { get, isObject, merge, set } from 'es-toolkit/compat';
-import type { ElementAttributeValue } from './element.js';
+import type { ViewElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export class StylesMap implements ElementAttributeValue {
+export class StylesMap implements ViewElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.
@@ -100,7 +100,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.setTo( 'margin:2px;' );
 	 *
@@ -145,7 +145,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.set( 'margin', '2px' );
 	 * ```
@@ -239,7 +239,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.setTo( 'margin:1px' );
 	 *
@@ -284,7 +284,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * const styles = new Styles();
 	 * styles.setTo( 'margin:1px 2px 3em;' );
@@ -323,7 +323,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * styles.set( 'margin' , '1px' );
 	 * styles.set( 'background', '#f00' );
@@ -349,7 +349,7 @@ export class StylesMap implements ElementAttributeValue {
 	 *
 	 * ```ts
 	 * // Enable 'margin' shorthand processing:
-	 * editor.data.addStyleProcessorRules( addMarginRules );
+	 * editor.data.addStyleProcessorRules( addMarginStylesRules );
 	 *
 	 * const styles = new Styles();
 	 * styles.setTo( 'margin:1px;' );
@@ -489,8 +489,8 @@ export class StylesMap implements ElementAttributeValue {
 	/**
 	 * Returns normalized styles entries for further processing.
 	 */
-	public getStylesEntries(): Array<PropertyDescriptor> {
-		const parsed: Array<PropertyDescriptor> = [];
+	public getStylesEntries(): Array<StylePropertyDescriptor> {
+		const parsed: Array<StylePropertyDescriptor> = [];
 
 		const keys = Object.keys( this._styles );
 
@@ -580,11 +580,11 @@ export class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without
+	 * Used by {@link module:engine/view/element~ViewElement#_canMergeAttributesFrom} to verify if the given attribute can be merged without
 	 * conflicts into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 */
@@ -599,10 +599,10 @@ export class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
+	 * Used by {@link module:engine/view/element~ViewElement#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 */
@@ -615,11 +615,11 @@ export class StylesMap implements ElementAttributeValue {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully
+	 * Used by {@link module:engine/view/element~ViewElement#_canSubtractAttributesOf} to verify if the given attribute can be fully
 	 * subtracted from the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
 	 */
@@ -638,9 +638,9 @@ export class StylesMap implements ElementAttributeValue {
  * Style processor is responsible for writing and reading a normalized styles object.
  */
 export class StylesProcessor {
-	private readonly _normalizers: Map<string, Normalizer>;
-	private readonly _extractors: Map<string, Extractor>;
-	private readonly _reducers: Map<string, Reducer>;
+	private readonly _normalizers: Map<string, StylesNormalizer>;
+	private readonly _extractors: Map<string, StylesExtractor>;
+	private readonly _reducers: Map<string, StylesReducer>;
 	private readonly _consumables: Map<string, Array<string>>;
 
 	/**
@@ -772,7 +772,7 @@ export class StylesProcessor {
 	 *
 	 * @param name Name of style property.
 	 */
-	public getReducedForm( name: string, styles: Styles ): Array<PropertyDescriptor> {
+	public getReducedForm( name: string, styles: Styles ): Array<StylePropertyDescriptor> {
 		const normalizedValue = this.getNormalized( name, styles );
 
 		// Might be empty string.
@@ -887,7 +887,7 @@ export class StylesProcessor {
 	 * } );
 	 * ```
 	 */
-	public setNormalizer( name: string, callback: Normalizer ): void {
+	public setNormalizer( name: string, callback: StylesNormalizer ): void {
 		this._normalizers.set( name, callback );
 	}
 
@@ -935,7 +935,7 @@ export class StylesProcessor {
 	 *
 	 * @param callbackOrPath Callback that return a requested value or path string for single values.
 	 */
-	public setExtractor( name: string, callbackOrPath: Extractor ): void {
+	public setExtractor( name: string, callbackOrPath: StylesExtractor ): void {
 		this._extractors.set( name, callbackOrPath );
 	}
 
@@ -975,7 +975,7 @@ export class StylesProcessor {
 	 * } );
 	 * ```
 	 */
-	public setReducer( name: string, callback: Reducer ): void {
+	public setReducer( name: string, callback: StylesReducer ): void {
 		this._reducers.set( name, callback );
 	}
 
@@ -1152,7 +1152,7 @@ function removeStyles( styles: Styles, toRemove: Styles ) {
  * const marginTopDescriptor = [ 'margin-top', '2px' ];
  * ```
  */
-export type PropertyDescriptor = [ name: string, value: string ];
+export type StylePropertyDescriptor = [ name: string, value: string ];
 
 /**
  * An object describing values associated with the sides of a box, for instance margins, paddings,
@@ -1174,7 +1174,7 @@ export type PropertyDescriptor = [ name: string, value: string ];
  * };
  * ```
  */
-export type BoxSides = {
+export type BoxStyleSides = {
 
 	/**
 	 * Top side value.
@@ -1207,25 +1207,25 @@ export interface Styles {
 /**
  * The value of style.
  */
-export type StyleValue = string | Array<string> | Styles | BoxSides;
+export type StyleValue = string | Array<string> | Styles | BoxStyleSides;
 
 /**
  * A normalizer method for a style property.
  *
  * @see ~StylesProcessor#setNormalizer
  */
-export type Normalizer = ( name: string ) => { path: string; value: StyleValue };
+export type StylesNormalizer = ( name: string ) => { path: string; value: StyleValue };
 
 /**
  * An extractor callback for a style property or path string for single values.
  *
  * @see ~StylesProcessor#setExtractor
  */
-export type Extractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
+export type StylesExtractor = string | ( ( name: string, styles: Styles ) => StyleValue | undefined );
 
 /**
  * A reducer callback for a style property.
  *
  * @see ~StylesProcessor#setReducer
  */
-export type Reducer = ( value: StyleValue ) => Array<PropertyDescriptor>;
+export type StylesReducer = ( value: StyleValue ) => Array<StylePropertyDescriptor>;

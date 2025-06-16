@@ -5,10 +5,10 @@
 
 import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
-import { DomConverter } from '../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../src/view/domconverter.js';
 import { xssTemplates } from '../../tests/dataprocessor/_utils/xsstemplates.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { stringify, parse } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { ViewDocument } from '../../src/view/document.js';
 
@@ -28,7 +28,7 @@ describe( 'HtmlDataProcessor', () => {
 			expect( dataProcessor ).to.have.property( 'skipComments' );
 
 			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
-			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).to.be.true;
 		} );
@@ -44,25 +44,25 @@ describe( 'HtmlDataProcessor', () => {
 		it( 'should convert HTML to DocumentFragment with single text node', () => {
 			const fragment = dataProcessor.toView( 'foo bar' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo bar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
 			const fragment = dataProcessor.toView( '<p>foo</p><p>bar</p>' );
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should return only elements inside body tag', () => {
 			const fragment = dataProcessor.toView( '<html><head></head><body><p>foo</p></body></html>' );
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should not add any additional nodes', () => {
 			const fragment = dataProcessor.toView( 'foo <b>bar</b> text' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo <b>bar</b> text' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo <b>bar</b> text' );
 		} );
 
 		// Test against XSS attacks.
@@ -91,7 +91,7 @@ describe( 'HtmlDataProcessor', () => {
 					'<span>.</span>'
 				);
 
-				expect( stringify( fragment ) ).to.equal(
+				expect( _stringifyView( fragment ) ).to.equal(
 					'<span>This is the<span>\u00a0</span></span>' +
 					'<a href="url">third developer preview</a>' +
 					'<span><span>\u00a0</span>of<span>\u00a0</span></span>' +
@@ -99,7 +99,7 @@ describe( 'HtmlDataProcessor', () => {
 					'<span>.</span>'
 				);
 
-				// Just to be sure... stringify() uses conversion and the browser extensively,
+				// Just to be sure... _stringifyView() uses conversion and the browser extensively,
 				// so it's not entirely safe.
 				expect( fragment.getChild( 0 ).getChild( 1 ).getChild( 0 ).data ).to.equal( '\u00a0' );
 				expect( fragment.getChild( 2 ).getChild( 0 ).getChild( 0 ).data ).to.equal( '\u00a0' );
@@ -369,13 +369,13 @@ describe( 'HtmlDataProcessor', () => {
 
 		it( 'should return text if document fragment with single text node is passed', () => {
 			const fragment = new ViewDocumentFragment( viewDocument );
-			fragment._appendChild( parse( 'foo bar' ) );
+			fragment._appendChild( _parseView( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -395,14 +395,14 @@ describe( 'HtmlDataProcessor', () => {
 				'<p>bar</p>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
 		} );
 	} );
 
 	describe( 'useFillerType()', () => {
 		it( 'should turn on and off using marked block fillers', () => {
-			const fragment = parse( '<container:p></container:p>' );
+			const fragment = _parseView( '<container:p></container:p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 
@@ -433,7 +433,7 @@ describe( 'HtmlDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<p>foobar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'should preserve comments when `false`', () => {
@@ -454,7 +454,7 @@ describe( 'HtmlDataProcessor', () => {
 				'</html>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<$comment></$comment><p>foo<$comment></$comment>bar</p><$comment></$comment>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<$comment></$comment><p>foo<$comment></$comment>bar</p><$comment></$comment>' );
 		} );
 	} );
 } );

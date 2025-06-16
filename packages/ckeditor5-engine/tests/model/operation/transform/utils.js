@@ -15,10 +15,10 @@ import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.j
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
-import { getData, parse } from '../../../../src/dev-utils/model.js';
-import { transformSets } from '../../../../src/model/operation/transform.js';
-import { Position } from '../../../../src/model/position.js';
-import { Range } from '../../../../src/model/range.js';
+import { _getModelData, _parseModel } from '../../../../src/dev-utils/model.js';
+import { transformOperationSets } from '../../../../src/model/operation/transform.js';
+import { ModelPosition } from '../../../../src/model/position.js';
+import { ModelRange } from '../../../../src/model/range.js';
 import { OperationFactory } from '../../../../src/model/operation/operationfactory.js';
 
 const clients = new Set();
@@ -56,7 +56,7 @@ export class Client {
 		const modelRoot = model.document.getRoot();
 
 		// Parse data string to model.
-		const parsedResult = parse( initModelString, model.schema, { context: [ modelRoot.name ] } );
+		const parsedResult = _parseModel( initModelString, model.schema, { context: [ modelRoot.name ] } );
 
 		// Retrieve DocumentFragment and Selection from parsed model.
 		const modelDocumentFragment = parsedResult.model;
@@ -71,10 +71,10 @@ export class Client {
 		const ranges = [];
 
 		for ( const range of selection.getRanges() ) {
-			const start = new Position( modelRoot, range.start.path );
-			const end = new Position( modelRoot, range.end.path );
+			const start = new ModelPosition( modelRoot, range.start.path );
+			const end = new ModelPosition( modelRoot, range.end.path );
 
-			ranges.push( new Range( start, end ) );
+			ranges.push( new ModelRange( start, end ) );
 		}
 
 		model.document.selection._setTo( ranges );
@@ -95,11 +95,11 @@ export class Client {
 		const startPos = this._getPosition( start );
 		const endPos = this._getPosition( end );
 
-		this.editor.model.document.selection._setTo( new Range( startPos, endPos ) );
+		this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
 	}
 
 	insert( itemString, path ) {
-		const item = parse( itemString, this.editor.model.schema );
+		const item = _parseModel( itemString, this.editor.model.schema );
 		const position = this._getPosition( path, 'start' );
 
 		this._processAction( 'insert', item, position );
@@ -115,7 +115,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'remove', new Range( startPos, endPos ) );
+		this._processAction( 'remove', new ModelRange( startPos, endPos ) );
 	}
 
 	delete() {
@@ -127,7 +127,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'move', new Range( startPos, endPos ), targetPos );
+		this._processAction( 'move', new ModelRange( startPos, endPos ), targetPos );
 	}
 
 	rename( newName, path ) {
@@ -141,14 +141,14 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'setAttribute', key, value, new Range( startPos, endPos ) );
+		this._processAction( 'setAttribute', key, value, new ModelRange( startPos, endPos ) );
 	}
 
 	removeAttribute( key, start, end ) {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'removeAttribute', key, new Range( startPos, endPos ) );
+		this._processAction( 'removeAttribute', key, new ModelRange( startPos, endPos ) );
 	}
 
 	setMarker( name, start, end ) {
@@ -163,7 +163,7 @@ export class Client {
 			actionName = 'addMarker';
 		}
 
-		const range = new Range( startPos, endPos );
+		const range = new ModelRange( startPos, endPos );
 
 		this._processAction( actionName, name, { range, usingOperation: true } );
 	}
@@ -176,7 +176,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'wrap', new Range( startPos, endPos ), elementName );
+		this._processAction( 'wrap', new ModelRange( startPos, endPos ), elementName );
 	}
 
 	unwrap( path ) {
@@ -215,7 +215,7 @@ export class Client {
 	}
 
 	getModelString() {
-		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
+		return _getModelData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
 	}
 
 	destroy() {
@@ -243,7 +243,7 @@ export class Client {
 			return this._getPositionFromSelection( type );
 		}
 
-		return new Position( this.document.getRoot(), path );
+		return new ModelPosition( this.document.getRoot(), path );
 	}
 
 	_getPositionFromSelection( type ) {
@@ -256,7 +256,7 @@ export class Client {
 			case 'end':
 				return selRange.end.clone();
 			case 'beforeParent':
-				return Position._createBefore( selRange.start.parent );
+				return ModelPosition._createBefore( selRange.start.parent );
 		}
 	}
 
@@ -343,9 +343,9 @@ export function syncClients() {
 			};
 
 			if ( localClient.orderNumber < remoteClient.orderNumber ) {
-				remoteOperationsTransformed = transformSets( localOperations, remoteOperations, options ).operationsB;
+				remoteOperationsTransformed = transformOperationSets( localOperations, remoteOperations, options ).operationsB;
 			} else {
-				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
+				remoteOperationsTransformed = transformOperationSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
 			localClient.editor.model.enqueueChange( { isUndoable: false }, writer => {

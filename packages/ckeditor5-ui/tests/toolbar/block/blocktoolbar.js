@@ -24,7 +24,7 @@ import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver
 import { DragDropBlockToolbar } from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar.js';
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -485,20 +485,20 @@ describe( 'BlockToolbar', () => {
 			editor.model.schema.register( 'foo', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
 
-			setData( editor.model, '<foo>foo[]bar</foo>' );
+			_setModelData( editor.model, '<foo>foo[]bar</foo>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		it( 'should display the button when the first selected block is an object', () => {
-			setData( editor.model, '[<imageBlock src="/assets/sample.png"><caption>foo</caption></imageBlock>]' );
+			_setModelData( editor.model, '[<imageBlock src="/assets/sample.png"><caption>foo</caption></imageBlock>]' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		// This test makes no sense now, but so do all other tests here (see https://github.com/ckeditor/ckeditor5/issues/1522).
 		it( 'should not display the button when the selection is inside a limit element', () => {
-			setData( editor.model, '<imageBlock src="/assets/sample.png"><caption>f[]oo</caption></imageBlock>' );
+			_setModelData( editor.model, '<imageBlock src="/assets/sample.png"><caption>f[]oo</caption></imageBlock>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
@@ -506,7 +506,7 @@ describe( 'BlockToolbar', () => {
 		it( 'should not display the button when the selection is placed in the root element', () => {
 			editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
-			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
@@ -522,7 +522,7 @@ describe( 'BlockToolbar', () => {
 			} ).then( editor => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 
-				setData( editor.model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( editor.model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
 
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 
@@ -542,7 +542,7 @@ describe( 'BlockToolbar', () => {
 
 		it( 'should attach the right side of the button to the left side of the editable and center with the first line ' +
 			'of the selected block #1', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
@@ -576,7 +576,7 @@ describe( 'BlockToolbar', () => {
 
 		it( 'should attach the right side of the button to the left side of the editable and center with the first line ' +
 			'of the selected block #2', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
@@ -612,7 +612,7 @@ describe( 'BlockToolbar', () => {
 		it( 'should attach the left side of the button to the right side of the editable when language direction is RTL', () => {
 			editor.locale.uiLanguageDirection = 'rtl';
 
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
@@ -781,7 +781,7 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should hide the UI when editor switched to readonly', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = true;
@@ -793,7 +793,7 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should show the button when the editor switched back from readonly', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 
@@ -807,7 +807,7 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should show/hide the button on the editor focus/blur', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.ui.focusTracker.isFocused = true;
 
@@ -823,7 +823,7 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should hide the UI when the editor switched to the readonly when the panel is not visible', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = false;
@@ -840,13 +840,13 @@ describe( 'BlockToolbar', () => {
 			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
 			// Place the selection outside of any block because the toolbar will not be shown in this case.
-			setData( editor.model, '[]<paragraph>bar</paragraph>' );
+			_setModelData( editor.model, '[]<paragraph>bar</paragraph>' );
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
 			sinon.assert.notCalled( spy );
 
-			setData( editor.model, '<paragraph>ba[]r</paragraph>' );
+			_setModelData( editor.model, '<paragraph>ba[]r</paragraph>' );
 
 			spy.resetHistory();
 
@@ -854,7 +854,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.called( spy );
 
-			setData( editor.model, '[]<paragraph>bar</paragraph>' );
+			_setModelData( editor.model, '[]<paragraph>bar</paragraph>' );
 
 			spy.resetHistory();
 

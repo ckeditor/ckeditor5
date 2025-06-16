@@ -4,9 +4,9 @@
  */
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
@@ -19,7 +19,7 @@ describe( 'PasteFromOffice - filters', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'list - paste from MS Word', () => {
-		const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
+		const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
@@ -30,7 +30,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
-				expect( stringify( view ) ).to.equal( '<ol><li><p style="mso-list:l0 level1 lfo0">Item 1</p></li></ol>' );
+				expect( _stringifyView( view ) ).to.equal( '<ol><li><p style="mso-list:l0 level1 lfo0">Item 1</p></li></ol>' );
 			} );
 
 			it( 'replaces list-like elements with semantic lists with proper bullet type based on styles', () => {
@@ -41,7 +41,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ul' );
-				expect( stringify( view ) ).to.equal( '<ul><li><p style="mso-list:l0 level1 lfo0">Item 1</p></li></ul>' );
+				expect( _stringifyView( view ) ).to.equal( '<ul><li><p style="mso-list:l0 level1 lfo0">Item 1</p></li></ul>' );
 			} );
 
 			it( 'does not modify the view if there are no list-like elements', () => {
@@ -51,7 +51,7 @@ describe( 'PasteFromOffice - filters', () => {
 				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 2 );
-				expect( stringify( view ) ).to.equal( html );
+				expect( _stringifyView( view ) ).to.equal( html );
 			} );
 
 			it( 'handles empty `mso-list` style correctly', () => {
@@ -62,7 +62,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
-				expect( stringify( view ) ).to.equal( '<ol><li><p style="mso-list:">Item 1</p></li></ol>' );
+				expect( _stringifyView( view ) ).to.equal( '<ol><li><p style="mso-list:">Item 1</p></li></ol>' );
 			} );
 
 			it( 'handles `mso-list: none` on paragraphs correctly', () => {
@@ -73,7 +73,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
-				expect( stringify( view ) ).to.equal( '<ol><li><p style="mso-list:none">not numbered<o:p></o:p></p></li></ol>' );
+				expect( _stringifyView( view ) ).to.equal( '<ol><li><p style="mso-list:none">not numbered<o:p></o:p></p></li></ol>' );
 			} );
 
 			it( 'handles empty body correctly', () => {
@@ -82,7 +82,7 @@ describe( 'PasteFromOffice - filters', () => {
 				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 0 );
-				expect( stringify( view ) ).to.equal( '' );
+				expect( _stringifyView( view ) ).to.equal( '' );
 			} );
 
 			it( 'handles RTL lists with bold item - #13711', () => {
@@ -97,7 +97,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ul' );
-				expect( stringify( view ) ).to.equal(
+				expect( _stringifyView( view ) ).to.equal(
 					'<ul>' +
 						'<li>' +
 							'<p dir="RTL" style="mso-list:l0 level1 lfo1">' +
@@ -121,7 +121,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol class="legal-list"><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -137,7 +137,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol class="legal-list"><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -153,7 +153,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol class="legal-list"><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -170,7 +170,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol class="legal-list"><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -187,7 +187,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol class="legal-list"><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -204,7 +204,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -220,7 +220,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol><li><p ${ level1 }>Foo</p></li></ol>`
 					);
 				} );
@@ -237,7 +237,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					transformListItemLikeElementsIntoLists( view, styles, hasMultiLevelListPluginLoaded );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ul><li><p ${ level1 }>Foo</p></li></ul>`
 					);
 				} );
@@ -256,7 +256,7 @@ describe( 'PasteFromOffice - filters', () => {
 					transformListItemLikeElementsIntoLists( view, '' );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						'<ol>' +
 							'<li>' +
 								`<p ${ level1 }>Foo</p>` +
@@ -282,7 +282,7 @@ describe( 'PasteFromOffice - filters', () => {
 					transformListItemLikeElementsIntoLists( view, '' );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol><li><p ${ level1 }>Foo</p>` +
 							`<ol><li><p ${ level3 }>Bar</p>` +
 								`<ol><li><p ${ level4 }>Baz</p></li></ol>` +
@@ -302,7 +302,7 @@ describe( 'PasteFromOffice - filters', () => {
 					transformListItemLikeElementsIntoLists( view, '' );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ol><li><p ${ level1 }>Foo</p>` +
 							`<ol><li><p ${ level3 }>Bar</p>` +
 								`<ol><li><p ${ level4 }>Baz</p></li></ol>` +
@@ -318,7 +318,7 @@ describe( 'PasteFromOffice - filters', () => {
 						'@list l0:level3 { mso-level-number-format: bullet; }' );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ul><li><p ${ level1 }>Foo</p>` +
 							`<ol><li><p ${ level2 }>Bar</p>` +
 								`<ul><li><p ${ level3 }>Baz</p></li></ul>` +
@@ -337,7 +337,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					expect( view.childCount ).to.equal( 1 );
 
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						`<ul><li><p ${ level1 }>Foo</p>` +
 							`<ol><li><p ${ level3 }>Bar</p></li></ol>` +
 							`<ul><li><p ${ level2 }>Baz</p></li></ul>` +
@@ -351,7 +351,7 @@ describe( 'PasteFromOffice - filters', () => {
 					transformListItemLikeElementsIntoLists( view, '' );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						'<ol>' +
 							`<li><p ${ level2 }>Foo</p></li>` +
 							`<li><p ${ level1 }>Bar</p>` +
@@ -378,7 +378,7 @@ describe( 'PasteFromOffice - filters', () => {
 					transformListItemLikeElementsIntoLists( view, styles );
 
 					expect( view.childCount ).to.equal( 1 );
-					expect( stringify( view ) ).to.equal(
+					expect( _stringifyView( view ) ).to.equal(
 						'<ol style="list-style-type:upper-alpha">' +
 							'<li><p style="mso-list:l0 level1 lfo0">Foo 1</p>' +
 								'<ul>' +
@@ -403,7 +403,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:lower-roman"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -417,7 +417,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:upper-alpha"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -431,7 +431,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:lower-alpha"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -445,7 +445,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:upper-roman"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -460,7 +460,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -474,7 +474,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:decimal-leading-zero"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -488,7 +488,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol style="list-style-type:decimal-leading-zero"><li><p ${ level1 }>Foo</p></li></ol>`
 						);
 					} );
@@ -509,7 +509,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							'<ul style="list-style-type:circle">' +
 								`<li><p class="MsoListBulletCxSpFirst" ${ level1 }>` +
 									'<span lang="EN-US"></span><span>Foo</span>' +
@@ -532,7 +532,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							'<ul style="list-style-type:disc">' +
 								`<li><p class="MsoListBulletCxSpFirst" ${ level1 }>` +
 									'<span lang="EN-US"></span><span>Foo</span>' +
@@ -555,7 +555,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							'<ul style="list-style-type:square">' +
 								`<li><p class="MsoListBulletCxSpFirst" ${ level1 }>` +
 									'<span lang="EN-US"></span><span>Foo</span>' +
@@ -578,7 +578,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							'<ul>' +
 								`<li><p class="MsoListBulletCxSpFirst" ${ level1 }>` +
 									'<span lang="EN-US"></span><span>Foo</span>' +
@@ -628,7 +628,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 						transformListItemLikeElementsIntoLists( view, styles );
 
-						expect( stringify( view ) ).to.equal(
+						expect( _stringifyView( view ) ).to.equal(
 							`<ol start="${ start }" style="list-style-type:${ cssStyle }">` +
 								'<li><p class="MsoListParagraphCxSpFirst" style="mso-list:l0 level1 lfo0">' +
 									'<span>Foo</span>' +
@@ -645,8 +645,8 @@ describe( 'PasteFromOffice - filters', () => {
 		let writer, viewDocument, htmlDataProcessor;
 
 		beforeEach( () => {
-			viewDocument = new Document( new StylesProcessor() );
-			writer = new UpcastWriter( viewDocument );
+			viewDocument = new ViewDocument( new StylesProcessor() );
+			writer = new ViewUpcastWriter( viewDocument );
 			htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 		} );
 

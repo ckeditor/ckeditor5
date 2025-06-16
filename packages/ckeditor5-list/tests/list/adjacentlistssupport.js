@@ -5,8 +5,8 @@
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { List, ListProperties, AdjacentListsSupport } from '../../src/index.js';
@@ -77,7 +77,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">One</paragraph>' +
 				'<listSeparator></listSeparator>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>'
@@ -94,7 +94,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="numbered">One</paragraph>' +
 				'<listSeparator></listSeparator>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="numbered">Two</paragraph>'
@@ -111,7 +111,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="numbered">One</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>'
 			);
@@ -140,7 +140,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</custom-block>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<customContainer>' +
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">One</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Two</paragraph>' +
@@ -160,7 +160,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ul>' +
@@ -181,7 +181,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ol>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ol>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
@@ -202,7 +202,7 @@ describe( 'AdjacentListsSupport', () => {
 				'</ul>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ol>' +
 					'<li><span class="ck-list-bogus-paragraph">One</span></li>' +
 				'</ol>' +
@@ -301,7 +301,7 @@ describe( 'AdjacentListsSupport - integrations', () => {
 			'</ul>'
 		);
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">One</paragraph>' +
 			'<listSeparator></listSeparator>' +
 			'<paragraph listIndent="0" listItemId="a01" listStyle="default" listType="bulleted">Two</paragraph>'

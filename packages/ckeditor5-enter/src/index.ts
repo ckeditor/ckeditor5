@@ -9,9 +9,9 @@
 
 export { Enter } from './enter.js';
 export { ShiftEnter } from './shiftenter.js';
-export type { ViewDocumentEnterEvent } from './enterobserver.js';
+export { EnterObserver, type ViewDocumentEnterEvent, type ViewDocumentEnterEventData } from './enterobserver.js';
 export { EnterCommand, type EnterCommandAfterExecuteEvent } from './entercommand.js';
-export { ShiftEnterCommand } from './shiftentercommand.js';
+export { ShiftEnterCommand, type ShiftEnterCommandAfterExecuteEvent } from './shiftentercommand.js';
 
 export { getCopyOnEnterAttributes as _getCopyOnEnterAttributes } from './utils.js';
 

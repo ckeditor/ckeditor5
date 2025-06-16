@@ -366,9 +366,9 @@ interface WidgetRepositoryToolbarDefinition {
 	view: ToolbarView;
 
 	/**
-	 * A function that returns an engine {@link module:engine/view/view~View}
+	 * A function that returns an engine {@link module:engine/view/view~EditingView}
 	 * element the toolbar is to be attached to. For instance, an image widget or a table widget (or `null` when
-	 * there is no such element). The function accepts an instance of {@link module:engine/view/selection~Selection}.
+	 * there is no such element). The function accepts an instance of {@link module:engine/view/selection~ViewSelection}.
 	 */
 	getRelatedElement: ( selection: ViewDocumentSelection ) => ViewElement | null | undefined;
 

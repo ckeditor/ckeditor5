@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { GFMDataProcessor } from './gfmdataprocessor.js';
+import { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
 
 /**
  * The GitHub Flavored Markdown (GFM) plugin.
@@ -22,7 +22,7 @@ export class Markdown extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.data.processor = new GFMDataProcessor( editor.data.viewDocument );
+		editor.data.processor = new MarkdownGfmDataProcessor( editor.data.viewDocument );
 	}
 
 	/**

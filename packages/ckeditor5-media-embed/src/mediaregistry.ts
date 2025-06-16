@@ -11,7 +11,7 @@ import { IconView, Template } from 'ckeditor5/src/ui.js';
 import { IconMediaPlaceholder } from 'ckeditor5/src/icons.js';
 import { logWarning, toArray, type Locale } from 'ckeditor5/src/utils.js';
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembedconfig.js';
 import type { MediaOptions } from './utils.js';
 
@@ -20,7 +20,7 @@ const mediaPlaceholderIconViewBox = '0 0 64 42';
 /**
  * A bridge between the raw media content provider definitions and the editor view content.
  *
- * It helps translating media URLs to corresponding {@link module:engine/view/element~Element view elements}.
+ * It helps translating media URLs to corresponding {@link module:engine/view/element~ViewElement view elements}.
  *
  * Mostly used by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} plugin.
  */
@@ -81,7 +81,7 @@ export class MediaRegistry {
 	}
 
 	/**
-	 * For the given media URL string and options, it returns the {@link module:engine/view/element~Element view element}
+	 * For the given media URL string and options, it returns the {@link module:engine/view/element~ViewElement view element}
 	 * representing that media.
 	 *
 	 * **Note:** If no URL is specified, an empty view element is returned.
@@ -90,7 +90,7 @@ export class MediaRegistry {
 	 * @param url The URL to be translated into a view element.
 	 */
 	public getMediaViewElement(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		url: string,
 		options: MediaOptions
 	): ViewElement {
@@ -163,7 +163,7 @@ export class MediaRegistry {
 /**
  * Represents media defined by the provider configuration.
  *
- * It can be rendered to the {@link module:engine/view/element~Element view element} and used in the editing or data pipeline.
+ * It can be rendered to the {@link module:engine/view/element~ViewElement view element} and used in the editing or data pipeline.
  */
 class Media {
 	/**
@@ -201,7 +201,7 @@ class Media {
 	 * @param writer The view writer used to produce a view element.
 	 */
 	public getViewElement(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		options: MediaOptions
 	): ViewElement {
 		const attributes: Record<string, unknown> = {};

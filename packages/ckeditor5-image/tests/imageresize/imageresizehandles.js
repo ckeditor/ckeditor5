@@ -13,7 +13,7 @@ import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
 import { LegacyTodoList } from '@ckeditor/ckeditor5-list/src/legacytodolist.js';
 import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import {
 	focusEditor,
 	resizerMouseSimulator,
@@ -126,7 +126,7 @@ describe( 'ImageResizeHandles', () => {
 				}, { priority: 'highest' } );
 				editor.commands.get( 'resizeImage' ).refresh();
 
-				setData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
+				_setModelData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 
 				await waitForAllImagesLoaded( editor );
 
@@ -313,7 +313,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'only creates a resizer after the image is loaded', async () => {
 			// https://github.com/ckeditor/ckeditor5/issues/8088
 			editor = await createEditor();
-			setData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
+			_setModelData( editor.model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>]` );
 			widget = viewDocument.getRoot().getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 
@@ -491,7 +491,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model,
+				_setModelData( editor.model,
 					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]` );
 
 				await waitForAllImagesLoaded( editor );
@@ -510,7 +510,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model,
+				_setModelData( editor.model,
 					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]`
 				);
 
@@ -605,7 +605,7 @@ describe( 'ImageResizeHandles', () => {
 				}, { priority: 'highest' } );
 				editor.commands.get( 'resizeImage' ).refresh();
 
-				setData( editor.model, `<paragraph>[<imageInline src="${ IMAGE_SRC_FIXTURE }"></imageInline>]</paragraph>` );
+				_setModelData( editor.model, `<paragraph>[<imageInline src="${ IMAGE_SRC_FIXTURE }"></imageInline>]</paragraph>` );
 
 				await waitForAllImagesLoaded( editor );
 
@@ -784,7 +784,7 @@ describe( 'ImageResizeHandles', () => {
 		it( 'only creates a resizer after the image is loaded', async () => {
 			// https://github.com/ckeditor/ckeditor5/issues/8088
 			editor = await createEditor();
-			setData( editor.model, `<paragraph>[<imageInline src="${ IMAGE_SRC_FIXTURE }"></imageInline>]</paragraph>` );
+			_setModelData( editor.model, `<paragraph>[<imageInline src="${ IMAGE_SRC_FIXTURE }"></imageInline>]</paragraph>` );
 			widget = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 			const domParts = getWidgetDomParts( editor, widget, 'bottom-right' );
 
@@ -1022,7 +1022,7 @@ describe( 'ImageResizeHandles', () => {
 
 				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-				setData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>' +
 						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
 					'</paragraph>'
@@ -1077,7 +1077,7 @@ describe( 'ImageResizeHandles', () => {
 
 			const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
 
-			setData( editor.model, '[<rawHtml></rawHtml>]' );
+			_setModelData( editor.model, '[<rawHtml></rawHtml>]' );
 
 			editor.model.change( writer => {
 				writer.setAttribute( 'value', `<img src="${ IMAGE_SRC_FIXTURE }">`, editor.model.document.getRoot().getChild( 0 ) );
@@ -1118,7 +1118,7 @@ describe( 'ImageResizeHandles', () => {
 	}
 
 	async function setModelAndWaitForImages( editor, data ) {
-		setData( editor.model, data );
+		_setModelData( editor.model, data );
 		return waitForAllImagesLoaded( editor );
 	}
 } );

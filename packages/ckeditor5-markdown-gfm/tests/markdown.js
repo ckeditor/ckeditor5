@@ -4,7 +4,7 @@
  */
 
 import { Markdown } from '../src/markdown.js';
-import { GFMDataProcessor } from '../src/gfmdataprocessor.js';
+import { MarkdownGfmDataProcessor } from '../src/gfmdataprocessor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Markdown', () => {
@@ -26,7 +26,7 @@ describe( 'Markdown', () => {
 				plugins: [ Markdown ]
 			} )
 			.then( editor => {
-				expect( editor.data.processor ).to.be.an.instanceof( GFMDataProcessor );
+				expect( editor.data.processor ).to.be.an.instanceof( MarkdownGfmDataProcessor );
 
 				return editor.destroy(); // Tests cleanup.
 			} );

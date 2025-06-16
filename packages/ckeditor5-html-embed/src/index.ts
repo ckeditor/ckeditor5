@@ -11,7 +11,7 @@ export { HtmlEmbed } from './htmlembed.js';
 export { HtmlEmbedEditing } from './htmlembedediting.js';
 export { HtmlEmbedUI } from './htmlembedui.js';
 export { HtmlEmbedCommand } from './htmlembedcommand.js';
-export type { HtmlEmbedConfig } from './htmlembedconfig.js';
+export type { HtmlEmbedConfig, HtmlEmbedSanitizeOutput } from './htmlembedconfig.js';
 
 export type { RawHtmlApi as _RawHtmlEmbedApi } from './htmlembedediting.js';
 

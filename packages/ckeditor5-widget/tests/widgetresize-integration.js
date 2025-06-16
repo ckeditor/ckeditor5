@@ -5,7 +5,7 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
 import { ImageResize } from '@ckeditor/ckeditor5-image/src/imageresize.js';
@@ -38,7 +38,7 @@ describe( 'WidgetResize - integration', () => {
 	it( 'should not fire viewDocument#mousedown events after starting resizing', async () => {
 		const eventSpy = sinon.spy().named( 'ViewDocument#mousedown' );
 
-		setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+		_setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
 
 		await waitForAllImagesLoaded( editor );
 

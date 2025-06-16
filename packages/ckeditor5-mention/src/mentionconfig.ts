@@ -180,7 +180,7 @@ export interface MentionFeed {
 	 * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
 	 * matching items (directly, or via a promise). If a function is passed, it is executed in the context of the editor instance.
 	 */
-	feed: Array<MentionFeedItem> | FeedCallback;
+	feed: Array<MentionFeedItem> | MentionFeedbackCallback;
 
 	/**
 	 * Specifies after how many characters the autocomplete panel should be shown.
@@ -193,7 +193,7 @@ export interface MentionFeed {
 	 * A function that renders a {@link module:mention/mentionconfig~MentionFeedItem}
 	 * to the autocomplete panel.
 	 */
-	itemRenderer?: ItemRenderer;
+	itemRenderer?: MentionItemRenderer;
 
 	/**
 	 * Specify how many available elements per feeds will the users be able to see in the dropdown list.
@@ -205,12 +205,12 @@ export interface MentionFeed {
 /**
  * Function that renders an array of {@link module:mention/mentionconfig~MentionFeedItem} based on string input.
  */
-export type FeedCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
+export type MentionFeedbackCallback = ( searchString: string ) => Array<MentionFeedItem> | Promise<Array<MentionFeedItem>>;
 
 /**
  * Function that takes renders a {@link module:mention/mentionconfig~MentionFeedObjectItem} as HTMLElement.
  */
-export type ItemRenderer = ( item: MentionFeedObjectItem ) => HTMLElement | string;
+export type MentionItemRenderer = ( item: MentionFeedObjectItem ) => HTMLElement | string;
 
 /**
  * The mention feed item. It may be defined as a string or a plain object.

@@ -4,7 +4,7 @@
  */
 
 import { BubblingEventInfo } from '../../../src/view/observer/bubblingeventinfo.js';
-import { setData as setModelData } from '../../../src/dev-utils/model.js';
+import { _setModelData } from '../../../src/dev-utils/model.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -30,7 +30,7 @@ describe( 'BubblingEmitterMixin', () => {
 	} );
 
 	it( 'should allow providing multiple contexts in one listener binding', () => {
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 		const spy = sinon.spy();
 		const data = {};
@@ -44,7 +44,7 @@ describe( 'BubblingEmitterMixin', () => {
 	} );
 
 	it( 'should reuse existing context', () => {
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 		const spy1 = sinon.spy();
 		const spy2 = sinon.spy();
@@ -62,7 +62,7 @@ describe( 'BubblingEmitterMixin', () => {
 	} );
 
 	it( 'should unbind from contexts', () => {
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 		const spyContext = sinon.spy();
 		const spyGlobal = sinon.spy();
@@ -89,7 +89,7 @@ describe( 'BubblingEmitterMixin', () => {
 	} );
 
 	it( 'should not unbind from contexts if other event is off', () => {
-		setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 		const spy = sinon.spy();
 		const data = {};
@@ -350,7 +350,7 @@ describe( 'BubblingEmitterMixin', () => {
 	describe( 'event bubbling', () => {
 		describe( 'bubbling starting from non collapsed selection', () => {
 			it( 'should start bubbling from the selection anchor position', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<blockQuote><paragraph>fo[o</paragraph></blockQuote>' +
 					'<paragraph>b]ar</paragraph>'
 				);
@@ -400,7 +400,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should start bubbling from the selection focus position', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<blockQuote><paragraph>fo[o</paragraph></blockQuote>' +
 					'<paragraph>b]ar</paragraph>',
 					{ lastRangeBackward: true }
@@ -453,7 +453,7 @@ describe( 'BubblingEmitterMixin', () => {
 
 		describe( 'while the selection in the text node', () => {
 			it( 'should bubble events from $text to $root and to default handlers if not stopped', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners( true );
@@ -500,7 +500,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $document (default) context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -546,7 +546,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -586,7 +586,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the blockquote context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -620,7 +620,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the p context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -648,7 +648,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the $text context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -670,7 +670,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not start bubbling events if stopped on the $capture context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -697,7 +697,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should bubble events from $custom to $root (but without $text) and to default handlers if not stopped', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners( true );
@@ -744,7 +744,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $document (default) context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -790,7 +790,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not trigger listeners on the lower priority if stopped on the $root context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -830,7 +830,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the blockquote context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -864,7 +864,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the p context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -892,7 +892,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should stop bubbling events if stopped on the custom context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -914,7 +914,7 @@ describe( 'BubblingEmitterMixin', () => {
 			} );
 
 			it( 'should not start bubbling events if stopped on the $capture context', () => {
-				setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
 				const events = setListeners();
@@ -931,7 +931,7 @@ describe( 'BubblingEmitterMixin', () => {
 		} );
 
 		it( 'should bubble non bubbling event (but without event info bubbling data)', () => {
-			setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
 
 			const data = {};
 			const events = setListeners( true );
@@ -978,7 +978,7 @@ describe( 'BubblingEmitterMixin', () => {
 		} );
 
 		it( 'should bubble from the provided view range', () => {
-			setModelData( model, '<paragraph>a[]bc</paragraph><blockQuote><paragraph>foobar</paragraph></blockQuote>' );
+			_setModelData( model, '<paragraph>a[]bc</paragraph><blockQuote><paragraph>foobar</paragraph></blockQuote>' );
 
 			const data = {};
 			const events = setListeners( true );
