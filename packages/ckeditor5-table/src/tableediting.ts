@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine.js';
+import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
@@ -295,10 +295,10 @@ export interface TableConversionAdditionalSlot {
 	/**
 	 * Filter for elements that should be placed inside given slot.
 	 */
-	filter: SlotFilter;
+	filter: DowncastSlotFilter;
 
 	/**
 	 * Position of the slot within the table.
 	 */
-	positionOffset: PositionOffset;
+	positionOffset: ModelPositionOffset;
 }

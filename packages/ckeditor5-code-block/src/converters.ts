@@ -8,7 +8,7 @@
  */
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
-import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
+import type { DowncastInsertEvent, ModelElement, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import { getPropertyAssociation } from './utils.js';
 
@@ -90,7 +90,7 @@ export function modelToViewCodeBlockInsertion(
 
 		writer.insert( targetViewPosition, pre );
 
-		mapper.bindElements( data.item as Element, code );
+		mapper.bindElements( data.item as ModelElement, code );
 	};
 }
 

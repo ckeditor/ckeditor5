@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DocumentFragment } from '../../src/view/documentfragment.js';
-import { Element } from '../../src/view/element.js';
-import { Text } from '../../src/view/text.js';
-import { UpcastWriter } from '../../src/view/upcastwriter.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewUpcastWriter } from '../../src/view/upcastwriter.js';
 import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewSelection } from '../../src/view/selection.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor, document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
-		writer = new UpcastWriter( document );
+		document = new ViewDocument( new StylesProcessor() );
+		writer = new ViewUpcastWriter( document );
 		dataprocessor = new HtmlDataProcessor( document );
 
 		const html = '' +
@@ -39,14 +39,14 @@ describe( 'UpcastWriter', () => {
 		it( 'should create empty document fragment', () => {
 			const df = writer.createDocumentFragment();
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
 			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 2 );
 		} );
 	} );
@@ -55,7 +55,7 @@ describe( 'UpcastWriter', () => {
 		it( 'should create empty element', () => {
 			const el = writer.createElement( 'p' );
 
-			expect( el ).to.instanceOf( Element );
+			expect( el ).to.instanceOf( ViewElement );
 			expect( el.name ).to.equal( 'p' );
 			expect( Array.from( el.getAttributes() ).length ).to.equal( 0 );
 			expect( el.childCount ).to.equal( 0 );
@@ -64,7 +64,7 @@ describe( 'UpcastWriter', () => {
 		it( 'should create element with attributes', () => {
 			const el = writer.createElement( 'a', { 'class': 'editor', 'contentEditable': 'true' } );
 
-			expect( el ).to.instanceOf( Element );
+			expect( el ).to.instanceOf( ViewElement );
 			expect( el.name ).to.equal( 'a' );
 			expect( Array.from( el.getAttributes() ).length ).to.equal( 2 );
 			expect( el.childCount ).to.equal( 0 );
@@ -73,7 +73,7 @@ describe( 'UpcastWriter', () => {
 		it( 'should create element with children', () => {
 			const el = writer.createElement( 'div', null, [ view.getChild( 0 ) ] );
 
-			expect( el ).to.instanceOf( Element );
+			expect( el ).to.instanceOf( ViewElement );
 			expect( el.name ).to.equal( 'div' );
 			expect( Array.from( el.getAttributes() ).length ).to.equal( 0 );
 			expect( el.childCount ).to.equal( 1 );
@@ -84,7 +84,7 @@ describe( 'UpcastWriter', () => {
 				{ 'class': 'editor', 'contentEditable': 'true' },
 				view.getChild( 2 ) );
 
-			expect( el ).to.instanceOf( Element );
+			expect( el ).to.instanceOf( ViewElement );
 			expect( el.name ).to.equal( 'blockquote' );
 			expect( Array.from( el.getAttributes() ).length ).to.equal( 2 );
 			expect( el.childCount ).to.equal( 1 );
@@ -95,7 +95,7 @@ describe( 'UpcastWriter', () => {
 		it( 'should create text', () => {
 			const text = writer.createText( 'FooBar' );
 
-			expect( text ).to.instanceOf( Text );
+			expect( text ).to.instanceOf( ViewText );
 			expect( text.data ).to.equal( 'FooBar' );
 		} );
 	} );
@@ -132,7 +132,7 @@ describe( 'UpcastWriter', () => {
 	describe( 'appendChild', () => {
 		it( 'should append inline child to paragraph', () => {
 			const el = view.getChild( 2 );
-			const newChild = new Element( 'span' );
+			const newChild = new ViewElement( 'span' );
 
 			const appended = writer.appendChild( newChild, el );
 
@@ -143,8 +143,8 @@ describe( 'UpcastWriter', () => {
 
 		it( 'should append block children to paragraph', () => {
 			const el = view.getChild( 2 );
-			const newChild1 = new Element( 'p' );
-			const newChild2 = new Element( 'h2' );
+			const newChild1 = new ViewElement( 'p' );
+			const newChild2 = new ViewElement( 'h2' );
 
 			const appended = writer.appendChild( [ newChild1, newChild2 ], el );
 
@@ -156,7 +156,7 @@ describe( 'UpcastWriter', () => {
 
 		it( 'should append list item to the list', () => {
 			const el = view.getChild( 3 );
-			const newChild = new Element( 'li' );
+			const newChild = new ViewElement( 'li' );
 
 			const appended = writer.appendChild( newChild, el );
 
@@ -166,7 +166,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should append element to DocumentFragment element', () => {
-			const newChild = new Element( 'p' );
+			const newChild = new ViewElement( 'p' );
 
 			const appended = writer.appendChild( newChild, view );
 
@@ -179,7 +179,7 @@ describe( 'UpcastWriter', () => {
 	describe( 'insertChild', () => {
 		it( 'should insert inline child into the paragraph on the first position', () => {
 			const el = view.getChild( 2 );
-			const newChild = new Element( 'span' );
+			const newChild = new ViewElement( 'span' );
 
 			const inserted = writer.insertChild( 0, newChild, el );
 
@@ -191,8 +191,8 @@ describe( 'UpcastWriter', () => {
 
 		it( 'should insert block children into the paragraph on the last position', () => {
 			const el = view.getChild( 2 );
-			const newChild1 = new Element( 'blockquote' );
-			const newChild2 = new Element( 'h2' );
+			const newChild1 = new ViewElement( 'blockquote' );
+			const newChild2 = new ViewElement( 'h2' );
 
 			const inserted = writer.insertChild( 2, [ newChild1, newChild2 ], el );
 
@@ -206,7 +206,7 @@ describe( 'UpcastWriter', () => {
 
 		it( 'should insert list item into the list element', () => {
 			const el = view.getChild( 3 );
-			const newChild = new Element( 'li' );
+			const newChild = new ViewElement( 'li' );
 
 			const inserted = writer.insertChild( 1, newChild, el );
 
@@ -217,7 +217,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should insert element to DocumentFragment element', () => {
-			const newChild = new Element( 'p' );
+			const newChild = new ViewElement( 'p' );
 
 			const inserted = writer.insertChild( 4, newChild, view );
 
@@ -276,7 +276,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should have no effect on detached elements', () => {
-			const newChild = new Element( 'h2' );
+			const newChild = new ViewElement( 'h2' );
 
 			const removed = writer.remove( newChild );
 
@@ -298,7 +298,7 @@ describe( 'UpcastWriter', () => {
 	describe( 'replace', () => {
 		it( 'should replace single element', () => {
 			const el = view.getChild( 0 ).getChild( 1 );
-			const newChild = new Element( 'span' );
+			const newChild = new ViewElement( 'span' );
 
 			const replacement = writer.replace( el, newChild );
 
@@ -309,7 +309,7 @@ describe( 'UpcastWriter', () => {
 
 		it( 'should replace element with children', () => {
 			const el = view.getChild( 3 );
-			const newChild = new Element( 'ol' );
+			const newChild = new ViewElement( 'ol' );
 
 			const replacement = writer.replace( el, newChild );
 
@@ -319,8 +319,8 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should have no effect on detached elements', () => {
-			const oldChild = new Element( 'h2' );
-			const newChild = new Element( 'h2' );
+			const oldChild = new ViewElement( 'h2' );
+			const newChild = new ViewElement( 'h2' );
 
 			const replacement = writer.replace( oldChild, newChild );
 
@@ -351,7 +351,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should do nothing for elements without parent', () => {
-			const element = new Element( document, 'p', null, 'foo' );
+			const element = new ViewElement( document, 'p', null, 'foo' );
 
 			writer.unwrapElement( element );
 
@@ -383,7 +383,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should have no effect on detached element', () => {
-			const el = new Element( document, 'h2' );
+			const el = new ViewElement( document, 'h2' );
 
 			const renamed = writer.rename( 'h3', el );
 
@@ -537,7 +537,7 @@ describe( 'UpcastWriter', () => {
 
 	describe( 'setCustomProperty', () => {
 		it( 'should add or update custom property on element', () => {
-			const el = new Element( 'span' );
+			const el = new ViewElement( 'span' );
 
 			writer.setCustomProperty( 'prop1', 'foo', el );
 			writer.setCustomProperty( 'prop2', 'bar', el );
@@ -555,7 +555,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should add or update custom property on document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new ViewDocumentFragment();
 
 			writer.setCustomProperty( 'prop1', 'foo', fragment );
 			writer.setCustomProperty( 'prop2', 'bar', fragment );
@@ -576,7 +576,7 @@ describe( 'UpcastWriter', () => {
 
 	describe( 'removeCustomProperty', () => {
 		it( 'should remove existing custom property from element', () => {
-			const el = new Element( 'p' );
+			const el = new ViewElement( 'p' );
 
 			writer.setCustomProperty( 'prop1', 'foo', el );
 
@@ -590,7 +590,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should remove existing custom property from document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new ViewDocumentFragment();
 
 			writer.setCustomProperty( 'prop1', 'foo', fragment );
 
@@ -604,7 +604,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should have no effect if custom property does not exists', () => {
-			const el = new Element( 'h1' );
+			const el = new ViewElement( 'h1' );
 
 			writer.removeCustomProperty( 'prop1', el );
 
@@ -615,41 +615,41 @@ describe( 'UpcastWriter', () => {
 
 	describe( 'createPositionAt()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( document, 'span' );
+			const span = new ViewElement( document, 'span' );
 			expect( writer.createPositionAt( span, 0 ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createPositionAfter()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
+			const span = new ViewElement( document, 'span', undefined, new ViewElement( document, 'span' ) );
 			expect( writer.createPositionAfter( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createPositionBefore()', () => {
 		it( 'should return instance of Position', () => {
-			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
+			const span = new ViewElement( document, 'span', undefined, new ViewElement( document, 'span' ) );
 			expect( writer.createPositionBefore( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
 		} );
 	} );
 
 	describe( 'createRange()', () => {
 		it( 'should return instance of Range', () => {
-			expect( writer.createRange( writer.createPositionAt( new Element( document, 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
+			expect( writer.createRange( writer.createPositionAt( new ViewElement( document, 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );
 
 	describe( 'createRangeIn()', () => {
 		it( 'should return instance of Range', () => {
-			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
+			const span = new ViewElement( document, 'span', undefined, new ViewElement( document, 'span' ) );
 			expect( writer.createRangeIn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );
 
 	describe( 'createRangeOn()', () => {
 		it( 'should return instance of Range', () => {
-			const span = new Element( document, 'span', undefined, new Element( document, 'span' ) );
+			const span = new ViewElement( document, 'span', undefined, new ViewElement( document, 'span' ) );
 			expect( writer.createRangeOn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
 		} );
 	} );

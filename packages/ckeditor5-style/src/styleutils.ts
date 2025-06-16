@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { Element, MatcherObjectPattern, DocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, ModelSelectable } from 'ckeditor5/src/engine.js';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
@@ -152,7 +152,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const model = this.editor.model;
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
@@ -168,7 +168,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
@@ -180,7 +180,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
+	public getAffectedBlocks( definition: BlockStyleDefinition, block: ModelElement ): Array<ModelElement> | null {
 		if ( definition.modelElements.includes( block.name ) ) {
 			return [ block ];
 		}
@@ -193,7 +193,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleEnabledForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+	public isStyleEnabledForInlineSelection( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): boolean {
 		const model = this.editor.model;
 
 		for ( const ghsAttributeName of definition.ghsAttributes ) {
@@ -210,7 +210,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleActiveForInlineSelection( definition: InlineStyleDefinition, selection: DocumentSelection ): boolean {
+	public isStyleActiveForInlineSelection( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): boolean {
 		for ( const ghsAttributeName of definition.ghsAttributes ) {
 			const ghsAttributeValue = this._getValueFromFirstAllowedNode( selection, ghsAttributeName );
 
@@ -227,7 +227,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: DocumentSelection ): Selectable {
+	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): ModelSelectable {
 		return selection;
 	}
 
@@ -282,7 +282,7 @@ export class StyleUtils extends Plugin {
 	 * @param attributeName Name of the GHS attribute.
 	 * @returns The attribute value.
 	 */
-	private _getValueFromFirstAllowedNode( selection: DocumentSelection, attributeName: string ): unknown | null {
+	private _getValueFromFirstAllowedNode( selection: ModelDocumentSelection, attributeName: string ): unknown | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 

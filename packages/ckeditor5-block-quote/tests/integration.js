@@ -16,9 +16,9 @@ import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
-	parse as parseModel,
-	getData as getModelData,
-	setData as setModelData
+	_parseModel,
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'BlockQuote integration', () => {
@@ -56,7 +56,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'enter', data );
 
@@ -70,7 +70,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
@@ -84,7 +84,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
@@ -98,7 +98,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'enter', data );
 
@@ -111,7 +111,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'does not interfere with a similar handler in the list feature', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
@@ -124,7 +124,7 @@ describe( 'BlockQuote integration', () => {
 
 			expect( data.preventDefault.called ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
@@ -138,7 +138,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>x</paragraph><blockQuote><paragraph>[]</paragraph></blockQuote><paragraph>x</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><blockQuote><paragraph>[]</paragraph></blockQuote><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'enter', data );
 
@@ -146,14 +146,14 @@ describe( 'BlockQuote integration', () => {
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 		} );
 
 		it( 'escapes block quote if selection is in an empty block in the middle of a block quote', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>[]</paragraph><paragraph>b</paragraph></blockQuote>' +
 				'<paragraph>x</paragraph>'
@@ -165,7 +165,7 @@ describe( 'BlockQuote integration', () => {
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -178,7 +178,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>x</paragraph>'
@@ -190,7 +190,7 @@ describe( 'BlockQuote integration', () => {
 			expect( execSpy.calledOnce ).to.be.true;
 			expect( execSpy.args[ 0 ][ 0 ] ).to.equal( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -203,7 +203,7 @@ describe( 'BlockQuote integration', () => {
 			const execSpy = sinon.spy( editor, 'execute' );
 			const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>x</paragraph>'
@@ -229,7 +229,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'merges paragraph into paragraph in the quote', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<blockQuote><paragraph>a</paragraph><paragraph>b</paragraph></blockQuote>' +
 				'<paragraph>[]c</paragraph>' +
 				'<paragraph>d</paragraph>'
@@ -237,7 +237,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote><paragraph>a</paragraph><paragraph>b[]c</paragraph></blockQuote>' +
 				'<paragraph>d</paragraph>'
 			);
@@ -246,7 +246,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'merges paragraph from a quote into a paragraph before quote', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>[]a</paragraph><paragraph>b</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -254,7 +254,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x[]a</paragraph>' +
 				'<blockQuote><paragraph>b</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -264,7 +264,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'merges two quotes', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>b</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>[]c</paragraph><paragraph>d</paragraph></blockQuote>' +
@@ -273,7 +273,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph><paragraph>b[]c</paragraph><paragraph>d</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -283,7 +283,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'unwraps empty quote when the backspace key pressed in the first empty paragraph in a quote', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
@@ -292,7 +292,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
 				'<paragraph>[]</paragraph>' +
@@ -303,7 +303,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'unwraps empty quote when the backspace key pressed in the empty paragraph that is the only content of quote', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -311,7 +311,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<paragraph>[]</paragraph>' +
 				'<paragraph>y</paragraph>'
@@ -321,7 +321,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'unwraps quote from the first paragraph when the backspace key pressed', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>[]</paragraph><paragraph>foo</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -329,7 +329,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<paragraph>[]</paragraph>' +
 				'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
@@ -340,7 +340,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'merges paragraphs in a quote when the backspace key pressed not in the first paragraph', () => {
 			const data = fakeEventData();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph></paragraph><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -348,7 +348,7 @@ describe( 'BlockQuote integration', () => {
 
 			viewDocument.fire( 'delete', data );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>y</paragraph>'
@@ -359,7 +359,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 
 			viewDocument.fire( 'delete', data );
 
@@ -373,7 +373,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
@@ -387,7 +387,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
@@ -401,7 +401,7 @@ describe( 'BlockQuote integration', () => {
 			const data = fakeEventData();
 			const execSpy = sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
 
 			viewDocument.fire( 'delete', data );
 
@@ -425,7 +425,7 @@ describe( 'BlockQuote integration', () => {
 					plugins: [ BlockQuote, Paragraph, Image ]
 				} )
 				.then( editor => {
-					setModelData( editor.model,
+					_setModelData( editor.model,
 						'<paragraph>fo[o</paragraph>' +
 						'<imageBlock src="/assets/sample.png"></imageBlock>' +
 						'<paragraph>b]ar</paragraph>'
@@ -433,7 +433,7 @@ describe( 'BlockQuote integration', () => {
 
 					editor.execute( 'blockQuote' );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<blockQuote>' +
 							'<paragraph>fo[o</paragraph>' +
 							'<imageBlock src="/assets/sample.png"></imageBlock>' +
@@ -447,7 +447,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'quotes an image with caption', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
 				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
@@ -457,7 +457,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>fo[o</paragraph>' +
 					'<imageBlock src="/assets/sample.png">' +
@@ -469,7 +469,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'adds an image to an existing quote', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
 				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
@@ -480,7 +480,7 @@ describe( 'BlockQuote integration', () => {
 			editor.execute( 'blockQuote' );
 
 			// Selection incorrectly trimmed.
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>foo</paragraph>' +
 					'<imageBlock src="/assets/sample.png">' +
@@ -492,49 +492,49 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'wraps paragraph+image', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>'
 			);
 		} );
 
 		it( 'unwraps paragraph+image', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]'
 			);
 		} );
 
 		it( 'wraps image+paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph>'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
 
 		it( 'unwraps image+paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph>'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
@@ -544,16 +544,16 @@ describe( 'BlockQuote integration', () => {
 	// There is a test which checks whether blockQuote will split the list items instead of merging with.
 	describe( 'compatibility with lists', () => {
 		it( 'does not merge the paragraph with list item', () => {
-			setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+			_setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
-			const df = parseModel(
+			const df = _parseModel(
 				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
 				model.schema
 			);
 
 			model.insertContent( df, model.document.selection );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">fo</listItem>' +
 				'<blockQuote>' +
 				'<paragraph>xxx</paragraph>' +
@@ -565,53 +565,53 @@ describe( 'BlockQuote integration', () => {
 
 	describe( 'compatibility with tables', () => {
 		it( 'wraps whole table', () => {
-			setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
+			_setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
 			);
 		} );
 
 		it( 'unwraps whole table', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
 			);
 		} );
 
 		it( 'wraps paragraph in table cell', () => {
-			setModelData( model, '<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>' );
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
 			);
 		} );
 
 		it( 'unwraps paragraph in table cell', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
 			);
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>'
 			);
 		} );
 
 		it( 'wraps image in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -621,7 +621,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><blockQuote>[<imageBlock><caption>foo</caption></imageBlock>]</blockQuote></tableCell>' +
@@ -631,7 +631,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'unwraps image in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><blockQuote>[<imageBlock><caption>foo</caption></imageBlock>]</blockQuote></tableCell>' +
@@ -641,7 +641,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -651,7 +651,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'wraps paragraph+image in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -661,7 +661,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -673,7 +673,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'unwraps paragraph+image in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -685,7 +685,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
@@ -695,7 +695,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'wraps image+paragraph in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></tableCell>' +
@@ -705,7 +705,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -717,7 +717,7 @@ describe( 'BlockQuote integration', () => {
 		} );
 
 		it( 'unwraps image+paragraph in table cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></tableCell>' +
@@ -727,7 +727,7 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<table>' +
 				'<tableRow>' +
 				'<tableCell>' +

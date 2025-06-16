@@ -9,7 +9,7 @@
 
 import { global } from 'ckeditor5/src/utils.js';
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { CKBoxConfig } from '../ckboxconfig.js';
 
 /**
@@ -17,7 +17,7 @@ import type { CKBoxConfig } from '../ckboxconfig.js';
  */
 export function createEditabilityChecker(
 	allowExternalImagesEditing: CKBoxConfig[ 'allowExternalImagesEditing' ]
-): ( element: Element ) => boolean {
+): ( element: ModelElement ) => boolean {
 	const checkUrl = createUrlChecker( allowExternalImagesEditing );
 
 	return element => {

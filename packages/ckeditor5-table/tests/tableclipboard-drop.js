@@ -8,7 +8,7 @@ import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable, viewTable } from './_utils/utils.js';
 
 import { TableEditing } from '../src/tableediting.js';
@@ -29,7 +29,7 @@ describe( 'table clipboard', () => {
 		modelRoot = model.document.getRoot();
 		viewDocument = editor.editing.view.document;
 
-		setModelData( model, modelTable( [
+		_setModelData( model, modelTable( [
 			[ '00[]', '01', '02' ],
 			[ '10', '11', '12' ],
 			[ '20', '21', '22' ]
@@ -72,7 +72,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) + '<paragraph>11</paragraph>', '12' ],
 				[ '20', '21', '22' ]
@@ -107,7 +107,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'10',
@@ -133,7 +133,7 @@ describe( 'table clipboard', () => {
 			viewDocument = editor.editing.view.document;
 
 			// Position the selection between paragraphs in a cell by using [].
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>', '11', '12' ],
 				[ '20', '21', '22' ]
@@ -175,7 +175,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'<paragraph>Foo</paragraph>' +
@@ -199,7 +199,7 @@ describe( 'table clipboard', () => {
 			viewDocument = editor.editing.view.document;
 
 			// Position the selection after the image by using [].
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '[]<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>', '11', '12' ]
 			] ) );
@@ -233,7 +233,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( domNode, 'before' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					modelTable( [ [ 'aa', 'ab' ], [ 'ba', 'bb' ] ] ) +
@@ -255,7 +255,7 @@ describe( 'table clipboard', () => {
 			viewDocument = editor.editing.view.document;
 
 			// Position the image in a cell and place selection after it (using []).
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>[]', '11', '12' ]
 			] ) );
@@ -296,7 +296,7 @@ describe( 'table clipboard', () => {
 				domEvent: getMockedMousePosition( firstParagraphDomNode, 'after' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[
 					'<imageBlock src="/assets/sample.png"><caption>Caption</caption></imageBlock>' +
@@ -318,7 +318,7 @@ describe( 'table clipboard', () => {
 			viewDocument = editor.editing.view.document;
 
 			// Set up a simple document with just a paragraph,
-			setModelData( model, '<paragraph>Some text[]</paragraph>' );
+			_setModelData( model, '<paragraph>Some text[]</paragraph>' );
 
 			const dataTransferMock = createDataTransfer();
 
@@ -353,7 +353,7 @@ describe( 'table clipboard', () => {
 			} );
 
 			// Expect the table to be inserted at the position where it was dropped,
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph>Some text</paragraph>' +
 				modelTable( [
 					[ 'aa', 'ab' ],

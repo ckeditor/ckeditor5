@@ -16,7 +16,7 @@ import {
 	type EditorUIReadyEvent
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 
 import { type DecoupledEditorUIView } from './decouplededitoruiview.js';
 
@@ -131,7 +131,7 @@ export class DecoupledEditorUI extends EditorUI {
 			}
 		}
 
-		enablePlaceholder( {
+		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
 			isDirectHost: false,

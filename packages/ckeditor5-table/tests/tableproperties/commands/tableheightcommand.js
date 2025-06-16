@@ -6,7 +6,7 @@
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { assertTableStyle, modelTable } from '../../_utils/utils.js';
 import { TablePropertiesEditing } from '../../../src/tableproperties/tablepropertiesediting.js';
@@ -33,29 +33,29 @@ describe( 'table properties', () => {
 			describe( 'isEnabled', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
-						setData( model, '<paragraph>foo[]</paragraph>' );
+						_setModelData( model, '<paragraph>foo[]</paragraph>' );
 						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be true if selection is in table', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table', () => {
-						setData( model, '<paragraph>f[oo]</paragraph>' );
+						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be true if selection is in table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
 						expect( command.isEnabled ).to.be.true;
 					} );
 
 					it( 'should be true if selection is over table', () => {
-						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
@@ -64,13 +64,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has no height property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has height property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -78,19 +78,19 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selection does not have table', () => {
-						setData( model, '<paragraph>f[oo]</paragraph>' );
+						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set is selection is in table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
 
 					it( 'should be set is selection is over table', () => {
-						setData( model, '[' + modelTable( [ [ 'foo' ] ], { tableHeight: '100px' } ) + ']' );
+						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ], { tableHeight: '100px' } ) + ']' );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -99,7 +99,7 @@ describe( 'table properties', () => {
 
 			describe( 'execute()', () => {
 				it( 'should use provided batch', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 					const batch = model.createBatch();
 					const spy = sinon.spy( model, 'enqueueChange' );
 
@@ -108,7 +108,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should add default unit for numeric values (number passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25 } );
 
@@ -116,7 +116,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should add default unit for numeric values (string passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25 } );
 
@@ -124,7 +124,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should not add default unit for numeric values with unit', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '25pt' } );
 
@@ -132,7 +132,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should add default unit to floats (number passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25.1 } );
 
@@ -140,7 +140,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should add default unit to floats (string passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '0.1' } );
 
@@ -148,7 +148,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should pass invalid values', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 'bar' } );
 
@@ -156,7 +156,7 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '.2' } );
 
@@ -165,7 +165,7 @@ describe( 'table properties', () => {
 
 				describe( 'collapsed selection', () => {
 					it( 'should set selected table height to a passed value', () => {
-						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+						_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: '25px' } );
 
@@ -173,7 +173,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						command.execute( { value: '25px' } );
 
@@ -181,7 +181,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ { tableHeight: '100px', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableHeight: '100px', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -191,7 +191,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection (inside table)', () => {
 					it( 'should set selected table height to a passed value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '25px' } );
 
@@ -199,7 +199,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '25px' } );
 
@@ -207,7 +207,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
 
@@ -217,7 +217,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection (over table)', () => {
 					it( 'should set selected table height to a passed value', () => {
-						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute( { value: '25px' } );
 
@@ -225,7 +225,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table height to a passed value', () => {
-						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute( { value: '25px' } );
 
@@ -233,7 +233,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove height from a selected table if no value is passed', () => {
-						setData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
+						_setModelData( model, '[' + modelTable( [ [ 'foo' ] ] ) + ']' );
 
 						command.execute();
 
@@ -262,13 +262,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '300px' } ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '300px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has height property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -276,13 +276,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '300px' } ) );
+						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '300px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has height property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ 'f[o]o' ] ], { tableHeight: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -292,7 +292,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove height from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableHeight: '100px' } ) );
 
 						command.execute( { value: '300px' } );
 
@@ -302,7 +302,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove height from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { tableHeight: '100px' } ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ], { tableHeight: '100px' } ) );
 
 						command.execute( { value: '300px' } );
 

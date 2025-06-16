@@ -7,15 +7,15 @@
  * @module engine/model/utils/selection-post-fixer
  */
 
-import { Position } from '../position.js';
-import { Range } from '../range.js';
+import { ModelPosition } from '../position.js';
+import { ModelRange } from '../range.js';
 
-import { type DocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
-import { type Node } from '../node.js';
-import { type Schema } from '../schema.js';
-import { type Writer } from '../writer.js';
-import { type Element } from '../element.js';
+import { type ModelNode } from '../node.js';
+import { type ModelSchema } from '../schema.js';
+import { type ModelWriter } from '../writer.js';
+import { type ModelElement } from '../element.js';
 
 /**
  * Injects selection post-fixer to the model.
@@ -25,11 +25,11 @@ import { type Element } from '../element.js';
  *
  * The correct position means that:
  *
- * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
+ * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~ModelSchema}
  * allows a `$text`.
- * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
+ * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~ModelSchema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
- * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
+ * * Only {@link module:engine/model/schema~ModelSchema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
  * selection is correct: `<paragraph>f[oo</paragraph><imageBlock></imageBlock>]`.
  *
@@ -77,7 +77,7 @@ export function injectSelectionPostFixer( model: Model ): void {
 /**
  * The selection post-fixer.
  */
-function selectionPostFixer( writer: Writer, model: Model ): boolean {
+function selectionPostFixer( writer: ModelWriter, model: Model ): boolean {
 	const selection = model.document.selection;
 	const schema = model.schema;
 
@@ -121,7 +121,7 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
  * @returns Returns fixed range or null if range is valid.
  * @internal
  */
-export function tryFixingRange( range: Range, schema: Schema ): Range | null {
+export function tryFixingRange( range: ModelRange, schema: ModelSchema ): ModelRange | null {
 	if ( range.isCollapsed ) {
 		return tryFixingCollapsedRange( range, schema );
 	}
@@ -137,7 +137,7 @@ export function tryFixingRange( range: Range, schema: Schema ): Range | null {
  * @param range Collapsed range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingCollapsedRange( range: Range, schema: Schema ) {
+function tryFixingCollapsedRange( range: ModelRange, schema: ModelSchema ) {
 	const originalPosition = range.start;
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
@@ -147,10 +147,10 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 	// In the first case, there is no need to fix the selection range.
 	// In the second, let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
-		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is Element => schema.isObject( item ) );
+		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is ModelElement => schema.isObject( item ) );
 
 		if ( ancestorObject ) {
-			return Range._createOn( ancestorObject );
+			return ModelRange._createOn( ancestorObject );
 		}
 
 		return null;
@@ -167,7 +167,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 		return null;
 	}
 
-	return new Range( fixedPosition );
+	return new ModelRange( fixedPosition );
 }
 
 /**
@@ -176,7 +176,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
  * @param range Expanded range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
+function tryFixingNonCollapsedRage( range: ModelRange, schema: ModelSchema ) {
 	const { start, end } = range;
 
 	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
@@ -210,7 +210,7 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 			const rangeStart = fixedStart ? fixedStart.start : start;
 			const rangeEnd = fixedEnd ? fixedEnd.end : end;
 
-			return new Range( rangeStart, rangeEnd );
+			return new ModelRange( rangeStart, rangeEnd );
 		}
 	}
 
@@ -231,14 +231,14 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 		let fixedEnd = end;
 
 		if ( expandStart ) {
-			fixedStart = Position._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
+			fixedStart = ModelPosition._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
 		}
 
 		if ( expandEnd ) {
-			fixedEnd = Position._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
+			fixedEnd = ModelPosition._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
 		}
 
-		return new Range( fixedStart, fixedEnd );
+		return new ModelRange( fixedStart, fixedEnd );
 	}
 
 	// Range was not fixed at this point so it is valid - ie it was placed around limit element already.
@@ -248,9 +248,9 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 /**
  * Finds the outer-most ancestor.
  */
-function findOutermostLimitAncestor( startingNode: Node, schema: Schema ): Node {
+function findOutermostLimitAncestor( startingNode: ModelNode, schema: ModelSchema ): ModelNode {
 	let isLimitNode = startingNode;
-	let parent: Node | DocumentFragment = isLimitNode;
+	let parent: ModelNode | ModelDocumentFragment = isLimitNode;
 
 	// Find outer most isLimit block as such blocks might be nested (ie. in tables).
 	while ( schema.isLimit( parent ) && parent.parent ) {
@@ -264,7 +264,7 @@ function findOutermostLimitAncestor( startingNode: Node, schema: Schema ): Node 
 /**
  * Checks whether any of range boundaries is placed around non-limit elements.
  */
-function checkSelectionOnNonLimitElements( start: Position, end: Position, schema: Schema ) {
+function checkSelectionOnNonLimitElements( start: ModelPosition, end: ModelPosition, schema: ModelSchema ) {
 	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
 	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
@@ -279,7 +279,7 @@ function checkSelectionOnNonLimitElements( start: Position, end: Position, schem
  * @returns Array of unique and non-intersecting ranges.
  * @internal
  */
-export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
+export function mergeIntersectingRanges( ranges: Array<ModelRange> ): Array<ModelRange> {
 	const rangesToMerge = [ ...ranges ];
 	const rangeIndexesToRemove = new Set();
 	let currentRangeIndex = 1;
@@ -315,6 +315,6 @@ export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
 /**
  * Checks if node exists and if it's a selectable.
  */
-function isSelectable( node: Node, schema: Schema ) {
+function isSelectable( node: ModelNode, schema: ModelSchema ) {
 	return node && schema.isSelectable( node );
 }

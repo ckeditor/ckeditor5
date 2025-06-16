@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableSelection } from '../../src/tableselection.js';
@@ -34,7 +34,7 @@ describe( 'RemoveColumnCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true if selection is inside table cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -43,7 +43,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be true if selection contains multiple cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
 			] ) );
@@ -59,7 +59,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be false if selection is inside table with one column only', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00' ],
 				[ '10[]' ],
 				[ '20[]' ]
@@ -69,7 +69,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be false if all columns are selected', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
 			] ) );
@@ -85,7 +85,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be false if all columns are selected - table with more than 10 columns (array sort bug)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12' ]
 			] ) );
 
@@ -100,7 +100,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be false if selection is outside a table', () => {
-			setData( model, '<paragraph>11[]</paragraph>' );
+			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -108,7 +108,7 @@ describe( 'RemoveColumnCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should remove a given column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', '21', '22' ]
@@ -116,7 +116,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '02' ],
 				[ '10', '[]12' ],
 				[ '20', '22' ]
@@ -124,7 +124,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should remove a given column from a table start', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -132,7 +132,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]01' ],
 				[ '11' ],
 				[ '21' ]
@@ -141,7 +141,7 @@ describe( 'RemoveColumnCommand', () => {
 
 		describe( 'with multiple cells selected', () => {
 			it( 'should properly remove the first column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -157,7 +157,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '01' ],
 					[ '11' ],
 					[ '[]21' ],
@@ -166,7 +166,7 @@ describe( 'RemoveColumnCommand', () => {
 			} );
 
 			it( 'should properly remove a middle column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -182,7 +182,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '02' ],
 					[ '10', '12' ],
 					[ '20', '[]22' ],
@@ -191,7 +191,7 @@ describe( 'RemoveColumnCommand', () => {
 			} );
 
 			it( 'should properly remove the last column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -207,7 +207,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '[]10' ],
 					[ '20' ],
@@ -216,7 +216,7 @@ describe( 'RemoveColumnCommand', () => {
 			} );
 
 			it( 'should properly remove two first columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -232,7 +232,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '02' ],
 					[ '[]12' ],
 					[ '22' ],
@@ -241,7 +241,7 @@ describe( 'RemoveColumnCommand', () => {
 			} );
 
 			it( 'should properly remove two middle columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ '10', '11', '12', '13' ],
 					[ '20', '21', '22', '23' ],
@@ -257,7 +257,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '[]23' ],
@@ -266,7 +266,7 @@ describe( 'RemoveColumnCommand', () => {
 			} );
 
 			it( 'should properly remove two middle columns with reversed selection', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ '10', '11', '12', '13' ],
 					[ '20', '21', '22', '23' ],
@@ -282,7 +282,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '03' ],
 					[ '10', '13' ],
 					[ '20', '[]23' ],
@@ -292,7 +292,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			it( 'should properly remove two last columns', () => {
 				// There's no handling for selection in case like that.
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -308,7 +308,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '[]10' ],
 					[ '20' ],
@@ -318,7 +318,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			it( 'should properly remove multiple heading columns', () => {
 				// There's no handling for selection in case like that.
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03', '04' ],
 					[ '10', '11', '12', '13', '14' ]
 				], { headingColumns: 3 } ) );
@@ -332,14 +332,14 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '04' ],
 					[ '10', '[]14' ]
 				], { headingColumns: 1 } ) );
 			} );
 
 			it( 'should properly calculate truncated colspans', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { contents: '00', colspan: 3 } ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
@@ -354,7 +354,7 @@ describe( 'RemoveColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00' ],
 					[ '[]12' ],
 					[ '22' ]
@@ -363,7 +363,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should change heading columns if removing a heading column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ],
 				[ '20', '21' ]
@@ -371,7 +371,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '01' ],
 				[ '[]11' ],
 				[ '21' ]
@@ -379,7 +379,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should decrease colspan of table cells from previous column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { colspan: 4, contents: '00' }, '04' ],
 				[ { colspan: 3, contents: '10' }, '13', '14' ],
 				[ { colspan: 2, contents: '20' }, '22[]', '23', '24' ],
@@ -389,7 +389,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 3, contents: '00' }, '04' ],
 				[ { colspan: 2, contents: '10' }, '13', '14' ],
 				[ { colspan: 2, contents: '20' }, '[]23', '24' ],
@@ -400,7 +400,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should decrease colspan of cells that are on removed column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { colspan: 3, contents: '[]00' }, '03' ],
 				[ { colspan: 2, contents: '10' }, '12', '13' ],
 				[ '20', '21', '22', '23' ]
@@ -408,7 +408,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '[]00' }, '03' ],
 				[ '10', '12', '13' ],
 				[ '21', '22', '23' ]
@@ -416,7 +416,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should move focus to previous column of removed cell if in last column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12[]' ],
 				[ '20', '21', '22' ]
@@ -424,7 +424,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '[]11' ],
 				[ '20', '21' ]
@@ -432,87 +432,87 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should work property if the rowspan is in the first column (the other cell in row is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '[]01' ],
 				[ '11' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]00' ]
 			] ) );
 		} );
 
 		it( 'should work property if the rowspan is in the first column (the cell in row below is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00' }, '01' ],
 				[ '[]11' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]00' ]
 			] ) );
 		} );
 
 		it( 'should work property if the rowspan is in the first column (the cell with rowspan is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { rowspan: 2, contents: '00[]' }, '01' ],
 				[ '11' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]01' ],
 				[ '11' ]
 			] ) );
 		} );
 
 		it( 'should work property if the rowspan is in the last column (the other cell in row is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', { rowspan: 2, contents: '01' } ],
 				[ '10' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]01' ]
 			] ) );
 		} );
 
 		it( 'should work property if the rowspan is in the last column (the cell in row below is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01' } ],
 				[ '[]10' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]01' ]
 			] ) );
 		} );
 
 		it( 'should work property if the rowspan is in the last column (the cell with rowspan is selected)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '[]01' } ],
 				[ '10' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]00' ],
 				[ '10' ]
 			] ) );
 		} );
 
 		it( 'should remove column if removing row with one column - other columns are spanned', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
 				[ '10' ],
 				[ '20', '21', '22' ]
@@ -520,7 +520,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]01', '02' ],
 				[ '21', '22' ]
 			] ) );

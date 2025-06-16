@@ -8,7 +8,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '../src/paragraph.js';
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { ParagraphButtonUI } from '../src/paragraphbuttonui.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 
 describe( 'HeadingButtonUI', () => {
@@ -26,7 +26,7 @@ describe( 'HeadingButtonUI', () => {
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					setData( editor.model, '<paragraph>f{}oo</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f{}oo</paragraph>' );
 				} );
 		} );
 
@@ -64,7 +64,7 @@ describe( 'HeadingButtonUI', () => {
 			expect( paragraphCommand.value ).to.be.true;
 			expect( paragraphButton.isOn ).to.be.true;
 
-			setData( editor.model, '<heading2>f{}oo</heading2>' );
+			_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
 			expect( paragraphCommand.value ).to.be.false;
 			expect( paragraphButton.isOn ).to.be.false;

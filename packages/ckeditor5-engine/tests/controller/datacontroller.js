@@ -13,8 +13,8 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
 
-import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model.js';
-import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view.js';
+import { _getModelData, _setModelData, _stringifyModel, _parseModel } from '../../src/dev-utils/model.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
@@ -81,7 +81,7 @@ describe( 'DataController', () => {
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( 'foobar' );
+			expect( _stringifyModel( output ) ).to.equal( 'foobar' );
 		} );
 
 		it( 'should set paragraph', () => {
@@ -92,7 +92,7 @@ describe( 'DataController', () => {
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _stringifyModel( output ) ).to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
 		it( 'should set two paragraphs', () => {
@@ -103,7 +103,7 @@ describe( 'DataController', () => {
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( _stringifyModel( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should set paragraphs with bold', () => {
@@ -118,19 +118,19 @@ describe( 'DataController', () => {
 			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			expect( _stringifyModel( output ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 
 		it( 'should parse in the root context by default', () => {
 			const output = data.parse( 'foo' );
 
-			expect( stringify( output ) ).to.equal( '' );
+			expect( _stringifyModel( output ) ).to.equal( '' );
 		} );
 
 		it( 'should accept parsing context', () => {
 			const output = data.parse( 'foo', [ '$block' ] );
 
-			expect( stringify( output ) ).to.equal( 'foo' );
+			expect( _stringifyModel( output ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should parse template with children', () => {
@@ -144,7 +144,7 @@ describe( 'DataController', () => {
 			const output = data.parse( '<template><p>foo</p></template>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<container><paragraph>foo</paragraph></container>' );
+			expect( _stringifyModel( output ) ).to.equal( '<container><paragraph>foo</paragraph></container>' );
 		} );
 	} );
 
@@ -156,7 +156,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should be decorated', () => {
-			const viewElement = parseView( '<p>foo</p>' );
+			const viewElement = _parseView( '<p>foo</p>' );
 			const spy = sinon.spy();
 
 			data.on( 'toModel', spy );
@@ -166,19 +166,19 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert content of an element #1', () => {
-			const viewElement = parseView( '<p>foo</p>' );
+			const viewElement = _parseView( '<p>foo</p>' );
 			const output = data.toModel( viewElement );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( _stringifyModel( output ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should convert content of an element #2', () => {
-			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
+			const viewFragment = _parseView( '<p>foo</p><p>bar</p>' );
 			const output = data.toModel( viewFragment );
 
 			expect( output ).to.be.instanceOf( ModelDocumentFragment );
-			expect( stringify( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( _stringifyModel( output ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should accept parsing context', () => {
@@ -186,13 +186,13 @@ describe( 'DataController', () => {
 
 			schema.register( 'inlineRoot', { allowChildren: '$text' } );
 
-			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
+			const viewFragment = new ViewDocumentFragment( viewDocument, [ _parseView( 'foo' ) ] );
 
 			// Model fragment in root (note that it is auto-paragraphed because $text is not allowed directly in $root).
-			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( _stringifyModel( data.toModel( viewFragment ) ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 			// Model fragment in inline root.
-			expect( stringify( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );
+			expect( _stringifyModel( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -229,22 +229,22 @@ describe( 'DataController', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.init( 'foo' );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should set data to multiple roots at once', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.init( { main: 'bar', title: 'baz' } );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'bar' );
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'baz' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( 'bar' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'baz' );
 		} );
 
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.init( { title: 'foo' } );
 
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should create a batch', () => {
@@ -286,7 +286,7 @@ describe( 'DataController', () => {
 				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
 			}, /^datacontroller-init-non-existent-root/, model );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
 	} );
 
@@ -305,7 +305,7 @@ describe( 'DataController', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should create a batch', () => {
@@ -353,8 +353,8 @@ describe( 'DataController', () => {
 			data.set( 'foo' );
 			data.set( { title: 'Bar' } );
 
-			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
 			expect( count( modelDocument.history.getOperations() ) ).to.equal( 2 );
 		} );
@@ -364,8 +364,8 @@ describe( 'DataController', () => {
 			data.set( 'foo', 'main' );
 			data.set( { title: 'Bar' } );
 
-			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
 			expect( count( modelDocument.history.getOperations() ) ).to.equal( 2 );
 		} );
@@ -377,11 +377,11 @@ describe( 'DataController', () => {
 
 			data.set( { title: 'foo' } );
 
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 
 			data.set( { title: '' } );
 
-			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
+			expect( _getModelData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
 		} );
 
 		it( 'should throw an error when non-existent root is used (single)', () => {
@@ -398,7 +398,7 @@ describe( 'DataController', () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
 			}, /datacontroller-set-non-existent-root/, model );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1721.
@@ -437,27 +437,27 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get paragraph with text', () => {
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should trim empty paragraph by default', () => {
-			setData( model, '<paragraph></paragraph>' );
+			_setModelData( model, '<paragraph></paragraph>' );
 
 			expect( data.get() ).to.equal( '' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( '' );
 		} );
 
 		it( 'should get empty paragraph (with trim=none)', () => {
-			setData( model, '<paragraph></paragraph>' );
+			_setModelData( model, '<paragraph></paragraph>' );
 
 			expect( data.get( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 
 		it( 'should get two paragraphs', () => {
-			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -465,21 +465,21 @@ describe( 'DataController', () => {
 
 		it( 'should get text directly in root', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			setData( model, 'foo' );
+			_setModelData( model, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should get paragraphs without bold', () => {
-			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'should get paragraphs with bold', () => {
-			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
@@ -490,8 +490,8 @@ describe( 'DataController', () => {
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 
-			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
-			setData( model, 'Bar', { rootName: 'title' } );
+			_setModelData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
+			_setModelData( model, 'Bar', { rootName: 'title' } );
 
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
@@ -519,7 +519,7 @@ describe( 'DataController', () => {
 				conversionApi.writer.insert( viewPosition, viewElement );
 			}, { priority: 'high' } );
 
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			expect( data.get( { attributeValue: 'foo' } ) ).to.equal( '<p attribute="foo">foo</p>' );
 			expect( data.get( { attributeValue: 'bar' } ) ).to.equal( '<p attribute="bar">foo</p>' );
@@ -540,7 +540,7 @@ describe( 'DataController', () => {
 				conversionApi.writer.wrap( viewRange, viewElement );
 			} );
 
-			setData( model, '<paragraph>f<$text foo="a">o</$text>ob<$text foo="b">a</$text>r</paragraph>' );
+			_setModelData( model, '<paragraph>f<$text foo="a">o</$text>ob<$text foo="b">a</$text>r</paragraph>' );
 
 			expect( data.get() ).to.equal( '<p>f<a>o</a>ob<b>a</b>r</p>' );
 			expect( data.get( { skipAttribute: 'a' } ) ).to.equal( '<p>foob<b>a</b>r</p>' );
@@ -559,7 +559,7 @@ describe( 'DataController', () => {
 				conversionApi.writer.wrap( viewRange, viewElement );
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			const root = model.document.getRoot();
 
@@ -582,12 +582,12 @@ describe( 'DataController', () => {
 				expect( conversionApi.options ).to.deep.equal( {} );
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 			data.get();
 		} );
 
 		it( 'should return empty string and log a warning when asked for data from a detached root', () => {
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			model.change( writer => {
 				writer.detachRoot( 'main' );
@@ -606,7 +606,7 @@ describe( 'DataController', () => {
 		it( 'should get template with children', () => {
 			schema.register( 'container', { inheritAllFrom: '$block' } );
 			schema.extend( 'paragraph', { allowIn: [ 'container' ] } );
-			setData( model, '<container><paragraph>foo</paragraph></container>' );
+			_setModelData( model, '<container><paragraph>foo</paragraph></container>' );
 
 			downcastHelpers.elementToElement( {
 				model: 'container',
@@ -617,7 +617,7 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'stringify()', () => {
+	describe( '_stringifyModel()', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			schema.register( 'div' );
@@ -629,13 +629,13 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should stringify a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
 			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should stringify a content of a document fragment', () => {
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -647,7 +647,7 @@ describe( 'DataController', () => {
 				spy( conversionApi.options );
 			}, { priority: 'high' } );
 
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 			const options = { foo: 'bar' };
 
 			data.stringify( modelDocumentFragment, options );
@@ -659,7 +659,7 @@ describe( 'DataController', () => {
 				expect( conversionApi.options ).to.deep.equal( {} );
 			} );
 
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 			data.stringify( modelDocumentFragment );
 		} );
 	} );
@@ -677,7 +677,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should be decorated', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 			const spy = sinon.spy();
 
 			data.on( 'toView', spy );
@@ -687,14 +687,14 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should use #viewDocument as a parent for returned document fragments', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 			const viewDocumentFragment = data.toView( modelElement );
 
 			expect( viewDocumentFragment.document ).to.equal( data.viewDocument );
 		} );
 
 		it( 'should convert a content of an element', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
 			const viewDocumentFragment = data.toView( modelElement );
 
@@ -708,7 +708,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should correctly convert document markers #1', () => {
-			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToHighlight( { model: 'marker:a', view: { classes: 'a' } } );
@@ -722,11 +722,11 @@ describe( 'DataController', () => {
 			const viewDocumentFragment = data.toView( modelElement );
 			const viewElement = viewDocumentFragment.getChild( 0 );
 
-			expect( stringifyView( viewElement ) ).to.equal( '<p><span class="a">foobar</span></p>' );
+			expect( _stringifyView( viewElement ) ).to.equal( '<p><span class="a">foobar</span></p>' );
 		} );
 
 		it( 'should correctly convert document markers #2', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToHighlight( { model: 'marker:a', view: { classes: 'a' } } );
@@ -747,11 +747,11 @@ describe( 'DataController', () => {
 
 			const viewDocumentFragment = data.toView( modelP1 );
 
-			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
+			expect( _stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
 		it( 'adjacent markers do not overlap regardless of creation order', () => {
-			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToData( { model: 'marker' } );
@@ -772,7 +772,7 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment1 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment1 ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment1 ) ).to.equal(
 				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
 				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
 			);
@@ -786,14 +786,14 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment2 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment2 ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment2 ) ).to.equal(
 				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
 				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
 			);
 		} );
 
 		it( 'intersecting markers downcast consistently regardless of creation order', () => {
-			const modelElement = parseModel( '<div><paragraph>1234567890</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>1234567890</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToData( { model: 'marker' } );
@@ -827,7 +827,7 @@ describe( 'DataController', () => {
 				}
 			} );
 
-			const result = stringifyView( data.toView( modelP ) );
+			const result = _stringifyView( data.toView( modelP ) );
 
 			model.change( writer => {
 				for ( const name of Object.keys( markerRanges ) ) {
@@ -840,13 +840,13 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment2 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment2 ) ).to.equal( result );
+			expect( _stringifyView( viewDocumentFragment2 ) ).to.equal( result );
 		} );
 
 		it( 'should convert a document fragment and its markers', () => {
 			downcastHelpers.markerToData( { model: 'foo' } );
 
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			const range = model.createRange(
 				model.createPositionAt( modelDocumentFragment.getChild( 0 ), 1 ),
@@ -859,14 +859,14 @@ describe( 'DataController', () => {
 			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
 			expect( viewDocumentFragment ).to.have.property( 'childCount', 2 );
 
-			expect( stringifyView( viewDocumentFragment ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment ) ).to.equal(
 				'<p>f<foo-start name="bar"></foo-start>oo</p><p>ba<foo-end name="bar"></foo-end>r</p>'
 			);
 		} );
 
 		// See https://github.com/ckeditor/ckeditor5/issues/8485.
 		it( 'should convert collapsed markers at element boundary', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToData( { model: 'marker:a' } );
@@ -886,7 +886,7 @@ describe( 'DataController', () => {
 
 			const viewElement = data.toView( modelParagraph );
 
-			expect( stringifyView( viewElement ) ).to.equal(
+			expect( _stringifyView( viewElement ) ).to.equal(
 				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
 				'foo' +
 				'<marker:b-start></marker:b-start><marker:b-end></marker:b-end>'
@@ -895,7 +895,7 @@ describe( 'DataController', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/8485.
 		it( 'should convert collapsed markers at element boundary in a deeply nested element', () => {
-			const modelElement = parseModel( '<div><div><div><div><paragraph>foo</paragraph></div></div></div></div>', schema );
+			const modelElement = _parseModel( '<div><div><div><div><paragraph>foo</paragraph></div></div></div></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToData( { model: 'marker:a' } );
@@ -915,7 +915,7 @@ describe( 'DataController', () => {
 
 			const viewElement = data.toView( modelElement );
 
-			expect( stringifyView( viewElement ) ).to.equal(
+			expect( _stringifyView( viewElement ) ).to.equal(
 				'<div><div><div><p>' +
 				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
 				'foo' +
@@ -926,7 +926,7 @@ describe( 'DataController', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/8485.
 		it( 'should skip collapsed markers at other element\'s boundaries', () => {
-			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
+			const modelElement = _parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
 			downcastHelpers.markerToData( { model: 'marker:a' } );
@@ -949,14 +949,14 @@ describe( 'DataController', () => {
 			const viewElementP2 = data.toView( modelP2 );
 
 			// The `marker:b` should not be present as it belongs to other element.
-			expect( stringifyView( viewElementP1 ) ).to.equal( '<marker:a-start></marker:a-start><marker:a-end></marker:a-end>foo' );
+			expect( _stringifyView( viewElementP1 ) ).to.equal( '<marker:a-start></marker:a-start><marker:a-end></marker:a-end>foo' );
 
 			// The `marker:a` should not be present as it belongs to other element.
-			expect( stringifyView( viewElementP2 ) ).to.equal( '<marker:b-start></marker:b-start><marker:b-end></marker:b-end>bar' );
+			expect( _stringifyView( viewElementP2 ) ).to.equal( '<marker:b-start></marker:b-start><marker:b-end></marker:b-end>bar' );
 		} );
 
 		it( 'should keep view-model mapping', () => {
-			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 			const viewDocumentFragment = data.toView( modelDocumentFragment );
 
 			const firstModelElement = modelDocumentFragment.getChild( 0 );
@@ -989,7 +989,7 @@ describe( 'DataController', () => {
 				spy( conversionApi.options );
 			}, { priority: 'high' } );
 
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'marker', {
@@ -1013,7 +1013,7 @@ describe( 'DataController', () => {
 			} );
 
 			const root = model.document.getRoot();
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			data.toView( root );
 		} );
@@ -1142,7 +1142,7 @@ describe( 'DataController', () => {
 
 			data.set( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>'
 			);
 		} );
@@ -1214,7 +1214,7 @@ describe( 'DataController', () => {
 				}
 			} );
 
-			setData( model, '<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>' );
+			_setModelData( model, '<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>' );
 
 			expect( data.get() ).to.equal( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
 		} );

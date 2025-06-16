@@ -11,7 +11,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { TypingChangeBuffer } from './utils/changebuffer.js';
 
-import type { DocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelRange, ModelSelection } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
@@ -67,7 +67,7 @@ export class InsertTextCommand extends Command {
 		const text = options.text || '';
 		const textInsertions = text.length;
 
-		let selection: Selection | DocumentSelection = doc.selection;
+		let selection: ModelSelection | ModelDocumentSelection = doc.selection;
 
 		if ( options.selection ) {
 			selection = options.selection;
@@ -86,7 +86,7 @@ export class InsertTextCommand extends Command {
 			this._buffer.lock();
 
 			// Store selection attributes before deleting old content to preserve formatting and link.
-			// This unifies the behavior between DocumentSelection and Selection provided as input option.
+			// This unifies the behavior between ModelDocumentSelection and Selection provided as input option.
 			const selectionAttributes = Array.from( doc.selection.getAttributes() );
 
 			model.deleteContent( selection );
@@ -126,18 +126,18 @@ export interface InsertTextCommandOptions {
 	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
 	 * the current selection in the model will be used instead.
 	 */
-	selection?: Selection | DocumentSelection;
+	selection?: ModelSelection | ModelDocumentSelection;
 
 	/**
 	 * The range in which the text is inserted. Defaults to the first range in the current selection.
 	 */
-	range?: Range;
+	range?: ModelRange;
 
 	/**
 	 * The range where the selection should be placed after the insertion.
 	 * If not specified, the selection will be placed right after the inserted text.
 	 */
-	resultRange?: Range;
+	resultRange?: ModelRange;
 }
 
 export interface InsertTextCommandExecuteEvent {

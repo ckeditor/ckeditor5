@@ -54,12 +54,12 @@ export class TextPartLanguageCommand extends Command {
 	 * If `languageCode` is set to `false` or a `null` value, it will remove attributes. Otherwise, it will set
 	 * the attribute in the `{@link #value value}` format.
 	 *
-	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection}:
+	 * The execution result differs, depending on the {@link module:engine/model/document~ModelDocument#selection}:
 	 *
 	 * * If the selection is on a range, the command applies the attribute to all nodes in that range
-	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~Schema schema}).
+	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~ModelSchema schema}).
 	 * * If the selection is collapsed in a non-empty node, the command applies the attribute to the
-	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy attributes from the selection).
+	 * {@link module:engine/model/document~ModelDocument#selection} itself (note that typed characters copy attributes from the selection).
 	 * * If the selection is collapsed in an empty node, the command applies the attribute to the parent node of the selection (note
 	 * that the selection inherits all attributes from a node if it is in an empty node).
 	 *

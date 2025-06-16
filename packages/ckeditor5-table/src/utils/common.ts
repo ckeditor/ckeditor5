@@ -9,12 +9,12 @@
 
 import type {
 	Conversion,
-	Element,
-	Item,
-	Position,
-	Schema,
-	Writer,
-	DocumentSelection
+	ModelElement,
+	ModelItem,
+	ModelPosition,
+	ModelSchema,
+	ModelWriter,
+	ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
@@ -29,7 +29,9 @@ import { type TableUtils } from '../tableutils.js';
  * @param item A model item on which the attribute will be set.
  * @param defaultValue The default attribute value. If a value is lower or equal, it will be unset.
  */
-export function updateNumericAttribute( key: string, value: unknown, item: Item, writer: Writer, defaultValue: unknown = 1 ): void {
+export function updateNumericAttribute(
+	key: string, value: unknown, item: ModelItem, writer: ModelWriter, defaultValue: unknown = 1
+): void {
 	if ( value !== undefined && value !== null && defaultValue !== undefined && defaultValue !== null && value > defaultValue ) {
 		writer.setAttribute( key, value, item );
 	} else {
@@ -46,7 +48,11 @@ export function updateNumericAttribute( key: string, value: unknown, item: Item,
  * @param attributes The element attributes.
  * @returns Created table cell.
  */
-export function createEmptyTableCell( writer: Writer, insertPosition: Position, attributes: Record<string, unknown> = {} ): Element {
+export function createEmptyTableCell(
+	writer: ModelWriter,
+	insertPosition: ModelPosition,
+	attributes: Record<string, unknown> = {}
+): ModelElement {
 	const tableCell = writer.createElement( 'tableCell', attributes );
 
 	writer.insertElement( 'paragraph', tableCell );
@@ -60,8 +66,8 @@ export function createEmptyTableCell( writer: Writer, insertPosition: Position, 
  *
  * @internal
  */
-export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: Element ): boolean {
-	const table = tableCell.parent!.parent as Element;
+export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: ModelElement ): boolean {
+	const table = tableCell.parent!.parent as ModelElement;
 	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string || '0' );
 	const { column } = tableUtils.getCellLocation( tableCell );
 
@@ -75,7 +81,7 @@ export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: Element 
  * @param options.defaultValue The default value for the specified `modelAttribute`.
  */
 export function enableProperty(
-	schema: Schema,
+	schema: ModelSchema,
 	conversion: Conversion,
 	options: {
 		modelAttribute: string;
@@ -103,7 +109,7 @@ export function enableProperty(
  *
  * @internal
  */
-export function getSelectionAffectedTable( selection: DocumentSelection ): Element {
+export function getSelectionAffectedTable( selection: ModelDocumentSelection ): ModelElement {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

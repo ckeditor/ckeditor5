@@ -7,35 +7,36 @@
  * @module engine/view/containerelement
  */
 
-import { Element, type ElementAttributes } from './element.js';
-import { type Document } from './document.js';
-import { type Node } from './node.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
+import { type ViewDocument } from './document.js';
+import { type ViewNode } from './node.js';
 
 /**
  * Containers are elements which define document structure. They define boundaries for
- * {@link module:engine/view/attributeelement~AttributeElement attributes}. They are mostly used for block elements like `<p>` or `<div>`.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attributes}.
+ * They are mostly used for block elements like `<p>` or `<div>`.
  *
  * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
- * types (container element, {@link module:engine/view/attributeelement~AttributeElement attribute element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
+ * types (container element, {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element}, etc) when developing a feature.
  *
  * The container element should be your default choice when writing a converter, unless:
  *
- * * this element represents a model text attribute (then use {@link module:engine/view/attributeelement~AttributeElement}),
- * * this is an empty element like `<img>` (then use {@link module:engine/view/emptyelement~EmptyElement}),
+ * * this element represents a model text attribute (then use {@link module:engine/view/attributeelement~ViewAttributeElement}),
+ * * this is an empty element like `<img>` (then use {@link module:engine/view/emptyelement~ViewEmptyElement}),
  * * this is a root element,
- * * this is a nested editable element (then use  {@link module:engine/view/editableelement~EditableElement}).
+ * * this is a nested editable element (then use  {@link module:engine/view/editableelement~ViewEditableElement}).
  *
  * To create a new container element instance use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `ViewDowncastWriter#createContainerElement()`}
  * method.
  */
-export class ContainerElement extends Element {
+export class ViewContainerElement extends ViewElement {
 	/**
 	 * Creates a container element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
-	 * @see module:engine/view/element~Element
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement
+	 * @see module:engine/view/element~ViewElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
@@ -43,20 +44,20 @@ export class ContainerElement extends Element {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
-		children?: Node | Iterable<Node>
+		attrs?: ViewElementAttributes,
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attrs, children );
 
-		this.getFillerOffset = getFillerOffset;
+		this.getFillerOffset = getViewFillerOffset;
 	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ContainerElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewContainerElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'containerElement' || type === 'view:containerElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -71,14 +72,12 @@ ContainerElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
-export { ContainerElement as ViewContainerElement };
-
 /**
  * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
  *
  * @returns Block filler offset or `null` if block filler is not needed.
  */
-export function getFillerOffset( this: ContainerElement ): number | null {
+export function getViewFillerOffset( this: ViewContainerElement ): number | null {
 	const children = [ ...this.getChildren() ];
 	const lastChild = children[ this.childCount - 1 ];
 

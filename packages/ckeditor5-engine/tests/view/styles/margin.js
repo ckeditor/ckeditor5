@@ -4,14 +4,14 @@
  */
 
 import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
-import { addMarginRules } from '../../../src/view/styles/margin.js';
+import { addMarginStylesRules } from '../../../src/view/styles/margin.js';
 
 describe( 'Margin styles normalizer', () => {
 	let styles;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
-		addMarginRules( stylesProcessor );
+		addMarginStylesRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );
 

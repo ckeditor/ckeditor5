@@ -5,11 +5,11 @@
 
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { FakeSelectionObserver } from '../../../src/view/observer/fakeselectionobserver.js';
-import { View } from '../../../src/view/view.js';
-import { DomEventData } from '../../../src/view/observer/domeventdata.js';
+import { EditingView } from '../../../src/view/view.js';
+import { ViewDocumentDomEventData } from '../../../src/view/observer/domeventdata.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { setData, stringify } from '../../../src/dev-utils/view.js';
+import { _setViewData, _stringifyView } from '../../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -29,7 +29,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
@@ -174,7 +174,7 @@ describe( 'FakeSelectionObserver', () => {
 				resolve();
 			}, { priority: 'lowest' } );
 
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
+			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, { target: document.body }, data ) );
 		} );
 	}
 
@@ -187,11 +187,11 @@ describe( 'FakeSelectionObserver', () => {
 	function checkSelectionChange( initialData, keyCode, output ) {
 		return new Promise( resolve => {
 			viewDocument.once( 'selectionChange', ( eventInfo, data ) => {
-				expect( stringify( root.getChild( 0 ), data.newSelection, { showType: true } ) ).to.equal( output );
+				expect( _stringifyView( root.getChild( 0 ), data.newSelection, { showType: true } ) ).to.equal( output );
 				resolve();
 			} );
 
-			setData( view, initialData );
+			_setViewData( view, initialData );
 			changeFakeSelectionPressing( keyCode );
 		} );
 	}
@@ -210,6 +210,6 @@ describe( 'FakeSelectionObserver', () => {
 			preventDefault: sinon.spy()
 		};
 
-		viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
+		viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, { target: document.body }, data ) );
 	}
 } );

@@ -19,7 +19,7 @@ import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
 
@@ -310,13 +310,13 @@ describe( 'ImageUploadUI', () => {
 		it( 'should optimize the insertion position', () => {
 			const files = [ createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			button.fire( 'done', files );
 
 			const id = fileRepository.getLoader( files[ 0 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]` +
 			'<paragraph>foo</paragraph>'
 			);
@@ -325,14 +325,14 @@ describe( 'ImageUploadUI', () => {
 		it( 'should correctly insert multiple files', () => {
 			const files = [ createNativeFileMock(), createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 			button.fire( 'done', files );
 
 			const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 			const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
 			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]` +
@@ -368,7 +368,7 @@ describe( 'ImageUploadUI', () => {
 			const spy = sinon.spy( editor.editing.view, 'focus' );
 			const file = [ createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			button.fire( 'done', file );
 

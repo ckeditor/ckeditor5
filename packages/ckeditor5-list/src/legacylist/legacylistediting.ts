@@ -20,7 +20,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
 	DowncastRemoveEvent,
-	Element,
+	ModelElement,
 	MapperModelToViewPositionEvent,
 	MapperViewToModelPositionEvent,
 	ModelInsertContentEvent,
@@ -105,20 +105,24 @@ export class LegacyListEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' )
 			.add( dispatcher => {
-				dispatcher.on<DowncastInsertEvent<Element>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on<DowncastInsertEvent<Element>>( 'insert:listItem', modelViewInsertion( editor.model ) );
-				dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-				dispatcher.on<DowncastAttributeEvent<Element>>(
+				dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on<DowncastAttributeEvent<ModelElement>>(
+					'attribute:listType:listItem', modelViewChangeType, { priority: 'high' }
+				);
+				dispatcher.on<DowncastAttributeEvent<ModelElement>>(
 					'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-				dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+				dispatcher.on<DowncastAttributeEvent<ModelElement>>(
+					'attribute:listIndent:listItem', modelViewChangeIndent( editor.model )
+				);
 				dispatcher.on<DowncastRemoveEvent>( 'remove:listItem', modelViewRemove( editor.model ) );
 				dispatcher.on<DowncastRemoveEvent>( 'remove', modelViewMergeAfter, { priority: 'low' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
-				dispatcher.on<DowncastInsertEvent<Element>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on<DowncastInsertEvent<Element>>( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+				dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:listItem', modelViewInsertion( editor.model ) );
 			} );
 
 		editor.conversion.for( 'upcast' )

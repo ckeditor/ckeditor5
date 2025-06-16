@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 
-import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model.js';
+import { _stringifyModel, _getModelData, _setModelData } from '../../../src/dev-utils/model.js';
 import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer.js';
 
 describe( 'Selection post-fixer', () => {
@@ -71,24 +71,24 @@ describe( 'Selection post-fixer', () => {
 		} );
 
 		it( 'should not crash if there is no correct position for model selection', () => {
-			setModelData( model, '' );
+			_setModelData( model, '' );
 
 			// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should react to structure changes', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
 
 			model.change( writer => {
 				writer.remove( modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+			expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 		} );
 
 		it( 'should react to selection changes', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
 
 			// <paragraph>foo</paragraph>[]<imageBlock></imageBlock>
 			model.change( writer => {
@@ -97,12 +97,12 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
 		} );
 
 		describe( 'selection - table scenarios', () => {
 			beforeEach( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[]foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -123,7 +123,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -144,7 +144,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -165,7 +165,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -186,7 +186,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -199,7 +199,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #5 (collapsed selection between tables)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -217,7 +217,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -239,7 +239,7 @@ describe( 'Selection post-fixer', () => {
 			// how the table feature is really implemented once we'll introduce row/cells/columns selection
 			// in which case all these elements will need to be marked as objects.
 			it( 'should fix #6 (element selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'[<tableRow>' +
@@ -250,7 +250,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -263,7 +263,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #7 (element selection of non-objects)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'[<tableRow>' +
@@ -282,7 +282,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -305,7 +305,7 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #8 (cross-limit selection which starts in a non-limit elements)', () => {
 				model.schema.extend( 'paragraph', { allowIn: 'tableCell' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -316,7 +316,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -329,7 +329,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix #1 (selection over paragraphs outside table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -341,7 +341,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>ba]z</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -355,7 +355,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix #2 (selection over image in table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -371,7 +371,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( writer.createRangeOn( image ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -383,7 +383,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix #3 (selection over paragraph & image in table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -399,7 +399,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( writer.createRangeIn( tableCell ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -411,7 +411,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix #4 (selection over image & paragraph in table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -427,7 +427,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( writer.createRangeIn( tableCell ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -444,7 +444,7 @@ describe( 'Selection post-fixer', () => {
 					allowContentOf: '$root'
 				} );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -460,7 +460,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( writer.createRangeIn( tableCell ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -486,7 +486,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( ranges );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -514,7 +514,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( ranges );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -527,7 +527,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix multiple ranges #3', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -550,7 +550,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>b]az</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -594,7 +594,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( ranges );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<table>' +
 					'<tableRow>' +
@@ -607,7 +607,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix multiple ranges on objects (table selection)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
@@ -620,7 +620,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 					'<tableRow>' +
 							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
@@ -637,13 +637,13 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix selection on block', () => {
 				model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 					'<tableRow><tableCell>[<paragraph>aaa</paragraph>]</tableCell></tableRow>' +
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow><tableCell><paragraph>[aaa]</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -651,7 +651,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should allow multi-range selection on non-continues blocks (column selected)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
@@ -668,7 +668,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
@@ -687,7 +687,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should allow multi-range selection on continues blocks (row selected)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -707,7 +707,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -729,7 +729,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should allow multi-range selection with mixed continues/non-continues blocks (part of table selected)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -749,7 +749,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -771,7 +771,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix ranges in multi-range selection (each range set differently - but valid)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[foo]</paragraph>' +
 						'<table>' +
 						'<tableRow>' +
@@ -781,7 +781,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[foo]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -793,7 +793,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix partially wrong selection (last range is post-fixed on whole table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
@@ -803,7 +803,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -815,7 +815,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix partially wrong selection (first range is post-fixed on whole table)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'[<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>]' +
@@ -825,7 +825,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -837,7 +837,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not reset the selection if the final range is the same as the initial one', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>[<imageBlock></imageBlock>]</tableCell>' +
@@ -854,7 +854,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelectionAttribute( 'foo', 'bar' );
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>[<imageBlock></imageBlock>]</tableCell>' +
@@ -871,7 +871,7 @@ describe( 'Selection post-fixer', () => {
 					allowContentOf: '$root'
 				} );
 
-				setModelData( model,
+				_setModelData( model,
 					'[<blockQuote>' +
 						'<paragraph>foo</paragraph>' +
 						'<table>' +
@@ -882,7 +882,7 @@ describe( 'Selection post-fixer', () => {
 					'</blockQuote>]'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<blockQuote>' +
 						'<paragraph>[foo</paragraph>' +
 						'<table>' +
@@ -897,7 +897,7 @@ describe( 'Selection post-fixer', () => {
 
 		describe( 'non-collapsed selection - image scenarios', () => {
 			beforeEach( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[]foo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -915,7 +915,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -933,7 +933,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -951,7 +951,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -969,7 +969,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -987,7 +987,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -1007,7 +1007,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>[xxx]</caption>' +
@@ -1027,7 +1027,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>[xx]x</caption>' +
@@ -1047,7 +1047,7 @@ describe( 'Selection post-fixer', () => {
 					) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<imageBlock>' +
 						'<caption>x[xx]</caption>' +
@@ -1057,11 +1057,11 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should not fix #5 (selection in root on non limit element that doesn\'t allow text)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'[<figure></figure>]'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<figure></figure>]'
 				);
 			} );
@@ -1086,7 +1086,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( [ firstRange, duplicatedRange, otherRange ] );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'[<imageBlock>' +
 						'<caption>xxx</caption>' +
@@ -1098,7 +1098,7 @@ describe( 'Selection post-fixer', () => {
 
 		describe( 'intersecting selection - merge ranges', () => {
 			it( 'should return one merged range: A+B+C - #1', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>fo[o b][ar b]az</paragraph>'
 				);
 
@@ -1113,11 +1113,11 @@ describe( 'Selection post-fixer', () => {
 				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
 
 				expect( mergedRanges.length ).to.equal( 1 );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
 			} );
 
 			it( 'should return one merged range: A+B+C - #2', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>f[oo b]a[r ba]z</paragraph>'
 				);
 
@@ -1132,11 +1132,11 @@ describe( 'Selection post-fixer', () => {
 				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
 
 				expect( mergedRanges.length ).to.equal( 1 );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo bar baz]</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo bar baz]</paragraph>' );
 			} );
 
 			it( 'should return two ranges: A, B+C', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>f[oo] ba[r ba]z</paragraph>'
 				);
 
@@ -1151,12 +1151,12 @@ describe( 'Selection post-fixer', () => {
 				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
 
 				expect( mergedRanges.length ).to.equal( 2 );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo [bar ba]z</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo [bar ba]z</paragraph>' );
 			} );
 
 			it( 'should return two ranges: A+B,C', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>f[oo][ bar] baz</paragraph>'	// foo bar baz
 				);
 
@@ -1170,21 +1170,21 @@ describe( 'Selection post-fixer', () => {
 				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
 
 				expect( mergedRanges.length ).to.equal( 3 );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo[ bar] baz</paragraph>' );
-				expect( stringify( model.document.getRoot(), mergedRanges[ 2 ] ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo[ bar] baz</paragraph>' );
+				expect( _stringifyModel( model.document.getRoot(), mergedRanges[ 2 ] ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 			} );
 		} );
 
 		describe( 'non-collapsed selection - other scenarios', () => {
 			it( 'should fix #1 (element selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>aaa</paragraph>' +
 					'[<paragraph>bbb</paragraph>]' +
 					'<paragraph>ccc</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>[bbb]</paragraph>' +
 					'<paragraph>ccc</paragraph>'
@@ -1192,13 +1192,13 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #2 (elements selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>aaa</paragraph>' +
 					'[<paragraph>bbb</paragraph>' +
 					'<paragraph>ccc</paragraph>]'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>[bbb</paragraph>' +
 					'<paragraph>ccc]</paragraph>'
@@ -1206,13 +1206,13 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #3 (partial selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>aaa</paragraph>' +
 					'[<paragraph>bbb</paragraph>' +
 					'<paragraph>ccc]</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>[bbb</paragraph>' +
 					'<paragraph>ccc]</paragraph>'
@@ -1220,13 +1220,13 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #4 (partial selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>b[bb</paragraph>]' +
 					'<paragraph>ccc</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>b[bb]</paragraph>' +
 					'<paragraph>ccc</paragraph>'
@@ -1234,13 +1234,13 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #5 (partial selection of not an object)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>aaa</paragraph>' +
 					'[<paragraph>bb]b</paragraph>' +
 					'<paragraph>ccc</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>aaa</paragraph>' +
 					'<paragraph>[bb]b</paragraph>' +
 					'<paragraph>ccc</paragraph>'
@@ -1253,11 +1253,11 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'c', { allowIn: 'b' } );
 				model.schema.extend( '$text', { allowIn: 'c' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<a><b><c>[</c></b></a>]'
 				);
 
-				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
+				expect( _getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
 			} );
 
 			it( 'should fix #7 (selection must not cross a limit element; ends in a root)', () => {
@@ -1266,11 +1266,11 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'c', { allowIn: 'b' } );
 				model.schema.extend( '$text', { allowIn: 'c' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'[<a><b><c>]</c></b></a>'
 				);
 
-				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
+				expect( _getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
 			} );
 
 			it( 'should fix #8 (selection must not cross a limit element; starts in a non-limit)', () => {
@@ -1280,11 +1280,11 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'c', { allowIn: 'b' } );
 				model.schema.extend( '$text', { allowIn: 'c' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<div>[<a><b><c>]</c></b></a></div>'
 				);
 
-				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
+				expect( _getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
 			} );
 
 			it( 'should fix #9 (selection must not cross a limit element; ends in a non-limit)', () => {
@@ -1294,35 +1294,35 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'c', { allowIn: 'b' } );
 				model.schema.extend( '$text', { allowIn: 'c' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<div><a><b><c>[</c></b></a>]</div>'
 				);
 
-				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
+				expect( _getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
 			} );
 
 			it( 'should not fix #1 (selection on text node)', () => {
-				setModelData( model, '<paragraph>foob[a]r</paragraph>', { lastRangeBackward: true } );
+				_setModelData( model, '<paragraph>foob[a]r</paragraph>', { lastRangeBackward: true } );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>foob[a]r</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foob[a]r</paragraph>' );
 			} );
 
 			it( 'should not fix #2 (inline widget selected)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
 				);
 			} );
 
 			it( 'should not fix #3 (text around inline widget)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
 				);
 			} );
@@ -1333,7 +1333,7 @@ describe( 'Selection post-fixer', () => {
 					isObject: true
 				} );
 
-				setModelData( model, '<div>[<div></div>]</div>' );
+				_setModelData( model, '<div>[<div></div>]</div>' );
 
 				model.change( writer => {
 					const innerDiv = model.document.getRoot().getNodeByPath( [ 0, 0 ] );
@@ -1341,7 +1341,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelection( writer.createRangeOn( innerDiv ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
+				expect( _getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
 			} );
 
 			it( 'should not fix #5 (selection starts before a selectable, which is not an object)', () => {
@@ -1349,11 +1349,11 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
 				model.schema.extend( '$text', { allowIn: 'selectable' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<div>[<selectable>foo]</selectable></div>'
 				);
 
-				expect( getModelData( model ) ).to.equal( '<div>[<selectable>foo]</selectable></div>' );
+				expect( _getModelData( model ) ).to.equal( '<div>[<selectable>foo]</selectable></div>' );
 			} );
 
 			it( 'should not fix #6 (selection ends after before a selectable, which is not an object)', () => {
@@ -1361,11 +1361,11 @@ describe( 'Selection post-fixer', () => {
 				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
 				model.schema.extend( '$text', { allowIn: 'selectable' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<div><selectable>[foo</selectable>]</div>'
 				);
 
-				expect( getModelData( model ) ).to.equal( '<div><selectable>[foo</selectable>]</div>' );
+				expect( _getModelData( model ) ).to.equal( '<div><selectable>[foo</selectable>]</div>' );
 			} );
 		} );
 
@@ -1378,15 +1378,15 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix selection that ends in inline element', () => {
-				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+				_setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[]<placeholder></placeholder>bbb</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>aaa[]<placeholder></placeholder>bbb</paragraph>' );
 			} );
 
 			it( 'should fix selection that starts in inline element', () => {
-				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+				_setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>aaa<placeholder></placeholder>[]bbb</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>aaa<placeholder></placeholder>[]bbb</paragraph>' );
 			} );
 
 			it( 'should fix selection that ends in inline element that is also an object', () => {
@@ -1394,9 +1394,9 @@ describe( 'Selection post-fixer', () => {
 					isObject: true
 				} );
 
-				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+				_setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
 			} );
 
 			it( 'should fix selection that starts in inline element that is also an object', () => {
@@ -1404,15 +1404,15 @@ describe( 'Selection post-fixer', () => {
 					isObject: true
 				} );
 
-				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+				_setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
 			} );
 		} );
 
 		describe( 'collapsed selection', () => {
 			beforeEach( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1432,7 +1432,7 @@ describe( 'Selection post-fixer', () => {
 					);
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1454,7 +1454,7 @@ describe( 'Selection post-fixer', () => {
 					);
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1467,7 +1467,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #3 (selection inside object element and before block element)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1477,7 +1477,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1489,25 +1489,25 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix #4 (selection inside limit element that doesn\'t allow text)', () => {
-				setModelData( model, '<imageBlock>[]</imageBlock>' );
+				_setModelData( model, '<imageBlock>[]</imageBlock>' );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<imageBlock></imageBlock>]'
 				);
 			} );
 
 			it( 'should fix #5 (selection inside limit element that doesn\'t allow text - closest ancestor)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table><tableRow><tableCell><imageBlock>[]</imageBlock></tableCell></tableRow></table>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<table><tableRow><tableCell>[<imageBlock></imageBlock>]</tableCell></tableRow></table>'
 				);
 			} );
 
 			it( 'should fix multiple ranges outside block element (but not merge them)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'[]<paragraph>foo</paragraph>[]' +
 					'<table>' +
 						'<tableRow>' +
@@ -1517,7 +1517,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[]foo[]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +

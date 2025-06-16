@@ -8,16 +8,16 @@
  */
 
 import { Batch, type BatchType } from './batch.js';
-import { Document } from './document.js';
+import { ModelDocument } from './document.js';
 import { MarkerCollection } from './markercollection.js';
-import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
-import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
+import { ModelSelection, type ModelPlaceOrOffset, type ModelSelectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
-import { DocumentSelection } from './documentselection.js';
-import { Schema } from './schema.js';
-import { Writer } from './writer.js';
-import { Node } from './node.js';
+import { ModelDocumentSelection } from './documentselection.js';
+import { ModelSchema } from './schema.js';
+import { ModelWriter } from './writer.js';
+import { ModelNode } from './node.js';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer.js';
@@ -28,7 +28,7 @@ import { insertObject } from './utils/insertobject.js';
 import { modifySelection } from './utils/modifyselection.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type ModelElement } from './element.js';
 import { type Operation } from './operation/operation.js';
 
@@ -54,23 +54,23 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's document.
 	 */
-	public readonly document: Document;
+	public readonly document: ModelDocument;
 
 	/**
 	 * Model's schema.
 	 */
-	public readonly schema: Schema;
+	public readonly schema: ModelSchema;
 
 	/**
 	 * All callbacks added by {@link module:engine/model/model~Model#change} or
 	 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
 	 */
-	private readonly _pendingChanges: Array<{ batch: Batch; callback: ( writer: Writer ) => any }>;
+	private readonly _pendingChanges: Array<{ batch: Batch; callback: ( writer: ModelWriter ) => any }>;
 
 	/**
 	 * The last created and currently used writer instance.
 	 */
-	private _currentWriter: Writer | null;
+	private _currentWriter: ModelWriter | null;
 
 	// @if CK_DEBUG_ENGINE // private _operationLogs: Array<string>;
 	// @if CK_DEBUG_ENGINE // private _appliedOperations: Array<Operation>;
@@ -79,8 +79,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 		super();
 
 		this.markers = new MarkerCollection();
-		this.document = new Document( this );
-		this.schema = new Schema();
+		this.document = new ModelDocument( this );
+		this.schema = new ModelSchema();
 
 		this._pendingChanges = [];
 		this._currentWriter = null;
@@ -187,7 +187,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The `change()` method is the primary way of changing the model. You should use it to modify all document nodes
 	 * (including detached nodes – i.e. nodes not added to the {@link module:engine/model/model~Model#document model document}),
-	 * the {@link module:engine/model/document~Document#selection document's selection}, and
+	 * the {@link module:engine/model/document~ModelDocument#selection document's selection}, and
 	 * {@link module:engine/model/model~Model#markers model markers}.
 	 *
 	 * ```ts
@@ -225,7 +225,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @typeParam TReturn The return type of the provided callback.
 	 * @param callback Callback function which may modify the model.
 	 */
-	public change<TReturn>( callback: ( writer: Writer ) => TReturn ): TReturn {
+	public change<TReturn>( callback: ( writer: ModelWriter ) => TReturn ): TReturn {
 		try {
 			if ( this._pendingChanges.length === 0 ) {
 				// If this is the outermost block, create a new batch and start `_runPendingChanges` execution flow.
@@ -273,7 +273,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @param callback Callback function which may modify the model.
 	 */
 	public enqueueChange(
-		callback: ( writer: Writer ) => unknown
+		callback: ( writer: ModelWriter ) => unknown
 	): void;
 
 	/**
@@ -317,7 +317,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * In order to make a nested `enqueueChange()` create a single undo step together with the changes done in the outer `change()`
-	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~Writer#batch writer} of the outer block.
+	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~ModelWriter#batch writer} of the outer block.
 	 *
 	 * @label CUSTOM_BATCH
 	 * @param batchOrType A batch or a {@link module:engine/model/batch~Batch#constructor batch type} that should be used in the callback.
@@ -326,12 +326,12 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public enqueueChange(
 		batchOrType: Batch | BatchType | undefined,
-		callback: ( writer: Writer ) => unknown
+		callback: ( writer: ModelWriter ) => unknown
 	): void;
 
 	public enqueueChange(
-		batchOrType: Batch | BatchType | ( ( writer: Writer ) => unknown ) | undefined,
-		callback?: ( writer: Writer ) => unknown
+		batchOrType: Batch | BatchType | ( ( writer: ModelWriter ) => unknown ) | undefined,
+		callback?: ( writer: ModelWriter ) => unknown
 	): void {
 		try {
 			if ( !batchOrType ) {
@@ -360,7 +360,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:engine/model/operation/operation~Operation operations} to the model.
 	 *
 	 * This is a low-level way of changing the model. It is exposed for very specific use cases (like the undo feature).
-	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~Writer `Writer`}.
+	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~ModelWriter `Writer`}.
 	 * See also {@glink framework/architecture/editing-engine#changing-the-model Changing the model} section
 	 * of the {@glink framework/architecture/editing-engine Editing architecture} guide.
 	 *
@@ -400,9 +400,9 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &ndash; just like the
 	 * pasting feature should do.
 	 *
-	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
+	 * For lower-level methods see {@link module:engine/model/writer~ModelWriter `Writer`}.
 	 *
-	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
+	 * This method, unlike {@link module:engine/model/writer~ModelWriter `Writer`}'s methods, does not have to be used
 	 * inside a {@link #change `change()` block}.
 	 *
 	 * # Conversion and schema
@@ -489,7 +489,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * If you want the document selection to be moved to the inserted content, use the
-	 * {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the writer after inserting
+	 * {@link module:engine/model/writer~ModelWriter#setSelection `setSelection()`} method of the writer after inserting
 	 * the content:
 	 *
 	 * ```ts
@@ -504,7 +504,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * } );
 	 * ```
 	 *
-	 * If an instance of the {@link module:engine/model/selection~Selection model selection} is passed as `selectable`,
+	 * If an instance of the {@link module:engine/model/selection~ModelSelection model selection} is passed as `selectable`,
 	 * the new content will be inserted at the passed selection (instead of document selection):
 	 *
 	 * ```ts
@@ -530,9 +530,9 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * at the insertion position.
 	 */
 	public insertContent(
-		content: Item | ModelDocumentFragment,
-		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset,
+		content: ModelItem | ModelDocumentFragment,
+		selectable?: ModelSelectable,
+		placeOrOffset?: ModelPlaceOrOffset,
 		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
@@ -555,8 +555,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * # Notes
 	 *
 	 * * If you want to insert a non-object content, see {@link #insertContent} instead.
-	 * * For lower-level API, see {@link module:engine/model/writer~Writer `Writer`}.
-	 * * Unlike {@link module:engine/model/writer~Writer `Writer`}, this method does not have to be used inside
+	 * * For lower-level API, see {@link module:engine/model/writer~ModelWriter `Writer`}.
+	 * * Unlike {@link module:engine/model/writer~ModelWriter `Writer`}, this method does not have to be used inside
 	 * a {@link #change `change()` block}.
 	 * * Inserting object into the model is not enough to make CKEditor 5 render that content to the user.
 	 * CKEditor 5 implements a model-view-controller architecture and what `model.insertObject()` does
@@ -607,7 +607,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param element An object to be inserted into the model document.
 	 * @param selectable A selectable where the content should be inserted. If not specified, the current
-	 * {@link module:engine/model/document~Document#selection document selection} will be used instead.
+	 * {@link module:engine/model/document~ModelDocument#selection document selection} will be used instead.
 	 * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
 	 * @param options Additional options.
 	 * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
@@ -618,7 +618,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Note that this option only works for block objects. Inline objects are inserted into text and do not split blocks.
 	 * @param options.setSelection An option that, when set, moves the
-	 * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
+	 * {@link module:engine/model/document~ModelDocument#selection document selection} after inserting the object.
 	 * * When `'on'`, the document selection will be set on the inserted object.
 	 * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
 	 * such text node, a paragraph will be created and the document selection will be moved inside it.
@@ -626,8 +626,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public insertObject(
 		element: ModelElement,
-		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset | null,
+		selectable?: ModelSelectable,
+		placeOrOffset?: ModelPlaceOrOffset | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
@@ -661,7 +661,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * * `<heading1>x^y</heading1>` with the option disabled (`leaveUnmerged == false`)
 	 * * `<heading1>x^</heading1><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
 	 *
-	 * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
+	 * Note: {@link module:engine/model/schema~ModelSchema#isObject object} and {@link module:engine/model/schema~ModelSchema#isLimit limit}
 	 * elements will not be merged.
 	 *
 	 * @param options.doNotResetEntireContent Whether to skip replacing the entire content with a
@@ -689,7 +689,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * the <kbd>Shift</kbd>+<kbd>Backspace</kbd> keystroke.
 	 */
 	public deleteContent(
-		selection: ModelSelection | DocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		options?: {
 			leaveUnmerged?: boolean;
 			doNotResetEntireContent?: boolean;
@@ -730,7 +730,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
 	 */
 	public modifySelection(
-		selection: ModelSelection | DocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		options?: {
 			direction?: 'forward' | 'backward';
 			unit?: 'character' | 'codePoint' | 'word';
@@ -767,19 +767,19 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @fires getSelectedContent
 	 * @param selection The selection of which content will be returned.
 	 */
-	public getSelectedContent( selection: ModelSelection | DocumentSelection ): ModelDocumentFragment {
+	public getSelectedContent( selection: ModelSelection | ModelDocumentSelection ): ModelDocumentFragment {
 		return getSelectedContent( this, selection );
 	}
 
 	/**
-	 * Checks whether the given {@link module:engine/model/range~Range range} or
-	 * {@link module:engine/model/element~Element element} has any meaningful content.
+	 * Checks whether the given {@link module:engine/model/range~ModelRange range} or
+	 * {@link module:engine/model/element~ModelElement element} has any meaningful content.
 	 *
 	 * Meaningful content is:
 	 *
 	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
 	 * any non-whitespace characters),
-	 * * or any {@link module:engine/model/schema~Schema#isContent content element},
+	 * * or any {@link module:engine/model/schema~ModelSchema#isContent content element},
 	 * * or any {@link module:engine/model/markercollection~Marker marker} which
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *
@@ -841,11 +841,11 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * This method is decorated. Although this method accepts any parameter of `Selectable` type, the
 	 * {@link ~Model#event:canEditAt `canEditAt` event} is fired with `selectable` normalized to an instance of
-	 * {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}
+	 * {@link module:engine/model/selection~ModelSelection} or {@link module:engine/model/documentselection~ModelDocumentSelection}
 	 *
 	 * @fires canEditAt
 	 */
-	public canEditAt( selectable: Selectable ): boolean {
+	public canEditAt( selectable: ModelSelectable ): boolean {
 		const selection = normalizeSelectable( selectable );
 
 		return this.fire<ModelCanEditAtEvent>( 'canEditAt', [ selection ] )!;
@@ -855,16 +855,16 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a position from the given root and path in that root.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionFromPath `Writer#createPositionFromPath()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionFromPath `Writer#createPositionFromPath()`}.
 	 *
 	 * @param root Root of the position.
-	 * @param path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
+	 * @param stickiness Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness?: PositionStickiness
+		stickiness?: ModelPositionStickiness
 	): ModelPosition {
 		return new ModelPosition( root, path, stickiness );
 	}
@@ -872,10 +872,10 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/model/position~Position position},
+	 * * a {@link module:engine/model/position~ModelPosition position},
 	 * * a parent element and offset in that element,
 	 * * a parent element and `'end'` (the position will be set at the end of that element),
-	 * * a {@link module:engine/model/item~Item model item} and `'before'` or `'after'`
+	 * * a {@link module:engine/model/item~ModelItem model item} and `'before'` or `'after'`
 	 * (the position will be set before or after the given model item).
 	 *
 	 * This method is a shortcut to other factory methods such as:
@@ -884,39 +884,39 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * * {@link module:engine/model/model~Model#createPositionAfter `createPositionAfter()`}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionAt `Writer#createPositionAt()`},
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt `Writer#createPositionAt()`},
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | ModelPosition | ModelDocumentFragment,
-		offset?: PositionOffset
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
+		offset?: ModelPositionOffset
 	): ModelPosition {
 		return ModelPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
-	 * Creates a new position after the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position after the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionAfter `Writer#createPositionAfter()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAfter `Writer#createPositionAfter()`}.
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionAfter( item: Item ): ModelPosition {
+	public createPositionAfter( item: ModelItem ): ModelPosition {
 		return ModelPosition._createAfter( item );
 	}
 
 	/**
-	 * Creates a new position before the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position before the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionBefore `Writer#createPositionBefore()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionBefore `Writer#createPositionBefore()`}.
 	 *
 	 * @param item Item before which the position should be placed.
 	 */
-	public createPositionBefore( item: Item ): ModelPosition {
+	public createPositionBefore( item: ModelItem ): ModelPosition {
 		return ModelPosition._createBefore( item );
 	}
 
@@ -924,7 +924,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a range spanning from the `start` position to the `end` position.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createRange `Writer#createRange()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRange `Writer#createRange()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -944,7 +944,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * that element and ends after the last child of that element.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createRangeIn `Writer#createRangeIn()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRangeIn `Writer#createRangeIn()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -959,10 +959,10 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a range that starts before the given {@link module:engine/model/item~Item model item} and ends after it.
+	 * Creates a range that starts before the given {@link module:engine/model/item~ModelItem model item} and ends after it.
 	 *
 	 * Note: This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createRangeOn `Writer.createRangeOn()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRangeOn `Writer.createRangeOn()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -972,27 +972,27 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item
 	 */
-	public createRangeOn( item: Item ): ModelRange {
+	public createRangeOn( item: ModelItem ): ModelRange {
 		return ModelRange._createOn( item );
 	}
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createSelection `Writer#createSelection()`}.
 	 *
 	 * ```ts
 	 * // Creates selection at the given offset in the given element.
 	 * const paragraph = writer.createElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 *
@@ -1006,14 +1006,14 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createSelection `Writer#createSelection()`}.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -1051,7 +1051,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable?: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
 
 	public createSelection( ...args: ConstructorParameters<typeof ModelSelection> ): ModelSelection {
 		return new ModelSelection( ...args );
@@ -1083,7 +1083,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Removes all events listeners set by model instance and destroys {@link module:engine/model/document~Document}.
+	 * Removes all events listeners set by model instance and destroys {@link module:engine/model/document~ModelDocument}.
 	 */
 	public destroy(): void {
 		this.document.destroy();
@@ -1103,7 +1103,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 			while ( this._pendingChanges.length ) {
 				// Create a new writer using batch instance created for this chain of changes.
 				const currentBatch = this._pendingChanges[ 0 ].batch;
-				this._currentWriter = new Writer( this, currentBatch );
+				this._currentWriter = new ModelWriter( this, currentBatch );
 
 				// Execute changes callback and gather the returned value.
 				const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
@@ -1126,21 +1126,21 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * Normalizes a selectable to a Selection or DocumentSelection.
+ * Normalizes a selectable to a Selection or ModelDocumentSelection.
  */
 function normalizeSelectable(
-	selectable?: Selectable,
-	placeOrOffset?: PlaceOrOffset | null
-): ModelSelection | DocumentSelection | undefined {
+	selectable?: ModelSelectable,
+	placeOrOffset?: ModelPlaceOrOffset | null
+): ModelSelection | ModelDocumentSelection | undefined {
 	if ( !selectable ) {
 		return;
 	}
 
-	if ( selectable instanceof ModelSelection || selectable instanceof DocumentSelection ) {
+	if ( selectable instanceof ModelSelection || selectable instanceof ModelDocumentSelection ) {
 		return selectable;
 	}
 
-	if ( selectable instanceof Node ) {
+	if ( selectable instanceof ModelNode ) {
 		if ( placeOrOffset || placeOrOffset === 0 ) {
 			return new ModelSelection( selectable, placeOrOffset );
 		} else if ( selectable.is( 'rootElement' ) ) {
@@ -1182,15 +1182,15 @@ export type AfterChangesEvent = {
  * using {@link ~Model#applyOperation}.
  *
  * Note that this event is suitable only for very specific use-cases. Use it if you need to listen to every single operation
- * applied on the document. However, in most cases {@link module:engine/model/document~Document#event:change} should
+ * applied on the document. However, in most cases {@link module:engine/model/document~ModelDocument#event:change} should
  * be used.
  *
  * A few callbacks are already added to this event by engine internal classes:
  *
  * * with `highest` priority operation is validated,
  * * with `normal` priority operation is executed,
- * * with `low` priority the {@link module:engine/model/document~Document} updates its version,
- * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
+ * * with `low` priority the {@link module:engine/model/document~ModelDocument} updates its version,
+ * * with `low` priority {@link module:engine/model/liveposition~ModelLivePosition} and {@link module:engine/model/liverange~ModelLiveRange}
  * update themselves.
  *
  * @eventName ~Model#applyOperation
@@ -1206,7 +1206,7 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
  * listener to this event so it can be fully customized by the features.
  *
  * **Note** The `selectable` parameter for the {@link ~Model#insertContent} is optional. When `undefined` value is passed the method uses
- * {@link module:engine/model/document~Document#selection document selection}.
+ * {@link module:engine/model/document~ModelDocument#selection document selection}.
  *
  * @eventName ~Model#insertContent
  * @param args The arguments passed to the original method.
@@ -1214,8 +1214,8 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
 export type ModelInsertContentEvent = {
 	name: 'insertContent';
 	args: [ [
-		content: Item | ModelDocumentFragment,
-		selectable?: ModelSelection | DocumentSelection,
+		content: ModelItem | ModelDocumentFragment,
+		selectable?: ModelSelection | ModelDocumentSelection,
 		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
@@ -1228,7 +1228,7 @@ export type ModelInsertContentEvent = {
  * listener to this event so it can be fully customized by the features.
  *
  * **Note** The `selectable` parameter for the {@link ~Model#insertObject} is optional. When `undefined` value is passed the method uses
- * {@link module:engine/model/document~Document#selection document selection}.
+ * {@link module:engine/model/document~ModelDocument#selection document selection}.
  *
  * @eventName ~Model#insertObject
  * @param args The arguments passed to the original method.
@@ -1237,7 +1237,7 @@ export type ModelInsertObjectEvent = {
 	name: 'insertObject';
 	args: [ [
 		element: ModelElement,
-		selectable?: ModelSelection | DocumentSelection | null,
+		selectable?: ModelSelection | ModelDocumentSelection | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
@@ -1287,7 +1287,8 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
  * listener to this event, so it can be fully customized by the features.
  *
  * Although the original method accepts any parameter of `Selectable` type, this event is fired with `selectable` normalized
- * to an instance of {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}.
+ * to an instance of {@link module:engine/model/selection~ModelSelection} or
+ * {@link module:engine/model/documentselection~ModelDocumentSelection}.
  *
  * @eventName ~Model#canEditAt
  * @param args The arguments passed to the original method.
@@ -1295,7 +1296,7 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
 export type ModelCanEditAtEvent = {
 	name: 'canEditAt';
 	args: [ [
-		selectable?: ModelSelection | DocumentSelection
+		selectable?: ModelSelection | ModelDocumentSelection
 	] ];
 	return: boolean;
 };

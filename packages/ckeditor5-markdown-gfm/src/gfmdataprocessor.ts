@@ -72,7 +72,7 @@ export class MarkdownGfmDataProcessor implements DataProcessor {
 	}
 
 	/**
-	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment} to data format &ndash; in this
+	 * Converts the provided {@link module:engine/view/documentfragment~ViewDocumentFragment} to data format &ndash; in this
 	 * case to a Markdown string.
 	 *
 	 * @returns Markdown string.
@@ -87,7 +87,7 @@ export class MarkdownGfmDataProcessor implements DataProcessor {
 	 * and not processed during the conversion from Markdown to view elements.
 	 *
 	 * The raw data can be later accessed by a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param pattern The pattern matching all view elements whose content should
 	 * be treated as raw data.

@@ -9,7 +9,7 @@
 
 import {
 	Matcher,
-	UpcastWriter,
+	ViewUpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewNode,
@@ -45,7 +45,7 @@ export function transformListItemLikeElementsIntoLists(
 		return;
 	}
 
-	const writer = new UpcastWriter( documentFragment.document );
+	const writer = new ViewUpcastWriter( documentFragment.document );
 	const itemLikeElements = findAllItemLikeElements( documentFragment, writer );
 
 	if ( !itemLikeElements.length ) {
@@ -186,7 +186,7 @@ export function transformListItemLikeElementsIntoLists(
  */
 export function unwrapParagraphInListItem(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	for ( const value of writer.createRangeIn( documentFragment ) ) {
 		const element = value.item;
@@ -211,7 +211,7 @@ export function unwrapParagraphInListItem(
  */
 function findAllItemLikeElements(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): Array<ListLikeElement> {
 	const range = writer.createRangeIn( documentFragment );
 	const itemLikeElements: Array<ListLikeElement> = [];
@@ -463,7 +463,7 @@ function mapListStyleDefinition( value: string ) {
  */
 function createNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
-	writer: UpcastWriter,
+	writer: ViewUpcastWriter,
 	hasMultiLevelListPlugin: boolean
 ) {
 	const list = writer.createElement( listStyle.type );
@@ -529,7 +529,7 @@ function getListItemData( element: ViewElement ): ListItemData {
 /**
  * Removes span with a numbering/bullet from a given element.
  */
-function removeBulletElement( element: ViewElement, writer: UpcastWriter ) {
+function removeBulletElement( element: ViewElement, writer: ViewUpcastWriter ) {
 	// Matcher for finding `span` elements holding lists numbering/bullets.
 	const bulletMatcher = new Matcher( {
 		name: 'span',

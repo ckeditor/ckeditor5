@@ -11,9 +11,9 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Consumables,
-	DowncastWriter,
-	Element,
-	Item,
+	ViewDowncastWriter,
+	ModelElement,
+	ModelItem,
 	UpcastElementEvent,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -243,17 +243,17 @@ export interface AttributeStrategy {
 	/**
 	 * Verifies whether the strategy is applicable for the specified model element.
 	 */
-	appliesToListItem( element: Item ): boolean;
+	appliesToListItem( element: ModelItem ): boolean;
 
 	/**
 	 * Verifies whether the model attribute value is valid.
 	 */
-	hasValidAttribute( element: Element ): boolean;
+	hasValidAttribute( element: ModelElement ): boolean;
 
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement ): void;
 
 	/**
 	 * Retrieves the property value from the view element.

@@ -5,9 +5,9 @@
 
 import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
-import { DocumentFragment } from '../../../../src/model/documentfragment.js';
-import { Element } from '../../../../src/model/element.js';
-import { Text } from '../../../../src/model/text.js';
+import { ModelDocumentFragment } from '../../../../src/model/documentfragment.js';
+import { ModelElement } from '../../../../src/model/element.js';
+import { ModelText } from '../../../../src/model/text.js';
 
 describe( 'transform', () => {
 	describe( 'undo', () => {
@@ -682,7 +682,7 @@ describe( 'transform', () => {
 			expectClients( '<heading1>FooFoobarbar</heading1>' );
 
 			function getPastedContent() {
-				return new Element( 'heading1', null, new Text( 'Foobar' ) );
+				return new ModelElement( 'heading1', null, new ModelText( 'Foobar' ) );
 			}
 		} );
 
@@ -716,9 +716,9 @@ describe( 'transform', () => {
 
 			function pasteContent() {
 				john.editor.model.insertContent(
-					new DocumentFragment( [
-						new Element( 'heading1', null, new Text( 'Foo' ) ),
-						new Element( 'paragraph', null, new Text( 'Bar' ) )
+					new ModelDocumentFragment( [
+						new ModelElement( 'heading1', null, new ModelText( 'Foo' ) ),
+						new ModelElement( 'paragraph', null, new ModelText( 'Bar' ) )
 					] )
 				);
 			}
@@ -730,9 +730,9 @@ describe( 'transform', () => {
 			john.setData( '<paragraph>Ab[]cd</paragraph><paragraph>Wxyz</paragraph>' );
 
 			john.editor.model.insertContent(
-				new DocumentFragment( [
-					new Element( 'paragraph', null, new Text( 'Foo' ) ),
-					new Element( 'paragraph', null, new Text( 'Bar' ) )
+				new ModelDocumentFragment( [
+					new ModelElement( 'paragraph', null, new ModelText( 'Foo' ) ),
+					new ModelElement( 'paragraph', null, new ModelText( 'Bar' ) )
 				] )
 			);
 

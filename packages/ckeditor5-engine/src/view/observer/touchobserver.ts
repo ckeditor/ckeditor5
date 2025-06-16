@@ -8,13 +8,13 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
 
 /**
  * Touch events observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} by {@link module:engine/view/view~EditingView#addObserver} method.
  */
 export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 'touchmove'> {
 	/**
@@ -36,15 +36,15 @@ export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchstart
+ * @eventName module:engine/view/document~ViewDocument#touchstart
  * @param data The event data.
  */
 export type ViewDocumentTouchStartEvent = {
 	name: 'touchstart';
-	args: [ data: DomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };
 
 /**
@@ -53,15 +53,15 @@ export type ViewDocumentTouchStartEvent = {
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchend
+ * @eventName module:engine/view/document~ViewDocument#touchend
  * @param data The event data.
  */
 export type ViewDocumentTouchEndEvent = {
 	name: 'touchend';
-	args: [ data: DomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };
 
 /**
@@ -70,13 +70,13 @@ export type ViewDocumentTouchEndEvent = {
  * Introduced by {@link module:engine/view/observer/touchobserver~TouchObserver}.
  *
  * Note that this event is not available by default. To make it available, {@link module:engine/view/observer/touchobserver~TouchObserver}
- * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
+ * needs to be added to {@link module:engine/view/view~EditingView} by the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchmove
+ * @eventName module:engine/view/document~ViewDocument#touchmove
  * @param data The event data.
  */
 export type ViewDocumentTouchMoveEvent = {
 	name: 'touchmove';
-	args: [ data: DomEventData<TouchEvent> ];
+	args: [ data: ViewDocumentDomEventData<TouchEvent> ];
 };

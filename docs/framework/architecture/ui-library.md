@@ -903,7 +903,7 @@ editor.plugins.get( 'Dialog' ).view.updatePosition();
 
 ### Best practices
 
-For the best user experience, the editing view should get {@link module:engine/view/view~View#focus focused} upon any user action (like executing a command) to make sure the editor retains focus:
+For the best user experience, the editing view should get {@link module:engine/view/view~EditingView#focus focused} upon any user action (like executing a command) to make sure the editor retains focus:
 
 ```js
 // Execute some action on the "dropdown#execute" event.

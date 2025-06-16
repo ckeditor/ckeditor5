@@ -4,8 +4,8 @@
  */
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
-import { type View } from './view.js';
-import { type DomEventData } from './observer/domeventdata.js';
+import { type EditingView } from './view.js';
+import { type ViewDocumentDomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
 /**
@@ -31,7 +31,7 @@ import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js'
  * transparent for the selection. The arrow key moves the caret between zero-width spaces characters, so the additional
  * code is needed to handle the caret.
  *
- * Both inline and block fillers are handled by the {@link module:engine/view/renderer~Renderer renderer} and are not present in the
+ * Both inline and block fillers are handled by the {@link module:engine/view/renderer~ViewRenderer renderer} and are not present in the
  * view.
  *
  * @module engine/view/filler
@@ -160,14 +160,14 @@ export function getDataWithoutFiller( domText: Text | string ): string {
  * @param view View controller instance we should inject quirks handling on.
  * @internal
  */
-export function injectQuirksHandling( view: View ): void {
+export function injectQuirksHandling( view: EditingView ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
 }
 
 /**
  * Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
  */
-function jumpOverInlineFiller( evt: unknown, data: DomEventData & KeystrokeInfo ) {
+function jumpOverInlineFiller( evt: unknown, data: ViewDocumentDomEventData & KeystrokeInfo ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 

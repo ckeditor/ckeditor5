@@ -9,8 +9,8 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { AttributeCommand } from '../../src/attributecommand.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
@@ -102,7 +102,7 @@ describe( 'BoldEditing', () => {
 		it( 'should convert <strong> to bold attribute', () => {
 			editor.setData( '<p><strong>foo</strong>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -111,7 +111,7 @@ describe( 'BoldEditing', () => {
 		it( 'should convert <b> to bold attribute', () => {
 			editor.setData( '<p><b>foo</b>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -120,7 +120,7 @@ describe( 'BoldEditing', () => {
 		it( 'should convert font-weight:bold to bold attribute', () => {
 			editor.setData( '<p><span style="font-weight: bold;">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -129,7 +129,7 @@ describe( 'BoldEditing', () => {
 		it( 'should convert font-weight defined as number to bold attribute (if the value is higher or equal to 600)', () => {
 			editor.setData( '<p><span style="font-weight: 600;">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -138,7 +138,7 @@ describe( 'BoldEditing', () => {
 		it( 'should not convert font-weight defined as number to bold attribute (if the value is lower than 600)', () => {
 			editor.setData( '<p><span style="font-weight: 500;">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
@@ -147,7 +147,7 @@ describe( 'BoldEditing', () => {
 		it( 'should not convert font-weight if the value is invalid', () => {
 			editor.setData( '<p><span style="font-weight: foo;">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foobar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
@@ -156,7 +156,7 @@ describe( 'BoldEditing', () => {
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<strong>foo</strong>bar' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
@@ -165,9 +165,9 @@ describe( 'BoldEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( model, '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+			_setModelData( model, '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><strong>foo</strong>bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
 	} );
 } );

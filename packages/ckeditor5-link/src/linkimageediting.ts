@@ -14,8 +14,8 @@ import {
 import {
 	Matcher,
 	type UpcastElementEvent,
-	type Node,
-	type Element,
+	type ModelNode,
+	type ModelElement,
 	type DowncastAttributeEvent,
 	type ViewElement,
 	type DowncastDispatcher,
@@ -165,7 +165,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 
 			// A full definition of the image feature.
 			// figure > a > img: parent of the view link element is an image element (figure).
-			let modelElement: Node | null = data.modelCursor.parent as Node;
+			let modelElement: ModelNode | null = data.modelCursor.parent as ModelNode;
 
 			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
 				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
@@ -177,7 +177,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 				// Continue conversion where image conversion ends.
 				data.modelCursor = conversionResult.modelCursor;
 
-				modelElement = data.modelCursor.nodeBefore as Node;
+				modelElement = data.modelCursor.nodeBefore as ModelNode;
 			}
 
 			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {
@@ -197,7 +197,7 @@ function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher )
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 				return;
 			}
@@ -241,7 +241,7 @@ function downcastImageLink( editor: Editor ): ( dispatcher: DowncastDispatcher )
  */
 function downcastImageLinkManualDecorator( decorator: LinkManualDecorator ): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
 			const viewFigure = conversionApi.mapper.toViewElement( data.item )!;
 			const linkInImage = Array.from( viewFigure.getChildren() )
 				.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) );
@@ -327,7 +327,7 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDe
 			// `nodeBefore` comes after conversion: `<a><img></a>`.
 			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
 			// See the body of the `upcastLink()` function.
-			const modelElement = data.modelCursor.nodeBefore as Element || data.modelCursor.parent;
+			const modelElement = data.modelCursor.nodeBefore as ModelElement || data.modelCursor.parent;
 
 			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
 		}, { priority: 'high' } );

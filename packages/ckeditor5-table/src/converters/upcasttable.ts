@@ -7,7 +7,7 @@
  * @module table/converters/upcasttable
  */
 
-import type { Element, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 
 import { createEmptyTableCell } from '../utils/common.js';
 import { first } from 'ckeditor5/src/utils.js';
@@ -50,7 +50,7 @@ export function upcastTableFigure() {
 			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
 
 			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<Element> );
+			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable ) {
@@ -161,7 +161,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
 				return;
 			}
 
-			const tableCell = data.modelRange.start.nodeAfter as Element;
+			const tableCell = data.modelRange.start.nodeAfter as ModelElement;
 			const modelCursor = writer.createPositionAt( tableCell, 0 );
 
 			// Ensure a paragraph in the model for empty table cells for converted table cells.

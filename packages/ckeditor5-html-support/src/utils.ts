@@ -8,12 +8,12 @@
  */
 
 import type {
-	DocumentSelection,
-	DowncastWriter,
-	Item,
-	Range,
+	ModelDocumentSelection,
+	ViewDowncastWriter,
+	ModelItem,
+	ModelRange,
 	ViewElement,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 import { startCase, cloneDeep } from 'es-toolkit/compat';
 
@@ -33,7 +33,7 @@ export interface GHSViewAttributes {
 * @internal
 */
 export function updateViewAttributes(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	oldViewAttributes: GHSViewAttributes,
 	newViewAttributes: GHSViewAttributes,
 	viewElement: ViewElement
@@ -55,7 +55,7 @@ export function updateViewAttributes(
  * @param viewElement The view element to update.
  * @internal
  */
-export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function setViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -79,7 +79,7 @@ export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSVi
  * @param viewElement The view element to update.
  * @internal
  */
-export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function removeViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.removeAttribute( key, viewElement );
@@ -131,8 +131,8 @@ type ModifyGhsStylesCallback = ( t: Map<string, string> ) => void;
  * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes',
 	callback: ModifyGhsAttributesCallback
@@ -145,8 +145,8 @@ export function modifyGhsAttribute(
  * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'classes',
 	callback: ModifyGhsClassesCallback
@@ -157,16 +157,16 @@ export function modifyGhsAttribute(
  * @param callback That receives a map as an argument and should modify it (add or remove entries).
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'styles',
 	callback: ModifyGhsStylesCallback
 ): void;
 
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes' | 'styles' | 'classes',
 	callback: ModifyGhsClassesCallback | ModifyGhsAttributesCallback | ModifyGhsStylesCallback
@@ -220,7 +220,7 @@ export function modifyGhsAttribute(
  *
  * @internal
  */
-export function removeFormatting( ghsAttributeName: string, itemRange: Range, writer: Writer ): void {
+export function removeFormatting( ghsAttributeName: string, itemRange: ModelRange, writer: ModelWriter ): void {
 	for ( const item of itemRange.getItems( { shallow: true } ) ) {
 		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 

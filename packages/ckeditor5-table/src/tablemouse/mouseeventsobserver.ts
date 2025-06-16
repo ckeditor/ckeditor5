@@ -7,7 +7,7 @@
  * @module table/tablemouse/mouseeventsobserver
  */
 
-import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
+import { DomEventObserver, type ViewDocumentDomEventData } from 'ckeditor5/src/engine.js';
 
 /**
  * The mouse selection event observer.
@@ -18,7 +18,7 @@ import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
  * - `'mouseleave'`
  *
  * Note that this observer is disabled by default. To enable this observer, it needs to be added to
- * {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * The observer is registered by the {@link module:table/tableselection~TableSelection} plugin.
  *
@@ -44,15 +44,15 @@ export class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mousele
  *
  * Note that this event is not available by default. To make it available,
  * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
- * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * to {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
- * @eventName module:engine/view/document~Document#mousemove
+ * @eventName module:engine/view/document~ViewDocument#mousemove
  * @param data Event data.
  */
 export type ViewDocumentTableMouseMoveEvent = {
 	name: 'mousemove';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };
 
 /**
@@ -62,13 +62,13 @@ export type ViewDocumentTableMouseMoveEvent = {
  *
  * Note that this event is not available by default. To make it available,
  * {@link module:table/tablemouse/mouseeventsobserver~MouseEventsObserver} needs to be added
- * to {@link module:engine/view/view~View} using the {@link module:engine/view/view~View#addObserver} method.
+ * to {@link module:engine/view/view~EditingView} using the {@link module:engine/view/view~EditingView#addObserver} method.
  *
  * @see module:table/tablemouse/mouseeventsobserver~MouseEventsObserver
- * @eventName module:engine/view/document~Document#mouseleave
+ * @eventName module:engine/view/document~ViewDocument#mouseleave
  * @param data Event data.
  */
 export type ViewDocumentTableMouseLeaveEvent = {
 	name: 'mouseleave';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ViewDocumentDomEventData<MouseEvent> ];
 };
