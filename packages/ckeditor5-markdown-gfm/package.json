@@ -22,8 +22,10 @@
     "@ckeditor/ckeditor5-core": "45.2.0",
     "@ckeditor/ckeditor5-engine": "45.2.0",
     "ckeditor5": "45.2.0",
+    "hast": "1.0.0",
     "hast-util-from-dom": "5.0.1",
     "hast-util-to-html": "9.0.5",
+    "hast-util-to-mdast": "10.1.2",
     "rehype-dom-parse": "5.0.2",
     "rehype-dom-stringify": "4.0.2",
     "rehype-remark": "10.0.1",
@@ -32,7 +34,8 @@
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
     "remark-stringify": "11.0.0",
-    "unified": "11.0.5"
+    "unified": "11.0.5",
+    "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "45.2.0",
