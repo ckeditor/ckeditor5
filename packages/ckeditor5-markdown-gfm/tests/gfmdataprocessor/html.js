@@ -9,7 +9,7 @@ describe( 'GFMDataProcessor', () => {
 	describe( 'html', () => {
 		it( 'should keep html', () => {
 			testDataProcessor(
-				'test with <keep>html</keep> and <notkeep>not html</notkeep>',
+				'test with <keep>html</keep> and <notkeep>not html</notkeep><!-- HTML comment -->',
 
 				'<p>test with <keep>html</keep> and <notkeep>not html</notkeep></p>',
 
