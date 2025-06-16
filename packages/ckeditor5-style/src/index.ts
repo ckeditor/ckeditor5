@@ -17,7 +17,7 @@ export {
 	type NormalizedStyleDefinitions,
 	type BlockStyleDefinition,
 	type InlineStyleDefinition,
-	type _NormalizedStyleDefinition,
+	type NormalizedStyleDefinition,
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsIsActiveForBlockEvent,
 	type StyleUtilsGetAffectedBlocksEvent,
