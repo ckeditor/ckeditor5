@@ -9,15 +9,25 @@ describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'html', () => {
 		it( 'should keep html', () => {
 			testDataProcessor(
-				'<div>Test</div>',
-
+				'test with <keep>html</keep> and <notkeep>not html</notkeep><!-- HTML comment -->',
 				'<p>test with <keep>html</keep> and <notkeep>not html</notkeep></p>',
-
 				'test with <keep>html</keep> and not html',
-
 				{
 					setup: dataProcessor => {
 						dataProcessor.keepHtml( 'keep' );
+					}
+				}
+			);
+		} );
+
+		it( 'should keep html with HTML in root', () => {
+			testDataProcessor(
+				'<div>Test</div>',
+				'<div>Test</div>',
+				'<div>Test</div>',
+				{
+					setup: dataProcessor => {
+						dataProcessor.keepHtml( 'div' );
 					}
 				}
 			);

@@ -16,7 +16,7 @@ import rehypeStringify from 'rehype-dom-stringify';
 import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
 import { fromDom } from 'hast-util-from-dom';
-import type { Element, Root } from 'hast';
+import type { Element, Root, RootContent } from 'hast';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
@@ -97,9 +97,7 @@ function rehypeDomRaw() {
 			// Convert each parsed DOM node back into HAST and replace the original children.
 			node.children = Array
 				.from( template.content.childNodes )
-				.map( domNode => fromDom( domNode ) )
-				// These cannot be root nodes, but this check is needed to make TypeScript happy.
-				.filter( child => child.type !== 'root' );
+				.map( domNode => fromDom( domNode ) as RootContent );
 		} );
 	};
 }
