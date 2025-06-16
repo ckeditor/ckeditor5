@@ -14,6 +14,17 @@ modified_at: 2025-05-08
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v45.2.1
+
+Released on June 17, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.1))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.2.1.
+
+* Fixed incorrect cache invalidation in `Mapper`, which could lead to crashes when editing heavily formatted content or when using complex features like multi-level lists.
+* Fixed editor crash that happened when typing over a table content with the balloon toolbar enabled.
+* Fixed editor crash that happened when editing deeply nested multi-level lists.
+* Improved calculation of pagination page-breaks on documents with long tables.
+
 ## Update to CKEditor&nbsp;5 v45.2.0
 
 Released on June 4, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.0))
