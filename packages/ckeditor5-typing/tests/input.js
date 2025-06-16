@@ -145,16 +145,68 @@ describe( 'Input', () => {
 			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
 				setModelData( editor.model, '[<widget></widget>]' );
 
-				const spy = sinon.spy();
-
-				viewDocument.fire( 'insertText', {
-					preventDefault: spy,
+				const eventData = {
+					preventDefault: sinon.spy(),
 					selection: viewDocument.selection,
-					text: 'bar',
-					domEvent: {}
-				} );
+					text: 'bar'
+				};
 
-				sinon.assert.calledOnce( spy );
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.calledOnce( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+			} );
+
+			it( 'should preventDefault() the original beforeinput event if target ranges span across different blocks', () => {
+				setModelData( editor.model,
+					'<paragraph>[foo</paragraph>' +
+					'<paragraph>]bar</paragraph>'
+				);
+
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: viewDocument.selection,
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.calledOnce( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+			} );
+
+			it( 'should not preventDefault() the original beforeinput event if target ranges span a single block', () => {
+				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: viewDocument.selection,
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( insertTextCommandSpy );
 			} );
 
