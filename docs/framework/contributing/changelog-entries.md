@@ -206,9 +206,9 @@ A new feature without any breaking changes.
 ---
 type: Feature
 scope:
-- ckeditor5-ui
-  closes:
-- 1
+  - ckeditor5-ui
+closes:
+  - 1
 ---
 
 Added support for RTL languages.
@@ -222,8 +222,8 @@ A generic bug fix for an existing feature that affects many packages (closes two
 ---
 type: Fix
 closes:
-   - 2
-   - 3
+  - 2
+  - 3
 ---
 
 The editor will be great again.
@@ -235,9 +235,9 @@ An improvement that is not backward compatible and sent by a non-core contributo
 ---
 type: Other
 scope:
-- ckeditor5-utils
+  - ckeditor5-utils
 closes:
-- 9
+  - 9
 ---
 
 Extracted the `utils#foo()` to a separate package.
@@ -247,9 +247,9 @@ Extracted the `utils#foo()` to a separate package.
 ---
 type: Feature
 scope:
-    - ckeditor5-engine
+  - ckeditor5-engine
 closes:
-    - 9
+  - 9
 ---
 
 Introduced the `engine#foo()` method.
@@ -259,9 +259,9 @@ Introduced the `engine#foo()` method.
 ---
 type: Major breaking change
 scope:
-- ckeditor5-utils
+  - ckeditor5-utils
 see:
-- 9
+  - 9
 ---
 
 The `utils#foo()` method was moved to the `engine` package.
