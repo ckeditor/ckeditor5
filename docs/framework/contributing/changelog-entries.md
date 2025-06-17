@@ -8,31 +8,7 @@ modified_at: 2025-06-17
 
 # Changelog entries
 
-CKEditor 5 switched from a Git-based changelog system, where commit messages followed a fixed convention and were parsed automatically, to a Markdown file-based changelog system inspired by tools like Changesets.
-
-Instead of embedding changelog metadata into commit messages (e.g., `Feature`, `Fix`, etc.), contributors will now write human-readable Markdown files stored in the repository. These files describe the nature of the change (bug fix, feature, breaking change, etc.) and are committed alongside the actual code. These entries will be automatically compiled into the final changelog during the release process.
-
-## Reasons for changes
-
-The previous approach, based on conventional commit messages, had several key limitations:
-
-1. **Immutability of git commits**  
-   Once a commit is pushed, its changelog message cannot be edited without rewriting history, making it challenging to fix typos or improve clarity.
-
-2. **Branching limitations**  
-   Releasing from hotfix or pre-release branches (e.g., merging `#release` into `#master`) introduced technical conflicts.
-
-3. **Risk of lost changes**  
-   When changes are applied directly to `master` (e.g., hotfixes) and not carefully tracked, changelog entries can be lost or duplicated.
-
-4. **Strict commit order**  
-   Major and minor breaking changes had to be made in the final commits of a release branch to appear correctly in the changelog, limiting developer flexibility and increasing release friction.
-
-5. **Lack of linting & review**  
-   Commit messages couldn't be appropriately linted and were difficult to review. Incorrect formatting often went unnoticed until the changelog generation failed or produced incomplete results.
-
-6. **Lost changelogs from feature branches**  
-   When feature branches were merged into epic branches before landing on `#master`, their commit messages - and thus their changelogs - were sometimes omitted from the final release notes.
+CKEditor 5 uses Markdown file-based changelog system inspired by tools like Changesets. Contributors are written in a human-readable Markdown files stored in the repository. These files describe the nature of the change (bug fix, feature, breaking change, etc.) and are committed alongside the actual code. These entries will be automatically compiled into the final changelog during the release process.
 
 ## How to create a new file
 
