@@ -1,247 +1,318 @@
 ---
 category: framework-contributing
-meta-title: Git commit message convention | CKEditor 5 Framework Documentation
-meta-description: Learn CKEditor 5's Git commit message convention to write clear, structured messages that improve project history and collaboration.
+meta-title: Changelog entries | CKEditor 5 Framework Documentation
+meta-description: Learn how to write structured, user-facing changelog entries for CKEditor 5 using a Markdown-based system designed for clarity, versioning, and long-term maintainability.
 order: 60
-modified_at: 2021-09-07
+modified_at: 2025-06-17
 ---
 
-# Git commit message convention
+# Changelog entries
 
-Every commit made *directly* to the `master` branch must follow the convention below. Based on commits in the `master` branch CKEditor&nbsp;5 release tools will generate changelog entries for the current release.
+CKEditor 5 switched from a Git-based changelog system, where commit messages followed a fixed convention and were parsed automatically, to a Markdown file-based changelog system inspired by tools like Changesets.
 
-<info-box>
-	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). For ticket branches, **only merge commits are analyzed**.
+Instead of embedding changelog metadata into commit messages (e.g., `Feature`, `Fix`, etc.), contributors will now write human-readable Markdown files stored in the repository. These files describe the nature of the change (bug fix, feature, breaking change, etc.) and are committed alongside the actual code. These entries will be automatically compiled into the final changelog during the release process.
 
-	Therefore, this guide is mainly targeted at core team members. However, it may help you understand how to write a suggested commit message when creating a pull request for CKEditor&nbsp;5.
-</info-box>
+## Reasons for changes
 
-## Convention
+The previous approach, based on conventional commit messages, had several key limitations:
 
-Commit message template:
+1. **Immutability of git commits**  
+   Once a commit is pushed, its changelog message cannot be edited without rewriting history, making it challenging to fix typos or improve clarity.
 
-```
-Type (package-name): A short sentence about the commit. Closes #XXX.
+2. **Branching limitations**  
+   Releasing from hotfix or pre-release branches (e.g., merging `#release` into `#master`) introduced technical conflicts.
 
-Type (another-package-name): If the change affects more than one package, it is possible to put multiple entries at once. Closes #YYY.
+3. **Risk of lost changes**  
+   When changes are applied directly to `master` (e.g., hotfixes) and not carefully tracked, changelog entries can be lost or duplicated.
 
-Optional description.
+4. **Strict commit order**  
+   Major and minor breaking changes had to be made in the final commits of a release branch to appear correctly in the changelog, limiting developer flexibility and increasing release friction.
 
-MAJOR BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
-MINOR BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
-```
+5. **Lack of linting & review**  
+   Commit messages couldn't be appropriately linted and were difficult to review. Incorrect formatting often went unnoticed until the changelog generation failed or produced incomplete results.
 
-### Commit types
+6. **Lost changelogs from feature branches**  
+   When feature branches were merged into epic branches before landing on `#master`, their commit messages - and thus their changelogs - were sometimes omitted from the final release notes.
 
-| Type | Release | Description | Changelog |
-| --- | --- | --- | --- |
-| Feature | `minor` | A new feature. | Visible |
-| Fix | `patch` | A bug fix. Should also be used for enhancements if they do not introduce new features at the same time. | Visible |
-| Other | `patch` | An enhancement &ndash; when it is neither a bug fix nor a feature. Example: public API refactoring. Use it also if you do not want to admit that it was a bug ;). | Visible |
-| Docs | `patch` | Updated documentation. | Hidden |
-| Internal | `patch` | Other kinds of internal changes. | Hidden |
-| Tests | `patch` | Changes in test files. | Hidden |
-| Revert | `patch` | Revert of some commit. | Hidden |
-| Release | `patch` | A special type of commit used by the release tools. | Hidden |
+## How to create a new file
 
-Each commit can contain additional notes that will be inserted into the changelog:
-
-* `MAJOR BREAKING CHANGE`,
-* `MINOR BREAKING CHANGE`.
-
-If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
-
-For reference on how to identify minor or major breaking changes see the {@link updating/versioning-policy versioning policy guide}.
-
-Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
+Create a new Markdown file in the `.changelog/` directory to add a changelog entry. Each file **must** describe **one change only**. You can create as many files as you need to explain the changes.
 
 <info-box>
-	Remember to always specify whether the breaking change is major or minor. If you fail to do so, the system will assume all unspecified breaking changes are major.
+    The easiest and preferred way to create a changelog entry is by running:
+
+    ```bash
+    yarn run nice
+    ```
+
+    `nice` stands for **N**ew **I**ndividual **C**hangelog **E**ntry.
 </info-box>
 
-### Package name
+This command creates a new Markdown file with a filename based on the current date and Git branch name: `YYYYMMDDHHMMSS_{branch-name}.md`. The branch name is automatically slugified (only letters, numbers, `-`, and `_` are allowed).
 
-Most commits are related to one or more packages. Each affected package should be listed in parentheses following the commit type. You should list the package that was the most impacted by the change first.
+_Example: `20250617103000_fix-toolbar-alignment.md`_
 
-It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case, having all the packages listed would reduce the changelog readability.
+The file will include a predefined frontmatter template. **You must manually fill in the details** (like `type`, `scope`, `closes`, and the summary of your change).
 
-The package name is based on the npm package name but it has the `@ckeditor/ckeditor5-` prefix stripped.
+## Format of a changelog entry
+
+Each changelog entry is a Markdown file with a frontmatter section followed by a summary and optional context. Here's a breakdown of all available fields:
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Field</th>
+      <th style="width: 10%;">Required?</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>type</code></td>
+      <td>✅ Yes</td>
+      <td>
+        Type of the change. See the allowed values and their impact in the table below.
+      </td>
+    </tr>
+    <tr>
+      <td><code>scope</code></td>
+      <td>❌ No</td>
+      <td>Affected package(s), using short names like <code>ckeditor5-core</code>.</td>
+    </tr>
+    <tr>
+      <td><code>closes</code></td>
+      <td>❌ No</td>
+      <td>List of issues this change resolves. Use numbers (<code>123</code>), full references (<code>ckeditor/ckeditor5#123</code>), or full URLs.</td>
+    </tr>
+    <tr>
+      <td><code>see</code></td>
+      <td>❌ No</td>
+      <td>Related issues that provide context but are not directly resolved by this change. Same format as <code>closes</code>.</td>
+    </tr>
+    <tr>
+      <td><code>communityCredits</code></td>
+      <td>❌ No</td>
+      <td>GitHub usernames of external contributors who should be credited for this change.</td>
+    </tr>
+    <tr>
+      <td><em>(body)</em></td>
+      <td>✅ Yes</td>
+      <td>After the frontmatter, add a short and meaningful summary of the change. Optionally include extended context or rationale.</td>
+    </tr>
+  </tbody>
+</table>
+
+<info-box>
+    **Tip**: Keep the summary clear and user-facing - this is what will appear in the final changelog.
+</info-box>
+
+The changelog entry format is designed to be both human-friendly and machine-readable. It uses a simple frontmatter structure followed by a short description of the change. Each field in the frontmatter serves a specific purpose, from determining the entry's visibility to linking it with related issues or acknowledging community contributions.
+
+Using these fields correctly ensures that the changelog remains accurate, meaningful, and consistent across releases. The sections below explain the available fields in more detail and provide guidance on when and how to use them.
+
+### Allowed values for the `type` field
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 25%;">Type</th>
+      <th style="width: 10%;">Release</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Feature</td>
+      <td><code>minor</code></td>
+      <td>A new feature. Introduces user-facing functionality.</td>
+    </tr>
+    <tr>
+      <td>Fix</td>
+      <td><code>patch</code></td>
+      <td>A bug fix. Use also for small improvements that do not qualify as new features.</td>
+    </tr>
+    <tr>
+      <td>Other</td>
+      <td><code>patch</code></td>
+      <td>Enhancement or refactor. It's not a fix or feature. Example: public API cleanup.</td>
+    </tr>
+    <tr>
+      <td>Major breaking change</td>
+      <td><code>major</code></td>
+      <td>A change in the integration layer or the plugin development API. See {@link updating/versioning-policy versioning policy} for details.</td>
+    </tr>
+    <tr>
+      <td>Minor breaking change</td>
+      <td><code>minor</code></td>
+      <td>Low-lever customizability API layer. See {@link updating/versioning-policy versioning policy} for details.</td>
+    </tr>
+  </tbody>
+</table>
+
+### Package name (`scope`)
+
+Changes affect one or more packages. List the package that was most impacted by the change first.
+
+However, it is possible to skip this part if many packages are affected. This usually indicates a generic change. In this case, having all the packages listed would reduce the changelog's readability.
+
+The package name is based on the npm package name, but the `@ckeditor/` prefix is stripped.
 
 If your change is related to the main package, use `ckeditor5` as the package name.
 
 <info-box>
-	If the commit introduces a breaking change across the entire project (a generic change), you do not need to specify the package name.
+    If the commit introduces a breaking change across the entire project (a generic change), you do not need to specify the package name.
 </info-box>
 
 ### Referencing issues
 
-When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
-* `Closes #123` &ndash; When the PR closes an issue.
-* `Closes #123` (outside the merge message) &ndash; When a PR in a public repository closes an issue from a private repository.
-* `See #123` &ndash; When the PR only references an issue but does not close it yet.
-* _No reference_ &ndash; when the PR does not reference any issue.
+When creating PRs that address specific issues, use the following messages to indicate them.
 
-### Methods name syntax
+* `Closes` &ndash; When the PR resolves an issue.
+* `See` &ndash; When the PR references an issue but has not resolved it yet.
 
-All methods mentioned in the Git commit message should use the **#** sign between the class name and the method name. An example of a properly named method:
+Both fields (`closes` and `see`) can contain multiple references, but they must follow the same format:
+
+* `14724` &ndash; A simple issue number.
+* `ckeditor/ckeditor5#14724` &ndash; A full reference to an issue in the CKEditor 5 repository.
+* `https://github.com/ckeditor/ckeditor5/issues/14724` &ndash; A full URL to an issue in the CKEditor 5 repository.
+
+### Giving credit
+
+When closing a non-core contributor's PR, add information about the contributor to the changelog entry file using the `communityCredits` field. It should contain a list of GitHub usernames of contributors who should be credited for this change.
+
+### Description
+
+Write a concise and meaningful summary of the change. This main message will appear in the public changelog, so keep it clear, user-facing, and relevant.
+
+Use the `ClassName#methodName()` format when referencing methods. This ensures consistency across all entries.
+
+**Example:**
 
 ```
 MarkerCollection#has()
 ```
 
-### Order of entries
+You may include multiple sentences if additional context is helpful.
 
-The proper order of sections for a commit message is as follows:
-* Entries that should be added to the changelog.
-* Entries that will not be added to the changelog.
-* Breaking change notes.
+### Examples of correct entry formatting
 
-All entries must be separated with a blank line, otherwise the lines will not be treated as separate entries.
-
-### Squash commits
-
-The changelog generator understands squash commits created by GitHub when merging a pull request.
-
-When using the _"Squash and merge"_ option, ensure the default commit title is not modified. It should contain the pull request title and its number, for example: `Sample pull request (#000)`. The changelog entries should be added as a commit description. They must follow the same rules as merge commits.
-
-### Examples of correct and incorrect message formatting
-
-An example of a proper commit message:
-
-```
-Feature (package-name-1): Message 1. Closes: #123
-
-Fix (package-name-2): Message 2. Closes: #456
-
-Tests: A change across the entire project.
-```
-
-An example of an invalid commit message with incorrectly separated lines (the second line will be treated as a part of the first line):
-
-```
-Feature (package-name-1): Message 1.
-Fix (package-name-2): Message 2.
-Tests: Message 3.
-```
-
-An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the breaking change message):
-
-```
-Feature (package-name): Message 1.
-
-MINOR BREAKING CHANGE (package-name): A description.
-
-Internal: Message 2.
-```
-
-### Example commits
+<info-box>
+    Unlike the previous Git-based system, which captured all commit types, including internal changes, the new file-based changelog focuses exclusively on public, user-facing changes, ensuring the final changelog remains clear and relevant to end users.
+</info-box>
 
 A new feature without any breaking changes.
 
-```
-Feature (ui): Added support for RTL languages. Closes #1.
+```md
+---
+type: Feature
+scope:
+- ckeditor5-ui
+  closes:
+- 1
+---
+
+Added support for RTL languages.
 
 RTL content will now be rendered correctly.
 ```
 
 A generic bug fix for an existing feature that affects many packages (closes two tickets):
 
-```
-Fix: The editor will be great again. Closes #3. Closes #4.
-```
+```md
+---
+type: Fix
+closes:
+   - 2
+   - 3
+---
 
-A commit with updated documentation:
-
-```
-Docs (link): Updated the README.
-```
-
-A commit that provides or changes the tests:
-
-```
-Tests (widget): Introduced missing tests. Closes #5.
+The editor will be great again.
 ```
 
 An improvement that is not backward compatible and sent by a non-core contributor. Public API was changed:
 
+```md
+---
+type: Other
+scope:
+- ckeditor5-utils
+closes:
+- 9
+---
+
+Extracted the `utils#foo()` to a separate package.
 ```
-Other (utils): Extracted the `utils#foo()` to a separate package. Closes #9.
 
-Feature (engine): Introduced the `engine#foo()` method. Closes #9.
+```md
+---
+type: Feature
+scope:
+    - ckeditor5-engine
+closes:
+    - 9
+---
 
-MAJOR BREAKING CHANGE (utils): The `utils#foo()` method was moved to the `engine` package. See #9.
+Introduced the `engine#foo()` method.
 ```
 
-For the commits shown above the changelog will look like this:
+```md
+---
+type: Major breaking change
+scope:
+- ckeditor5-utils
+see:
+- 9
+---
+
+The `utils#foo()` method was moved to the `engine` package.
+```
+
+For the entries shown above, the changelog will look like this:
 
 ```md
 Changelog
 =========
 
-## [1.0.0](https://github.com/ckeditor/ckeditor5/compare/v1.0.0...v0.0.1) (2017-01-04)
+## [51.0.0](https://github.com/ckeditor/ckeditor5/compare/v50.1.1...v51.0.0) (June 17, 2025)
 
-### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/support/versioning-policy.html#major-and-minor-breaking-changes)
+### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issues/9).
 
 ### Features
 
-* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine#foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
-* **[ui](http://npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5/commit/adc59ed))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine#foo()` method. Closes [#9](https://github.com/ckeditor/ckeditor5/issues/9).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issues/1).
 
-   RTL content will now be rendered correctly.
+  RTL content will now be rendered correctly.
 
 ### Bug fixes
 
-* The editor will be great again. Closes [#3](https://github.com/ckeditor/ckeditor5/issue/3). Closes [#4](https://github.com/ckeditor/ckeditor5/issue/4). ([a0b4ce8](https://github.com/ckeditor/ckeditor5/commit/a0b4ce8))
+* The editor will be great again. Closes [#2](https://github.com/ckeditor/ckeditor5/issues/2), [#3](https://github.com/ckeditor/ckeditor5/issues/3).
 
 ### Other changes
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Closes [#9](https://github.com/ckeditor/ckeditor5/issues/9).
 ```
 
 ### Fixing errors
 
-If the commit message was wrong but it was already too late to fix (for example, already merged into `master`), you can push an empty commit with the correct message straight to `master`:
-
-```
-git checkout master
-git commit --allow-empty # Fix the message in the commit
-git push origin master
-```
-
-<info-box>
-	Two commits for the same pull request will require **manual deduplication** during the changelog generation process. To reduce the noise, **avoid this technique for minor errors** like spelling or grammar: changelog entries will be checked and corrected anyway. Use it to add missing `BREAKING CHANGE` entries or fix wrong ticket numbers in `Closes #123` (critical information for integrators). You can also notify the team about the fix.
-</info-box>
+If the entry message is wrong, you can fix it by editing the Markdown file in the `.changelog/` directory and preparing a new pull request.
 
 ## Handling pull requests
 
-When creating a pull request, you may (it is recommended in the pull request template) propose a merge commit message.
+When creating a pull request, you may propose a changelog entry (as recommended in the pull request template).
 
-The reviewer must validate the proposed message and apply necessary changes. The PR description can be edited.
+The reviewer must validate the proposed message and apply necessary changes. It can be done using the GitHub interface (as suggestions).
 
-Things like:
+As a reviewer, make sure to check the following aspects of the proposed changelog entry and add or correct them if needed:
 
-* the language and grammar of the message,
-* the type of the change,
-* mentioned issue(s) number,
-* breaking changes,
-* and any additional information
+* The language and grammar of the message
+* The type of the change
+* Mentioned issue(s) number
+* Breaking changes
+* Any additional relevant information
 
-should be checked and added if missing.
+You must be aware that the message will end up in the changelog and must be understandable in the broad context of the entire editor. It is not for you &ndash; it is for other developers.
 
-As a reviewer, you must be aware that the message will end up in the changelog and must be understandable in the broad context of the entire editor. It is not for you &ndash; it is for other developers.
-
-When closing a PR, remember to copy the source of the message to the textarea with the merge commit message:
-
-{@img assets/img/closing-a-pr.gif 998 Screencast how to copy a source version of the suggested commit message when closing a PR.}
-
-### Giving credit
-
-When closing a non-core contributor's PR make sure to add information about the contributor to the commit message. For example:
-
-```
-Feature (ui): Added support for RTL languages. Closes #1.
-
-Thanks to @someone!
-```
+When closing a PR, you do not have to copy anything. Pick your merge strategy (e.g., "Squash and merge"), and GitHub will handle the rest.
