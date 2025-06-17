@@ -144,7 +144,7 @@ Using these fields correctly ensures that the changelog remains accurate, meanin
     <tr>
       <td>Minor breaking change</td>
       <td><code>minor</code></td>
-      <td>Low-layer customizability API layer. See {@link updating/versioning-policy versioning policy} for details.</td>
+      <td>Low-level customizable API layer. See {@link updating/versioning-policy versioning policy} for details.</td>
     </tr>
   </tbody>
 </table>
