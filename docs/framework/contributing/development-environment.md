@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Development environment | CKEditor 5 Framework Documentation
+meta-description: Learn how to set up a development environment for CKEditor 5, including cloning, building, and running the editor locally.
 order: 20
 modified_at: 2022-09-29
 ---

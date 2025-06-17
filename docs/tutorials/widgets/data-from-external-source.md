@@ -2,6 +2,7 @@
 category: widget-tutorials
 order: 26
 meta-title: Data from an external source tutorial | CKEditor 5 Documentation
+meta-description: Learn how to load and display data from an external source in a CKEditor 5 widget, with steps on integration, updates, and conversion.
 modified_at: 2022-11-15
 ---
 

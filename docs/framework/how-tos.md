@@ -2,6 +2,7 @@
 category: framework
 order: 500
 meta-title: CKEditor 5 How-tos | CKEditor 5 Documentation
+meta-description: Find out how to configure a specific setting of CKEditor 5.
 modified_at: 2023-07-17
 ---
 
