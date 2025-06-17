@@ -83,7 +83,7 @@ GHSEditor
 
 		attachTourBalloon( {
 			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Source' ),
-			text: 'Switch to the source mode to check out the source of the content and play with it.',
+			text: 'Switch to the source mode.',
 			editor,
 			tippyOptions: {
 				placement: 'bottom-start'
