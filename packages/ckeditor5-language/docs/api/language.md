@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 text part language feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-language.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-language)
-
 This package implements text part language support for CKEditor&nbsp;5 that allows you to define the language for each passage of content written in multiple languages. It helps satisfy the [WCAG Success Criterion 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html).
 
 ## Demo

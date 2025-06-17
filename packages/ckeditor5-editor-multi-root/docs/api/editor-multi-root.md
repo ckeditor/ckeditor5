@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 multi-root editor implementation
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-multi-root.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)
-
 The multi-root editor implementation for CKEditor&nbsp;5. See the {@link examples/builds/multi-root-editor demo}.
 
 ## Documentation

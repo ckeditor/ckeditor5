@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 code block feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight)
-
 This package implements the code block feature for CKEditor&nbsp;5.
 
 ## Demo

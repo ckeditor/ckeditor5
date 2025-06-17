@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 Easy Image with Cloud Services
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-easy-image.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image)
-
 This package implements the Easy Image feature for CKEditor&nbsp;5.
 
 Easy Image lets you easily insert images which are automatically rescaled, optimized, responsive and delivered through a blazing-fast CDN. It integrates automatically with the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
