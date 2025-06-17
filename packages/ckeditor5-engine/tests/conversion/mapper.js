@@ -583,7 +583,7 @@ describe( 'Mapper', () => {
 				//
 				// After invalidation the cache will end before `<u>`: `<p>a<b>b|<u>cc</u>d</b><i>e</i></p>`
 				//
-				// Now we again make a request, for model offset `6`, which is after `ee`.
+				// Now we again make a request, for model offset `6`, which is after `e`.
 				// Since we have position cached before `<u>` we will continue from there.
 				// We will "move up" when reaching end of `</b>`.
 				// Note, that before fixes were made `<b>` would not be cached when "moving up".
@@ -1186,18 +1186,19 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
 			// <p>ab<span>cd<em>^<b>e</b>f</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
-			// This should invalidate cache starting from `<em>`.
+			// Since the insertion position is at the beginning of `<em>`, the position will be treated like it is before `<em>`.
+			// So the invalidation will start from "cd".
 			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );
 			check( 3, viewContainer, 1, 2 );
-			check( 4, viewSpan, 1, 4 );
-			check( 5, viewSpan, 1, 4 );
 
 			// Later cache is cleared, the closest value is returned:
-			check( 6, viewSpan, 1, 4 );
-			check( 8, viewSpan, 1, 4 );
+			check( 4, viewContainer, 1, 2 );
+			check( 5, viewContainer, 1, 2 );
+			check( 6, viewContainer, 1, 2 );
+			check( 8, viewContainer, 1, 2 );
 		} );
 
 		it( 'should invalidate part of the existing cache when a node is inserted (deep #2 - direct parent not cached)', () => {
@@ -1219,30 +1220,67 @@ describe( 'MapperCache', () => {
 			check( 3, viewContainer, 1, 2 );
 
 			// Later cache is cleared, the closest value is returned:
-			check( 4, viewSpan, 1, 4 );
-			check( 6, viewSpan, 1, 4 );
+			check( 4, viewContainer, 1, 2 );
+			check( 6, viewContainer, 1, 2 );
 		} );
 
 		it( 'should invalidate part of the existing cache when a node is inserted (deep #3 - only top element cached)', () => {
+			// To show that only part of the cache is invalidated, we need more items in this sample.
+			const viewTextXXX = new ViewText( viewDocument, 'xxx' );
+			const viewStrong = new ViewAttributeElement( viewDocument, 'strong', null, viewTextXXX );
+			viewContainer._insertChild( 0, viewStrong );
+
+			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
+			cache.startTracking( viewContainer );
+
+			cache.save( viewContainer, 1, viewContainer, 3 );
+			cache.save( viewContainer, 2, viewContainer, 5 );
+			cache.save( viewContainer, 3, viewContainer, 9 );
+			cache.save( viewContainer, 4, viewContainer, 11 );
+
+			// <p><strong>xxx</strong>ab<span>cd<em>^<b>e</b>f</em></span>gh</p>
+			// -> <p><strong>xxx</strong>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
+			// This should invalidate cache like the insertion is before `<span>`.
+			// That's because neither `<em>` nor "cd" are not cached, so we need to invalidate from a point further behind.
+			// In this case we invalidate all cache after "ab".
+			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
+
+			// Retained cached:
+			check( 3, viewContainer, 1, 3 );
+
+			// Later cache is cleared, the closest value is returned:
+			check( 5, viewContainer, 1, 3 );
+			check( 9, viewContainer, 1, 3 );
+			check( 11, viewContainer, 1, 3 );
+		} );
+
+		it( 'should invalidate the existing cache when a node is inserted at the beginning of a non-tracked element', () => {
 			// This is a similar scenario as above, but this time, `<em>` -- the direct parent of insertion -- is not cached.
 			cache.startTracking( viewContainer );
 
 			cache.save( viewContainer, 1, viewContainer, 2 );
+			cache.save( viewSpan, 1, viewContainer, 4 );
+			cache.save( viewB, 1, viewContainer, 5 );
+			cache.save( viewEm, 1, viewContainer, 5 );
+			cache.save( viewEm, 2, viewContainer, 6 );
+			cache.save( viewSpan, 2, viewContainer, 6 );
 			cache.save( viewContainer, 2, viewContainer, 6 );
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
-			// <p>ab<span>cd<em>^<b>e</b>f</em></span>gh</p> -> <p>ab<span>cd<em><strong></strong><b>e</b>f</em></span>gh</p>.
-			// This should invalidate cache starting from before `<span>` (not before `<em>`).
-			// That's because `<em>` is not cached, so we invalidate starting from before its parent.
+			// <p>ab<span>^cd<em><b>e</b>f</em></span>gh</p> -> <p>ab<span><strong></strong>cd<em><b>e</b>f</em></span>gh</p>.
+			// This should invalidate cache starting from before `<span>`.
 			viewEm._insertChild( 0, new ViewAttributeElement( viewDocument, 'strong' ) );
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );
-			check( 3, viewContainer, 1, 2 );
 
 			// Later cache is cleared, the closest value is returned:
+			check( 3, viewContainer, 1, 2 );
 			check( 4, viewContainer, 1, 2 );
+			check( 5, viewContainer, 1, 2 );
 			check( 6, viewContainer, 1, 2 );
+			check( 7, viewContainer, 1, 2 );
+			check( 8, viewContainer, 1, 2 );
 		} );
 
 		it( 'nothing happens if change is after valid cache', () => {
@@ -1314,16 +1352,17 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
 			// <p>ab<span>cd<em><b>e^</b>f</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em><b>ex</b>f</em></span></p>.
-			// This should invalidate cache starting from before `"ex"`.
+			// This should invalidate cache starting from before `"ex"`. But "e" is first node, and its parents `<b>` and `<em>` are
+			// also first nodes, so we invalidate starting from before "cd".
 			viewTextE._data = 'ex';
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );
-			check( 4, viewSpan, 1, 4 );
 
 			// Later cache is cleared, the closest value is returned:
-			check( 6, viewSpan, 1, 4 );
-			check( 8, viewSpan, 1, 4 );
+			check( 4, viewContainer, 1, 2 );
+			check( 6, viewContainer, 1, 2 );
+			check( 8, viewContainer, 1, 2 );
 		} );
 
 		it( 'should invalidate cache when text node changes (deep - text node not cached)', () => {
@@ -1335,16 +1374,17 @@ describe( 'MapperCache', () => {
 			cache.save( viewContainer, 3, viewContainer, 8 );
 
 			// <p>ab<span>cd<em><b>e^</b>f</em></span>gh</p> -> <p><strong></strong>ab<span>cd<em><b>ex</b>f</em></span></p>.
-			// This should invalidate cache starting from before `"ex"`.
+			// This should invalidate cache starting from before `"ex"`. But "e" is first node, and its parents `<b>` and `<em>` are
+			// also first nodes, so we invalidate starting from before "cd".
 			viewTextE._data = 'ex';
 
 			// Retained cached:
 			check( 2, viewContainer, 1, 2 );
-			check( 4, viewSpan, 1, 4 );
 
 			// Later cache is cleared, the closest value is returned:
-			check( 6, viewSpan, 1, 4 );
-			check( 8, viewSpan, 1, 4 );
+			check( 4, viewContainer, 1, 2 );
+			check( 6, viewContainer, 1, 2 );
+			check( 8, viewContainer, 1, 2 );
 		} );
 
 		it( 'should invalidate cache if first child in tracked element has 0 model length (#1 - ui element + remove)', () => {
