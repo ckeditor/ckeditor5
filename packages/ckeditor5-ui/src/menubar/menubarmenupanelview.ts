@@ -9,15 +9,15 @@
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../focuscycler.js';
-import type ViewCollection from '../viewcollection.js';
-import View from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { View } from '../view.js';
 
 import '../../theme/components/menubar/menubarmenupanel.css';
 
 /**
  * A view representing a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView} of a menu.
  */
-export default class MenuBarMenuPanelView extends View implements FocusableView {
+export class MenuBarMenuPanelView extends View implements FocusableView {
 	/**
 	 * Collection of the child views in this panel.
 	 */

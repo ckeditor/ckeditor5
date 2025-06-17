@@ -7,10 +7,43 @@
  * @module widget
  */
 
-export { default as Widget } from './widget.js';
-export { default as WidgetToolbarRepository } from './widgettoolbarrepository.js';
-export { default as WidgetResize } from './widgetresize.js';
-export { default as WidgetTypeAround } from './widgettypearound/widgettypearound.js';
-export * from './utils.js';
+export { Widget } from './widget.js';
+export { WidgetToolbarRepository } from './widgettoolbarrepository.js';
+export { WidgetResize, type WidgetResizerOptions } from './widgetresize.js';
+export { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
+export {
+	WIDGET_CLASS_NAME,
+	WIDGET_SELECTED_CLASS_NAME,
+	isWidget,
+	toWidget,
+	setHighlightHandling,
+	setLabel,
+	getLabel,
+	toWidgetEditable,
+	findOptimalInsertionRange,
+	viewToModelPositionOutsideModelElement,
+	calculateResizeHostAncestorWidth,
+	calculateResizeHostPercentageWidth
+} from './utils.js';
+
+export { WidgetHighlightStack, type WidgetHighlightStackChangeEvent, type WidgetHighlightStackChangeEventData } from './highlightstack.js';
+export { verticalWidgetNavigationHandler } from './verticalnavigation.js';
+export {
+	WidgetResizer,
+	type WidgetResizerBeginEvent,
+	type WidgetResizerCancelEvent,
+	type WidgetResizerCommitEvent,
+	type WidgetResizerUpdateSizeEvent
+} from './widgetresize/resizer.js';
+
+export { SizeView as _WidgetSizeView } from './widgetresize/sizeview.js';
+export {
+	TYPE_AROUND_SELECTION_ATTRIBUTE as _WIDGET_TYPE_AROUND_SELECTION_ATTRIBUTE,
+	getClosestTypeAroundDomButton as _getClosestWidgetTypeAroundDomButton,
+	getTypeAroundButtonPosition as _getWidgetTypeAroundButtonPosition,
+	getClosestWidgetViewElement as _getClosestWidgetViewElement,
+	getTypeAroundFakeCaretPosition as _getWidgetTypeAroundFakeCaretPosition,
+	isTypeAroundWidget
+} from './widgettypearound/utils.js';
 
 import './augmentation.js';

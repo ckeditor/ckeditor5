@@ -16,16 +16,16 @@ import {
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import ResizeState from './resizerstate.js';
-import SizeView from './sizeview.js';
+import { ResizeState } from './resizerstate.js';
+import { SizeView } from './sizeview.js';
 
-import type { ResizerOptions } from '../widgetresize.js';
+import type { WidgetResizerOptions } from '../widgetresize.js';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Represents a resizer for a single resizable object.
  */
-export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
+export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Flag that indicates whether resizer can be used.
 	 *
@@ -63,7 +63,7 @@ export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Options passed to the {@link #constructor}.
 	 */
-	private _options: ResizerOptions;
+	private _options: WidgetResizerOptions;
 
 	/**
 	 * A wrapper that is controlled by the resizer. This is usually a widget element.
@@ -71,14 +71,14 @@ export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
 	private _viewResizerWrapper: ViewElement | null = null;
 
 	/**
-	 * The width of the resized {@link module:widget/widgetresize~ResizerOptions#viewElement viewElement} before the resizing started.
+	 * The width of the resized {@link module:widget/widgetresize~WidgetResizerOptions#viewElement viewElement} before the resizing started.
 	 */
 	private _initialViewWidth: string | undefined;
 
 	/**
 	 * @param options Resizer options.
 	 */
-	constructor( options: ResizerOptions ) {
+	constructor( options: WidgetResizerOptions ) {
 		super();
 
 		this._options = options;
@@ -477,24 +477,24 @@ export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * @eventName ~Resizer#begin
+ * @eventName ~WidgetResizer#begin
  */
-export type ResizerBeginEvent = DecoratedMethodEvent<Resizer, 'begin'>;
+export type WidgetResizerBeginEvent = DecoratedMethodEvent<WidgetResizer, 'begin'>;
 
 /**
- * @eventName ~Resizer#cancel
+ * @eventName ~WidgetResizer#cancel
  */
-export type ResizerCancelEvent = DecoratedMethodEvent<Resizer, 'cancel'>;
+export type WidgetResizerCancelEvent = DecoratedMethodEvent<WidgetResizer, 'cancel'>;
 
 /**
- * @eventName ~Resizer#commit
+ * @eventName ~WidgetResizer#commit
  */
-export type ResizerCommitEvent = DecoratedMethodEvent<Resizer, 'commit'>;
+export type WidgetResizerCommitEvent = DecoratedMethodEvent<WidgetResizer, 'commit'>;
 
 /**
- * @eventName ~Resizer#updateSize
+ * @eventName ~WidgetResizer#updateSize
  */
-export type ResizerUpdateSizeEvent = DecoratedMethodEvent<Resizer, 'updateSize'>;
+export type WidgetResizerUpdateSizeEvent = DecoratedMethodEvent<WidgetResizer, 'updateSize'>;
 
 /**
  * @param resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.

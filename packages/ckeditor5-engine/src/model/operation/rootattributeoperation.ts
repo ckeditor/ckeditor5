@@ -7,13 +7,13 @@
  * @module engine/model/operation/rootattributeoperation
  */
 
-import Operation from './operation.js';
+import { Operation } from './operation.js';
 
-import type Document from '../document.js';
-import type RootElement from '../rootelement.js';
+import { type ModelDocument } from '../document.js';
+import { type ModelRootElement } from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
@@ -22,14 +22,14 @@ import type { Selectable } from '../selection.js';
  * {@link module:engine/model/operation/attributeoperation~AttributeOperation}.
  * It is because {@link module:engine/model/operation/attributeoperation~AttributeOperation}
  * requires a range to change and root element can't
- * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.
- * {@link module:engine/model/position~Position} can't be created before a root element.
+ * be a part of range because every {@link module:engine/model/position~ModelPosition} has to be inside a root.
+ * {@link module:engine/model/position~ModelPosition} can't be created before a root element.
  */
-export default class RootAttributeOperation extends Operation {
+export class RootAttributeOperation extends Operation {
 	/**
 	 * Root element to change.
 	 */
-	public readonly root: RootElement;
+	public readonly root: ModelRootElement;
 
 	/**
 	 * Key of an attribute to change or remove.
@@ -58,11 +58,11 @@ export default class RootAttributeOperation extends Operation {
 	 * @param key Key of an attribute to change or remove.
 	 * @param oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
 	 * @param newValue New value of the attribute with given key or `null`, if operation should remove attribute.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
-		root: RootElement,
+		root: ModelRootElement,
 		key: string,
 		oldValue: unknown,
 		newValue: unknown,
@@ -92,7 +92,7 @@ export default class RootAttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.root;
 	}
 
@@ -122,7 +122,7 @@ export default class RootAttributeOperation extends Operation {
 			 * The element to change is not a root element.
 			 *
 			 * @error rootattribute-operation-not-a-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
@@ -137,7 +137,7 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute which should be removed does not exist for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
@@ -152,7 +152,7 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute with given key already exists for the given node.
 			 *
 			 * @error rootattribute-operation-attribute-exists
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
@@ -199,7 +199,7 @@ export default class RootAttributeOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): RootAttributeOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): RootAttributeOperation {
 		if ( !document.getRoot( json.root ) ) {
 			/**
 			 * Cannot create RootAttributeOperation for document. Root with the specified name does not exist.

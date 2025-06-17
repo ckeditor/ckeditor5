@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Strikethrough from '../src/strikethrough.js';
-import StrikethroughEditing from '../src/strikethrough/strikethroughediting.js';
-import StrikethroughUI from '../src/strikethrough/strikethroughui.js';
+import { Strikethrough } from '../src/strikethrough.js';
+import { StrikethroughEditing } from '../src/strikethrough/strikethroughediting.js';
+import { StrikethroughUI } from '../src/strikethrough/strikethroughui.js';
 
 describe( 'Strikethrough', () => {
 	it( 'should require StrikethroughEditing and StrikethroughUI', () => {

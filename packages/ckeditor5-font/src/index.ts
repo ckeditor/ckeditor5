@@ -7,36 +7,48 @@
  * @module font
  */
 
-export { default as Font } from './font.js';
-export { default as FontBackgroundColor } from './fontbackgroundcolor.js';
-export { default as FontColor } from './fontcolor.js';
-export { default as FontFamily } from './fontfamily.js';
-export { default as FontSize } from './fontsize.js';
-export { default as FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
-export { default as FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
-export { default as FontColorEditing } from './fontcolor/fontcolorediting.js';
-export { default as FontColorUI } from './fontcolor/fontcolorui.js';
-export { default as FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
-export { default as FontFamilyUI } from './fontfamily/fontfamilyui.js';
-export { default as FontSizeEditing } from './fontsize/fontsizeediting.js';
-export { default as FontSizeUI } from './fontsize/fontsizeui.js';
-export type { default as FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
-export type { default as FontColorCommand } from './fontcolor/fontcolorcommand.js';
-export type { default as FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
-export type { default as FontSizeCommand } from './fontsize/fontsizecommand.js';
+export { Font } from './font.js';
+export { FontBackgroundColor } from './fontbackgroundcolor.js';
+export { FontColor } from './fontcolor.js';
+export { FontFamily } from './fontfamily.js';
+export { FontSize } from './fontsize.js';
+export { FontCommand } from './fontcommand.js';
+export { FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
+export { FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
+export { FontColorEditing } from './fontcolor/fontcolorediting.js';
+export { FontColorUI } from './fontcolor/fontcolorui.js';
+export { FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
+export { FontFamilyUI } from './fontfamily/fontfamilyui.js';
+export { FontSizeEditing } from './fontsize/fontsizeediting.js';
+export { FontSizeUI } from './fontsize/fontsizeui.js';
+export { FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
+export { FontColorCommand } from './fontcolor/fontcolorcommand.js';
+export { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
+export { FontSizeCommand } from './fontsize/fontsizecommand.js';
+export { FontColorUIBase } from './ui/colorui.js';
 
-export type {
-	FONT_BACKGROUND_COLOR,
-	FONT_COLOR,
-	FONT_FAMILY,
-	FONT_SIZE,
-	ColorSelectorDropdownView
+export {
+	buildDefinition as _buildFontDefinition,
+	renderUpcastAttribute as _renderUpcastFontColorAttribute,
+	renderDowncastElement as _renderDowncastFontElement,
+	addColorSelectorToDropdown as _addFontColorSelectorToDropdown,
+	type FontConverterDefinition as _FontConverterDefinition,
+	type FONT_BACKGROUND_COLOR,
+	type FONT_COLOR,
+	type FONT_FAMILY,
+	type FONT_SIZE,
+	type FontColorSelectorDropdownView
 } from './utils.js';
 
 export type {
 	FontColorConfig,
 	FontFamilyConfig,
-	FontSizeConfig
+	FontFamilyOption,
+	FontSizeConfig,
+	FontSizeOption
 } from './fontconfig.js';
+
+export { normalizeOptions as _normalizeFontFamilyOptions } from './fontfamily/utils.js';
+export { normalizeOptions as _normalizeFontSizeOptions } from './fontsize/utils.js';
 
 import './augmentation.js';

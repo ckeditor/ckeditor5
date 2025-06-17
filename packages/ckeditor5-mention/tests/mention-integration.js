@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _parseView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import MentionEditing from '../src/mentionediting.js';
-import Mention from '../src/mention.js';
-import MentionUI from '../src/mentionui.js';
+import { MentionEditing } from '../src/mentionediting.js';
+import { Mention } from '../src/mention.js';
+import { MentionUI } from '../src/mentionui.js';
 
 describe( 'Mention feature - integration', () => {
 	let div, editor, model, doc;
@@ -66,12 +66,12 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jaohn bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jaohn bar</p>' );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
@@ -91,12 +91,12 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jhn bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jhn bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jhn bar</p>' );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
@@ -160,20 +160,20 @@ describe( 'Mention feature - integration', () => {
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( initialData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( initialData );
 
 			editor.execute( 'redo' );
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 		}
 	} );
@@ -201,7 +201,7 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' )
+				content: _parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' )
 			} );
 
 			const expectedData = '<p>foo</p>' +
@@ -210,7 +210,7 @@ describe( 'Mention feature - integration', () => {
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 		} );
 	} );
@@ -242,7 +242,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with table toolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<table><tableRow><tableCell><paragraph>foo []</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo []</paragraph></tableCell></tableRow></table>' );
 
 			const balloon = editor.plugins.get( 'ContextualBalloon' );
 			const panelView = balloon.view;
@@ -294,7 +294,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with link toolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			const balloon = editor.plugins.get( 'ContextualBalloon' );
 			const panelView = balloon.view;
@@ -371,7 +371,7 @@ describe( 'Mention feature - integration', () => {
 				writer.setSelection( paragraph, 0 );
 			} );
 
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

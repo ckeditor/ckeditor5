@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter.js';
-import Document from '../../../src/view/document.js';
-import EditableElement from '../../../src/view/editableelement.js';
-import ViewPosition from '../../../src/view/position.js';
-import ViewRange from '../../../src/view/range.js';
-import createViewRoot from '../_utils/createroot.js';
-import ViewElement from '../../../src/view/element.js';
-import ViewSelection from '../../../src/view/selection.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewEditableElement } from '../../../src/view/editableelement.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { createViewRoot } from '../_utils/createroot.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewSelection } from '../../../src/view/selection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import DocumentFragment from '../../../src/view/documentfragment.js';
-import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
+import { HtmlDataProcessor } from '../../../src/dataprocessor/htmldataprocessor.js';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
@@ -25,9 +25,9 @@ describe( 'DowncastWriter', () => {
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 		root = createViewRoot( doc );
-		writer = new DowncastWriter( doc );
+		writer = new ViewDowncastWriter( doc );
 	} );
 
 	describe( 'setSelection()', () => {
@@ -86,14 +86,14 @@ describe( 'DowncastWriter', () => {
 		it( 'should create empty document fragment', () => {
 			const df = writer.createDocumentFragment();
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
 			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 2 );
 		} );
 	} );
@@ -108,7 +108,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createAttributeElement()', () => {
-		it( 'should create AttributeElement', () => {
+		it( 'should create ViewAttributeElement', () => {
 			const element = writer.createAttributeElement( 'foo', attributes );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
@@ -139,7 +139,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createContainerElement()', () => {
-		it( 'should create ContainerElement', () => {
+		it( 'should create ViewContainerElement', () => {
 			const element = writer.createContainerElement( 'foo', attributes );
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
@@ -206,10 +206,10 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createEditableElement()', () => {
-		it( 'should create EditableElement', () => {
+		it( 'should create ViewEditableElement', () => {
 			const element = writer.createEditableElement( 'foo', attributes );
 
-			expect( element ).to.be.instanceOf( EditableElement );
+			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
 		} );
@@ -224,7 +224,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createEmptyElement()', () => {
-		it( 'should create EmptyElement', () => {
+		it( 'should create ViewEmptyElement', () => {
 			const element = writer.createEmptyElement( 'foo', attributes );
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
@@ -607,7 +607,7 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
-	describe( 'manages AttributeElement#_clonesGroup', () => {
+	describe( 'manages ViewAttributeElement#_clonesGroup', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
 			const text = writer.createText( 'abccccde' );
 

@@ -1,6 +1,7 @@
 ---
 title: Find and replace
 meta-title: Find and replace | CKEditor 5 Documentation
+meta-description: Quickly find and replace text in CKEditor 5 with a powerful, user-friendly interface to streamline content editing and corrections.
 category: features
 modified_at: 2024-01-03
 ---

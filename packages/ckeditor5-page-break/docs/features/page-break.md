@@ -2,6 +2,7 @@
 category: features
 menu-title: Page break
 meta-title: Page break | CKEditor 5 Documentation
+meta-description: Insert page breaks in CKEditor 5 to control content flow and ensure proper pagination in printed or exported documents.
 ---
 
 # Page break

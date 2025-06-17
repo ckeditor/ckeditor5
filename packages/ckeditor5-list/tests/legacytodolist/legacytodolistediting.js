@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
-import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
-import LegacyCheckTodoListCommand from '../../src/legacytodolist/legacychecktodolistcommand.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
+import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
+import { LegacyCheckTodoListCommand } from '../../src/legacytodolist/legacychecktodolistcommand.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'LegacyTodoListEditing', () => {
@@ -91,13 +91,13 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should create to-do list item and change to paragraph in normal usage flow', () => {
-			expect( getViewData( view ) ).to.equalMarkup( '<p>[]</p>' );
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' );
+			expect( _getViewData( view ) ).to.equalMarkup( '<p>[]</p>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' );
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]</listItem>' );
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__label" contenteditable="false"></label>' +
 						'<span class="todo-list__label__description">[]</span>' +
@@ -107,8 +107,8 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'insertText', { text: 'a' } );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">a[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">a[]</listItem>' );
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__label" contenteditable="false"></label>' +
 						'<span class="todo-list__label__description">a{}</span>' +
@@ -118,8 +118,8 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'insertText', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__label" contenteditable="false"></label>' +
 						'<span class="todo-list__label__description">ab{}</span>' +
@@ -129,8 +129,8 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>ab[]</paragraph>' );
-			expect( getViewData( view ) ).to.equalMarkup( '<p>ab{}</p>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>ab[]</paragraph>' );
+			expect( _getViewData( view ) ).to.equalMarkup( '<p>ab{}</p>' );
 		} );
 
 		it( 'should register checkTodoList command', () => {
@@ -144,12 +144,12 @@ describe( 'LegacyTodoListEditing', () => {
 
 	describe( 'editing pipeline', () => {
 		it( 'should convert to-do list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li><label class="todo-list__label" contenteditable="false"></label>' +
 						'<span class="todo-list__label__description">{}1</span>' +
@@ -162,7 +162,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert nested to-do list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
@@ -171,7 +171,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">6.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -206,7 +206,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert to-do list items mixed with bulleted list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
@@ -214,7 +214,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">5.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -242,7 +242,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert to-do list items mixed with numbered list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
@@ -250,7 +250,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'<listItem listType="todo" listIndent="1">5.1</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -278,7 +278,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly convert list type change #1', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="numbered" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">3.0</listItem>'
@@ -286,7 +286,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ol>' +
 					'<li>1.0</li>' +
 				'</ol>' +
@@ -303,7 +303,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly convert list type change #2', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="0">[]2.0</listItem>' +
 				'<listItem listType="todo" listIndent="0">3.0</listItem>'
@@ -311,7 +311,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'numberedList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -331,7 +331,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly convert list type change #3', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
 				'<listItem listType="todo" listIndent="0">3.0</listItem>'
@@ -339,7 +339,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -359,13 +359,13 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly convert list type change (when next list item is nested)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">[]2.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.0</listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -387,7 +387,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'todoList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -407,7 +407,7 @@ describe( 'LegacyTodoListEditing', () => {
 			);
 		} );
 		it( 'should properly convert list type change - inner text with attribute', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
 				'<listItem listType="todo" listIndent="0"><$text bold="true">2.0</$text></listItem>' +
 				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
@@ -415,7 +415,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul>' +
 				'<li>1{.0</li>' +
 				'<li><strong>2.0</strong></li>' +
@@ -425,7 +425,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly convert list type change - inner text with many attributes', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1[.0</listItem>' +
 				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">2.0</$text></listItem>' +
 				'<listItem listType="todo" listIndent="0">3.]0</listItem>'
@@ -433,7 +433,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 			editor.execute( 'bulletedList' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul>' +
 				'<li>1{.0</li>' +
 				'<li><a href="foo"><strong>2.0</strong></a></li>' +
@@ -443,9 +443,9 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert todoListChecked attribute change', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">1.0</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">1.0</listItem>' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -458,7 +458,7 @@ describe( 'LegacyTodoListEditing', () => {
 				writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -471,7 +471,7 @@ describe( 'LegacyTodoListEditing', () => {
 				writer.setAttribute( 'todoListChecked', false, modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -482,14 +482,14 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should remove todoListChecked attribute when checked todoListItem is changed to regular list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">f[oo</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">fo]o</listItem>'
 			);
 
 			editor.execute( 'bulletedList' );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="bulleted">f[oo</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">fo]o</listItem>'
 			);
@@ -532,17 +532,17 @@ describe( 'LegacyTodoListEditing', () => {
 				writer.addClass( 'checked', viewElement );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
-			expect( getViewData( view ) ).to.equalMarkup( '<test>{}Foo</test>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
+			expect( _getViewData( view ) ).to.equalMarkup( '<test>{}Foo</test>' );
 
 			model.change( writer => writer.setAttribute( 'todoListChecked', true, modelRoot.getChild( 0 ) ) );
-			expect( getViewData( view ) ).to.equalMarkup( '<test class="checked">{}Foo</test>' );
+			expect( _getViewData( view ) ).to.equalMarkup( '<test class="checked">{}Foo</test>' );
 		} );
 
 		it( 'should render selection after checkmark element in the first text node', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -553,9 +553,9 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should render selection after checkmark element when list item does not contain any text nodes', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]</listItem>' );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -566,7 +566,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should render marker UIElements after the checkmark element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">[]foo</listItem>' +
 				'<listItem listType="todo" listIndent="0">bar</listItem>'
 			);
@@ -602,7 +602,7 @@ describe( 'LegacyTodoListEditing', () => {
 				} );
 			} );
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -626,15 +626,15 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly handle typing inside text node with attribute', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
 
 			editor.execute( 'insertText', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo"><$text bold="true">b[]foo</$text></listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -647,17 +647,17 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly handle typing inside text node with many attributes', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">[]foo</$text></listItem>'
 			);
 
 			editor.execute( 'insertText', { text: 'b' } );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo"><$text bold="true" linkHref="foo">b[]foo</$text></listItem>'
 			);
 
-			expect( getViewData( view ) ).to.equalMarkup(
+			expect( _getViewData( view ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<label class="todo-list__label" contenteditable="false"></label>' +
@@ -670,11 +670,11 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should properly handle enter key in list item containing soft-breaks', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0">[]Foo<softBreak></softBreak>bar</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]Foo<softBreak></softBreak>bar</listItem>' );
 
 			editor.execute( 'enter' );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo"></listItem>' +
 				'<listItem listIndent="0" listType="todo">[]Foo<softBreak></softBreak>bar</listItem>'
 			);
@@ -711,7 +711,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should announce entering and leaving list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>' +
@@ -726,7 +726,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should announce entering and leaving list once, even if there is nested list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="1">1</listItem>' +
@@ -768,7 +768,7 @@ describe( 'LegacyTodoListEditing', () => {
 
 	describe( 'data pipeline m -> v', () => {
 		it( 'should convert to-do list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>'
 			);
@@ -792,7 +792,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert nested to-do list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">2.1</listItem>'
 			);
@@ -818,7 +818,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert to-do list item mixed with bulleted list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">2.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
@@ -860,7 +860,7 @@ describe( 'LegacyTodoListEditing', () => {
 		} );
 
 		it( 'should convert to-do list item mixed with numbered list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="todo" listIndent="0">1.0</listItem>' +
 				'<listItem listType="numbered" listIndent="0">2.0</listItem>' +
 				'<listItem listType="todo" listIndent="1">3.1</listItem>' +
@@ -928,13 +928,13 @@ describe( 'LegacyTodoListEditing', () => {
 				mapper.bindElements( data.item, element );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">Foo</listItem>' );
 
 			expect( editor.getData() ).to.equal( '<test>Foo</test>' );
 		} );
 
 		it( 'should handle links inside to-do list item', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0"><$text linkHref="foo">Foo</$text> Bar</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0"><$text linkHref="foo">Foo</$text> Bar</listItem>' );
 
 			expect( editor.getData() ).to.equal(
 				'<ul class="todo-list">' +
@@ -953,7 +953,7 @@ describe( 'LegacyTodoListEditing', () => {
 		it( 'should convert li with checkbox before the first text node as to-do list item', () => {
 			editor.setData( '<ul><li><input type="checkbox">foo</li></ul>' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]foo</listItem>' );
 		} );
 
 		it( 'should convert li with checked checkbox as checked to-do list item', () => {
@@ -965,7 +965,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]a</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">b</listItem>' +
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">c</listItem>'
@@ -975,13 +975,13 @@ describe( 'LegacyTodoListEditing', () => {
 		it( 'should not convert li with checkbox in the middle of the text', () => {
 			editor.setData( '<ul><li>Foo<input type="checkbox">Bar</li></ul>' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="bulleted">[]FooBar</listItem>' );
 		} );
 
 		it( 'should convert li with checkbox wrapped by inline elements when checkbox is before the first text node', () => {
 			editor.setData( '<ul><li><label><input type="checkbox">Foo</label></li></ul>' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]Foo</listItem>' );
 		} );
 
 		it( 'should split items with checkboxes - bulleted list', () => {
@@ -993,7 +993,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="bulleted">[]foo</listItem>' +
 				'<listItem listIndent="0" listType="todo">bar</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">biz</listItem>'
@@ -1009,7 +1009,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="numbered">[]foo</listItem>' +
 				'<listItem listIndent="0" listType="todo">bar</listItem>' +
 				'<listItem listIndent="0" listType="numbered">biz</listItem>'
@@ -1035,7 +1035,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="bulleted">[]1.1</listItem>' +
 				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
 				'<listItem listIndent="1" listType="todo">3.2</listItem>' +
@@ -1078,7 +1078,7 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo" todoListChecked="true">[]1.1</listItem>' +
 				'<listItem listIndent="1" listType="todo">2.2</listItem>' +
 				'<listItem listIndent="1" listType="todo" todoListChecked="true">3.2</listItem>' +
@@ -1099,17 +1099,17 @@ describe( 'LegacyTodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="numbered">[]foo</listItem>' );
 		} );
 	} );
 
 	describe( 'todoListChecked attribute model post-fixer', () => {
 		it( 'should remove todoListChecked attribute when checked todoListItem is renamed', () => {
-			setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0" todoListChecked="true">fo[]o</listItem>' );
 
 			editor.execute( 'todoList' );
 
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o</paragraph>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>fo[]o</paragraph>' );
 		} );
 	} );
 
@@ -1204,14 +1204,14 @@ describe( 'LegacyTodoListEditing', () => {
 
 		function testArrowKey() {
 			it( 'should jump at the end of the previous node when selection is after checkmark element', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<blockQuote><paragraph>foo</paragraph></blockQuote>' +
 					'<listItem listIndent="0" listType="todo">[]bar</listItem>'
 				);
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<blockQuote><paragraph>foo[]</paragraph></blockQuote>' +
 					'<listItem listIndent="0" listType="todo">bar</listItem>'
 				);
@@ -1221,18 +1221,18 @@ describe( 'LegacyTodoListEditing', () => {
 			} );
 
 			it( 'should prevent default handler when list item is a first block element in the root', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+				_setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+				expect( _getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 			} );
 
 			it( 'should do nothing when selection is not collapsed', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
+				_setModelData( model, '<listItem listIndent="0" listType="todo">[bar]</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
@@ -1241,7 +1241,7 @@ describe( 'LegacyTodoListEditing', () => {
 			} );
 
 			it( 'should do nothing when selection is not at the beginning list item', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+				_setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
@@ -1252,7 +1252,7 @@ describe( 'LegacyTodoListEditing', () => {
 			it( 'should do nothing when other arrow key was pressed', () => {
 				domEvtDataStub.keyCode = getCode( 'arrowUp' );
 
-				setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
+				_setModelData( model, '<listItem listIndent="0" listType="todo">b[]ar</listItem>' );
 
 				viewDoc.fire( 'keydown', domEvtDataStub );
 
@@ -1261,7 +1261,7 @@ describe( 'LegacyTodoListEditing', () => {
 			} );
 
 			it( 'should do nothing when other arrow key was pressed (the selection is at the beginning of text)', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
+				_setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				domEvtDataStub = {
 					keyCode: getCode( 'arrowDown' ),
@@ -1345,7 +1345,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 	} );
 
 	it( 'should render checkbox inside a checkmark UIElement', () => {
-		setModelData( model, '<listItem listIndent="0" listType="todo">foo</listItem>' );
+		_setModelData( model, '<listItem listIndent="0" listType="todo">foo</listItem>' );
 
 		const checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
@@ -1360,7 +1360,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 	} );
 
 	it( 'should render checked checkbox inside a checkmark UIElement', () => {
-		setModelData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' );
+		_setModelData( model, '<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' );
 
 		const checkmarkViewElement = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
 		const checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
@@ -1370,7 +1370,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 	} );
 
 	it( 'should toggle `todoListChecked` state using command when click on checkbox element', () => {
-		setModelData( model,
+		_setModelData( model,
 			'<listItem listIndent="0" listType="todo">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
 		);
@@ -1393,7 +1393,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equalMarkup(
+		expect( _getModelData( model ) ).to.equalMarkup(
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
 		);
@@ -1406,14 +1406,14 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		sinon.assert.calledTwice( command.execute );
 		expect( checkboxElement.checked ).to.equal( false );
-		expect( getModelData( model ) ).to.equalMarkup(
+		expect( _getModelData( model ) ).to.equalMarkup(
 			'<listItem listIndent="0" listType="todo">foo</listItem>' +
 			'<paragraph>b[a]r</paragraph>'
 		);
 	} );
 
 	it( 'should toggle `todoListChecked` state using command when checkmark was created as a result of changing list type', () => {
-		setModelData( model, '<listItem listIndent="0" listType="numbered">f[]oo</listItem>' );
+		_setModelData( model, '<listItem listIndent="0" listType="numbered">f[]oo</listItem>' );
 		editor.execute( 'todoList' );
 
 		const command = editor.commands.get( 'checkTodoList' );
@@ -1434,7 +1434,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model ) ).to.equalMarkup(
+		expect( _getModelData( model ) ).to.equalMarkup(
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
 	} );
@@ -1453,7 +1453,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		sinon.spy( command, 'execute' );
 
-		setModelData( model, '<listItem listIndent="0" listType="todo">f[]oo</listItem>', { rootName: 'dynamicRoot' } );
+		_setModelData( model, '<listItem listIndent="0" listType="todo">f[]oo</listItem>', { rootName: 'dynamicRoot' } );
 
 		let checkmarkViewElement = viewDoc.getRoot( 'dynamicRoot' ).getChild( 0 ).getChild( 0 ).getChild( 0 );
 		let checkmarkDomElement = view.domConverter.mapViewToDom( checkmarkViewElement );
@@ -1469,7 +1469,7 @@ describe( 'TodoListEditing - checkbox rendering', () => {
 
 		sinon.assert.calledOnce( command.execute );
 		expect( checkboxElement.checked ).to.equal( true );
-		expect( getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
+		expect( _getModelData( model, { rootName: 'dynamicRoot' } ) ).to.equal(
 			'<listItem listIndent="0" listType="todo" todoListChecked="true">f[]oo</listItem>'
 		);
 

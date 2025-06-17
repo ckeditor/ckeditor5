@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { Selection, DocumentSelection } from 'ckeditor5/src/engine.js';
+import type { ModelSelection, ModelDocumentSelection } from 'ckeditor5/src/engine.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
 
 import { isBookmarkIdValid } from './utils.js';
@@ -24,7 +24,7 @@ import { isBookmarkIdValid } from './utils.js';
  * editor.execute( 'updateBookmark', { bookmarkId: 'newId' } );
  * ```
  */
-export default class UpdateBookmarkCommand extends Command {
+export class UpdateBookmarkCommand extends Command {
 	/**
 	 * The value of the `'bookmarkId'` attribute.
 	 *
@@ -87,7 +87,7 @@ export default class UpdateBookmarkCommand extends Command {
 /**
  * Returns the selected `bookmark` element in the model, if any.
  */
-function getSelectedBookmark( selection: Selection | DocumentSelection ) {
+function getSelectedBookmark( selection: ModelSelection | ModelDocumentSelection ) {
 	const element = selection.getSelectedElement();
 
 	if ( !!element && element.is( 'element', 'bookmark' ) ) {

@@ -1,7 +1,7 @@
 ### Table mocking tools
 
 Helper tools for preparing test cases like this:
- 
+
 ```javascript
 // +----+----+----+----+----+
 // | 00 | 01 | 02 | 03 | 04 |
@@ -14,7 +14,7 @@ Helper tools for preparing test cases like this:
 // +----+----+----+----+----+
 // | 40 | 41 | 42 | 43 | 44 |
 // +----+----+----+----+----+
-setModelData( model, modelTable( [
+_setModelData( model, modelTable( [
     [ '00', '01', '02', '03', '04' ],
     [ '10', { contents: '11', colspan: 2, rowspan: 2 }, { contents: '13', rowspan: 2 }, '14' ],
     [ '20', '24' ],

@@ -7,31 +7,31 @@
  * @module engine/model/operation/mergeoperation
  */
 
-import Operation from './operation.js';
-import SplitOperation from './splitoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { SplitOperation } from './splitoperation.js';
+import { ModelPosition } from '../position.js';
+import { ModelRange } from '../range.js';
 import { _move } from './utils.js';
 
-import type Document from '../document.js';
-import type Element from '../element.js';
-import type { Selectable } from '../selection.js';
+import { type ModelDocument } from '../document.js';
+import { type ModelElement } from '../element.js';
+import type { ModelSelectable } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Operation to merge two {@link module:engine/model/element~Element elements}.
+ * Operation to merge two {@link module:engine/model/element~ModelElement elements}.
  *
  * The merged element is the parent of {@link ~MergeOperation#sourcePosition} and it is merged into the parent of
  * {@link ~MergeOperation#targetPosition}. All nodes from the merged element are moved to {@link ~MergeOperation#targetPosition}.
  *
  * The merged element is moved to the graveyard at {@link ~MergeOperation#graveyardPosition}.
  */
-export default class MergeOperation extends Operation {
+export class MergeOperation extends Operation {
 	/**
 	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link #targetPosition}.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Summary offset size of nodes which will be moved from the merged element to the new parent.
@@ -41,12 +41,12 @@ export default class MergeOperation extends Operation {
 	/**
 	 * Position which the nodes from the merged elements will be moved to.
 	 */
-	public targetPosition: Position;
+	public targetPosition: ModelPosition;
 
 	/**
 	 * Position in graveyard to which the merged element will be moved.
 	 */
-	public graveyardPosition: Position;
+	public graveyardPosition: ModelPosition;
 
 	/**
 	 * Creates a merge operation.
@@ -56,14 +56,14 @@ export default class MergeOperation extends Operation {
 	 * @param howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param graveyardPosition Position in graveyard to which the merged element will be moved.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
-		sourcePosition: Position,
+		sourcePosition: ModelPosition,
 		howMany: number,
-		targetPosition: Position,
-		graveyardPosition: Position,
+		targetPosition: ModelPosition,
+		graveyardPosition: ModelPosition,
 		baseVersion: number | null
 	) {
 		super( baseVersion );
@@ -91,32 +91,32 @@ export default class MergeOperation extends Operation {
 	/**
 	 * Position before the merged element (which will be deleted).
 	 */
-	public get deletionPosition(): Position {
-		return new Position( this.sourcePosition.root, this.sourcePosition.path.slice( 0, -1 ) );
+	public get deletionPosition(): ModelPosition {
+		return new ModelPosition( this.sourcePosition.root, this.sourcePosition.path.slice( 0, -1 ) );
 	}
 
 	/**
 	 * Artificial range that contains all the nodes from the merged element that will be moved to {@link ~MergeOperation#sourcePosition}.
 	 * The range starts at {@link ~MergeOperation#sourcePosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
 	 */
-	public get movedRange(): Range {
+	public get movedRange(): ModelRange {
 		const end = this.sourcePosition.getShiftedBy( Number.POSITIVE_INFINITY );
 
-		return new Range( this.sourcePosition, end );
+		return new ModelRange( this.sourcePosition, end );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
-		const mergedElement = this.sourcePosition.parent as Element;
+	public get affectedSelectable(): ModelSelectable {
+		const mergedElement = this.sourcePosition.parent as ModelElement;
 
 		return [
-			Range._createOn( mergedElement ),
+			ModelRange._createOn( mergedElement ),
 
 			// These could be positions but `Selectable` type only supports `Iterable<Range>`.
-			Range._createFromPositionAndShift( this.targetPosition, 0 ),
-			Range._createFromPositionAndShift( this.graveyardPosition, 0 )
+			ModelRange._createFromPositionAndShift( this.targetPosition, 0 ),
+			ModelRange._createFromPositionAndShift( this.graveyardPosition, 0 )
 		];
 	}
 
@@ -137,7 +137,7 @@ export default class MergeOperation extends Operation {
 		const targetPosition = this.targetPosition._getTransformedByMergeOperation( this );
 
 		const path = this.sourcePosition.path.slice( 0, -1 );
-		const insertionPosition = new Position( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
+		const insertionPosition = new ModelPosition( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
 
 		return new SplitOperation( targetPosition, this.howMany, insertionPosition, this.graveyardPosition, this.baseVersion! + 1 );
 	}
@@ -180,11 +180,11 @@ export default class MergeOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		const mergedElement = this.sourcePosition.parent as Element;
-		const sourceRange = Range._createIn( mergedElement );
+		const mergedElement = this.sourcePosition.parent as ModelElement;
+		const sourceRange = ModelRange._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );
-		_move( Range._createOn( mergedElement ), this.graveyardPosition );
+		_move( ModelRange._createOn( mergedElement ), this.graveyardPosition );
 	}
 
 	/**
@@ -213,10 +213,10 @@ export default class MergeOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): MergeOperation {
-		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
-		const targetPosition = Position.fromJSON( json.targetPosition, document );
-		const graveyardPosition = Position.fromJSON( json.graveyardPosition, document );
+	public static override fromJSON( json: any, document: ModelDocument ): MergeOperation {
+		const sourcePosition = ModelPosition.fromJSON( json.sourcePosition, document );
+		const targetPosition = ModelPosition.fromJSON( json.targetPosition, document );
+		const graveyardPosition = ModelPosition.fromJSON( json.graveyardPosition, document );
 
 		return new this( sourcePosition, json.howMany, targetPosition, graveyardPosition, json.baseVersion );
 	}

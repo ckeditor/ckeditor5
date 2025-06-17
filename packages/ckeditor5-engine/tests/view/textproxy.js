@@ -3,31 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TextProxy from '../../src/view/textproxy.js';
-import Text from '../../src/view/text.js';
-import ContainerElement from '../../src/view/containerelement.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import RootEditableElement from '../../src/view/rooteditableelement.js';
+import { ViewTextProxy } from '../../src/view/textproxy.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
+import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import Document from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy, document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
-		text = new Text( document, 'abcdefgh' );
-		parent = new ContainerElement( document, 'p', [], [ text ] );
-		wrapper = new ContainerElement( document, 'div', [], parent );
+		document = new ViewDocument( new StylesProcessor() );
+		text = new ViewText( document, 'abcdefgh' );
+		parent = new ViewContainerElement( document, 'p', [], [ text ] );
+		wrapper = new ViewContainerElement( document, 'div', [], parent );
 
-		textProxy = new TextProxy( text, 2, 3 );
+		textProxy = new ViewTextProxy( text, 2, 3 );
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create TextProxy instance with specified properties', () => {
+		it( 'should create ViewTextProxy instance with specified properties', () => {
 			expect( textProxy ).to.have.property( 'parent' ).to.equal( parent );
 			expect( textProxy ).to.have.property( 'data' ).to.equal( 'cde' );
 			expect( textProxy ).to.have.property( 'textNode' ).to.equal( text );
@@ -35,8 +35,8 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should have isPartial property', () => {
-			const startTextProxy = new TextProxy( text, 0, 4 );
-			const fullTextProxy = new TextProxy( text, 0, 8 );
+			const startTextProxy = new ViewTextProxy( text, 0, 4 );
+			const fullTextProxy = new ViewTextProxy( text, 0, 8 );
 
 			expect( textProxy.isPartial ).to.be.true;
 			expect( startTextProxy.isPartial ).to.be.true;
@@ -45,21 +45,21 @@ describe( 'TextProxy', () => {
 
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, -1, 2 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-offsetintext/ );
 
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 9, 1 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 2, -1 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-length/ );
 
 			expectToThrowCKEditorError( () => {
-				new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
+				new ViewTextProxy( text, 2, 9 ); // eslint-disable-line no-new
 			}, /view-textproxy-wrong-length/ );
 		} );
 	} );
@@ -96,7 +96,7 @@ describe( 'TextProxy', () => {
 
 	describe( 'getDocument', () => {
 		it( 'should return Document attached to the parent element', () => {
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 
 			wrapper.parent = root;
 
@@ -104,7 +104,7 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should return Document if element is inside DocumentFragment', () => {
-			new DocumentFragment( document, [ wrapper ] ); // eslint-disable-line no-new
+			new ViewDocumentFragment( document, [ wrapper ] ); // eslint-disable-line no-new
 
 			expect( textProxy.document ).to.equal( document );
 		} );
@@ -112,8 +112,8 @@ describe( 'TextProxy', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
-			const docMock = createDocumentMock();
-			const root = new RootEditableElement( docMock, 'div' );
+			const docMock = createViewDocumentMock();
+			const root = new ViewRootEditableElement( docMock, 'div' );
 
 			wrapper.parent = root;
 

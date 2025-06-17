@@ -2,6 +2,7 @@
 category: source-code-editing
 menu-title: Source code editing
 meta-title: Source code editing | CKEditor 5 Documentation
+meta-description: Edit HTML source code directly in CKEditor 5 with the Source Editing feature for greater control and customization of your content.
 modified_at: 2024-02-06
 order: 10
 ---

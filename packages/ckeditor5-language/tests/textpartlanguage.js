@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TextPartLanguage from '../src/textpartlanguage.js';
-import TextPartLanguageEditing from '../src/textpartlanguageediting.js';
-import TextPartLanguageUI from '../src/textpartlanguageui.js';
+import { TextPartLanguage } from '../src/textpartlanguage.js';
+import { TextPartLanguageEditing } from '../src/textpartlanguageediting.js';
+import { TextPartLanguageUI } from '../src/textpartlanguageui.js';
 
 describe( 'TextPartLanguage', () => {
 	it( 'should require TextPartLanguageEditing and TextPartLanguageUI', () => {

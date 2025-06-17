@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
-import TableSelection from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import SelectColumnCommand from '../../src/commands/selectcolumncommand.js';
+import { SelectColumnCommand } from '../../src/commands/selectcolumncommand.js';
 
 describe( 'SelectColumnCommand', () => {
 	let editor, model, modelRoot, command, tableSelection;
@@ -39,7 +39,7 @@ describe( 'SelectColumnCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true if the selection is inside table cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -48,7 +48,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should be true if the selection contains multiple cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -63,7 +63,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should be true if the selection is inside the table and the editor is read-only', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]' ]
 			] ) );
 
@@ -73,7 +73,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should be false if the selection is outside a table', () => {
-			setData( model, '<paragraph>11[]</paragraph>' );
+			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -81,7 +81,7 @@ describe( 'SelectColumnCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should select a column of a table cell with a collapsed selection', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '[]11', '12' ],
 				[ '20', '21', '22' ]
@@ -97,7 +97,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should select a column of table cell with a collapsed selection in first table cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -113,7 +113,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should select a column of table cell with a collapsed selection in last cell in the first column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20[]', '21' ]
@@ -129,7 +129,7 @@ describe( 'SelectColumnCommand', () => {
 		} );
 
 		it( 'should select a column of table cell with collapsed selection in the first cell of the last column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '11' ]
 			] ) );
@@ -155,7 +155,7 @@ describe( 'SelectColumnCommand', () => {
 				// +----+----+----+----+
 				// | 40 | 41 | 42 | 43 |
 				// +----+----+----+----+
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { colspan: 4, contents: '00' } ],
 					[ { colspan: 3, contents: '10' }, '13' ],
 					[ { colspan: 2, contents: '20' }, '22', '23' ],
@@ -317,7 +317,7 @@ describe( 'SelectColumnCommand', () => {
 
 		describe( 'with multiple columns selected', () => {
 			beforeEach( () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ '10', '11', '12', '13' ],
 					[ '20', '21', '22', '23' ]
@@ -400,7 +400,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should support selecting mixed heading and cell columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ],
 					[ '10', '11', '12', '13' ],
 					[ '20', '21', '22', '23' ]
@@ -423,7 +423,7 @@ describe( 'SelectColumnCommand', () => {
 
 		describe( 'with entire column selected', () => {
 			it( 'should select a column if all its cells are selected', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ]
@@ -444,7 +444,7 @@ describe( 'SelectColumnCommand', () => {
 			} );
 
 			it( 'should properly select column if reversed selection is made', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );

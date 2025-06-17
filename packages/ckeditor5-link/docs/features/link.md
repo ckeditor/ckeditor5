@@ -1,6 +1,7 @@
 ---
 title: Link
 meta-title: Links | CKEditor 5 Documentation
+meta-description: Add, edit, and customize links in CKEditor 5 to easily connect your content to external URLs, email addresses, or internal resources.
 category: features
 modified_at: 2025-04-07
 ---

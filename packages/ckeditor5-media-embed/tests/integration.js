@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MediaEmbed from '../src/mediaembed.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { MediaEmbed } from '../src/mediaembed.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { enableViewPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
 
 describe( 'MediaEmbed integration', () => {
 	let element, clock;
@@ -33,7 +33,7 @@ describe( 'MediaEmbed integration', () => {
 			const editingRoot = editor.editing.view.document.getRoot();
 
 			editingRoot.placeholder = 'foo';
-			enablePlaceholder( {
+			enableViewPlaceholder( {
 				view: editor.editing.view,
 				element: editingRoot,
 				isDirectHost: false
@@ -51,7 +51,7 @@ describe( 'MediaEmbed integration', () => {
 
 			clock.tick( 100 );
 
-			expect( getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected media" contenteditable="false" data-placeholder="foo">' +
 					'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=H08tGjXNHO4"></div>' +
 					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +

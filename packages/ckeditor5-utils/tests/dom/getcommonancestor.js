@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getCommonAncestor from '../../src/dom/getcommonancestor.js';
-import createElement from '../../src/dom/createelement.js';
+import { getCommonAncestor } from '../../src/dom/getcommonancestor.js';
+import { createElement } from '../../src/dom/createelement.js';
 
 describe( 'getParents', () => {
 	let b, span1, span2, p1, p2, i, div;

@@ -2,6 +2,7 @@
 title: Removing text formatting
 menu-title: Remove formatting
 meta-title: Removing text formatting | CKEditor 5 Documentation
+meta-description: Use the Remove Format feature in CKEditor 5 to clear text styling and return content to its default, unformatted state.
 category: features
 ---
 
@@ -92,7 +93,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-From now on, the remove format button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
+From now on, the remove format button should also remove links in the content. {@link module:engine/model/schema~ModelSchema#setAttributeProperties Learn more about attribute properties.}
 
 ## Related features
 

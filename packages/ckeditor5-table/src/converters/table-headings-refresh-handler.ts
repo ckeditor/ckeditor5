@@ -9,11 +9,11 @@
 
 import type {
 	EditingController,
-	Element,
+	ModelElement,
 	Model
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker from '../tablewalker.js';
+import { TableWalker } from '../tablewalker.js';
 
 /**
  * A table headings refresh handler which marks the table cells or rows in the differ to have it re-rendered
@@ -22,8 +22,10 @@ import TableWalker from '../tablewalker.js';
  * Table heading rows and heading columns are represented in the model by a `headingRows` and `headingColumns` attributes.
  *
  * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
+ *
+ * @internal
  */
-export default function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
+export function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 
 	for ( const change of differ.getChanges() ) {
@@ -64,7 +66,7 @@ export default function tableHeadingsRefreshHandler( model: Model, editing: Edit
 			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
 
 			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as Element );
+				editing.reconvertItem( ( isRowChange ? tableSlot.cell.parent : tableSlot.cell ) as ModelElement );
 			}
 		}
 	}

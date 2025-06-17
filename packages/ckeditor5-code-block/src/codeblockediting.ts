@@ -11,22 +11,22 @@ import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 
 import {
-	UpcastWriter,
-	type Range,
-	type Node,
+	ViewUpcastWriter,
+	type ModelRange,
+	type ModelNode,
 	type ModelGetSelectedContentEvent,
 	type ViewDocumentTabEvent,
 	type DowncastInsertEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
-	type Element,
+	type ModelElement,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
-import CodeBlockCommand from './codeblockcommand.js';
-import IndentCodeBlockCommand from './indentcodeblockcommand.js';
-import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
+import { CodeBlockCommand } from './codeblockcommand.js';
+import { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
+import { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
@@ -49,7 +49,7 @@ const DEFAULT_ELEMENT = 'paragraph';
  *
  * Introduces the `'codeBlock'` command and the `'codeBlock'` model element.
  */
-export default class CodeBlockEditing extends Plugin {
+export class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -192,7 +192,7 @@ export default class CodeBlockEditing extends Plugin {
 			}
 
 			const text = data.dataTransfer.getData( 'text/plain' );
-			const writer = new UpcastWriter( editor.editing.view.document );
+			const writer = new ViewUpcastWriter( editor.editing.view.document );
 
 			// Pass the view fragment to the default clipboardInput handler.
 			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
@@ -316,7 +316,7 @@ export default class CodeBlockEditing extends Plugin {
 		const { model, ui, t } = this.editor;
 		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
 
-		let lastFocusedCodeBlock: Element | null = null;
+		let lastFocusedCodeBlock: ModelElement | null = null;
 
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
@@ -418,7 +418,7 @@ function leaveBlockStartOnEnter( editor: Editor, isSoftEnter: boolean ): boolean
 		editor.execute( 'enter' );
 
 		// The cloned block exists now before the original code block.
-		const newBlock = modelDoc.selection.anchor!.parent.previousSibling! as Element;
+		const newBlock = modelDoc.selection.anchor!.parent.previousSibling! as ModelElement;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
@@ -460,7 +460,7 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const nodeBefore = lastSelectionPosition.nodeBefore;
 
-	let emptyLineRangeToRemoveOnEnter: Range;
+	let emptyLineRangeToRemoveOnEnter: ModelRange;
 
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
@@ -541,7 +541,7 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
-		const newBlock = modelDoc.selection.anchor!.parent as Element;
+		const newBlock = modelDoc.selection.anchor!.parent as ModelElement;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
@@ -554,10 +554,10 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	return true;
 }
 
-function isEmptyishTextNode( node: Node | null ) {
+function isEmptyishTextNode( node: ModelNode | null ) {
 	return node && node.is( '$text' ) && !node.data.match( /\S/ );
 }
 
-function isSoftBreakNode( node: Node | null ) {
+function isSoftBreakNode( node: ModelNode | null ) {
 	return node && node.is( 'element', 'softBreak' );
 }

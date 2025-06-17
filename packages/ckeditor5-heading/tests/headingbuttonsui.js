@@ -4,11 +4,11 @@
  */
 
 import { IconHeading2 } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import HeadingEditing from '../src/headingediting.js';
-import HeadingButtonsUI from '../src/headingbuttonsui.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { HeadingEditing } from '../src/headingediting.js';
+import { HeadingButtonsUI } from '../src/headingbuttonsui.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { getLocalizedOptions } from '../src/utils.js';
 
 describe( 'HeadingButtonUI', () => {
@@ -39,7 +39,7 @@ describe( 'HeadingButtonUI', () => {
 					editor = newEditor;
 
 					// Set data so the commands will be enabled.
-					setData( editor.model, '<heading1>f{}oo</heading1>' );
+					_setModelData( editor.model, '<heading1>f{}oo</heading1>' );
 				} );
 		} );
 
@@ -82,7 +82,7 @@ describe( 'HeadingButtonUI', () => {
 			expect( headingCommand.value ).to.equal( 'heading1' );
 			expect( headingButton.isOn ).to.be.true;
 
-			setData( editor.model, '<heading2>f{}oo</heading2>' );
+			_setModelData( editor.model, '<heading2>f{}oo</heading2>' );
 
 			expect( headingCommand.value ).to.equal( 'heading2' );
 			expect( headingButton.isOn ).to.be.false;
@@ -132,7 +132,7 @@ describe( 'HeadingButtonUI', () => {
 					editor = newEditor;
 
 					// Set data so the commands will be enabled.
-					setData( editor.model, '<heading1>f{}oo</heading1>' );
+					_setModelData( editor.model, '<heading1>f{}oo</heading1>' );
 				} );
 		} );
 

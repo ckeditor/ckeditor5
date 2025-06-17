@@ -8,41 +8,41 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine.js';
+import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
+import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
 
-import InsertTableCommand from './commands/inserttablecommand.js';
-import InsertRowCommand from './commands/insertrowcommand.js';
-import InsertColumnCommand from './commands/insertcolumncommand.js';
-import SplitCellCommand from './commands/splitcellcommand.js';
-import MergeCellCommand from './commands/mergecellcommand.js';
-import RemoveRowCommand from './commands/removerowcommand.js';
-import RemoveColumnCommand from './commands/removecolumncommand.js';
-import SetHeaderRowCommand from './commands/setheaderrowcommand.js';
-import SetHeaderColumnCommand from './commands/setheadercolumncommand.js';
-import MergeCellsCommand from './commands/mergecellscommand.js';
-import SelectRowCommand from './commands/selectrowcommand.js';
-import SelectColumnCommand from './commands/selectcolumncommand.js';
-import TableUtils from '../src/tableutils.js';
+import { InsertTableCommand } from './commands/inserttablecommand.js';
+import { InsertRowCommand } from './commands/insertrowcommand.js';
+import { InsertColumnCommand } from './commands/insertcolumncommand.js';
+import { SplitCellCommand } from './commands/splitcellcommand.js';
+import { MergeCellCommand } from './commands/mergecellcommand.js';
+import { RemoveRowCommand } from './commands/removerowcommand.js';
+import { RemoveColumnCommand } from './commands/removecolumncommand.js';
+import { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+import { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
+import { MergeCellsCommand } from './commands/mergecellscommand.js';
+import { SelectRowCommand } from './commands/selectrowcommand.js';
+import { SelectColumnCommand } from './commands/selectcolumncommand.js';
+import { TableUtils } from '../src/tableutils.js';
 
-import injectTableLayoutPostFixer from './converters/table-layout-post-fixer.js';
-import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer.js';
+import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
+import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 
-import tableHeadingsRefreshHandler from './converters/table-headings-refresh-handler.js';
-import tableCellRefreshHandler from './converters/table-cell-refresh-handler.js';
+import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
+import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 
 import '../theme/tableediting.css';
 
 /**
  * The table editing feature.
  */
-export default class TableEditing extends Plugin {
+export class TableEditing extends Plugin {
 	/**
 	 * Handlers for creating additional slots in the table.
 	 */
-	private _additionalSlots: Array<AdditionalSlot>;
+	private _additionalSlots: Array<TableConversionAdditionalSlot>;
 
 	/**
 	 * @inheritDoc
@@ -219,7 +219,7 @@ export default class TableEditing extends Plugin {
 	/**
 	 * Registers downcast handler for the additional table slot.
 	 */
-	public registerAdditionalSlot( slotHandler: AdditionalSlot ): void {
+	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
 	}
 }
@@ -290,15 +290,15 @@ function upcastCellSpan( type: string ) {
  * </table>
  * ```
  */
-export interface AdditionalSlot {
+export interface TableConversionAdditionalSlot {
 
 	/**
 	 * Filter for elements that should be placed inside given slot.
 	 */
-	filter: SlotFilter;
+	filter: DowncastSlotFilter;
 
 	/**
 	 * Position of the slot within the table.
 	 */
-	positionOffset: PositionOffset;
+	positionOffset: ModelPositionOffset;
 }

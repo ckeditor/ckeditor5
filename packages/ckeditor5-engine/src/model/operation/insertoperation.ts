@@ -7,36 +7,36 @@
  * @module engine/model/operation/insertoperation
  */
 
-import Operation from './operation.js';
-import Position from '../position.js';
-import NodeList from '../nodelist.js';
-import MoveOperation from './moveoperation.js';
-import { _insert, _normalizeNodes, type NodeSet } from './utils.js';
-import Text from '../text.js';
-import Element from '../element.js';
-import type { Selectable } from '../selection.js';
+import { Operation } from './operation.js';
+import { ModelPosition } from '../position.js';
+import { ModelNodeList } from '../nodelist.js';
+import { MoveOperation } from './moveoperation.js';
+import { _insert, _normalizeNodes, type ModelNodeSet } from './utils.js';
+import { ModelText } from '../text.js';
+import { ModelElement } from '../element.js';
+import type { ModelSelectable } from '../selection.js';
 
-import type Document from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to insert one or more nodes at given position in the model.
  */
-export default class InsertOperation extends Operation {
+export class InsertOperation extends Operation {
 	/**
 	 * Position of insertion.
 	 *
 	 * @readonly
 	 */
-	public position: Position;
+	public position: ModelPosition;
 
 	/**
 	 * List of nodes to insert.
 	 *
 	 * @readonly
 	 */
-	public nodes: NodeList;
+	public nodes: ModelNodeList;
 
 	/**
 	 * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
@@ -50,15 +50,15 @@ export default class InsertOperation extends Operation {
 	 *
 	 * @param position Position of insertion.
 	 * @param nodes The list of nodes to be inserted.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( position: Position, nodes: NodeSet, baseVersion: number | null ) {
+	constructor( position: ModelPosition, nodes: ModelNodeSet, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.position = position.clone();
 		this.position.stickiness = 'toNone';
-		this.nodes = new NodeList( _normalizeNodes( nodes ) );
+		this.nodes = new ModelNodeList( _normalizeNodes( nodes ) );
 		this.shouldReceiveAttributes = false;
 	}
 
@@ -79,7 +79,7 @@ export default class InsertOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.position.clone();
 	}
 
@@ -87,7 +87,7 @@ export default class InsertOperation extends Operation {
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): InsertOperation {
-		const nodes = new NodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
+		const nodes = new ModelNodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
 		const insert = new InsertOperation( this.position, nodes, this.baseVersion );
 
 		insert.shouldReceiveAttributes = this.shouldReceiveAttributes;
@@ -100,7 +100,7 @@ export default class InsertOperation extends Operation {
 	 */
 	public getReversed(): Operation {
 		const graveyard = this.position.root.document!.graveyard;
-		const gyPosition = new Position( graveyard, [ 0 ] );
+		const gyPosition = new ModelPosition( graveyard, [ 0 ] );
 
 		return new MoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion! + 1 );
 	}
@@ -135,7 +135,7 @@ export default class InsertOperation extends Operation {
 		// to the operation, not modified. For example, text nodes can get merged or cropped while Elements can
 		// get children. It is important that InsertOperation has the copy of original nodes in intact state.
 		const originalNodes = this.nodes;
-		this.nodes = new NodeList( [ ...originalNodes ].map( node => node._clone( true ) ) );
+		this.nodes = new ModelNodeList( [ ...originalNodes ].map( node => node._clone( true ) ) );
 
 		_insert( this.position, originalNodes );
 	}
@@ -165,20 +165,20 @@ export default class InsertOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): InsertOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): InsertOperation {
 		const children = [];
 
 		for ( const child of json.nodes ) {
 			if ( child.name ) {
 				// If child has name property, it is an Element.
-				children.push( Element.fromJSON( child ) );
+				children.push( ModelElement.fromJSON( child ) );
 			} else {
 				// Otherwise, it is a Text node.
-				children.push( Text.fromJSON( child ) );
+				children.push( ModelText.fromJSON( child ) );
 			}
 		}
 
-		const insert = new InsertOperation( Position.fromJSON( json.position, document ), children, json.baseVersion );
+		const insert = new InsertOperation( ModelPosition.fromJSON( json.position, document ), children, json.baseVersion );
 		insert.shouldReceiveAttributes = json.shouldReceiveAttributes;
 
 		return insert;

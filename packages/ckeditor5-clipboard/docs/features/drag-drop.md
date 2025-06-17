@@ -1,7 +1,7 @@
 ---
 menu-title: Drag and drop
 meta-title: Drag and drop | CKEditor 5 Documentation
-meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor 5
+meta-description: Learn all about using the drag and drop mechanism to manage content and uploads in CKEditor 5.
 category: features
 ---
 

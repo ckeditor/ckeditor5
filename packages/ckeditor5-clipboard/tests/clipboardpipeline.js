@@ -3,25 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClipboardPipeline from '../src/clipboardpipeline.js';
-import ClipboardObserver from '../src/clipboardobserver.js';
-import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ClipboardPipeline } from '../src/clipboardpipeline.js';
+import { ClipboardObserver } from '../src/clipboardobserver.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import {
-	stringify as stringifyView,
-	parse as parseView
+	_stringifyView,
+	_parseView
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import {
-	stringify as stringifyModel,
-	setData as setModelData,
-	getData as getModelData
+	_stringifyModel,
+	_setModelData,
+	_getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ClipboardPipeline feature', () => {
 	let editor, view, viewDocument, clipboardPlugin, scrollSpy;
@@ -91,7 +92,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyView( data.content ) ).to.equal( '<p>x</p>' );
+					expect( _stringifyView( data.content ) ).to.equal( '<p>x</p>' );
 
 					done();
 				} );
@@ -110,7 +111,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph>' );
+					expect( _stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph>' );
 
 					done();
 				} );
@@ -150,7 +151,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
+					expect( _stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
 
 					done();
 				} );
@@ -170,7 +171,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph><paragraph>y  z</paragraph>' );
+					expect( _stringifyModel( data.content ) ).to.equal( '<paragraph>x</paragraph><paragraph>y  z</paragraph>' );
 
 					done();
 				} );
@@ -191,7 +192,7 @@ describe( 'ClipboardPipeline feature', () => {
 				viewDocument.on( 'clipboardInput', ( evt, data ) => {
 					const fragment = new ViewDocumentFragment();
 
-					fragment._appendChild( parseView( '<p>foo</p>' ) );
+					fragment._appendChild( _parseView( '<p>foo</p>' ) );
 					data.content = fragment;
 				} );
 
@@ -199,7 +200,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyView( data.content ) ).to.equal( '<p>foo</p>' );
+					expect( _stringifyView( data.content ) ).to.equal( '<p>foo</p>' );
 
 					done();
 				} );
@@ -217,7 +218,7 @@ describe( 'ClipboardPipeline feature', () => {
 				viewDocument.on( 'clipboardInput', ( evt, data ) => {
 					const fragment = new ViewDocumentFragment();
 
-					fragment._appendChild( parseView( '<p>foo</p>' ) );
+					fragment._appendChild( _parseView( '<p>foo</p>' ) );
 					data.content = fragment;
 				} );
 
@@ -225,7 +226,7 @@ describe( 'ClipboardPipeline feature', () => {
 					expect( data.content ).is.instanceOf( ModelDocumentFragment );
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.method ).to.equal( 'paste' );
-					expect( stringifyModel( data.content ) ).to.equal( '<paragraph>foo</paragraph>' );
+					expect( _stringifyModel( data.content ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 					done();
 				} );
@@ -253,7 +254,7 @@ describe( 'ClipboardPipeline feature', () => {
 			clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 				expect( data.content ).is.instanceOf( ViewDocumentFragment );
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
-				expect( stringifyView( data.content ) ).to.equal( '' );
+				expect( _stringifyView( data.content ) ).to.equal( '' );
 
 				expect( editorViewCalled.calledOnce ).to.be.true;
 
@@ -295,7 +296,7 @@ describe( 'ClipboardPipeline feature', () => {
 			} );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
+			expect( _stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
 		} );
 
 		it( 'does not insert content when editor is read-only', () => {
@@ -369,7 +370,7 @@ describe( 'ClipboardPipeline feature', () => {
 			} );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( 'x<paragraph>y</paragraph>' );
+			expect( _stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( 'x<paragraph>y</paragraph>' );
 		} );
 
 		it( 'does nothing when pasted content is empty', () => {
@@ -438,7 +439,7 @@ describe( 'ClipboardPipeline feature', () => {
 				type: 'application/zip',
 				size: 1024
 			};
-			const dataTransferMock = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => {} } );
+			const dataTransferMock = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => {} } );
 			const spy = sinon.spy();
 
 			viewDocument.fire( 'drop', {
@@ -483,7 +484,7 @@ describe( 'ClipboardPipeline feature', () => {
 			it( 'should contain an editor ID when pasting content copied from the same editor (in dataTransfer)', () => {
 				const spy = sinon.spy();
 
-				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
 
 				// Copy selected content.
 				const dataTransferMock = createDataTransfer();
@@ -510,7 +511,7 @@ describe( 'ClipboardPipeline feature', () => {
 			it( 'should contain an editor ID when pasting content copied from the same editor', () => {
 				const spy = sinon.spy();
 
-				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
 
 				// Copy selected content.
 				const dataTransferMock = createDataTransfer();
@@ -592,7 +593,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			_setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			clipboardPlugin.on( 'outputTransformation', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
@@ -600,7 +601,7 @@ describe( 'ClipboardPipeline feature', () => {
 				expect( data.method ).to.equal( 'copy' );
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.content ).is.instanceOf( ModelDocumentFragment );
-				expect( stringifyModel( data.content ) ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
+				expect( _stringifyModel( data.content ) ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
 				done();
 			} );
 
@@ -615,7 +616,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const preventDefaultSpy = sinon.spy();
 			const toViewSpy = sinon.spy( editor.data, 'toView' );
 
-			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			_setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			clipboardPlugin.on( 'outputTransformation', ( evt, data ) => {
 				expect( toViewSpy ).calledWithExactly( data.content, { isClipboardPipeline: true } );
@@ -633,7 +634,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			_setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
@@ -642,7 +643,7 @@ describe( 'ClipboardPipeline feature', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 
 				expect( data.content ).is.instanceOf( ViewDocumentFragment );
-				expect( stringifyView( data.content ) ).to.equal( '<p>bc</p><p>de</p>' );
+				expect( _stringifyView( data.content ) ).to.equal( '<p>bc</p><p>de</p>' );
 
 				done();
 			} );
@@ -657,7 +658,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const preventDefaultSpy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			_setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
 			viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 				expect( data.method ).to.equal( 'cut' );
@@ -676,7 +677,7 @@ describe( 'ClipboardPipeline feature', () => {
 			const preventDefaultSpy = sinon.spy();
 			const spy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+			_setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 			editor.enableReadOnlyMode( 'unit-test' );
 
 			viewDocument.on( 'clipboardOutput', spy );
@@ -751,7 +752,7 @@ describe( 'ClipboardPipeline feature', () => {
 
 			viewDocument.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
-				content: parseView( input ),
+				content: _parseView( input ),
 				method: 'copy'
 			} );
 
@@ -798,7 +799,7 @@ describe( 'ClipboardPipeline feature', () => {
 
 			viewDocument.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
-				content: parseView( input ),
+				content: _parseView( input ),
 				method: 'copy'
 			} );
 
@@ -820,7 +821,7 @@ describe( 'ClipboardPipeline feature', () => {
 		it( 'deletes selected content in case of cut', () => {
 			const dataTransferMock = createDataTransfer();
 
-			setModelData( editor.model, '<paragraph>f[o</paragraph><paragraph>x]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o</paragraph><paragraph>x]o</paragraph>' );
 
 			// Change block is only to get writer instance.
 			// Writer should not be passed along this event.
@@ -833,7 +834,7 @@ describe( 'ClipboardPipeline feature', () => {
 				} );
 			} );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>f[]o</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>f[]o</paragraph>' );
 		} );
 
 		it( 'uses low priority observer for the clipboardOutput event', () => {

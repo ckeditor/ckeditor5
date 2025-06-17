@@ -7,8 +7,8 @@
  * @module editor-classic/classiceditor
  */
 
-import ClassicEditorUI from './classiceditorui.js';
-import ClassicEditorUIView from './classiceditoruiview.js';
+import { ClassicEditorUI } from './classiceditorui.js';
+import { ClassicEditorUIView } from './classiceditoruiview.js';
 
 import {
 	Editor,
@@ -28,7 +28,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a classic editor instance, use the static
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method.
  */
-export default class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

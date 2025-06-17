@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
-import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import {
 	downcastImageAttribute,
@@ -17,16 +17,16 @@ import {
 	upcastImageFigure
 } from './converters.js';
 
-import ImageEditing from './imageediting.js';
-import ImageSizeAttributes from '../imagesizeattributes.js';
-import ImageTypeCommand from './imagetypecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageEditing } from './imageediting.js';
+import { ImageSizeAttributes } from '../imagesizeattributes.js';
+import { ImageTypeCommand } from './imagetypecommand.js';
+import { ImageUtils } from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from './utils.js';
-import ImagePlaceholder from './imageplaceholder.js';
+import { ImagePlaceholder } from './imageplaceholder.js';
 
 /**
  * The image block plugin.
@@ -38,7 +38,7 @@ import ImagePlaceholder from './imageplaceholder.js';
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeBlock'`} command that converts inline images into
  * block images.
  */
-export default class ImageBlockEditing extends Plugin {
+export class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -175,7 +175,7 @@ export default class ImageBlockEditing extends Plugin {
 				// Convert inline images into block images only when the currently selected block is empty
 				// (e.g. an empty paragraph) or some object is selected (to replace it).
 				if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageBlock' ) {
-					const writer = new UpcastWriter( editingView.document );
+					const writer = new ViewUpcastWriter( editingView.document );
 
 					// Wrap <img ... /> -> <figure class="image"><img .../></figure>
 					const blockViewImages = docFragmentChildren.map(

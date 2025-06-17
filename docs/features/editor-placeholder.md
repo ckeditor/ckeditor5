@@ -1,6 +1,7 @@
 ---
 category: features
 meta-title: Editor placeholder | CKEditor 5 Documentation
+meta-description: Learn how to configure and style CKEditor 5 placeholder text—set via textarea or config, customize with CSS, and update it dynamically in your editor.
 ---
 
 # Editor placeholder

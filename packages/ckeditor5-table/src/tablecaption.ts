@@ -8,15 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import TableCaptionEditing from './tablecaption/tablecaptionediting.js';
-import TableCaptionUI from './tablecaption/tablecaptionui.js';
+import { TableCaptionEditing } from './tablecaption/tablecaptionediting.js';
+import { TableCaptionUI } from './tablecaption/tablecaptionui.js';
 
 import '../theme/tablecaption.css';
 
 /**
  * The table caption plugin.
  */
-export default class TableCaption extends Plugin {
+export class TableCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

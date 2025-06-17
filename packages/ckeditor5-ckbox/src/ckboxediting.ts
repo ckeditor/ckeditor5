@@ -9,24 +9,24 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
-	Range,
-	type DocumentSelection,
+	ModelRange,
+	type ModelDocumentSelection,
 	type DowncastAttributeEvent,
-	type DowncastWriter,
-	type Element,
-	type Item,
-	type Node,
+	type ViewDowncastWriter,
+	type ModelElement,
+	type ModelItem,
+	type ModelNode,
 	type UpcastElementEvent,
 	type ViewElement,
-	type Writer
+	type ModelWriter
 } from 'ckeditor5/src/engine.js';
 import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 
-import CKBoxCommand from './ckboxcommand.js';
-import CKBoxUploadAdapter from './ckboxuploadadapter.js';
-import CKBoxUtils from './ckboxutils.js';
+import { CKBoxCommand } from './ckboxcommand.js';
+import { CKBoxUploadAdapter } from './ckboxuploadadapter.js';
+import { CKBoxUtils } from './ckboxutils.js';
 
 import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 import { sendHttpRequest } from './utils.js';
@@ -37,7 +37,7 @@ const COMMAND_FORCE_DISABLE_ID = 'NoPermission';
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
  * {@link module:ckbox/ckboxuploadadapter~CKBoxUploadAdapter CKBox upload adapter}.
  */
-export default class CKBoxEditing extends Plugin {
+export class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -189,7 +189,7 @@ export default class CKBoxEditing extends Plugin {
 		// Convert `ckboxLinkId` => `data-ckbox-resource-id`.
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			// Due to custom converters for linked block images, handle the `ckboxLinkId` attribute manually.
-			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:ckboxLinkId:imageBlock', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:ckboxLinkId:imageBlock', ( evt, data, conversionApi ) => {
 				const { writer, mapper, consumable } = conversionApi;
 
 				if ( !consumable.consume( data.item, evt.name ) ) {
@@ -285,7 +285,7 @@ export default class CKBoxEditing extends Plugin {
 					// Otherwise, just set the `ckboxLinkId` for the model element.
 					const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
-					writer.setAttribute( 'ckboxLinkId', attributeValue, modelElement as Element );
+					writer.setAttribute( 'ckboxLinkId', attributeValue, modelElement as ModelElement );
 				}
 			}, { priority: 'low' } );
 		} );
@@ -342,7 +342,7 @@ export default class CKBoxEditing extends Plugin {
  * A post-fixer that synchronizes the asset ID with the model element.
  */
 function syncDataIdPostFixer( editor: Editor ) {
-	return ( writer: Writer ) => {
+	return ( writer: ModelWriter ) => {
 		let changed = false;
 
 		const model = editor.model;
@@ -360,7 +360,7 @@ function syncDataIdPostFixer( editor: Editor ) {
 			}
 
 			const range = entry.type === 'insert' ?
-				new Range( entry.position, entry.position.getShiftedBy( entry.length ) ) :
+				new ModelRange( entry.position, entry.position.getShiftedBy( entry.length ) ) :
 				entry.range;
 
 			const isLinkHrefAttributeRemoval = entry.type === 'attribute' &&
@@ -402,8 +402,8 @@ function syncDataIdPostFixer( editor: Editor ) {
 /**
  * A post-fixer that removes the `ckboxLinkId` from the selection if it does not represent a link anymore.
  */
-function injectSelectionPostFixer( selection: DocumentSelection ) {
-	return ( writer: Writer ) => {
+function injectSelectionPostFixer( selection: ModelDocumentSelection ) {
+	return ( writer: ModelWriter ) => {
 		const shouldRemoveLinkIdAttribute = !selection.hasAttribute( 'linkHref' ) && selection.hasAttribute( 'ckboxLinkId' );
 
 		if ( shouldRemoveLinkIdAttribute ) {
@@ -424,7 +424,7 @@ function injectSelectionPostFixer( selection: DocumentSelection ) {
  * For any model element, zero, one or more than one asset can be found (e.g. a linked image may be associated with the link asset and the
  * image asset).
  */
-function findAssetsForItem( item: Item, assets: Set<CKBoxAssetDefinition> ) {
+function findAssetsForItem( item: ModelItem, assets: Set<CKBoxAssetDefinition> ) {
 	const isImageElement = item.is( 'element', 'imageInline' ) || item.is( 'element', 'imageBlock' );
 	const isLinkElement = item.hasAttribute( 'linkHref' );
 
@@ -442,7 +442,7 @@ function findAssetsForItem( item: Item, assets: Set<CKBoxAssetDefinition> ) {
 /**
  * Creates view link element with the requested ID.
  */
-function createLinkElement( writer: DowncastWriter, id: string ) {
+function createLinkElement( writer: ViewDowncastWriter, id: string ) {
 	// Priority equal 5 is needed to merge adjacent `<a>` elements together.
 	const viewElement = writer.createAttributeElement( 'a', { 'data-ckbox-resource-id': id }, { priority: 5 } );
 
@@ -454,7 +454,7 @@ function createLinkElement( writer: DowncastWriter, id: string ) {
 /**
  * Checks if the model element may have the `ckboxLinkId` attribute.
  */
-function shouldUpcastAttributeForNode( node: Node ) {
+function shouldUpcastAttributeForNode( node: ModelNode ) {
 	if ( node.is( '$text' ) ) {
 		return true;
 	}

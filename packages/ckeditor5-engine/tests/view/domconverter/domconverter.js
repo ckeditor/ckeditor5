@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewEditable from '../../../src/view/editableelement.js';
-import ViewDocument from '../../../src/view/document.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
+import { ViewEditableElement } from '../../../src/view/editableelement.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import ViewPosition from '../../../src/view/position.js';
-import ViewRange from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { ViewText } from '@ckeditor/ckeditor5-engine';
 
-describe( 'DomConverter', () => {
+describe( 'ViewDomConverter', () => {
 	let converter, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'constructor()', () => {
@@ -33,26 +33,26 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create converter with defined block mode filler', () => {
-			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+			converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 
 		it( 'should create converter with proper default block mode filler - depending on the rendering mode', () => {
-			converter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			converter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 
-			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+			converter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 			expect( converter.blockFillerMode ).to.equal( 'br' );
 		} );
 	} );
 
 	describe( 'domDocument', () => {
-		it( 'should return DOM document instance used by the DomConverter #1 - rendering mode data', () => {
+		it( 'should return DOM document instance used by the ViewDomConverter #1 - rendering mode data', () => {
 			expect( converter.domDocument ).to.be.instanceof( globalThis.Document );
 		} );
 
-		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
-			const converterEditing = new DomConverter( viewDocument, {
+		it( 'should return DOM document instance used by the ViewDomConverter #2 - rendering mode editing', () => {
+			const converterEditing = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
 
@@ -65,7 +65,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument( new StylesProcessor() );
-			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewEditable = new ViewEditableElement( viewDocument, 'div' );
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -310,7 +310,7 @@ describe( 'DomConverter', () => {
 		for ( const mode of [ 'nbsp', 'markedNbsp' ] ) {
 			describe( 'mode "' + mode + '"', () => {
 				beforeEach( () => {
-					converter = new DomConverter( viewDocument, { blockFillerMode: mode } );
+					converter = new ViewDomConverter( viewDocument, { blockFillerMode: mode } );
 				} );
 
 				for ( const elementName of blockElements ) {
@@ -404,7 +404,7 @@ describe( 'DomConverter', () => {
 
 		describe( 'mode "br"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
+				converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'br' } );
 			} );
 
 			it( 'should return true if the node is an instance of the BR block filler', () => {
@@ -416,7 +416,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should return false if the node is an instance of the NBSP block filler', () => {
-				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
+				converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'br' } );
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 				// NBSP must be check inside a context.
 				const context = document.createElement( 'div' );
@@ -787,8 +787,8 @@ describe( 'DomConverter', () => {
 		let writer, warnStub;
 
 		beforeEach( () => {
-			writer = new DowncastWriter( viewDocument );
-			converter = new DomConverter( viewDocument, {
+			writer = new ViewDowncastWriter( viewDocument );
+			converter = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
 
@@ -967,7 +967,7 @@ describe( 'DomConverter', () => {
 
 	describe( 'removeDomElementAttribute()', () => {
 		beforeEach( () => {
-			// Silence warnings about unsafe attributes and elements created by the DomConverter.
+			// Silence warnings about unsafe attributes and elements created by the ViewDomConverter.
 			testUtils.sinon.stub( console, 'warn' )
 				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
 				.callsFake( () => {} );
@@ -1055,7 +1055,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			// View structure.
-			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewEditable = new ViewEditableElement( viewDocument, 'div' );
 			viewP = new ViewContainerElement( viewDocument, 'p' );
 			viewText = new ViewText( viewDocument, 'foobar' );
 

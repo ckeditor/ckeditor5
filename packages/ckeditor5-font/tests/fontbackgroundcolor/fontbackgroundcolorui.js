@@ -4,10 +4,10 @@
  */
 
 import { IconFontBackground } from 'ckeditor5/src/icons.js';
-import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
-import FontBackgroundColorUI from './../../src/fontbackgroundcolor/fontbackgroundcolorui.js';
-import ColorUI from './../../src/ui/colorui.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { FontBackgroundColorEditing } from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
+import { FontBackgroundColorUI } from './../../src/fontbackgroundcolor/fontbackgroundcolorui.js';
+import { FontColorUIBase } from './../../src/ui/colorui.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'FontBckgroundColorUI', () => {
 	let element, editor;
@@ -31,8 +31,8 @@ describe( 'FontBckgroundColorUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'is ColorUI', () => {
-		expect( FontBackgroundColorUI.prototype ).to.be.instanceOf( ColorUI );
+	it( 'is FontColorUIBase', () => {
+		expect( FontBackgroundColorUI.prototype ).to.be.instanceOf( FontColorUIBase );
 	} );
 
 	it( 'has properly set initial values', () => {

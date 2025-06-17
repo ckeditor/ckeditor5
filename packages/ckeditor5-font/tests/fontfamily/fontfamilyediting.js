@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FontFamilyEditing from './../../src/fontfamily/fontfamilyediting.js';
+import { FontFamilyEditing } from './../../src/fontfamily/fontfamilyediting.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontFamilyEditing', () => {
 	let editor, doc;
@@ -106,13 +106,13 @@ describe( 'FontFamilyEditing', () => {
 
 			describe( 'editing pipeline conversion', () => {
 				it( 'should convert unknown fontFamily attribute values', () => {
-					setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:foo-bar;">o</span>o</p>' );
 				} );
 
 				it( 'should convert defined fontFamily attribute values', () => {
-					setModelData( doc, '<paragraph>f<$text fontFamily="Arial, Helvetica, sans-serif">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontFamily="Arial, Helvetica, sans-serif">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
 				} );
@@ -124,7 +124,7 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Other">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Other">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Other;">o</span>o</p>' );
 				} );
@@ -134,7 +134,7 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial,sans-serif">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( data );
 				} );
@@ -144,7 +144,7 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="Arial, sans-serif">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, sans-serif;">o</span>o</p>' );
 				} );
@@ -154,7 +154,7 @@ describe( 'FontFamilyEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph>' +
 							'<$text fontFamily="Arial,Verdana">[]foo</$text><$text fontFamily="Arial, sans-serif">bar</$text>' +
 						'</paragraph>'
@@ -196,13 +196,13 @@ describe( 'FontFamilyEditing', () => {
 		} );
 
 		it( 'should discard unknown fontFamily attribute values', () => {
-			setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontFamily="foo-bar">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should convert fontFamily attribute to configured simple preset', () => {
-			setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontFamily="Arial">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial;">o</span>o</p>' );
 		} );
@@ -210,14 +210,14 @@ describe( 'FontFamilyEditing', () => {
 		it( 'should convert fontFamily attribute to configured complex preset', () => {
 			const fontFamily = '\'Lucida Sans Unicode\', \'Lucida Grande\', sans-serif';
 
-			setModelData( doc, `<paragraph>f<$text fontFamily="${ fontFamily }">o</$text>o</paragraph>` );
+			_setModelData( doc, `<paragraph>f<$text fontFamily="${ fontFamily }">o</$text>o</paragraph>` );
 
 			expect( editor.getData() )
 				.to.equal( `<p>f<span style="font-family:${ fontFamily };">o</span>o</p>` );
 		} );
 
 		it( 'should convert fontFamily attribute from user defined settings', () => {
-			setModelData( doc, '<paragraph>f<$text fontFamily="my">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontFamily="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<mark class="my-style">o</mark>o</p>' );
 		} );
@@ -276,7 +276,7 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my-other">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my-other">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Other;">o</span>o</p>' );
 		} );
@@ -286,7 +286,7 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontFamily="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( data );
 		} );
@@ -299,7 +299,7 @@ describe( 'FontFamilyEditing', () => {
 				'<p>b<span class="text-complex">a</span>z</p>'
 			);
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]f<$text fontFamily="complex">o</$text>o</paragraph>' +
 				'<paragraph>f<$text fontFamily="complex">o</$text>o</paragraph>' +
 				'<paragraph>b<$text fontFamily="complex">a</$text>r</paragraph>' +
@@ -319,7 +319,7 @@ describe( 'FontFamilyEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]foo<$text fontFamily="complex">bar</$text></paragraph>'
 			);
 

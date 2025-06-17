@@ -2,6 +2,7 @@
 title: Content minimap
 menu-title: Content minimap
 meta-title: Content minimap | CKEditor 5 Documentation
+meta-description: Add a minimap to CKEditor 5 for quick document navigation, enhancing the editing experience with a compact overview of content structure.
 category: features
 contributeUrl: false
 modified_at: 2021-07-12

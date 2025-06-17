@@ -7,13 +7,13 @@
  * @module image/imagecaption/toggleimagecaptioncommand
  */
 
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
-import ImageBlockEditing from '../image/imageblockediting.js';
-import type ImageCaptionUtils from './imagecaptionutils.js';
-import type ImageUtils from '../imageutils.js';
-import type ImageCaptionEditing from './imagecaptionediting.js';
+import { ImageBlockEditing } from '../image/imageblockediting.js';
+import { type ImageCaptionUtils } from './imagecaptionutils.js';
+import { type ImageUtils } from '../imageutils.js';
+import { type ImageCaptionEditing } from './imagecaptionediting.js';
 
 /**
  * The toggle image caption command.
@@ -40,7 +40,7 @@ import type ImageCaptionEditing from './imagecaptionediting.js';
  * editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
  * ```
  */
-export default class ToggleImageCaptionCommand extends Command {
+export class ToggleImageCaptionCommand extends Command {
 	declare public value: boolean;
 
 	/**
@@ -112,7 +112,7 @@ export default class ToggleImageCaptionCommand extends Command {
 	 * * it attempts to restore the caption content from the `ImageCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 */
-	private _showImageCaption( writer: Writer, focusCaptionOnShow?: boolean ): void {
+	private _showImageCaption( writer: ModelWriter, focusCaptionOnShow?: boolean ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const imageCaptionEditing: ImageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
@@ -146,19 +146,19 @@ export default class ToggleImageCaptionCommand extends Command {
 	 * The content of the caption is stored in the `ImageCaptionEditing` caption registry to make this
 	 * a reversible action.
 	 */
-	private _hideImageCaption( writer: Writer ): void {
+	private _hideImageCaption( writer: ModelWriter ): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const imageCaptionEditing: ImageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
 		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		let selectedImage = selection.getSelectedElement()!;
-		let captionElement: Element;
+		let captionElement: ModelElement;
 
 		if ( selectedImage ) {
 			captionElement = imageCaptionUtils.getCaptionFromImageModelElement( selectedImage )!;
 		} else {
 			captionElement = imageCaptionUtils.getCaptionFromModelSelection( selection )!;
-			selectedImage = captionElement!.parent as Element;
+			selectedImage = captionElement!.parent as ModelElement;
 		}
 
 		// Store the caption content so it can be restored quickly if the user changes their mind even if they toggle image<->imageInline.

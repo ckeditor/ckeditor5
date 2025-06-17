@@ -7,10 +7,12 @@
  * @module enter
  */
 
-export { default as Enter } from './enter.js';
-export { default as ShiftEnter } from './shiftenter.js';
-export type { ViewDocumentEnterEvent } from './enterobserver.js';
-export type { default as EnterCommand, EnterCommandAfterExecuteEvent } from './entercommand.js';
-export type { default as ShiftEnterCommand } from './shiftentercommand.js';
+export { Enter } from './enter.js';
+export { ShiftEnter } from './shiftenter.js';
+export { EnterObserver, type ViewDocumentEnterEvent, type ViewDocumentEnterEventData } from './enterobserver.js';
+export { EnterCommand, type EnterCommandAfterExecuteEvent } from './entercommand.js';
+export { ShiftEnterCommand, type ShiftEnterCommandAfterExecuteEvent } from './shiftentercommand.js';
+
+export { getCopyOnEnterAttributes as _getCopyOnEnterAttributes } from './utils.js';
 
 import './augmentation.js';

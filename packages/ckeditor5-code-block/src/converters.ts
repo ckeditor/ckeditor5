@@ -8,7 +8,7 @@
  */
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
-import type { DowncastInsertEvent, Element, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
+import type { DowncastInsertEvent, ModelElement, Model, UpcastElementEvent, UpcastTextEvent, EditingView } from 'ckeditor5/src/engine.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import { getPropertyAssociation } from './utils.js';
 
@@ -37,6 +37,7 @@ import { getPropertyAssociation } from './utils.js';
  * @param useLabels When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function modelToViewCodeBlockInsertion(
 	model: Model,
@@ -89,7 +90,7 @@ export function modelToViewCodeBlockInsertion(
 
 		writer.insert( targetViewPosition, pre );
 
-		mapper.bindElements( data.item as Element, code );
+		mapper.bindElements( data.item as ModelElement, code );
 	};
 }
 
@@ -109,6 +110,7 @@ export function modelToViewCodeBlockInsertion(
  * ```
  *
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<DowncastInsertEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -145,6 +147,7 @@ export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<D
  *
  * @param languageDefs The normalized language configuration passed to the feature.
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelCodeBlockInsertion(
 	editingView: EditingView,
@@ -196,6 +199,7 @@ export function dataViewToModelCodeBlockInsertion(
 			const language = classesToLanguages[ className ];
 
 			if ( language ) {
+				consumable.consume( viewCodeElement, { classes: [ className ] } );
 				writer.setAttribute( 'language', language, codeBlock );
 				break;
 			}
@@ -237,6 +241,7 @@ export function dataViewToModelCodeBlockInsertion(
  * ```
  *
  * @returns {Function} Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEvent> {
 	return ( evt, data, { consumable, writer } ) => {
@@ -310,6 +315,7 @@ export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEv
  * ```
  *
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelOrphanNodeConsumer(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, { consumable } ) => {

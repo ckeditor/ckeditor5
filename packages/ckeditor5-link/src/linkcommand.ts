@@ -10,16 +10,16 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, type ModelRange, type ModelItem } from 'ckeditor5/src/engine.js';
 
-import AutomaticDecorators from './utils/automaticdecorators.js';
+import { AutomaticDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
-import type ManualDecorator from './utils/manualdecorator.js';
+import { type LinkManualDecorator } from './utils/manualdecorator.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
  */
-export default class LinkCommand extends Command {
+export class LinkCommand extends Command {
 	/**
 	 * The value of the `'linkHref'` attribute if the start of the selection is located in a node with this attribute.
 	 *
@@ -29,12 +29,12 @@ export default class LinkCommand extends Command {
 	declare public value: string | undefined;
 
 	/**
-	 * A collection of {@link module:link/utils/manualdecorator~ManualDecorator manual decorators}
+	 * A collection of {@link module:link/utils/manualdecorator~LinkManualDecorator manual decorators}
 	 * corresponding to the {@link module:link/linkconfig~LinkConfig#decorators decorator configuration}.
 	 *
 	 * You can consider it a model with states of manual decorators added to the currently selected link.
 	 */
-	public readonly manualDecorators = new Collection<ManualDecorator>();
+	public readonly manualDecorators = new Collection<LinkManualDecorator>();
 
 	/**
 	 * An instance of the helper that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition}
@@ -81,7 +81,7 @@ export default class LinkCommand extends Command {
 	 * those nodes where the `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
 	 * When the selection is collapsed and is not inside the text with the `linkHref` attribute, a
-	 * new {@link module:engine/model/text~Text text node} with the `linkHref` attribute will be inserted in place of the caret, but
+	 * new {@link module:engine/model/text~ModelText text node} with the `linkHref` attribute will be inserted in place of the caret, but
 	 * only if such element is allowed in this place. The `_data` of the inserted text will equal the `href` parameter.
 	 * The selection will be updated to wrap the just inserted text node.
 	 *
@@ -91,7 +91,7 @@ export default class LinkCommand extends Command {
 	 *
 	 * There is an optional argument to this command that applies or removes model
 	 * {@glink framework/architecture/editing-engine#text-attributes text attributes} brought by
-	 * {@link module:link/utils/manualdecorator~ManualDecorator manual link decorators}.
+	 * {@link module:link/utils/manualdecorator~LinkManualDecorator manual link decorators}.
 	 *
 	 * Text attribute names in the model correspond to the entries in the {@link module:link/linkconfig~LinkConfig#decorators
 	 * configuration}.
@@ -176,14 +176,14 @@ export default class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
-			const updateLinkAttributes = ( itemOrRange: Item | Range ): void => {
+			const updateLinkAttributes = ( itemOrRange: ModelItem | ModelRange ): void => {
 				writer.setAttribute( 'linkHref', href, itemOrRange );
 
 				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, itemOrRange ) );
 				falsyManualDecorators.forEach( item => writer.removeAttribute( item, itemOrRange ) );
 			};
 
-			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
+			const updateLinkTextIfNeeded = ( range: ModelRange, linkHref?: string ): ModelRange | undefined => {
 				const linkText = extractTextFromLinkRange( range );
 
 				if ( !linkText ) {
@@ -235,7 +235,7 @@ export default class LinkCommand extends Command {
 				}
 			};
 
-			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+			const collapseSelectionAtLinkEnd = ( linkRange: ModelRange ): void => {
 				const { plugins } = this.editor;
 
 				writer.setSelection( linkRange.end );
@@ -323,8 +323,8 @@ export default class LinkCommand extends Command {
 
 				// Store the selection ranges in a pseudo live range array (stickiness to the outside of the range).
 				const stickyPseudoRanges = selectionRanges.map( range => ( {
-					start: LivePosition.fromPosition( range.start, 'toPrevious' ),
-					end: LivePosition.fromPosition( range.end, 'toNext' )
+					start: ModelLivePosition.fromPosition( range.start, 'toPrevious' ),
+					end: ModelLivePosition.fromPosition( range.end, 'toNext' )
 				} ) );
 
 				// Update or set links (including text update if needed).
@@ -376,7 +376,7 @@ export default class LinkCommand extends Command {
 	 * @param range A range to check.
 	 * @param allowedRanges An array of ranges created on elements where the attribute is accepted.
 	 */
-	private _isRangeToUpdate( range: Range, allowedRanges: Array<Range> ): boolean {
+	private _isRangeToUpdate( range: ModelRange, allowedRanges: Array<ModelRange> ): boolean {
 		for ( const allowedRange of allowedRanges ) {
 			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
 			if ( allowedRange.containsRange( range ) ) {
@@ -471,7 +471,7 @@ function findChanges( oldText: string, newText: string ): Array<{ offset: number
  * @param linkRange Range of the entire link.
  * @returns Text node.
  */
-function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
+function getLinkPartTextNode( range: ModelRange, linkRange: ModelRange ): ModelItem | null {
 	if ( !range.isCollapsed ) {
 		return first( range.getItems() );
 	}

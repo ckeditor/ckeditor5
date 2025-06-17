@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DowncastAttributeEvent, Element, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { DowncastAttributeEvent, ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
@@ -16,6 +16,7 @@ import type { ImageStyleOptionDefinition } from '../imageconfig.js';
  *
  * @param styles An array containing available image style options.
  * @returns A model-to-view attribute converter.
+ * @internal
  */
 export function modelToViewStyleAttribute( styles: Array<ImageStyleOptionDefinition> ): GetCallback<DowncastAttributeEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -27,7 +28,7 @@ export function modelToViewStyleAttribute( styles: Array<ImageStyleOptionDefinit
 		const newStyle = getStyleDefinitionByName( data.attributeNewValue as string, styles );
 		const oldStyle = getStyleDefinitionByName( data.attributeOldValue as string, styles );
 
-		const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+		const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 		const viewWriter = conversionApi.writer;
 
 		if ( oldStyle ) {
@@ -45,6 +46,7 @@ export function modelToViewStyleAttribute( styles: Array<ImageStyleOptionDefinit
  *
  * @param styles Image style options for which the converter is created.
  * @returns A view-to-model converter.
+ * @internal
  */
 export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinition> ): GetCallback<UpcastElementEvent> {
 	// Convert only non–default styles.
@@ -73,7 +75,7 @@ export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinit
 		}
 
 		// Convert styles one by one.
-		for ( const style of nonDefaultStyles[ ( modelImageElement as Element ).name ] ) {
+		for ( const style of nonDefaultStyles[ ( modelImageElement as ModelElement ).name ] ) {
 			// Try to consume class corresponding with the style.
 			if ( conversionApi.consumable.consume( viewElement, { classes: style.className } ) ) {
 				// And convert this style to model attribute.

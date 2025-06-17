@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { MarkdownGfmDataProcessor } from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import { ListPropertiesEditing } from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import CodeBlockUI from '../src/codeblockui.js';
-import CodeBlockEditing from '../src/codeblockediting.js';
+import { CodeBlockUI } from '../src/codeblockui.js';
+import { CodeBlockEditing } from '../src/codeblockediting.js';
 
 describe( 'CodeBlock - integration', () => {
 	describe( 'with Markdown GFM', () => {
@@ -30,7 +30,7 @@ describe( 'CodeBlock - integration', () => {
 		class CodeBlockIntegration extends Plugin {
 			constructor( editor ) {
 				super( editor );
-				editor.data.processor = new GFMDataProcessor( editor.data.viewDocument );
+				editor.data.processor = new MarkdownGfmDataProcessor( editor.data.viewDocument );
 			}
 		}
 
@@ -152,29 +152,29 @@ describe( 'CodeBlock - integration', () => {
 			expect( cSharpButton.label ).to.equal( 'C#' );
 
 			// Initial state.
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			// Select a language from dropdown.
 			cSharpButton.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
 
 			// Click on the `codeBlock` button next to the dropdown. When selection is inside the `<codeBlock>` element,
 			// the entire element should be replaced with the paragraph.
 			codeBlock.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			// Clicking the button once again should create the code block with the C# language instead of the default (plaintext).
 			codeBlock.fire( 'execute' );
-			expect( getData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<codeBlock language="cs">[]</codeBlock>' );
 
 			dropdown.element.remove();
 		} );
 	} );
 
-	describe( 'with DocumentListEditing', () => {
+	describe( 'with ListEditing', () => {
 		let editor, model;
 
-		describe( 'when DocumentListEditing is loaded', () => {
+		describe( 'when ListEditing is loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {
@@ -196,7 +196,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should allow all list attributes in the schema', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
@@ -209,7 +209,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should disallow attributes that are not registered as list attributes', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 
@@ -223,7 +223,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 		} );
 
-		describe( 'when DocumentListEditing is not loaded', () => {
+		describe( 'when ListEditing is not loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {
@@ -238,7 +238,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 
 			it( 'should disallow all attributes starting with list* in the schema', () => {
-				setData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
+				_setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
 				const codeBlock = model.document.getRoot().getChild( 0 );
 

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Image from '../src/image.js';
-import ImageUpload from '../src/imageupload.js';
-import ImageUploadEditing from '../src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '../src/imageupload/imageuploadprogress.js';
-import ImageUploadUI from '../src/imageupload/imageuploadui.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Image } from '../src/image.js';
+import { ImageUpload } from '../src/imageupload.js';
+import { ImageUploadEditing } from '../src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '../src/imageupload/imageuploadprogress.js';
+import { ImageUploadUI } from '../src/imageupload/imageuploadui.js';
 
 import { UploadAdapterPluginMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 

@@ -9,7 +9,7 @@
 
 import { KeystrokeHandler, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor.js';
+import { type Editor } from './editor/editor.js';
 
 /**
  * A keystroke handler for editor editing. Its instance is available
@@ -24,7 +24,7 @@ import type Editor from './editor/editor.js';
  * editor.keystrokes.set( 'Ctrl+Y', 'redo' );
  * ```
  */
-export default class EditingKeystrokeHandler extends KeystrokeHandler {
+export class EditingKeystrokeHandler extends KeystrokeHandler {
 	/**
 	 * The editor instance.
 	 */
@@ -48,7 +48,7 @@ export default class EditingKeystrokeHandler extends KeystrokeHandler {
 	 * @param callback If a string is passed, then the keystroke will
 	 * {@link module:core/editor/editor~Editor#execute execute a command}.
 	 * If a function, then it will be called with the
-	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
+	 * {@link module:engine/view/observer/keyobserver~ViewDocumentKeyEventData key event data} object and
 	 * a `cancel()` helper to both `preventDefault()` and `stopPropagation()` of the event.
 	 * @param options Additional options.
 	 * @param options.priority The priority of the keystroke callback. The higher the priority value

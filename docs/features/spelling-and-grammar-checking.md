@@ -2,6 +2,7 @@
 category: features
 menu-title: Spell and grammar checker
 meta-title: Spelling, grammar, and punctuation checking | CKEditor 5 Documentation
+meta-description: Enable spelling and grammar checking in CKEditor 5 with WProofreader. Learn how to configure, customize, and enhance writing quality.
 modified_at: 2022-10-05
 badges: [ premium ]
 ---

@@ -10,30 +10,30 @@
 import { CKEditorError } from 'ckeditor5/src/utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
-	DocumentSelection,
-	Element,
-	Node,
-	Position,
-	Range,
-	Selection,
-	Writer
+	ModelDocumentSelection,
+	ModelElement,
+	ModelNode,
+	ModelPosition,
+	ModelRange,
+	ModelSelection,
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableWalkerOptions } from './tablewalker.js';
+import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';
 
-type Cell = { cell: Element; rowspan: number };
+type Cell = { cell: ModelElement; rowspan: number };
 type CellsToMove = Map<number, Cell>;
 type CellsToTrim = Array<Cell>;
 
-type IndexesObject = { first: number; last: number };
+export type TableIndexesObject = { first: number; last: number };
 
 /**
  * The table utilities plugin.
  */
-export default class TableUtils extends Plugin {
+export class TableUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -84,11 +84,11 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @returns Returns a `{row, column}` object.
 	 */
-	public getCellLocation( tableCell: Element ): { row: number; column: number } {
+	public getCellLocation( tableCell: ModelElement ): { row: number; column: number } {
 		const tableRow = tableCell.parent!;
-		const table = tableRow.parent as Element;
+		const table = tableRow.parent as ModelElement;
 
-		const rowIndex = table.getChildIndex( tableRow as Node );
+		const rowIndex = table.getChildIndex( tableRow as ModelNode );
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
@@ -125,14 +125,14 @@ export default class TableUtils extends Plugin {
 	 * @returns The created table element.
 	 */
 	public createTable(
-		writer: Writer,
+		writer: ModelWriter,
 		options: {
 			rows?: number;
 			columns?: number;
 			headingRows?: number;
 			headingColumns?: number;
 		}
-	): Element {
+	): ModelElement {
 		const table = writer.createElement( 'table' );
 
 		const rows = options.rows || 2;
@@ -179,7 +179,7 @@ export default class TableUtils extends Plugin {
 	 * @param options.copyStructureFromAbove The flag for copying row structure. Note that
 	 * the row structure will not be copied if this option is not provided.
 	 */
-	public insertRows( table: Element, options: { at?: number; rows?: number; copyStructureFromAbove?: boolean } = {} ): void {
+	public insertRows( table: ModelElement, options: { at?: number; rows?: number; copyStructureFromAbove?: boolean } = {} ): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
@@ -293,7 +293,7 @@ export default class TableUtils extends Plugin {
 	 * @param options.at The column index at which the columns will be inserted. Default value is 0.
 	 * @param options.columns The number of columns to insert. Default value is 1.
 	 */
-	public insertColumns( table: Element, options: { at?: number; columns?: number } = {} ): void {
+	public insertColumns( table: ModelElement, options: { at?: number; columns?: number } = {} ): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
@@ -381,7 +381,7 @@ export default class TableUtils extends Plugin {
 	 * @param options.at The row index at which the removing rows will start.
 	 * @param options.rows The number of rows to remove. Default value is 1.
 	 */
-	public removeRows( table: Element, options: { at: number; rows?: number } ): void {
+	public removeRows( table: ModelElement, options: { at: number; rows?: number } ): void {
 		const model = this.editor.model;
 
 		const rowsToRemove = options.rows || 1;
@@ -471,7 +471,7 @@ export default class TableUtils extends Plugin {
 	 * @param options.at The row index at which the removing columns will start.
 	 * @param options.columns The number of columns to remove.
 	 */
-	public removeColumns( table: Element, options: { at: number; columns?: number } ): void {
+	public removeColumns( table: ModelElement, options: { at: number; columns?: number } ): void {
 		const model = this.editor.model;
 		const first = options.at;
 		const columnsToRemove = options.columns || 1;
@@ -559,10 +559,10 @@ export default class TableUtils extends Plugin {
 	 *  | b | c | d |
 	 *  +---+---+---+
 	 */
-	public splitCellVertically( tableCell: Element, numberOfCells = 2 ): void {
+	public splitCellVertically( tableCell: ModelElement, numberOfCells = 2 ): void {
 		const model = this.editor.model;
 		const tableRow = tableCell.parent!;
-		const table = tableRow.parent as Element;
+		const table = tableRow.parent as ModelElement;
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
@@ -692,11 +692,11 @@ export default class TableUtils extends Plugin {
 	 *  |   | h | i |
 	 *  +---+---+---+
 	 */
-	public splitCellHorizontally( tableCell: Element, numberOfCells = 2 ): void {
+	public splitCellHorizontally( tableCell: ModelElement, numberOfCells = 2 ): void {
 		const model = this.editor.model;
 
-		const tableRow = tableCell.parent as Node;
-		const table = tableRow.parent! as Element;
+		const tableRow = tableCell.parent as ModelNode;
+		const table = tableRow.parent! as ModelElement;
 		const splitCellRow = table.getChildIndex( tableRow )!;
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
@@ -816,11 +816,11 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param table The table to analyze.
 	 */
-	public getColumns( table: Element ): number {
+	public getColumns( table: ModelElement ): number {
 		// Analyze first row only as all the rows should have the same width.
 		// Using the first row without checking if it's a tableRow because we expect
 		// that table will have only tableRow model elements at the beginning.
-		const row = table.getChild( 0 ) as Element;
+		const row = table.getChild( 0 ) as ModelElement;
 
 		return [ ...row.getChildren() ]
 			// $marker elements can also be children of a row too (when TrackChanges is on). Don't include them in the count.
@@ -841,7 +841,7 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @param table The table to analyze.
 	 */
-	public getRows( table: Element ): number {
+	public getRows( table: ModelElement ): number {
 		// Rowspan not included due to #6427.
 		return Array.from( table.getChildren() )
 			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
@@ -859,7 +859,7 @@ export default class TableUtils extends Plugin {
 	 * @param table A table over which the walker iterates.
 	 * @param options An object with configuration.
 	 */
-	public createTableWalker( table: Element, options: TableWalkerOptions = {} ): TableWalker {
+	public createTableWalker( table: ModelElement, options: TableWalkerOptions = {} ): TableWalker {
 		return new TableWalker( table, options );
 	}
 
@@ -870,7 +870,7 @@ export default class TableUtils extends Plugin {
 	 * To obtain the cells selected from the inside, use
 	 * {@link #getTableCellsContainingSelection}.
 	 */
-	public getSelectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
+	public getSelectedTableCells( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const cells = [];
 
 		for ( const range of this.sortRanges( selection.getRanges() ) ) {
@@ -886,12 +886,12 @@ export default class TableUtils extends Plugin {
 
 	/**
 	 * Returns all model table cells that the provided model selection's ranges
-	 * {@link module:engine/model/range~Range#start} inside.
+	 * {@link module:engine/model/range~ModelRange#start} inside.
 	 *
 	 * To obtain the cells selected from the outside, use
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getTableCellsContainingSelection( selection: Selection | DocumentSelection ): Array<Element> {
+	public getTableCellsContainingSelection( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const cells = [];
 
 		for ( const range of selection.getRanges() ) {
@@ -908,12 +908,12 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns all model table cells that are either completely selected
 	 * by selection ranges or host selection range
-	 * {@link module:engine/model/range~Range#start start positions} inside them.
+	 * {@link module:engine/model/range~ModelRange#start start positions} inside them.
 	 *
 	 * Combines {@link #getTableCellsContainingSelection} and
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getSelectionAffectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
+	public getSelectionAffectedTableCells( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const selectedCells = this.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
@@ -936,8 +936,8 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @returns Returns an object with the `first` and `last` table row indexes.
 	 */
-	public getRowIndexes( tableCells: Array<Element> ): IndexesObject {
-		const indexes = tableCells.map( cell => ( cell.parent as Element ).index! );
+	public getRowIndexes( tableCells: Array<ModelElement> ): TableIndexesObject {
+		const indexes = tableCells.map( cell => ( cell.parent as ModelElement ).index! );
 
 		return this._getFirstLastIndexesObject( indexes );
 	}
@@ -955,7 +955,7 @@ export default class TableUtils extends Plugin {
 	 *
 	 * @returns Returns an object with the `first` and `last` table column indexes.
 	 */
-	public getColumnIndexes( tableCells: Array<Element> ): IndexesObject {
+	public getColumnIndexes( tableCells: Array<ModelElement> ): TableIndexesObject {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 		const tableMap = [ ...new TableWalker( table ) ];
 
@@ -989,7 +989,7 @@ export default class TableUtils extends Plugin {
 	 *   - a, c (the unselected cell "b" creates a gap)
 	 *   - f, g, h (cell "d" spans over a cell from the row of "f" cell - thus creates a gap)
 	 */
-	public isSelectionRectangular( selectedTableCells: Array<Element> ): boolean {
+	public isSelectionRectangular( selectedTableCells: Array<ModelElement> ): boolean {
 		if ( selectedTableCells.length < 2 || !this._areCellInTheSameTableSection( selectedTableCells ) ) {
 			return false;
 		}
@@ -1033,14 +1033,14 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns array of sorted ranges.
 	 */
-	public sortRanges( ranges: Iterable<Range> ): Array<Range> {
+	public sortRanges( ranges: Iterable<ModelRange> ): Array<ModelRange> {
 		return Array.from( ranges ).sort( compareRangeOrder );
 	}
 
 	/**
 	 * Helper method to get an object with `first` and `last` indexes from an unsorted array of indexes.
 	 */
-	private _getFirstLastIndexesObject( indexes: Array<number> ): IndexesObject {
+	private _getFirstLastIndexesObject( indexes: Array<number> ): TableIndexesObject {
 		const allIndexesSorted = indexes.sort( ( indexA, indexB ) => indexA - indexB );
 
 		const first = allIndexesSorted[ 0 ];
@@ -1065,7 +1065,7 @@ export default class TableUtils extends Plugin {
 	 *  │ c │ c │ d │ d │
 	 *  └───┴───┴───┴───┘
 	 */
-	private _areCellInTheSameTableSection( tableCells: Array<Element> ): boolean {
+	private _areCellInTheSameTableSection( tableCells: Array<ModelElement> ): boolean {
 		const table = tableCells[ 0 ].findAncestor( 'table' )!;
 
 		const rowIndexes = this.getRowIndexes( tableCells );
@@ -1086,7 +1086,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Unified check if table rows/columns indexes are in the same heading/body section.
 	 */
-	private _areIndexesInSameSection( { first, last }: IndexesObject, headingSectionSize: number ): boolean {
+	private _areIndexesInSameSection( { first, last }: TableIndexesObject, headingSectionSize: number ): boolean {
 		const firstCellIsInHeading = first < headingSectionSize;
 		const lastCellIsInHeading = last < headingSectionSize;
 
@@ -1101,7 +1101,9 @@ export default class TableUtils extends Plugin {
  * @param rows The number of rows to create.
  * @param tableCellToInsert The number of cells to insert in each row.
  */
-function createEmptyRows( writer: Writer, table: Element, insertAt: number, rows: number, tableCellToInsert: number, attributes = {} ) {
+function createEmptyRows(
+	writer: ModelWriter, table: ModelElement, insertAt: number, rows: number, tableCellToInsert: number, attributes = {}
+) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
@@ -1116,7 +1118,7 @@ function createEmptyRows( writer: Writer, table: Element, insertAt: number, rows
  *
  * @param cells The number of cells to create
  */
-function createCells( cells: number, writer: Writer, insertPosition: Position, attributes = {} ) {
+function createCells( cells: number, writer: ModelWriter, insertPosition: ModelPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
 		createEmptyTableCell( writer, insertPosition, attributes );
 	}
@@ -1151,7 +1153,7 @@ function breakSpanEvenly( span: number, numberOfCells: number ): { newCellsSpan:
 /**
  * Updates heading columns attribute if removing a row from head section.
  */
-function adjustHeadingColumns( table: Element, removedColumnIndexes: IndexesObject, writer: Writer ) {
+function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: TableIndexesObject, writer: ModelWriter ) {
 	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
@@ -1165,7 +1167,7 @@ function adjustHeadingColumns( table: Element, removedColumnIndexes: IndexesObje
 /**
  * Calculates a new heading rows value for removing rows from heading section.
  */
-function updateHeadingRows( table: Element, { first, last }: IndexesObject, writer: Writer ) {
+function updateHeadingRows( table: ModelElement, { first, last }: TableIndexesObject, writer: ModelWriter ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	if ( first < headingRows ) {
@@ -1198,7 +1200,7 @@ function updateHeadingRows( table: Element, { first, last }: IndexesObject, writ
  * - cells to trim: '02', '03' & '04'.
  * - cells to move: '21' & '32'.
  */
-function getCellsToMoveAndTrimOnRemoveRow( table: Element, { first, last }: IndexesObject ) {
+function getCellsToMoveAndTrimOnRemoveRow( table: ModelElement, { first, last }: TableIndexesObject ) {
 	const cellsToMove: CellsToMove = new Map();
 	const cellsToTrim: CellsToTrim = [];
 
@@ -1241,7 +1243,7 @@ function getCellsToMoveAndTrimOnRemoveRow( table: Element, { first, last }: Inde
 	return { cellsToMove, cellsToTrim };
 }
 
-function moveCellsToRow( table: Element, targetRowIndex: number, cellsToMove: CellsToMove, writer: Writer ) {
+function moveCellsToRow( table: ModelElement, targetRowIndex: number, cellsToMove: CellsToMove, writer: ModelWriter ) {
 	const tableWalker = new TableWalker( table, {
 		includeAllSlots: true,
 		row: targetRowIndex
@@ -1271,7 +1273,7 @@ function moveCellsToRow( table: Element, targetRowIndex: number, cellsToMove: Ce
 	}
 }
 
-function compareRangeOrder( rangeA: Range, rangeB: Range ) {
+function compareRangeOrder( rangeA: ModelRange, rangeB: ModelRange ) {
 	// Since table cell ranges are disjoint, it's enough to check their start positions.
 	const posA = rangeA.start;
 	const posB = rangeB.start;

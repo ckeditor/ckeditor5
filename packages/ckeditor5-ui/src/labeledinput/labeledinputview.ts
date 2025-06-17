@@ -7,10 +7,10 @@
  * @module ui/labeledinput/labeledinputview
  */
 
-import View from '../view.js';
-import LabelView from '../label/labelview.js';
+import { View } from '../view.js';
+import { LabelView } from '../label/labelview.js';
 
-import type { default as InputView, InputViewInputEvent } from '../input/inputview.js';
+import type { InputView, InputViewInputEvent } from '../input/inputview.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -19,7 +19,7 @@ import '../../theme/components/labeledinput/labeledinput.css';
 /**
  * The labeled input view class.
  */
-export default class LabeledInputView extends View {
+export class LabeledInputView extends View {
 	/**
 	 * The label view.
 	 */

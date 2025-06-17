@@ -10,18 +10,18 @@
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
-import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
+import { InsertTextCommand, type InsertTextCommandOptions } from './inserttextcommand.js';
+import { InsertTextObserver, type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
-	LiveRange,
+	ModelLiveRange,
 	type Model,
 	type Mapper,
-	type Element,
-	type Range,
+	type ModelElement,
+	type ModelRange,
 	type ViewNode,
 	type ViewElement,
-	type MutationData,
+	type ObserverMutationData,
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
@@ -36,7 +36,7 @@ import { debounce } from 'es-toolkit/compat';
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
-export default class Input extends Plugin {
+export class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
@@ -269,7 +269,7 @@ export default class Input extends Plugin {
 			// There could be new item queued on the composition end, so flush it.
 			this._typingQueue.flush( 'after composition end' );
 
-			const mutations: Array<MutationData> = [];
+			const mutations: Array<ObserverMutationData> = [];
 
 			if ( this._typingQueue.hasAffectedElements() ) {
 				for ( const element of this._typingQueue.flushAffectedElements() ) {
@@ -351,7 +351,7 @@ class TypingQueue {
 	/**
 	 * A set of model elements. The typing happened in those elements. It's used for mutations check.
 	 */
-	private _affectedElements = new Set<Element>();
+	private _affectedElements = new Set<ModelElement>();
 
 	/**
 	 * @inheritDoc
@@ -391,10 +391,10 @@ class TypingQueue {
 			commandLiveData.selectionRanges = [];
 
 			for ( const range of commandData.selection.getRanges() ) {
-				commandLiveData.selectionRanges.push( LiveRange.fromRange( range ) );
+				commandLiveData.selectionRanges.push( ModelLiveRange.fromRange( range ) );
 
 				// Keep reference to the model element for later mutation checks.
-				this._affectedElements.add( range.start.parent as Element );
+				this._affectedElements.add( range.start.parent as ModelElement );
 			}
 		}
 
@@ -415,7 +415,7 @@ class TypingQueue {
 		if ( commandLiveData.selectionRanges ) {
 			const ranges = commandLiveData.selectionRanges
 				.map( liveRange => detachLiveRange( liveRange ) )
-				.filter( ( range ): range is Range => !!range );
+				.filter( ( range ): range is ModelRange => !!range );
 
 			if ( ranges.length ) {
 				commandData.selection = this.editor.model.createSelection( ranges );
@@ -495,7 +495,7 @@ class TypingQueue {
 	/**
 	 * Returns `true` if the given model element is related to recent typing.
 	 */
-	public isElementAffected( element: Element ): boolean {
+	public isElementAffected( element: ModelElement ): boolean {
 		return this._affectedElements.has( element );
 	}
 
@@ -509,7 +509,7 @@ class TypingQueue {
 	/**
 	 * Returns an array of typing-related elements and clears the internal list.
 	 */
-	public flushAffectedElements(): Array<Element> {
+	public flushAffectedElements(): Array<ModelElement> {
 		const result = Array.from( this._affectedElements );
 
 		this._affectedElements.clear();
@@ -543,9 +543,9 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 }
 
 /**
- * Detaches a LiveRange and returns the static range from it.
+ * Detaches a ModelLiveRange and returns the static range from it.
  */
-function detachLiveRange( liveRange: LiveRange ): Range | null {
+function detachLiveRange( liveRange: ModelLiveRange ): ModelRange | null {
 	const range = liveRange.toRange();
 
 	liveRange.detach();
@@ -571,9 +571,9 @@ function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewEleme
 }
 
 /**
- * The insertText command data stored as LiveRange-s.
+ * The insertText command data stored as ModelLiveRange-s.
  */
 type InsertTextCommandLiveOptions = {
 	text?: string;
-	selectionRanges?: Array<LiveRange>;
+	selectionRanges?: Array<ModelLiveRange>;
 };

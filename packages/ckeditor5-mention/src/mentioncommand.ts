@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Range } from 'ckeditor5/src/engine.js';
+import type { ModelRange } from 'ckeditor5/src/engine.js';
 import { CKEditorError, toMap } from 'ckeditor5/src/utils.js';
 
 import { _addMentionAttributes } from './mentionediting.js';
@@ -55,7 +55,7 @@ const BRACKET_PAIRS = {
  * } );
  *	```
  */
-export default class MentionCommand extends Command {
+export class MentionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -93,7 +93,7 @@ export default class MentionCommand extends Command {
 		mention: string | { id: string; [ key: string ]: unknown };
 		marker: string;
 		text?: string;
-		range?: Range;
+		range?: ModelRange;
 	} ): void {
 		const model = this.editor.model;
 		const document = model.document;

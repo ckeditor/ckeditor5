@@ -7,8 +7,8 @@
  * @module autoformat
  */
 
-export { default as Autoformat } from './autoformat.js';
-export { default as blockAutoformatEditing } from './blockautoformatediting.js';
-export { default as inlineAutoformatEditing } from './inlineautoformatediting.js';
+export { Autoformat } from './autoformat.js';
+export { blockAutoformatEditing } from './blockautoformatediting.js';
+export { inlineAutoformatEditing, type AutoformatTestCallback } from './inlineautoformatediting.js';
 
 import './augmentation.js';

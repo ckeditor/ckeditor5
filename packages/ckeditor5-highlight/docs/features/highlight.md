@@ -1,6 +1,7 @@
 ---
 category: features
 meta-title: Highlight | CKEditor 5 Documentation
+meta-description: Highlight text in CKEditor 5 with customizable colors to emphasize important content and improve document clarity.
 ---
 
 # Highlight

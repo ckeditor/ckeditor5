@@ -7,11 +7,11 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import BalloonPanelView from './balloonpanelview.js';
-import View from '../../view.js';
-import ButtonView from '../../button/buttonview.js';
+import { BalloonPanelView } from './balloonpanelview.js';
+import { View } from '../../view.js';
+import { ButtonView } from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
-import type ViewCollection from '../../viewcollection.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
@@ -21,7 +21,7 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	type PositionOptions,
+	type DomOptimalPositionOptions,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
@@ -65,17 +65,17 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * view you want to display. If there is more than one panel stack to be displayed, the rotator view will add a
  * navigation bar. If there is only one stack, the rotator view is transparent (it does not add any UI elements).
  */
-export default class ContextualBalloon extends Plugin {
+export class ContextualBalloon extends Plugin {
 	/**
-	 * The {@link module:utils/dom/position~Options#limiter position limiter}
+	 * The {@link module:utils/dom/position~DomOptimalPositionOptions#limiter position limiter}
 	 * for the {@link #view balloon}, used when no `limiter` has been passed into {@link #add}
 	 * or {@link #updatePosition}.
 	 *
 	 * By default, a function that obtains the farthest DOM
-	 * {@link module:engine/view/rooteditableelement~RootEditableElement}
-	 * of the {@link module:engine/view/document~Document#selection}.
+	 * {@link module:engine/view/rooteditableelement~ViewRootEditableElement}
+	 * of the {@link module:engine/view/document~ViewDocument#selection}.
 	 */
-	public positionLimiter: PositionOptions[ 'limiter' ];
+	public positionLimiter: DomOptimalPositionOptions[ 'limiter' ];
 
 	public visibleStack?: string;
 
@@ -326,7 +326,7 @@ export default class ContextualBalloon extends Plugin {
 	 *
 	 * @param position Position options.
 	 */
-	public updatePosition( position?: Partial<PositionOptions> ): void {
+	public updatePosition( position?: Partial<DomOptimalPositionOptions> ): void {
 		if ( position ) {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
@@ -339,7 +339,7 @@ export default class ContextualBalloon extends Plugin {
 	 * Returns position options of the last view in the stack.
 	 * This keeps the balloon in the same position when the view is changed.
 	 */
-	public getPositionOptions(): Partial<PositionOptions> | undefined {
+	public getPositionOptions(): Partial<DomOptimalPositionOptions> | undefined {
 		let position = Array.from( this._visibleStack.values() ).pop()!.position;
 
 		if ( position ) {
@@ -569,7 +569,7 @@ export interface ViewConfiguration {
 	/**
 	 * Positioning options.
 	 */
-	position?: Partial<PositionOptions>;
+	position?: Partial<DomOptimalPositionOptions>;
 
 	/**
 	 * An additional CSS class added to the {@link #view balloon} when visible.
@@ -597,6 +597,7 @@ type Stack = Map<View, ViewConfiguration>;
  * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
  * It is used for displaying the last view from the current stack and providing navigation buttons for switching stacks.
  * See the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
+ * @internal
  */
 export class RotatorView extends View {
 	/**

@@ -10,8 +10,8 @@
  */
 
 import type { LanguageDirection } from './language.js';
-import CKEditorError from './ckeditorerror.js';
-import env from './env.js';
+import { CKEditorError } from './ckeditorerror.js';
+import { env } from './env.js';
 
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',
@@ -177,7 +177,7 @@ export function isArrowKeyCode( keyCode: number ): boolean {
 export type ArrowKeyCodeDirection = 'left' | 'up' | 'right' | 'down';
 
 /**
- * Returns the direction in which the {@link module:engine/model/documentselection~DocumentSelection selection}
+ * Returns the direction in which the {@link module:engine/model/documentselection~ModelDocumentSelection selection}
  * will move when the provided arrow key code is pressed considering the language direction of the editor content.
  *
  * For instance, in right–to–left (RTL) content languages, pressing the left arrow means moving the selection right (forward)
@@ -229,7 +229,7 @@ function getEnvKeyCode( key: string ): number {
 }
 
 /**
- * Determines if the provided key code moves the {@link module:engine/model/documentselection~DocumentSelection selection}
+ * Determines if the provided key code moves the {@link module:engine/model/documentselection~ModelDocumentSelection selection}
  * forward or backward considering the language direction of the editor content.
  *
  * For instance, in right–to–left (RTL) languages, pressing the left arrow means moving forward

@@ -10,7 +10,7 @@
 /**
  * The HTML writer interface.
  */
-export default interface HtmlWriter {
+export interface DataProcessorHtmlWriter {
 
 	/**
 	 * Returns an HTML string created from a document fragment.

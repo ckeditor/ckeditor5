@@ -7,7 +7,7 @@ import { makeList } from './lists.js';
 
 // Creates long mixed content, including all kinds of features: paragraphs, list items, formatted content, tables and images.
 // This is a sum of all other data sets, where each data set has smaller volume.
-export default function makeData() {
+export function makeData() {
 	let initialData = '';
 
 	// Each chunk of data will include: a few formatted and unformatted pararaphs, small list with sub-items, 40 cell table and two images.

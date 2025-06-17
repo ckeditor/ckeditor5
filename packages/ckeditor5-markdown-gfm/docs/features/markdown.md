@@ -39,7 +39,7 @@ Please remember that Markdown syntax is really simple and it does not cover all 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor}:
 
 <code-switcher>
 ```js
@@ -67,7 +67,7 @@ If you need more extensive Markdown support for formatting elements (for example
 
 ## The Markdown data processor
 
-The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
+The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
 
 ```js
 editor.getData(); // -> 'This is [CKEditor&nbsp;5](https://ckeditor.com).'

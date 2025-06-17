@@ -4,19 +4,19 @@
  */
 
 import { ContextualBalloon, Dialog, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import EmojiPicker from '../src/emojipicker.js';
-import EmojiRepository from '../src/emojirepository.js';
-import EmojiCommand from '../src/emojicommand.js';
-import EmojiPickerFormView from '../src/ui/emojipickerformview.js';
+import { EmojiPicker } from '../src/emojipicker.js';
+import { EmojiRepository } from '../src/emojirepository.js';
+import { EmojiCommand } from '../src/emojicommand.js';
+import { EmojiPickerFormView } from '../src/ui/emojipickerformview.js';
 
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );
@@ -333,16 +333,16 @@ describe( 'EmojiPicker', () => {
 		} );
 
 		it( 'should insert an emoji after clicking on it in the picker', () => {
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
 			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
 		it( 'should remove fake visual selection marker before inserting the emoji', () => {
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
 
 			emojiPicker.showUI();
 
@@ -352,7 +352,7 @@ describe( 'EmojiPicker', () => {
 
 			emojiPicker.emojiPickerView.gridView.fire( 'execute', { emoji: '😀' } );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>😀[]</paragraph>' );
 		} );
 
 		it( 'should use the "insertText" command when inserting the emoji', () => {
@@ -436,14 +436,14 @@ describe( 'EmojiPicker', () => {
 
 		// See #17819.
 		it( 'should not change the selection after opening the UI', async () => {
-			setModelData(
+			_setModelData(
 				editor.model,
 				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
 			);
 
 			emojiPicker.showUI();
 
-			expect( getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).to.equal(
 				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
 			);
 		} );
@@ -461,7 +461,7 @@ describe( 'EmojiPicker', () => {
 		describe( 'fake visual selection', () => {
 			describe( 'non-collapsed', () => {
 				it( 'should be displayed when a text fragment is selected', () => {
-					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 					emojiPicker.showUI();
 
@@ -476,13 +476,13 @@ describe( 'EmojiPicker', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-emoji-selection">o</span>}o</p>' );
+					expect( _getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-emoji-selection">o</span>}o</p>' );
 					expect( editor.getData() ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the empty block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
 
 					emojiPicker.showUI();
 
@@ -498,7 +498,7 @@ describe( 'EmojiPicker', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>[</p><p><span class="ck-fake-emoji-selection">foo</span>]</p>'
 					);
 					expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
@@ -506,7 +506,7 @@ describe( 'EmojiPicker', () => {
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the first block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 
 					emojiPicker.showUI();
 
@@ -522,14 +522,14 @@ describe( 'EmojiPicker', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>foo{</p><p><span class="ck-fake-emoji-selection">bar</span>]</p>'
 					);
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
-					setModelData( editor.model, [
+					_setModelData( editor.model, [
 						'<paragraph>foo[</paragraph>',
 						'<paragraph></paragraph>',
 						'<paragraph></paragraph>',
@@ -564,7 +564,7 @@ describe( 'EmojiPicker', () => {
 						'<p>}baz</p>'
 					].join( '' );
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( [
 						'<p>foo</p>',
 						'<p>&nbsp;</p><p>&nbsp;</p>',
@@ -577,7 +577,7 @@ describe( 'EmojiPicker', () => {
 
 			describe( 'collapsed', () => {
 				it( 'should be displayed on a collapsed selection', () => {
-					setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
 
 					emojiPicker.showUI();
 
@@ -592,7 +592,7 @@ describe( 'EmojiPicker', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>f{}<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>o</p>'
 					);
 					expect( editor.getData() ).to.equal( '<p>fo</p>' );
@@ -600,7 +600,7 @@ describe( 'EmojiPicker', () => {
 
 				it( 'should be displayed on selection focus when selection contains only one empty element ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, [
+					_setModelData( editor.model, [
 						'<paragraph>foo[</paragraph>',
 						'<paragraph></paragraph>',
 						'<paragraph>]bar</paragraph>'
@@ -625,13 +625,13 @@ describe( 'EmojiPicker', () => {
 						'<p>]<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>bar</p>'
 					].join( '' );
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, [
+					_setModelData( editor.model, [
 						'<paragraph>foo[</paragraph>',
 						'<paragraph></paragraph>',
 						'<paragraph></paragraph>',
@@ -658,13 +658,13 @@ describe( 'EmojiPicker', () => {
 						'<p>]<span class="ck-fake-emoji-selection ck-fake-emoji-selection_collapsed"></span>bar</p>'
 					].join( '' );
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is inside an empty element)', () => {
-					setModelData( editor.model, [
+					_setModelData( editor.model, [
 						'<paragraph>foo[</paragraph>',
 						'<paragraph></paragraph>',
 						'<paragraph>]</paragraph>',
@@ -691,7 +691,7 @@ describe( 'EmojiPicker', () => {
 						'<p>bar</p>'
 					].join( '' );
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );

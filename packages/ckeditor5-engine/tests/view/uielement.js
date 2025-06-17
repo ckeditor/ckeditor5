@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import UIElement from '../../src/view/uielement.js';
-import Element from '../../src/view/element.js';
-import Document from '../../src/view/document.js';
+import { ViewUIElement } from '../../src/view/uielement.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-describe( 'UIElement', () => {
+describe( 'ViewUIElement', () => {
 	let uiElement, doc;
 
 	beforeEach( () => {
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 
-		uiElement = new UIElement( doc, 'span', {
+		uiElement = new ViewUIElement( doc, 'span', {
 			foo: 'bar',
 			style: 'margin-top: 2em;color: white;',
 			class: 'foo bar'
@@ -34,7 +34,7 @@ describe( 'UIElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
-				new UIElement( doc, 'img', null, [ new Element( doc, 'i' ) ] ); // eslint-disable-line no-new
+				new ViewUIElement( doc, 'img', null, [ new ViewElement( doc, 'i' ) ] ); // eslint-disable-line no-new
 			}, 'view-uielement-cannot-add' );
 		} );
 	} );
@@ -43,7 +43,7 @@ describe( 'UIElement', () => {
 		let el;
 
 		before( () => {
-			el = new UIElement( doc, 'span' );
+			el = new ViewUIElement( doc, 'span' );
 		} );
 
 		it( 'should return true for uiElement/element, also with correct name and element name', () => {
@@ -84,7 +84,7 @@ describe( 'UIElement', () => {
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expectToThrowCKEditorError( () => {
-				uiElement._appendChild( new Element( doc, 'i' ) );
+				uiElement._appendChild( new ViewElement( doc, 'i' ) );
 			}, 'view-uielement-cannot-add' );
 		} );
 	} );
@@ -92,7 +92,7 @@ describe( 'UIElement', () => {
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expectToThrowCKEditorError( () => {
-				uiElement._insertChild( 0, new Element( doc, 'i' ) );
+				uiElement._insertChild( 0, new ViewElement( doc, 'i' ) );
 			}, 'view-uielement-cannot-add' );
 		} );
 	} );

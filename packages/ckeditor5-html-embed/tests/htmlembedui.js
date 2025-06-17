@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import HtmlEmbedEditing from '../src/htmlembedediting.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import HtmlEmbedUI from '../src/htmlembedui.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { HtmlEmbedUI } from '../src/htmlembedui.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconHtml } from 'ckeditor5/src/icons.js';
 

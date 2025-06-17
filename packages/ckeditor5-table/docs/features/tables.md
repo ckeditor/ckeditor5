@@ -1,6 +1,7 @@
 ---
 menu-title: Basics
 meta-title: Tables overview | CKEditor 5 Documentation
+meta-description: Create and customize tables in CKEditor 5 to organize data effectively with support for merging cells, headers, and responsive layouts.
 category: tables
 order: 10
 modified_at: 2023-02-22

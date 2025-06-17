@@ -2,7 +2,7 @@
 title: Menu bar
 category: setup
 meta-title: Menu bar | CKEditor 5 Documentation
-meta-description: Handling the CKEditor 5 menu bar.
+meta-description: Handling and fully utilizing the CKEditor 5 menu bar to boost productivity and easy access to features.
 modified_at: 2024-05-13
 order: 50
 ---

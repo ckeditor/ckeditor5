@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { canBeCodeBlock, getTextNodeAtLineStart } from '../src/utils.js';
 
@@ -200,7 +200,7 @@ describe( 'CodeBlock - utils', () => {
 
 		function test( input, output ) {
 			it( input, () => {
-				setData( model, input );
+				_setModelData( model, input );
 
 				const textNode = getTextNodeAtLineStart( model.document.selection.getFirstPosition(), model );
 
@@ -211,7 +211,7 @@ describe( 'CodeBlock - utils', () => {
 				}
 
 				if ( output ) {
-					expect( getData( model ) ).to.equal( output );
+					expect( _getModelData( model ) ).to.equal( output );
 				} else {
 					expect( textNode ).to.be.null;
 				}

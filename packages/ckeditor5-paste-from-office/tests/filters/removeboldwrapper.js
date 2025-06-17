@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import removeBoldWrapper from '../../src/filters/removeboldwrapper.js';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { removeBoldWrapper } from '../../src/filters/removeboldwrapper.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters', () => {
-	const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
+	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 	describe( 'removeBoldWrapper', () => {
 		let writer, viewDocument;
 
 		before( () => {
-			viewDocument = new Document();
-			writer = new UpcastWriter( viewDocument );
+			viewDocument = new ViewDocument();
+			writer = new ViewUpcastWriter( viewDocument );
 		} );
 
 		it( 'should remove bold wrapper added by google docs', () => {

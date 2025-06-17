@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 3+
 meta-title: Using CKEditor 5 with Vue.js 3+ from CDN | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with CDN.
+meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: cloud
 order: 70
 ---
@@ -254,7 +254,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 ### `focus`
 
-Corresponds to the {@link module:engine/view/document~Document#event:focus `focus`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
 ```html
 <ckeditor :editor="editor" @focus="onEditorFocus" />
@@ -262,7 +262,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:focus `focu
 
 ### `blur`
 
-Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
 ```html
 <ckeditor :editor="editor" @blur="onEditorBlur" />
@@ -270,7 +270,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`
 
 ### `input`
 
-Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event.
+Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event.
 
 ```html
 <ckeditor :editor="editor" @input="onEditorInput" />

@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
-import EditingController from '../../src/controller/editingcontroller.js';
+import { EditingController } from '../../src/controller/editingcontroller.js';
 
-import View from '../../src/view/view.js';
+import { EditingView } from '../../src/view/view.js';
 
-import Mapper from '../../src/conversion/mapper.js';
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
+import { Mapper } from '../../src/conversion/mapper.js';
+import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 
-import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
-import Model from '../../src/model/model.js';
-import ModelPosition from '../../src/model/position.js';
-import ModelRange from '../../src/model/range.js';
-import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import { DowncastHelpers } from '../../src/conversion/downcasthelpers.js';
+import { Model } from '../../src/model/model.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 
-import { getData as getModelData, setData as setModelData, parse } from '../../src/dev-utils/model.js';
-import { getData as getViewData } from '../../src/dev-utils/view.js';
+import { _getModelData, _setModelData, _parseModel } from '../../src/dev-utils/model.js';
+import { _getViewData } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 
@@ -43,7 +43,7 @@ describe( 'EditingController', () => {
 
 		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
-			expect( editing ).to.have.property( 'view' ).that.is.instanceof( View );
+			expect( editing ).to.have.property( 'view' ).that.is.instanceof( EditingView );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'downcastDispatcher' ).that.is.instanceof( DowncastDispatcher );
 
@@ -77,7 +77,7 @@ describe( 'EditingController', () => {
 		let model, modelRoot, viewRoot, domRoot, editing, listener;
 
 		beforeEach( () => {
-			listener = Object.create( EmitterMixin );
+			listener = new ( EmitterMixin() )();
 
 			model = new Model();
 			modelRoot = model.document.createRoot();
@@ -110,7 +110,7 @@ describe( 'EditingController', () => {
 
 			viewRoot._removeChildren( 0, viewRoot.childCount );
 
-			const modelData = new ModelDocumentFragment( parse(
+			const modelData = new ModelDocumentFragment( _parseModel(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>bar</paragraph>',
@@ -134,11 +134,11 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert insertion', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert split', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.split( model.document.selection.getFirstPosition() );
@@ -149,17 +149,17 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert rename', () => {
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.change( writer => {
 				writer.rename( modelRoot.getChild( 0 ), 'div' );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert delete', () => {
@@ -174,13 +174,13 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert selection from view to model', done => {
 			listener.listenTo( editing.view.document, 'selectionChange', () => {
 				setTimeout( () => {
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>b[a]r</paragraph>'
@@ -210,7 +210,7 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 		} );
 
 		it( 'should convert not collapsed selection', () => {
@@ -221,7 +221,7 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
 		} );
 
 		it( 'should clear previous selection', () => {
@@ -232,7 +232,7 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -241,7 +241,7 @@ describe( 'EditingController', () => {
 				) );
 			} );
 
-			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
+			expect( _getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
 		} );
 
 		it( 'should convert adding marker', () => {
@@ -251,7 +251,7 @@ describe( 'EditingController', () => {
 				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -266,7 +266,7 @@ describe( 'EditingController', () => {
 				writer.removeMarker( 'marker' );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo</p><p></p><p>bar</p>' );
 		} );
 
@@ -283,7 +283,7 @@ describe( 'EditingController', () => {
 				writer.updateMarker( 'marker', { range: range2 } );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p><span>fo</span>o</p><p></p><p>bar</p>' );
 		} );
 
@@ -295,7 +295,7 @@ describe( 'EditingController', () => {
 				writer.insertText( 'xyz', new ModelPosition( modelRoot, [ 1, 0 ] ) );
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oo</span></p><p><span>xyz</span></p><p><span>ba</span>r</p>' );
 		} );
 
@@ -313,7 +313,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f<span>oor</span></p><p></p><p><span>ba</span></p>' );
 		} );
 
@@ -331,7 +331,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>f</p><p></p><p><span>ba</span>roo</p>' );
 		} );
 
@@ -349,7 +349,7 @@ describe( 'EditingController', () => {
 				);
 			} );
 
-			expect( getViewData( editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
 
@@ -491,7 +491,7 @@ describe( 'EditingController', () => {
 			editing.destroy();
 
 			model.change( writer => {
-				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
+				const modelData = _parseModel( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
 
 				writer.insert( modelData, model.document.getRoot() );
 			} );
@@ -668,7 +668,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should not fix flat range on text', () => {
-			setModelData( model, '<paragraph>foobar</paragraph>' );
+			_setModelData( model, '<paragraph>foobar</paragraph>' );
 
 			const targetRanges = [ view.createRange(
 				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 ),
@@ -703,7 +703,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should fix range that ends in block object (deleteContentBackward)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<blockObject></blockObject>' +
 				'<paragraph>bar</paragraph>'
@@ -742,7 +742,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should fix range that ends in block object (deleteContentForward)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<blockObject></blockObject>' +
 				'<paragraph>bar</paragraph>'
@@ -775,7 +775,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should fix range that is collapsed inside an object (insertText)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<blockObject></blockObject>' +
 				'<paragraph>bar</paragraph>'
@@ -819,7 +819,7 @@ describe( 'EditingController', () => {
 			// Note that this is a synthetic scenario and in real life scenarios such event (insert text)
 			// should prefer to jump into the nearest position that accepts text (now it wraps the object).
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<blockObject></blockObject>' +
 				'<paragraph>bar</paragraph>'
@@ -860,7 +860,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should fix range that is collapsed before an object (insertText)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<blockObject></blockObject>' +
 				'<paragraph>bar</paragraph>'
@@ -901,7 +901,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should fix range that is wrapping the block element (enter)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>bar</paragraph>' +
 				'<paragraph>baz</paragraph>'
@@ -934,7 +934,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should not crash while trying to fix null range while composing', () => {
-			setModelData( model, '<paragraph>a</paragraph>' );
+			_setModelData( model, '<paragraph>a</paragraph>' );
 
 			const targetRanges = [ null ];
 

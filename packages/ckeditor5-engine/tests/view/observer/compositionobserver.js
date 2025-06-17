@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CompositionObserver from '../../../src/view/observer/compositionobserver.js';
-import View from '../../../src/view/view.js';
+import { CompositionObserver } from '../../../src/view/observer/compositionobserver.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'CompositionObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( CompositionObserver );
 	} );

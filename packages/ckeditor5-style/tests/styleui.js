@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 
-import Style from '../src/style.js';
-import StyleUI from '../src/styleui.js';
-import StylePanelView from '../src/ui/stylepanelview.js';
+import { Style } from '../src/style.js';
+import { StyleUI } from '../src/styleui.js';
+import { StylePanelView } from '../src/ui/stylepanelview.js';
 
 describe( 'StyleUI', () => {
 	let editor, element;

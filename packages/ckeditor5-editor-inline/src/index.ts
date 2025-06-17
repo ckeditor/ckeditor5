@@ -7,4 +7,6 @@
  * @module editor-inline
  */
 
-export { default as InlineEditor } from './inlineeditor.js';
+export { InlineEditor } from './inlineeditor.js';
+export { InlineEditorUI } from './inlineeditorui.js';
+export { InlineEditorUIView } from './inlineeditoruiview.js';

@@ -10,8 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
 
-import PageBreakEditing from './pagebreakediting.js';
-import PageBreakUI from './pagebreakui.js';
+import { PageBreakEditing } from './pagebreakediting.js';
+import { PageBreakUI } from './pagebreakui.js';
 
 /**
  * The page break feature.
@@ -20,7 +20,7 @@ import PageBreakUI from './pagebreakui.js';
  *
  * For a detailed overview, check the {@glink features/page-break Page break feature} documentation.
  */
-export default class PageBreak extends Plugin {
+export class PageBreak extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

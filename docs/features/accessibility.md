@@ -2,6 +2,7 @@
 category: features
 classes: keyboard-shortcuts
 meta-title: Accessibility support | CKEditor 5 Documentation
+meta-description: Accessibility support in CKEditor 5 - WCAG 2.x  and Section 508 conformance, VPAT Accessibility Conformance Report, keyboard shortcuts.
 modified_at: 2024-04-05
 order: -997
 ---

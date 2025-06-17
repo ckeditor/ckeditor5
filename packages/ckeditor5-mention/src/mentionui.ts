@@ -15,7 +15,7 @@ import {
 import type {
 	ViewDocumentKeyDownEvent,
 	Marker,
-	Position
+	ModelPosition
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -31,22 +31,22 @@ import {
 	env,
 	keyCodes,
 	logWarning,
-	type PositionOptions
+	type DomOptimalPositionOptions
 } from 'ckeditor5/src/utils.js';
 
 import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
 
 import { debounce } from 'es-toolkit/compat';
 
-import MentionsView from './ui/mentionsview.js';
-import DomWrapperView from './ui/domwrapperview.js';
-import MentionListItemView from './ui/mentionlistitemview.js';
+import { MentionsView } from './ui/mentionsview.js';
+import { MentionDomWrapperView } from './ui/domwrapperview.js';
+import { MentionListItemView } from './ui/mentionlistitemview.js';
 
 import type {
-	FeedCallback,
+	MentionFeedbackCallback,
 	MentionFeed,
 	MentionFeedItem,
-	ItemRenderer,
+	MentionItemRenderer,
 	MentionFeedObjectItem
 } from './mentionconfig.js';
 
@@ -68,7 +68,7 @@ const defaultCommitKeyCodes = [
 /**
  * The mention UI feature.
  */
-export default class MentionUI extends Plugin {
+export class MentionUI extends Plugin {
 	/**
 	 * The mention view.
 	 */
@@ -302,7 +302,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Returns item renderer for the marker.
 	 */
-	private _getItemRenderer( marker: string ): ItemRenderer | undefined {
+	private _getItemRenderer( marker: string ): MentionItemRenderer | undefined {
 		const { itemRenderer } = this._mentionsConfigurations.get( marker )!;
 
 		return itemRenderer;
@@ -508,7 +508,7 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Renders a single item in the autocomplete list.
 	 */
-	private _renderItem( item: MentionFeedObjectItem, marker: string ): DomWrapperView | ButtonView {
+	private _renderItem( item: MentionFeedObjectItem, marker: string ): MentionDomWrapperView | ButtonView {
 		const editor = this.editor;
 
 		let view;
@@ -520,7 +520,7 @@ export default class MentionUI extends Plugin {
 			const renderResult = renderer( item );
 
 			if ( typeof renderResult != 'string' ) {
-				view = new DomWrapperView( editor.locale, renderResult );
+				view = new MentionDomWrapperView( editor.locale, renderResult );
 			} else {
 				label = renderResult;
 			}
@@ -544,7 +544,10 @@ export default class MentionUI extends Plugin {
 	 * @param mentionMarker
 	 * @param preferredPosition The name of the last matched position name.
 	 */
-	private _getBalloonPanelPositionData( mentionMarker: Marker, preferredPosition: MentionsView['position'] ): Partial<PositionOptions> {
+	private _getBalloonPanelPositionData(
+		mentionMarker: Marker,
+		preferredPosition: MentionsView['position']
+	): Partial<DomOptimalPositionOptions> {
 		const editor = this.editor;
 		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
@@ -588,8 +591,8 @@ export default class MentionUI extends Plugin {
 function getBalloonPanelPositions(
 	preferredPosition: MentionsView['position'],
 	uiLanguageDirection: string
-): PositionOptions['positions'] {
-	const positions: Record<string, PositionOptions['positions'][0]> = {
+): DomOptimalPositionOptions['positions'] {
+	const positions: Record<string, DomOptimalPositionOptions['positions'][0]> = {
 		// Positions the panel to the southeast of the caret rectangle.
 		'caret_se': ( targetRect: Rect ) => {
 			return {
@@ -708,6 +711,8 @@ function getLastValidMarkerInText(
  * Creates a RegExp pattern for the marker.
  *
  * Function has to be exported to achieve 100% code coverage.
+ *
+ * @internal
  */
 export function createRegExp( marker: string, minimumCharacters: number ): RegExp {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
@@ -798,7 +803,7 @@ function createFeedCallback( feedItems: Array<MentionFeedItem> ) {
 /**
  * Checks if position in inside or right after a text with a mention.
  */
-function isPositionInExistingMention( position: Position ): boolean | null {
+function isPositionInExistingMention( position: ModelPosition ): boolean | null {
 	// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
 	// and you cannot use selection.hasAttribute( 'mention' ) just yet.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
@@ -814,7 +819,7 @@ function isPositionInExistingMention( position: Position ): boolean | null {
  *
  * See https://github.com/ckeditor/ckeditor5/issues/11400.
  */
-function isMarkerInExistingMention( markerPosition: Position ): boolean | null {
+function isMarkerInExistingMention( markerPosition: ModelPosition ): boolean | null {
 	const nodeAfter = markerPosition.nodeAfter;
 
 	return nodeAfter && nodeAfter.is( '$text' ) && nodeAfter.hasAttribute( 'mention' );
@@ -887,8 +892,8 @@ type RequestFeedErrorEvent = {
 
 type Definition = {
 	marker: string;
-	feedCallback: FeedCallback;
-	itemRenderer?: ItemRenderer;
+	feedCallback: MentionFeedbackCallback;
+	itemRenderer?: MentionItemRenderer;
 	dropdownLimit?: number;
 };
 
