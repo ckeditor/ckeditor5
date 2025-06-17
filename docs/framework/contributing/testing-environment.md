@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
-meta-description: Discover how to set up and use the testing environment for CKEditor 5, including running unit and manual tests effectively.
+meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
 modified_at: 2022-09-07
 ---
