@@ -15,7 +15,8 @@ import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
-import type { Handle as MdastHandle } from 'hast-util-to-mdast';
+import type { Handle, State } from 'hast-util-to-mdast';
+import type { Element, Node, Root, RootContent } from 'hast';
 
 export class MarkdownGfmHtmlToMd {
 	private _processor: any;
@@ -31,7 +32,7 @@ export class MarkdownGfmHtmlToMd {
 	}
 
 	public parse( html: string ): string {
-		return this._processor
+		return this._processor!
 			.processSync( html )
 			.toString()
 			.trim();
@@ -40,11 +41,11 @@ export class MarkdownGfmHtmlToMd {
 	/**
 	 * Returns handlers for raw HTML tags that should be kept in the Markdown output.
 	 */
-	private _getRawTagsHandlers(): Record<string, MdastHandle> {
-		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
-			handlers[ tagName ] = ( state: any, node: any ) => {
+	private _getRawTagsHandlers(): Record<string, Handle> {
+		return this._keepRawTags.reduce( ( handlers: Record<string, Handle>, tagName: string ) => {
+			handlers[ tagName ] = ( state: State, node: RootContent ) => {
 				const result = {
-					type: 'html',
+					type: 'html' as const,
 					value: toHtml( node, { allowDangerousHtml: true } )
 				};
 
@@ -54,7 +55,7 @@ export class MarkdownGfmHtmlToMd {
 			};
 
 			return handlers;
-		}, {} as Record<string, MdastHandle> );
+		}, {} as Record<string, Handle> );
 	}
 
 	private _buildProcessor() {
@@ -63,7 +64,7 @@ export class MarkdownGfmHtmlToMd {
 			.use( rehypeParse )
 			// Removes `<label>` element from TODO lists.
 			.use( removeLabelFromCheckboxes )
-			// Turns HTML syntax tree to markdown syntax tree.
+			// Turns HTML syntax tree into Markdown syntax tree.
 			.use( rehypeRemark, {
 				// Keeps allowed HTML tags.
 				handlers: this._getRawTagsHandlers()
@@ -90,9 +91,9 @@ export class MarkdownGfmHtmlToMd {
  * Removes `<label>` element from TODO lists, so that `<input>` and `text` are direct children of `<li>`.
  */
 function removeLabelFromCheckboxes(): ReturnType<Plugin> {
-	return function( tree ) {
-		visit( tree, 'element', ( node: any, index: number, parent: any ) => {
-			if ( node.tagName === 'label' && parent.tagName === 'li' ) {
+	return function( tree: Node ): void {
+		visit( tree, 'element', ( node: Element, index: number, parent: Root | Element ) => {
+			if ( node.tagName === 'label' && parent.type === 'element' && parent.tagName === 'li' ) {
 				parent.children[ index ] = node.children[ 0 ];
 				parent.children.splice( index + 1, 1, ...node.children );
 			}
