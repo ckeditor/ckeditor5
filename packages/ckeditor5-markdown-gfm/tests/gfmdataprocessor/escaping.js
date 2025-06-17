@@ -77,6 +77,10 @@ describe( 'MarkdownGfmDataProcessor', () => {
 			// contain the raw characters but we "know" that those are text nodes and therefore should be converted
 			// back to entities when outputting markdown.
 
+			it( 'should escape <', () => {
+				testDataProcessor( '\\<', '<p><</p>' );
+			} );
+
 			it( 'should escape HTML as text', () => {
 				testDataProcessor( '\\<h1>Test\\</h1>', '<p><h1>Test</h1></p>' );
 			} );

@@ -82,7 +82,10 @@ export class MarkdownGfmHtmlToMd {
 				rule: '-',
 				handlers: {
 					break: () => '\n'
-				}
+				},
+				unsafe: [
+					{ character: '<' }
+				]
 			} );
 	}
 }
