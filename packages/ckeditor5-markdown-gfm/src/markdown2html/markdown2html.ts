@@ -51,12 +51,15 @@ export class MarkdownGfmMdToHtml {
 }
 
 /**
-	 * Removes default classes added to `<ul>`, `<ol>`, and `<li>` elements.
-	 */
+ * Rehype plugin that improves handling of the To-do lists by removing:
+ *  * default classes added to `<ul>`, `<ol>`, and `<li>` elements.
+ *  * bogus space after <input type="checkbox"> because it would be preserved by ViewDomConverter as it's next to an inline object.
+ */
 function deleteClassesFromToDoLists(): ReturnType<Plugin> {
 	return ( tree: Node ): void => {
 		visit( tree, 'element', ( node: Element ) => {
 			if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
+				node.children = node.children.filter( child => child.type !== 'text' || !!child.value.trim() );
 				delete node.properties.className;
 			}
 		} );

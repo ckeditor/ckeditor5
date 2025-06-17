@@ -362,8 +362,8 @@ describe( 'MarkdownGfmDataProcessor', () => {
 				'* [x] Item 2',
 
 				'<ul>' +
-					'<li><input disabled="" type="checkbox"></input> Item 1</li>' +
-					'<li><input checked="" disabled="" type="checkbox"></input> Item 2</li>' +
+					'<li><input disabled="" type="checkbox"></input>Item 1</li>' +
+					'<li><input checked="" disabled="" type="checkbox"></input>Item 2</li>' +
 				'</ul>'
 			);
 		} );
