@@ -95,9 +95,9 @@ export default class Input extends Plugin {
 			// In case of typing on a non-collapsed range, we have to handle it ourselves as a browser
 			// could modify the DOM unpredictably.
 			// Noticed cases:
-			// * <codeBlock>[foo</codeBlock><paragraph>]bar</paragraph>
-			// * <paragraph>[foo</paragraph><codeBlock>]bar</codeBlock>
-			// * <paragraph>[foo</paragraph><blockQuote><paragraph>]bar</paragraph></blockQuote>
+			// * <pre><code>[foo</code></pre><p>]bar</p>
+			// * <p>[foo</p><pre>]<code>bar</code></pre>
+			// * <p>[foo</p><blockquote><p>]bar</p></blockquote>
 			//
 			// Especially tricky case is when a code block follows a paragraph as code block on the view side
 			// is rendered as a <code> element inside a <pre> element, but only the <code> element is mapped to the model.
