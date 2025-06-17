@@ -79,7 +79,7 @@ Each changelog entry is a Markdown file with a frontmatter section followed by a
 </table>
 
 <info-box>
-    **Tip**: Keep the summary clear and user-facing - this is what will appear in the final changelog.
+    **Tip**: Keep the summary clear and user-facing &ndash; this is what will appear in the final changelog.
 </info-box>
 
 The changelog entry format is designed to be both human-friendly and machine-readable. It uses a simple frontmatter structure followed by a short description of the change. Each field in the frontmatter serves a specific purpose, from determining the entry's visibility to linking it with related issues or acknowledging community contributions.
