@@ -2,7 +2,7 @@
 category: framework-deep-dive-conversion
 menu-title: View to model (upcast)
 meta-title: Upcast conversion - view to model | CKEditor 5 Framework Documentation
-meta-description: Learn about upcasting in CKEditor 5, converting view elements into model data for accurate content representation and editing.
+meta-description: Learn about upcasting in CKEditor 5. It converts view elements into model data for accurate content representation and editing.
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02
