@@ -114,6 +114,11 @@ export default class Input extends Plugin {
 				modelRanges = Array.from( modelSelection.getRanges() );
 			}
 
+			// Browser must not modify multiple blocks selected as the result is unpredictable.
+			if ( modelRanges.some( range => range.start.parent !== range.end.parent ) ) {
+				data.preventDefault();
+			}
+
 			let insertText = text;
 
 			// Typing in English on Android is firing composition events for the whole typed word.
