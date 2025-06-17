@@ -7,6 +7,6 @@
 	--ck-content-line-height: 1.5;
 }
 
-.ck.ck-content {
+.ck-content {
 	line-height: var(--ck-content-line-height);
 }
