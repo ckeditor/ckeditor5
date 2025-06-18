@@ -61,8 +61,6 @@ export default class ListItemBoldIntegration extends Plugin {
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
 					writer.addClass( 'ck-bold', viewElement );
-				} else {
-					writer.removeClass( 'ck-bold', viewElement );
 				}
 			}
 		} );
