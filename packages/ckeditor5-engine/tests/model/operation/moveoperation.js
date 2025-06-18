@@ -29,7 +29,7 @@ describe( 'MoveOperation', () => {
 		expect( remove1.type ).to.equal( 'remove' );
 
 		const remove2 = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( gy, [ 1 ] ), 0 );
-		expect( remove2.type ).to.equal( 'remove' );
+		expect( remove2.type ).to.equal( 'move' );
 
 		const reinsert = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( root, [ 0, 0 ] ), 0 );
 		expect( reinsert.type ).to.equal( 'reinsert' );

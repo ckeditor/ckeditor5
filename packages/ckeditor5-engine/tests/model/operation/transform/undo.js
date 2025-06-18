@@ -945,5 +945,45 @@ describe( 'transform', () => {
 
 			expectClients( '<paragraph>ABCD</paragraph>' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/18740
+		it( 'unwrap, merge first element, undo, undo', () => {
+			john.setData( '<paragraph>A</paragraph><blockQuote><paragraph>[B</paragraph><paragraph>C]</paragraph></blockQuote>' );
+
+			// For some reason the command value is not correctly refreshed.
+			john.editor.commands.get( 'blockQuote' ).refresh();
+			john._processExecute( 'blockQuote' );
+			john.merge( [ 1 ] );
+
+			expectClients( '<paragraph>AB</paragraph><paragraph>C</paragraph>' );
+
+			john.undo();
+
+			expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
+
+			john.undo();
+
+			expectClients( '<paragraph>A</paragraph><blockQuote><paragraph>B</paragraph><paragraph>C</paragraph></blockQuote>' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/18740
+		it( 'unwrap, merge last element, undo, undo', () => {
+			john.setData( '<paragraph>A</paragraph><blockQuote><paragraph>[B</paragraph><paragraph>C]</paragraph></blockQuote>' );
+
+			// For some reason the command value is not correctly refreshed.
+			john.editor.commands.get( 'blockQuote' ).refresh();
+			john._processExecute( 'blockQuote' );
+			john.merge( [ 2 ] );
+
+			expectClients( '<paragraph>A</paragraph><paragraph>BC</paragraph>' );
+
+			john.undo();
+
+			expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
+
+			john.undo();
+
+			expectClients( '<paragraph>A</paragraph><blockQuote><paragraph>B</paragraph><paragraph>C</paragraph></blockQuote>' );
+		} );
 	} );
 } );
