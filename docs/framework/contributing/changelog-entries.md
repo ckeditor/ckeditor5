@@ -154,7 +154,7 @@ Both fields (`closes` and `see`) can contain multiple references, but they must 
 
 ### Giving credit
 
-When closing a R submitted by a non-core contributor, add information about the contributor to the changelog entry file using the `communityCredits` field. It should contain a list of GitHub usernames of contributors who should be credited for this change.
+When closing a PR submitted by a non-core contributor, add information about the contributor to the changelog entry file using the `communityCredits` field. It should contain a list of GitHub usernames of contributors who should be credited for this change.
 
 ### Description
 
