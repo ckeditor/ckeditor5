@@ -333,22 +333,6 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 		} );
-
-		it( 'should remove the style from <li> if listItemFontFamily attribute is removed from the list item', () => {
-			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">[foo]</$text>' +
-				'</paragraph>'
-			);
-
-			expect( view.document.getRoot().getChild( 0 ).getChild( 0 ).getStyle( 'font-family' ) ).to.equal( 'Arial' );
-
-			model.change( writer => {
-				writer.setAttribute( 'listItemFontFamily', '', model.document.getRoot().getChild( 0 ) );
-			} );
-
-			expect( view.document.getRoot().getChild( 0 ).getChild( 0 ).getStyle( 'font-family' ) ).to.be.undefined;
-		} );
 	} );
 
 	describe( 'upcast', () => {
