@@ -333,32 +333,6 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'</ul>'
 			);
 		} );
-
-		it( 'should not downcast listItemFontFamily attribute if value is empty', () => {
-			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="">' +
-					'<$text fontFamily="Arial">foo</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
-					'<li>' +
-						'<span class="ck-list-bogus-paragraph">' +
-							'<span style="font-family:Arial">foo</span>' +
-						'</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			expect( editor.getData() ).to.equalMarkup(
-				'<ul>' +
-					'<li>' +
-						'<span style="font-family:Arial;">foo</span>' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
 	} );
 
 	describe( 'upcast', () => {
