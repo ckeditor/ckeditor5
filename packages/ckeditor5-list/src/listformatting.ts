@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
+import ListItemFontColorIntegration from './listformatting/listitemfontcolorintegration.js';
 import type {
 	Element,
 	Model,
@@ -60,7 +61,10 @@ export default class ListFormatting extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListItemFontFamilyIntegration ] as const;
+		return [
+			ListItemFontFamilyIntegration,
+			ListItemFontColorIntegration
+		] as const;
 	}
 
 	/**
