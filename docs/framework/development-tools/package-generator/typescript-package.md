@@ -1,6 +1,7 @@
 ---
 menu-title: TypeScript package
 meta-title: Package generator TypeScript package content | CKEditor 5 Framework Documentation
+meta-description: Learn how to generate a standalone TypeScript package with the CKEditor 5 package generator, including setup and build configuration.
 category: package-generator
 order: 43
 modified_at: 2024-06-27

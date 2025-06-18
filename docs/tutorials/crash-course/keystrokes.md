@@ -2,6 +2,7 @@
 category: crash-course
 order: 80
 meta-title: CKEditor 5 crash course - handling keystrokes | CKEditor 5 Documentation
+meta-description: Customize keyboard behavior in CKEditor 5 with the keystrokes API to enhance user interaction and streamline editing workflows.
 modified_at: 2025-03-14
 ---
 

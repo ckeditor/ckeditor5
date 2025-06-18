@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Document editor example | CKEditor 5 Documentation
+meta-description: Explore the document editor preset for rich text editing with features similar to native word processors.
 order: 50
 toc: false
 contributeUrl: false

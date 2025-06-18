@@ -3,6 +3,7 @@ menu-title: Using a React component in a widget
 category: widget-tutorials
 order: 25
 meta-title: Using a React component in a block widget tutorial | CKEditor 5 Documentation
+meta-description: Learn how to integrate a React component into a CKEditor 5 widget, including setup, rendering, and data binding techniques.
 ---
 
 # Using a React component in a block widget
