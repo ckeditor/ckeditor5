@@ -4,7 +4,7 @@ This repository uses Markdown files to define changelog entries. If the changes 
 
     yarn run nice
 
-This will generate a `*.md` file in the `.changelog/` directory for your description. You can create as many as you need.
+This will generate an `*.md` file in the `.changelog/` directory for your description. You can create as many as you need.
 
 **Note:**  
 If your PR is internal-only (e.g., tests, tooling, docs), you can skip this step - just mention it below.

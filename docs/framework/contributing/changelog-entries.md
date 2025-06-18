@@ -8,7 +8,7 @@ modified_at: 2025-06-17
 
 # Changelog entries
 
-CKEditor 5 uses Markdown file-based changelog system inspired by tools like Changesets. Contributors are written in a human-readable Markdown files stored in the repository. These files describe the nature of the change (bug fix, feature, breaking change, etc.) and are committed alongside the actual code. These entries will be automatically compiled into the final changelog during the release process.
+CKEditor 5 uses Markdown file-based changelog system inspired by tools like Changesets. Contributions are noted in a human-readable Markdown files stored in the repository. These files describe the nature of the change (bug fix, feature, breaking change, etc.) and are committed alongside the actual code. These entries will be automatically compiled into the final changelog during the release process.
 
 ## How to create a new file
 
@@ -24,7 +24,7 @@ Create a new Markdown file in the `.changelog/` directory to add a changelog ent
     `nice` stands for **N**ew **I**ndividual **C**hangelog **E**ntry.
 </info-box>
 
-This command creates a new Markdown file with a filename based on the current date and Git branch name: `YYYYMMDDHHMMSS_{branch-name}.md`. The branch name is automatically slugified (only letters, numbers, `-`, and `_` are allowed).
+This command creates a new Markdown file with a file name based on the current date and Git branch name: `YYYYMMDDHHMMSS_{branch-name}.md`. The branch name is automatically slugified (only letters, numbers, `-`, and `_` are allowed).
 
 _Example: `20250617103000_fix-toolbar-alignment.md`_
 
@@ -32,12 +32,12 @@ The file will include a predefined frontmatter template. **You must manually fil
 
 ## Format of a changelog entry
 
-Each changelog entry is a Markdown file with a frontmatter section followed by a summary and optional context. Here's a breakdown of all available fields:
+Each changelog entry is a Markdown file with a frontmatter section followed by a summary and optional context. Here is a breakdown of all available fields:
 
 <table>
   <thead>
     <tr>
-      <th style="width: 20%;">Field</th>
+      <th style="width: 25%;">Field</th>
       <th style="width: 10%;">Required?</th>
       <th>Description</th>
     </tr>
@@ -110,7 +110,7 @@ Using these fields correctly ensures that the changelog remains accurate, meanin
     <tr>
       <td>Other</td>
       <td><code>patch</code></td>
-      <td>Enhancement or refactor. It's not a fix or feature. Example: public API cleanup.</td>
+      <td>Enhancement or refactor. It is not a fix or feature. Example: public API cleanup.</td>
     </tr>
     <tr>
       <td>Major breaking change</td>
@@ -129,7 +129,7 @@ Using these fields correctly ensures that the changelog remains accurate, meanin
 
 Changes affect one or more packages. List the package that was most impacted by the change first.
 
-However, it is possible to skip this part if many packages are affected. This usually indicates a generic change. In this case, having all the packages listed would reduce the changelog's readability.
+However, it is possible to skip this part if many packages are affected. This usually indicates a generic change. In this case, having all the packages listed would reduce the readability of the changelog.
 
 The package name is based on the npm package name, but the `@ckeditor/` prefix is stripped.
 
@@ -154,7 +154,7 @@ Both fields (`closes` and `see`) can contain multiple references, but they must 
 
 ### Giving credit
 
-When closing a non-core contributor's PR, add information about the contributor to the changelog entry file using the `communityCredits` field. It should contain a list of GitHub usernames of contributors who should be credited for this change.
+When closing a R submitted by a non-core contributor, add information about the contributor to the changelog entry file using the `communityCredits` field. It should contain a list of GitHub usernames of contributors who should be credited for this change.
 
 ### Description
 
@@ -291,4 +291,4 @@ As a reviewer, make sure to check the following aspects of the proposed changelo
 
 You must be aware that the message will end up in the changelog and must be understandable in the broad context of the entire editor. It is not for you &ndash; it is for other developers.
 
-When closing a PR, you do not have to copy anything. Pick your merge strategy (e.g., "Squash and merge"), and GitHub will handle the rest.
+When closing a PR, you do not have to copy anything. Pick your merge strategy (for example, "Squash and merge"), and GitHub will handle the rest.
