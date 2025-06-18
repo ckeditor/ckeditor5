@@ -62,8 +62,6 @@ export default class ListItemFontColorIntegration extends Plugin {
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
 					writer.setStyle( 'color', value as string, viewElement );
-				} else {
-					writer.removeStyle( 'color', viewElement );
 				}
 			}
 		} );

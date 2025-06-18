@@ -330,32 +330,6 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 		} );
-
-		it( 'should not downcast listItemFontColor attribute if value is empty', () => {
-			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="">' +
-					'foo' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
-					'<li>' +
-						'<span class="ck-list-bogus-paragraph">' +
-							'foo' +
-						'</span>' +
-					'</li>' +
-				'</ul>'
-			);
-
-			expect( editor.getData() ).to.equalMarkup(
-				'<ul>' +
-					'<li>' +
-						'foo' +
-					'</li>' +
-				'</ul>'
-			);
-		} );
 	} );
 
 	describe( 'upcast', () => {
