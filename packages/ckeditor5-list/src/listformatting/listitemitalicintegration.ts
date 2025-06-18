@@ -61,8 +61,6 @@ export default class ListItemItalicIntegration extends Plugin {
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
 					writer.addClass( 'ck-italic', viewElement );
-				} else {
-					writer.removeClass( 'ck-italic', viewElement );
 				}
 			}
 		} );
