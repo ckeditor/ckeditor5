@@ -60,10 +60,9 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			attributeName: 'listItemFontFamily',
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
+				// There is no need of removing the style because downcast strategies handles it automatically.
 				if ( value ) {
 					writer.setStyle( 'font-family', value as string, viewElement );
-				} else {
-					writer.removeStyle( 'font-family', viewElement );
 				}
 			}
 		} );

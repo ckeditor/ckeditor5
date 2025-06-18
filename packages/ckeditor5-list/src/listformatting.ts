@@ -181,7 +181,7 @@ export default class ListFormatting extends Plugin {
 function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
 	// In case of multi-block, check if all blocks have the same format.
 	const listItemBlocks = getAllListItemBlocks( listItem );
-	let format;
+	let format: { isConsistent: boolean; value?: string };
 
 	for ( let i = 0; i < listItemBlocks.length; i++ ) {
 		const listItemBlock = listItemBlocks[ i ];
