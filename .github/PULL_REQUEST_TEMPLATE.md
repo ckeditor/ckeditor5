@@ -1,9 +1,34 @@
-### Suggested merge commit message ([convention](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/git-commit-message-convention.html))
+<!--
 
-Type: Message. Closes #000.
+This repository uses Markdown files to define changelog entries. If the changes in this pull request are **user-facing**, please create a changelog entry by running the following command:
+
+    yarn run nice
+
+This will generate a `*.md` file in the `.changelog/` directory for your description. You can create as many as you need.
+
+**Note:**  
+If your PR is internal-only (e.g., tests, tooling, docs), you can skip this step - just mention it below.
+
+-->
+
+### 🚀 Summary
+
+*A brief summary of what this PR changes.*
 
 ---
 
-### Additional information
+### 📌 Related issues
 
-_For example – encountered issues, assumptions you had to make, other affected tickets, etc._
+<!--
+
+Although changelog entries list connected issues, GitHub requires listing them here to automatically link and close them.
+
+-->
+
+* Closes #000
+
+---
+
+### 💡 Additional information
+
+*Optional: Notes on decisions, edge cases, or anything helpful for reviewers.*
