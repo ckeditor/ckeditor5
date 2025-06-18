@@ -33,22 +33,29 @@ While CKEditor&nbsp;5 provides a rich client-side editing experience, there are 
 * **AI-powered editing**: Make automated suggestions while users are actively editing, helping improve content quality.
 * **Automated publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments.
 
-## Getting started with server-side editor API
+## API examples
+
+Below, you will find several examples of practical server-side API applications. There are far more possibilities available. 
+
+<info-box info>
+	In the examples below we use the {@link module:core/editor/editor~Editor `editor`} variable in many places. While on the client (browser) environment it is not available by default, it is a globally available pointer to the editor's instance on the server. There is no need to set this up when using Cloud Services.
+</info-box>
+
+### Getting started with server-side editor API
 
 This guide explains how to write scripts that can be executed through the Server-side Editor API endpoint. The following sections provide examples of such scripts, each demonstrating a specific use case that can be automated on the server side.
 
-For information about setting up and using the endpoint itself, see the {TODO: link Cloud Services Server-side Editor API} documentation.
+For information about setting up and using the endpoint itself, see the [link Cloud Services Server-side Editor API](todo) documentation.
 
-## Working with content
+### Working with content
 
 <info-box info>
 	Please note you need to have a bundle uploaded first with proper credentials <!-- link here--> for the service to work properly.
 </info-box>
 
-### Getting editor data
+#### Getting editor data
 
-The most basic action you can perform is getting the editor's data. We use {@link module:core/editor/editor~Editor `editor`} for that, as it is a make a globally available variable by the Cloud environment.
-
+The most basic action you can perform is getting the editor's data.
 ```js
 // Get the editor data.
 const data = editor.getData();
@@ -74,7 +81,7 @@ return {
 
 This approach allows you to not only retrieve the document content but also process it, extract metadata, or prepare it for specific use cases like exports or integrations with other systems.
 
-### Using commands
+#### Using commands
 
 Commands provide a high-level API to interact with the editor and change the document content. Most editor features provide a command that you can use to trigger some action on the editor.
 
@@ -89,7 +96,7 @@ This command will find all instances of "Cksource" in your documents and change 
 
 To learn more about the commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands) guide.
 
-### Insert HTML content
+#### Insert HTML content
 
 When you have HTML content ready (for example, from another system or a template), you can insert it directly into the editor. This is often simpler than building the content piece by piece using the editor API.
 
@@ -108,7 +115,7 @@ const insertPosition = editor.model.createPositionAt( root, 1 );
 editor.model.insertContent( model, insertPosition );
 ```
 
-### Using editor model API
+#### Using editor model API
 
 If you cannot find a command that would perform a specific action on the document, you can use the editor API to apply precise changes. This approach offers the greatest flexibility and should cover any needs you may have. It requires, however, a better understanding of CKEditor internals.
 
@@ -137,11 +144,11 @@ This approach is particularly useful when you have to modify the document data i
 
 To learn more about working with the editor engine, see the {@link framework/architecture/editing-engine Editing engine} guide.
 
-## Working with track changes
+### Working with track changes
 
 You can leverage the {@link features/track-changes track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
 
-### Using commands
+#### Using commands
 
 Track changes is integrated with most editor commands. If you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
 
@@ -157,7 +164,7 @@ editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
 
 The `trackChanges` command ensures that all changes made by other commands are marked as suggestions.
 
-### Content changes
+#### Content changes
 
 Now, let's see how to suggest deleting a specified part of the document:
 
@@ -199,7 +206,7 @@ The `insertContent()` method can be used in the following scenarios:
 * Integrating with content management systems to propose changes.
 * Building custom workflows for content creation and review.
 
-### Working with suggestions
+#### Working with suggestions
 
 You can use the {@link module:track-changes/trackchangesdata~TrackChangesData track changes data plugin} to get the document data with all suggestions either accepted or discarded:
 
@@ -243,7 +250,7 @@ suggestion.accept();
 
 It allows to display and manage suggestions outside of the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
 
-### Attribute modifications
+#### Attribute modifications
 
 If you wish to create attributes suggestions using the editor model API, you need to specifically tell the track changes features to record these changes. Let's look at how to correctly make a suggestion to update links URLs:
 
@@ -276,7 +283,7 @@ for ( const item of items ) {
 }
 ```
 
-## Resolving comments
+### Resolving comments
 
 The {@link features/comments comments} feature allows your users to have discussions on certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
 
@@ -296,11 +303,11 @@ for ( const thread of threads ) {
 
 This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
 
-## Working with revision history
+### Working with revision history
 
 Use the {@link features/revision-history revision history} feature API to build more functional integration between your application and the document revisions data.
 
-### Saving revisions
+#### Saving revisions
 
 You can use Revision history API to save a new revision directly from your application backend:
 
@@ -313,7 +320,7 @@ This can be used on an unchanged document just to create a document snapshot, or
 
 Revision history API can help you build an automated mechanism that will automatically create revisions in some time intervals, or based on other factors. It can be particularly useful when you need to create checkpoints for your documents to maintain an audit trail of content modifications.
 
-### Working with revision data
+#### Working with revision data
 
 In more complex scenarios, you might have a need to work with content coming from various revisions of your document:
 
