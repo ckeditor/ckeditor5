@@ -524,20 +524,20 @@ describe( 'ListEditing - converters', () => {
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted" selection:bold="true"></paragraph>' +
+					'<paragraph listIndent="0" listItemBold="true" listItemId="a" listType="bulleted" selection:bold="true"></paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li><span class="ck-list-bogus-paragraph"><strong></strong></span></li>' +
+						'<li class="ck-bold"><span class="ck-list-bogus-paragraph"><strong></strong></span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 					'</ul>'
 				);
 
 				expect( editor.getData() ).to.equal(
 					'<ul>' +
-						'<li>&nbsp;</li>' +
+						'<li class="ck-bold">&nbsp;</li>' +
 						'<li>b</li>' +
 					'</ul>'
 				);

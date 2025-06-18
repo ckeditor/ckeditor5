@@ -340,12 +340,12 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 					'<li style="font-weight: bold">foo</li>' +
 				'</ol>',
 
-				'<listItem listIndent="0" listItemId="a00" listType="numbered">' +
+				'<listItem listIndent="0" listItemBold="true" listItemId="a00" listType="numbered">' +
 					'<$text bold="true">foo</$text>' +
 				'</listItem>',
 
 				'<ol>' +
-					'<li><strong>foo</strong></li>' +
+					'<li class="ck-bold"><strong>foo</strong></li>' +
 				'</ol>'
 			);
 		} );
