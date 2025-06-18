@@ -334,30 +334,20 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
-		it( 'should not downcast listItemFontFamily attribute if value is empty', () => {
+		it( 'should remove the style from <li> if listItemFontFamily attribute is removed from the list item', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="">' +
-					'foo' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+					'<$text fontFamily="Arial">[foo]</$text>' +
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-				'<ul>' +
-					'<li>' +
-						'<span class="ck-list-bogus-paragraph">' +
-							'foo' +
-						'</span>' +
-					'</li>' +
-				'</ul>'
-			);
+			expect( view.document.getRoot().getChild( 0 ).getChild( 0 ).getStyle( 'font-family' ) ).to.equal( 'Arial' );
 
-			expect( editor.getData() ).to.equalMarkup(
-				'<ul>' +
-					'<li>' +
-						'foo' +
-					'</li>' +
-				'</ul>'
-			);
+			model.change( writer => {
+				writer.setAttribute( 'listItemFontFamily', '', model.document.getRoot().getChild( 0 ) );
+			} );
+
+			expect( view.document.getRoot().getChild( 0 ).getChild( 0 ).getStyle( 'font-family' ) ).to.be.undefined;
 		} );
 	} );
 
