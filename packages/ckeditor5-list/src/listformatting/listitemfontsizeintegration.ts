@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ViewElement } from 'ckeditor5/src/engine.js';
-import { type FontSizeConfig } from '@ckeditor/ckeditor5-font';
+import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
 
 import ListEditing from '../list/listediting.js';
 import type ListFormatting from '../listformatting.js';
@@ -51,9 +51,7 @@ export default class ListItemFontSizeIntegration extends Plugin {
 			return;
 		}
 
-		const fontSizeConfig: FontSizeConfig = editor.config.get( 'fontSize' )!;
-		const isFontSizeConfigNumeric = checkIsFontSizeConfigNumeric( fontSizeConfig );
-		const namedPresets = getNamedPresetsFromConfig( fontSizeConfig, isFontSizeConfigNumeric );
+		const normalizedFontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
 		ListFormatting.registerFormatAttribute( 'listItemFontSize', 'fontSize' );
 
@@ -66,19 +64,17 @@ export default class ListItemFontSizeIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value: string, viewElement ) {
 				if ( value ) {
-					if ( isFontSizeConfigNumeric ) {
-						writer.setStyle( 'font-size', value as string, viewElement );
-					}
-					else if ( namedPresets.includes( value ) ) {
-						writer.addClass( `text-${ value }`, viewElement );
-					}
-				} else {
-					if ( isFontSizeConfigNumeric ) {
-						writer.removeStyle( 'font-size', viewElement );
-					} else {
-						for ( const preset of namedPresets ) {
-							writer.removeClass( `text-${ preset }`, viewElement );
+					const fontSizeOption = normalizedFontSizeOptions.find( option => option.model == value );
+
+					if ( fontSizeOption && fontSizeOption.view && typeof fontSizeOption.view != 'string' ) {
+						if ( fontSizeOption.view.styles ) {
+							writer.setStyle( 'font-size', value as string, viewElement );
 						}
+						else if ( fontSizeOption.view.classes ) {
+							writer.addClass( fontSizeOption.view.classes, viewElement );
+						}
+					} else {
+						writer.setStyle( 'font-size', value as string, viewElement );
 					}
 				}
 			}
@@ -109,11 +105,73 @@ export default class ListItemFontSizeIntegration extends Plugin {
 			}
 		}, 'listItemFontSize' );
 
-		const fontSizeConfig: FontSizeConfig = editor.config.get( 'fontSize' )!;
-		const isFontSizeConfigNumeric = checkIsFontSizeConfigNumeric( fontSizeConfig );
-		const namedPresets = getNamedPresetsFromConfig( editor.config.get( 'fontSize' )!, isFontSizeConfigNumeric );
+		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
+		const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
-		if ( isFontSizeConfigNumeric ) {
+		// If the `supportAllValues` is set to `true`, we allow any value (in pixels) for the font size attribute.
+		if ( supportAllValues ) {
+			editor.conversion.for( 'upcast' ).elementToAttribute( {
+				model: {
+					key: 'listItemFontSize',
+					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'font-size' )
+				},
+				view: {
+					name: 'li',
+					styles: {
+						'font-size': /.*/
+					}
+				}
+			} );
+		} else {
+			// List of classes used in the font size options, e.g. `text-small`, `text-big`.
+			const classes = fontSizeOptions.flatMap( option => {
+				if (
+					option.view &&
+					typeof option.view !== 'string' &&
+					typeof option.view.classes === 'string'
+				) {
+					return [ option.view.classes ];
+				}
+				return [];
+			} );
+			const classToModelMap = new Map();
+
+			// Create a map of class names to model attributes, e.g. `text-small` -> `small`.
+			classes.forEach( className => {
+				classToModelMap.set( className, className.replace( /^text-/, '' ) );
+			} );
+
+			// List of font-size styles used in the font size options, e.g. `14px`, `16px`.
+			const styles = fontSizeOptions.flatMap( option => {
+				if (
+					option.view &&
+					typeof option.view !== 'string' &&
+					typeof option.view.styles === 'object' &&
+					option.view.styles[ 'font-size' ]
+				) {
+					return [ option.view.styles[ 'font-size' ] ];
+				}
+				return [];
+			} );
+
+			// Convert classes to model attributes, e.g. `text-small` -> `small`.
+			editor.conversion.for( 'upcast' ).elementToAttribute( {
+				model: {
+					key: 'listItemFontSize',
+					value: ( viewElement: ViewElement ) => {
+						const classNames = [ ...viewElement.getClassNames() ];
+						const fontSizeClass = classNames.find( className => classToModelMap.has( className ) );
+
+						return classToModelMap.get( fontSizeClass );
+					}
+				},
+				view: {
+					name: 'li',
+					classes: new RegExp( `^(${ classes.join( '|' ) })$` )
+				}
+			} );
+
+			// Apart from classes, we also support inline styles for font size, e.g. `style="font-size: 16px;"`.
 			editor.conversion.for( 'upcast' ).attributeToAttribute( {
 				model: {
 					key: 'listItemFontSize',
@@ -124,46 +182,10 @@ export default class ListItemFontSizeIntegration extends Plugin {
 				view: {
 					name: 'li',
 					styles: {
-						'font-size': /.*/
+						'font-size': new RegExp( `^(${ styles.join( '|' ) })$` )
 					}
-				}
-			} );
-		} else {
-			editor.conversion.for( 'upcast' ).attributeToAttribute( {
-				model: {
-					key: 'listItemFontSize',
-					value: ( viewElement: ViewElement ) => {
-						const className = [ ...viewElement.getClassNames() ].find( className => {
-							return className.startsWith( 'text-' );
-						} );
-
-						return className!.replace( /^text-/, '' );
-					}
-				},
-				view: {
-					key: 'class',
-					name: 'li',
-					value: new RegExp( `^text-(${ namedPresets.join( '|' ) })$` )
 				}
 			} );
 		}
 	}
-}
-
-/**
- * Checks if the font size configuration is numeric (not using named presets).
- */
-function checkIsFontSizeConfigNumeric( fontSizeConfig: FontSizeConfig ): boolean {
-	return fontSizeConfig.options!.some( option => {
-		return typeof option === 'number';
-	} );
-}
-
-/**
- * Returns an array of named presets from the font size configuration if it's not a numeric configuration.
- */
-function getNamedPresetsFromConfig( fontSizeConfig: FontSizeConfig, isFontSizeConfigNumeric: boolean ): Array<string> {
-	return isFontSizeConfigNumeric ? [] : [ 'tiny', 'small', 'big', 'huge' ].filter( preset => {
-		return fontSizeConfig.options!.includes( preset );
-	} );
 }

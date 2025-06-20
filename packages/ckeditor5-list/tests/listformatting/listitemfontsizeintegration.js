@@ -34,7 +34,18 @@ describe( 'ListItemFontSizeIntegration', () => {
 				CodeBlockEditing,
 				HeadingEditing,
 				TableEditing
-			]
+			],
+			fontSize: {
+				options: [
+					10,
+					11,
+					12,
+					13,
+					'tiny',
+					'small',
+					'big'
+				]
+			}
 		} );
 
 		model = editor.model;
@@ -110,7 +121,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		} );
 	} );
 
-	describe( 'config: named presets', () => {
+	describe( 'named presets (classes)', () => {
 		describe( 'downcast', () => {
 			it( 'should downcast listItemFontSize attribute as class in <li>', () => {
 				setModelData( model,
@@ -401,7 +412,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 							'</p>' +
 						'</li>' +
 					'</ul>' +
-					'<p class="text-huge">baz</p>'
+					'<p class="text-big">baz</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -548,38 +559,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		} );
 	} );
 
-	describe( 'config: numbered values', () => {
-		let editor, model, view;
-
-		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( {
-				plugins: [
-					ListItemFontSizeIntegration,
-					FontSizeEditing,
-					Paragraph,
-					BlockQuoteEditing,
-					CodeBlockEditing,
-					HeadingEditing,
-					TableEditing
-				],
-				fontSize: {
-					options: [
-						10,
-						11,
-						12,
-						13
-					]
-				}
-			} );
-
-			model = editor.model;
-			view = editor.editing.view;
-		} );
-
-		afterEach( async () => {
-			await editor.destroy();
-		} );
-
+	describe( 'numbered values (styles)', () => {
 		describe( 'downcast', () => {
 			it( 'should downcast listItemFontSize attribute as style in <li>', () => {
 				setModelData( model,
@@ -998,6 +978,82 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'</table>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'supportAllValues: true', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontSizeIntegration,
+					FontSizeEditing,
+					Paragraph,
+					BlockQuoteEditing,
+					CodeBlockEditing,
+					HeadingEditing,
+					TableEditing
+				],
+				fontSize: {
+					options: [ 10, 12 ],
+					supportAllValues: true
+				}
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should upcast a numeric value specified in config from <li> to listItemFontSize attribute', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="10px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast a numeric value not specified in config from <li> to listItemFontSize attribute', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-size:11px;">' +
+						'<span style="font-size:11px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontSize="11px" listItemId="a00" listType="bulleted">' +
+					'<$text fontSize="11px">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should not upcast a class from <li> to listItemFontSize attribute', () => {
+			editor.setData(
+				'<ul>' +
+					'<li class="text-tiny">' +
+						'<span class="text-tiny">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
+			);
 		} );
 	} );
 
