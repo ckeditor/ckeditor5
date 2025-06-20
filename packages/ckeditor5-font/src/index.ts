@@ -39,4 +39,6 @@ export type {
 	FontSizeConfig
 } from './fontconfig.js';
 
+export { normalizeOptions as _normalizeFontSizeOptions } from './fontsize/utils.js';
+
 import './augmentation.js';
