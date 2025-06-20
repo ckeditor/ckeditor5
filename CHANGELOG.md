@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [45.2.1](https://github.com/ckeditor/ckeditor5/compare/v45.2.0...v45.2.1) (June 23, 2025)
+## [45.2.1](https://github.com/ckeditor/ckeditor5/compare/v45.2.0...v45.2.1) (June 24, 2025)
 
 We are happy to announce the release of CKEditor 5 v45.2.1.
 
