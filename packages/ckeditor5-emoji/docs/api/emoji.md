@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 Emoji feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-emoji.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-emoji)
-
 This package implements the Emoji feature for CKEditor&nbsp;5.
 
 ## Demo

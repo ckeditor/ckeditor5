@@ -6,7 +6,7 @@ media-description: Embed rich media content like videos and social media posts i
 modified_at: 2021-10-08
 ---
 
-{@snippet features/build-media-source}
+{@snippet features/build-media-source empty}
 
 # Media embed
 
@@ -16,9 +16,11 @@ The media embed feature lets you insert embeddable media such as YouTube or Vime
 
 You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/media.svg Insert media} to embed media. You can also paste a media URL directly into the editor content, and it will be [automatically embedded](#automatic-media-embed-on-paste). Try both approaches with the following URLs:
 
-* <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
-* <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
-* <input class="example-input" type="text" value="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa">
+<ck:preload-svg-spritesheet-icon icon='link' />
+
+* <ck:input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4" icon='link' expanded readonly />
+* <ck:input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA" icon='link' expanded readonly />
+* <ck:input class="example-input" type="text" value="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa" icon='link' expanded readonly />
 
 {@snippet features/media-embed}
 
@@ -28,8 +30,8 @@ You can use the insert media button in the toolbar {@icon @ckeditor/ckeditor5-ic
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>

@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 HTML Support feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-html-support.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)
-
 This package implements the General HTML Support feature for CKEditor&nbsp;5.
 
 ## Demo

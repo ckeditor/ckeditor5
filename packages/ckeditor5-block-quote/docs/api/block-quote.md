@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 block quote feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-block-quote.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)
-
 This package implements block quote support for CKEditor&nbsp;5.
 
 ## Demo

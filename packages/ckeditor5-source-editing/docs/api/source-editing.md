@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 source editing feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-source-editing.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)
-
 This package implements the source editing feature for CKEditor&nbsp;5.
 
 ## Demo

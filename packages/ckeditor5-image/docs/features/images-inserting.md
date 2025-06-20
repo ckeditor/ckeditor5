@@ -24,8 +24,8 @@ To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-icon
 
 ### Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
@@ -55,14 +55,14 @@ This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-icons/t
 
 You can paste an image URL directly into the editor content, and it will be automatically embedded.
 
-<input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg">
+<ck:input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg" expanded readonly icon="link" />
 
 {@snippet features/image-insert-via-pasting-url-into-editor}
 
 ### Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>

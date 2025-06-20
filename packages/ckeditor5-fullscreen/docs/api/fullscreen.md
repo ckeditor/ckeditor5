@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 Fullscreen mode feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-fullscreen.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen)
-
 This package implements the fullscreen mode feature for CKEditor&nbsp;5.
 
 ## Demo

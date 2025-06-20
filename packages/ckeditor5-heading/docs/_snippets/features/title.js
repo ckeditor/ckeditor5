@@ -151,53 +151,16 @@ BalloonEditor
 		window.editor = editor;
 
 		const titlePlugin = editor.plugins.get( 'Title' );
-		const titleConsole = new Console( document.querySelector( '.title-console__title' ), 'plaintext' );
-		const bodyConsole = new Console( document.querySelector( '.title-console__body' ), 'html' );
-		const dataConsole = new Console( document.querySelector( '.title-console__data' ), 'html' );
+		const titleConsole = document.querySelector( '#title-console__title' );
+		const bodyConsole = document.querySelector( '#title-console__body' );
+		const dataConsole = document.querySelector( '#title-console__data' );
 
-		editor.model.document.on( 'change:data', () => {
-			titleConsole.update( titlePlugin.getTitle() );
-			bodyConsole.update( titlePlugin.getBody() );
-			dataConsole.update( editor.getData() );
-		} );
-
-		// Load data.
-		titleConsole.update( '' );
-		bodyConsole.update( '<p>&nbsp;</p>' );
-		dataConsole.update( '<p>&nbsp;</p>' );
+		editor.model.document.on( 'change:data', window.umberto.throttle( async () => {
+			await titleConsole.codeBlock.setCode( titlePlugin.getTitle() );
+			await bodyConsole.codeBlock.setCode( titlePlugin.getBody() );
+			await dataConsole.codeBlock.setCode( editor.getData() );
+		}, 100 ) );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-class Console {
-	constructor( element, language ) {
-		this.element = element;
-		this.language = language;
-		this.consoleUpdates = 0;
-		this.previousData = '';
-	}
-
-	update( data ) {
-		if ( this.previousData == data ) {
-			return;
-		}
-
-		this.previousData = data;
-		const element = this.element;
-
-		this.consoleUpdates++;
-
-		element.classList.add( 'updated' );
-
-		const content = window.Prism.highlight( data, window.Prism.languages[ this.language ], this.language );
-
-		element.innerHTML = `'${ content }'`;
-
-		setTimeout( () => {
-			if ( --this.consoleUpdates == 0 ) {
-				element.classList.remove( 'updated' );
-			}
-		}, 500 );
-	}
-}
