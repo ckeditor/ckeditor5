@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 35.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 35.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v35.x
 order: 89
 modified_at: 2022-10-05

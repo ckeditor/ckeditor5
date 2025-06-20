@@ -3,6 +3,7 @@ category: examples-framework
 order: 90
 toc: false
 meta-title: Theme customization example | CKEditor 5 Documentation
+meta-description: Customize the CKEditor 5 theme to match your app's look and feel by modifying styles, icons, and UI components.
 classes: main__content--no-toc
 ---
 

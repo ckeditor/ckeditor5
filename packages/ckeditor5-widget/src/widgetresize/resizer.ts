@@ -16,7 +16,7 @@ import {
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import { ResizeState } from './resizerstate.js';
+import { WidgetResizeState } from './resizerstate.js';
 import { SizeView } from './sizeview.js';
 
 import type { WidgetResizerOptions } from '../widgetresize.js';
@@ -53,7 +53,7 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Note that a new state is created for each resize transaction.
 	 */
-	private _state!: ResizeState;
+	private _state!: WidgetResizeState;
 
 	/**
 	 * A view displaying the proposed new element size during the resizing.
@@ -108,7 +108,7 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Note that a new state is created for each resize transaction.
 	 */
-	public get state(): ResizeState {
+	public get state(): WidgetResizeState {
 		return this._state;
 	}
 
@@ -185,7 +185,7 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param domResizeHandle Clicked handle.
 	 */
 	public begin( domResizeHandle: HTMLElement ): void {
-		this._state = new ResizeState( this._options );
+		this._state = new WidgetResizeState( this._options );
 
 		this._sizeView._bindToState( this._options, this.state );
 

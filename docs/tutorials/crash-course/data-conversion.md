@@ -3,6 +3,7 @@ category: crash-course
 order: 40
 menu-title: Data conversion
 meta-title: CKEditor 5 crash course - Data conversion | CKEditor 5 Documentation
+meta-description: Learn how data conversion works in CKEditor 5 to seamlessly transform content between the model, view, and HTML during editing and output.
 modified_at: 2023-08-16
 ---
 

@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Git commit message convention | CKEditor 5 Framework Documentation
+meta-description: Learn CKEditor 5's Git commit message convention to write clear, structured messages that improve project history and collaboration.
 order: 60
 modified_at: 2021-09-07
 ---

@@ -2,6 +2,7 @@
 category: framework-deep-dive-conversion-helpers
 menu-title: Downcast helpers
 meta-title: Downcast helpers | CKEditor 5 Framework Documentation
+meta-description: Learn how to use CKEditor 5 downcast helpers to streamline converting model elements into view elements efficiently.
 order: 20
 since: 33.0.0
 modified_at: 2022-03-02

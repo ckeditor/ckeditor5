@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 29.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 29.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v29.x
 order: 95
 ---
