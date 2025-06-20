@@ -80,7 +80,7 @@ describe( 'MarkdownGfmDataProcessor', () => {
 
 				'single line\n' +
 				'\n' +
-				'*   item'
+				'* item'
 			);
 		} );
 	} );

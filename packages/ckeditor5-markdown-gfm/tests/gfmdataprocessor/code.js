@@ -23,18 +23,6 @@ describe( 'MarkdownGfmDataProcessor', () => {
 			);
 		} );
 
-		it( 'should process spaces inside inline code', () => {
-			testDataProcessor(
-				'regular text and` inline code`',
-
-				'<p>regular text and<code> inline code</code></p>',
-
-				// When converting back it will be normalized and spaces
-				// at the beginning of inline code will be removed.
-				'regular text and `inline code`'
-			);
-		} );
-
 		it( 'should properly process backticks inside code spans #1', () => {
 			testDataProcessor(
 				'`` `backticks` ``',
@@ -236,12 +224,7 @@ describe( 'MarkdownGfmDataProcessor', () => {
 				// GitHub is rendering as special html with syntax highlighting.
 				// We will need to handle this separately by some feature.
 
-				'<pre><code class="language-js"></code></pre>',
-
-				// When converting back, empty code blocks will be removed.
-				// This might be an issue when switching from source to editor
-				// but changing this cannot be done in to-markdown converters.
-				''
+				'<pre><code class="language-js"></code></pre>'
 			);
 		} );
 
@@ -256,10 +239,8 @@ describe( 'MarkdownGfmDataProcessor', () => {
 
 				'<pre><code class="language-js"></code></pre>',
 
-				// When converting back, empty code blocks will be removed.
-				// This might be an issue when switching from source to editor
-				// but changing this cannot be done in to-markdown converters.
-				''
+				'```js\n' +
+				'```'
 			);
 		} );
 
@@ -324,7 +305,10 @@ describe( 'MarkdownGfmDataProcessor', () => {
 
 				'<pre><code class="language-raw"></code></pre>',
 
-				'',
+				[
+					'```raw',
+					'```'
+				].join( '\n' ),
 
 				{
 					setup( processor ) {

@@ -27,17 +27,17 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	if ( options && options.setup ) {
 		options.setup( dataProcessor );
 	}
-	const viewFragment = dataProcessor.toView( markdown );
 
+	const viewFragment = dataProcessor.toView( markdown );
 	const html = cleanHtml( _stringifyView( viewFragment ) );
 
 	// Check if view has correct data.
-	expect( html ).to.equal( viewString );
+	expect( JSON.stringify( html ) ).to.equal( JSON.stringify( viewString ) );
 
 	// Check if converting back gives the same result.
 	const normalized = typeof normalizedMarkdown !== 'undefined' ? normalizedMarkdown : markdown;
 
-	expect( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ).to.equal( normalized );
+	expect( JSON.stringify( cleanMarkdown( dataProcessor.toData( viewFragment ) ) ) ).to.equal( JSON.stringify( normalized ) );
 
 	return viewFragment;
 }
