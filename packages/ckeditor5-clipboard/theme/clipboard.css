@@ -34,5 +34,6 @@
 
 .ck.ck-clipboard-drop-target-line {
 	position: absolute;
+	z-index: var(--ck-z-default);
 	pointer-events: none;
 }
