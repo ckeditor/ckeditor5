@@ -70,14 +70,14 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: 'var(--ck-highlight-marker-green)',
+					color: 'var(--ck-content-highlight-marker-green)',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: 'var(--ck-highlight-pen-red)',
+					color: 'var(--ck-content-highlight-pen-red)',
 					type: 'pen'
 				}
 			]
@@ -127,13 +127,13 @@ The highlight feature is using the power of [CSS variables](https://developer.mo
 ```css
 :root {
 	/* Make green a little darker. */
-	--ck-highlight-marker-green: #199c19;
+	--ck-content-highlight-marker-green: #199c19;
 
 	/* Make the yellow more "dirty". */
-	--ck-highlight-marker-yellow: #cac407;
+	--ck-content-highlight-marker-yellow: #cac407;
 
 	/* Make red more pinkish. */
-	--ck-highlight-pen-red: #ec3e6e;
+	--ck-content-highlight-pen-red: #ec3e6e;
 }
 ```
 
@@ -223,34 +223,15 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 
 	```js
 	highlight.options = [
-		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: 'var(--ck-highlight-marker-yellow)', type: 'marker' },
-		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-highlight-marker-green)', type: 'marker' },
-		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: 'var(--ck-highlight-marker-pink)', type: 'marker' },
-		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: 'var(--ck-highlight-marker-blue)', type: 'marker' },
-		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-highlight-pen-red)', type: 'pen' },
-		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: 'var(--ck-highlight-pen-green)', type: 'pen' }
+		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: 'var(--ck-content-highlight-marker-yellow)', type: 'marker' },
+		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-content-highlight-marker-green)', type: 'marker' },
+		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: 'var(--ck-content-highlight-marker-pink)', type: 'marker' },
+		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: 'var(--ck-content-highlight-marker-blue)', type: 'marker' },
+		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-content-highlight-pen-red)', type: 'pen' },
+		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: 'var(--ck-content-highlight-pen-green)', type: 'pen' }
 	]
 	```
 
 	the `'highlight'` command will accept the corresponding strings as values:
 
-	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'` button,
-	* `'greenMarker'` &ndash; available as the `'highlight:greenMarker'` button,
-	* `'pinkMarker'` &ndash; available as the `'highlight:pinkMarker'` button,
-	* `'blueMarker'` &ndash; available as the `'highlight:blueMarker'` button,
-	* `'redPen'` &ndash; available as the `'highlight:redPen'` button,
-	* `'greenPen'` &ndash; available as the `'highlight:greenPen'` button.
-
-	Passing an empty `value` will remove any `highlight` attribute from the selection:
-
-	```js
-	editor.execute( 'highlight' );
-	```
-
-<info-box>
-	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
-</info-box>
-
-## Contribute
-
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
+	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'`

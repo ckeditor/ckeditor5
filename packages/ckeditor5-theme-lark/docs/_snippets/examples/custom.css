@@ -100,8 +100,8 @@
 
 	/* -- Overrides the default colors used by the ckeditor5-image package. --------------------- */
 
-	--ck-color-image-caption-background: hsl(0, 0%, 97%);
-	--ck-color-image-caption-text: hsl(0, 0%, 20%);
+	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
 
 	/* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
 
