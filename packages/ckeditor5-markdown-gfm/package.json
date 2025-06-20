@@ -21,10 +21,11 @@
     "@ckeditor/ckeditor5-clipboard": "45.2.0",
     "@ckeditor/ckeditor5-core": "45.2.0",
     "@ckeditor/ckeditor5-engine": "45.2.0",
-    "@types/marked": "4.3.2",
     "@types/turndown": "5.0.5",
     "ckeditor5": "45.2.0",
-    "marked": "4.0.12",
+    "marked": "15.0.12",
+    "marked-mangle": "1.1.10",
+    "marked-xhtml": "1.0.12",
     "turndown": "7.2.0",
     "turndown-plugin-gfm": "1.0.2"
   },
