@@ -40,7 +40,6 @@ export * from '@ckeditor/ckeditor5-icons';
 export * from '@ckeditor/ckeditor5-image';
 export * from '@ckeditor/ckeditor5-indent';
 export * from '@ckeditor/ckeditor5-language';
-export * from '@ckeditor/ckeditor5-line-height';
 export * from '@ckeditor/ckeditor5-link';
 export * from '@ckeditor/ckeditor5-list';
 export * from '@ckeditor/ckeditor5-markdown-gfm';
