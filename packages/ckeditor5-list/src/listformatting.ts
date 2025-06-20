@@ -7,8 +7,7 @@
  * @module list/listformatting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
 import type {
 	Element,
@@ -66,7 +65,20 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'list.enableListItemFormatting', true );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
+		if ( !this.editor.config.get( 'list.enableListItemFormatting' ) ) {
+			return;
+		}
+
 		this._registerPostfixerForListItemFormatting();
 	}
 
@@ -164,8 +176,14 @@ export default class ListFormatting extends Plugin {
 	 * to the list item element, based on whether there is a consistent default formatting attribute
 	 * applied within its content.
 	 */
-	public registerFormatAttribute( listItemFormatAttribute: string, formatAttribute: string ): void {
+	public registerFormatAttribute( listItemFormatAttribute: string, formatAttribute: string ): boolean {
+		if ( !this.editor.config.get( 'list.enableListItemFormatting' ) ) {
+			return false;
+		}
+
 		this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
+
+		return true;
 	}
 }
 

@@ -46,6 +46,20 @@ export interface ListConfig {
 	 * @default true
 	 */
 	multiBlock?: boolean;
+
+	/**
+	 * Enables list item formatting. Current list of integrated formatting plugins includes:
+	 * * {@link module:list/listformatting/listitemfontfamilyintegration~ListItemFontFamilyIntegration Font family}
+	 * * {@link module:list/listformatting/listitemfontsizeintegration~ListItemFontSizeIntegration Font size}
+	 * * {@link module:list/listformatting/listitemfontcolorintegration~ListItemFontColorIntegration Font color}
+	 * * {@link module:list/listformatting/listitemboldintegration~ListItemBoldIntegration Bold}
+	 * * {@link module:list/listformatting/listitemitalicintegration~ListItemItalicIntegration Italic}
+	 *
+	 * **Note:** This is enabled by default.
+	 *
+	 * @default true
+	 */
+	enableListItemFormatting?: boolean;
 }
 
 /**

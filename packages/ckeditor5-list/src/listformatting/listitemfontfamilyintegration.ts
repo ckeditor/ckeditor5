@@ -18,6 +18,11 @@ import type ListFormatting from '../listformatting.js';
  */
 export default class ListItemFontFamilyIntegration extends Plugin {
 	/**
+	 * Indicates whether the integration is enabled.
+	 */
+	private _integrationEnabled: boolean = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -50,7 +55,11 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'listItemFontFamily', 'fontFamily' );
+		this._integrationEnabled = ListFormatting.registerFormatAttribute( 'listItemFontFamily', 'fontFamily' );
+
+		if ( !this._integrationEnabled ) {
+			return;
+		}
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.
@@ -75,7 +84,7 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+		if ( !editor.plugins.has( 'FontFamilyEditing' ) || !this._integrationEnabled ) {
 			return;
 		}
 
