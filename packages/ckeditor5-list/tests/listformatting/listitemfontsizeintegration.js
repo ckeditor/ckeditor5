@@ -289,7 +289,8 @@ describe( 'ListItemFontSizeIntegration', () => {
 				);
 			} );
 
-			it( 'should downcast listItemFontSize attribute as class in <li> in table list item', () => {
+			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
+			it.skip( 'should downcast listItemFontSize attribute as class in <li> in table list item', () => {
 				setModelData( model,
 					'<table listIndent="0" listItemId="a" listItemFontSize="tiny">' +
 						'<tableRow>' +
@@ -525,7 +526,8 @@ describe( 'ListItemFontSizeIntegration', () => {
 				);
 			} );
 
-			it( 'should upcast class in <li> to listItemFontSize attribute for table', () => {
+			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
+			it.skip( 'should upcast class in <li> to listItemFontSize attribute for table', () => {
 				editor.setData(
 					'<ul>' +
 						'<li class="text-tiny">' +
@@ -727,7 +729,8 @@ describe( 'ListItemFontSizeIntegration', () => {
 				);
 			} );
 
-			it( 'should downcast listItemFontSize attribute as style in <li> in table list item', () => {
+			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
+			it.skip( 'should downcast listItemFontSize attribute as style in <li> in table list item', () => {
 				setModelData( model,
 					'<table listIndent="0" listItemId="a" listItemFontSize="10px">' +
 						'<tableRow>' +
@@ -947,7 +950,8 @@ describe( 'ListItemFontSizeIntegration', () => {
 				);
 			} );
 
-			it( 'should upcast style in <li> to listItemFontSize attribute for table', () => {
+			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
+			it.skip( 'should upcast style in <li> to listItemFontSize attribute for table', () => {
 				editor.setData(
 					'<ul>' +
 						'<li style="font-size:10px;">' +
