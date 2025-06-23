@@ -17,7 +17,8 @@ import type {
 
 import {
 	isListItemBlock,
-	getAllListItemBlocks
+	getAllListItemBlocks,
+	isFirstBlockOfListItem
 } from '../src/list/utils/model.js';
 
 import '../theme/listformatting.css';
@@ -98,17 +99,13 @@ export default class ListFormatting extends Plugin {
 				if ( entry.type === 'attribute' ) {
 					if (
 						entry.attributeKey == 'listItemId' ||
-						Object.values( this._loadedFormattings ).some( key =>
-							entry.attributeKey === key ||
-							entry.attributeKey === `selection:${ key }`
-						)
+						this._isInlineOrSelectionFormatting( entry.attributeKey )
 					) {
 						if ( isListItemBlock( entry.range.start.nodeAfter ) ) {
 							modifiedListItems.add( entry.range.start.nodeAfter );
-						} else {
-							if ( isListItemBlock( entry.range.start.parent ) ) {
-								modifiedListItems.add( entry.range.start.parent );
-							}
+						}
+						else if ( isListItemBlock( entry.range.start.parent ) ) {
+							modifiedListItems.add( entry.range.start.parent );
 						}
 					}
 				}
@@ -124,6 +121,16 @@ export default class ListFormatting extends Plugin {
 					if ( isListItemBlock( entry.position.parent ) ) {
 						modifiedListItems.add( entry.position.parent );
 					}
+
+					if ( entry.type == 'insert' && entry.name != '$text' ) {
+						const range = writer.createRangeIn( entry.position.nodeAfter as Element );
+
+						for ( const item of range.getItems() ) {
+							if ( isListItemBlock( item ) ) {
+								modifiedListItems.add( item );
+							}
+						}
+					}
 				}
 			}
 
@@ -132,34 +139,24 @@ export default class ListFormatting extends Plugin {
 					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
 					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-					if ( format.isConsistent ) {
-						if ( format.value ) {
-							if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
-								returnValue = returnValue || addFormattingToListItem(
-									writer,
-									listItem,
-									listItemFormatAttributeName,
-									format.value
-								);
-							}
-						} else {
-							if (
-								listItem.hasAttribute( listItemFormatAttributeName ) &&
-								!model.schema.isLimit( listItem ) // Do not remove formatting from limit elements (e.g. tables).
-							) {
-								returnValue = returnValue || removeFormattingFromListItem(
-									writer,
-									listItem,
-									listItemFormatAttributeName
-								);
-							}
+					if ( format ) {
+						if ( setFormattingToListItem(
+							writer,
+							listItem,
+							listItemFormatAttributeName,
+							format
+						) ) {
+							returnValue = true;
 						}
-					} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-						returnValue = returnValue || removeFormattingFromListItem(
+					}
+					else {
+						if ( removeFormattingFromListItem(
 							writer,
 							listItem,
 							listItemFormatAttributeName
-						);
+						) ) {
+							returnValue = true;
+						}
 					}
 				}
 			}
@@ -185,108 +182,77 @@ export default class ListFormatting extends Plugin {
 
 		return true;
 	}
+
+	/**
+	 * Returns true if the given model attribute name is a supported inline formatting attribute.
+	 */
+	private _isInlineOrSelectionFormatting( attributeKey: string ): boolean {
+		return Object.values( this._loadedFormattings ).some( key => attributeKey === key || attributeKey === `selection:${ key }` );
+	}
 }
 
 /**
  * Returns the consistent format of the list item element.
- * It checks consistency also for multi-block list items.
- * If the list item is empty, it checks the selection format.
+ * If the list item contains multiple blocks, it checks only the first block.
  */
 function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
-	// In case of multi-block, check if all blocks have the same format.
-	const listItemBlocks = getAllListItemBlocks( listItem );
-	let format: { isConsistent: boolean; value?: string };
-
-	for ( let i = 0; i < listItemBlocks.length; i++ ) {
-		const listItemBlock = listItemBlocks[ i ];
-		const blockFormat = getSingleListItemConsistentFormat( model, listItemBlock, attributeKey );
-
-		if ( i == 0 ) {
-			format = blockFormat;
-
-			if ( !format.isConsistent ) {
-				return format;
-			}
-
-			continue;
-		}
-
-		if ( !blockFormat.isConsistent ) {
-			return {
-				isConsistent: false,
-				value: undefined
-			};
-		}
-
-		if (
-			blockFormat.isConsistent &&
-			blockFormat.value !== format!.value
-		) {
-			return {
-				isConsistent: false,
-				value: undefined
-			};
-		}
+	if ( isFirstBlockOfListItem( listItem ) ) {
+		return getSingleListItemConsistentFormat( model, listItem, attributeKey );
 	}
 
-	return format!;
+	// Always the first block of the list item should be checked for consistent formatting.
+	const listItemBlocks = getAllListItemBlocks( listItem );
+
+	return getSingleListItemConsistentFormat( model, listItemBlocks[ 0 ], attributeKey );
 }
 
 /**
  * Returns the consistent format of a single list item element.
  */
 function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
-	let value;
-
-	if ( listItem.isEmpty ) {
-		const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
-		value = selectionFormat || value;
-
-		return {
-			isConsistent: true,
-			value
-		};
+	// Do not check internals of limit elements (for example, do not check table cells).
+	if ( model.schema.isLimit( listItem ) ) {
+		return;
 	}
 
-	if ( model.schema.isLimit( listItem ) ) {
-		return {
-			isConsistent: true,
-			value
-		};
+	if ( listItem.isEmpty ) {
+		return listItem.getAttribute( `selection:${ attributeKey }` ) as string;
 	}
 
 	const range = model.createRangeIn( listItem );
+	const walker = range.getWalker( { ignoreElementEnd: true } );
+	let value;
 
-	for ( const child of range.getItems() ) {
-		if ( model.schema.checkAttribute( child, attributeKey ) ) {
-			const formatAttribute = child.getAttribute( attributeKey ) as string;
+	for ( const { item } of walker ) {
+		if ( model.schema.checkAttribute( item, attributeKey ) ) {
+			const formatAttribute = item.getAttribute( attributeKey ) as string;
 
 			if ( formatAttribute === undefined ) {
-				return {
-					isConsistent: false,
-					value: undefined
-				};
-			} else if ( value === undefined ) { // First item
+				return;
+			}
+			else if ( value === undefined ) {
+				// First item inside a list item block.
 				value = formatAttribute;
-			} else if ( value !== formatAttribute ) { // Second and next items
-				return {
-					isConsistent: false,
-					value: undefined
-				};
+			}
+			else if ( value !== formatAttribute ) {
+				// Following items in the same block of a list item.
+				return;
+			}
+
+			// Jump over inline limit elements as we expect only outside them to be the same formatting.
+			if ( model.schema.isLimit( item ) ) {
+				walker.jumpTo( model.createPositionAfter( item ) );
 			}
 		}
 	}
 
-	return {
-		isConsistent: true,
-		value
-	};
+	return value;
 }
 
 /**
  * Adds the specified formatting attribute to the list item element.
  */
-function addFormattingToListItem(
+function setFormattingToListItem(
 	writer: Writer,
 	listItem: Element,
 	attributeKey: string,

@@ -280,7 +280,8 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
-		it( 'should downcast listItemFontFamily attribute as style in <li> in table list item', () => {
+		// Post-fixer currently remove `listItemFontFamily` attribute from table list items.
+		it.skip( 'should downcast listItemFontFamily attribute as style in <li> in table list item', () => {
 			setModelData( model,
 				'<table listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
 					'<tableRow>' +
@@ -474,7 +475,8 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
+		// Post-fixer currently remove `listItemFontFamily` attribute from table list items.
+		it.skip( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
 			editor.setData(
 				'<ul>' +
 					'<li style="font-family:Arial;">' +

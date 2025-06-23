@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -20,7 +21,7 @@ describe( 'ListFormatting', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListFormatting, Paragraph, MyPlugin, MyPlugin2 ]
+			plugins: [ ListFormatting, Paragraph, BlockQuoteEditing, MyPlugin, MyPlugin2 ]
 		} );
 
 		model = editor.model;
@@ -28,19 +29,21 @@ describe( 'ListFormatting', () => {
 
 		model.schema.extend( '$text', { allowAttributes: [ 'inlineFormat', 'inlineFormat2' ] } );
 
-		model.schema.register( 'limitElement', {
+		model.schema.register( 'blockObject', {
 			inheritAllFrom: '$blockObject',
-			allowAttributes: [ 'listItemId', 'listIndent', 'listItemFormat' ]
+			allowAttributesOf: '$listItem',
+			allowAttributes: [ 'listItemFormat' ],
+			allowChildren: '$text'
 		} );
 
-		editor.conversion.elementToElement( { model: 'limitElement', view: 'limitElement' } );
+		editor.conversion.elementToElement( { model: 'blockObject', view: 'blockObject' } );
 
-		model.schema.register( 'innerBlock', {
-			inheritAllFrom: '$block',
-			allowIn: 'paragraph'
+		model.schema.register( 'inlineObject', {
+			inheritAllFrom: '$inlineObject',
+			allowChildren: '$text'
 		} );
 
-		editor.conversion.elementToElement( { model: 'innerBlock', view: 'innerBlock' } );
+		editor.conversion.elementToElement( { model: 'inlineObject', view: 'inlineObject' } );
 
 		stubUid();
 	} );
@@ -71,7 +74,7 @@ describe( 'ListFormatting', () => {
 		] );
 	} );
 
-	describe( 'postfixer', () => {
+	describe( 'post-fixer', () => {
 		describe( 'changing formatting in empty list item', () => {
 			it( 'should set attribute in empty li when adding formatting', () => {
 				setModelData( model,
@@ -228,6 +231,27 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 			} );
+
+			it( 'should set attribute in li when adding formatting on the whole text in multiple list items', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">[<$text>foo</$text>]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b">[<$text>bar</$text>]</paragraph>'
+				);
+
+				model.change( () => {
+					setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
+					setAttribute( model, 'inlineFormat', 'foo', docSelection.getLastRange() );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="b">' +
+						'<$text inlineFormat="foo">bar</$text>' +
+					'</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'inserting a text node into a list item', () => {
@@ -356,29 +380,124 @@ describe( 'ListFormatting', () => {
 			} );
 		} );
 
-		describe( 'other blocks handling (tables etc.)', () => {
-			it( 'should not remove attribute form the limit elements (like table)', () => {
+		describe( 'inserting structures', () => {
+			it( 'should apply list item format in deeper inserted/pasted structure', () => {
+				model.change( writer => {
+					const blockQuote = writer.createElement( 'blockQuote' );
+					const paragraph = writer.createElement( 'paragraph', { listItemId: 'a', listIndent: 0 } );
+					const text = writer.createText( 'abc', { inlineFormat: 'foo' } );
+
+					writer.insert( text, paragraph, 0 );
+					writer.insert( paragraph, blockQuote, 0 );
+					writer.insert( blockQuote, model.document.getRoot(), 'end' );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph></paragraph>' +
+					'<blockQuote>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+							'<$text inlineFormat="foo">abc</$text>' +
+						'</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+		} );
+
+		describe( 'other elements handling (block objects, inline objects)', () => {
+			it( 'should not check inner block widget nodes', () => {
 				setModelData( model,
-					'<limitElement listIndent="0" listItemId="a" listItemFormat="foo"></limitElement>'
+					'<blockObject listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+					'</blockObject>'
 				);
 
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<blockObject listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+					'</blockObject>'
+				);
 			} );
 
-			it( 'should check all nested items and add attribute when checking if the list item is formatted consistently', () => {
+			it( 'should remove list item formatting for block object', () => {
+				setModelData( model,
+					'<blockObject listIndent="0" listItemId="a" listItemFormat="foo" >' +
+						'<$text inlineFormat="foo">abc</$text>' +
+					'</blockObject>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<blockObject listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+					'</blockObject>'
+				);
+			} );
+
+			it( 'should not check inner block widget even if empty', () => {
+				setModelData( model,
+					'<blockObject listIndent="0" listItemId="a">[]</blockObject>'
+				);
+
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<blockObject listIndent="0" listItemId="a" selection:inlineFormat="foo"></blockObject>'
+				);
+			} );
+
+			it( 'should consider inline object format but ignore internal format', () => {
 				setModelData( model,
 					'<paragraph listIndent="0" listItemId="a">' +
-						'<innerBlock listIndent="0" listItemId="b">' +
-							'<$text inlineFormat="foo">foo</$text>' +
-						'</innerBlock>' +
+						'<inlineObject inlineFormat="foo">' +
+							'<$text inlineFormat="bar">foo</$text>' +
+						'</inlineObject>' +
 					'</paragraph>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
-						'<innerBlock listIndent="0" listItemId="b">' +
-							'<$text inlineFormat="foo">foo</$text>' +
-						'</innerBlock>' +
+						'<inlineObject inlineFormat="foo">' +
+							'<$text inlineFormat="bar">foo</$text>' +
+						'</inlineObject>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should consider inline object format but ignore internal format when next to text', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+						'<inlineObject inlineFormat="foo">' +
+							'<$text inlineFormat="bar">foo</$text>' +
+						'</inlineObject>' +
+						'<$text inlineFormat="foo">def</$text>' +
+					'</paragraph>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+						'<inlineObject inlineFormat="foo">' +
+							'<$text inlineFormat="bar">foo</$text>' +
+						'</inlineObject>' +
+						'<$text inlineFormat="foo">def</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should consider inline object format when next to text (if format differs on element)', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+						'<inlineObject inlineFormat="bar"></inlineObject>' +
+						'<$text inlineFormat="foo">def</$text>' +
+					'</paragraph>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">abc</$text>' +
+						'<inlineObject inlineFormat="bar"></inlineObject>' +
+						'<$text inlineFormat="foo">def</$text>' +
 					'</paragraph>'
 				);
 			} );
@@ -463,7 +582,7 @@ describe( 'ListFormatting', () => {
 		} );
 
 		describe( 'multi-block modifications', () => {
-			it( 'should remove attributes when new multi-block item has different formatting', () => {
+			it( 'should not remove attributes when new multi-block item has different formatting', () => {
 				setModelData( model,
 					'<paragraph listIndent="0" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
@@ -479,12 +598,12 @@ describe( 'ListFormatting', () => {
 				editor.execute( 'mergeListItemBackward' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
-					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
 				);
 			} );
 
-			it( 'should remove attributes when multi-block item has no formatting', () => {
+			it( 'should not remove attributes when new multi-block item has no formatting', () => {
 				setModelData( model,
 					'<paragraph listIndent="0" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
@@ -500,31 +619,11 @@ describe( 'ListFormatting', () => {
 				editor.execute( 'mergeListItemBackward' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a">' +
-						'<$text inlineFormat="foo">foo</$text>' +
-					'</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a">' +
-						'bar' +
-					'</paragraph>'
-				);
-			} );
-
-			it( 'should add attribute when empty multi-block item with different selection formatting is removed', () => {
-				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a">' +
-						'<$text inlineFormat="foo">foo</$text>' +
-					'</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a"></paragraph>]'
-				);
-
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
-				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
-
-				editor.execute( 'delete' );
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'bar' +
 					'</paragraph>'
 				);
 			} );
