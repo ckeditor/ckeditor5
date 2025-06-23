@@ -39,7 +39,7 @@ Replace the CKEditor&nbsp;5 NPM package imports with the CDN script imports and 
 
 **Before:**
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
@@ -70,7 +70,7 @@ export class AppComponent {
 
 **After:**
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
@@ -115,7 +115,7 @@ export class AppComponent {
 }
 ```
 
-```html
+```angular-html
 // app.component.html
 
 <ckeditor

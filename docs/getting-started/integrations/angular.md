@@ -50,7 +50,7 @@ Instead, add the `CKEditorModule` to the imports in your app component. The comp
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
@@ -89,7 +89,7 @@ Depending on the plugins used (open source only or premium too), you may need to
 
 Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 
-```html
+```angular-html
 <!-- app.component.html -->
 
 <ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
@@ -99,7 +99,7 @@ Then, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 If you want to use NGModule components, add the `CKEditorModule` to the `imports` array. It will make the CKEditor&nbsp;5 component available in your Angular application.
 
-```ts
+```angular-ts
 // app.module.ts
 
 import { NgModule } from '@angular/core';
@@ -128,7 +128,7 @@ Then, import the editor in your Angular component and assign it to a `public` pr
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
@@ -164,7 +164,7 @@ Depending on the plugins you used, you may need to import the first or both CSS 
 
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
-```html
+```angular-html
 <!-- app.component.html -->
 
 <ckeditor [editor]="Editor" [config]="config" data="<p>Hello, world!</p>"></ckeditor>
@@ -178,7 +178,7 @@ The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text
 
 The {@link getting-started/setup/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
-```html
+```angular-html
 <ckeditor [editor]="Editor"></ckeditor>
 ```
 
@@ -186,7 +186,7 @@ The {@link getting-started/setup/editor-lifecycle `Editor`} which provides the s
 
 The {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor:
 
-```html
+```angular-html
 <ckeditor [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic' ] }"></ckeditor>
 ```
 
@@ -194,13 +194,13 @@ The {@link module:core/editor/editorconfig~EditorConfig configuration} of the ed
 
 The initial data of the editor. It can be a static value:
 
-```html
+```angular-html
 <ckeditor data="<p>Hello, world!</p>"></ckeditor>
 ```
 
 or a shared parent component's property
 
-```ts
+```angular-ts
 @Component( {
 	// ...
 } )
@@ -210,7 +210,7 @@ export class MyComponent {
 }
 ```
 
-```html
+```angular-html
 <ckeditor [data]="editorData"></ckeditor>
 ```
 
@@ -220,7 +220,7 @@ The tag name of the HTML element on which the rich text editor will be created.
 
 The default tag is `<div>`.
 
-```html
+```angular-html
 <ckeditor tagName="textarea"></ckeditor>
 ```
 
@@ -228,7 +228,7 @@ The default tag is `<div>`.
 
 Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–only} state:
 
-```ts
+```angular-ts
 @Component( {
 	// ...
 } )
@@ -241,7 +241,7 @@ export class MyComponent {
 }
 ```
 
-```html
+```angular-html
 <ckeditor [disabled]="isDisabled"></ckeditor>
 
 <button (click)="toggleDisabled()">
@@ -255,7 +255,7 @@ export class MyComponent {
 
 An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
 
-```ts
+```angular-ts
 import { Editor, Context, ContextWatchdog } from 'ckeditor5';
 
 @Component( {
@@ -279,7 +279,7 @@ export class MyComponent {
 }
 ```
 
-```html
+```angular-html
 <div *ngIf="ready">
 	<ckeditor [watchdog]="watchdog"></ckeditor>
 	<ckeditor [watchdog]="watchdog"></ckeditor>
@@ -291,7 +291,7 @@ export class MyComponent {
 
 If the `watchdog` property is not used, {@link module:watchdog/editorwatchdog~EditorWatchdog `EditorWatchdog`} will be used by default. `editorWatchdogConfig` property allows for passing a {@link module:watchdog/watchdog~WatchdogConfig config} to that watchdog.
 
-```ts
+```angular-ts
 @Component( {
 	// ...
 } )
@@ -304,7 +304,7 @@ export class MyComponent {
 }
 ```
 
-```html
+```angular-html
 <ckeditor [editorWatchdogConfig]="myWatchdogConfig"></ckeditor>
 ```
 
@@ -332,11 +332,11 @@ Note that this method might be called multiple times. Apart from initialization,
 Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `change:data` event object.
 
-```html
+```angular-html
 <ckeditor [editor]="Editor" (change)="onChange($event)"></ckeditor>
 ```
 
-```ts
+```angular-ts
 import { ClassicEditor } from 'ckeditor5';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
@@ -379,7 +379,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 Create some model in your component to share with the editor:
 
-```ts
+```angular-ts
 @Component( {
 	// ...
 } )
@@ -393,7 +393,7 @@ export class MyComponent {
 
 Use the model in the template to enable a two–way data binding:
 
-```html
+```angular-html
 <ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
 ```
 
@@ -415,7 +415,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 
 Then in the parent component add the relative path to the above style sheet:
 
-```ts
+```angular-ts
 /* src/app/app.component.ts */
 
 @Component( {
@@ -454,7 +454,7 @@ Then, add it in the `angular.json` configuration file:
 
 To display {@link features/editor-placeholder the placeholder} in the main editable element, set the `placeholder` field in the CKEditor&nbsp;5 rich text editor component configuration:
 
-```ts
+```angular-ts
 @Component( {
 	// ...
 } )
@@ -471,13 +471,13 @@ The CKEditor&nbsp;5 rich text editor component provides all the functionality ne
 
 To do this, create a template reference variable `#editor` pointing to the `<ckeditor>` component:
 
-```html
+```angular-html
 <ckeditor #editor [editor]="Editor"></ckeditor>
 ```
 
 Then get the `<ckeditor>` component using a property decorated by `@ViewChild( 'editor' )` and access the editor instance when needed:
 
-```ts
+```angular-ts
 @Component()
 export class MyComponent {
 	@ViewChild( 'editor' ) editorComponent: CKEditorComponent;
@@ -500,7 +500,7 @@ export class MyComponent {
 
 If you want to use the {@link framework/document-editor document (decoupled) editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}:
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
@@ -546,7 +546,7 @@ Import the needed CSS style sheet:
 
 And then, link the method in the template:
 
-```html
+```angular-html
 <!-- app.component.html -->
 
 <ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
@@ -569,7 +569,7 @@ CKEditor 5 supports multiple UI languages, and so does the official Angular comp
 
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array of the `config` property.
 
-```ts
+```angular-ts
 // app.component.ts
 
 import { Component, ViewEncapsulation } from '@angular/core';
