@@ -109,6 +109,16 @@ export default class ListFormatting extends Plugin {
 					if ( isListItemBlock( entry.position.parent ) ) {
 						modifiedListItems.add( entry.position.parent );
 					}
+
+					if ( entry.type == 'insert' && entry.name != '$text' ) {
+						const range = writer.createRangeIn( entry.position.nodeAfter as Element );
+
+						for ( const item of range.getItems() ) {
+							if ( isListItemBlock( item ) ) {
+								modifiedListItems.add( item );
+							}
+						}
+					}
 				}
 			}
 
@@ -118,21 +128,23 @@ export default class ListFormatting extends Plugin {
 					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
 					if ( format ) {
-						if ( listItem.getAttribute( listItemFormatAttributeName ) !== format ) {
-							returnValue = setFormattingToListItem(
-								writer,
-								listItem,
-								listItemFormatAttributeName,
-								format
-							) || returnValue;
+						if ( setFormattingToListItem(
+							writer,
+							listItem,
+							listItemFormatAttributeName,
+							format
+						) ) {
+							returnValue = true;
 						}
 					}
-					else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-						returnValue = removeFormattingFromListItem(
+					else {
+						if ( removeFormattingFromListItem(
 							writer,
 							listItem,
 							listItemFormatAttributeName
-						) || returnValue;
+						) ) {
+							returnValue = true;
+						}
 					}
 				}
 			}
@@ -180,12 +192,13 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
  * Returns the consistent format of a single list item element.
  */
 function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
-	if ( listItem.isEmpty ) {
-		return listItem.getAttribute( `selection:${ attributeKey }` ) as string;
-	}
-
+	// Do not check internals of limit elements (for example, do not check table cells).
 	if ( model.schema.isLimit( listItem ) ) {
 		return;
+	}
+
+	if ( listItem.isEmpty ) {
+		return listItem.getAttribute( `selection:${ attributeKey }` ) as string;
 	}
 
 	const range = model.createRangeIn( listItem );
