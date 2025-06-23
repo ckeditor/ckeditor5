@@ -1022,6 +1022,14 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'<$text fontSize="10px">foo</$text>' +
 				'</paragraph>'
 			);
+
+			expect( editor.getData() ).to.equal(
+				'<ul>' +
+					'<li style="font-size:10px;">' +
+						'<span style="font-size:10px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 
 		it( 'should upcast a numeric value not specified in config from <li> to listItemFontSize attribute', () => {
@@ -1038,6 +1046,14 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'<$text fontSize="11px">foo</$text>' +
 				'</paragraph>'
 			);
+
+			expect( editor.getData() ).to.equal(
+				'<ul>' +
+					'<li style="font-size:11px;">' +
+						'<span style="font-size:11px;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 
 		it( 'should not upcast a class from <li> to listItemFontSize attribute', () => {
@@ -1053,6 +1069,12 @@ describe( 'ListItemFontSizeIntegration', () => {
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
 					'foo' +
 				'</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<ul>' +
+					'<li>foo</li>' +
+				'</ul>'
 			);
 		} );
 	} );
