@@ -18,7 +18,8 @@ import type {
 
 import {
 	isListItemBlock,
-	getAllListItemBlocks
+	getAllListItemBlocks,
+	isFirstBlockOfListItem
 } from '../src/list/utils/model.js';
 
 import '../theme/listformatting.css';
@@ -118,7 +119,7 @@ export default class ListFormatting extends Plugin {
 			for ( const listItem of modifiedListItems ) {
 				for ( const listItemFormatAttributeName in this._loadedFormattings ) {
 					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
-					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
+					const format = getListItemConsistentFormat( model, listItem, formatAttributeName, listItemFormatAttributeName );
 
 					if ( format.isConsistent ) {
 						if ( format.value ) {
@@ -171,47 +172,20 @@ export default class ListFormatting extends Plugin {
 
 /**
  * Returns the consistent format of the list item element.
- * It checks consistency also for multi-block list items.
- * If the list item is empty, it checks the selection format.
+ * If the list item contains multiple blocks, it checks only the first block.
  */
-function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
-	// In case of multi-block, check if all blocks have the same format.
-	const listItemBlocks = getAllListItemBlocks( listItem );
-	let format: { isConsistent: boolean; value?: string };
+function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string, listItemFormatAttribute: string ) {
+	if ( !isFirstBlockOfListItem( listItem ) ) {
+		const listItemBlocks = getAllListItemBlocks( listItem );
+		const firstBlockFormat = listItemBlocks[ 0 ].getAttribute( listItemFormatAttribute ) as string;
 
-	for ( let i = 0; i < listItemBlocks.length; i++ ) {
-		const listItemBlock = listItemBlocks[ i ];
-		const blockFormat = getSingleListItemConsistentFormat( model, listItemBlock, attributeKey );
-
-		if ( i == 0 ) {
-			format = blockFormat;
-
-			if ( !format.isConsistent ) {
-				return format;
-			}
-
-			continue;
-		}
-
-		if ( !blockFormat.isConsistent ) {
-			return {
-				isConsistent: false,
-				value: undefined
-			};
-		}
-
-		if (
-			blockFormat.isConsistent &&
-			blockFormat.value !== format!.value
-		) {
-			return {
-				isConsistent: false,
-				value: undefined
-			};
-		}
+		return {
+			isConsistent: firstBlockFormat !== undefined,
+			value: firstBlockFormat
+		};
 	}
 
-	return format!;
+	return getSingleListItemConsistentFormat( model, listItem, attributeKey );
 }
 
 /**

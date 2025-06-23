@@ -463,7 +463,7 @@ describe( 'ListFormatting', () => {
 		} );
 
 		describe( 'multi-block modifications', () => {
-			it( 'should remove attributes when new multi-block item has different formatting', () => {
+			it( 'should not remove attributes when new multi-block item has different formatting', () => {
 				setModelData( model,
 					'<paragraph listIndent="0" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
@@ -479,12 +479,12 @@ describe( 'ListFormatting', () => {
 				editor.execute( 'mergeListItemBackward' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
-					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
 				);
 			} );
 
-			it( 'should remove attributes when multi-block item has no formatting', () => {
+			it( 'should not remove attributes when new multi-block item has no formatting', () => {
 				setModelData( model,
 					'<paragraph listIndent="0" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
@@ -500,31 +500,11 @@ describe( 'ListFormatting', () => {
 				editor.execute( 'mergeListItemBackward' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listItemId="a">' +
-						'<$text inlineFormat="foo">foo</$text>' +
-					'</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a">' +
-						'bar' +
-					'</paragraph>'
-				);
-			} );
-
-			it( 'should add attribute when empty multi-block item with different selection formatting is removed', () => {
-				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a">' +
-						'<$text inlineFormat="foo">foo</$text>' +
-					'</paragraph>' +
-					'[<paragraph listIndent="0" listItemId="a"></paragraph>]'
-				);
-
-				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
-				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
-
-				editor.execute( 'delete' );
-
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
 						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'bar' +
 					'</paragraph>'
 				);
 			} );
