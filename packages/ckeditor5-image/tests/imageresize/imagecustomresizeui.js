@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
-import Image from '../../src/image.js';
-import ImageStyle from '../../src/imagestyle.js';
+import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
+import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';
+import { Image } from '../../src/image.js';
+import { ImageStyle } from '../../src/imagestyle.js';
 
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
@@ -43,7 +43,7 @@ describe( 'ImageCustomResizeUI', () => {
 			.filter( Boolean )
 			.find( item => item.label === 'Custom' );
 
-		setModelData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>]` );
+		_setModelData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>]` );
 	} );
 
 	afterEach( async () => {
@@ -69,7 +69,7 @@ describe( 'ImageCustomResizeUI', () => {
 		} );
 
 		it( 'should be enabled when there are not any images', () => {
-			setModelData( model, '' );
+			_setModelData( model, '' );
 
 			expect( button.isEnabled ).to.be.false;
 		} );
@@ -98,7 +98,7 @@ describe( 'ImageCustomResizeUI', () => {
 		} );
 
 		it( 'should open with empty value if image was not resized', () => {
-			setModelData( model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>` );
+			_setModelData( model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }"></imageBlock>` );
 			plugin._createForm();
 
 			expect( balloon.visibleView ).to.be.null;

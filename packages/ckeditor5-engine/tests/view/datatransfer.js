@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DataTransfer from '../../src/view/datatransfer.js';
+import { ViewDataTransfer } from '../../src/view/datatransfer.js';
 
 describe( 'DataTransfer', () => {
 	describe( 'constructor', () => {
 		it( 'should create files from the native files', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				files: {
 					0: 'file1',
 					1: 'file2',
@@ -20,7 +20,7 @@ describe( 'DataTransfer', () => {
 		} );
 
 		it( 'should create files from the native items', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				items: {
 					0: { kind: 'file', getAsFile: () => 'file1' },
 					1: { kind: 'file', getAsFile: () => 'file2' },
@@ -45,7 +45,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer );
+			const dt = new ViewDataTransfer( nativeDataTransfer );
 
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
@@ -65,7 +65,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer );
+			const dt = new ViewDataTransfer( nativeDataTransfer );
 
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
 			expect( dt.files ).to.deep.equal( [ 'file1' ] );
@@ -85,7 +85,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer, { cacheFiles: true } );
+			const dt = new ViewDataTransfer( nativeDataTransfer, { cacheFiles: true } );
 
 			expect( spy.get.calledOnce ).to.be.true;
 			expect( dt._files ).to.deep.equal( [ 'file1' ] );
@@ -108,7 +108,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'files', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer );
+			const dt = new ViewDataTransfer( nativeDataTransfer );
 
 			expect( spy.get.calledOnce ).to.be.false;
 			expect( dt._files ).to.be.null;
@@ -131,7 +131,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer, { cacheFiles: true } );
+			const dt = new ViewDataTransfer( nativeDataTransfer, { cacheFiles: true } );
 
 			expect( spy.get.calledOnce ).to.be.true;
 			expect( dt._files ).to.deep.equal( [ 'file1' ] );
@@ -154,7 +154,7 @@ describe( 'DataTransfer', () => {
 
 			const spy = sinon.spy( nativeDataTransfer, 'items', [ 'get' ] );
 
-			const dt = new DataTransfer( nativeDataTransfer );
+			const dt = new ViewDataTransfer( nativeDataTransfer );
 
 			expect( spy.get.calledOnce ).to.be.false;
 			expect( dt._files ).to.be.null;
@@ -168,7 +168,7 @@ describe( 'DataTransfer', () => {
 
 	describe( 'getData()', () => {
 		it( 'should return data from the native data transfer', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				getData( type ) {
 					return 'foo:' + type;
 				}
@@ -181,7 +181,7 @@ describe( 'DataTransfer', () => {
 	describe( 'setData()', () => {
 		it( 'should set data in the native data transfer', () => {
 			const spy = sinon.spy();
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				setData: spy
 			} );
 
@@ -193,7 +193,7 @@ describe( 'DataTransfer', () => {
 
 	describe( 'types', () => {
 		it( 'should return available types', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				types: [ 'text/html', 'text/plain' ]
 			} );
 
@@ -203,7 +203,7 @@ describe( 'DataTransfer', () => {
 
 	describe( '#effectAllowed', () => {
 		it( 'should return value from the native data transfer', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				effectAllowed: 'foo'
 			} );
 
@@ -212,7 +212,7 @@ describe( 'DataTransfer', () => {
 
 		it( 'should set value in the native data transfer', () => {
 			const spy = sinon.spy();
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				set effectAllowed( value ) {
 					spy( value );
 				}
@@ -226,7 +226,7 @@ describe( 'DataTransfer', () => {
 
 	describe( '#dropEffect', () => {
 		it( 'should return value from the native data transfer', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				dropEffect: 'foo'
 			} );
 
@@ -235,7 +235,7 @@ describe( 'DataTransfer', () => {
 
 		it( 'should set value in the native data transfer', () => {
 			const spy = sinon.spy();
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				set dropEffect( value ) {
 					spy( value );
 				}
@@ -250,7 +250,7 @@ describe( 'DataTransfer', () => {
 	describe( '#setDragImage()', () => {
 		it( 'should call the native data transfer', () => {
 			const spy = sinon.spy();
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				setDragImage( element, x, y ) {
 					spy( element, x, y );
 				}
@@ -264,7 +264,7 @@ describe( 'DataTransfer', () => {
 
 	describe( '#isCanceled', () => {
 		it( 'should return true if native data transfer dropEffect is equal "none" and mozUserCancelled is not set', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				dropEffect: 'none',
 				mozUserCancelled: false
 			} );
@@ -273,7 +273,7 @@ describe( 'DataTransfer', () => {
 		} );
 
 		it( 'should return true if native data transfer dropEffect is equal "none" and mozUserCancelled is set', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				dropEffect: 'none',
 				mozUserCancelled: true
 			} );
@@ -282,7 +282,7 @@ describe( 'DataTransfer', () => {
 		} );
 
 		it( 'should return false if native data transfer dropEffect is equal "move" and mozUserCancelled is not set', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				dropEffect: 'move',
 				mozUserCancelled: false
 			} );
@@ -291,7 +291,7 @@ describe( 'DataTransfer', () => {
 		} );
 
 		it( 'should return false if native data transfer dropEffect is equal "move" and mozUserCancelled is set', () => {
-			const dt = new DataTransfer( {
+			const dt = new ViewDataTransfer( {
 				dropEffect: 'move',
 				mozUserCancelled: true
 			} );

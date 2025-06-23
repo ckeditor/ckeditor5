@@ -9,13 +9,13 @@
 
 import { ObservableMixin, Rect } from '@ckeditor/ckeditor5-utils';
 
-import type { ResizerOptions } from '../widgetresize.js';
+import type { WidgetResizerOptions } from '../widgetresize.js';
 import { calculateResizeHostPercentageWidth } from '../utils.js';
 
 /**
  * Stores the internal state of a single resizable object.
  */
-export default class ResizeState extends /* #__PURE__ */ ObservableMixin() {
+export class WidgetResizeState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The position of the handle that initiated the resizing. E.g. `"top-left"`, `"bottom-right"` etc. or `null`
 	 * if unknown.
@@ -73,7 +73,7 @@ export default class ResizeState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Resizer options.
 	 */
-	private readonly _options: ResizerOptions;
+	private readonly _options: WidgetResizerOptions;
 
 	/**
 	 * The original width (pixels) of the resized object when the resize process was started.
@@ -106,7 +106,7 @@ export default class ResizeState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * @param options Resizer options.
 	 */
-	constructor( options: ResizerOptions ) {
+	constructor( options: WidgetResizerOptions ) {
 		super();
 
 		this.set( 'activeHandlePosition', null );

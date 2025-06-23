@@ -13,7 +13,7 @@ import { IconHeading1, IconHeading2, IconHeading3, IconHeading4, IconHeading5, I
 
 import { getLocalizedOptions } from './utils.js';
 import type { HeadingOption } from './headingconfig.js';
-import type HeadingCommand from './headingcommand.js';
+import { type HeadingCommand } from './headingcommand.js';
 
 const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
 	heading1: IconHeading1,
@@ -57,7 +57,7 @@ const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
  * It is possible to use custom icons by providing `icon` config option in {@link module:heading/headingconfig~HeadingOption}.
  * For the default configuration standard icons are used.
  */
-export default class HeadingButtonsUI extends Plugin {
+export class HeadingButtonsUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

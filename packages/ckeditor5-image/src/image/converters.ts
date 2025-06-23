@@ -9,7 +9,7 @@
 
 import type {
 	DowncastDispatcher,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
@@ -17,7 +17,7 @@ import type {
 	DowncastAttributeEvent
 } from 'ckeditor5/src/engine.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * Returns a function that converts the image view representation:
@@ -59,7 +59,7 @@ export function upcastImageFigure( imageUtils: ImageUtils ): ( dispatcher: Upcas
 		const conversionResult = conversionApi.convertItem( viewImage, data.modelCursor );
 
 		// Get image element from conversion result.
-		const modelImage = first( conversionResult.modelRange!.getItems() ) as Element;
+		const modelImage = first( conversionResult.modelRange!.getItems() ) as ModelElement;
 
 		// When image wasn't successfully converted then finish conversion.
 		if ( !modelImage ) {
@@ -151,7 +151,7 @@ export function upcastPicture( imageUtils: ImageUtils ): ( dispatcher: UpcastDis
 			// Continue conversion where image conversion ends.
 			data.modelCursor = conversionResult.modelCursor;
 
-			modelImage = first( conversionResult.modelRange!.getItems() ) as Element;
+			modelImage = first( conversionResult.modelRange!.getItems() ) as ModelElement;
 		}
 
 		conversionApi.consumable.consume( pictureViewElement, { name: true } );
@@ -185,7 +185,7 @@ export function downcastSrcsetAttribute(
 	imageUtils: ImageUtils,
 	imageType: 'imageBlock' | 'imageInline'
 ): ( dispatcher: DowncastDispatcher ) => void {
-	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi	) => {
+	const converter: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi	) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -207,7 +207,7 @@ export function downcastSrcsetAttribute(
 	};
 
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:srcset:${ imageType }`, converter );
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:srcset:${ imageType }`, converter );
 	};
 }
 
@@ -218,7 +218,7 @@ export function downcastSrcsetAttribute(
  * @internal
  */
 export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher: DowncastDispatcher ) => void {
-	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi	) => {
+	const converter: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi	) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -277,8 +277,8 @@ export function downcastSourcesAttribute( imageUtils: ImageUtils ): ( dispatcher
 	};
 
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageBlock', converter );
-		dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:sources:imageInline', converter );
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:sources:imageBlock', converter );
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:sources:imageInline', converter );
 	};
 }
 
@@ -294,7 +294,7 @@ export function downcastImageAttribute(
 	imageType: 'imageBlock' | 'imageInline',
 	attributeKey: string
 ): ( dispatcher: DowncastDispatcher ) => void {
-	const converter: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
+	const converter: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -307,7 +307,7 @@ export function downcastImageAttribute(
 	};
 
 	return dispatcher => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ attributeKey }:${ imageType }`, converter );
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};
 }
 

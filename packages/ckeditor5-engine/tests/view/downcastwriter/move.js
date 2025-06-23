@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
-import ContainerElement from '../../../src/view/containerelement.js';
-import AttributeElement from '../../../src/view/attributeelement.js';
-import RootEditableElement from '../../../src/view/rooteditableelement.js';
-import EmptyElement from '../../../src/view/emptyelement.js';
-import UIElement from '../../../src/view/uielement.js';
-import RawElement from '../../../src/view/rawelement.js';
-import Range from '../../../src/view/range.js';
-import Position from '../../../src/view/position.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewRootEditableElement } from '../../../src/view/rooteditableelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
 
-import Document from '../../../src/view/document.js';
-import Mapper from '../../../src/conversion/mapper.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { Mapper } from '../../../src/conversion/mapper.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -23,25 +23,25 @@ describe( 'DowncastWriter', () => {
 	describe( 'move()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test ranges.
 		//
 		// @param {String} input
 		// @param {String} expectedResult
 		// @param {String} expectedRemoved
 		function testMove( source, destination, sourceAfterMove, destinationAfterMove ) {
-			const { view: srcView, selection: srcSelection } = parse( source );
-			const { view: dstView, selection: dstSelection } = parse( destination );
+			const { view: srcView, selection: srcSelection } = _parseView( source );
+			const { view: dstView, selection: dstSelection } = _parseView( destination );
 
 			const newRange = writer.move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
-			expect( stringify( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
-			expect( stringify( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
+			expect( _stringifyView( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
+			expect( _stringifyView( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
 		}
 
 		before( () => {
-			document = new Document( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			document = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should move single text node', () => {
@@ -120,28 +120,30 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should correctly move text nodes inside same parent', () => {
-			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
+			const { view, selection } = _parseView(
+				'<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>'
+			);
 
-			const newRange = writer.move( selection.getFirstRange(), Position._createAt( view, 2 ) );
+			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
-			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
+			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should correctly move text nodes inside same container', () => {
-			const { view, selection } = parse(
+			const { view, selection } = _parseView(
 				'<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>'
 			);
 
 			const viewText = view.getChild( 3 );
-			const newRange = writer.move( selection.getFirstRange(), Position._createAt( viewText, 1 ) );
+			const newRange = writer.move( selection.getFirstRange(), ViewPosition._createAt( viewText, 1 ) );
 
-			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
+			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
 			);
 		} );
 
-		it( 'should move EmptyElement', () => {
+		it( 'should move ViewEmptyElement', () => {
 			testMove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:div>baz{}quix</container:div>',
@@ -150,14 +152,14 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw if trying to move to EmptyElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+		it( 'should throw if trying to move to ViewEmptyElement', () => {
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstEmpty = new EmptyElement( document, 'img' );
-			new ContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstEmpty, 0 );
+			const dstEmpty = new ViewEmptyElement( document, 'img' );
+			new ViewContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
+			const dstPosition = new ViewPosition( dstEmpty, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -174,13 +176,13 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to UIElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstUI = new UIElement( document, 'span' );
-			new ContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstUI, 0 );
+			const dstUI = new ViewUIElement( document, 'span' );
+			new ViewContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
+			const dstPosition = new ViewPosition( dstUI, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -197,13 +199,13 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to a RawElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
-			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
+			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstRawElement = new RawElement( document, 'span' );
-			new ContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
-			const dstPosition = new Position( dstRawElement, 0 );
+			const dstRawElement = new ViewRawElement( document, 'span' );
+			new ViewContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
+			const dstPosition = new ViewPosition( dstRawElement, 0 );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( srcRange, dstPosition );
@@ -213,19 +215,19 @@ describe( 'DowncastWriter', () => {
 		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {
 			const mapper = new Mapper();
 
-			const srcContainer = new ContainerElement( document, 'p' );
-			const dstContainer = new ContainerElement( document, 'p' );
+			const srcContainer = new ViewContainerElement( document, 'p' );
+			const dstContainer = new ViewContainerElement( document, 'p' );
 
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 			root._appendChild( [ srcContainer, dstContainer ] );
 
-			const attrElemA = new AttributeElement( document, 'span' );
+			const attrElemA = new ViewAttributeElement( document, 'span' );
 			attrElemA._id = 'foo';
 
-			const attrElemB = new AttributeElement( document, 'span' );
+			const attrElemB = new ViewAttributeElement( document, 'span' );
 			attrElemB._id = 'foo';
 
-			writer.insert( new Position( srcContainer, 0 ), [ attrElemA, attrElemB ] );
+			writer.insert( new ViewPosition( srcContainer, 0 ), [ attrElemA, attrElemB ] );
 
 			mapper.bindElementToMarker( attrElemA, 'foo' );
 
@@ -235,7 +237,7 @@ describe( 'DowncastWriter', () => {
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 
-			writer.move( writer.createRangeOn( attrElemB ), new Position( dstContainer, 0 ) );
+			writer.move( writer.createRangeOn( attrElemB ), new ViewPosition( dstContainer, 0 ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 		} );

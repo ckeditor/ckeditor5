@@ -14,7 +14,7 @@ import sinon from 'sinon';
  * When `addFocusables()` or `removeFocusables()` are provided, additional tests are run to check how the focus cycling
  * works when the collection of focusable views is modified.
  */
-export default function testFocusCycling( {
+export function testFocusCycling( {
 	getView,
 	getFocusablesCollection,
 	actions,

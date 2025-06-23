@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
-import ListEditing from '../../src/list/listediting.js';
-import ListCommand from '../../src/list/listcommand.js';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
-import TodoCheckboxChangeObserver from '../../src/todolist/todocheckboxchangeobserver.js';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import { TodoListEditing } from '../../src/todolist/todolistediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
+import { ListCommand } from '../../src/list/listcommand.js';
+import { CheckTodoListCommand } from '../../src/todolist/checktodolistcommand.js';
+import { TodoCheckboxChangeObserver } from '../../src/todolist/todocheckboxchangeobserver.js';
+import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'TodoListEditing (multiBlock=false)', () => {
 	let editor, model, view, editorElement;
@@ -46,6 +46,10 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		view = editor.editing.view;
 
 		stubUid();
+
+		// Remove downcast strategy for listItemId to avoid having to take it into account in all tests.
+		editor.plugins.get( 'ListEditing' )._downcastStrategies.splice( editor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+			strategy => strategy.attributeName === 'listItemId' ), 1 );
 	} );
 
 	afterEach( async () => {
@@ -325,7 +329,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -339,7 +343,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -388,7 +392,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph' +
 						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
 						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
@@ -409,7 +413,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
@@ -417,7 +421,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		it( 'should not consume other label elements', () => {
 			editor.setData( '<p><label>foo</label></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph><$text htmlLabel="{}">foo</$text></paragraph>'
 			);
 		} );
@@ -546,11 +550,11 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should not use description span if there is an alignment set on the paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a00" listType="todo">foo</listItem>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -565,7 +569,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'right' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label todo-list__label_without-description">' +
@@ -582,7 +586,7 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -597,17 +601,17 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should use description span even if there is an selection attribute on block', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a00" listType="todo">[]</listItem>'
 			);
 
 			model.change( writer => writer.setSelectionAttribute( 'bold', true ) );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a00" listType="todo" selection:bold="true"></listItem>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -740,16 +744,16 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 	function testUpcast( input, output ) {
 		editor.setData( input );
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 
 	function testEditing( input, output ) {
-		setModelData( model, input );
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+		_setModelData( model, input );
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 
 	function testData( input, output ) {
-		setModelData( model, input );
-		expect( editor.getData() ).to.equalMarkup( output );
+		_setModelData( model, input );
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( output );
 	}
 } );

@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import Typing from '../src/typing.js';
-import TextTransformation from '../src/texttransformation.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { Typing } from '../src/typing.js';
+import { TextTransformation } from '../src/texttransformation.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -73,17 +73,17 @@ describe( 'Text transformation feature', () => {
 		beforeEach( createEditorInstance );
 
 		it( 'should not work for selection changes', () => {
-			setData( model, '<paragraph>foo bar(tm) baz[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo bar(tm) baz[]</paragraph>' );
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 11 );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
 		} );
 
 		it( 'should not work for deletion changes', () => {
-			setData( model, '<paragraph>foo bar(tm) []</paragraph>' );
+			_setModelData( model, '<paragraph>foo bar(tm) []</paragraph>' );
 
 			// Simulate delete command.
 			model.change( writer => {
@@ -92,18 +92,18 @@ describe( 'Text transformation feature', () => {
 				model.deleteContent( selection, { doNotResetEntireContent: true } );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm)</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm)</paragraph>' );
 		} );
 
 		it( 'should not work for merging changes', () => {
-			setData( model, '<paragraph>foo bar(tm)</paragraph><paragraph>[] baz</paragraph>' );
+			_setModelData( model, '<paragraph>foo bar(tm)</paragraph><paragraph>[] baz</paragraph>' );
 
 			// Simulate delete command.
 			model.change( writer => {
 				writer.merge( writer.createPositionAfter( doc.getRoot().getChild( 0 ) ) );
 			} );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
 		} );
 
 		describe( 'symbols', () => {
@@ -151,16 +151,16 @@ describe( 'Text transformation feature', () => {
 
 		// https://github.com/ckeditor/ckeditor5-typing/issues/203.
 		it( 'should replace only the parts of content which changed', () => {
-			setData( model, '<paragraph>Foo "<$text bold="true">Bar</$text>[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo "<$text bold="true">Bar</$text>[]</paragraph>' );
 
 			simulateTyping( '"' );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo “<$text bold="true">Bar”</$text></paragraph>' );
 		} );
 
 		it( 'should keep styles of the replaced text #1', () => {
-			setData( model, '<paragraph>Foo <$text bold="true">"</$text>Bar[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text bold="true">"</$text>Bar[]</paragraph>' );
 
 			model.change( writer => {
 				writer.setSelectionAttribute( { bold: true } );
@@ -168,81 +168,81 @@ describe( 'Text transformation feature', () => {
 
 			simulateTyping( '"' );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo <$text bold="true">“</$text>Bar<$text bold="true">”</$text></paragraph>' );
 		} );
 
 		it( 'should keep styles of the replaced text #2', () => {
-			setData( model, '<paragraph>F<$text bold="true">oo "B</$text>ar[]</paragraph>' );
+			_setModelData( model, '<paragraph>F<$text bold="true">oo "B</$text>ar[]</paragraph>' );
 
 			simulateTyping( '"' );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>F<$text bold="true">oo “B</$text>ar”</paragraph>' );
 		} );
 
 		it( 'should work with soft breaks in parent', () => {
-			setData( model, '<paragraph>"Foo <softBreak></softBreak>"Bar[]</paragraph>' );
+			_setModelData( model, '<paragraph>"Foo <softBreak></softBreak>"Bar[]</paragraph>' );
 
 			simulateTyping( '"' );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>"Foo <softBreak></softBreak>“Bar”</paragraph>' );
 		} );
 
 		it( 'should be disabled inside code blocks', () => {
-			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
 
 			simulateTyping( '1/2' );
 
 			const plugin = editor.plugins.get( 'TextTransformation' );
 
 			expect( plugin.isEnabled ).to.be.false;
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
 		it( 'can undo transformation', () => {
-			setData( model, '<paragraph>Foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 			simulateTyping( '(c)' );
 
 			editor.commands.execute( 'undo' );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		it( 'can undo transformation by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
-			setData( model, '<paragraph>Foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 			simulateTyping( '(c)' );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
-				setData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
+				_setModelData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
 
 				simulateTyping( transformFrom );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformTo }</paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo }" inside text`, () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				// Insert text - should not be transformed.
 				model.enqueueChange( model.createBatch(), writer => {
@@ -254,12 +254,12 @@ describe( 'Text transformation feature', () => {
 					writer.insertText( ' ', doc.selection.focus );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo } if not right before selection"`, () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				// Insert text - should not be transformed.
 				model.enqueueChange( model.createBatch(), writer => {
@@ -268,18 +268,18 @@ describe( 'Text transformation feature', () => {
 
 				simulateTyping( ' ' );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
 			} );
 		}
 
 		function testShouldNotTransform( transformFrom, transformTo ) {
 			it( `should not transform "${ transformFrom }" to "${ transformTo }"`, () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( transformFrom );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ transformFrom }</paragraph>` );
 			} );
 		}
@@ -296,11 +296,11 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( 'CKE' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 			} );
 		} );
 
@@ -314,11 +314,11 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( 'user@example.com' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
 			} );
 		} );
 
@@ -332,11 +332,11 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>Foo. []</paragraph>' );
+				_setModelData( model, '<paragraph>Foo. []</paragraph>' );
 
 				simulateTyping( 'b' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo. B</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo. B</paragraph>' );
 			} );
 		} );
 
@@ -350,15 +350,15 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( 'CKE' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor™</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor™</paragraph>' );
 			} );
 		} );
 
@@ -372,15 +372,15 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( 'CKE' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
 			} );
 		} );
 
@@ -393,15 +393,15 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
 
 				simulateTyping( '(r)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)®</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)®</paragraph>' );
 			} );
 		} );
 
@@ -414,15 +414,15 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)</paragraph>' );
 
 				simulateTyping( '...' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)…</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>(tm)…</paragraph>' );
 			} );
 		} );
 
@@ -444,11 +444,11 @@ describe( 'Text transformation feature', () => {
 					}
 				}
 			} ).then( () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				simulateTyping( '(tm)' );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>™</paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>™</paragraph>' );
 			} );
 		} );
 	} );

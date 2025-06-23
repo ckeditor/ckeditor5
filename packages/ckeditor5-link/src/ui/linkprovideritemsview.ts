@@ -31,7 +31,7 @@ import '../../theme/linkprovideritems.css';
 /**
  * The link provider items view.
  */
-export default class LinkProviderItemsView extends View {
+export class LinkProviderItemsView extends View {
 	/**
 	 * Tracks information about the list of links.
 	 *
@@ -139,7 +139,7 @@ export default class LinkProviderItemsView extends View {
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<CancelEvent>( 'cancel' );
+			this.fire<LinkProvidersCancelEvent>( 'cancel' );
 			cancel();
 		} );
 
@@ -296,7 +296,7 @@ export default class LinkProviderItemsView extends View {
  *
  * @eventName ~LinkProviderItemsView#cancel
  */
-export type CancelEvent = {
+export type LinkProvidersCancelEvent = {
 	name: 'cancel';
 	args: [];
 };

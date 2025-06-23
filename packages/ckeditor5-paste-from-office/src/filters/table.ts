@@ -8,7 +8,7 @@
  */
 
 import {
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
@@ -17,10 +17,12 @@ import { convertCssLengthToPx } from './utils.js';
 /**
  * Applies border none for table and cells without a border specified.
  * Normalizes style length units to px.
+ *
+ * @internal
  */
-export default function transformTables(
+export function transformTables(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (

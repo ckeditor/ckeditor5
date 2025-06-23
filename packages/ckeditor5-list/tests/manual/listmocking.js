@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 import {
-	parse as parseModel,
-	setData as setModelData,
-	getData as getModelData
+	_parseModel,
+	_setModelData,
+	_getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { modelList, stringifyList } from '../list/_utils/utils.js';
-import List from '../../src/list.js';
+import { List } from '../../src/list.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -127,7 +127,7 @@ const setModelDataFromAscii = () => {
 
 	const editorModelString = modelList( modelDataArray );
 
-	setModelData( window.editor.model, editorModelString );
+	_setModelData( window.editor.model, editorModelString );
 	document.getElementById( 'data-output' ).innerText = getListModelWithNewLines( editorModelString );
 };
 
@@ -153,11 +153,11 @@ const setAsciiListFromModel = () => {
 	const editorModelString = document.getElementById( 'data-input' ).value;
 	const cleanedEditorModelString = editorModelString.replace( /^[^']*'|'[^']*$|\n|\r/gm, '' );
 
-	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
+	const editorModel = _parseModel( cleanedEditorModelString, window.editor.model.schema );
 	const asciiListCodeSnippet = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 
 	document.getElementById( 'data-output' ).innerText = asciiListCodeSnippet;
-	setModelData( window.editor.model, cleanedEditorModelString );
+	_setModelData( window.editor.model, cleanedEditorModelString );
 };
 
 const processInput = () => {
@@ -182,14 +182,14 @@ const processEditorModel = () => {
 	const dataType = document.querySelector( 'input[name="input-type"]:checked' ).value;
 
 	if ( dataType === 'model' ) {
-		const editorModelStringWithNewLines = getListModelWithNewLines( getModelData( window.editor.model, { withoutSelection: true } ) );
+		const editorModelStringWithNewLines = getListModelWithNewLines( _getModelData( window.editor.model, { withoutSelection: true } ) );
 
 		document.getElementById( 'data-input' ).value = editorModelStringWithNewLines;
 	}
 
 	if ( dataType === 'ascii' ) {
-		const stringifiedEditorModel = getModelData( window.editor.model, { withoutSelection: true } );
-		const editorModel = parseModel( stringifiedEditorModel, window.editor.model.schema );
+		const stringifiedEditorModel = _getModelData( window.editor.model, { withoutSelection: true } );
+		const editorModel = _parseModel( stringifiedEditorModel, window.editor.model.schema );
 
 		document.getElementById( 'data-input' ).value = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 	}

@@ -7,12 +7,13 @@
  * @module style/stylecommand
  */
 
-import type { DocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions
@@ -23,7 +24,7 @@ import StyleUtils, {
  *
  * Applies and removes styles from selection and elements.
  */
-export default class StyleCommand extends Command {
+export class StyleCommand extends Command {
 	/**
 	 * Set of currently applied styles on the current selection.
 	 *
@@ -97,7 +98,7 @@ export default class StyleCommand extends Command {
 		const firstBlock = first( selection.getSelectedBlocks() ) || selection.getFirstPosition()!.parent;
 
 		if ( firstBlock ) {
-			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<ModelElement>;
 
 			for ( const block of ancestorBlocks ) {
 				if ( block.is( 'rootElement' ) ) {
@@ -136,13 +137,13 @@ export default class StyleCommand extends Command {
 	 *
 	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
 	 *
-	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection} and the
+	 * The execution result differs, depending on the {@link module:engine/model/document~ModelDocument#selection} and the
 	 * style type (inline or block):
 	 *
 	 * * When applying inline styles:
 	 *   * If the selection is on a range, the command applies the style classes to all nodes in that range.
 	 *   * If the selection is collapsed in a non-empty node, the command applies the style classes to the
-	 * {@link module:engine/model/document~Document#selection}.
+	 * {@link module:engine/model/document~ModelDocument#selection}.
 	 *
 	 * * When applying block styles:
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.
@@ -215,13 +216,13 @@ export default class StyleCommand extends Command {
 	 * Returns a set of elements that should be affected by the block-style change.
 	 */
 	private _findAffectedBlocks(
-		selectedBlocks: Iterable<Element>,
+		selectedBlocks: Iterable<ModelElement>,
 		definition: BlockStyleDefinition
-	): Set<Element> {
-		const blocks = new Set<Element>();
+	): Set<ModelElement> {
+		const blocks = new Set<ModelElement>();
 
 		for ( const selectedBlock of selectedBlocks ) {
-			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<ModelElement>;
 
 			for ( const block of ancestorBlocks ) {
 				if ( block.is( 'rootElement' ) ) {
@@ -277,10 +278,10 @@ function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): defini
  * @param selection Current document's selection.
  * @returns Selected blocks if there are any, first selected element otherwise.
  */
-function getBlocksFromSelection( selection: DocumentSelection ) {
+function getBlocksFromSelection( selection: ModelDocumentSelection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );
 	if ( blocks.length ) {
 		return blocks;
 	}
-	return [ selection.getFirstPosition()!.parent as Element ];
+	return [ selection.getFirstPosition()!.parent as ModelElement ];
 }

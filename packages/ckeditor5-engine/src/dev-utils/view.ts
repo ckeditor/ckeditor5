@@ -11,46 +11,46 @@
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
 
-import View from '../view/view.js';
-import ViewDocument from '../view/document.js';
-import ViewDocumentFragment from '../view/documentfragment.js';
-import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
-import ViewElement from '../view/element.js';
-import DocumentSelection from '../view/documentselection.js';
-import Range from '../view/range.js';
-import Position from '../view/position.js';
-import AttributeElement from '../view/attributeelement.js';
-import ContainerElement from '../view/containerelement.js';
-import EmptyElement from '../view/emptyelement.js';
-import UIElement from '../view/uielement.js';
-import RawElement from '../view/rawelement.js';
+import { EditingView } from '../view/view.js';
+import { ViewDocument } from '../view/document.js';
+import { ViewDocumentFragment } from '../view/documentfragment.js';
+import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
+import { ViewElement } from '../view/element.js';
+import { ViewDocumentSelection } from '../view/documentselection.js';
+import { ViewRange } from '../view/range.js';
+import { ViewPosition } from '../view/position.js';
+import { ViewAttributeElement } from '../view/attributeelement.js';
+import { ViewContainerElement } from '../view/containerelement.js';
+import { ViewEmptyElement } from '../view/emptyelement.js';
+import { ViewUIElement } from '../view/uielement.js';
+import { ViewRawElement } from '../view/rawelement.js';
 import { StylesProcessor } from '../view/stylesmap.js';
 
-import type ViewNode from '../view/node.js';
-import type ViewText from '../view/text.js';
-import type DomConverter from '../view/domconverter.js';
+import { type ViewNode } from '../view/node.js';
+import { type ViewText } from '../view/text.js';
+import { type ViewDomConverter } from '../view/domconverter.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 const allowedTypes = {
-	'container': ContainerElement,
-	'attribute': AttributeElement,
-	'empty': EmptyElement,
-	'ui': UIElement,
-	'raw': RawElement
+	'container': ViewContainerElement,
+	'attribute': ViewAttributeElement,
+	'empty': ViewEmptyElement,
+	'ui': ViewUIElement,
+	'raw': ViewRawElement
 };
-// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf DomConverter.setContentOf} method.
-// Used to render UIElement and RawElement.
-const domConverterStub: DomConverter = {
+// Returns simplified implementation of {@link module:engine/view/domconverter~ViewDomConverter#setContentOf ViewDomConverter.setContentOf}
+// method. Used to render UIElement and RawElement.
+const domConverterStub: ViewDomConverter = {
 	setContentOf: ( node: any, html: string ) => {
 		node.innerHTML = html;
 	}
 } as any;
 
 /**
- * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
+ * Writes the content of the {@link module:engine/view/document~ViewDocument document} to an HTML-like string.
  *
  * @param view The view to stringify.
  * @param options.withoutSelection Whether to write the selection. When set to `true`, the selection will
@@ -62,16 +62,16 @@ const domConverterStub: DomConverter = {
  * @param options.showPriority When set to `true`, the attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param options.renderUIElements When set to `true`, the inner content of each
- * {@link module:engine/view/uielement~UIElement} will be printed.
+ * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
- * {@link module:engine/view/rawelement~RawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
  */
-export function getData(
-	view: View,
+export function _getViewData(
+	view: EditingView,
 	options: {
 		withoutSelection?: boolean;
 		rootName?: string;
@@ -79,11 +79,12 @@ export function getData(
 		showPriority?: boolean;
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
-		domConverter?: DomConverter;
+		domConverter?: ViewDomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
-	if ( !( view instanceof View ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
+	if ( !( view instanceof EditingView ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
 	}
 
 	const document = view.document;
@@ -96,31 +97,32 @@ export function getData(
 		renderUIElements: options.renderUIElements,
 		renderRawElements: options.renderRawElements,
 		ignoreRoot: true,
-		domConverter: options.domConverter
+		domConverter: options.domConverter,
+		skipListItemIds: options.skipListItemIds
 	};
 
 	return withoutSelection ?
-		getData._stringify( root, null, stringifyOptions ) :
-		getData._stringify( root, document.selection, stringifyOptions );
+		_getViewData._stringify( root, null, stringifyOptions ) :
+		_getViewData._stringify( root, document.selection, stringifyOptions );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
-getData._stringify = stringify;
+_getViewData._stringify = _stringifyView;
 
 /**
- * Sets the content of a view {@link module:engine/view/document~Document document} provided as an HTML-like string.
+ * Sets the content of a view {@link module:engine/view/document~ViewDocument document} provided as an HTML-like string.
  *
  * @param data An HTML-like string to write into the document.
- * @param options.rootName The root name where parsed data will be stored. If not provided,
+ * @param options.rootName The root name where _parseViewd data will be stored. If not provided,
  * the default `main` name will be used.
  */
-export function setData(
-	view: View,
+export function _setViewData(
+	view: EditingView,
 	data: string,
 	options: { rootName?: string } = {}
 ): void {
-	if ( !( view instanceof View ) ) {
-		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
+	if ( !( view instanceof EditingView ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~EditingView.' );
 	}
 
 	const document = view.document;
@@ -128,7 +130,7 @@ export function setData(
 	const root = document.getRoot( rootName )!;
 
 	view.change( writer => {
-		const result: any = setData._parse( data, { rootElement: root } );
+		const result: any = _setViewData._parse( data, { rootElement: root } );
 
 		if ( result.view && result.selection ) {
 			writer.setSelection( result.selection );
@@ -136,27 +138,27 @@ export function setData(
 	} );
 }
 
-// Set parse as setData private method - needed for testing/spying.
-setData._parse = parse;
+// Set _parseView as _setViewData private method - needed for testing/spying.
+_setViewData._parse = _parseView;
 
 /**
  * Converts view elements to HTML-like string representation.
  *
- * A root element can be provided as {@link module:engine/view/text~Text text}:
+ * A root element can be provided as {@link module:engine/view/text~ViewText text}:
  *
  * ```ts
  * const text = downcastWriter.createText( 'foobar' );
  * stringify( text ); // 'foobar'
  * ```
  *
- * or as an {@link module:engine/view/element~Element element}:
+ * or as an {@link module:engine/view/element~ViewElement element}:
  *
  * ```ts
  * const element = downcastWriter.createElement( 'p', null, downcastWriter.createText( 'foobar' ) );
  * stringify( element ); // '<p>foobar</p>'
  * ```
  *
- * or as a {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
+ * or as a {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}:
  *
  * ```ts
  * const text = downcastWriter.createText( 'foobar' );
@@ -167,7 +169,7 @@ setData._parse = parse;
  * stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  * ```
  *
- * Additionally, a {@link module:engine/view/documentselection~DocumentSelection selection} instance can be provided.
+ * Additionally, a {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance can be provided.
  * Ranges from the selection will then be included in the output data.
  * If a range position is placed inside the element node, it will be represented with `[` and `]`:
  *
@@ -212,8 +214,8 @@ setData._parse = parse;
  * stringify( text, selection ); // '{f}oo{ba}r'
  * ```
  *
- * A {@link module:engine/view/range~Range range} or {@link module:engine/view/position~Position position} instance can be provided
- * instead of the {@link module:engine/view/documentselection~DocumentSelection selection} instance. If a range instance
+ * A {@link module:engine/view/range~ViewRange range} or {@link module:engine/view/position~ViewPosition position} instance can be provided
+ * instead of the {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance. If a range instance
  * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
  * be converted to a selection containing one range collapsed at this position.
  *
@@ -228,10 +230,10 @@ setData._parse = parse;
  *
  * An additional `options` object can be provided.
  * If `options.showType` is set to `true`, element's types will be
- * presented for {@link module:engine/view/attributeelement~AttributeElement attribute elements},
- * {@link module:engine/view/containerelement~ContainerElement container elements}
- * {@link module:engine/view/emptyelement~EmptyElement empty elements}
- * and {@link module:engine/view/uielement~UIElement UI elements}:
+ * presented for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
+ * {@link module:engine/view/containerelement~ViewContainerElement container elements}
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements}
+ * and {@link module:engine/view/uielement~ViewUIElement UI elements}:
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'b' );
@@ -245,7 +247,7 @@ setData._parse = parse;
  * ```
  *
  * If `options.showPriority` is set to `true`, a priority will be displayed for all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements}.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements}.
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'b' );
@@ -254,7 +256,7 @@ setData._parse = parse;
  * ```
  *
  * If `options.showAttributeElementId` is set to `true`, the attribute element's id will be displayed for all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that have it set.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that have it set.
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'span' );
@@ -274,21 +276,21 @@ setData._parse = parse;
  * @param options.showAttributeElementId When set to `true`, attribute element's id will be printed
  * (`<span id="marker:foo">`).
  * @param options.ignoreRoot When set to `true`, the root's element opening and closing will not be printed.
- * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~Document document's} root element.
+ * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~ViewDocument document's} root element.
  * @param options.sameSelectionCharacters When set to `true`, the selection inside the text will be marked as
  *  `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both will be marked as `[` and `]` only.
  * @param options.renderUIElements When set to `true`, the inner content of each
- * {@link module:engine/view/uielement~UIElement} will be printed.
+ * {@link module:engine/view/uielement~ViewUIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
- * {@link module:engine/view/rawelement~RawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns An HTML-like string representing the view.
  */
-export function stringify(
+export function _stringifyView(
 	node: ViewNode | ViewDocumentFragment,
-	selectionOrPositionOrRange: DocumentSelection | Position | Range | null = null,
+	selectionOrPositionOrRange: ViewDocumentSelection | ViewPosition | ViewRange | null = null,
 	options: {
 		showType?: boolean;
 		showPriority?: boolean;
@@ -297,16 +299,17 @@ export function stringify(
 		sameSelectionCharacters?: boolean;
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
-		domConverter?: DomConverter;
+		domConverter?: ViewDomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
 	let selection;
 
 	if (
-		selectionOrPositionOrRange instanceof Position ||
-		selectionOrPositionOrRange instanceof Range
+		selectionOrPositionOrRange instanceof ViewPosition ||
+		selectionOrPositionOrRange instanceof ViewRange
 	) {
-		selection = new DocumentSelection( selectionOrPositionOrRange );
+		selection = new ViewDocumentSelection( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
 	}
@@ -318,92 +321,93 @@ export function stringify(
 
 /**
  * Parses an HTML-like string and returns a view tree.
- * A simple string will be converted to a {@link module:engine/view/text~Text text} node:
+ * A simple string will be converted to a {@link module:engine/view/text~ViewText text} node:
  *
  * ```ts
- * parse( 'foobar' ); // Returns an instance of text.
+ * _parseView( 'foobar' ); // Returns an instance of text.
  * ```
  *
- * {@link module:engine/view/element~Element Elements} will be parsed with attributes as children:
+ * {@link module:engine/view/element~ViewElement Elements} will be _parseViewd with attributes as children:
  *
  * ```ts
- * parse( '<b name="baz">foobar</b>' ); // Returns an instance of element with the `baz` attribute and a text child node.
+ * _parseView( '<b name="baz">foobar</b>' ); // Returns an instance of element with the `baz` attribute and a text child node.
  * ```
  *
  * Multiple nodes provided on root level will be converted to a
- * {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}:
  *
  * ```ts
- * parse( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
+ * _parseView( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
  * ```
  *
- * The method can parse multiple {@link module:engine/view/range~Range ranges} provided in string data and return a
- * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
- * {@link module:engine/view/text~Text text} nodes should be marked using `{` and `}` brackets:
+ * The method can _parseView multiple {@link module:engine/view/range~ViewRange ranges} provided in string data and return a
+ * {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance containing these ranges. Ranges placed inside
+ * {@link module:engine/view/text~ViewText text} nodes should be marked using `{` and `}` brackets:
  *
  * ```ts
- * const { text, selection } = parse( 'f{ooba}r' );
+ * const { text, selection } = _parseView( 'f{ooba}r' );
  * ```
  *
  * Ranges placed outside text nodes should be marked using `[` and `]` brackets:
  *
  * ```ts
- * const { root, selection } = parse( '<p>[<b>foobar</b>]</p>' );
+ * const { root, selection } = _parseView( '<p>[<b>foobar</b>]</p>' );
  * ```
  *
  * ** Note: **
  * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
- * by setting `sameSelectionCharacters=true` option. It is mainly used when the view parse option is used by model utilities.
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when the view _parseView option is used by model utilities.
  *
  * Sometimes there is a need for defining the order of ranges inside the created selection. This can be achieved by providing
  * the range order array as an additional parameter:
  *
  * ```ts
- * const { root, selection } = parse( '{fo}ob{ar}{ba}z', { order: [ 2, 3, 1 ] } );
+ * const { root, selection } = _parseView( '{fo}ob{ar}{ba}z', { order: [ 2, 3, 1 ] } );
  * ```
  *
  * In the example above, the first range (`{fo}`) will be added to the selection as the second one, the second range (`{ar}`) will be
  * added as the third and the third range (`{ba}`) will be added as the first one.
  *
  * If the selection's last range should be added as a backward one
- * (so the {@link module:engine/view/documentselection~DocumentSelection#anchor selection anchor} is represented
- * by the `end` position and {@link module:engine/view/documentselection~DocumentSelection#focus selection focus} is
+ * (so the {@link module:engine/view/documentselection~ViewDocumentSelection#anchor selection anchor} is represented
+ * by the `end` position and {@link module:engine/view/documentselection~ViewDocumentSelection#focus selection focus} is
  * represented by the `start` position), use the `lastRangeBackward` flag:
  *
  * ```ts
- * const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
+ * const { root, selection } = _parseView( `{foo}bar{baz}`, { lastRangeBackward: true } );
  * ```
  *
  * Some more examples and edge cases:
  *
  * ```ts
  * // Returns an empty document fragment.
- * parse( '' );
+ * _parseView( '' );
  *
  * // Returns an empty document fragment and a collapsed selection.
- * const { root, selection } = parse( '[]' );
+ * const { root, selection } = _parseView( '[]' );
  *
  * // Returns an element and a selection that is placed inside the document fragment containing that element.
- * const { root, selection } = parse( '[<a></a>]' );
+ * const { root, selection } = _parseView( '[<a></a>]' );
  * ```
  *
  * @param data An HTML-like string to be parsed.
  * @param options.order An array with the order of parsed ranges added to the returned
- * {@link module:engine/view/documentselection~DocumentSelection Selection} instance. Each element should represent the
+ * {@link module:engine/view/documentselection~ViewDocumentSelection Selection} instance. Each element should represent the
  * desired position of each range in the selection instance. For example: `[2, 3, 1]` means that the first range will be
  * placed as the second, the second as the third and the third as the first.
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward to the returned
- * {@link module:engine/view/documentselection~DocumentSelection selection} instance.
+ * {@link module:engine/view/documentselection~ViewDocumentSelection selection} instance.
  * @param options.rootElement The default root to use when parsing elements.
  * When set to `null`, the root element will be created automatically. If set to
- * {@link module:engine/view/element~Element Element} or {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment},
+ * {@link module:engine/view/element~ViewElement Element} or
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment},
  * this node will be used as the root for all parsed nodes.
  * @param options.sameSelectionCharacters When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.
  * @returns Returns the parsed view node or an object with two fields: `view` and `selection` when selection ranges were included in the
  * data to parse.
  */
-export function parse(
+export function _parseView(
 	data: string,
 	options: {
 		order?: Array<number>;
@@ -412,7 +416,7 @@ export function parse(
 		sameSelectionCharacters?: boolean;
 		inlineObjectElements?: Array<string>;
 	} = {}
-): ViewNode | ViewDocumentFragment | { view: ViewNode | ViewDocumentFragment; selection: DocumentSelection } {
+): ViewNode | ViewDocumentFragment | { view: ViewNode | ViewDocumentFragment; selection: ViewDocumentSelection } {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
 
 	options.order = options.order || [];
@@ -431,7 +435,7 @@ export function parse(
 	let view: ViewDocumentFragment | ViewNode = processor.toView( data )!;
 
 	// At this point we have a view tree with Elements that could have names like `attribute:b:1`. In the next step
-	// we need to parse Element's names and convert them to AttributeElements and ContainerElements.
+	// we need to parse Element's names and convert them to ViewAttributeElements and ViewContainerElements.
 	view = _convertViewElements( view );
 
 	// If custom root is provided - move all nodes there.
@@ -446,7 +450,7 @@ export function parse(
 	}
 
 	// Parse ranges included in view text nodes.
-	const ranges = rangeParser.parse( view, options.order );
+	const ranges = rangeParser._parseView( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
 	if ( view.is( 'documentFragment' ) && view.childCount === 1 ) {
@@ -455,7 +459,7 @@ export function parse(
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
-		const selection = new DocumentSelection( ranges, { backward: !!options.lastRangeBackward } );
+		const selection = new ViewDocumentSelection( ranges, { backward: !!options.lastRangeBackward } );
 
 		return {
 			view,
@@ -472,11 +476,11 @@ export function parse(
 }
 
 /**
- * Private helper class used for converting ranges represented as text inside view {@link module:engine/view/text~Text text nodes}.
+ * Private helper class used for converting ranges represented as text inside view {@link module:engine/view/text~ViewText text nodes}.
  */
 class RangeParser {
 	public sameSelectionCharacters: boolean;
-	private _positions!: Array<{ bracket: string; position: Position }>;
+	private _positions!: Array<{ bracket: string; position: ViewPosition }>;
 
 	/**
 	 * Creates a range parser instance.
@@ -490,7 +494,7 @@ class RangeParser {
 	}
 
 	/**
-	 * Parses the view and returns ranges represented inside {@link module:engine/view/text~Text text nodes}.
+	 * Parses the view and returns ranges represented inside {@link module:engine/view/text~ViewText text nodes}.
 	 * The method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If a text node is empty after
 	 * the process, it will be removed, too.
 	 *
@@ -500,7 +504,7 @@ class RangeParser {
 	 * as the first.
 	 * @returns An array with ranges found.
 	 */
-	public parse( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<Range> {
+	public _parseView( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<ViewRange> {
 		this._positions = [];
 
 		// Remove all range brackets from view nodes and save their positions.
@@ -586,7 +590,7 @@ class RangeParser {
 						// Store information about text range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
-							position: new Position( node, item.textOffset )
+							position: new ViewPosition( node, item.textOffset )
 						} );
 					} else {
 						// Check if element range delimiter is not placed inside text node.
@@ -600,7 +604,7 @@ class RangeParser {
 						// Store information about element range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
-							position: new Position( parent, offset )
+							position: new ViewPosition( parent, offset )
 						} );
 					}
 				} else {
@@ -614,7 +618,7 @@ class RangeParser {
 					// Store information about element range delimiter.
 					this._positions.push( {
 						bracket: item.bracket,
-						position: new Position( parent, index )
+						position: new ViewPosition( parent, index )
 					} );
 				}
 			}
@@ -631,7 +635,7 @@ class RangeParser {
 	 * @param rangesOrder An array with new range order.
 	 * @returns Sorted ranges array.
 	 */
-	private _sortRanges( ranges: Array<Range>, rangesOrder: Array<number> ): Array<Range> {
+	private _sortRanges( ranges: Array<ViewRange>, rangesOrder: Array<number> ): Array<ViewRange> {
 		const sortedRanges = [];
 		let index = 0;
 
@@ -650,7 +654,7 @@ class RangeParser {
 	/**
 	 * Uses all found bracket positions to create ranges from them.
 	 */
-	private _createRanges(): Array<Range> {
+	private _createRanges(): Array<ViewRange> {
 		const ranges = [];
 		let range = null;
 
@@ -667,7 +671,7 @@ class RangeParser {
 			}
 
 			if ( item.bracket == ELEMENT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_START_TOKEN ) {
-				range = new Range( item.position, item.position );
+				range = new ViewRange( item.position, item.position );
 			} else {
 				( range as any ).end = item.position;
 				ranges.push( range! );
@@ -689,8 +693,8 @@ class RangeParser {
  */
 class ViewStringify {
 	public root: ViewNode | ViewDocumentFragment;
-	public selection: DocumentSelection | null;
-	public ranges: Array<Range>;
+	public selection: ViewDocumentSelection | null;
+	public ranges: Array<ViewRange>;
 	public showType: boolean;
 	public showPriority: boolean;
 	public showAttributeElementId: boolean;
@@ -698,7 +702,8 @@ class ViewStringify {
 	public sameSelectionCharacters: boolean;
 	public renderUIElements: boolean;
 	public renderRawElements: boolean;
-	public domConverter: DomConverter;
+	public domConverter: ViewDomConverter;
+	public skipListItemIds: boolean;
 
 	/**
 	 * Creates a view stringify instance.
@@ -713,16 +718,18 @@ class ViewStringify {
 	 * @param options.sameSelectionCharacters When set to `true`, the selection inside the text is marked as
 	 * `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both are marked as `[` and `]`.
 	 * @param options.renderUIElements When set to `true`, the inner content of each
-	 * {@link module:engine/view/uielement~UIElement} will be printed.
+	 * {@link module:engine/view/uielement~ViewUIElement} will be printed.
 	 * @param options.renderRawElements When set to `true`, the inner content of each
-	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
-	 * {@link module:engine/view/rawelement~RawElement} will be printed.
+	 * {@link module:engine/view/rawelement~ViewRawElement} will be printed.
+	 * @param options.skipListItemIds When set to `true`, `<li>` elements will not have `listItemId` attribute. By default it's hidden
+	 * because it's randomly generated and hard to verify properly, while bringing little value.
 	 */
 	constructor(
 		root: ViewNode | ViewDocumentFragment,
-		selection: DocumentSelection | null,
+		selection: ViewDocumentSelection | null,
 		options: {
 			showType?: boolean;
 			showPriority?: boolean;
@@ -731,7 +738,8 @@ class ViewStringify {
 			sameSelectionCharacters?: boolean;
 			renderUIElements?: boolean;
 			renderRawElements?: boolean;
-			domConverter?: DomConverter;
+			domConverter?: ViewDomConverter;
+			skipListItemIds?: boolean;
 		}
 	) {
 		this.root = root;
@@ -750,6 +758,7 @@ class ViewStringify {
 		this.renderUIElements = !!options.renderUIElements;
 		this.renderRawElements = !!options.renderRawElements;
 		this.domConverter = options.domConverter || domConverterStub;
+		this.skipListItemIds = options.skipListItemIds !== undefined ? !!options.skipListItemIds : true;
 	}
 
 	/**
@@ -762,6 +771,10 @@ class ViewStringify {
 		this._walkView( this.root, chunk => {
 			result += chunk;
 		} );
+
+		if ( this.skipListItemIds ) {
+			result = result.replaceAll( / data-list-item-id="[^"]+"/g, '' );
+		}
 
 		return result;
 	}
@@ -812,8 +825,9 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if a given {@link module:engine/view/element~Element element} has a {@link module:engine/view/range~Range#start range start}
-	 * or a {@link module:engine/view/range~Range#start range end} placed at a given offset and returns its string representation.
+	 * Checks if a given {@link module:engine/view/element~ViewElement element} has
+	 * a {@link module:engine/view/range~ViewRange#start range start}
+	 * or a {@link module:engine/view/range~ViewRange#start range end} placed at a given offset and returns its string representation.
 	 */
 	private _stringifyElementRanges( element: ViewElement | ViewDocumentFragment, offset: number ): string {
 		let start = '';
@@ -838,9 +852,9 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if a given {@link module:engine/view/element~Element Text node} has a
-	 * {@link module:engine/view/range~Range#start range start} or a
-	 * {@link module:engine/view/range~Range#start range end} placed somewhere inside. Returns a string representation of text
+	 * Checks if a given {@link module:engine/view/element~ViewElement Text node} has a
+	 * {@link module:engine/view/range~ViewRange#start range start} or a
+	 * {@link module:engine/view/range~ViewRange#start range end} placed somewhere inside. Returns a string representation of text
 	 * with range delimiters placed inside.
 	 */
 	private _stringifyTextRanges( node: ViewText ): string {
@@ -890,7 +904,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to an opening tag.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to an opening tag.
 	 *
 	 * Depending on the current configuration, the opening tag can be simple (`<a>`), contain a type prefix (`<container:p>`,
 	 * `<attribute:a>` or `<empty:img>`), contain priority information ( `<attribute:a view-priority="20">` ),
@@ -910,7 +924,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to a closing tag.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to a closing tag.
 	 * Depending on the current configuration, the closing tag can be simple (`</a>`) or contain a type prefix (`</container:p>`,
 	 * `</attribute:a>` or `</empty:img>`).
 	 */
@@ -922,14 +936,14 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element's} type to its string representation
+	 * Converts the passed {@link module:engine/view/element~ViewElement element's} type to its string representation
 	 *
 	 * Returns:
-	 * * 'attribute' for {@link module:engine/view/attributeelement~AttributeElement attribute elements},
-	 * * 'container' for {@link module:engine/view/containerelement~ContainerElement container elements},
-	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements},
-	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
-	 * * 'raw' for {@link module:engine/view/rawelement~RawElement raw elements},
+	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
+	 * * 'container' for {@link module:engine/view/containerelement~ViewContainerElement container elements},
+	 * * 'empty' for {@link module:engine/view/emptyelement~ViewEmptyElement empty elements},
+	 * * 'ui' for {@link module:engine/view/uielement~ViewUIElement UI elements},
+	 * * 'raw' for {@link module:engine/view/rawelement~ViewRawElement raw elements},
 	 * * an empty string when the current configuration is preventing showing elements' types.
 	 */
 	private _stringifyElementType( element: ViewElement ): string {
@@ -945,10 +959,10 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to its priority representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to its priority representation.
 	 *
 	 * The priority string representation will be returned when the passed element is an instance of
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute element} and the current configuration allows to show the
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} and the current configuration allows to show the
 	 * priority. Otherwise returns an empty string.
 	 */
 	private _stringifyElementPriority( element: ViewElement ): string {
@@ -960,10 +974,10 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to its id representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to its id representation.
 	 *
 	 * The id string representation will be returned when the passed element is an instance of
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute element}, the element has an id
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}, the element has an id
 	 * and the current configuration allows to show the id. Otherwise returns an empty string.
 	 */
 	private _stringifyElementId( element: ViewElement ): string {
@@ -975,7 +989,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} attributes to their string representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} attributes to their string representation.
 	 * If an element has no attributes, an empty string is returned.
 	 */
 	private _stringifyElementAttributes( element: ViewElement ): string {
@@ -1006,11 +1020,11 @@ class ViewStringify {
 }
 
 /**
- * Converts {@link module:engine/view/element~Element elements} to
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements},
- * {@link module:engine/view/containerelement~ContainerElement container elements},
- * {@link module:engine/view/emptyelement~EmptyElement empty elements} or
- * {@link module:engine/view/uielement~UIElement UI elements}.
+ * Converts {@link module:engine/view/element~ViewElement elements} to
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
+ * {@link module:engine/view/containerelement~ViewContainerElement container elements},
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements} or
+ * {@link module:engine/view/uielement~ViewUIElement UI elements}.
  * It converts the whole tree starting from the `rootNode`. The conversion is based on element names.
  * See the `_convertElement` method for more details.
  *
@@ -1030,7 +1044,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 		// from `rootNode` to `convertedElement`. This would interfere with iteration.
 		for ( const child of [ ...rootNode.getChildren() ] ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
-				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
+				throw new Error( 'Parse error - cannot parse inside ViewEmptyElement.' );
 			} else if ( convertedElement.is( 'uiElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside UIElement.' );
 			} else if ( convertedElement.is( 'rawElement' ) ) {
@@ -1047,22 +1061,22 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 }
 
 /**
- * Converts an {@link module:engine/view/element~Element element} to
- * {@link module:engine/view/attributeelement~AttributeElement attribute element},
- * {@link module:engine/view/containerelement~ContainerElement container element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element} or
- * {@link module:engine/view/uielement~UIElement UI element}.
+ * Converts an {@link module:engine/view/element~ViewElement element} to
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
+ * {@link module:engine/view/containerelement~ViewContainerElement container element},
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
+ * {@link module:engine/view/uielement~ViewUIElement UI element}.
  * If the element's name is in the format of `attribute:b`, it will be converted to
- * an {@link module:engine/view/attributeelement~AttributeElement attribute element} with a priority of 11.
+ * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} with a priority of 11.
  * Additionally, attribute elements may have specified priority (for example `view-priority="11"`) and/or
  * id (for example `view-id="foo"`).
  * If the element's name is in the format of `container:p`, it will be converted to
- * a {@link module:engine/view/containerelement~ContainerElement container element}.
+ * a {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * If the element's name is in the format of `empty:img`, it will be converted to
- * an {@link module:engine/view/emptyelement~EmptyElement empty element}.
+ * an {@link module:engine/view/emptyelement~ViewEmptyElement empty element}.
  * If the element's name is in the format of `ui:span`, it will be converted to
- * a {@link module:engine/view/uielement~UIElement UI element}.
- * If the element's name does not contain any additional information, a {@link module:engine/view/element~Element view Element} will be
+ * a {@link module:engine/view/uielement~ViewUIElement UI element}.
+ * If the element's name does not contain any additional information, a {@link module:engine/view/element~ViewElement view Element} will be
  * returned.
  *
  * @param viewElement A view element to convert.
@@ -1092,11 +1106,11 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
 }
 
 /**
- * Converts the `view-priority` attribute and the {@link module:engine/view/element~Element#name element's name} information needed for
- * creating {@link module:engine/view/attributeelement~AttributeElement attribute element},
- * {@link module:engine/view/containerelement~ContainerElement container element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element} or
- * {@link module:engine/view/uielement~UIElement UI element}.
+ * Converts the `view-priority` attribute and the {@link module:engine/view/element~ViewElement#name element's name} information needed for
+ * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
+ * {@link module:engine/view/containerelement~ViewContainerElement container element},
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
+ * {@link module:engine/view/uielement~ViewUIElement UI element}.
  * The name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
  * `attribute:span`, `empty:img`, `ui:span`);
  *

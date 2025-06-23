@@ -9,13 +9,13 @@
 
 import { ContextPlugin } from 'ckeditor5/src/core.js';
 import type { TokenUrl } from './cloudservicesconfig.js';
-import Token, { type InitializedToken, type TokenOptions } from './token/token.js';
-import UploadGateway from './uploadgateway/uploadgateway.js';
+import { Token, type InitializedToken, type CloudServicesTokenOptions } from './token/token.js';
+import { UploadGateway } from './uploadgateway/uploadgateway.js';
 
 /**
  * The `CloudServicesCore` plugin exposes the base API for communication with CKEditor Cloud Services.
  */
-export default class CloudServicesCore extends ContextPlugin {
+export class CloudServicesCore extends ContextPlugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -38,7 +38,7 @@ export default class CloudServicesCore extends ContextPlugin {
 	 * @param options.initValue Initial value of the token.
 	 * @param options.autoRefresh Specifies whether to start the refresh automatically.
 	 */
-	public createToken( tokenUrlOrRefreshToken: TokenUrl, options?: TokenOptions ): Token {
+	public createToken( tokenUrlOrRefreshToken: TokenUrl, options?: CloudServicesTokenOptions ): Token {
 		return new Token( tokenUrlOrRefreshToken, options );
 	}
 

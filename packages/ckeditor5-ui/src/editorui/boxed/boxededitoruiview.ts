@@ -7,9 +7,9 @@
  * @module ui/editorui/boxed/boxededitoruiview
  */
 
-import EditorUIView from '../editoruiview.js';
-import LabelView from '../../label/labelview.js';
-import type ViewCollection from '../../viewcollection.js';
+import { EditorUIView } from '../editoruiview.js';
+import { LabelView } from '../../label/labelview.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -17,7 +17,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * The boxed editor UI view class. This class represents an editor interface
  * consisting of a toolbar and an editable area, enclosed within a box.
  */
-export default abstract class BoxedEditorUIView extends EditorUIView {
+export abstract class BoxedEditorUIView extends EditorUIView {
 	/**
 	 * Collection of the child views located in the top (`.ck-editor__top`)
 	 * area of the UI.

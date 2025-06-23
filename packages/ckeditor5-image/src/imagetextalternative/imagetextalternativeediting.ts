@@ -8,15 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageTextAlternativeCommand from './imagetextalternativecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageTextAlternativeCommand } from './imagetextalternativecommand.js';
+import { ImageUtils } from '../imageutils.js';
 
 /**
  * The image text alternative editing plugin.
  *
  * Registers the `'imageTextAlternative'` command.
  */
-export default class ImageTextAlternativeEditing extends Plugin {
+export class ImageTextAlternativeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,39 +7,56 @@
  * @module clipboard
  */
 
-export { default as Clipboard } from './clipboard.js';
+export { Clipboard } from './clipboard.js';
 export {
-	default as ClipboardPipeline,
+	ClipboardPipeline,
 	type ClipboardContentInsertionEvent,
 	type ClipboardContentInsertionData,
 	type ClipboardInputTransformationEvent,
 	type ClipboardInputTransformationData,
 	type ClipboardOutputTransformationEvent,
 	type ClipboardOutputTransformationData,
-	type ViewDocumentClipboardOutputEvent
+	type ViewDocumentClipboardOutputEvent,
+	type ViewDocumentClipboardOutputEventData
 } from './clipboardpipeline.js';
 
 export {
-	default as ClipboardMarkersUtils,
+	ClipboardMarkersUtils,
 	type ClipboardMarkerRestrictedAction,
 	type ClipboardMarkerConfiguration
 } from './clipboardmarkersutils.js';
 
-export { default as plainTextToHtml } from './utils/plaintexttohtml.js';
-export { default as viewToPlainText } from './utils/viewtoplaintext.js';
+export { plainTextToHtml } from './utils/plaintexttohtml.js';
+export { viewToPlainText } from './utils/viewtoplaintext.js';
 
-export { default as DragDrop } from './dragdrop.js';
-export { default as PastePlainText } from './pasteplaintext.js';
-export { default as DragDropTarget } from './dragdroptarget.js';
-export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
+export { DragDrop } from './dragdrop.js';
+export { PastePlainText } from './pasteplaintext.js';
+export { DragDropTarget } from './dragdroptarget.js';
+export { DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
 export {
-	default as ClipboardObserver,
+	ClipboardObserver,
 	type ClipboardEventData,
+	type ClipboardInputEventData,
+	type DraggingEventData,
 	type ViewDocumentClipboardInputEvent,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentPasteEvent,
-	type ViewDocumentCutEvent
+	type ViewDocumentCutEvent,
+	type ViewDocumentDragOverEvent,
+	type ViewDocumentDropEvent,
+	type ViewDocumentDraggingEvent,
+	type ViewDocumentDragStartEvent,
+	type ViewDocumentDragEndEvent,
+	type ViewDocumentDragEnterEvent,
+	type ViewDocumentDragLeaveEvent
 } from './clipboardobserver.js';
+
+export { DragDrop as _DragDrop } from './dragdrop.js';
+export { DragDropBlockToolbar as _DragDropBlockToolbar } from './dragdropblocktoolbar.js';
+export { DragDropTarget as _DragDropTarget } from './dragdroptarget.js';
+export { LineView as _ClipboardLineView } from './lineview.js';
+
+export { normalizeClipboardData as _normalizeClipboardData } from './utils/normalizeclipboarddata.js';
 
 import './augmentation.js';

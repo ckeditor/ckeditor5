@@ -9,16 +9,16 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import HorizontalLineCommand from './horizontallinecommand.js';
+import { HorizontalLineCommand } from './horizontallinecommand.js';
 
 import '../theme/horizontalline.css';
 
 /**
  * The horizontal line editing feature.
  */
-export default class HorizontalLineEditing extends Plugin {
+export class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -76,14 +76,14 @@ export default class HorizontalLineEditing extends Plugin {
 }
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a horizontal line widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+ * Converts a given {@link module:engine/view/element~ViewElement} to a horizontal line widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} allowing to
  *   recognize the horizontal line widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param writer An instance of the view writer.
  */
-function toHorizontalLineWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+function toHorizontalLineWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'horizontalLine', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );

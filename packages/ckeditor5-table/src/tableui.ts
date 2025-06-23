@@ -12,7 +12,7 @@ import { IconTable, IconTableColumn, IconTableRow, IconTableMergeCell } from 'ck
 import {
 	addListToDropdown,
 	createDropdown,
-	ViewModel,
+	UIModel,
 	SplitButtonView,
 	SwitchButtonView,
 	type DropdownView,
@@ -21,10 +21,10 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
 
-import InsertTableView from './ui/inserttableview.js';
+import { InsertTableView } from './ui/inserttableview.js';
 
-import type InsertTableCommand from './commands/inserttablecommand.js';
-import type MergeCellsCommand from './commands/mergecellscommand.js';
+import { type InsertTableCommand } from './commands/inserttablecommand.js';
+import { type MergeCellsCommand } from './commands/mergecellscommand.js';
 
 /**
  * The table UI plugin. It introduces:
@@ -37,7 +37,7 @@ import type MergeCellsCommand from './commands/mergecellscommand.js';
  *
  * The `'tableColumn'`, `'tableRow'` and `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  */
-export default class TableUI extends Plugin {
+export class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -383,7 +383,7 @@ function addListOption(
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
 	if ( option.type === 'button' || option.type === 'switchbutton' ) {
-		const model = option.model = new ViewModel( option.model );
+		const model = option.model = new UIModel( option.model );
 		const { commandName, bindIsOn } = option.model;
 		const command = editor.commands.get( commandName as string )!;
 

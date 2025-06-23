@@ -9,12 +9,12 @@
 
 import type {
 	DowncastConversionApi,
-	Element,
-	Schema,
+	ModelElement,
+	ModelSchema,
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment,
-	Range
+	ModelRange
 } from 'ckeditor5/src/engine.js';
 
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
@@ -57,7 +57,7 @@ export function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean 
 }
 
 /**
- * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~ViewAttributeElement} with the provided `href` attribute.
  */
 export function createLinkElement( href: string, { writer }: DowncastConversionApi ): ViewAttributeElement {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
@@ -151,7 +151,7 @@ export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDe
 /**
  * Returns `true` if the specified `element` can be linked (the element allows the `linkHref` attribute).
  */
-export function isLinkableElement( element: Element | null, schema: Schema ): element is Element {
+export function isLinkableElement( element: ModelElement | null, schema: ModelSchema ): element is ModelElement {
 	if ( !element ) {
 		return false;
 	}
@@ -199,7 +199,7 @@ export function openLink( link: string ): void {
  *
  * If the returned value is `undefined`, the range contains elements other than text nodes.
  */
-export function extractTextFromLinkRange( range: Range ): string | undefined {
+export function extractTextFromLinkRange( range: ModelRange ): string | undefined {
 	let text = '';
 
 	for ( const item of range.getItems() ) {

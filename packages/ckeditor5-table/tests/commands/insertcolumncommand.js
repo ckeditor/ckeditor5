@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableSelection from '../../src/tableselection.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import InsertColumnCommand from '../../src/commands/insertcolumncommand.js';
+import { InsertColumnCommand } from '../../src/commands/insertcolumncommand.js';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -39,59 +39,59 @@ describe( 'InsertColumnCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be true if in table', () => {
-				setData( model, modelTable( [ [ '[]' ] ] ) );
+				_setModelData( model, modelTable( [ [ '[]' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
 		describe( 'execute()', () => {
 			it( 'should insert column in given table to the right of the selection\'s column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11[]', '12' ],
 					[ '21', '22' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11[]', '', '12' ],
 					[ '21', '', '22' ]
 				] ) );
 			} );
 
 			it( 'should insert column in given table to the right of the selection\'s column (selection in block content)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '', '13' ]
 				] ) );
 			} );
 
 			it( 'should insert column at table end', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12' ],
 					[ '21', '22[]' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12', '' ],
 					[ '21', '22[]', '' ]
 				] ) );
 			} );
 
 			it( 'should insert column after a multi column selection', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12', '13' ],
 					[ '21', '22', '23' ]
 				] ) );
@@ -106,7 +106,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '11', '12', '', '13' ],
 					[ '21', '22', '', '23' ]
 				] ) );
@@ -118,7 +118,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should update table heading columns attribute when inserting column in headings section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11[]', '12' ],
 					[ '21', '22' ],
 					[ '31', '32' ]
@@ -126,7 +126,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11[]', '', '12' ],
 					[ '21', '', '22' ],
 					[ '31', '', '32' ]
@@ -134,7 +134,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should not update table heading columns attribute when inserting column after headings section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12[]', '13' ],
 					[ '21', '22', '23' ],
 					[ '31', '32', '33' ]
@@ -142,7 +142,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12[]', '', '13' ],
 					[ '21', '22', '', '23' ],
 					[ '31', '32', '', '33' ]
@@ -150,7 +150,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should skip spanned columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11[]', '12' ],
 					[ { colspan: 2, contents: '21' } ],
 					[ '31', '32' ]
@@ -158,7 +158,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11[]', '', '12' ],
 					[ { colspan: 3, contents: '21' } ],
 					[ '31', '', '32' ]
@@ -174,7 +174,7 @@ describe( 'InsertColumnCommand', () => {
 				// | 20                | 24      |
 				// +----+----+----+----+----+----+
 				//                     ^-- heading columns
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01[]', '02', '03', '04', '05' ],
 					[ '10', '11', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 4 }, { contents: '24', colspan: 2 } ]
@@ -190,7 +190,7 @@ describe( 'InsertColumnCommand', () => {
 				// | 20                     | 24      |
 				// +----+----+----+----+----+----+----+
 				//                          ^-- heading columns
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01[]', '', '02', '03', '04', '05' ],
 					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
@@ -198,7 +198,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should insert a column when a widget in the table cell is selected', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12' ],
 					[ '21', '22' ],
 					[ '31', '[<horizontalLine></horizontalLine>]' ]
@@ -206,7 +206,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '11', '12', '' ],
 					[ '21', '22', '' ],
 					[ '31', '<horizontalLine></horizontalLine>', '' ]
@@ -224,7 +224,7 @@ describe( 'InsertColumnCommand', () => {
 				view: 'foo'
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell></tableCell>' +
@@ -243,59 +243,59 @@ describe( 'InsertColumnCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be true if in table', () => {
-				setData( model, modelTable( [ [ '[]' ] ] ) );
+				_setModelData( model, modelTable( [ [ '[]' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 
 		describe( 'execute()', () => {
 			it( 'should insert column in given table to the left of the selection\'s column', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12[]' ],
 					[ '21', '22' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '', '12[]' ],
 					[ '21', '', '22' ]
 				] ) );
 			} );
 
 			it( 'should insert column in given table to the left of the selection\'s column (selection in block content)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
 			} );
 
 			it( 'should insert columns at the table start', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12' ],
 					[ '[]21', '22' ]
 				] ) );
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '', '11', '12' ],
 					[ '', '[]21', '22' ]
 				] ) );
 			} );
 
 			it( 'should insert column before a multi column selection', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12', '13' ],
 					[ '21', '22', '23' ]
 				] ) );
@@ -310,7 +310,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '', '11', '12', '13' ],
 					[ '', '21', '22', '23' ]
 				] ) );
@@ -322,7 +322,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should update table heading columns attribute when inserting column in headings section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12[]' ],
 					[ '21', '22' ],
 					[ '31', '32' ]
@@ -330,7 +330,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '', '12[]' ],
 					[ '21', '', '22' ],
 					[ '31', '', '32' ]
@@ -338,7 +338,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should not update table heading columns attribute when inserting column after headings section', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12', '13[]' ],
 					[ '21', '22', '23' ],
 					[ '31', '32', '33' ]
@@ -346,7 +346,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12', '', '13[]' ],
 					[ '21', '22', '', '23' ],
 					[ '31', '32', '', '33' ]
@@ -354,7 +354,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should skip spanned columns', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '11', '12[]' ],
 					[ { colspan: 2, contents: '21' } ],
 					[ '31', '32' ]
@@ -362,7 +362,7 @@ describe( 'InsertColumnCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '', '12[]' ],
 					[ { colspan: 3, contents: '21' } ],
 					[ '31', '', '32' ]
@@ -378,7 +378,7 @@ describe( 'InsertColumnCommand', () => {
 				// | 20                | 24      |
 				// +----+----+----+----+----+----+
 				//                     ^-- heading columns
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '[]02', '03', '04', '05' ],
 					[ '10', '11', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 4 }, { contents: '24', colspan: 2 } ]
@@ -394,7 +394,7 @@ describe( 'InsertColumnCommand', () => {
 				// | 20                     | 24      |
 				// +----+----+----+----+----+----+----+
 				//                          ^-- heading columns
-				expect( getData( model ) ).to.equalMarkup( modelTable( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', '01', '', '[]02', '03', '04', '05' ],
 					[ '10', '11', '', { contents: '12', colspan: 2 }, '14', '15' ],
 					[ { contents: '20', colspan: 5 }, { contents: '24', colspan: 2 } ]
@@ -412,7 +412,7 @@ describe( 'InsertColumnCommand', () => {
 				view: 'foo'
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell></tableCell>' +

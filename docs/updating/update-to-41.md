@@ -173,17 +173,17 @@ If you happen to encounter this error, remove all imports of `DocumentList` and 
 		</tr>
 		<tr>
 			<td>-</td>
-			<td>{@link module:list/documentlist~DocumentList `DocumentList`}</td>
+			<td>`DocumentList`</td>
 			<td>Alias for the {@link module:list/list~List `List`} plugin</td>
 		</tr>
 		<tr>
 			<td>-</td>
-			<td>{@link module:list/documentlistproperties~DocumentListProperties `DocumentListProperties`}</td>
+			<td>`DocumentListProperties`</td>
 			<td>Alias for the {@link module:list/listproperties~ListProperties `ListProperties`} plugin</td>
 		</tr>
 		<tr>
 			<td>-</td>
-			<td>{@link module:list/tododocumentlist~TodoDocumentList `TodoDocumentList`}</td>
+			<td>`TodoDocumentList`</td>
 			<td>Alias for the {@link module:list/todolist~TodoList `TodoList`} plugin</td>
 		</tr>
 		<tr>

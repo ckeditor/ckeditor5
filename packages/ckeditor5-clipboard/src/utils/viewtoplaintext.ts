@@ -7,7 +7,7 @@
  * @module clipboard/utils/viewtoplaintext
  */
 
-import type { DomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
+import type { ViewDomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
 
 // Elements which should not have empty-line padding.
 // Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
@@ -17,14 +17,14 @@ const smallPaddingElements = [ 'figcaption', 'li' ];
 const listElements = [ 'ol', 'ul' ];
 
 /**
- * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
+ * Converts {@link module:engine/view/item~ViewItem view item} and all of its children to plain text.
  *
  * @param converter The converter instance.
  * @param viewItem View item to convert.
  * @returns Plain text representation of `viewItem`.
  */
-export default function viewToPlainText(
-	converter: DomConverter,
+export function viewToPlainText(
+	converter: ViewDomConverter,
 	viewItem: ViewItem | ViewDocumentFragment
 ): string {
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
@@ -102,7 +102,7 @@ function newLinePadding(
 
 	if ( listElements.includes( element.name ) && listElements.includes( previous.name ) ) {
 		/**
-		 * Because `<ul>` and `<ol>` are AttributeElements, two consecutive lists will not have any padding between
+		 * Because `<ul>` and `<ol>` are ViewAttributeElements, two consecutive lists will not have any padding between
 		 * them (see the `if` statement below). To fix this, we need to make an exception for this case.
 		 */
 		return '\n\n';

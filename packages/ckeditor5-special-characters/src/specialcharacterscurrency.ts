@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type SpecialCharacters from './specialcharacters.js';
+import { type SpecialCharacters } from './specialcharacters.js';
 
 /**
  * A plugin that provides special characters for the "Currency" category.
@@ -22,7 +22,7 @@ import type SpecialCharacters from './specialcharacters.js';
  *   .catch( ... );
  * ```
  */
-export default class SpecialCharactersCurrency extends Plugin {
+export class SpecialCharactersCurrency extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

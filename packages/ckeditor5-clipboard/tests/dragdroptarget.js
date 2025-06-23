@@ -3,23 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DragDrop from '../src/dragdrop.js';
-import DragDropTarget from '../src/dragdroptarget.js';
-import PastePlainText from '../src/pasteplaintext.js';
+import { DragDrop } from '../src/dragdrop.js';
+import { DragDropTarget } from '../src/dragdroptarget.js';
+import { PastePlainText } from '../src/pasteplaintext.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 
-import { LiveRange } from '@ckeditor/ckeditor5-engine';
+import { ModelLiveRange } from '@ckeditor/ckeditor5-engine';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { CustomTitle } from './utils/customtitleplugin.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
@@ -74,7 +75,7 @@ describe( 'Drag and Drop target', () => {
 
 	describe( 'getFinalDropRange', () => {
 		it( 'should return drop position after paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foobar</paragraph>' +
 				'[<horizontalLine></horizontalLine>]'
 			);
@@ -98,7 +99,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position before paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foobar</paragraph>' +
 				'[<horizontalLine></horizontalLine>]'
 			);
@@ -122,7 +123,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position after widget in none block mode', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>' +
 				'<blockQuote><horizontalLine></horizontalLine></blockQuote>' +
 				'<paragraph>bar</paragraph>'
@@ -151,7 +152,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position without target ranges', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>' +
 				'<blockQuote><horizontalLine></horizontalLine></blockQuote>' +
 				'<paragraph>bar</paragraph>'
@@ -180,7 +181,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position before paragraph in none block mode', () => {
-			setModelData( model, '<paragraph>[]foobar</paragraph>' );
+			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 
@@ -204,7 +205,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position in inline mode before text', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><softBreak></softBreak><$text bold="true">foobar</$text></paragraph>'
 			);
 
@@ -228,7 +229,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position in inline mode after text', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><softBreak></softBreak><$text bold="true">foobar</$text></paragraph>'
 			);
 
@@ -252,7 +253,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position inside block before paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foobar</paragraph>' +
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 			);
@@ -280,7 +281,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position inside block after paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foobar</paragraph>' +
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 			);
@@ -308,7 +309,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should through a warn in case when something went wrong', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foobar</paragraph>' +
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 			);
@@ -335,7 +336,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should return drop position for $text element when hovering widget', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo<$text bold="true">bar</$text>baz</paragraph>' +
 				'<horizontalLine></horizontalLine>'
 			);
@@ -361,7 +362,7 @@ describe( 'Drag and Drop target', () => {
 
 	describe( 'updateDropMarker', () => {
 		it( 'should find drop position while hovering over empty nested editable', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foobar</paragraph>' +
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 			);
@@ -386,7 +387,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should find drop position before block element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foobar</paragraph><horizontalLine></horizontalLine>'
 			);
 
@@ -410,7 +411,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should find drop position after block element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<horizontalLine></horizontalLine>'
 			);
 
@@ -437,7 +438,7 @@ describe( 'Drag and Drop target', () => {
 			model.schema.register( 'htmlDiv', { inheritAllFrom: '$container' } );
 			editor.conversion.elementToElement( { model: 'htmlDiv', view: 'div' } );
 
-			setModelData( model,
+			_setModelData( model,
 				'<htmlDiv></htmlDiv>'
 			);
 
@@ -461,7 +462,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should hide drop target if target is not in editing root', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<horizontalLine></horizontalLine>'
 			);
 
@@ -488,7 +489,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should put drop target marker inside a text node', () => {
-			setModelData( model, '<paragraph>[]foobar</paragraph>' );
+			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 			const viewPosition = mapper.toViewPosition( modelPosition );
@@ -527,7 +528,7 @@ describe( 'Drag and Drop target', () => {
 					}
 				} );
 
-			setModelData( model, '<paragraph>[<inlineWidget><widgetTitle>abc</widgetTitle></inlineWidget>]foobar</paragraph>' );
+			_setModelData( model, '<paragraph>[<inlineWidget><widgetTitle>abc</widgetTitle></inlineWidget>]foobar</paragraph>' );
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 4 );
 			const viewPosition = mapper.toViewPosition( modelPosition );
@@ -541,7 +542,7 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.document.selection.getFirstRange() )
+				ModelLiveRange.fromRange( model.document.selection.getFirstRange() )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -550,7 +551,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should not remove drop target marker if dragging left some nested element', () => {
-			setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
 			const spy = sinon.spy();
 			const clock = sinon.useFakeTimers();
@@ -606,7 +607,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should hide drop target if range is collapsed', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>' +
 				'<paragraph>bar</paragraph>'
 			);
@@ -626,7 +627,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should reconvert drop target on scroll event', done => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]foo</paragraph>' +
 				'<paragraph>bar</paragraph>'
 			);
@@ -660,7 +661,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should not drop target marker inside the element being dragged', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<blockQuote>' +
 					'<paragraph>one</paragraph>' +
 					'<paragraph>two</paragraph>' +
@@ -680,14 +681,14 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
+				ModelLiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
 		} );
 
 		it( 'should find place to drop target marker when dropping is not allowed on a given element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'[<imageInline src="/assets/sample.png"></imageInline>]' +
 				'</paragraph>' +
@@ -708,7 +709,7 @@ describe( 'Drag and Drop target', () => {
 				x,
 				y + ( height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -717,7 +718,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should drop position when mouse is over the bottom half of the block element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foobar</paragraph>' +
 				'<horizontalLine></horizontalLine>'
 			);
@@ -734,7 +735,7 @@ describe( 'Drag and Drop target', () => {
 				x,
 				y + ( height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( paragraphElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( paragraphElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -743,7 +744,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should show drop target if the dragged element cannot be dropped on a given position, but is a block element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' +
 				'<imageBlock alt="bar" src="/assets/sample.png">' +
 					'<caption>Caption</caption>' +
@@ -764,7 +765,7 @@ describe( 'Drag and Drop target', () => {
 				blockImageDomRect.x,
 				blockImageDomRect.y + ( blockImageDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( tableElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( tableElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -784,7 +785,7 @@ describe( 'Drag and Drop target', () => {
 				captionDomRect.x,
 				captionDomRect.y,
 				false,
-				LiveRange.fromRange( model.createRangeOn( tableElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( tableElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -794,7 +795,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should find drop position when hovering over object element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[foo]</paragraph>' +
 				'<imageBlock alt="bar" src="/assets/sample.png">' +
 					'<caption>Caption</caption>' +
@@ -815,14 +816,14 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.createRangeOn( modelElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( modelElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ) ).to.not.be.undefined;
 		} );
 
 		it( 'should find the drop target if element cannot be dropped on a given position', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'<imageInline alt="foo" src="/assets/sample.png"></imageInline>' +
 				'</paragraph>' +
@@ -845,7 +846,7 @@ describe( 'Drag and Drop target', () => {
 				blockImageDomRect.x,
 				blockImageDomRect.y + ( blockImageDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -865,7 +866,7 @@ describe( 'Drag and Drop target', () => {
 				captionDomRect.x,
 				captionDomRect.y + ( captionDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			// Marker should be placed after the `<imageBlock>`, because `<imageInline>` can't be dropped inside the `<caption>`.
@@ -877,7 +878,7 @@ describe( 'Drag and Drop target', () => {
 
 	describe( 'removeDropMarker', () => {
 		it( 'should remove drop target with delay', () => {
-			setModelData( model, '<paragraph>[]foobar</paragraph>' );
+			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 			const clock = sinon.useFakeTimers();
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );
@@ -906,7 +907,7 @@ describe( 'Drag and Drop target', () => {
 		} );
 
 		it( 'should remove drop target marker ', () => {
-			setModelData( model, '<paragraph>[]foobar</paragraph>' );
+			_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 			const modelPosition = model.createPositionAt( root.getChild( 0 ), 2 );
 			const viewPosition = mapper.toViewPosition( modelPosition );

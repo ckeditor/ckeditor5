@@ -16,19 +16,19 @@ import {
 	MenuBarMenuListView,
 	MenuBarMenuListItemView,
 	MenuBarMenuListItemButtonView,
-	ViewModel,
+	UIModel,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { Collection, type LanguageDirection } from 'ckeditor5/src/utils.js';
 import { stringifyLanguageAttribute } from './utils.js';
-import type TextPartLanguageCommand from './textpartlanguagecommand.js';
+import { type TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 /**
  * The text part language UI plugin.
  *
  * It introduces the `'language'` dropdown.
  */
-export default class TextPartLanguageUI extends Plugin {
+export class TextPartLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -176,7 +176,7 @@ export default class TextPartLanguageUI extends Plugin {
 		// Item definition with false `languageCode` will behave as remove lang button.
 		itemDefinitions.add( {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				label: removeTitle,
 				languageCode: false,
 				withText: true
@@ -190,7 +190,7 @@ export default class TextPartLanguageUI extends Plugin {
 		for ( const option of options ) {
 			const def = {
 				type: 'button' as const,
-				model: new ViewModel( {
+				model: new UIModel( {
 					label: option.title,
 					languageCode: option.languageCode,
 					role: 'menuitemradio',

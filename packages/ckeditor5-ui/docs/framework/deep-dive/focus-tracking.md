@@ -50,7 +50,7 @@ Each root of the editing view has the `contenteditable` attribute. The editing v
 
 ### Checking if the view document is focused
 
-You can check if the view document is focused using its {@link framework/deep-dive/observables observable} {@link module:engine/view/document~Document#isFocused} property. Create an editor instance and execute the following code:
+You can check if the view document is focused using its {@link framework/deep-dive/observables observable} {@link module:engine/view/document~ViewDocument#isFocused} property. Create an editor instance and execute the following code:
 
 ```js
 console.log( editor.editing.view.document.isFocused );
@@ -74,7 +74,7 @@ To spice things up even more, you should also know `isFocused` will change when 
 
 The simplest way to focus the editor is to call the {@link module:core/editor/editor~Editor#focus `editor.focus()`} method.
 
-However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
+However, you may wish to explicitly focus the editable area of CKEditor&nbsp;5 when a certain action is executed (for example, a button is clicked). To do that, use the {@link module:engine/view/view~EditingView#focus `focus()`} method of the editing view:
 
 ```js
 editor.editing.view.focus();
@@ -83,7 +83,7 @@ editor.editing.view.focus();
 This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the first editable. If an editor has many editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
-	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
+	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~ModelWriter#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
 </info-box>
 
 ## Focus in the editor UI

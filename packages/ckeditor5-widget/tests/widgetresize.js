@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import WidgetResize from '../src/widgetresize.js';
+import { WidgetResize } from '../src/widgetresize.js';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 import { toWidget } from '../src/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils.js';
 
@@ -23,7 +23,7 @@ describe( 'WidgetResize', () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement );
 
-		setModelData( editor.model, '[<widget></widget>]' );
+		_setModelData( editor.model, '[<widget></widget>]' );
 
 		await focusEditor( editor );
 
@@ -622,14 +622,14 @@ describe( 'WidgetResize', () => {
 		} );
 
 		it( 'works without WidgetToolbarRepository plugin', async () => {
-			setModelData( localEditor.model, '[<widget></widget>]' );
+			_setModelData( localEditor.model, '[<widget></widget>]' );
 
 			localEditor.plugins.get( WidgetResize ).attachTo( gerResizerOptions( localEditor ) );
 			// Nothing should be thrown.
 		} );
 
 		it( 'sets the selected resizer if associated widget is already selected', async () => {
-			setModelData( localEditor.model, '[<widget></widget>]' );
+			_setModelData( localEditor.model, '[<widget></widget>]' );
 
 			const widgetResizePlugin = localEditor.plugins.get( WidgetResize );
 			const resizer = widgetResizePlugin.attachTo( gerResizerOptions( localEditor ) );
@@ -665,9 +665,9 @@ describe( 'WidgetResize', () => {
 					}
 				} );
 
-			setModelData( localEditor.model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
+			_setModelData( localEditor.model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
 
-			expect( getViewData( localEditor.editing.view ) ).to.equal(
+			expect( _getViewData( localEditor.editing.view ) ).to.equal(
 				'<p>' +
 					'foo ' +
 					'<attr>[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]</attr>' +

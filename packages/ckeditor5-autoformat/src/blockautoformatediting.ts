@@ -6,15 +6,15 @@
 import type { Command, Editor } from 'ckeditor5/src/core.js';
 
 import {
-	LiveRange,
-	type DocumentChangeEvent,
-	type Item,
-	type Text
+	ModelLiveRange,
+	type ModelDocumentChangeEvent,
+	type ModelItem,
+	type ModelText
 } from 'ckeditor5/src/engine.js';
 
 import { first } from 'ckeditor5/src/utils.js';
 
-import type Autoformat from './autoformat.js';
+import { type Autoformat } from './autoformat.js';
 
 import type { Delete } from 'ckeditor5/src/typing.js';
 
@@ -34,7 +34,7 @@ import type { Delete } from 'ckeditor5/src/typing.js';
  */
 
 /**
- * Creates a listener triggered on {@link module:engine/model/document~Document#event:change:data `change:data`} event in the document.
+ * Creates a listener triggered on {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event in the document.
  * Calls the callback when inserted text matches the regular expression or the command name
  * if provided instead of the callback.
  *
@@ -67,7 +67,7 @@ import type { Delete } from 'ckeditor5/src/typing.js';
  * In case of providing the callback, it receives the following parameter:
  * * match RegExp.exec() result of matching the pattern to inserted text.
  */
-export default function blockAutoformatEditing(
+export function blockAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	pattern: RegExp,
@@ -87,7 +87,7 @@ export default function blockAutoformatEditing(
 		};
 	}
 
-	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<ModelDocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( command && !command.isEnabled || !plugin.isEnabled ) {
 			return;
 		}
@@ -131,7 +131,7 @@ export default function blockAutoformatEditing(
 			return;
 		}
 
-		const firstNode = blockToFormat.getChild( 0 ) as Text;
+		const firstNode = blockToFormat.getChild( 0 ) as ModelText;
 
 		const firstNodeRange = editor.model.createRangeOn( firstNode );
 
@@ -152,7 +152,7 @@ export default function blockAutoformatEditing(
 			// Matched range.
 			const start = writer.createPositionAt( blockToFormat, 0 );
 			const end = writer.createPositionAt( blockToFormat, match[ 0 ].length );
-			const range = new LiveRange( start, end );
+			const range = new ModelLiveRange( start, end );
 
 			const wasChanged = callback( { match } );
 
@@ -166,7 +166,7 @@ export default function blockAutoformatEditing(
 				// If the block is empty and the document selection has been moved when
 				// applying formatting (e.g. is now in newly created block).
 				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
-					writer.remove( blockToFormat as Item );
+					writer.remove( blockToFormat as ModelItem );
 				}
 			}
 			range.detach();

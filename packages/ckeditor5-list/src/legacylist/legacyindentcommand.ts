@@ -7,14 +7,14 @@
  * @module list/legacylist/legacyindentcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
  * The list indent command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
  */
-export default class LegacyIndentCommand extends Command {
+export class LegacyIndentCommand extends Command {
 	/**
 	 * Determines by how much the command will change the list item's indent attribute.
 	 */
@@ -53,7 +53,7 @@ export default class LegacyIndentCommand extends Command {
 			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			let next = lastItem.nextSibling as Element | null;
+			let next = lastItem.nextSibling as ModelElement | null;
 
 			// Check all items after last indented item, as long as their indent is bigger than indent of that item.
 			while (
@@ -62,7 +62,7 @@ export default class LegacyIndentCommand extends Command {
 			) {
 				itemsToChange.push( next );
 
-				next = next.nextSibling as Element | null;
+				next = next.nextSibling as ModelElement | null;
 			}
 
 			// We need to be sure to keep model in correct state after each small change, because converters

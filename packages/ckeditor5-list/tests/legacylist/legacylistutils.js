@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyListUtils from '../../src/legacylist/legacylistutils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { LegacyListUtils } from '../../src/legacylist/legacylistutils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 describe( 'LegacyListUtils', () => {
 	let editor, plugin;

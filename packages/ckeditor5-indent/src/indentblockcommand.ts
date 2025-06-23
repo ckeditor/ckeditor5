@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { ListUtils } from '@ckeditor/ckeditor5-list';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -32,7 +32,7 @@ import type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
  * editor.execute( 'outdentBlock' );
  * ```
  */
-export default class IndentBlockCommand extends Command {
+export class IndentBlockCommand extends Command {
 	/**
 	 * The command's indentation behavior.
 	 */
@@ -91,7 +91,7 @@ export default class IndentBlockCommand extends Command {
 	/**
 	 * Returns blocks from selection that should have blockIndent selection set.
 	 */
-	private _getBlocksToChange(): Array<Element> {
+	private _getBlocksToChange(): Array<ModelElement> {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const blocksInSelection = Array.from( selection.getSelectedBlocks() );
@@ -105,7 +105,7 @@ export default class IndentBlockCommand extends Command {
 	 * - for blocks in Document Lists (disallowed forward indentation only). See https://github.com/ckeditor/ckeditor5/issues/14155.
 	 * Otherwise returns true.
 	 */
-	private _isIndentationChangeAllowed( element: Element ): boolean {
+	private _isIndentationChangeAllowed( element: ModelElement ): boolean {
 		const editor = this.editor;
 
 		if ( !editor.model.schema.checkAttribute( element, 'blockIndent' ) ) {
@@ -121,8 +121,8 @@ export default class IndentBlockCommand extends Command {
 			return true;
 		}
 
-		const documentListUtils: ListUtils = editor.plugins.get( 'ListUtils' );
+		const listUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 
-		return !documentListUtils.isListItemBlock( element );
+		return !listUtils.isListItemBlock( element );
 	}
 }

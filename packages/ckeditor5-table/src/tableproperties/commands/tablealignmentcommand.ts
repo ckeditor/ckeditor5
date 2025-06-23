@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import TablePropertyCommand from './tablepropertycommand.js';
+import { TablePropertyCommand } from './tablepropertycommand.js';
 
 /**
  * The table alignment command.
@@ -24,7 +24,7 @@ import TablePropertyCommand from './tablepropertycommand.js';
  * } );
  * ```
  */
-export default class TableAlignmentCommand extends TablePropertyCommand {
+export class TableAlignmentCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableAlignmentCommand` instance.
 	 *

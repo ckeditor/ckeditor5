@@ -4,32 +4,32 @@
  */
 
 import { IconBookmarkMedium, IconBookmarkSmall, IconLink } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
-import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { indexOf } from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
+import { isRange } from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ClickObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 
-import LinkEditing from '../src/linkediting.js';
-import LinkUI from '../src/linkui.js';
-import LinkFormView from '../src/ui/linkformview.js';
-import LinkPreviewButtonView from '../src/ui/linkpreviewbuttonview.js';
-import LinkPropertiesView from '../src/ui/linkpropertiesview.js';
-import ManualDecorator from '../src/utils/manualdecorator.js';
+import { LinkEditing } from '../src/linkediting.js';
+import { LinkUI } from '../src/linkui.js';
+import { LinkFormView } from '../src/ui/linkformview.js';
+import { LinkPreviewButtonView } from '../src/ui/linkpreviewbuttonview.js';
+import { LinkPropertiesView } from '../src/ui/linkpropertiesview.js';
+import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LinkUI', () => {
@@ -168,7 +168,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should open on-top of the toolbar if the link is selected', () => {
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkButton.fire( 'execute' );
 
@@ -348,7 +348,7 @@ describe( 'LinkUI', () => {
 
 			beforeEach( () => {
 				button = editor.ui.componentFactory.create( 'linkProperties' );
-				editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+				editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 					id: 'linkIsBar',
 					label: 'Bar',
 					attributes: {
@@ -426,7 +426,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should create #toolbarView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 
@@ -434,7 +434,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should create #formView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 
@@ -442,7 +442,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should not throw if the UI is already visible', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 
@@ -452,7 +452,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
@@ -472,7 +472,7 @@ describe( 'LinkUI', () => {
 
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
 			// (#7926)
-			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
 			toolbarView = linkUIFeature.toolbarView;
@@ -492,7 +492,7 @@ describe( 'LinkUI', () => {
 		it( 'should add #toolbarView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
-			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			linkUIFeature._showUI();
@@ -510,7 +510,7 @@ describe( 'LinkUI', () => {
 
 		// #https://github.com/ckeditor/ckeditor5-link/issues/181
 		it( 'should add #formView to the balloon when collapsed selection is inside the link and #toolbarView is already visible', () => {
-			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			linkUIFeature._showUI();
@@ -535,7 +535,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should disable #formView and #toolbarView elements when link and unlink commands are disabled', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 			formView = linkUIFeature.formView;
@@ -574,7 +574,7 @@ describe( 'LinkUI', () => {
 			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			// Open the link balloon.
 			linkUIFeature._showUI();
@@ -609,7 +609,7 @@ describe( 'LinkUI', () => {
 			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 			linkUIFeature._showUI();
 			expect( formView.urlInputView.fieldView.element.value ).to.equal( '' );
@@ -621,7 +621,7 @@ describe( 'LinkUI', () => {
 			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			balloon.add( {
 				view: new View(),
@@ -640,7 +640,7 @@ describe( 'LinkUI', () => {
 			toolbarView = linkUIFeature.toolbarView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>fo<$text linkHref="foo">o[] b</$text>ar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>fo<$text linkHref="foo">o[] b</$text>ar</paragraph>' );
 			linkUIFeature._showUI();
 
 			const customView = new View();
@@ -683,7 +683,7 @@ describe( 'LinkUI', () => {
 				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
 				linkUIFeature._showUI();
 
@@ -698,7 +698,7 @@ describe( 'LinkUI', () => {
 				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 				linkUIFeature._showUI();
 
 				formView.fire( 'submit' );
@@ -712,7 +712,7 @@ describe( 'LinkUI', () => {
 				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
 				linkUIFeature._showUI();
 
@@ -731,7 +731,7 @@ describe( 'LinkUI', () => {
 				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 				linkUIFeature._showUI();
 
 				formView.fire( 'submit' );
@@ -752,7 +752,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should not duplicate #update listeners', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
@@ -767,12 +767,12 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – editing a link, then the selection remains in the link', () => {
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
-				expect( getViewData( view ) ).to.equal(
+				expect( _getViewData( view ) ).to.equal(
 					'<p><a class="ck-link_selected" href="url">f{}oo</a></p>'
 				);
 
@@ -792,7 +792,7 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – creating a new link, then the selection moved', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
@@ -820,7 +820,7 @@ describe( 'LinkUI', () => {
 				toolbarView = linkUIFeature.toolbarView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkUIFeature._showUI();
 
@@ -846,7 +846,7 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides of the panel – editing a link, then the selection moved out of the link', () => {
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
 				linkUIFeature._showUI();
 
@@ -867,14 +867,14 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides the panel – editing a link, then the selection expands', () => {
-				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkUIFeature._showUI();
 
 				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
-				expect( getViewData( view ) ).to.equal( '<p><a class="ck-link_selected" href="url">f{}oo</a></p>' );
+				expect( _getViewData( view ) ).to.equal( '<p><a class="ck-link_selected" href="url">f{}oo</a></p>' );
 
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
@@ -893,7 +893,7 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides the panel – creating a new link, then the selection moved to another parent', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 
 				linkUIFeature._showUI();
 
@@ -919,7 +919,7 @@ describe( 'LinkUI', () => {
 		describe( 'fake visual selection', () => {
 			describe( 'non-collapsed', () => {
 				it( 'should be displayed when a text fragment is selected', () => {
-					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 					linkUIFeature._showUI();
 
@@ -934,13 +934,13 @@ describe( 'LinkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
+					expect( _getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
 					expect( editor.getData() ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the empty block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
 
 					linkUIFeature._showUI();
 
@@ -956,7 +956,7 @@ describe( 'LinkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>[</p>' +
 						'<p><span class="ck-fake-link-selection">foo</span>]</p>'
 					);
@@ -965,7 +965,7 @@ describe( 'LinkUI', () => {
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the first block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 
 					linkUIFeature._showUI();
 
@@ -981,7 +981,7 @@ describe( 'LinkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>foo{</p>' +
 						'<p><span class="ck-fake-link-selection">bar</span>]</p>'
 					);
@@ -989,7 +989,7 @@ describe( 'LinkUI', () => {
 				} );
 
 				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -1020,7 +1020,7 @@ describe( 'LinkUI', () => {
 						'<p></p>' +
 						'<p>}baz</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal(
 						'<p>foo</p>' +
 						'<p>&nbsp;</p><p>&nbsp;</p>' +
@@ -1033,7 +1033,7 @@ describe( 'LinkUI', () => {
 
 			describe( 'collapsed', () => {
 				it( 'should be displayed on a collapsed selection', () => {
-					setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
 
 					linkUIFeature._showUI();
 
@@ -1048,7 +1048,7 @@ describe( 'LinkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
 					);
 					expect( editor.getData() ).to.equal( '<p>fo</p>' );
@@ -1056,7 +1056,7 @@ describe( 'LinkUI', () => {
 
 				it( 'should be displayed on selection focus when selection contains only one empty element ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]bar</paragraph>' );
 
@@ -1077,13 +1077,13 @@ describe( 'LinkUI', () => {
 						'<p></p>' +
 						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]bar</paragraph>' );
@@ -1106,13 +1106,13 @@ describe( 'LinkUI', () => {
 						'<p></p>' +
 						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is inside an empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]</paragraph>' +
 						'<paragraph>bar</paragraph>' );
@@ -1135,7 +1135,7 @@ describe( 'LinkUI', () => {
 						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span></p>' +
 						'<p>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );
@@ -1166,7 +1166,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should create #toolbarView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addToolbarView();
 
@@ -1176,7 +1176,7 @@ describe( 'LinkUI', () => {
 		it( 'should add #toolbarView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
 			'that link',
 		() => {
-			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			linkUIFeature._addToolbarView();
 			toolbarView = linkUIFeature.toolbarView;
@@ -1191,7 +1191,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should create #formView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addFormView();
 
@@ -1199,7 +1199,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addFormView();
 			formView = linkUIFeature.formView;
@@ -1208,7 +1208,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should implement the CSS transition disabling feature', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addFormView();
 
@@ -1219,7 +1219,7 @@ describe( 'LinkUI', () => {
 	describe( '_addPropertiesView()', () => {
 		beforeEach( () => {
 			editor.editing.view.document.isFocused = true;
-			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+			editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 				id: 'linkIsBar',
 				label: 'Bar',
 				attributes: {
@@ -1229,7 +1229,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should create #propertiesView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 
@@ -1237,7 +1237,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should add #propertiesView to the balloon and attach the balloon', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addPropertiesView();
 			propertiesView = linkUIFeature.propertiesView;
@@ -1246,7 +1246,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should not add #propertiesView to the balloon again when it is already added', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._addPropertiesView();
 			propertiesView = linkUIFeature.propertiesView;
@@ -1326,7 +1326,7 @@ describe( 'LinkUI', () => {
 		it( 'should not throw if selection includes soft break before text item', () => {
 			linkUIFeature._hideUI();
 
-			setModelData( editor.model, '<paragraph>[<softBreak></softBreak>fo]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<softBreak></softBreak>fo]</paragraph>' );
 
 			linkUIFeature._showUI();
 
@@ -1430,7 +1430,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'should make stack with link visible on Ctrl+K keystroke - link', () => {
-			setModelData( editor.model, '<paragraph><$text linkHref="foo.html">f[]oo</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text linkHref="foo.html">f[]oo</$text></paragraph>' );
 
 			const customView = new View();
 
@@ -1535,7 +1535,7 @@ describe( 'LinkUI', () => {
 			it( 'should focus the link toolbar on Alt+F10', () => {
 				linkUIFeature._createViews();
 
-				setModelData( editor.model, '<paragraph><$text linkHref="foo">b[]ar</$text></paragraph>' );
+				_setModelData( editor.model, '<paragraph><$text linkHref="foo">b[]ar</$text></paragraph>' );
 				editor.ui.focusTracker.isFocused = true;
 
 				const focusSpy = sinon.spy( linkUIFeature.toolbarView, 'focus' );
@@ -1661,21 +1661,21 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should show the UI when collapsed selection is inside link element', () => {
-				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
+				_setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should show the UI when selection exclusively encloses a link element (#1)', () => {
-				setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
+				_setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should show the UI when selection exclusively encloses a link element (#2)', () => {
-				setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
+				_setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
@@ -1700,49 +1700,49 @@ describe( 'LinkUI', () => {
 						)
 					} );
 
-				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
 			it( 'should do nothing when selection is not inside link element', () => {
-				setModelData( editor.model, '[]' );
+				_setModelData( editor.model, '[]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#1)', () => {
-				setModelData( editor.model, '<$text linkHref="url">f[o]o</$text>' );
+				_setModelData( editor.model, '<$text linkHref="url">f[o]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#2)', () => {
-				setModelData( editor.model, '<$text linkHref="url">[fo]o</$text>' );
+				_setModelData( editor.model, '<$text linkHref="url">[fo]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#3)', () => {
-				setModelData( editor.model, '<$text linkHref="url">f[oo]</$text>' );
+				_setModelData( editor.model, '<$text linkHref="url">f[oo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#4)', () => {
-				setModelData( editor.model, 'ba[r<$text linkHref="url">foo]</$text>' );
+				_setModelData( editor.model, 'ba[r<$text linkHref="url">foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should do nothing when selection is non-collapsed and doesn\'t enclose a link element (#5)', () => {
-				setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
+				_setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
@@ -1769,7 +1769,7 @@ describe( 'LinkUI', () => {
 					}
 				} );
 
-				setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
+				_setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
 
 				observer.fire( 'click', { target: document.body } );
 				sinon.assert.calledWithExactly( spy );
@@ -2064,12 +2064,12 @@ describe( 'LinkUI', () => {
 			it( 'should propagate the protocol to the link\'s `linkHref` attribute in model', async () => {
 				const { editor, formView } = await createEditorWithLinkConfig( { defaultProtocol: 'http://' } );
 
-				setModelData( editor.model, '[ckeditor.com]' );
+				_setModelData( editor.model, '[ckeditor.com]' );
 
 				formView.urlInputView.fieldView.value = 'ckeditor.com';
 				formView.fire( 'submit' );
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'[<$text linkHref="http://ckeditor.com">ckeditor.com</$text>]'
 				);
 
@@ -2080,12 +2080,12 @@ describe( 'LinkUI', () => {
 				'protocol automatically to the provided value', async () => {
 				const { editor, formView } = await createEditorWithLinkConfig( { defaultProtocol: 'http://' } );
 
-				setModelData( editor.model, '[email@example.com]' );
+				_setModelData( editor.model, '[email@example.com]' );
 
 				formView.urlInputView.fieldView.value = 'email@example.com';
 				formView.fire( 'submit' );
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'[<$text linkHref="mailto:email@example.com">email@example.com</$text>]'
 				);
 
@@ -2094,12 +2094,12 @@ describe( 'LinkUI', () => {
 
 			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value ' +
 				'even when defaultProtocol is undefined', () => {
-				setModelData( editor.model, '<paragraph>[email@example.com]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[email@example.com]</paragraph>' );
 
 				formView.urlInputView.fieldView.value = 'email@example.com';
 				formView.fire( 'submit' );
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
 				);
 			} );
@@ -2120,11 +2120,11 @@ describe( 'LinkUI', () => {
 
 		describe( 'binding', () => {
 			beforeEach( () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 			} );
 
 			it( 'should populate form on open on collapsed selection in text', () => {
-				setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2150,13 +2150,13 @@ describe( 'LinkUI', () => {
 					'CKEditor 5'
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">CKEditor 5</$text>[]o</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on collapsed selection in text (without providing displayed text)', () => {
-				setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2181,13 +2181,13 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">http://ckeditor.com</$text>[]o</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on non-collapsed selection in text', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2213,13 +2213,13 @@ describe( 'LinkUI', () => {
 					'CKEditor 5'
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>f[<$text linkHref="http://ckeditor.com">CKEditor 5</$text>]o</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on non-collapsed selection in text (without providing displayed text)', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2244,13 +2244,13 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>f[<$text linkHref="http://ckeditor.com">o</$text>]o</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on collapsed selection in link', () => {
-				setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2277,13 +2277,13 @@ describe( 'LinkUI', () => {
 					'CKEditor 5'
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">CKEditor 5</$text>[]ar</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on collapsed selection in link (without providing displayed text)', () => {
-				setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2309,13 +2309,13 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">o[]b</$text>ar</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on non-collapsed selection in link', () => {
-				setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">[ob]</$text>ar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">[ob]</$text>ar</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2342,13 +2342,13 @@ describe( 'LinkUI', () => {
 					'CKEditor 5'
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo[<$text linkHref="http://ckeditor.com">CKEditor 5</$text>]ar</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on non-collapsed selection in link (without providing displayed text)', () => {
-				setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">[ob]</$text>ar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">[ob]</$text>ar</paragraph>' );
 
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
@@ -2374,13 +2374,13 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo[<$text linkHref="http://ckeditor.com">ob</$text>]ar</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on collapsed selection in link with text matching href', () => {
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>fo<$text linkHref="http://cksource.com">http://ck[]source.com</$text>ar</paragraph>'
 				);
 
@@ -2408,13 +2408,13 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo<$text linkHref="http://ckeditor.com">http://ckeditor.com</$text>[]ar</paragraph>'
 				);
 			} );
 
 			it( 'should populate form on open on collapsed selection in link with text matching href but styled', () => {
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>' +
 						'fo' +
 						'<$text linkHref="http://cksource.com">htt[]p://</$text>' +
@@ -2447,7 +2447,7 @@ describe( 'LinkUI', () => {
 					undefined
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>fo' +
 						'<$text linkHref="http://ckeditor.com">http://</$text>' +
 						'<$text bold="true" linkHref="http://ckeditor.com">ckeditor.com</$text>' +
@@ -2458,7 +2458,7 @@ describe( 'LinkUI', () => {
 
 			it( 'should populate form on open on collapsed selection in link with text matching href but styled ' +
 				'and update text', () => {
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>' +
 						'fo' +
 						'<$text linkHref="http://cksource.com">htt[]p://</$text>' +
@@ -2491,7 +2491,7 @@ describe( 'LinkUI', () => {
 					'CKSource'
 				) ).to.be.true;
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>' +
 						'fo<$text linkHref="http://cksource.com">CKS</$text>' +
 						'<$text bold="true" linkHref="http://cksource.com">ource</$text>' +
@@ -2501,7 +2501,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should disable displayed text field on multi block select', () => {
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>f[oo</paragraph>' +
 					'<paragraph>ba]r</paragraph>'
 				);
@@ -2681,7 +2681,7 @@ describe( 'LinkUI', () => {
 				it( 'should gather information about manual decorators', () => {
 					const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
+					_setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 
 					linkUIFeature._showUI( true ); // ToolbarView
 					linkUIFeature._showUI( true ); // FormView
@@ -2712,7 +2712,7 @@ describe( 'LinkUI', () => {
 				} );
 
 				it( 'should keep switch state when form is closed', () => {
-					setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
+					_setModelData( model, 'f[<$text linkHref="url" linkIsFoo="true">ooba</$text>]r' );
 
 					linkUIFeature._createPropertiesView();
 
@@ -2752,7 +2752,7 @@ describe( 'LinkUI', () => {
 				} );
 
 				it( 'reacts on switch button changes', () => {
-					setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
+					_setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 
 					const linkCommand = editor.commands.get( 'link' );
 					const modelItem = linkCommand.manualDecorators.first;
@@ -2774,7 +2774,7 @@ describe( 'LinkUI', () => {
 
 				describe( '_getDecoratorSwitchesState()', () => {
 					it( 'should provide object with decorators states', () => {
-						setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
+						_setModelData( model, 'f[<$text linkHref="url" linkDecorator1="true">ooba</$text>]r' );
 
 						expect( linkUIFeature._getDecoratorSwitchesState() ).to.deep.equal( {
 							linkDecorator1: true,
@@ -2864,7 +2864,7 @@ describe( 'LinkUI', () => {
 
 	describe( 'properties view', () => {
 		beforeEach( () => {
-			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+			editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 				id: 'linkIsBar',
 				label: 'Bar',
 				attributes: {
@@ -2876,7 +2876,7 @@ describe( 'LinkUI', () => {
 		it( 'can be closed by clicking the back button', () => {
 			const spy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 			linkUIFeature._addPropertiesView();
@@ -2893,7 +2893,7 @@ describe( 'LinkUI', () => {
 		} );
 
 		it( 'can be closed by clicking the "esc" button', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			linkUIFeature._showUI();
 			linkUIFeature._addPropertiesView();
@@ -3092,7 +3092,7 @@ describe( 'LinkUI', () => {
 					navigate
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 				fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 				expect( navigate ).to.be.calledOnce;
@@ -3110,7 +3110,7 @@ describe( 'LinkUI', () => {
 					navigate
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 				fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 				expect( navigate ).to.be.calledOnce;
@@ -3126,7 +3126,7 @@ describe( 'LinkUI', () => {
 					navigate
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
 				fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 				expect( navigate ).not.to.be.called;
@@ -3139,7 +3139,7 @@ describe( 'LinkUI', () => {
 					getListItems: () => [ { href: 'https://example.org' } ]
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://example.org">Bar[]</$text></paragraph>' );
 				fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 				expect( windowOpenStub ).to.be.calledWith( 'https://example.org', '_blank' );
@@ -3168,7 +3168,7 @@ describe( 'LinkUI', () => {
 			} );
 
 			it( 'should set fallback label and icon if selected link was not found in link providers', () => {
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.isEnabled ).to.be.true;
 				expect( button.isVisible ).to.be.true;
@@ -3188,7 +3188,7 @@ describe( 'LinkUI', () => {
 					]
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.isEnabled ).to.be.true;
 				expect( button.isVisible ).to.be.true;
@@ -3218,7 +3218,7 @@ describe( 'LinkUI', () => {
 					}
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.tooltip ).to.be.equal( 'Tooltip' );
 				expect( button.icon ).to.be.equal( IconBookmarkMedium );
@@ -3245,7 +3245,7 @@ describe( 'LinkUI', () => {
 					}
 				} );
 
-				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.tooltip ).to.be.equal( 'Tooltip' );
 				expect( button.icon ).to.be.null;

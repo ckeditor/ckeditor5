@@ -11,10 +11,10 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element
+	ModelElement
 } from 'ckeditor5/src/engine.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, updateViewAttributes } from '../utils.js';
 import { getDescendantElement } from './integrationutils.js';
 import { viewToModelBlockAttributeConverter } from '../converters.js';
@@ -22,7 +22,7 @@ import { viewToModelBlockAttributeConverter } from '../converters.js';
 /**
  * Provides the General HTML Support integration with the {@link module:horizontal-line/horizontalline~HorizontalLine} feature.
  */
-export default class HorizontalLineElementSupport extends Plugin {
+export class HorizontalLineElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -58,7 +58,7 @@ export default class HorizontalLineElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:hr', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:hr', ( evt, definition ) => {
 			if ( definition.model !== 'horizontalLine' ) {
 				return;
 			}
@@ -89,7 +89,7 @@ function modelToViewHorizontalLineAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const containerElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+			const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 			const viewElement = getDescendantElement( conversionApi.writer, containerElement, 'hr' );
 
 			if ( viewElement ) {

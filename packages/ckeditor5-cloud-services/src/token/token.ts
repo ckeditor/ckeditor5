@@ -19,7 +19,7 @@ const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
  * The value of the token is retrieved from the specified URL and refreshed every 1 hour by default.
  * If the token retrieval fails, the token will automatically retry in 5 seconds intervals.
  */
-export default class Token extends /* #__PURE__ */ ObservableMixin() {
+export class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Value of the token.
 	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.
@@ -42,7 +42,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	private _options: { initValue?: string; autoRefresh: boolean };
 
 	/**
-	 * `setTimeout()` id for a token refresh when {@link module:cloud-services/token/token~TokenOptions auto refresh} is enabled.
+	 * `setTimeout()` id for a token refresh when {@link module:cloud-services/token/token~CloudServicesTokenOptions auto refresh}
+	 * is enabled.
 	 */
 	private _tokenRefreshTimeout?: ReturnType<typeof setTimeout>;
 
@@ -58,7 +59,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token/token~Token#refreshToken} interface.
 	 */
-	constructor( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ) {
+	constructor( tokenUrlOrRefreshToken: TokenUrl, options: CloudServicesTokenOptions = {} ) {
 		super();
 
 		if ( !tokenUrlOrRefreshToken ) {
@@ -113,7 +114,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * Refresh token method. Useful in a method form as it can be overridden in tests.
 	 *
 	 * This method will be invoked periodically based on the token expiry date after first call to keep the token up-to-date
-	 * (requires {@link module:cloud-services/token/token~TokenOptions auto refresh option} to be set).
+	 * (requires {@link module:cloud-services/token/token~CloudServicesTokenOptions auto refresh option} to be set).
 	 *
 	 * If the token refresh fails, the method will retry in 5 seconds intervals until success or the token gets
 	 * {@link #destroy destroyed}.
@@ -142,8 +143,8 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 				 * endpoint is up and running. {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl Learn more}
 				 * about token configuration.
 				 *
-				 * **Note:** If the token's {@link module:cloud-services/token/token~TokenOptions auto refresh option} is enabled,
-				 * attempts to refresh will be made until success or token's
+				 * **Note:** If the token's {@link module:cloud-services/token/token~CloudServicesTokenOptions auto refresh option}
+				 * is enabled, attempts to refresh will be made until success or token's
 				 * {@link module:cloud-services/token/token~Token#destroy destruction}.
 				 *
 				 * @error token-refresh-failed
@@ -242,7 +243,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token/token~Token#refreshToken} interface.
 	 */
-	public static create( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ): Promise<InitializedToken> {
+	public static create( tokenUrlOrRefreshToken: TokenUrl, options: CloudServicesTokenOptions = {} ): Promise<InitializedToken> {
 		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();
@@ -257,7 +258,7 @@ export type InitializedToken = Token & { value: string };
 /**
  * Options for creating tokens.
  */
-export interface TokenOptions {
+export interface CloudServicesTokenOptions {
 
 	/**
 	 * Initial value of the token.

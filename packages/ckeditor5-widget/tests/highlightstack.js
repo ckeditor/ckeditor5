@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HighlightStack from '../src/highlightstack.js';
+import { WidgetHighlightStack } from '../src/highlightstack.js';
 
 describe( 'HighlightStack', () => {
 	let stack;
 
 	beforeEach( () => {
-		stack = new HighlightStack();
+		stack = new WidgetHighlightStack();
 	} );
 
 	it( 'should fire event when new descriptor is provided to an empty stack', () => {

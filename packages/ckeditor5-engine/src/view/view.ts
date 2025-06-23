@@ -7,34 +7,35 @@
  * @module engine/view/view
  */
 
-import Document, { type ViewDocumentLayoutChangedEvent } from './document.js';
-import DowncastWriter from './downcastwriter.js';
-import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
-import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
-import Selection, {
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions
+import { ViewDocument, type ViewDocumentLayoutChangedEvent } from './document.js';
+import { ViewDowncastWriter } from './downcastwriter.js';
+import { ViewRenderer } from './renderer.js';
+import { ViewDomConverter } from './domconverter.js';
+import { ViewPosition, type ViewPositionOffset } from './position.js';
+import { ViewRange } from './range.js';
+import {
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions
 } from './selection.js';
 
-import type { default as Observer, ObserverConstructor } from './observer/observer.js';
+import type { Observer, ObserverConstructor } from './observer/observer.js';
 import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
 import type { StylesProcessor } from './stylesmap.js';
-import type Element from './element.js';
-import type { default as Node, ViewNodeChangeEvent } from './node.js';
-import type Item from './item.js';
+import { type ViewElement } from './element.js';
+import type { ViewNode, ViewNodeChangeEvent } from './node.js';
+import { type ViewItem } from './item.js';
 
-import KeyObserver from './observer/keyobserver.js';
-import FakeSelectionObserver from './observer/fakeselectionobserver.js';
-import MutationObserver, { type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
-import SelectionObserver from './observer/selectionobserver.js';
-import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
-import CompositionObserver from './observer/compositionobserver.js';
-import InputObserver from './observer/inputobserver.js';
-import ArrowKeysObserver from './observer/arrowkeysobserver.js';
-import TabObserver from './observer/tabobserver.js';
+import { KeyObserver } from './observer/keyobserver.js';
+import { FakeSelectionObserver } from './observer/fakeselectionobserver.js';
+import { MutationObserver, type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
+import { SelectionObserver } from './observer/selectionobserver.js';
+import { FocusObserver, type ViewDocumentBlurEvent } from './observer/focusobserver.js';
+import { CompositionObserver } from './observer/compositionobserver.js';
+import { InputObserver } from './observer/inputobserver.js';
+import { ArrowKeysObserver } from './observer/arrowkeysobserver.js';
+import { TabObserver } from './observer/tabobserver.js';
 
 import {
 	CKEditorError,
@@ -56,8 +57,8 @@ type DomRange = globalThis.Range;
  * abstraction over the DOM structure and events and hide all browsers quirks.
  *
  * View controller renders view document to DOM whenever view structure changes. To determine when view can be rendered,
- * all changes need to be done using the {@link module:engine/view/view~View#change} method, using
- * {@link module:engine/view/downcastwriter~DowncastWriter}:
+ * all changes need to be done using the {@link module:engine/view/view~EditingView#change} method, using
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter}:
  *
  * ```ts
  * view.change( writer => {
@@ -66,7 +67,7 @@ type DomRange = globalThis.Range;
  * ```
  *
  * View controller also register {@link module:engine/view/observer/observer~Observer observers} which observes changes
- * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
+ * on DOM and fire events on the {@link module:engine/view/document~ViewDocument Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
@@ -78,23 +79,24 @@ type DomRange = globalThis.Range;
  * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
- * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
+ * This class also {@link module:engine/view/view~EditingView#attachDomRoot binds the DOM and the view elements}.
  *
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
- * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter DomConverter} instead.
+ * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~ViewDomConverter ViewDomConverter}
+ * instead.
  */
-export default class View extends /* #__PURE__ */ ObservableMixin() {
+export class EditingView extends /* #__PURE__ */ ObservableMixin() {
 	/**
-	 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
+	 * Instance of the {@link module:engine/view/document~ViewDocument} associated with this view controller.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
-	 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
-	 * {@link module:engine/view/view~View#_renderer renderer}
+	 * Instance of the {@link module:engine/view/domconverter~ViewDomConverter domConverter} used by
+	 * {@link module:engine/view/view~EditingView#_renderer renderer}
 	 * and {@link module:engine/view/observer/observer~Observer observers}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
@@ -118,14 +120,14 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	declare public hasDomSelection: boolean;
 
 	/**
-	 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
+	 * Instance of the {@link module:engine/view/renderer~ViewRenderer renderer}.
 	 */
-	private readonly _renderer: Renderer;
+	private readonly _renderer: ViewRenderer;
 
 	/**
 	 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
-	 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
-	 * the view is destroyed ({@link module:engine/view/view~View#detachDomRoot}), they can be easily restored.
+	 * is {@link module:engine/view/view~EditingView#attachDomRoot attached} to the view so later on, when
+	 * the view is destroyed ({@link module:engine/view/view~EditingView#detachDomRoot}), they can be easily restored.
 	 * This way, the DOM element can go back to the (clean) state as if the editing view never used it.
 	 */
 	private readonly _initialDomRootAttributes: WeakMap<HTMLElement, Record<string, string>> = new WeakMap();
@@ -136,9 +138,9 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _observers: Map<ObserverConstructor, Observer> = new Map();
 
 	/**
-	 * DowncastWriter instance used in {@link #change change method} callbacks.
+	 * ViewDowncastWriter instance used in {@link #change change method} callbacks.
 	 */
-	private readonly _writer: DowncastWriter;
+	private readonly _writer: ViewDowncastWriter;
 
 	/**
 	 * Is set to `true` when {@link #change view changes} are currently in progress.
@@ -167,20 +169,20 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	constructor( stylesProcessor: StylesProcessor ) {
 		super();
 
-		this.document = new Document( stylesProcessor );
-		this.domConverter = new DomConverter( this.document );
+		this.document = new ViewDocument( stylesProcessor );
+		this.domConverter = new ViewDomConverter( this.document );
 
 		this.set( 'isRenderingInProgress', false );
 		this.set( 'hasDomSelection', false );
 
-		this._renderer = new Renderer( this.domConverter, this.document.selection );
+		this._renderer = new ViewRenderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
 			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
-		this._writer = new DowncastWriter( this.document );
+		this._writer = new ViewDowncastWriter( this.document );
 
 		// Add default observers.
-		// Make sure that this list matches AlwaysRegisteredObservers type.
+		// Make sure that this list matches AlwaysRegisteredViewObservers type.
 		this.addObserver( MutationObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( SelectionObserver );
@@ -243,7 +245,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Attaches a DOM root element to the view element and enable all observers on that element.
-	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized
+	 * Also {@link module:engine/view/renderer~ViewRenderer#markToSync mark element} to be synchronized
 	 * with the view what means that all child nodes will be removed and replaced with content of the view root.
 	 *
 	 * This method also will change view element name as the same as tag name of given dom root.
@@ -394,7 +396,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	public getObserver<T extends ObserverConstructor>( ObserverConstructor: T ):
-	T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
+	T extends AlwaysRegisteredViewObservers ? InstanceType<T> : InstanceType<T> | undefined;
 
 	/**
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
@@ -486,7 +488,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * It will focus DOM element representing {@link module:engine/view/editableelement~EditableElement EditableElement}
+	 * It will focus DOM element representing {@link module:engine/view/editableelement~ViewEditableElement ViewEditableElement}
 	 * that is currently having selection inside.
 	 */
 	public focus(): void {
@@ -529,7 +531,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * When the outermost change block is done and rendering to the DOM is over the
-	 * {@link module:engine/view/view~View#event:render `View#render`} event is fired.
+	 * {@link module:engine/view/view~EditingView#event:render `View#render`} event is fired.
 	 *
 	 * This method throws a `applying-view-changes-on-rendering` error when
 	 * the change block is used after rendering to the DOM has started.
@@ -537,17 +539,17 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 * @param callback Callback function which may modify the view.
 	 * @returns Value returned by the callback.
 	 */
-	public change<TReturn>( callback: ( writer: DowncastWriter ) => TReturn ): TReturn {
+	public change<TReturn>( callback: ( writer: ViewDowncastWriter ) => TReturn ): TReturn {
 		if ( this.isRenderingInProgress || this._postFixersInProgress ) {
 			/**
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} during rendering
-			 * process,
-			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} inside of
-			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
+			 * * calling {@link module:engine/view/view~EditingView#change} or {@link module:engine/view/view~EditingView#forceRender}
+			 * during rendering process,
+			 * * calling {@link module:engine/view/view~EditingView#change} or {@link module:engine/view/view~EditingView#forceRender}
+			 * inside of {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
 			 */
@@ -589,7 +591,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Forces rendering {@link module:engine/view/document~Document view document} to DOM. If any view changes are
+	 * Forces rendering {@link module:engine/view/document~ViewDocument view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
 	 *
 	 * Note that this method is dedicated for special cases. All view changes should be wrapped in the {@link #change}
@@ -620,20 +622,20 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/view/position~Position position},
+	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
-		return Position._createAt( itemOrPosition, offset );
+	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
+		return ViewPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
@@ -641,8 +643,8 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
-		return Position._createAfter( item );
+	public createPositionAfter( item: ViewItem ): ViewPosition {
+		return ViewPosition._createAfter( item );
 	}
 
 	/**
@@ -650,52 +652,52 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
-		return Position._createBefore( item );
+	public createPositionBefore( item: ViewItem ): ViewPosition {
+		return ViewPosition._createBefore( item );
 	}
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates it's own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end?: Position | null ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end?: ViewPosition | null ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
 	 * const paragraph = view.createContainerElement( 'paragraph' );
 	 * const selection = view.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = view.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = view.createSelection( paragraph, 'on' );
 	 * ```
@@ -723,10 +725,10 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): ViewSelection;
 
 	/**
-	 * Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -775,10 +777,10 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions ): ViewSelection;
 
-	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
-		return new Selection( ...args );
+	public createSelection( ...args: ConstructorParameters<typeof ViewSelection> ): ViewSelection {
+		return new ViewSelection( ...args );
 	}
 
 	/**
@@ -811,8 +813,8 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
- * {@link module:engine/view/document~Document#registerPostFixer post-fixers} are executed.
+ * Fired after a topmost {@link module:engine/view/view~EditingView#change change block} and all
+ * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers} are executed.
  *
  * Actual rendering is performed as a first listener on 'normal' priority.
  *
@@ -824,9 +826,9 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
  *
  * This event is useful when you want to update interface elements after the rendering, e.g. position of the
  * balloon panel. If you wants to change view structure use
- * {@link module:engine/view/document~Document#registerPostFixer post-fixers}.
+ * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers}.
  *
- * @eventName ~View#render
+ * @eventName ~EditingView#render
  */
 export type ViewRenderEvent = {
 	name: 'render';
@@ -834,7 +836,7 @@ export type ViewRenderEvent = {
 };
 
 /**
- * An event fired at the moment of {@link module:engine/view/view~View#scrollToTheSelection} being called. It
+ * An event fired at the moment of {@link module:engine/view/view~EditingView#scrollToTheSelection} being called. It
  * carries two objects in its payload (`args`):
  *
  * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
@@ -844,19 +846,19 @@ export type ViewRenderEvent = {
  *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
  *   for instance, if the integration requires re–scrolling after certain interaction.
  *
- * @eventName ~View#scrollToTheSelection
+ * @eventName ~EditingView#scrollToTheSelection
  */
 export type ViewScrollToTheSelectionEvent = {
 	name: 'scrollToTheSelection';
 	args: [
 		ViewScrollToTheSelectionEventData,
-		Parameters<View[ 'scrollToTheSelection' ]>[ 0 ]
+		Parameters<EditingView[ 'scrollToTheSelection' ]>[ 0 ]
 	];
 };
 
 /**
  * An object passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper while calling
- * {@link module:engine/view/view~View#scrollToTheSelection}.
+ * {@link module:engine/view/view~EditingView#scrollToTheSelection}.
  */
 export type ViewScrollToTheSelectionEventData = {
 	target: DomRange;
@@ -869,7 +871,7 @@ export type ViewScrollToTheSelectionEventData = {
 /**
  * Observers that are always registered.
  */
-export type AlwaysRegisteredObservers =
+export type AlwaysRegisteredViewObservers =
 	| typeof MutationObserver
 	| typeof FocusObserver
 	| typeof SelectionObserver

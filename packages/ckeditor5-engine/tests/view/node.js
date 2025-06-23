@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Element from '../../src/view/element.js';
-import Text from '../../src/view/text.js';
-import Node from '../../src/view/node.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import RootEditableElement from '../../src/view/rooteditableelement.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewNode } from '../../src/view/node.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import Document from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Node', () => {
@@ -19,25 +19,25 @@ describe( 'Node', () => {
 		charB, charA, charR, img;
 
 	before( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 
-		charB = new Text( document, 'b' );
-		charA = new Text( document, 'a' );
-		img = new Element( document, 'img' );
-		charR = new Text( document, 'r' );
+		charB = new ViewText( document, 'b' );
+		charA = new ViewText( document, 'a' );
+		img = new ViewElement( document, 'img' );
+		charR = new ViewText( document, 'r' );
 
-		one = new Element( document, 'one' );
-		two = new Element( document, 'two', null, [ charB, charA, img, charR ] );
-		three = new Element( document, 'three' );
+		one = new ViewElement( document, 'one' );
+		two = new ViewElement( document, 'two', null, [ charB, charA, img, charR ] );
+		three = new ViewElement( document, 'three' );
 
-		root = new Element( document, null, null, [ one, two, three ] );
+		root = new ViewElement( document, null, null, [ one, two, three ] );
 	} );
 
 	describe( 'is()', () => {
 		let node;
 
 		beforeEach( () => {
-			node = new Node();
+			node = new ViewNode();
 		} );
 
 		it( 'should return true for node', () => {
@@ -128,7 +128,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return ancestors including DocumentFragment', () => {
-			const fragment = new DocumentFragment( document, root );
+			const fragment = new ViewDocumentFragment( document, root );
 			const result = img.getAncestors();
 			root._remove();
 
@@ -149,7 +149,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return null for detached subtrees', () => {
-			const detached = new Element( document, 'foo' );
+			const detached = new ViewElement( document, 'foo' );
 
 			expect( img.getCommonAncestor( detached ) ).to.be.null;
 			expect( detached.getCommonAncestor( img ) ).to.be.null;
@@ -179,14 +179,14 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( document, 'foo' );
-			const bar = new Text( document, 'bar' );
-			const bom = new Text( document, 'bom' );
-			const d = new Element( document, 'd', null, [ bar ] );
-			const c = new Element( document, 'c', null, [ foo, d ] );
-			const b = new Element( document, 'b', null, [ c ] );
-			const e = new Element( document, 'e', null, [ bom ] );
-			const a = new Element( document, 'a', null, [ b, e ] );
+			const foo = new ViewText( document, 'foo' );
+			const bar = new ViewText( document, 'bar' );
+			const bom = new ViewText( document, 'bom' );
+			const d = new ViewElement( document, 'd', null, [ bar ] );
+			const c = new ViewElement( document, 'c', null, [ foo, d ] );
+			const b = new ViewElement( document, 'b', null, [ c ] );
+			const e = new ViewElement( document, 'e', null, [ bom ] );
+			const a = new ViewElement( document, 'a', null, [ b, e ] );
 
 			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
 
@@ -206,9 +206,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( document, 'foo' );
-			const bar = new Text( document, 'bar' );
-			const df = new DocumentFragment( document, [ foo, bar ] );
+			const foo = new ViewText( document, 'foo' );
+			const bar = new ViewText( document, 'bar' );
+			const df = new ViewDocumentFragment( document, [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
 		} );
@@ -231,8 +231,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			const f = new Text( document, 'f' );
-			const bar = new Element( document, 'bar', [], [] );
+			const f = new ViewText( document, 'f' );
+			const bar = new ViewElement( document, 'bar', [], [] );
 
 			f.parent = bar;
 
@@ -258,14 +258,14 @@ describe( 'Node', () => {
 
 	describe( 'getRoot()', () => {
 		it( 'should return this element if it has no parent', () => {
-			const child = new Element( document, 'p' );
+			const child = new ViewElement( document, 'p' );
 
 			expect( child.root ).to.equal( child );
 		} );
 
 		it( 'should return root element', () => {
-			const parent = new RootEditableElement( document, 'div' );
-			const child = new Element( document, 'p' );
+			const parent = new ViewRootEditableElement( document, 'div' );
+			const child = new ViewElement( document, 'p' );
 
 			child.parent = parent;
 
@@ -303,8 +303,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( document, 'root' );
-			const otherElement = new Element( document, 'element' );
+			const otherRoot = new ViewElement( document, 'root' );
+			const otherElement = new ViewElement( document, 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -341,8 +341,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( document, 'root' );
-			const otherElement = new Element( document, 'element' );
+			const otherRoot = new ViewElement( document, 'root' );
+			const otherElement = new ViewElement( document, 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -352,22 +352,22 @@ describe( 'Node', () => {
 
 	describe( 'isAttached()', () => {
 		it( 'returns false for a fresh node', () => {
-			const char = new Text( document, 'x' );
-			const el = new Element( document, 'one' );
+			const char = new ViewText( document, 'x' );
+			const el = new ViewElement( document, 'one' );
 
 			expect( char.isAttached() ).to.equal( false );
 			expect( el.isAttached() ).to.equal( false );
 		} );
 
 		it( 'returns true for the root element', () => {
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 
 			expect( root.isAttached() ).to.equal( true );
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
-			const foo = new Text( document, 'foo' );
-			new DocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
+			const foo = new ViewText( document, 'foo' );
+			new ViewDocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
 		} );
@@ -375,16 +375,16 @@ describe( 'Node', () => {
 
 	describe( '_remove()', () => {
 		it( 'should remove node from its parent', () => {
-			const char = new Text( document, 'a' );
-			const parent = new Element( document, 'p', null, [ char ] );
+			const char = new ViewText( document, 'a' );
+			const parent = new ViewElement( document, 'p', null, [ char ] );
 			char._remove();
 
 			expect( parent.getChildIndex( char ) ).to.equal( -1 );
 		} );
 
 		it( 'uses parent._removeChildren method', () => {
-			const char = new Text( document, 'a' );
-			const parent = new Element( document, 'p', null, [ char ] );
+			const char = new ViewText( document, 'a' );
+			const parent = new ViewElement( document, 'p', null, [ char ] );
 			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
 			const index = char.index;
 			char._remove();
@@ -396,8 +396,8 @@ describe( 'Node', () => {
 
 	describe( 'toJSON()', () => {
 		it( 'should prevent circular reference when stringifying a node', () => {
-			const char = new Text( document, 'a' );
-			const parent = new Element( document, 'p', null );
+			const char = new ViewText( document, 'a' );
+			const parent = new ViewElement( document, 'p', null );
 			parent._appendChild( char );
 
 			sinon.stub( char, 'document' ).value( 'view.Document()' );
@@ -420,10 +420,10 @@ describe( 'Node', () => {
 		} );
 
 		beforeEach( () => {
-			text = new Text( document, 'foo' );
-			img = new Element( document, 'img', { 'src': 'img.png' } );
+			text = new ViewText( document, 'foo' );
+			img = new ViewElement( document, 'img', { 'src': 'img.png' } );
 
-			root = new Element( document, 'p', { renderer: { markToSync: rootChangeSpy } } );
+			root = new ViewElement( document, 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root._appendChild( [ text, img ] );
 
 			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
@@ -473,7 +473,7 @@ describe( 'Node', () => {
 
 		describe( '_insertChild()', () => {
 			it( 'should fire change event', () => {
-				root._insertChild( 1, new Element( document, 'img' ) );
+				root._insertChild( 1, new ViewElement( document, 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
@@ -482,7 +482,7 @@ describe( 'Node', () => {
 
 		describe( '_appendChild()', () => {
 			it( 'should fire change event', () => {
-				root._appendChild( new Element( document, 'img' ) );
+				root._appendChild( new ViewElement( document, 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );

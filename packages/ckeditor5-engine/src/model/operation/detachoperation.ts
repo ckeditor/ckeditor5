@@ -7,26 +7,28 @@
  * @module engine/model/operation/detachoperation
  */
 
-import Operation from './operation.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { ModelRange } from '../range.js';
 import { _remove } from './utils.js';
 
-import type Position from '../position.js';
+import { type ModelPosition } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
 /**
  * Operation to permanently remove node from detached root.
  * Note this operation is only a local operation and won't be send to the other clients.
+ *
+ * @internal
  */
-export default class DetachOperation extends Operation {
+export class DetachOperation extends Operation {
 	/**
-	 * Position before the first {@link module:engine/model/item~Item model item} to detach.
+	 * Position before the first {@link module:engine/model/item~ModelItem model item} to detach.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Offset size of moved range.
@@ -40,11 +42,11 @@ export default class DetachOperation extends Operation {
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param sourcePosition Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param sourcePosition Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 */
-	constructor( sourcePosition: Position, howMany: number ) {
+	constructor( sourcePosition: ModelPosition, howMany: number ) {
 		super( null );
 
 		this.sourcePosition = sourcePosition.clone();
@@ -61,7 +63,7 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return null;
 	}
 
@@ -96,7 +98,7 @@ export default class DetachOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		_remove( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
+		_remove( ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 	}
 
 	/**

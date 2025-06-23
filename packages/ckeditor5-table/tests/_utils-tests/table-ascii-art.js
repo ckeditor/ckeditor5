@@ -4,11 +4,11 @@
  */
 
 import { createTableAsciiArt, modelTable, prepareModelTableInput, prettyFormatModelTableInput } from '../_utils/utils.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableEditing } from '../../src/tableediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'table ascii-art and model helpers', () => {
 	let editor, model, modelRoot;
@@ -38,7 +38,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '00' ]
 			];
 
-			setModelData( model, modelTable( tableData ) );
+			_setModelData( model, modelTable( tableData ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -75,7 +75,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '00', '01' ]
 			];
 
-			setModelData( model, modelTable( tableData ) );
+			_setModelData( model, modelTable( tableData ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -113,7 +113,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '10' ]
 			];
 
-			setModelData( model, modelTable( tableData ) );
+			_setModelData( model, modelTable( tableData ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -154,7 +154,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '10', '11' ]
 			];
 
-			setModelData( model, modelTable( tableData ) );
+			_setModelData( model, modelTable( tableData ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -197,7 +197,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '30', '31' ]
 			];
 
-			setModelData( model, modelTable( structuredClone( tableData ) ) );
+			_setModelData( model, modelTable( structuredClone( tableData ) ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -247,7 +247,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ { contents: '40', colspan: 4 } ]
 			];
 
-			setModelData( model, modelTable( structuredClone( tableData ) ) );
+			_setModelData( model, modelTable( structuredClone( tableData ) ) );
 
 			table = modelRoot.getChild( 0 );
 		} );
@@ -297,7 +297,7 @@ describe( 'table ascii-art and model helpers', () => {
 				[ '10', 'foobar' ]
 			];
 
-			setModelData( model, modelTable( tableData ) );
+			_setModelData( model, modelTable( tableData ) );
 
 			table = modelRoot.getChild( 0 );
 		} );

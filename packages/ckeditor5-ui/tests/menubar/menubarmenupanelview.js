@@ -4,9 +4,9 @@
  */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import MenuBarMenuPanelView from '../../src/menubar/menubarmenupanelview.js';
-import ViewCollection from '../../src/viewcollection.js';
-import View from '../../src/view.js';
+import { MenuBarMenuPanelView } from '../../src/menubar/menubarmenupanelview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
+import { View } from '../../src/view.js';
 import {
 	LabeledFieldView,
 	createLabeledInputText

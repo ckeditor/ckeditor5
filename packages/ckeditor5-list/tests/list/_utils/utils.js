@@ -3,30 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import {
-	getData as getModelData,
-	parse as parseModel,
-	stringify as stringifyModel
+	_getModelData,
+	_parseModel,
+	_stringifyModel
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import ListWalker from '../../../src/list/utils/listwalker.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ListWalker } from '../../../src/list/utils/listwalker.js';
 
 /**
  * Sets the editor model according to the specified input string.
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} input
- * @returns {module:engine/model/selection~Selection} The selection marked in input string.
+ * @returns {module:engine/model/selection~ModelSelection} The selection marked in input string.
  */
 export function prepareTest( model, input ) {
 	const modelRoot = model.document.getRoot( 'main' );
 
 	// Parse data string to model.
-	const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+	const parsedResult = _parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
-	// Retrieve DocumentFragment and Selection from parsed model.
+	// Retrieve ModelDocumentFragment and Selection from parsed model.
 	const modelDocumentFragment = parsedResult.model;
 	const selection = parsedResult.selection;
 
@@ -60,6 +60,10 @@ export function prepareTest( model, input ) {
  * @returns {Object}
  */
 export function setupTestHelpers( editor ) {
+	// Remove downcast strategy for listItemId to avoid having to take it into account in all tests.
+	editor.plugins.get( 'ListEditing' )._downcastStrategies.splice( editor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+		strategy => strategy.attributeName === 'listItemId' ), 1 );
+
 	const model = editor.model;
 	const modelRoot = model.document.getRoot();
 	const view = editor.editing.view;
@@ -68,28 +72,28 @@ export function setupTestHelpers( editor ) {
 		test( input, output, actionCallback, testUndo ) {
 			const callbackSelection = prepareTest( model, input );
 
-			const modelBefore = getModelData( model );
-			const viewBefore = getViewData( view, { withoutSelection: true } );
+			const modelBefore = _getModelData( model );
+			const viewBefore = _getViewData( view, { withoutSelection: true } );
 
 			test.reconvertSpy = sinon.spy( editor.editing, 'reconvertItem' );
 			actionCallback( callbackSelection );
 			test.reconvertSpy.restore();
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 
 			if ( testUndo ) {
-				const modelAfter = getModelData( model );
-				const viewAfter = getViewData( view, { withoutSelection: true } );
+				const modelAfter = _getModelData( model );
+				const viewAfter = _getViewData( view, { withoutSelection: true } );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
-				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
+				expect( _getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
-				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
+				expect( _getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
 			}
 		},
 
@@ -103,7 +107,7 @@ export function setupTestHelpers( editor ) {
 
 			const actionCallback = selection => {
 				model.change( writer => {
-					writer.insert( parseModel( item, model.schema ), selection.getFirstPosition() );
+					writer.insert( _parseModel( item, model.schema ), selection.getFirstPosition() );
 				} );
 			};
 
@@ -203,8 +207,8 @@ export function setupTestHelpers( editor ) {
 		data( input, modelData, output = input ) {
 			editor.setData( input );
 
-			expect( editor.getData(), 'output data' ).to.equalMarkup( output );
-			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
+			expect( editor.getData( { skipListItemIds: true } ), 'output data' ).to.equalMarkup( output );
+			expect( _getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
 		}
 	};
 
@@ -321,8 +325,8 @@ modelList.defaultBlock = 'paragraph';
 /**
  * Returns document list pseudo markdown notation for a given document fragment or element.
  *
- * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Element} fragmentOrElement The document
- * fragment or element to stringify to pseudo markdown notation.
+ * @param {module:engine/model/documentfragment~ModelDocumentFragment|module:engine/model/element~ModelElement} fragmentOrElement
+ * The document fragment or element to stringify to pseudo markdown notation.
  * @returns {String}
  */
 export function stringifyList( fragmentOrElement ) {
@@ -330,7 +334,7 @@ export function stringifyList( fragmentOrElement ) {
 	const lines = [];
 
 	if ( fragmentOrElement.is( 'element' ) ) {
-		fragmentOrElement = new DocumentFragment( [ fragmentOrElement ] );
+		fragmentOrElement = new ModelDocumentFragment( [ fragmentOrElement ] );
 	}
 
 	model.change( writer => {
@@ -371,7 +375,7 @@ function stringifyNode( node, writer ) {
 		writer.append( contentNode, fragment );
 	}
 
-	return stringifyModel( fragment );
+	return _stringifyModel( fragment );
 }
 
 function stringifyElement( content, listAttributes = {} ) {

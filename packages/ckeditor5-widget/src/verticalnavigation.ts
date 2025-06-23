@@ -14,13 +14,13 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	EditingController,
 	Model,
-	Position,
-	Range,
-	Schema,
-	Selection,
+	ModelPosition,
+	ModelRange,
+	ModelSchema,
+	ModelSelection,
 	ViewDocumentArrowKeyEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -29,7 +29,7 @@ import type {
  *
  * @param editing The editing controller.
  */
-export default function verticalNavigationHandler(
+export function verticalWidgetNavigationHandler(
 	editing: EditingController
 ): GetCallback<ViewDocumentArrowKeyEvent> {
 	const model = editing.model;
@@ -108,7 +108,7 @@ export default function verticalNavigationHandler(
  * @param selection The current selection.
  * @param isForward The expected navigation direction.
  */
-function findTextRangeFromSelection( editing: EditingController, selection: Selection | DocumentSelection, isForward: boolean ) {
+function findTextRangeFromSelection( editing: EditingController, selection: ModelSelection | ModelDocumentSelection, isForward: boolean ) {
 	const model = editing.model;
 
 	if ( isForward ) {
@@ -153,7 +153,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Sele
  *
  * @param direction Search direction.
  */
-function getNearestNonInlineLimit( model: Model, startPosition: Position, direction: 'forward' | 'backward' ) {
+function getNearestNonInlineLimit( model: Model, startPosition: ModelPosition, direction: 'forward' | 'backward' ) {
 	const schema = model.schema;
 	const range = model.createRangeIn( startPosition.root );
 
@@ -183,7 +183,7 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
  * @returns The nearest selection position.
  *
  */
-function getNearestTextPosition( schema: Schema, range: Range, direction: 'forward' | 'backward' ) {
+function getNearestTextPosition( schema: ModelSchema, range: ModelRange, direction: 'forward' | 'backward' ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
 	if ( schema.checkChild( position, '$text' ) ) {
@@ -207,7 +207,7 @@ function getNearestTextPosition( schema: Schema, range: Range, direction: 'forwa
  * @param modelRange The current table cell content range.
  * @param isForward The expected navigation direction.
  */
-function isSingleLineRange( editing: EditingController, modelRange: Range, isForward: boolean ) {
+function isSingleLineRange( editing: EditingController, modelRange: ModelRange, isForward: boolean ) {
 	const model = editing.model;
 	const domConverter = editing.view.domConverter;
 
@@ -251,6 +251,6 @@ function isSingleLineRange( editing: EditingController, modelRange: Range, isFor
 	return true;
 }
 
-function selectionWillShrink( selection: DocumentSelection, isForward: boolean ) {
+function selectionWillShrink( selection: ModelDocumentSelection, isForward: boolean ) {
 	return !selection.isCollapsed && selection.isBackward == isForward;
 }

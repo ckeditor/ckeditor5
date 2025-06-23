@@ -7,15 +7,15 @@
  * @module ui/editorui/editorui
  */
 
-import ComponentFactory from '../componentfactory.js';
-import TooltipManager from '../tooltipmanager.js';
-import PoweredBy from './poweredby.js';
-import EvaluationBadge from './evaluationbadge.js';
-import AriaLiveAnnouncer from '../arialiveannouncer.js';
+import { ComponentFactory } from '../componentfactory.js';
+import { TooltipManager } from '../tooltipmanager.js';
+import { PoweredBy } from './poweredby.js';
+import { EvaluationBadge } from './evaluationbadge.js';
+import { AriaLiveAnnouncer } from '../arialiveannouncer.js';
 
-import type EditorUIView from './editoruiview.js';
-import type ToolbarView from '../toolbar/toolbarview.js';
-import type { default as View, UIViewRenderEvent } from '../view.js';
+import { type EditorUIView } from './editoruiview.js';
+import { type ToolbarView } from '../toolbar/toolbarview.js';
+import type { View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
@@ -34,7 +34,7 @@ import {
 import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
 import type {
-	default as MenuBarView,
+	MenuBarView,
 	MenuBarConfigAddedGroup,
 	MenuBarConfigAddedItem,
 	MenuBarConfigAddedMenu
@@ -44,7 +44,7 @@ import { normalizeMenuBarConfig } from '../menubar/utils.js';
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
-export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
+export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor that the UI belongs to.
 	 */
@@ -380,29 +380,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
 	): void {
 		this._extraMenuBarElements.push( config );
-	}
-
-	/**
-	 * Stores all editable elements used by the editor instance.
-	 *
-	 * @deprecated
-	 */
-	protected get _editableElements(): unknown {
-		/**
-		 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
-		 * deprecated and will be removed in the near future. Please use
-		 * {@link module:ui/editorui/editorui~EditorUI#setEditableElement `setEditableElement()`} and
-		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
-		 *
-		 * @error editor-ui-deprecated-editable-elements
-		 * @param {module:ui/editorui/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
-		 */
-		console.warn(
-			'editor-ui-deprecated-editable-elements: ' +
-			'The EditorUI#_editableElements property has been deprecated and will be removed in the near future.',
-			{ editorUI: this } );
-
-		return this._editableElementsMap;
 	}
 
 	/**
@@ -779,7 +756,7 @@ export type EditorUIReadyEvent = {
 /**
  * Fired whenever the UI (all related components) should be refreshed.
  *
- * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
+ * **Note:**: The event is fired after each {@link module:engine/view/document~ViewDocument#event:layoutChanged}.
  * It can also be fired manually via the {@link module:ui/editorui/editorui~EditorUI#update} method.
  *
  * @eventName ~EditorUI#update

@@ -288,7 +288,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-You can treat both inline and block elements as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
+You can treat both inline and block elements as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~HtmlSupportDataSchemaDefinition#isObject isObject} property to `true`.
 
 ```js
 // Inline object element.

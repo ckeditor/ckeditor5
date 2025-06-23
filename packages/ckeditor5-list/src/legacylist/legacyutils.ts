@@ -8,14 +8,14 @@
  */
 
 import {
-	TreeWalker,
-	getFillerOffset,
+	ModelTreeWalker,
+	getViewFillerOffset,
 	type DowncastConversionApi,
-	type DowncastWriter,
-	type Element,
-	type Item,
+	type ViewDowncastWriter,
+	type ModelElement,
+	type ModelItem,
 	type Model,
-	type Position,
+	type ModelPosition,
 	type ViewContainerElement,
 	type ViewElement,
 	type ViewItem,
@@ -23,11 +23,12 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 /**
- * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
+ * Creates a list item {@link module:engine/view/containerelement~ViewContainerElement}.
  *
+ * @internal
  * @param writer The writer instance.
  */
-export function createViewListItemElement( writer: DowncastWriter ): ViewContainerElement {
+export function createViewListItemElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	const viewItem = writer.createContainerElement( 'li' );
 
 	viewItem.getFillerOffset = getListItemFillerOffset;
@@ -40,11 +41,12 @@ export function createViewListItemElement( writer: DowncastWriter ): ViewContain
  * Then, it binds the created view list item (`<li>`) with the model `listItem` element.
  * The function then returns the created view list item (`<li>`).
  *
+ * @internal
  * @param modelItem Model list item.
  * @param conversionApi Conversion interface.
  * @returns View list element.
  */
-export function generateLiInUl( modelItem: Item, conversionApi: DowncastConversionApi ): ViewContainerElement {
+export function generateLiInUl( modelItem: ModelItem, conversionApi: DowncastConversionApi ): ViewContainerElement {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
@@ -65,13 +67,14 @@ export function generateLiInUl( modelItem: Item, conversionApi: DowncastConversi
  * should be in a view list element (`<ul>` or `<ol>`) and should be its only child.
  * See comments below to better understand the algorithm.
  *
+ * @internal
  * @param modelItem Model list item.
  * @param injectedItem
  * @param conversionApi Conversion interface.
  * @param model The model instance.
  */
 export function injectViewList(
-	modelItem: Element,
+	modelItem: ModelElement,
 	injectedItem: ViewContainerElement,
 	conversionApi: DowncastConversionApi,
 	model: Model
@@ -91,7 +94,7 @@ export function injectViewList(
 		smallerIndent: true,
 		listIndent: modelItem.getAttribute( 'listIndent' ) as number
 	} );
-	const prevItem = modelItem.previousSibling as Element | null;
+	const prevItem = modelItem.previousSibling as ModelElement | null;
 
 	if ( refItem && refItem.getAttribute( 'listIndent' ) == modelItem.getAttribute( 'listIndent' ) ) {
 		// There is a list item with the same indent - we found the same-level sibling.
@@ -187,19 +190,20 @@ export function injectViewList(
  * Helper function that takes two parameters that are expected to be view list elements, and merges them.
  * The merge happens only if both parameters are list elements of the same type (the same element name and the same class attributes).
  *
+ * @internal
  * @param viewWriter The writer instance.
  * @param firstList The first element to compare.
  * @param secondList The second element to compare.
  * @returns The position after merge or `null` when there was no merge.
  */
 export function mergeViewLists(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	firstList: ViewItem,
 	secondList: ViewItem
 ): ViewPosition | null;
 
 export function mergeViewLists(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	firstList: any,
 	secondList: any
 ): ViewPosition | null {
@@ -224,6 +228,7 @@ export function mergeViewLists(
  * `<container:p>foo^<ui:span></ui:span><ui:span></ui:span>bar</container:p>`
  * For position ^, the position before "bar" will be returned.
  *
+ * @internal
  */
 export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosition {
 	return viewPosition.getLastMatchingPosition( value => value.item.is( 'uiElement' ) );
@@ -233,6 +238,7 @@ export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosit
  * Helper function that searches for a previous list item sibling of a given model item that meets the given criteria
  * passed by the options object.
  *
+ * @internal
  * @param options Search criteria.
  * @param options.sameIndent Whether the sought sibling should have the same indentation.
  * @param options.smallerIndent Whether the sought sibling should have a smaller indentation.
@@ -240,14 +246,14 @@ export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosit
  * @param options.direction Walking direction.
  */
 export function getSiblingListItem(
-	modelItem: Item | null,
+	modelItem: ModelItem | null,
 	options: {
 		sameIndent?: boolean;
 		smallerIndent?: boolean;
 		listIndent?: number;
 		direction?: 'forward' | 'backward';
 	}
-): Element | null {
+): ModelElement | null {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 	const indent = options.listIndent;
@@ -273,6 +279,8 @@ export function getSiblingListItem(
 
 /**
  * Returns a first list view element that is direct child of the given view element.
+ *
+ * @internal
  */
 export function findNestedList( viewElement: ViewElement ): ViewElement | null {
 	for ( const node of ( viewElement.getChildren() as Iterable<ViewElement> ) ) {
@@ -291,12 +299,13 @@ export function findNestedList( viewElement: ViewElement ): ViewElement | null {
  *
  * Additionally, if the `position` is inside a list item, that list item will be returned as well.
  *
+ * @internal
  * @param position Starting position.
  * @param direction Walking direction.
  */
-export function getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<Element> {
-	const items: Array<Element> = [];
-	const listItem = position.parent as Element;
+export function getSiblingNodes( position: ModelPosition, direction: 'forward' | 'backward' ): Array<ModelElement> {
+	const items: Array<ModelElement> = [];
+	const listItem = position.parent as ModelElement;
 	const walkerOptions = {
 		ignoreElementEnd: false,
 		startPosition: position,
@@ -304,7 +313,7 @@ export function getSiblingNodes( position: Position, direction: 'forward' | 'bac
 		direction
 	};
 	const limitIndent = listItem.getAttribute( 'listIndent' ) as number;
-	const nodes = [ ...new TreeWalker( walkerOptions ) ]
+	const nodes = [ ...new ModelTreeWalker( walkerOptions ) ]
 		.filter( value => value.item.is( 'element' ) )
 		.map( value => value.item );
 
@@ -385,7 +394,7 @@ export function getSiblingNodes( position: Position, direction: 'forward' | 'bac
  *
  * @internal
  */
-export function getSelectedListItems( model: Model ): Array<Element> {
+export function getSelectedListItems( model: Model ): Array<ModelElement> {
 	const document = model.document;
 
 	// For all selected blocks find all list items that are being selected
@@ -424,6 +433,8 @@ const NUMBERED_LIST_STYLE_TYPES = [
 
 /**
  * Checks whether the given list-style-type is supported by numbered or bulleted list.
+ *
+ * @internal
  */
 export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
 	if ( BULLETED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
@@ -449,5 +460,5 @@ function getListItemFillerOffset( this: any ): number | null {
 		return 0;
 	}
 
-	return getFillerOffset.call( this );
+	return getViewFillerOffset.call( this );
 }

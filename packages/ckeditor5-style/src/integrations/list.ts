@@ -8,13 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsActiveForBlockEvent,
@@ -24,7 +25,7 @@ import StyleUtils, {
 
 import type { StyleDefinition } from '../styleconfig.js';
 
-export default class ListStyleSupport extends Plugin {
+export class ListStyleSupport extends Plugin {
 	private _listUtils!: ListUtils;
 	private _styleUtils!: StyleUtils;
 	private _htmlSupport!: GeneralHtmlSupport;
@@ -100,7 +101,7 @@ export default class ListStyleSupport extends Plugin {
 	/**
 	 * Verifies if the given style is applicable to the provided block element.
 	 */
-	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const model = this.editor.model;
 
 		if ( ![ 'ol', 'ul', 'li' ].includes( definition.element ) ) {
@@ -130,7 +131,7 @@ export default class ListStyleSupport extends Plugin {
 	/**
 	 * Returns true if the given style is applied to the specified block element.
 	 */
-	private _isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isStyleActiveForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
@@ -140,7 +141,7 @@ export default class ListStyleSupport extends Plugin {
 	/**
 	 * Returns an array of block elements that style should be applied to.
 	 */
-	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
+	private _getAffectedBlocks( definition: BlockStyleDefinition, block: ModelElement ): Array<ModelElement> | null {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
 			return null;
 		}

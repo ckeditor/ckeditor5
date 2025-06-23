@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Range from '../../../../src/model/range.js';
-import LivePosition from '../../../../src/model/liveposition.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ModelRange } from '../../../../src/model/range.js';
+import { LivePosition } from '../../../../src/model/liveposition.js';
 
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 class Link extends Plugin {
 	init() {
@@ -62,7 +62,7 @@ class AutoLinker extends Plugin {
 					if ( entry.position.offset + entry.length == index + length ) {
 						const livePos = LivePosition._createAt( parent, index );
 						this.editor.model.enqueueChange( writer => {
-							const urlRange = Range._createFromPositionAndShift( livePos, length );
+							const urlRange = ModelRange._createFromPositionAndShift( livePos, length );
 							writer.setAttribute( 'link', url, urlRange );
 						} );
 						return;

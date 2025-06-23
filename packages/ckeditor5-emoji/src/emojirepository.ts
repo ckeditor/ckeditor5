@@ -12,8 +12,8 @@ import { groupBy } from 'es-toolkit/compat';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning, version as editorVersion } from 'ckeditor5/src/utils.js';
-import EmojiUtils from './emojiutils.js';
-import type { SkinToneId } from './emojiconfig.js';
+import { EmojiUtils } from './emojiutils.js';
+import type { EmojiSkinToneId } from './emojiconfig.js';
 
 // An endpoint from which the emoji data will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
@@ -26,7 +26,7 @@ const DEFAULT_EMOJI_VERSION = 16;
  *
  * Loads the emoji repository from URL during plugin initialization and provides utility methods to search it.
  */
-export default class EmojiRepository extends Plugin {
+export class EmojiRepository extends Plugin {
 	/**
 	 * A callback to resolve the {@link #_repositoryPromise} to control the return value of this promise.
 	 */
@@ -201,7 +201,7 @@ export default class EmojiRepository extends Plugin {
 	/**
 	 * Returns an array of available skin tones.
 	 */
-	public getSkinTones(): Array<SkinTone> {
+	public getSkinTones(): Array<EmojiSkinTone> {
 		const { t } = this.editor.locale;
 
 		return [
@@ -425,15 +425,15 @@ export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
  *
  * The `default` key is always present. Additional values are assigned only if an emoji supports skin tones.
  */
-export type EmojiMap = { [K in Exclude<SkinToneId, 'default'>]?: string; } & {
+export type EmojiMap = { [K in Exclude<EmojiSkinToneId, 'default'>]?: string; } & {
 	default: string;
 };
 
 /**
  * Represents an emoji skin tone variant.
  */
-export type SkinTone = {
-	id: SkinToneId;
+export type EmojiSkinTone = {
+	id: EmojiSkinToneId;
 	icon: string;
 	tooltip: string;
 };

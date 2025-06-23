@@ -8,14 +8,14 @@
  */
 
 import { toMap, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine.js';
+import type { DowncastAttributeEvent, DowncastDispatcher, ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
 import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
 
 /**
  * Helper class that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition} and provides
  * the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatchers} for them.
  */
-export default class AutomaticDecorators {
+export class AutomaticDecorators {
 	/**
 	 * Stores the definition of {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}.
 	 * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
@@ -104,7 +104,7 @@ export default class AutomaticDecorators {
 	 */
 	public getDispatcherForLinkedImage(): ( dispatcher: DowncastDispatcher ) => void {
 		return dispatcher => {
-			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
 				const viewFigure = mapper.toViewElement( data.item )!;
 				const linkInImage = Array.from( viewFigure.getChildren() )
 					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) )!;

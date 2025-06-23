@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils.js';
-import ObservableMixin from '../src/observablemixin.js';
-import EmitterMixin from '../src/emittermixin.js';
-import EventInfo from '../src/eventinfo.js';
+import { ObservableMixin } from '../src/observablemixin.js';
+import { EmitterMixin } from '../src/emittermixin.js';
+import { EventInfo } from '../src/eventinfo.js';
 
 describe( 'ObservableMixin', () => {
 	const Observable = ObservableMixin();
@@ -1160,7 +1160,7 @@ describe( 'Observable', () => {
 
 			expect( foo.method ).to.not.equal( originalMethod );
 
-			foo.stopListening( Object.create( ObservableMixin ) );
+			foo.stopListening( new ( ObservableMixin() )() );
 
 			expect( foo.method ).to.not.equal( originalMethod );
 		} );

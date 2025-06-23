@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Writer from '../../src/model/writer.js';
-import Batch from '../../src/model/batch.js';
-import InsertOperation from '../../src/model/operation/insertoperation.js';
+import { Model } from '../../src/model/model.js';
+import { ModelWriter } from '../../src/model/writer.js';
+import { Batch } from '../../src/model/batch.js';
+import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
-import DocumentFragment from '../../src/model/documentfragment.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 import { getNodesAndText } from '../../tests/model/_utils/utils.js';
-import DocumentSelection from '../../src/model/documentselection.js';
+import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
@@ -38,7 +38,7 @@ describe( 'Writer', () => {
 		let writer;
 
 		beforeEach( () => {
-			writer = new Writer( model, batch );
+			writer = new ModelWriter( model, batch );
 		} );
 
 		it( 'should have model instance', () => {
@@ -54,7 +54,7 @@ describe( 'Writer', () => {
 		it( 'should create text node', () => {
 			const text = createText( 'foo' );
 
-			expect( text ).to.instanceof( Text );
+			expect( text ).to.instanceof( ModelText );
 			expect( text.data ).to.equal( 'foo' );
 			expect( Array.from( text.getAttributes() ) ).to.length( 0 );
 		} );
@@ -70,7 +70,7 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createElement( 'foo' );
 
-			expect( element ).to.instanceof( Element );
+			expect( element ).to.instanceof( ModelElement );
 			expect( element.name ).to.equal( 'foo' );
 			expect( Array.from( element.getAttributes() ) ).to.length( 0 );
 		} );
@@ -86,7 +86,7 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createDocumentFragment();
 
-			expect( element ).to.instanceof( DocumentFragment );
+			expect( element ).to.instanceof( ModelDocumentFragment );
 		} );
 	} );
 
@@ -125,8 +125,8 @@ describe( 'Writer', () => {
 			const child = createElement( 'child' );
 			const textChild = createText( 'textChild' );
 
-			insert( child, new Position( parent, [ 0 ] ) );
-			insert( textChild, new Position( parent, [ 1 ] ) );
+			insert( child, new ModelPosition( parent, [ 0 ] ) );
+			insert( textChild, new ModelPosition( parent, [ 1 ] ) );
 
 			expect( Array.from( parent ) ).to.deep.equal( [ child, textChild ] );
 		} );
@@ -355,20 +355,20 @@ describe( 'Writer', () => {
 			}, /^model-writer-insert-forbidden-move/, model );
 		} );
 
-		it( 'should transfer markers from given DocumentFragment', () => {
+		it( 'should transfer markers from given ModelDocumentFragment', () => {
 			const root = doc.createRoot();
 			const docFrag = createDocumentFragment();
 
 			appendText( 'abcd', root );
 
 			appendElement( 'p', docFrag );
-			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			insertText( 'foo bar', new ModelPosition( docFrag, [ 0, 0 ] ) );
 
-			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
+			const marker = new ModelRange( new ModelPosition( docFrag, [ 0, 1 ] ), new ModelPosition( docFrag, [ 0, 5 ] ) );
 
 			docFrag.markers.set( 'marker', marker );
 
-			insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
@@ -391,17 +391,19 @@ describe( 'Writer', () => {
 
 			// <docFrag><p>f[oo b]ar</p></docFrag>.
 			appendElement( 'p', docFrag );
-			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			insertText( 'foo bar', new ModelPosition( docFrag, [ 0, 0 ] ) );
 
 			model.change( writer => {
-				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 1, 2 ] ) );
 
 				writer.addMarker( 'marker', { range, usingOperation: true } );
 			} );
 
-			docFrag.markers.set( 'marker', new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) ) );
+			docFrag.markers.set(
+				'marker', new ModelRange( new ModelPosition( docFrag, [ 0, 1 ] ), new ModelPosition( docFrag, [ 0, 5 ] ) )
+			);
 
-			insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
@@ -415,7 +417,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const root = doc.createRoot();
 			const node = createText( 'foo' );
 
@@ -429,10 +431,10 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node with attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
 		} );
@@ -440,10 +442,10 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node with no attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', null, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -451,10 +453,10 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node omitting attributes param', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', new Position( parent, [ 0 ] ) );
+			insertText( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -467,8 +469,8 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
-			expect( parent.getChild( 1 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node at the end of given element', () => {
@@ -478,8 +480,8 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
 		} );
 
 		it( 'should create and insert text node at the given offset of given element', () => {
@@ -491,9 +493,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node before the given node', () => {
@@ -507,9 +509,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node after the given node', () => {
@@ -523,9 +525,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create proper operation', () => {
@@ -542,7 +544,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -555,30 +557,30 @@ describe( 'Writer', () => {
 		it( 'should create and insert element with attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
 		} );
 
 		it( 'should create and insert element with no attributes at given position', () => {
 			const parent = createDocumentFragment();
-			insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
 			const parent = createDocumentFragment();
-			insertElement( 'foo', new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -664,7 +666,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const child = createElement( 'child' );
 
 			expectToThrowCKEditorError( () => {
@@ -821,7 +823,7 @@ describe( 'Writer', () => {
 			appendText( 'foo', null, parent );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -831,7 +833,7 @@ describe( 'Writer', () => {
 			appendText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -850,7 +852,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -904,7 +906,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -965,7 +967,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, node );
@@ -992,7 +994,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', node );
@@ -1019,9 +1021,9 @@ describe( 'Writer', () => {
 			} );
 
 			function getRange( startIndex, endIndex ) {
-				return new Range(
-					Position._createAt( root, startIndex ),
-					Position._createAt( root, endIndex )
+				return new ModelRange(
+					ModelPosition._createAt( root, startIndex ),
+					ModelPosition._createAt( root, endIndex )
 				);
 			}
 
@@ -1039,7 +1041,7 @@ describe( 'Writer', () => {
 
 			function getCompressedAttrs() {
 				// default: 111---111222---1112------
-				const range = Range._createIn( root );
+				const range = ModelRange._createIn( root );
 
 				return Array.from( range.getItems( { singleCharacters: true } ) )
 					.map( item => item.getAttribute( 'a' ) || '-' )
@@ -1089,9 +1091,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
-					const range = new Range(
-						new Position( root, [ 18, 1 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 1 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					setAttribute( 'a', 1, range );
@@ -1101,9 +1103,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not change elements attribute if range contains closing tag', () => {
-					const range = new Range(
-						new Position( root, [ 18, 1 ] ),
-						new Position( root, [ 21 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 1 ] ),
+						new ModelPosition( root, [ 21 ] )
 					);
 
 					setAttribute( 'a', 1, range );
@@ -1113,9 +1115,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not create an operation if the range contains only closing tag', () => {
-					const range = new Range(
-						new Position( root, [ 18, 3 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 3 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					setAttribute( 'a', 3, range );
@@ -1137,7 +1139,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
@@ -1188,9 +1190,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
-					const range = new Range(
-						new Position( root, [ 18, 3 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 3 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					removeAttribute( 'a', range );
@@ -1213,7 +1215,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'a', getRange( 3, 15 ) );
@@ -1272,7 +1274,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, p );
@@ -1295,7 +1297,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', root );
@@ -1313,7 +1315,7 @@ describe( 'Writer', () => {
 					appendElement( 'e', { a: 1 }, root );
 					appendText( 'xxx', root );
 
-					const range = Range._createIn( root );
+					const range = ModelRange._createIn( root );
 
 					clearAttributes( range );
 
@@ -1358,7 +1360,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 					const element = createElement( 'x' );
 
 					expectToThrowCKEditorError( () => {
@@ -1381,7 +1383,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range', () => {
-			const range = Range._createIn( frag );
+			const range = ModelRange._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1403,7 +1405,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
-			const range = Range._createIn( frag );
+			const range = ModelRange._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1465,7 +1467,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
@@ -1479,14 +1481,14 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p1 = new Element( 'p', { key1: 'value1' }, new Text( 'foo' ) );
-			p2 = new Element( 'p', { key2: 'value2' }, new Text( 'bar' ) );
+			p1 = new ModelElement( 'p', { key1: 'value1' }, new ModelText( 'foo' ) );
+			p2 = new ModelElement( 'p', { key2: 'value2' }, new ModelText( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 		} );
 
 		it( 'should merge foo and bar into foobar', () => {
-			merge( new Position( root, [ 1 ] ) );
+			merge( new ModelPosition( root, [ 1 ] ) );
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -1497,12 +1499,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should correctly merge in document fragment', () => {
-			const docFrag = new DocumentFragment( [
-				new Element( 'p', null, 'foo' ),
-				new Element( 'p', null, 'bar' )
+			const docFrag = new ModelDocumentFragment( [
+				new ModelElement( 'p', null, 'foo' ),
+				new ModelElement( 'p', null, 'bar' )
 			] );
 
-			merge( new Position( docFrag, [ 1 ] ) );
+			merge( new ModelPosition( docFrag, [ 1 ] ) );
 
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
 			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
@@ -1526,9 +1528,9 @@ describe( 'Writer', () => {
 			} );
 
 			function testMerge( startElement, startOffset, endElement, endOffset ) {
-				const markerRange = new Range(
-					Position._createAt( startElement, startOffset ),
-					Position._createAt( endElement, endOffset )
+				const markerRange = new ModelRange(
+					ModelPosition._createAt( startElement, startOffset ),
+					ModelPosition._createAt( endElement, endOffset )
 				);
 
 				addMarker( 'name', {
@@ -1538,7 +1540,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				merge( Position._createAfter( p1 ) );
+				merge( ModelPosition._createAfter( p1 ) );
 
 				const history = model.document.history;
 
@@ -1555,7 +1557,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {
-			const markerRange = new Range( Position._createAt( p2, 0 ), Position._createAt( p2, 2 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p2, 0 ), ModelPosition._createAt( p2, 2 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1564,7 +1566,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			merge( Position._createAfter( p1 ) );
+			merge( ModelPosition._createAfter( p1 ) );
 
 			const history = model.document.history;
 
@@ -1576,21 +1578,21 @@ describe( 'Writer', () => {
 
 		it( 'should throw if there is no element after', () => {
 			expectToThrowCKEditorError( () => {
-				merge( new Position( root, [ 2 ] ) );
+				merge( new ModelPosition( root, [ 2 ] ) );
 			}, /^writer-merge-no-element-after/, model );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expectToThrowCKEditorError( () => {
-				merge( new Position( root, [ 0, 2 ] ) );
+				merge( new ModelPosition( root, [ 0, 2 ] ) );
 			}, /^writer-merge-no-element-before/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.merge( new Position( root, [ 1 ] ) );
+				writer.merge( new ModelPosition( root, [ 1 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -1601,26 +1603,26 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			div = new Element( 'div', [], new Text( 'foobar' ) );
-			p = new Element( 'p', [], new Text( 'abcxyz' ) );
+			div = new ModelElement( 'div', [], new ModelText( 'foobar' ) );
+			p = new ModelElement( 'p', [], new ModelText( 'abcxyz' ) );
 
-			div._insertChild( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
-			div._insertChild( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
+			div._insertChild( 0, [ new ModelElement( 'p', [], new ModelText( 'gggg' ) ) ] );
+			div._insertChild( 2, [ new ModelElement( 'p', [], new ModelText( 'hhhh' ) ) ] );
 
 			root._insertChild( 0, [ div, p ] );
 
-			range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 0, 3 ] ), new ModelPosition( root, [ 0, 7 ] ) );
 		} );
 
 		it( 'should move flat range of nodes', () => {
-			move( range, new Position( root, [ 1, 3 ] ) );
+			move( range, new ModelPosition( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
 		it( 'should create a marker operation if a marker was affected', () => {
-			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1629,7 +1631,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+			move( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ), ModelPosition._createAt( div, 0 ) );
 
 			const history = model.document.history;
 
@@ -1645,7 +1647,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {
-			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1654,7 +1656,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+			move( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ), ModelPosition._createAt( div, 0 ) );
 
 			const history = model.document.history;
 
@@ -1666,15 +1668,15 @@ describe( 'Writer', () => {
 
 		it( 'should throw if object to move is not a range', () => {
 			expectToThrowCKEditorError( () => {
-				move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
+				move( root.getChild( 0 ), new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-move-invalid-range/, model );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
-			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
+			const notFlatRange = new ModelRange( new ModelPosition( root, [ 0, 2, 2 ] ), new ModelPosition( root, [ 0, 6 ] ) );
 
 			expectToThrowCKEditorError( () => {
-				move( notFlatRange, new Position( root, [ 1, 3 ] ) );
+				move( notFlatRange, new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-move-range-not-flat/, model );
 		} );
 
@@ -1687,10 +1689,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.move( range, new Position( root, [ 1, 3 ] ) );
+				writer.move( range, new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -1708,8 +1710,8 @@ describe( 'Writer', () => {
 			insertElement( 'p', div );
 			appendElement( 'p', div );
 
-			insertText( 'gggg', new Position( div, [ 0, 0 ] ) );
-			insertText( 'hhhh', new Position( div, [ 7, 0 ] ) );
+			insertText( 'gggg', new ModelPosition( div, [ 0, 0 ] ) );
+			insertText( 'hhhh', new ModelPosition( div, [ 7, 0 ] ) );
 		} );
 
 		describe( 'remove from document', () => {
@@ -1723,7 +1725,7 @@ describe( 'Writer', () => {
 
 				// Range starts in ROOT > DIV > P > gg|gg.
 				// Range ends in ROOT > DIV > ...|ar.
-				range = new Range( new Position( root, [ 0, 0, 2 ] ), new Position( root, [ 0, 5 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 0, 2 ] ), new ModelPosition( root, [ 0, 5 ] ) );
 			} );
 
 			it( 'should remove specified node', () => {
@@ -1731,20 +1733,20 @@ describe( 'Writer', () => {
 
 				expect( root.maxOffset ).to.equal( 1 );
 				expect( root.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1762,7 +1764,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should create a marker operation if a marker was affected', () => {
-				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+				const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 				addMarker( 'name', {
 					range: markerRange,
@@ -1771,7 +1773,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+				remove( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ) );
 
 				const history = model.document.history;
 
@@ -1788,7 +1790,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should not create a marker operation if affected marker was not using operations', () => {
-				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+				const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 				addMarker( 'name', {
 					range: markerRange,
@@ -1797,7 +1799,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+				remove( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ) );
 
 				const history = model.document.history;
 
@@ -1808,7 +1810,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
-				const writer = new Writer( model, batch );
+				const writer = new ModelWriter( model, batch );
 
 				expectToThrowCKEditorError( () => {
 					writer.remove( range );
@@ -1826,7 +1828,7 @@ describe( 'Writer', () => {
 
 				// Range starts in FRAG > DIV > P > gg|gg.
 				// Range ends in FRAG > DIV > ...|ar.
-				range = new Range( new Position( frag, [ 0, 0, 2 ] ), new Position( frag, [ 0, 5 ] ) );
+				range = new ModelRange( new ModelPosition( frag, [ 0, 0, 2 ] ), new ModelPosition( frag, [ 0, 5 ] ) );
 			} );
 
 			it( 'should remove specified node', () => {
@@ -1834,20 +1836,20 @@ describe( 'Writer', () => {
 
 				expect( frag.maxOffset ).to.equal( 1 );
 				expect( frag.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1865,7 +1867,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
-				const writer = new Writer( model, batch );
+				const writer = new ModelWriter( model, batch );
 
 				expectToThrowCKEditorError( () => {
 					writer.remove( range );
@@ -1877,7 +1879,7 @@ describe( 'Writer', () => {
 	describe( 'rename()', () => {
 		it( 'should rename given element', () => {
 			const root = doc.createRoot();
-			const p = new Element( 'p', null, new Text( 'abc' ) );
+			const p = new ModelElement( 'p', null, new ModelText( 'abc' ) );
 
 			root._appendChild( p );
 
@@ -1888,8 +1890,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should rename in document fragment', () => {
-			const docFrag = new DocumentFragment();
-			const p = new Element( 'p' );
+			const docFrag = new ModelDocumentFragment();
+			const p = new ModelElement( 'p' );
 
 			docFrag._appendChild( p );
 
@@ -1901,13 +1903,13 @@ describe( 'Writer', () => {
 
 		it( 'should throw if not an Element instance is passed', () => {
 			expectToThrowCKEditorError( () => {
-				rename( new Text( 'abc' ), 'h' );
+				rename( new ModelText( 'abc' ), 'h' );
 			}, /^writer-rename-not-element-instance/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
-			const p = new Element( 'p', null, new Text( 'abc' ) );
+			const writer = new ModelWriter( model, batch );
+			const p = new ModelElement( 'p', null, new ModelText( 'abc' ) );
 
 			expectToThrowCKEditorError( () => {
 				writer.rename( p, 'h' );
@@ -1921,13 +1923,13 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new Element( 'p', { key: 'value' }, new Text( 'foobar' ) );
+			p = new ModelElement( 'p', { key: 'value' }, new ModelText( 'foobar' ) );
 
 			root._insertChild( 0, p );
 		} );
 
 		it( 'should split foobar to foo and bar', () => {
-			split( new Position( root, [ 0, 3 ] ) );
+			split( new ModelPosition( root, [ 0, 3 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1945,10 +1947,10 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should split inside document fragment', () => {
-			const docFrag = new DocumentFragment();
-			docFrag._appendChild( new Element( 'p', null, new Text( 'foobar' ) ) );
+			const docFrag = new ModelDocumentFragment();
+			docFrag._appendChild( new ModelElement( 'p', null, new ModelText( 'foobar' ) ) );
 
-			split( new Position( docFrag, [ 0, 3 ] ) );
+			split( new ModelPosition( docFrag, [ 0, 3 ] ) );
 
 			expect( docFrag.maxOffset ).to.equal( 2 );
 
@@ -1962,7 +1964,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			split( new Position( root, [ 0, 6 ] ) );
+			split( new ModelPosition( root, [ 0, 6 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1980,7 +1982,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expectToThrowCKEditorError( () => {
-				split( new Position( root, [ 0 ] ) );
+				split( new ModelPosition( root, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
@@ -1988,7 +1990,7 @@ describe( 'Writer', () => {
 			expectToThrowCKEditorError( () => {
 				const element = createElement( 'p' );
 
-				split( new Position( element, [ 0 ] ) );
+				split( new ModelPosition( element, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
@@ -1996,17 +1998,17 @@ describe( 'Writer', () => {
 			expectToThrowCKEditorError( () => {
 				const documentFragment = createDocumentFragment();
 
-				split( new Position( documentFragment, [ 0 ] ) );
+				split( new ModelPosition( documentFragment, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
 		it( 'should split elements to limitElement', () => {
-			const div = new Element( 'div', null, p );
-			const section = new Element( 'section', null, div );
+			const div = new ModelElement( 'div', null, p );
+			const section = new ModelElement( 'section', null, div );
 
 			root._insertChild( 0, section );
 
-			split( new Position( p, [ 3 ] ), section );
+			split( new ModelPosition( p, [ 3 ] ), section );
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( section.maxOffset ).to.equal( 2 );
@@ -2025,22 +2027,22 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when limitElement is not a position ancestor', () => {
-			const div = new Element( 'div', null, p );
-			const section = new Element( 'section', null, div );
+			const div = new ModelElement( 'div', null, p );
+			const section = new ModelElement( 'section', null, div );
 
 			root._insertChild( 0, div );
 			root._insertChild( 1, section );
 
 			expectToThrowCKEditorError( () => {
-				split( new Position( p, [ 3 ] ), section );
+				split( new ModelPosition( p, [ 3 ] ), section );
 			}, /^writer-split-invalid-limit-element/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.split( new Position( root, [ 0, 3 ] ) );
+				writer.split( new ModelPosition( root, [ 0, 3 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -2051,13 +2053,13 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			root._insertChild( 0, new Text( 'foobar' ) );
+			root._insertChild( 0, new ModelText( 'foobar' ) );
 
-			range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 4 ] ) );
 		} );
 
 		it( 'should wrap flat range with given element', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			wrap( range, p );
 
 			expect( root.maxOffset ).to.equal( 5 );
@@ -2078,9 +2080,9 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should wrap inside document fragment', () => {
-			const docFrag = new DocumentFragment( new Text( 'foo' ) );
+			const docFrag = new ModelDocumentFragment( new ModelText( 'foo' ) );
 
-			wrap( Range._createIn( docFrag ), 'p' );
+			wrap( ModelRange._createIn( docFrag ), 'p' );
 
 			expect( docFrag.maxOffset ).to.equal( 1 );
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
@@ -2088,8 +2090,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
-			root._insertChild( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
-			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
+			root._insertChild( 1, [ new ModelElement( 'p', [], new ModelText( 'xyz' ) ) ] );
+			const notFlatRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6, 2 ] ) );
 
 			expectToThrowCKEditorError( () => {
 				wrap( notFlatRange, 'p' );
@@ -2097,7 +2099,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children #1', () => {
-			const p = new Element( 'p', [], new Text( 'a' ) );
+			const p = new ModelElement( 'p', [], new ModelText( 'a' ) );
 
 			expectToThrowCKEditorError( () => {
 				wrap( range, p );
@@ -2105,7 +2107,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children #2', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			root._insertChild( 0, p );
 
 			expectToThrowCKEditorError( () => {
@@ -2114,7 +2116,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.wrap( range, 'p' );
@@ -2128,8 +2130,8 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new Element( 'p', [], new Text( 'xyz' ) );
-			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
+			p = new ModelElement( 'p', [], new ModelText( 'xyz' ) );
+			root._insertChild( 0, [ new ModelText( 'a' ), p, new ModelText( 'b' ) ] );
 		} );
 
 		it( 'should unwrap given element', () => {
@@ -2140,7 +2142,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap inside document fragment', () => {
-			const docFrag = new DocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
+			const docFrag = new ModelDocumentFragment( new ModelElement( 'p', null, new ModelText( 'foo' ) ) );
 
 			unwrap( docFrag.getChild( 0 ) );
 
@@ -2149,7 +2151,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {
-			const element = new Element( 'p' );
+			const element = new ModelElement( 'p' );
 
 			expectToThrowCKEditorError( () => {
 				unwrap( element );
@@ -2157,7 +2159,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( p );
@@ -2170,8 +2172,8 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			root._appendChild( new ModelText( 'foo' ) );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should throw if options.usingOperation is not defined', () => {
@@ -2231,7 +2233,7 @@ describe( 'Writer', () => {
 		it( 'should throw when trying to update existing marker in the document marker collection', () => {
 			addMarker( 'name', { range, usingOperation: false } );
 
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { range: range2, usingOperation: false } );
@@ -2266,7 +2268,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw when trying to use detached writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.addMarker( marker, null, { usingOperation: true } );
@@ -2279,13 +2281,13 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			root._appendChild( new ModelText( 'foo' ) );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should update managed marker\'s range by marker instance using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2300,7 +2302,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2 } );
 
@@ -2315,7 +2317,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker instance using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2, usingOperation: true } );
 
@@ -2330,7 +2332,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2, usingOperation: true } );
 
@@ -2348,7 +2350,7 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2383,7 +2385,7 @@ describe( 'Writer', () => {
 		it( 'should create additional operation when marker type changes to not managed using operation and changing its range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: true } );
 			updateMarker( 'name', { range: range2, usingOperation: false } );
@@ -2426,7 +2428,7 @@ describe( 'Writer', () => {
 		it( 'should enable changing marker to be managed using operation while changing range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: false } );
 			updateMarker( 'name', { range: range2, usingOperation: true } );
@@ -2464,7 +2466,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not change affectsData property if not provided', () => {
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, affectsData: false, usingOperation: false } );
 			updateMarker( 'name', { range: range2 } );
@@ -2546,7 +2548,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw when trying to use detached writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.updateMarker( marker, { usingOperation: true } );
@@ -2559,8 +2561,8 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			root._appendChild( new ModelText( 'foo' ) );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
@@ -2577,7 +2579,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.removeMarker( 'name' );
@@ -2763,16 +2765,16 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p' ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p' ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 		} );
 
-		it( 'should use DocumentSelection#_setTo method', () => {
+		it( 'should use ModelDocumentSelection#_setTo method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setToSpy = sinon.spy( DocumentSelection.prototype, '_setTo' );
+			const setToSpy = sinon.spy( ModelDocumentSelection.prototype, '_setTo' );
 			setSelection( firstParagraph, 0 );
 
 			expect( setToSpy.calledOnce ).to.be.true;
@@ -2780,7 +2782,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should change document selection ranges', () => {
-			const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 2, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 2, 2 ] ) );
 
 			setSelection( range, { backward: true } );
 
@@ -2800,16 +2802,16 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p' ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p' ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 		} );
 
-		it( 'should use DocumentSelection#_setFocus method', () => {
+		it( 'should use ModelDocumentSelection#_setFocus method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setFocusSpy = sinon.spy( DocumentSelection.prototype, '_setFocus' );
+			const setFocusSpy = sinon.spy( ModelDocumentSelection.prototype, '_setFocus' );
 			setSelectionFocus( firstParagraph, 0 );
 
 			expect( setFocusSpy.calledOnce ).to.be.true;
@@ -2817,8 +2819,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should change document selection ranges', () => {
-			setSelection( new Position( root, [ 0, 0 ] ) );
-			setSelectionFocus( new Position( root, [ 2, 2 ] ) );
+			setSelection( new ModelPosition( root, [ 0, 0 ] ) );
+			setSelectionFocus( new ModelPosition( root, [ 2, 2 ] ) );
 
 			expect( model.document.selection._ranges.length ).to.equal( 1 );
 			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
@@ -2827,7 +2829,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'setSelectionAttribute()', () => {
-		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		const fooStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'foo' );
 		let root, rangeInEmptyP, emptyP;
 
 		beforeEach( () => {
@@ -2836,12 +2838,12 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p', [], [] ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], [] ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 
-			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
 			emptyP = root.getChild( 0 );
 		} );
 
@@ -2872,7 +2874,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'removeSelectionAttribute()', () => {
-		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		const fooStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'foo' );
 		let root, rangeInEmptyP, emptyP;
 
 		beforeEach( () => {
@@ -2881,12 +2883,12 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p', [], [] ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], [] ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 
-			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
 			emptyP = root.getChild( 0 );
 		} );
 
@@ -2926,8 +2928,8 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'overrideSelectionGravity()', () => {
-		it( 'should use DocumentSelection#_overrideGravity', () => {
-			const overrideGravitySpy = sinon.spy( DocumentSelection.prototype, '_overrideGravity' );
+		it( 'should use ModelDocumentSelection#_overrideGravity', () => {
+			const overrideGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_overrideGravity' );
 
 			overrideSelectionGravity();
 
@@ -2942,12 +2944,12 @@ describe( 'Writer', () => {
 		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
 			const root = doc.createRoot();
 			root._appendChild( [
-				new Text( 'foo', { foo: true } ),
-				new Text( 'bar', { foo: true, bar: true } ),
-				new Text( 'biz', { foo: true } )
+				new ModelText( 'foo', { foo: true } ),
+				new ModelText( 'bar', { foo: true, bar: true } ),
+				new ModelText( 'biz', { foo: true } )
 			] );
 
-			setSelection( new Position( root, [ 6 ] ) );
+			setSelection( new ModelPosition( root, [ 6 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
 
@@ -2957,7 +2959,7 @@ describe( 'Writer', () => {
 			expect( model.document.selection.isGravityOverridden ).to.true;
 
 			// Moving selection should not restore the gravity.
-			setSelection( new Position( root, [ 5 ] ) );
+			setSelection( new ModelPosition( root, [ 5 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
 			expect( model.document.selection.isGravityOverridden ).to.true;
@@ -2965,9 +2967,9 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'restoreSelectionGravity()', () => {
-		it( 'should use DocumentSelection#_restoreGravity', () => {
+		it( 'should use ModelDocumentSelection#_restoreGravity', () => {
 			const overrideUid = overrideSelectionGravity();
-			const restoreGravitySpy = sinon.spy( DocumentSelection.prototype, '_restoreGravity' );
+			const restoreGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_restoreGravity' );
 
 			restoreSelectionGravity( overrideUid );
 
@@ -2978,12 +2980,12 @@ describe( 'Writer', () => {
 		it( 'should restore overridden gravity to default', () => {
 			const root = doc.createRoot();
 			root._appendChild( [
-				new Text( 'foo', { foo: true } ),
-				new Text( 'bar', { foo: true, bar: true } ),
-				new Text( 'biz', { foo: true } )
+				new ModelText( 'foo', { foo: true } ),
+				new ModelText( 'bar', { foo: true, bar: true } ),
+				new ModelText( 'biz', { foo: true } )
 			] );
 
-			setSelection( new Position( root, [ 6 ] ) );
+			setSelection( new ModelPosition( root, [ 6 ] ) );
 
 			const overrideUid = overrideSelectionGravity();
 

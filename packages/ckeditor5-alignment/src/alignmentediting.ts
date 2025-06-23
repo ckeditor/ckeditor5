@@ -8,17 +8,17 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { AttributeDescriptor } from 'ckeditor5/src/engine.js';
+import type { DowncastAttributeDescriptor } from 'ckeditor5/src/engine.js';
 
-import AlignmentCommand from './alignmentcommand.js';
+import { AlignmentCommand } from './alignmentcommand.js';
 import { isDefault, isSupported, normalizeAlignmentOptions, supportedOptions } from './utils.js';
-import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
+import type { AlignmentFormat, AlignmentSupportedOption } from './alignmentconfig.js';
 
 /**
  * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
  * the `alignment` attribute for block elements in the {@link module:engine/model/model~Model model}.
  */
-export default class AlignmentEditing extends Plugin {
+export class AlignmentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -95,7 +95,7 @@ export default class AlignmentEditing extends Plugin {
  * Prepare downcast conversion definition for inline alignment styling.
  */
 function buildDowncastInlineDefinition( options: Array<AlignmentFormat> ) {
-	const view: Record<string, { key: 'style'; value: { 'text-align': SupportedOption } }> = {};
+	const view: Record<string, { key: 'style'; value: { 'text-align': AlignmentSupportedOption } }> = {};
 
 	for ( const { name } of options ) {
 		view[ name ] = {
@@ -167,7 +167,7 @@ function buildUpcastCompatibilityDefinitions( options: Array<AlignmentFormat> ) 
  * Prepare conversion definitions for upcast and downcast alignment with classes.
  */
 function buildClassDefinition( options: Array<AlignmentFormat> ) {
-	const view: Record<string, AttributeDescriptor> = {};
+	const view: Record<string, DowncastAttributeDescriptor> = {};
 
 	for ( const option of options ) {
 		view[ option.name ] = {

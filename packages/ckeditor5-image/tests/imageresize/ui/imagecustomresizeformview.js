@@ -4,13 +4,13 @@
  */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import ImageCustomResizeFormView from '../../../src/imageresize/ui/imagecustomresizeformview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ImageCustomResizeFormView } from '../../../src/imageresize/ui/imagecustomresizeformview.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusCycler } from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageCustomResizeFormView', () => {
 	let view;

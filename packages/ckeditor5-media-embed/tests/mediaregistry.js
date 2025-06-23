@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MediaRegistry from '../src/mediaregistry.js';
+import { MediaRegistry } from '../src/mediaregistry.js';
 
 describe( 'MediaRegistry', () => {
 	describe( 'constructor()', () => {

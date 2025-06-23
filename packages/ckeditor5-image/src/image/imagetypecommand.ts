@@ -7,14 +7,14 @@
  * @module image/image/imagetypecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
  */
-export default class ImageTypeCommand extends Command {
+export class ImageTypeCommand extends Command {
 	/**
 	 * Model element name the command converts to.
 	 */
@@ -56,7 +56,7 @@ export default class ImageTypeCommand extends Command {
 	 * (for before and after the change) so external integrations can hook into the decorated
 	 * `execute` event and handle this change. `null` if the type change failed.
 	 */
-	public override execute( options: { setImageSizes?: boolean } = {} ): { oldElement: Element; newElement: Element } | null {
+	public override execute( options: { setImageSizes?: boolean } = {} ): { oldElement: ModelElement; newElement: ModelElement } | null {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );

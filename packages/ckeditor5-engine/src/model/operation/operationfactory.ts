@@ -7,23 +7,23 @@
  * @module engine/model/operation/operationfactory
  */
 
-import AttributeOperation from './attributeoperation.js';
-import InsertOperation from './insertoperation.js';
-import MarkerOperation from './markeroperation.js';
-import MoveOperation from './moveoperation.js';
-import NoOperation from './nooperation.js';
-import Operation from './operation.js';
-import RenameOperation from './renameoperation.js';
-import RootAttributeOperation from './rootattributeoperation.js';
-import RootOperation from './rootoperation.js';
-import SplitOperation from './splitoperation.js';
-import MergeOperation from './mergeoperation.js';
+import { AttributeOperation } from './attributeoperation.js';
+import { InsertOperation } from './insertoperation.js';
+import { MarkerOperation } from './markeroperation.js';
+import { MoveOperation } from './moveoperation.js';
+import { NoOperation } from './nooperation.js';
+import { Operation } from './operation.js';
+import { RenameOperation } from './renameoperation.js';
+import { RootAttributeOperation } from './rootattributeoperation.js';
+import { RootOperation } from './rootoperation.js';
+import { SplitOperation } from './splitoperation.js';
+import { MergeOperation } from './mergeoperation.js';
 
-import type Document from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 const operations: {
 	[ className: string ]: {
-		fromJSON( json: any, document: Document ): Operation;
+		fromJSON( json: any, document: ModelDocument ): Operation;
 	};
 } = {};
 
@@ -42,14 +42,14 @@ operations[ MergeOperation.className ] = MergeOperation;
 /**
  * A factory class for creating operations.
  */
-export default abstract class OperationFactory {
+export abstract class OperationFactory {
 	/**
 	 * Creates an operation instance from a JSON object (parsed JSON string).
 	 *
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static fromJSON( json: any, document: Document ): Operation {
+	public static fromJSON( json: any, document: ModelDocument ): Operation {
 		return operations[ json.__className ].fromJSON( json, document );
 	}
 }

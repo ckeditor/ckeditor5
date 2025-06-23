@@ -9,7 +9,7 @@
 
 import {
 	Matcher,
-	UpcastWriter,
+	ViewUpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewNode
@@ -21,13 +21,14 @@ import {
  *
  * @param documentFragment Document fragment on which transform images.
  * @param rtfData The RTF data from which images representation will be used.
+ * @internal
  */
 export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFragment, rtfData: string ): void {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
 
-	const upcastWriter = new UpcastWriter( documentFragment.document );
+	const upcastWriter = new ViewUpcastWriter( documentFragment.document );
 	const shapesIds = findAllShapesIds( documentFragment, upcastWriter );
 
 	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
@@ -61,7 +62,7 @@ export function _convertHexToBase64( hexString: string ): string {
  * @param documentFragment Document fragment from which to extract shape ids.
  * @returns Array of shape ids.
  */
-function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): Array<string> {
+function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): Array<string> {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new Matcher( {
@@ -112,7 +113,7 @@ function findAllShapesIds( documentFragment: ViewDocumentFragment, writer: Upcas
 function removeAllImgElementsRepresentingShapes(
 	shapesIds: Array<string>,
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	const range = writer.createRangeIn( documentFragment );
 
@@ -146,7 +147,7 @@ function removeAllImgElementsRepresentingShapes(
  *
  * @param documentFragment Document fragment from which to remove shape elements.
  */
-function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer: UpcastWriter ) {
+function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ) {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new Matcher( {
@@ -169,7 +170,7 @@ function removeAllShapeElements( documentFragment: ViewDocumentFragment, writer:
 /**
  * Inserts `img` tags if there is none after a shape.
  */
-function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocumentFragment, writer: UpcastWriter ) {
+function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ) {
 	const range = writer.createRangeIn( documentFragment );
 
 	const shapes: Array<ViewElement> = [];
@@ -239,7 +240,7 @@ function insertMissingImgs( shapeIds: Array<string>, documentFragment: ViewDocum
  */
 function findAllImageElementsWithLocalSource(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): Array<ImageWithIndex> {
 	const range = writer.createRangeIn( documentFragment );
 
@@ -340,7 +341,7 @@ function extractImageDataFromRtf( rtfData: string ): Array<{ hex: string; type: 
 function replaceImagesFileSourceWithInlineRepresentation(
 	imageElements: Array<ImageWithIndex>,
 	imagesHexSources: ReturnType<typeof extractImageDataFromRtf>,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ) {
 	for ( let i = 0; i < imageElements.length; i++ ) {
 		const { element, imageIndex } = imageElements[ i ];

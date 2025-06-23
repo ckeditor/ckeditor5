@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isWindow from '../../src/dom/iswindow.js';
+import { isWindow } from '../../src/dom/iswindow.js';
 
 describe( 'isWindow()', () => {
 	it( 'detects DOM Window in browsers', () => {

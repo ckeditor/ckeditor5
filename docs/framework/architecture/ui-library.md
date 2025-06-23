@@ -399,7 +399,7 @@ The {@link module:ui/list/listview~ListView} can be added to a dropdown using th
 
 <code-switcher>
 ```js
-import { ViewModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
+import { UIModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
 
 // The default dropdown.
 const dropdownView = createDropdown( locale );
@@ -409,7 +409,7 @@ const items = new Collection();
 
 items.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		withText: true,
 		label: 'Foo'
 	} )
@@ -417,7 +417,7 @@ items.add( {
 
 items.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		withText: true,
 		label: 'Bar'
 	} )
@@ -903,7 +903,7 @@ editor.plugins.get( 'Dialog' ).view.updatePosition();
 
 ### Best practices
 
-For the best user experience, the editing view should get {@link module:engine/view/view~View#focus focused} upon any user action (like executing a command) to make sure the editor retains focus:
+For the best user experience, the editing view should get {@link module:engine/view/view~EditingView#focus focused} upon any user action (like executing a command) to make sure the editor retains focus:
 
 ```js
 // Execute some action on the "dropdown#execute" event.

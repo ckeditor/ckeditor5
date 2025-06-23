@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-editor-multi-root": "45.2.0",
     "@ckeditor/ckeditor5-engine": "45.2.0",
     "@ckeditor/ckeditor5-utils": "45.2.0",
-    "es-toolkit": "1.32.0"
+    "es-toolkit": "1.38.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-clipboard": "45.2.0",

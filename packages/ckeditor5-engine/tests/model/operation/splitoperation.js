@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import SplitOperation from '../../../src/model/operation/splitoperation.js';
-import MergeOperation from '../../../src/model/operation/mergeoperation.js';
-import Position from '../../../src/model/position.js';
-import Element from '../../../src/model/element.js';
-import Text from '../../../src/model/text.js';
+import { Model } from '../../../src/model/model.js';
+import { SplitOperation } from '../../../src/model/operation/splitoperation.js';
+import { MergeOperation } from '../../../src/model/operation/mergeoperation.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelElement } from '../../../src/model/element.js';
+import { ModelText } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -20,11 +20,11 @@ describe( 'SplitOperation', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		gy = doc.graveyard;
-		gyPos = new Position( gy, [ 0 ] );
+		gyPos = new ModelPosition( gy, [ 0 ] );
 	} );
 
 	it( 'should have proper type', () => {
-		const splitPosition = new Position( root, [ 1, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
@@ -33,7 +33,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should have proper insertionPosition', () => {
-		const splitPosition = new Position( root, [ 1, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
@@ -42,7 +42,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should have proper moveTargetPosition', () => {
-		const splitPosition = new Position( root, [ 1, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
@@ -51,7 +51,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should have proper movedRange', () => {
-		const splitPosition = new Position( root, [ 1, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const split = new SplitOperation( splitPosition, 2, insertionPosition, null, 1 );
@@ -61,11 +61,11 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should split an element', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+		const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 		root._insertChild( 0, [ p1 ] );
 
-		const splitPosition = new Position( root, [ 0, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		model.applyOperation( new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version ) );
@@ -83,13 +83,13 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should split an element using graveyard element', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1 ] );
 		gy._insertChild( 0, [ p2 ] );
 
-		const splitPosition = new Position( root, [ 0, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		model.applyOperation( new SplitOperation( splitPosition, 3, insertionPosition, gyPos, doc.version ) );
@@ -109,7 +109,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should create a proper MergeOperation as a reverse', () => {
-		const splitPosition = new Position( root, [ 1, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 1, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const operation = new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version );
@@ -118,17 +118,17 @@ describe( 'SplitOperation', () => {
 		expect( reverse ).to.be.an.instanceof( MergeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 3 );
-		expect( reverse.sourcePosition.isEqual( new Position( root, [ 2, 0 ] ) ) ).to.be.true;
-		expect( reverse.targetPosition.isEqual( new Position( root, [ 1, 3 ] ) ) ).to.be.true;
+		expect( reverse.sourcePosition.isEqual( new ModelPosition( root, [ 2, 0 ] ) ) ).to.be.true;
+		expect( reverse.targetPosition.isEqual( new ModelPosition( root, [ 1, 3 ] ) ) ).to.be.true;
 		expect( reverse.graveyardPosition.isEqual( gyPos ) ).to.be.true;
 	} );
 
 	it( 'should undo split by applying reverse operation', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+		const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 		root._insertChild( 0, [ p1 ] );
 
-		const splitPosition = new Position( root, [ 0, 3 ] );
+		const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 		const operation = new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version );
@@ -144,11 +144,11 @@ describe( 'SplitOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if split position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
-			const splitPosition = new Position( root, [ 0, 8 ] );
+			const splitPosition = new ModelPosition( root, [ 0, 8 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 			const operation = new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version );
@@ -157,25 +157,25 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should throw an error if split position is in root', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
-			const splitPosition = new Position( root, [ 0, 0 ] );
+			const splitPosition = new ModelPosition( root, [ 0, 0 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 			const operation = new SplitOperation( splitPosition, 3, insertionPosition, null, doc.version );
-			operation.splitPosition = new Position( root, [ 1 ] );
+			operation.splitPosition = new ModelPosition( root, [ 1 ] );
 
 			expectToThrowCKEditorError( () => operation._validate(), /split-operation-split-in-root/, model );
 		} );
 
 		it( 'should throw an error if number of nodes to move is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
-			const splitPosition = new Position( root, [ 0, 2 ] );
+			const splitPosition = new ModelPosition( root, [ 0, 2 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 			const operation = new SplitOperation( splitPosition, 6, insertionPosition, null, doc.version );
@@ -184,11 +184,11 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should throw an error if graveyard position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new ModelText( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
-			const splitPosition = new Position( root, [ 0, 2 ] );
+			const splitPosition = new ModelPosition( root, [ 0, 2 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 			const operation = new SplitOperation( splitPosition, 4, insertionPosition, gyPos, doc.version );
@@ -198,7 +198,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should create SplitOperation with the same parameters when cloned #1', () => {
-		const position = new Position( root, [ 1, 2 ] );
+		const position = new ModelPosition( root, [ 1, 2 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( position );
 		const howMany = 4;
 		const baseVersion = doc.version;
@@ -219,7 +219,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should create SplitOperation with the same parameters when cloned #2', () => {
-		const position = new Position( root, [ 1, 2 ] );
+		const position = new ModelPosition( root, [ 1, 2 ] );
 		const insertionPosition = SplitOperation.getInsertionPosition( position );
 		const howMany = 4;
 		const baseVersion = doc.version;
@@ -241,7 +241,7 @@ describe( 'SplitOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object #1', () => {
-			const position = new Position( root, [ 0, 3 ] );
+			const position = new ModelPosition( root, [ 0, 3 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( position );
 			const op = new SplitOperation( position, 2, insertionPosition, null, doc.version );
 
@@ -258,7 +258,7 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should create proper json object #2', () => {
-			const position = new Position( root, [ 0, 3 ] );
+			const position = new ModelPosition( root, [ 0, 3 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( position );
 			const op = new SplitOperation( position, 2, insertionPosition, gyPos, doc.version );
 
@@ -277,7 +277,7 @@ describe( 'SplitOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper SplitOperation from json object #1', () => {
-			const position = new Position( root, [ 0, 3 ] );
+			const position = new ModelPosition( root, [ 0, 3 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( position );
 			const op = new SplitOperation( position, 2, insertionPosition, null, doc.version );
 
@@ -289,7 +289,7 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should create proper SplitOperation from json object #2', () => {
-			const position = new Position( root, [ 0, 3 ] );
+			const position = new ModelPosition( root, [ 0, 3 ] );
 			const insertionPosition = SplitOperation.getInsertionPosition( position );
 			const op = new SplitOperation( position, 2, insertionPosition, gyPos, doc.version );
 

@@ -7,17 +7,17 @@
  * @module ui/list/listitemview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { FocusableView } from '../focuscycler.js';
-import type ViewCollection from '../viewcollection.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list item view class.
  */
-export default class ListItemView extends View {
+export class ListItemView extends View {
 	/**
 	 * Collection of the child views inside of the list item {@link #element}.
 	 */

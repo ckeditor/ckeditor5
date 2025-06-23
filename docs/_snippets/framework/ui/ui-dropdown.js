@@ -10,7 +10,7 @@ import {
 	addListToDropdown,
 	addToolbarToDropdown,
 	createDropdown,
-	ViewModel,
+	UIModel,
 	IconBold,
 	IconItalic,
 	Collection,
@@ -22,14 +22,14 @@ const locale = new Locale();
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new ViewModel( {
+	model: new UIModel( {
 		label: 'Switch button',
 		withText: true
 	} )

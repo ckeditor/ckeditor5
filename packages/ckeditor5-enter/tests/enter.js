@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Enter from '../src/enter.js';
-import EnterCommand from '../src/entercommand.js';
-import EnterObserver from '../src/enterobserver.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Enter } from '../src/enter.js';
+import { EnterCommand } from '../src/entercommand.js';
+import { EnterObserver } from '../src/enterobserver.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Enter feature', () => {
 	let element, editor, viewDocument;
@@ -67,7 +67,7 @@ describe( 'Enter feature', () => {
 		const domEvt = getDomEvent();
 		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
@@ -80,7 +80,7 @@ describe( 'Enter feature', () => {
 		const executeSpy = editor.execute = sinon.spy();
 		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt ) );
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( domEvt.preventDefault, executeSpy, scrollSpy );
@@ -90,7 +90,7 @@ describe( 'Enter feature', () => {
 		const domEvt = getDomEvent();
 		const commandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.notCalled( commandExecuteSpy );
 	} );
@@ -98,7 +98,7 @@ describe( 'Enter feature', () => {
 	it( 'prevents default event action even if the command should not be executed', () => {
 		const domEvt = getDomEvent();
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.calledOnce( domEvt.preventDefault );
 	} );
@@ -108,7 +108,7 @@ describe( 'Enter feature', () => {
 
 		viewDocument.isComposing = true;
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new ViewDocumentDomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.notCalled( domEvt.preventDefault );
 	} );

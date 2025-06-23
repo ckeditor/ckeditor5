@@ -25,7 +25,7 @@
  *
  * @returns New spliced array.
  */
-export default function spliceArray<T>(
+export function spliceArray<T>(
 	targetArray: Array<T>,
 	insertArray: Array<T>,
 	index: number

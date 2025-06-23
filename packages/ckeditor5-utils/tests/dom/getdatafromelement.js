@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getDataFromElement from '../../src/dom/getdatafromelement.js';
+import { getDataFromElement } from '../../src/dom/getdatafromelement.js';
 
 describe( 'getDataFromElement', () => {
 	let divEl;

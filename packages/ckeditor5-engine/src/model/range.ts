@@ -7,41 +7,41 @@
  * @module engine/model/range
  */
 
-import TypeCheckable from './typecheckable.js';
-import Position from './position.js';
-import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { ModelTypeCheckable } from './typecheckable.js';
+import { ModelPosition } from './position.js';
+import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
-import type Document from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type InsertOperation from './operation/insertoperation.js';
-import type Item from './item.js';
-import type MergeOperation from './operation/mergeoperation.js';
-import type MoveOperation from './operation/moveoperation.js';
-import type Operation from './operation/operation.js';
-import type SplitOperation from './operation/splitoperation.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelElement } from './element.js';
+import { type InsertOperation } from './operation/insertoperation.js';
+import { type ModelItem } from './item.js';
+import { type MergeOperation } from './operation/mergeoperation.js';
+import { type MoveOperation } from './operation/moveoperation.js';
+import { type Operation } from './operation/operation.js';
+import { type SplitOperation } from './operation/splitoperation.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Represents a range in the model tree.
  *
- * A range is defined by its {@link module:engine/model/range~Range#start} and {@link module:engine/model/range~Range#end}
+ * A range is defined by its {@link module:engine/model/range~ModelRange#start} and {@link module:engine/model/range~ModelRange#end}
  * positions.
  *
  * You can create range instances via its constructor or the `createRange*()` factory methods of
- * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~ModelWriter}.
  */
-export default class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
+export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTreeWalkerValue> {
 	/**
 	 * Start position.
 	 */
-	public readonly start: Position;
+	public readonly start: ModelPosition;
 
 	/**
 	 * End position.
 	 */
-	public readonly end: Position;
+	public readonly end: ModelPosition;
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
@@ -49,11 +49,11 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param start The start position.
 	 * @param end The end position. If not set, the range will be collapsed at the `start` position.
 	 */
-	constructor( start: Position, end?: Position | null ) {
+	constructor( start: ModelPosition, end?: ModelPosition | null ) {
 		super();
 
-		this.start = Position._createAt( start );
-		this.end = end ? Position._createAt( end ) : Position._createAt( start );
+		this.start = ModelPosition._createAt( start );
+		this.end = end ? ModelPosition._createAt( end ) : ModelPosition._createAt( start );
 
 		// If the range is collapsed, treat in a similar way as a position and set its boundaries stickiness to 'toNone'.
 		// In other case, make the boundaries stick to the "inside" of the range.
@@ -64,17 +64,17 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	/**
 	 * Iterable interface.
 	 *
-	 * Iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
-	 * them together with additional information like length or {@link module:engine/model/position~Position positions},
-	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
-	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range
-	 * and all the {@link module:engine/model/element~Element}s that are entered into when iterating over this range.
+	 * Iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
+	 * them together with additional information like length or {@link module:engine/model/position~ModelPosition positions},
+	 * grouped as {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
+	 * It iterates over all {@link module:engine/model/textproxy~ModelTextProxy text contents} that are inside the range
+	 * and all the {@link module:engine/model/element~ModelElement}s that are entered into when iterating over this range.
 	 *
-	 * This iterator uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range
+	 * This iterator uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range
 	 * and `ignoreElementEnd` option set to `true`.
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
-		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	public* [ Symbol.iterator ](): IterableIterator<ModelTreeWalkerValue> {
+		yield* new ModelTreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
 	/**
@@ -87,7 +87,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 
 	/**
 	 * Describes whether this range is flat, that is if {@link #start} position and
-	 * {@link #end} position are in the same {@link module:engine/model/position~Position#parent}.
+	 * {@link #end} position are in the same {@link module:engine/model/position~ModelPosition#parent}.
 	 */
 	public get isFlat(): boolean {
 		const startParentPath = this.start.getParentPath();
@@ -99,31 +99,31 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	/**
 	 * Range root element.
 	 */
-	public get root(): Element | DocumentFragment {
+	public get root(): ModelElement | ModelDocumentFragment {
 		return this.start.root;
 	}
 
 	/**
-	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
+	 * Checks whether this range contains given {@link module:engine/model/position~ModelPosition position}.
 	 *
 	 * @param position Position to check.
-	 * @returns `true` if given {@link module:engine/model/position~Position position} is contained
+	 * @returns `true` if given {@link module:engine/model/position~ModelPosition position} is contained
 	 * in this range,`false` otherwise.
 	 */
-	public containsPosition( position: Position ): boolean {
+	public containsPosition( position: ModelPosition ): boolean {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
 	}
 
 	/**
-	 * Checks whether this range contains given {@link ~Range range}.
+	 * Checks whether this range contains given {@link ~ModelRange range}.
 	 *
 	 * @param otherRange Range to check.
 	 * @param loose Whether the check is loose or strict. If the check is strict (`false`), compared range cannot
 	 * start or end at the same position as this range boundaries. If the check is loose (`true`), compared range can start, end or
 	 * even be equal to this range. Note that collapsed ranges are always compared in strict mode.
-	 * @returns {Boolean} `true` if given {@link ~Range range} boundaries are contained by this range, `false` otherwise.
+	 * @returns {Boolean} `true` if given {@link ~ModelRange range} boundaries are contained by this range, `false` otherwise.
 	 */
-	public containsRange( otherRange: Range, loose: boolean = false ): boolean {
+	public containsRange( otherRange: ModelRange, loose: boolean = false ): boolean {
 		if ( otherRange.isCollapsed ) {
 			loose = false;
 		}
@@ -135,10 +135,10 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Checks whether given {@link module:engine/model/item~Item} is inside this range.
+	 * Checks whether given {@link module:engine/model/item~ModelItem} is inside this range.
 	 */
-	public containsItem( item: Item ): boolean {
-		const pos = Position._createBefore( item );
+	public containsItem( item: ModelItem ): boolean {
+		const pos = ModelPosition._createBefore( item );
 
 		return this.containsPosition( pos ) || this.start.isEqual( pos );
 	}
@@ -149,7 +149,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param otherRange Range to compare with.
 	 * @returns `true` if ranges are equal, `false` otherwise.
 	 */
-	public isEqual( otherRange: Range ): boolean {
+	public isEqual( otherRange: ModelRange ): boolean {
 		return this.start.isEqual( otherRange.start ) && this.end.isEqual( otherRange.end );
 	}
 
@@ -159,13 +159,13 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param otherRange Range to compare with.
 	 * @returns `true` if ranges intersect, `false` otherwise.
 	 */
-	public isIntersecting( otherRange: Range ): boolean {
+	public isIntersecting( otherRange: ModelRange ): boolean {
 		return this.start.isBefore( otherRange.end ) && this.end.isAfter( otherRange.start );
 	}
 
 	/**
-	 * Computes which part(s) of this {@link ~Range range} is not a part of given {@link ~Range range}.
-	 * Returned array contains zero, one or two {@link ~Range ranges}.
+	 * Computes which part(s) of this {@link ~ModelRange range} is not a part of given {@link ~ModelRange range}.
+	 * Returned array contains zero, one or two {@link ~ModelRange ranges}.
 	 *
 	 * Examples:
 	 *
@@ -190,7 +190,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param otherRange Range to differentiate against.
 	 * @returns The difference between ranges.
 	 */
-	public getDifference( otherRange: Range ): Array<Range> {
+	public getDifference( otherRange: ModelRange ): Array<ModelRange> {
 		const ranges = [];
 
 		if ( this.isIntersecting( otherRange ) ) {
@@ -199,24 +199,24 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			if ( this.containsPosition( otherRange.start ) ) {
 				// Given range start is inside this range. This means that we have to
 				// add shrunken range - from the start to the middle of this range.
-				ranges.push( new Range( this.start, otherRange.start ) );
+				ranges.push( new ModelRange( this.start, otherRange.start ) );
 			}
 
 			if ( this.containsPosition( otherRange.end ) ) {
 				// Given range end is inside this range. This means that we have to
 				// add shrunken range - from the middle of this range to the end.
-				ranges.push( new Range( otherRange.end, this.end ) );
+				ranges.push( new ModelRange( otherRange.end, this.end ) );
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( new Range( this.start, this.end ) );
+			ranges.push( new ModelRange( this.start, this.end ) );
 		}
 
 		return ranges;
 	}
 
 	/**
-	 * Returns an intersection of this {@link ~Range range} and given {@link ~Range range}.
+	 * Returns an intersection of this {@link ~ModelRange range} and given {@link ~ModelRange range}.
 	 * Intersection is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -236,7 +236,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param otherRange Range to check for intersection.
 	 * @returns A common part of given ranges or `null` if ranges have no common part.
 	 */
-	public getIntersection( otherRange: Range ): Range | null {
+	public getIntersection( otherRange: ModelRange ): ModelRange | null {
 		if ( this.isIntersecting( otherRange ) ) {
 			// Ranges intersect, so a common range will be returned.
 			// At most, it will be same as this range.
@@ -255,7 +255,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 				commonRangeEnd = otherRange.end;
 			}
 
-			return new Range( commonRangeStart, commonRangeEnd );
+			return new ModelRange( commonRangeStart, commonRangeEnd );
 		}
 
 		// Ranges do not intersect, so they do not have common part.
@@ -263,7 +263,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Returns a range created by joining this {@link ~Range range} with the given {@link ~Range range}.
+	 * Returns a range created by joining this {@link ~ModelRange range} with the given {@link ~ModelRange range}.
 	 * If ranges have no common part, returns `null`.
 	 *
 	 * Examples:
@@ -289,10 +289,10 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param otherRange Range to be joined.
 	 * @param loose Whether the intersection check is loose or strict. If the check is strict (`false`),
 	 * ranges are tested for intersection or whether start/end positions are equal. If the check is loose (`true`),
-	 * compared range is also checked if it's {@link module:engine/model/position~Position#isTouching touching} current range.
+	 * compared range is also checked if it's {@link module:engine/model/position~ModelPosition#isTouching touching} current range.
 	 * @returns A sum of given ranges or `null` if ranges have no common part.
 	 */
-	public getJoined( otherRange: Range, loose: boolean = false ): Range | null {
+	public getJoined( otherRange: ModelRange, loose: boolean = false ): ModelRange | null {
 		let shouldJoin = this.isIntersecting( otherRange );
 
 		if ( !shouldJoin ) {
@@ -318,7 +318,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			endPosition = otherRange.end;
 		}
 
-		return new Range( startPosition, endPosition );
+		return new ModelRange( startPosition, endPosition );
 	}
 
 	/**
@@ -356,7 +356,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * ( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 * ```
 	 *
-	 * **Note:** if an {@link module:engine/model/element~Element element} is not wholly contained in this range, it won't be returned
+	 * **Note:** if an {@link module:engine/model/element~ModelElement element} is not wholly contained in this range, it won't be returned
 	 * in any of the returned flat ranges. See in the example how `H` elements at the beginning and at the end of the range
 	 * were omitted. Only their parts that were wholly in the range were returned.
 	 *
@@ -364,11 +364,11 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @returns Array of flat ranges covering this range.
 	 */
-	public getMinimalFlatRanges(): Array<Range> {
+	public getMinimalFlatRanges(): Array<ModelRange> {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		const pos = Position._createAt( this.start );
+		const pos = ModelPosition._createAt( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
@@ -376,7 +376,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			const howMany = posParent.maxOffset - pos.offset;
 
 			if ( howMany !== 0 ) {
-				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
+				ranges.push( new ModelRange( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
 			( pos as any ).path = pos.path.slice( 0, -1 );
@@ -390,7 +390,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			const howMany = offset - pos.offset;
 
 			if ( howMany !== 0 ) {
-				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
+				ranges.push( new ModelRange( pos, pos.getShiftedBy( howMany ) ) );
 			}
 
 			pos.offset = offset;
@@ -401,7 +401,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Creates a {@link module:engine/model/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link module:engine/model/treewalker~ModelTreeWalker TreeWalker} instance with this range as a boundary.
 	 *
 	 * For example, to iterate over all items in the entire document root:
 	 *
@@ -415,32 +415,32 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * }
 	 * ```
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
+	public getWalker( options: ModelTreeWalkerOptions = {} ): ModelTreeWalker {
 		options.boundaries = this;
 
-		return new TreeWalker( options );
+		return new ModelTreeWalker( options );
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them.
 	 *
-	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link module:engine/model/item~Item model items},
-	 * not {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range and
+	 * `ignoreElementEnd` option set to `true`. However it returns only {@link module:engine/model/item~ModelItem model items},
+	 * not {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~ModelTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
+	public* getItems( options: ModelTreeWalkerOptions = {} ): IterableIterator<ModelItem> {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 
 		for ( const value of treeWalker ) {
 			yield value.item;
@@ -448,21 +448,21 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/model/position~Position positions} that are boundaries or
+	 * Returns an iterator that iterates over all {@link module:engine/model/position~ModelPosition positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link module:engine/model/position~Position positions}, not {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range. However it returns only
+	 * {@link module:engine/model/position~ModelPosition positions}, not {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~ModelTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<Position> {
+	public* getPositions( options: ModelTreeWalkerOptions = {} ): IterableIterator<ModelPosition> {
 		options.boundaries = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 
 		yield treeWalker.position;
 
@@ -481,7 +481,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param operation Operation to transform range by.
 	 * @returns Range which is the result of transformation.
 	 */
-	public getTransformedByOperation( operation: Operation ): Array<Range> {
+	public getTransformedByOperation( operation: Operation ): Array<ModelRange> {
 		switch ( operation.type ) {
 			case 'insert':
 				return this._getTransformedByInsertOperation( operation as InsertOperation );
@@ -495,18 +495,18 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 				return [ this._getTransformedByMergeOperation( operation as MergeOperation ) ];
 		}
 
-		return [ new Range( this.start, this.end ) ];
+		return [ new ModelRange( this.start, this.end ) ];
 	}
 
 	/**
 	 * Returns a range that is a result of transforming this range by multiple `operations`.
 	 *
-	 * @see ~Range#getTransformedByOperation
+	 * @see ~ModelRange#getTransformedByOperation
 	 * @param operations Operations to transform the range by.
 	 * @returns Range which is the result of transformation.
 	 */
-	public getTransformedByOperations( operations: Iterable<Operation> ): Array<Range> {
-		const ranges = [ new Range( this.start, this.end ) ];
+	public getTransformedByOperations( operations: Iterable<Operation> ): Array<ModelRange> {
+		const ranges = [ new ModelRange( this.start, this.end ) ];
 
 		for ( const operation of operations ) {
 			for ( let i = 0; i < ranges.length; i++ ) {
@@ -537,19 +537,19 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~ModelDocumentFragment}
 	 * which is a common ancestor of the range's both ends (in which the entire range is contained).
 	 */
-	public getCommonAncestor(): Element | DocumentFragment | null {
+	public getCommonAncestor(): ModelElement | ModelDocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element Element} contained by the range.
+	 * Returns an {@link module:engine/model/element~ModelElement Element} contained by the range.
 	 * The element will be returned when it is the **only** node within the range and **fully–contained**
 	 * at the same time.
 	 */
-	public getContainedElement(): Element | null {
+	public getContainedElement(): ModelElement | null {
 		if ( this.isCollapsed ) {
 			return null;
 		}
@@ -590,7 +590,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @internal
 	 */
-	public _getTransformedByInsertOperation( operation: InsertOperation, spread: boolean = false ): Array<Range> {
+	public _getTransformedByInsertOperation( operation: InsertOperation, spread: boolean = false ): Array<ModelRange> {
 		return this._getTransformedByInsertion( operation.position, operation.howMany, spread );
 	}
 
@@ -601,7 +601,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @internal
 	 */
-	public _getTransformedByMoveOperation( operation: MoveOperation, spread: boolean = false ): Array<Range> {
+	public _getTransformedByMoveOperation( operation: MoveOperation, spread: boolean = false ): Array<ModelRange> {
 		const sourcePosition = operation.sourcePosition;
 		const howMany = operation.howMany;
 		const targetPosition = operation.targetPosition;
@@ -616,7 +616,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @internal
 	 */
-	public _getTransformedBySplitOperation( operation: SplitOperation ): Range {
+	public _getTransformedBySplitOperation( operation: SplitOperation ): ModelRange {
 		const start = this.start._getTransformedBySplitOperation( operation );
 		let end = this.end._getTransformedBySplitOperation( operation );
 
@@ -631,7 +631,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			end = this.end.getShiftedBy( -1 );
 		}
 
-		return new Range( start, end );
+		return new ModelRange( start, end );
 	}
 
 	/**
@@ -641,7 +641,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 *
 	 * @internal
 	 */
-	public _getTransformedByMergeOperation( operation: MergeOperation ): Range {
+	public _getTransformedByMergeOperation( operation: MergeOperation ): ModelRange {
 		// Special case when the marker is set on "the closing tag" of an element. Marker can be set like that during
 		// transformations, especially when a content of a few block elements were removed. For example:
 		//
@@ -654,7 +654,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		// <p>F{}z</p>
 		//
 		if ( this.start.isEqual( operation.targetPosition ) && this.end.isEqual( operation.deletionPosition ) ) {
-			return new Range( this.start );
+			return new ModelRange( this.start );
 		}
 
 		let start = this.start._getTransformedByMergeOperation( operation );
@@ -696,7 +696,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 
 			if ( operation.sourcePosition.isBefore( operation.targetPosition ) ) {
 				// Case 1.
-				start = Position._createAt( end );
+				start = ModelPosition._createAt( end );
 				start.offset = 0;
 			} else {
 				if ( !operation.deletionPosition.isEqual( start ) ) {
@@ -708,16 +708,16 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 				start = operation.targetPosition;
 			}
 
-			return new Range( start, end );
+			return new ModelRange( start, end );
 		}
 
-		return new Range( start, end );
+		return new ModelRange( start, end );
 	}
 
 	/**
-	 * Returns an array containing one or two {@link ~Range ranges} that are a result of transforming this
-	 * {@link ~Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link ~Range ranges} are
-	 * returned if the insertion was inside this {@link ~Range range} and `spread` is set to `true`.
+	 * Returns an array containing one or two {@link ~ModelRange ranges} that are a result of transforming this
+	 * {@link ~ModelRange range} by inserting `howMany` nodes at `insertPosition`. Two {@link ~ModelRange ranges} are
+	 * returned if the insertion was inside this {@link ~ModelRange range} and `spread` is set to `true`.
 	 *
 	 * Examples:
 	 *
@@ -746,21 +746,21 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * was inside the range. Defaults to `false`.
 	 * @returns Result of the transformation.
 	 */
-	public _getTransformedByInsertion( insertPosition: Position, howMany: number, spread: boolean = false ): Array<Range> {
+	public _getTransformedByInsertion( insertPosition: ModelPosition, howMany: number, spread: boolean = false ): Array<ModelRange> {
 		if ( spread && this.containsPosition( insertPosition ) ) {
 			// Range has to be spread. The first part is from original start to the spread point.
 			// The other part is from spread point to the original end, but transformed by
 			// insertion to reflect insertion changes.
 
 			return [
-				new Range( this.start, insertPosition ),
-				new Range(
+				new ModelRange( this.start, insertPosition ),
+				new ModelRange(
 					insertPosition.getShiftedBy( howMany ),
 					this.end._getTransformedByInsertion( insertPosition, howMany )
 				)
 			];
 		} else {
-			const range = new Range( this.start, this.end );
+			const range = new ModelRange( this.start, this.end );
 
 			( range as any ).start = range.start._getTransformedByInsertion( insertPosition, howMany );
 			( range as any ).end = range.end._getTransformedByInsertion( insertPosition, howMany );
@@ -770,8 +770,8 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Returns an array containing {@link ~Range ranges} that are a result of transforming this
-	 * {@link ~Range range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 * Returns an array containing {@link ~ModelRange ranges} that are a result of transforming this
+	 * {@link ~ModelRange range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @internal
 	 * @param sourcePosition Position from which nodes are moved.
@@ -781,16 +781,16 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @returns  Result of the transformation.
 	 */
 	public _getTransformedByMove(
-		sourcePosition: Position,
-		targetPosition: Position,
+		sourcePosition: ModelPosition,
+		targetPosition: ModelPosition,
 		howMany: number,
 		spread: boolean = false
-	): Array<Range> {
+	): Array<ModelRange> {
 		// Special case for transforming a collapsed range. Just transform it like a position.
 		if ( this.isCollapsed ) {
 			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany );
 
-			return [ new Range( newPos ) ];
+			return [ new ModelRange( newPos ) ];
 		}
 
 		// Special case for transformation when a part of the range is moved towards the range.
@@ -805,7 +805,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		// <div><p>ab</p><p>c[d</p></div><p>e]f</p> --> <div><p>ab</p>{</div>}<p>c[d</p><p>e]f</p>
 		//
 		// This special case is applied only if the range is to be kept together (not spread).
-		const moveRange = Range._createFromPositionAndShift( sourcePosition, howMany );
+		const moveRange = ModelRange._createFromPositionAndShift( sourcePosition, howMany );
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( this.containsPosition( targetPosition ) && !spread ) {
@@ -813,12 +813,12 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 				const start = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany );
 				const end = this.end._getTransformedByMove( sourcePosition, targetPosition, howMany );
 
-				return [ new Range( start, end ) ];
+				return [ new ModelRange( start, end ) ];
 			}
 		}
 
 		// Default algorithm.
-		let result: Array<Range>;
+		let result: Array<ModelRange>;
 
 		const differenceSet = this.getDifference( moveRange );
 		let difference = null;
@@ -827,13 +827,13 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 
 		if ( differenceSet.length == 1 ) {
 			// `moveRange` and this range may intersect but may be separate.
-			difference = new Range(
+			difference = new ModelRange(
 				differenceSet[ 0 ].start._getTransformedByDeletion( sourcePosition, howMany )!,
 				differenceSet[ 0 ].end._getTransformedByDeletion( sourcePosition, howMany )!
 			);
 		} else if ( differenceSet.length == 2 ) {
 			// `moveRange` is inside this range.
-			difference = new Range(
+			difference = new ModelRange(
 				this.start,
 				this.end._getTransformedByDeletion( sourcePosition, howMany )
 			);
@@ -846,7 +846,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		}
 
 		if ( common ) {
-			const transformedCommon = new Range(
+			const transformedCommon = new ModelRange(
 				common.start._getCombined( moveRange.start, insertPosition! ),
 				common.end._getCombined( moveRange.start, insertPosition! )
 			);
@@ -873,7 +873,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param howMany How many nodes are removed.
 	 * @returns Result of the transformation.
 	 */
-	public _getTransformedByDeletion( deletePosition: Position, howMany: number ): Range | null {
+	public _getTransformedByDeletion( deletePosition: ModelPosition, howMany: number ): ModelRange | null {
 		let newStart = this.start._getTransformedByDeletion( deletePosition, howMany );
 		let newEnd = this.end._getTransformedByDeletion( deletePosition, howMany );
 
@@ -889,18 +889,18 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 			newEnd = deletePosition;
 		}
 
-		return new Range( newStart, newEnd );
+		return new ModelRange( newStart, newEnd );
 	}
 
 	/**
-	 * Creates a new range, spreading from specified {@link module:engine/model/position~Position position} to a position moved by
+	 * Creates a new range, spreading from specified {@link module:engine/model/position~ModelPosition position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
 	 * @internal
 	 * @param position Beginning of the range.
 	 * @param shift How long the range should be.
 	 */
-	public static _createFromPositionAndShift( position: Position, shift: number ): Range {
+	public static _createFromPositionAndShift( position: ModelPosition, shift: number ): ModelRange {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -908,23 +908,23 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: Element | DocumentFragment ): Range {
-		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
+	public static _createIn( element: ModelElement | ModelDocumentFragment ): ModelRange {
+		return new this( ModelPosition._createAt( element, 0 ), ModelPosition._createAt( element, element.maxOffset ) );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/model/item~ModelItem model item} and ends after it.
 	 *
 	 * @internal
 	 */
-	public static _createOn( item: Item ): Range {
-		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
+	public static _createOn( item: ModelItem ): ModelRange {
+		return this._createFromPositionAndShift( ModelPosition._createBefore( item ), item.offsetSize );
 	}
 
 	/**
@@ -945,11 +945,11 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param ranges Ranges to combine.
 	 * @returns Combined range.
 	 */
-	public static _createFromRanges( ranges: Array<Range> ): Range {
+	public static _createFromRanges( ranges: Array<ModelRange> ): ModelRange {
 		if ( ranges.length === 0 ) {
 			/**
 			 * At least one range has to be passed to
-			 * {@link module:engine/model/range~Range._createFromRanges `Range._createFromRanges()`}.
+			 * {@link module:engine/model/range~ModelRange._createFromRanges `Range._createFromRanges()`}.
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */
@@ -983,7 +983,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex - 1; i >= 0; i-- ) {
 			if ( ranges[ i ].end.isEqual( result.start ) ) {
-				( result as any ).start = Position._createAt( ranges[ i ].start );
+				( result as any ).start = ModelPosition._createAt( ranges[ i ].start );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -994,7 +994,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
 			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				( result as any ).end = Position._createAt( ranges[ i ].end );
+				( result as any ).end = ModelPosition._createAt( ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
@@ -1011,8 +1011,8 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * @param doc Document object that will be range owner.
 	 * @returns `Range` instance created using given plain object.
 	 */
-	public static fromJSON( json: any, doc: Document ): Range {
-		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
+	public static fromJSON( json: any, doc: ModelDocument ): ModelRange {
+		return new this( ModelPosition.fromJSON( json.start, doc ), ModelPosition.fromJSON( json.end, doc ) );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -1026,6 +1026,6 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Range.prototype.is = function( type: string ): boolean {
+ModelRange.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'model:range';
 };

@@ -10,14 +10,14 @@
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Collection } from 'ckeditor5/src/utils.js';
 
-import type { default as FindAndReplaceState, FindCallback } from './findandreplacestate.js';
-import type { ResultType } from './findandreplace.js';
-import type FindAndReplaceUtils from './findandreplaceutils.js';
+import type { FindAndReplaceState, FindCallback } from './findandreplacestate.js';
+import type { FindResultType } from './findandreplace.js';
+import { type FindAndReplaceUtils } from './findandreplaceutils.js';
 
 /**
  * The find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  */
-export default class FindCommand extends Command {
+export class FindCommand extends Command {
 	/**
 	 * The find and replace state object used for command operations.
 	 */
@@ -54,7 +54,7 @@ export default class FindCommand extends Command {
 	public override execute(
 		callbackOrText: string | FindCallback,
 		{ matchCase, wholeWords }: FindAttributes = {}
-	): { results: Collection<ResultType>; findCallback: FindCallback } {
+	): { results: Collection<FindResultType>; findCallback: FindCallback } {
 		const { editor } = this;
 		const { model } = editor;
 		const findAndReplaceUtils: FindAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
@@ -87,7 +87,7 @@ export default class FindCommand extends Command {
 
 		// Initial search is done on all nodes in all roots inside the content.
 		const results = model.document.getRootNames()
-			.reduce( ( ( currentResults: Collection<ResultType> | null, rootName ) => findAndReplaceUtils.updateFindResultFromRange(
+			.reduce( ( ( currentResults: Collection<FindResultType> | null, rootName ) => findAndReplaceUtils.updateFindResultFromRange(
 				model.createRangeIn( model.document.getRoot( rootName )! ),
 				model,
 				findCallback!,

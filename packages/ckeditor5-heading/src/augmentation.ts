@@ -8,9 +8,9 @@ import type {
 	HeadingCommand,
 	HeadingConfig,
 	HeadingEditing,
+	HeadingTitleConfig,
 	HeadingUI,
-	Title,
-	TitleConfig
+	Title
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -26,9 +26,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		/**
 		 * The configuration of the {@link module:heading/title~Title title feature}.
 		 *
-		 * Read more in {@link module:heading/title~TitleConfig}.
+		 * Read more in {@link module:heading/title~HeadingTitleConfig}.
 		 */
-		title?: TitleConfig;
+		title?: HeadingTitleConfig;
 	}
 
 	interface PluginsMap {

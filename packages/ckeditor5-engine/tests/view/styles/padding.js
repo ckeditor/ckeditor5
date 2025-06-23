@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { addPaddingRules } from '../../../src/view/styles/padding.js';
+import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
+import { addPaddingStylesRules } from '../../../src/view/styles/padding.js';
 
 describe( 'Padding styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
-		addPaddingRules( stylesProcessor );
+		addPaddingStylesRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );
 
