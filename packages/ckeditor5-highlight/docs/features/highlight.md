@@ -234,4 +234,23 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 
 	the `'highlight'` command will accept the corresponding strings as values:
 
-	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'`
+	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'` button,
+	* `'greenMarker'` &ndash; available as the `'highlight:greenMarker'` button,
+	* `'pinkMarker'` &ndash; available as the `'highlight:pinkMarker'` button,
+	* `'blueMarker'` &ndash; available as the `'highlight:blueMarker'` button,
+	* `'redPen'` &ndash; available as the `'highlight:redPen'` button,
+	* `'greenPen'` &ndash; available as the `'highlight:greenPen'` button.
+
+	Passing an empty `value` will remove any `highlight` attribute from the selection:
+
+	```js
+	editor.execute( 'highlight' );
+	```
+
+<info-box>
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
+## Contribute
+
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-highlight).
