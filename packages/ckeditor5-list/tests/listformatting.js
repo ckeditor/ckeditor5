@@ -238,7 +238,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="b">[<$text>bar</$text>]</paragraph>'
 				);
 
-				model.change( writer => {
+				model.change( () => {
 					setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 					setAttribute( model, 'inlineFormat', 'foo', docSelection.getLastRange() );
 				} );
