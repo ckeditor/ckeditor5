@@ -4,6 +4,7 @@ order: 70
 modified_at: 2025-06-23
 meta-title: Migrating internal exports | CKEditor 5 Documentation
 meta-description: Mihgrate CKEditor 5 to new, clearer, standardized public API names.
+toc-limit: 1
 ---
 
 # Migrating internal exports
@@ -1063,6 +1064,8 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | utils.ts | modelElementToPlainText  | _modelElementToPlainText     |
 
 ## New exports
+
+Listed below are exports introduced with NIM.
 
 ### @ckeditor/ckeditor5-ai
 
