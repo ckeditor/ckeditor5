@@ -28,7 +28,7 @@ npm install @ckeditor/ckeditor5-vue
 
 Once the integration is installed, create a new Vue component called `Editor.vue`. It will use the `useCKEditorCloud` helper to load the editor code from the CDN and the `<ckeditor>` component to run it, both of which come from the above package. The following example shows a single file component with open source and premium CKEditor&nbsp;5 plugins.
 
-```html
+```vue
 <template>
 	<ckeditor
 		v-if="editor"
@@ -78,7 +78,7 @@ In the above example, the `useCKEditorCloud` helper is used to load the editor c
 
 Now, you can import and use the `Editor.vue` component anywhere in your application.
 
-```html
+```vue
 <template>
 	<Editor />
 </template>
@@ -86,7 +86,7 @@ Now, you can import and use the `Editor.vue` component anywhere in your applicat
 
 If you use Nuxt.js with server-side rendering enabled, remember to wrap the `<Editor>` component in the `<ClientOnly>` component to avoid issues with the editor calling browser-specific APIs on the server.
 
-```html
+```vue
 <template>
 	<ClientOnly>
 		<Editor />
@@ -100,7 +100,7 @@ If you use Nuxt.js with server-side rendering enabled, remember to wrap the `<Ed
 
 This directive specifies the editor to be used by the component. It must directly reference the editor constructor to be used in the template.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" />
 </template>
@@ -110,7 +110,7 @@ This directive specifies the editor to be used by the component. It must directl
 
 By default, the editor component creates a `<div>` container which is used as an element passed to the editor (for example, {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
 
-```html
+```vue
 <ckeditor :editor="editor" tag-name="textarea" />
 ```
 
@@ -122,7 +122,7 @@ A [standard directive](https://v3.vuejs.org/guide/component-basics.html#using-v-
 * Automatically updates the state of the application as the editor content changes (for example, as the user types).
 * Can be used to set the editor content when necessary.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" v-model="data" />
 	<button @click="emptyEditor">Empty the editor</button>
@@ -153,7 +153,7 @@ If you only want to execute an action when the editor data changes, use the [`in
 
 Allows a one–way data binding that sets the content of the editor. Unlike [`v-model`](#v-model), the value will not be updated when the content of the editor changes.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :model-value="data" />
 </template>
@@ -174,7 +174,7 @@ To execute an action when the editor data changes, use the [`input`](#input) eve
 
 Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :config="config" />
 </template>
@@ -204,7 +204,7 @@ This directive controls the {@link module:core/editor/editor~Editor#isReadOnly `
 
 It sets the initial read–only state of the editor and changes it during its lifecycle.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :disabled="disabled" />
 </template>
@@ -227,7 +227,7 @@ The reason for introducing this option is performance issues in large documents.
 
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :disableTwoWayDataBinding="disableTwoWayDataBinding" />
 </template>
@@ -248,7 +248,7 @@ const disableTwoWayDataBinding = ref( true );
 
 Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
 
@@ -256,7 +256,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @focus="onEditorFocus" />
 ```
 
@@ -264,7 +264,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @blur="onEditorBlur" />
 ```
 
@@ -272,7 +272,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `b
 
 Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @input="onEditorInput" />
 ```
 
@@ -282,7 +282,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 **Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
 
-```html
+```vue
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
 
@@ -294,7 +294,7 @@ If you use the {@link framework/document-editor Document (decoupled) editor} in 
 
 Since accessing the editor toolbar is not possible until after the editor instance is {@link module:core/editor/editor~Editor#event:ready ready}, put your toolbar insertion code in a method executed upon the [`ready`](#ready) event of the component, like in the following example:
 
-```html
+```vue
 <template>
 	<ckeditor
 		v-if="editor"
@@ -367,7 +367,7 @@ It is not mandatory to build applications on top of the above sample, however, i
 
 CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Vue component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `useCKEditorCloud` function.
 
-```html
+```vue
 <script setup>
 import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
@@ -382,7 +382,7 @@ const cloud = useCKEditorCloud( {
 
 The CKEditor&nbsp;5 Vue component is written in TypeScript and provides type definitions. If you use TypeScript in your project, you can take advantage of them. To do so, import the component and its types using an `import type` statement from a special package containing type definitions. Take a look at the following example:
 
-```html
+```vue
 <script setup>
 import { useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 import type { ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -433,7 +433,7 @@ npm install --save-dev ckeditor5-premium-features
 
 After installing the package, you can import the types in the following way:
 
-```html
+```vue
 <script setup>
 // ...
 import type { Mention } from 'https://cdn.ckeditor.com/typings/ckeditor5-premium-features.d.ts';
