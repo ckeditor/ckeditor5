@@ -98,7 +98,7 @@ function removeLabelFromCheckboxes(): ReturnType<Plugin> {
 		visit( tree, 'element', ( node: Element, index: number, parent: Root | Element ) => {
 			if ( node.tagName === 'label' && parent.type === 'element' && parent.tagName === 'li' ) {
 				parent.children[ index ] = node.children[ 0 ];
-				parent.children.splice( index + 1, 1, ...node.children );
+				parent.children.splice( index, 1, ...node.children );
 			}
 		} );
 	};
