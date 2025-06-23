@@ -1,15 +1,12 @@
 ---
-# Scope:
-# Support migration from CKEditor 4 to CKEditor&nbsp;5.
-
 category: nim-migration
 order: 70
 modified_at: 2025-06-23
-meta-title: Migrating exports | CKEditor 5 Documentation
-meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor 5 version without problems.
+meta-title: Migrating internal exports | CKEditor 5 Documentation
+meta-description: Mihgrate CKEditor 5 to new, clearer, standardized public API names.
 ---
 
-# Migrating exports
+# Migrating internal exports
 
 As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
 
@@ -17,7 +14,7 @@ As part of the transition to the New Installation Methods (NIM), we have standar
 
 All internal exports are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix. This means you no longer need to specify the file path within a package to access these exports.
 
-### Example
+### Example usage
 
 Previously, importing internal exports required specifying the exact file path:
 
@@ -38,7 +35,7 @@ This standardized approach simplifies imports while clearly distinguishing inter
 Below, you will find all name changes in packages listed alphabetically for convenience.
 
 <info-box info>
-	The tables below list only the exports that have changed names and may introduce breaking changes. Newly exported methods that did not exist before are **not** included here.
+	The tables below list only these exports that have changed names and may introduce breaking changes. Newly exported methods that did not exist before NIM are **not** included here.
 </info-box>
 
 ### @ckeditor/ckeditor5-adapter-ckfinder
