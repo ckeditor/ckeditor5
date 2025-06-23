@@ -13,8 +13,10 @@ import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
 
+const INCORRECT_EXPORTS_MESSAGE = '❌ Some modules have incorrect exports in the index.ts file. See the table above to see the details.';
+
 main().catch( err => {
-	if ( err.message.includes( 'Some modules have incorrect exports' ) ) {
+	if ( err.message.includes( INCORRECT_EXPORTS_MESSAGE ) ) {
 		console.log( chalk.red( err.message ) );
 	} else {
 		console.error( err );
@@ -40,7 +42,7 @@ async function main() {
 	if ( dataToLogUnwrapped.length !== 0 ) {
 		logData( dataToLogUnwrapped, 'table' );
 
-		throw new Error( '❌ Some modules have incorrect exports in the index.ts file. See the table above to see the details.\n' );
+		throw new Error( INCORRECT_EXPORTS_MESSAGE + '\n' );
 	}
 
 	console.log( chalk.green( '✅ Packages use correct reexport names.' ) );
