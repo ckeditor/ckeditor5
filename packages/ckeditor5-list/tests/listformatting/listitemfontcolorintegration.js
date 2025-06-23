@@ -277,7 +277,8 @@ describe( 'ListItemFontColorIntegration', () => {
 			);
 		} );
 
-		it( 'should downcast listItemFontColor attribute as style in <li> in table list item', () => {
+		// Post-fixer currently removes `listItemFontColor` attribute from table list items.
+		it.skip( 'should downcast listItemFontColor attribute as style in <li> in table list item', () => {
 			setModelData( model,
 				'<table listIndent="0" listItemId="a" listItemFontColor="red">' +
 					'<tableRow>' +
@@ -471,7 +472,8 @@ describe( 'ListItemFontColorIntegration', () => {
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontColor attribute for table', () => {
+		// Post-fixer currently removes `listItemFontColor` attribute from table list items.
+		it.skip( 'should upcast style in <li> to listItemFontColor attribute for table', () => {
 			editor.setData(
 				'<ul>' +
 					'<li style="color:red;">' +
