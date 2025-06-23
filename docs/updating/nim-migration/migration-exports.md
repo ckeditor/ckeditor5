@@ -15,21 +15,23 @@ As part of the transition to the New Installation Methods (NIM), we have standar
 
 ## Internal exports
 
-We have also standardized the way internal exports are handled. All internal exports are now prefixed with an underscore (`_`) to clearly distinguish them from public API elements. This helps maintain a clean separation between the public API and internal implementation details.
+All internal exports are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix. This means you no longer need to specify the file path within a package to access these exports.
 
-#### Example
+### Example
 
-Suppose you previously imported an internal utility like this:
+Previously, importing internal exports required specifying the exact file path:
 
 ```ts
 import { getCsrfToken } from '@ckeditor/ckeditor5-adapter-ckfinder/src/utils';
 ```
 
-After migration, you should use the new, unified export from the package root, with the underscore prefix:
+Now, you can import them from the package's root entry point with the new name:
 
 ```ts
-import { _getCKFinderCsrfToken } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { _getCKFinderCsrfToken } from 'ckeditor5';
 ```
+
+This standardized approach simplifies imports while clearly distinguishing internal implementation details from the public API through the underscore prefix.
 
 ## Changed exports
 
