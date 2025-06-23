@@ -368,6 +368,64 @@ describe( 'MarkdownGfmDataProcessor', () => {
 			);
 		} );
 
+		it( 'should handle nested todo lists', () => {
+			testDataProcessor(
+				'* [ ] 1\n' +
+				'  * [ ] 2\n' +
+				'    * [ ] 3',
+
+				'<ul>' +
+					'<li>' +
+						'<input disabled="" type="checkbox"></input>1' +
+						'<ul>' +
+							'<li>' +
+								'<input disabled="" type="checkbox"></input>2' +
+								'<ul>' +
+									'<li>' +
+										'<input disabled="" type="checkbox"></input>3' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		/**
+		 * This is a bug that is present in both `turndown` and `remark-gfm`.
+		 *
+		 * If the task list item has a code block in new line, the `[ ]` or `[x]`
+		 * syntax will be escaped and treated as a regular text.
+		 *
+		 * https://github.com/micromark/micromark-extension-gfm-task-list-item/issues/4
+		 */
+		it( 'should process todo list with code block', () => {
+			testDataProcessor(
+				'* [ ]\n' +
+				'  ```plaintext\n' +
+				'  This is a code block.\n' +
+				'  ```\n' +
+				'* [ ] Foo.',
+
+				'<ul>' +
+					'<li>' +
+						'[ ]' +
+						'<pre><code class="language-plaintext">This is a code block.</code></pre>' +
+					'</li>' +
+					'<li>' +
+						'<input disabled="" type="checkbox"></input>Foo.' +
+					'</li>' +
+				'</ul>',
+
+				'* \\[ ]\n' +
+				'  ```plaintext\n' +
+				'  This is a code block.\n' +
+				'  ```\n' +
+				'* [ ] Foo.'
+			);
+		} );
+
 		it( 'should process the HTML produced by the todo list feature', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
 			const htmlDataProcessor = new HtmlDataProcessor( viewDocument );
