@@ -21,8 +21,6 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
 * @types/color-convert - Copyright (c) DefinitelyTyped.
-* @types/marked - Copyright (c) DefinitelyTyped.
-* @types/turndown - Copyright (c) DefinitelyTyped.
 * blurhash - Copyright (c) Wolt Enterprises.
 * color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
@@ -30,11 +28,25 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
-* marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), Copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
-* turndown - Copyright (c) 2017 Dom Christie.
-* turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
 * Regular Expression for URL validation - Copyright (c) 2010-2018 Diego Perini.
+* hast - Copyright (c) Titus Wormer
+* hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>
+* hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>
+* rehype-remark - Copyright (c) Titus Wormer <tituswormer@gmail.com>
+* remark-breaks - Copyright (c) 2017 Titus Wormer <tituswormer@gmail.com>
+* remark-gfm - Copyright (c) Titus Wormer <tituswormer@gmail.com>
+* remark-parse - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>
+* remark-rehype - Copyright (c) Titus Wormer <tituswormer@gmail.com>
+* remark-stringify - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>
+* unified - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
+* unist-util-visit - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
+
+The following libraries are included in CKEditor under the [ISC license](https://opensource.org/license/isc-license-txt):
+
+* hast-util-from-dom - Copyright (c) Keith McKnight <keith@mcknig.ht>
+* rehype-dom-parse - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>
+* rehype-dom-stringify - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>
 
 Trademarks
 ----------
