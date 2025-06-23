@@ -155,6 +155,10 @@ jobs:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package
           command: yarn run check-exports
+      - run:
+          when: always
+          name: Check if all package members are exported correctly from the index.ts file
+          command: yarn run validate-module-re-exports
 
   cke5_coverage:
     machine: true
