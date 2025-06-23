@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { ElementObjectDefinition, ViewElement } from 'ckeditor5/src/engine.js';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
 
 import ListEditing from '../list/listediting.js';
@@ -68,7 +68,7 @@ export default class ListItemFontSizeIntegration extends Plugin {
 
 					if ( fontSizeOption && fontSizeOption.view && typeof fontSizeOption.view != 'string' ) {
 						if ( fontSizeOption.view.styles ) {
-							writer.setStyle( 'font-size', value as string, viewElement );
+							writer.setStyle( fontSizeOption.view.styles, viewElement );
 						}
 						else if ( fontSizeOption.view.classes ) {
 							writer.addClass( fontSizeOption.view.classes, viewElement );
@@ -106,7 +106,6 @@ export default class ListItemFontSizeIntegration extends Plugin {
 		}, 'listItemFontSize' );
 
 		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
-		const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
 		// If the `supportAllValues` is set to `true`, we allow any value (in pixels) for the font size attribute.
 		if ( supportAllValues ) {
@@ -123,69 +122,25 @@ export default class ListItemFontSizeIntegration extends Plugin {
 				}
 			} );
 		} else {
-			// List of classes used in the font size options, e.g. `text-small`, `text-big`.
-			const classes = fontSizeOptions.flatMap( option => {
-				if (
-					option.view &&
-					typeof option.view !== 'string' &&
-					typeof option.view.classes === 'string'
-				) {
-					return [ option.view.classes ];
+			const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
+
+			for ( const option of fontSizeOptions ) {
+				if ( option.model && option.view ) {
+					const view = option.view as ElementObjectDefinition;
+
+					editor.conversion.for( 'upcast' ).elementToAttribute( {
+						model: {
+							key: 'listItemFontSize',
+							value: option.model
+						},
+						view: {
+							name: 'li',
+							...( view.styles ? { styles: view.styles } : {} ),
+							...( view.classes ? { classes: view.classes } : {} )
+						}
+					} );
 				}
-				return [];
-			} );
-			const classToModelMap = new Map();
-
-			// Create a map of class names to model attributes, e.g. `text-small` -> `small`.
-			classes.forEach( className => {
-				classToModelMap.set( className, className.replace( /^text-/, '' ) );
-			} );
-
-			// List of font-size styles used in the font size options, e.g. `14px`, `16px`.
-			const styles = fontSizeOptions.flatMap( option => {
-				if (
-					option.view &&
-					typeof option.view !== 'string' &&
-					typeof option.view.styles === 'object' &&
-					option.view.styles[ 'font-size' ]
-				) {
-					return [ option.view.styles[ 'font-size' ] ];
-				}
-				return [];
-			} );
-
-			// Convert classes to model attributes, e.g. `text-small` -> `small`.
-			editor.conversion.for( 'upcast' ).elementToAttribute( {
-				model: {
-					key: 'listItemFontSize',
-					value: ( viewElement: ViewElement ) => {
-						const classNames = [ ...viewElement.getClassNames() ];
-						const fontSizeClass = classNames.find( className => classToModelMap.has( className ) );
-
-						return classToModelMap.get( fontSizeClass );
-					}
-				},
-				view: {
-					name: 'li',
-					classes: new RegExp( `^(${ classes.join( '|' ) })$` )
-				}
-			} );
-
-			// Apart from classes, we also support inline styles for font size, e.g. `style="font-size: 16px;"`.
-			editor.conversion.for( 'upcast' ).attributeToAttribute( {
-				model: {
-					key: 'listItemFontSize',
-					value: ( viewElement: ViewElement ) => {
-						return viewElement.getStyle( 'font-size' );
-					}
-				},
-				view: {
-					name: 'li',
-					styles: {
-						'font-size': new RegExp( `^(${ styles.join( '|' ) })$` )
-					}
-				}
-			} );
+			}
 		}
 	}
 }
