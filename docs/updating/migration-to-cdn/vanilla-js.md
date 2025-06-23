@@ -130,7 +130,7 @@ const { ClassicEditor } = await loadCKEditorCloud( {
 
 If you are using custom plugins, you need to first {@link tutorials/creating-simple-plugin-timestamp#adapt-this-tutorial-to-cdn adapt these to work with the CDN approach}. It will change the way imports and CSS files are handled.
 
-Next, refer to the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide to learn about using the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function#using-the-loadckeditorcloud-function `loadCKEditorCloud`} functions. This will be needed to include the custom plugin in the CDN configuration of CKEditor&nbsp;5. By employing these, you can dynamically import the plugin in a way similar to this one:
+Next, refer to the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide to learn about using the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function#using-the-loadckeditorcloud-function `loadCKEditorCloud`} function. This will be needed to include the custom plugin in the CDN configuration of CKEditor&nbsp;5. By employing these, you can dynamically import the plugin in a way similar to this one:
 
 ```js
 plugins: {
