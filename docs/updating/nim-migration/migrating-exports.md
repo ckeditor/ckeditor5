@@ -50,7 +50,6 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file                         | original name           | re-exported name            |
 |------------------------------|-------------------------|-----------------------------|
-| adapters/openaitextadapter.ts | RequestMessageItem      | AIRequestMessageItem        |
 | adapters/aitextadapter.ts     | RequestHeaders          | AIRequestHeaders            |
 | adapters/aitextadapter.ts     | RequestParameters       | AIRequestParameters         |
 | adapters/awstextadapter.ts    | AWSTextAdapterConfig    | AIAWSTextAdapterConfig      |
@@ -93,7 +92,6 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file              | original name            | re-exported name                    |
 |-------------------|--------------------------|-------------------------------------|
-| casechangecommand.ts | TransformCallback     | CaseChangeTransformCallback         |
 | casechange.ts        | ExcludeWordsCallback  | CaseChangeExcludeWordsCallback      |
 | casechange.ts        | ExcludeWordsCallbackContext | CaseChangeExcludeWordsCallbackContext |
 
@@ -160,15 +158,12 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file     | original name     | re-exported name           |
 |----------|-------------------|----------------------------|
-| users.ts | Color             | CollaborationUserColor     |
-| users.ts | UserData          | CollaborationUserData      |
 | config.ts| UsersConfig       | CollaborationUsersConfig   |
 
 ### @ckeditor/ckeditor5-comments
 
 | file                              | original name              | re-exported name               |
 |-----------------------------------|----------------------------|--------------------------------|
-| annotation.ts                     | Target                     | AnnotationTargetBase           |
 | sidebaritemview.ts                | SidebarItemView            | AnnotationsSidebarItemView     |
 | sidebarview.ts                    | SidebarView                | AnnotationsSidebarView         |
 | basecommentthreadview.ts         | UISubmitCommentThreadEvent | UISubmitCommentThreadEvent     |
@@ -202,7 +197,6 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file                     | originalName                          | reExportedName                          |
 |--------------------------|-------------------------------------|---------------------------------------|
-| conversion/downcastdispatcher.ts | EventMap                        | DowncastDispatcherEventMap             |
 | conversion/downcastdispatcher.ts | DiffItemReinsert                | DifferItemReinsert                     |
 | conversion/downcasthelpers.ts    | insertText                     | _downcastInsertText                    |
 | conversion/downcasthelpers.ts    | insertAttributesAndChildren    | _downcastInsertAttributesAndChildren  |
@@ -575,9 +569,9 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file                    | original_method          | reexported_method              |
 |-------------------------|-------------------------|-------------------------------|
-| importwordcommand.ts    | DataInsertEventData      | ImportWordDataInsertEventData  |
 | importword.ts           | FormattingOptions        | ImportWordFormattingOptions    |
 | importwordcommand.ts    | DataInsertEvent          | ImportWordDataInsertEvent      |
+
 ### @ckeditor/ckeditor5-indent
 
 | file                      | original method name   | re-exported method name  |
@@ -683,6 +677,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | todolist/todocheckboxchangeobserver.ts | TodoCheckboxChangeObserver     | _TodoCheckboxChangeObserver       |
 
 ### @ckeditor/ckeditor5-list-multi-level
+
 | file                 | original method name              | new re-exported method name          |
 |----------------------|---------------------------------|------------------------------------|
 | multilevellist.ts    | MultiLevelListConfig             | _MultiLevelListConfig               |
@@ -691,6 +686,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | multilevellist.ts    | MultiLevelListMarkerPattern      | _MultiLevelListMarkerPattern        |
 
 ### @ckeditor/ckeditor5-markdown-gfm
+
 | file                     | original method name       | new re-exported method name      |
 |--------------------------|----------------------------|---------------------------------|
 | gfmdataprocessor.ts       | GFMDataProcessor            | MarkdownGfmDataProcessor         |
@@ -698,6 +694,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | markdown2html.ts          | MarkdownToHtml              | MarkdownGfmMdToHtml              |
 
 ### @ckeditor/ckeditor5-media-embed
+
 | file                    | original method name              | new re-exported method name                 |
 |-------------------------|---------------------------------|--------------------------------------------|
 | converters.ts           | modelToViewUrlAttributeConverter | _modelToViewUrlAttributeMediaConverter      |
@@ -710,6 +707,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | utils.ts                | insertMedia                     | _insertMedia                                |
 
 ### @ckeditor/ckeditor5-mention
+
 | file                    | original method name      | new re-exported method name         |
 |-------------------------|--------------------------|------------------------------------|
 | mentionconfig.ts        | FeedCallback             | MentionFeedbackCallback             |
@@ -720,12 +718,14 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | ui/domwrapperview.ts    | DomWrapperView           | MentionDomWrapperView               |
 
 ### @ckeditor/ckeditor5-merge-fields
+
 | file                    | original method name  | new re-exported method name          |
 |-------------------------|----------------------|-------------------------------------|
 | mergefieldsconfig.ts    | GroupDefinition       | MergeFieldsGroupDefinition           |
 | mergefieldsconfig.ts    | DataSetDefinition     | MergeFieldsDataSetDefinition          |
 
 ### @ckeditor/ckeditor5-minimap
+
 | file                       | original method name           | new re-exported method name            |
 |----------------------------|-------------------------------|---------------------------------------|
 | minimapiframeview.ts        | MinimapIframeView              | _MinimapIframeView                    |
@@ -739,6 +739,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | utils.ts                   | getScrollable                  | _getMinimapScrollable                 |
 
 ### @ckeditor/ckeditor5-paste-from-office
+
 | file                           | original method name                    | new re-exported method name                    |
 |--------------------------------|---------------------------------------|------------------------------------------------|
 | filters/bookmark.ts            | transformBookmarks                     | _transformPasteOfficeBookmarks                  |
@@ -768,9 +769,9 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | normalizers/mswordnormalizer.ts | MSWordNormalizer                | PasteFromOfficeMSWordNormalizer                       |
 
 ### @ckeditor/ckeditor5-real-time-collaboration
+
 | file                               | original method name        | new re-exported method name         |
 |------------------------------------|-----------------------------|------------------------------------|
-| realtimecollaborativeediting/websocketgateway.ts | Reconnect                 | RtcReconnect                      |
 | config.ts                         | PresenceListConfig          | RtcPresenceListConfig              |
 | presencelist/view/presencedropdownlistview.ts | PresenceDropdownListView   | _RtcPresenceDropdownListView       |
 | presencelist/view/presencedropdownlistview.ts | PresenceDropdownListWrapperView | _RtcPresenceDropdownListWrapperView |
@@ -782,6 +783,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | realtimecollaborativeediting/websocketgateway.ts | ReconnectContextPlugin     | RtcReconnectContextPlugin         |
 
 ### @ckeditor/ckeditor5-restricted-editing
+
 | file                             | original method name                   | new re-exported method name                   |
 |----------------------------------|-------------------------------------|-----------------------------------------------|
 | restrictededitingmode/converters.ts | setupExceptionHighlighting          | _setupRestrictedEditingExceptionHighlighting  |
@@ -793,6 +795,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | restrictededitingmode/utils.ts    | isSelectionInMarker                  | _isRestrictedEditingSelectionInMarker                  |
 
 ### @ckeditor/ckeditor5-revision-history
+
 | file                   | original method name  | new re-exported method name        |
 |------------------------|----------------------|-----------------------------------|
 | revisionhistory.ts     | TapeValue             | _RevisionHistoryTapeValue          |
@@ -800,6 +803,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | revisiontracker.ts     | RevisionSource        | _RevisionHistorySource             |
 
 ### @ckeditor/ckeditor5-special-characters
+
 | file                      | original method name          | new re-exported method name           |
 |---------------------------|------------------------------|--------------------------------------|
 | ui/charactergridview.ts    | CharacterGridView             | _SpecialCharactersGridView           |
@@ -812,6 +816,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | ui/specialcharactersview.ts | SpecialCharactersView        | _SpecialCharactersView               |
 
 ### @ckeditor/ckeditor5-style
+
 | file                           | original method name                           | new re-exported method name             |
 |--------------------------------|----------------------------------------------|----------------------------------------|
 | styleutils.ts                  | StyleUtilsIsEnabledForBlockEvent              | StyleUtilsIsEnabledForBlockEvent        |
@@ -831,7 +836,6 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file                      | original method name                 | re-exported method name                  |
 |---------------------------|------------------------------------|-----------------------------------------|
-| tableutils.ts             | IndexesObject                      | TableIndexesObject                       |
 | converters/downcast.ts    | downcastTable                     | _downcastTable                          |
 | converters/downcast.ts    | downcastRow                       | _downcastTableRow                       |
 | converters/downcast.ts    | downcastCell                      | _downcastTableCell                      |
@@ -931,7 +935,6 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 | file                        | original method name       | re-exported method name           |
 |-----------------------------|----------------------------|----------------------------------|
-| suggestiondescriptionfactory.ts | DescriptionItem           | SuggestionDescriptionItem         |
 | suggestiondescriptionfactory.ts | Description               | SuggestionDescription             |
 | suggestiondescriptionfactory.ts | DescriptionCallback       | SuggestionDescriptionCallback     |
 | suggestiondescriptionfactory.ts | LabelCallback             | SuggestionLabelCallback            |
@@ -993,20 +996,10 @@ Below, you will find all name changes in packages listed alphabetically for conv
 |------------------|------------------|---------------------------|
 | filereader.ts    | FileReader       | FileReader                |
 
-### @ckeditor/ckeditor5-uploadcare
-
-| file                                   | original name          | re-exported name               |
-|----------------------------------------|-------------------------|--------------------------------|
-| uploadcareconfig.ts                    | ExcludedKeys           | UploadcareExcludedKeys        |
-| uploadcareimageedit/uploadcareimageeditui.ts | ImageCache           | UploadcareImageCache          |
-
 ### @ckeditor/ckeditor5-utils
 
 | file                            | original name                     | re-exported name                      |
 |----------------------------------|------------------------------------|----------------------------------------|
-| observablemixin.ts              | SingleBindChain                   | ObservableSingleBindChain              |
-| observablemixin.ts              | DualBindChain                     | ObservableDualBindChain                |
-| observablemixin.ts              | MultiBindChain                    | ObservableMultiBindChain               |
 | areconnectedthroughproperties.ts| areConnectedThroughProperties     | areConnectedThroughProperties          |
 | ckeditorerror.ts                | DOCUMENTATION_URL                 | DOCUMENTATION_URL                      |
 | dom/getcommonancestor.ts       | getCommonAncestor                 | getCommonAncestor                      |
@@ -1068,3 +1061,101 @@ Below, you will find all name changes in packages listed alphabetically for conv
 | file     | original name           | re-exported name            |
 |----------|--------------------------|------------------------------|
 | utils.ts | modelElementToPlainText  | _modelElementToPlainText     |
+
+## New exports
+
+### @ckeditor/ckeditor5-ai
+
+| file | exported name |
+|------|----------------|
+| adapters/openaitextadapter.ts | AIRequestMessageItem |
+
+### @ckeditor/ckeditor5-case-change
+
+| file | exported name |
+|------|----------------|
+| casechangecommand.ts | CaseChangeTransformCallback |
+
+### @ckeditor/ckeditor5-collaboration-core
+
+| file | exported name |
+|------|----------------|
+| users.ts | CollaborationUserColor |
+| users.ts | CollaborationUserData |
+
+### @ckeditor/ckeditor5-comments
+
+| file | exported name |
+|------|----------------|
+| annotations/annotation.ts | AnnotationTargetBase |
+| comments/commentsrepository.ts | CommentPermissionsConfig |
+
+### @ckeditor/ckeditor5-import-word
+
+| file | exported name |
+|------|----------------|
+| importwordcommand.ts | ImportWordDataInsertEventData |
+
+### @ckeditor/ckeditor5-real-time-collaboration
+
+| file | exported name |
+|------|----------------|
+| realtimecollaborativeediting/websocketgateway.ts | RtcReconnect |
+
+### @ckeditor/ckeditor5-track-changes
+
+| file | exported name |
+|------|----------------|
+| suggestiondescriptionfactory.ts | SuggestionDescriptionItem |
+| trackchangesconfig.ts | TrackChangesPreviewConfig |
+| trackchangesdata.ts | TrackChangesDataGetter |
+
+### @ckeditor/ckeditor5-uploadcare
+
+| file | exported name |
+|------|----------------|
+| uploadcareconfig.ts | UploadcareExcludedKeys |
+| uploadcareimageedit/uploadcareimageeditui.ts | UploadcareImageCache |
+
+### @ckeditor/ckeditor5-engine
+
+| file | exported name |
+|------|----------------|
+| conversion/conversion.ts | ConversionType |
+| conversion/downcastdispatcher.ts | DowncastDispatcherEventMap |
+| view/domconverter.ts | BlockFillerMode |
+
+### @ckeditor/ckeditor5-table
+
+| file | exported name |
+|------|----------------|
+| tableutils.ts | TableIndexesObject |
+
+### @ckeditor/ckeditor5-ui
+
+| file | exported name |
+|------|----------------|
+| arialiveannouncer.ts | AriaLiveAnnouncerPolitenessValue |
+| arialiveannouncer.ts | AriaLiveAppendContentAttributes |
+| arialiveannouncer.ts | AriaLiveAnnounceConfig |
+| button/filedialogbuttonview.ts | FileDialogViewMixin |
+| button/filedialogbuttonview.ts | FileDialogButtonViewBase |
+| colorpicker/colorpickerview.ts | SliderView |
+| colorpicker/colorpickerview.ts | ColorPickerInputRowView |
+| editableui/inline/inlineeditableuiview.ts | InlineEditableUIViewOptions |
+| template.ts | AttributeValues |
+| toolbar/toolbarview.ts | ItemsView |
+| editorui/poweredby.ts | PoweredByConfig |
+
+### @ckeditor/ckeditor5-utils
+
+| file | exported name |
+|------|----------------|
+| crc32.ts | CRCValue |
+| dom/createelement.ts | HTMLElementAttributes |
+| dom/createelement.ts | SVGElementAttributes |
+| dom/createelement.ts | ChildrenElements |
+| dom/scroll.ts | IfTrue |
+| observablemixin.ts | ObservableSingleBindChain |
+| observablemixin.ts | ObservableDualBindChain |
+| observablemixin.ts | ObservableMultiBindChain |
