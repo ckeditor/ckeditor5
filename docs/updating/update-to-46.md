@@ -38,8 +38,8 @@ To improve consistency, all CSS variables that affect the styles of the editor c
 | `--ck-color-image-caption-text`               | `--ck-content-color-image-caption-text`              |
 | `--ck-color-mention-background`               | `--ck-content-color-mention-background`              |
 | `--ck-color-mention-text`                     | `--ck-content-color-mention-text`                    |
-| `--ck-color-selector-caption-background`      | `--ck-content-color-selector-caption-background`     |
-| `--ck-color-selector-caption-text`            | `--ck-content-color-selector-caption-text`           |
+| `--ck-color-selector-caption-background`      | ⚠️ NEW NAME `--ck-content-color-table-caption-background`     |
+| `--ck-color-selector-caption-text`            | ⚠️ NEW NAME `--ck-content-color-table-caption-text`           |
 | `--ck-image-style-spacing`                    | `--ck-content-image-style-spacing`                   |
 | `--ck-inline-image-style-spacing`             | `--ck-content-inline-image-style-spacing`            |
 | `--ck-todo-list-checkmark-size`               | `--ck-content-todo-list-checkmark-size`              |
@@ -56,6 +56,29 @@ Example:
 :root {
   --ck-content-highlight-marker-yellow: #fdfd77;
   --ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+}
+```
+
+#### Table-related CSS variables renamed for better clarity
+
+Some table-related CSS variables had improper naming with "-selector-" in their names, which was confusing and inconsistent. These variables have been renamed to use "-table-" prefix for better clarity and consistency.
+
+| Old variable name                           | New variable name                                 |
+|---------------------------------------------|---------------------------------------------------|
+| `--ck-color-selector-caption-highlighted-background` | `--ck-color-table-caption-highlighted-background` |
+| `--ck-color-selector-column-resizer-hover`  | `--ck-color-table-column-resizer-hover`           |
+| `--ck-color-selector-focused-cell-background` | `--ck-color-table-focused-cell-background`       |
+
+**Migration:**
+- Update your custom stylesheets and themes to use the new variable names.
+- The old variable names are no longer supported and will not have any effect.
+
+Example:
+```css
+:root {
+  --ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
+  --ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+  --ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 ```
 
