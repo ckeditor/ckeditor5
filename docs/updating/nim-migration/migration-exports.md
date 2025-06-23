@@ -13,9 +13,31 @@ meta-description: Learn how the migrate from CKEditor 4 to the latest CKEditor 5
 
 As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
 
-## Changes and new export names
+## Internal exports
+
+We have also standardized the way internal exports are handled. All internal exports are now prefixed with an underscore (`_`) to clearly distinguish them from public API elements. This helps maintain a clean separation between the public API and internal implementation details.
+
+#### Example
+
+Suppose you previously imported an internal utility like this:
+
+```ts
+import { getCsrfToken } from '@ckeditor/ckeditor5-adapter-ckfinder/src/utils';
+```
+
+After migration, you should use the new, unified export from the package root, with the underscore prefix:
+
+```ts
+import { _getCKFinderCsrfToken } from '@ckeditor/ckeditor5-adapter-ckfinder';
+```
+
+## Changed exports
 
 Below, you will find all name changes in packages listed alphabetically for convenience.
+
+<info-box info>
+	The tables below list only the exports that have changed names and may introduce breaking changes. Newly exported methods that did not exist before are **not** included here.
+</info-box>
 
 ### @ckeditor/ckeditor5-adapter-ckfinder
 
