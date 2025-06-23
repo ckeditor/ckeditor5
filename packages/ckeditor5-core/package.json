@@ -62,6 +62,7 @@
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
+    "theme",
     "CHANGELOG.md"
   ],
   "scripts": {
