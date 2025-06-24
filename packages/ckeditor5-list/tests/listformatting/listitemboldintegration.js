@@ -120,7 +120,7 @@ describe( 'ListItemBoldIntegration', () => {
 	describe( 'downcast', () => {
 		it( 'should downcast listItemBold attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
 			);
@@ -146,10 +146,10 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should downcast listItemBold attribute as class in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemBold="true">' +
+				'<paragraph listIndent="1" listItemId="b" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
 			);
@@ -189,10 +189,10 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should downcast listItemBold attribute as class in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">bar</$text>' +
 				'</paragraph>'
 			);
@@ -226,7 +226,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should downcast listItemBold attribute as class in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemBold="true">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text bold="true">foo</$text>' +
 					'</paragraph>' +
@@ -260,7 +260,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should downcast listItemBold attribute as class in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemBold="true">' +
+				'<heading1 listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</heading1>'
 			);
@@ -289,7 +289,7 @@ describe( 'ListItemBoldIntegration', () => {
 		// Post-fixer currently removes `listItemBold` attribute from table list items.
 		it.skip( 'should downcast listItemBold attribute as class in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemBold="true">' +
+				'<table listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -613,7 +613,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should not downcast listItemBold attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
 					'<$text bold="true">foo</$text>' +
 				'</paragraph>'
 			);

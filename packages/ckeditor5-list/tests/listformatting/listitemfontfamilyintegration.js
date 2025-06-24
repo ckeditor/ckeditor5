@@ -123,7 +123,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	describe( 'downcast', () => {
 		it( 'should downcast listItemFontFamily attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
 			);
@@ -149,10 +149,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should downcast listItemFontFamily attribute as style in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="1" listItemId="b" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
 			);
@@ -190,10 +190,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should downcast listItemFontFamily attribute as style in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">bar</$text>' +
 				'</paragraph>'
 			);
@@ -227,7 +227,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should downcast listItemFontFamily attribute as style in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontFamily="Arial">foo</$text>' +
 					'</paragraph>' +
@@ -261,7 +261,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should downcast listItemFontFamily attribute as style in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<heading1 listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</heading1>'
 			);
@@ -290,7 +290,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		// Post-fixer currently remove `listItemFontFamily` attribute from table list items.
 		it.skip( 'should downcast listItemFontFamily attribute as style in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<table listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -602,7 +602,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should not downcast listItemFontFamily attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial" listType="bulleted">' +
 					'<$text fontFamily="Arial">foo</$text>' +
 				'</paragraph>'
 			);

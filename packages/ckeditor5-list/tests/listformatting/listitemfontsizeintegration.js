@@ -132,7 +132,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		describe( 'downcast', () => {
 			it( 'should downcast listItemFontSize attribute as class in <li>', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">foo</$text>' +
 					'</paragraph>'
 				);
@@ -158,10 +158,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as class in nested list', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">foo</$text>' +
 					'</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listItemFontSize="tiny">' +
+					'<paragraph listIndent="1" listItemId="b" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">foo</$text>' +
 					'</paragraph>'
 				);
@@ -199,10 +199,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as class in <li> in multi-block', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">foo</$text>' +
 					'</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">bar</$text>' +
 					'</paragraph>'
 				);
@@ -236,7 +236,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as class in <li> in blockquote list item', () => {
 				setModelData( model,
-					'<blockQuote listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<blockQuote listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<paragraph>' +
 							'<$text fontSize="tiny">foo</$text>' +
 						'</paragraph>' +
@@ -270,7 +270,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as class in <li> in heading list item', () => {
 				setModelData( model,
-					'<heading1 listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<heading1 listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<$text fontSize="tiny">foo</$text>' +
 					'</heading1>'
 				);
@@ -299,7 +299,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
 			it.skip( 'should downcast listItemFontSize attribute as class in <li> in table list item', () => {
 				setModelData( model,
-					'<table listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<table listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>' +
@@ -633,7 +633,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		describe( 'downcast', () => {
 			it( 'should downcast listItemFontSize attribute as style in <li>', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">foo</$text>' +
 					'</paragraph>'
 				);
@@ -659,10 +659,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as style in nested list', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">foo</$text>' +
 					'</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listItemFontSize="10px">' +
+					'<paragraph listIndent="1" listItemId="b" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">foo</$text>' +
 					'</paragraph>'
 				);
@@ -700,10 +700,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as style in <li> in multi-block', () => {
 				setModelData( model,
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">foo</$text>' +
 					'</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">bar</$text>' +
 					'</paragraph>'
 				);
@@ -737,7 +737,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as style in <li> in blockquote list item', () => {
 				setModelData( model,
-					'<blockQuote listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<blockQuote listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<paragraph>' +
 							'<$text fontSize="10px">foo</$text>' +
 						'</paragraph>' +
@@ -771,7 +771,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should downcast listItemFontSize attribute as style in <li> in heading list item', () => {
 				setModelData( model,
-					'<heading1 listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<heading1 listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<$text fontSize="10px">foo</$text>' +
 					'</heading1>'
 				);
@@ -800,7 +800,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			// Post-fixer currently removes `listItemFontSize` attribute from table list items.
 			it.skip( 'should downcast listItemFontSize attribute as style in <li> in table list item', () => {
 				setModelData( model,
-					'<table listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<table listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>' +
@@ -1234,7 +1234,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 		it( 'should not downcast listItemFontSize attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px" listType="bulleted">' +
 					'<$text fontSize="10px">foo</$text>' +
 				'</paragraph>'
 			);

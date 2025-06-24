@@ -120,7 +120,7 @@ describe( 'ListItemItalicIntegration', () => {
 	describe( 'downcast', () => {
 		it( 'should downcast listItemItalic attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
@@ -146,10 +146,10 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should downcast listItemItalic attribute as class in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemItalic="true">' +
+				'<paragraph listIndent="1" listItemId="b" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
@@ -189,10 +189,10 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should downcast listItemItalic attribute as class in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">bar</$text>' +
 				'</paragraph>'
 			);
@@ -226,7 +226,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should downcast listItemItalic attribute as class in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text italic="true">foo</$text>' +
 					'</paragraph>' +
@@ -260,7 +260,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should downcast listItemItalic attribute as class in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<heading1 listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</heading1>'
 			);
@@ -289,7 +289,7 @@ describe( 'ListItemItalicIntegration', () => {
 		// Post-fixer currently removes `listItemItalic` attribute from table list items.
 		it.skip( 'should downcast listItemItalic attribute as class in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<table listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -597,7 +597,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should not downcast listItemItalic attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
 					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);

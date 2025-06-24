@@ -120,7 +120,7 @@ describe( 'ListItemFontColorIntegration', () => {
 	describe( 'downcast', () => {
 		it( 'should downcast listItemFontColor attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
@@ -146,10 +146,10 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemFontColor="red">' +
+				'<paragraph listIndent="1" listItemId="b" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
@@ -187,10 +187,10 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">bar</$text>' +
 				'</paragraph>'
 			);
@@ -224,7 +224,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontColor="red">foo</$text>' +
 					'</paragraph>' +
@@ -258,7 +258,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<heading1 listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</heading1>'
 			);
@@ -287,7 +287,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		// Post-fixer currently removes `listItemFontColor` attribute from table list items.
 		it.skip( 'should downcast listItemFontColor attribute as style in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<table listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -596,7 +596,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should not downcast listItemFontColor attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
