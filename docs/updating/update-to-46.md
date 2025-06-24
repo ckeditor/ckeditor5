@@ -93,4 +93,3 @@ Example:
 ### Major breaking changes in this release
 
 ### Minor breaking changes in this release
-### Minor breaking changes in this release
