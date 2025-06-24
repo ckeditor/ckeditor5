@@ -20,9 +20,7 @@ Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/cke
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
-### Major breaking changes in this release
-
-#### Content area CSS variables renamed to --ck-content-* prefix
+### Content area CSS variables renamed to `--ck-content-*` prefix
 
 To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
 
@@ -59,9 +57,9 @@ Example:
 }
 ```
 
-#### Table-related CSS variables renamed for better clarity
+### Table-related CSS variables renamed for better clarity
 
-Some table-related CSS variables had improper naming with "-selector-" in their names, which was confusing and inconsistent. These variables have been renamed to use "-table-" prefix for better clarity and consistency.
+Some table-related CSS variables had improper naming with `-selector-` in their names, which was confusing and inconsistent. These variables have been renamed to use `-table-` for better clarity and consistency.
 
 | Old variable name                           | New variable name                                 |
 |---------------------------------------------|---------------------------------------------------|
@@ -82,5 +80,7 @@ Example:
   --ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 ```
+
+### Major breaking changes in this release
 
 ### Minor breaking changes in this release
