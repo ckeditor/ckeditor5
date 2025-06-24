@@ -4,9 +4,15 @@
  */
 
 :root {
+	--ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	--ck-content-font-size: medium;
+	--ck-content-font-color: hsl(0, 0%, 0%);
 	--ck-content-line-height: 1.5;
 }
 
 .ck-content {
+	font-family: var(--ck-content-font-family);
+	font-size: var(--ck-content-font-size);
+	color: var(--ck-content-font-color);
 	line-height: var(--ck-content-line-height);
 }
