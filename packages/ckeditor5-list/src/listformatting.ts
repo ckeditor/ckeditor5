@@ -10,6 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
+import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
 import ListItemFontSizeIntegration from './listformatting/listitemfontsizeintegration.js';
 import type {
 	Element,
@@ -64,6 +66,8 @@ export default class ListFormatting extends Plugin {
 	public static get requires() {
 		return [
 			ListItemFontFamilyIntegration,
+			ListItemBoldIntegration,
+			ListItemItalicIntegration,
 			ListItemFontSizeIntegration
 		] as const;
 	}
@@ -131,24 +135,11 @@ export default class ListFormatting extends Plugin {
 					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
 					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-					if ( format ) {
-						if ( setFormattingToListItem(
-							writer,
-							listItem,
-							listItemFormatAttributeName,
-							format
-						) ) {
-							returnValue = true;
-						}
+					if ( format && setFormattingToListItem( writer, listItem, listItemFormatAttributeName, format ) ) {
+						returnValue = true;
 					}
-					else {
-						if ( removeFormattingFromListItem(
-							writer,
-							listItem,
-							listItemFormatAttributeName
-						) ) {
-							returnValue = true;
-						}
+					else if ( !format && removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName ) ) {
+						returnValue = true;
 					}
 				}
 			}

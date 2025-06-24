@@ -13,6 +13,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import stubUid from './list/_utils/uid.js';
 import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
+import ListItemBoldIntegration from '../src/listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from '../src/listformatting/listitemitalicintegration.js';
 import ListItemFontSizeIntegration from '../src/listformatting/listitemfontsizeintegration.js';
 
 describe( 'ListFormatting', () => {
@@ -72,6 +74,8 @@ describe( 'ListFormatting', () => {
 	it( 'should require integration plugins', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
 			ListItemFontFamilyIntegration,
+			ListItemBoldIntegration,
+			ListItemItalicIntegration,
 			ListItemFontSizeIntegration
 		] );
 	} );
