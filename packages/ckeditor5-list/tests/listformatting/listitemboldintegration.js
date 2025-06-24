@@ -386,14 +386,14 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-list-marker-bold;">' +
+				'<ul class="ck-list-marker-bold">' +
 					'<li class="ck-list-marker-bold">' +
-						'<p class="ck-list-marker-bold;">' +
+						'<p class="ck-list-marker-bold">' +
 							'<strong>foo</strong>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-list-marker-bold;">baz</p>'
+				'<p class="ck-list-marker-bold">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(

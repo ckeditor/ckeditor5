@@ -370,14 +370,14 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-list-marker-italic;">' +
+				'<ul class="ck-list-marker-italic">' +
 					'<li class="ck-list-marker-italic">' +
-						'<p class="ck-list-marker-italic;">' +
+						'<p class="ck-list-marker-italic">' +
 							'<i>foo</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-list-marker-italic;">baz</p>'
+				'<p class="ck-list-marker-italic">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(

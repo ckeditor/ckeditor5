@@ -846,14 +846,14 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 				editor.setData(
-					'<ul class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
+					'<ul class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:11px;">' +
 						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
-							'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
+							'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:12px;">' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</p>' +
 						'</li>' +
 					'</ul>' +
-					'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">baz</p>'
+					'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:13px;">baz</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(

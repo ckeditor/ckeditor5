@@ -368,14 +368,14 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
+				'<ul class="ck-list-marker-color" style="--ck-content-list-marker-color:blue;">' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
-						'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
+						'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:green;">' +
 							'<span style="color:red;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">baz</p>'
+				'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:orange;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(

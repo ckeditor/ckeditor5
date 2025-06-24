@@ -371,14 +371,14 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
+				'<ul class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Tahoma;">' +
 					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
-						'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
+						'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Verdana;">' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">baz</p>'
+				'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Helvetica;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
