@@ -43,7 +43,7 @@ function run() {
 
 function performTest() {
 	const dataSetName = getCurrentDataSetName();
-	const initialData = allDataSets[ dataSetName ]();
+	const initialData = allDataSets[ dataSetName ];
 	const finalConfig = { initialData, ...config };
 	const editorElement = document.querySelector( '#editor' );
 
