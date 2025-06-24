@@ -33,13 +33,10 @@ import {
 
 import { convertSelectionChange } from '../conversion/upcasthelpers.js';
 
-import { tryFixingRange } from '../model/utils/selection-post-fixer.js';
-
 import type { Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
 import { type ModelItem } from '../model/item.js';
 import { type ModelText } from '../model/text.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
-import { type ModelSchema } from '../model/schema.js';
 import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
@@ -121,12 +118,6 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
-		);
-
-		// Fix `beforeinput` target ranges so that they map to the valid model ranges.
-		this.listenTo<ViewDocumentInputEvent>( this.view.document, 'beforeinput',
-			fixTargetRanges( this.mapper, this.model.schema, this.view ),
-			{ priority: 'high' }
 		);
 
 		// Attach default model converters.
@@ -245,31 +236,4 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 			this.model.document.differ._refreshItem( item );
 		} );
 	}
-}
-
-/**
- * Checks whether the target ranges provided by the `beforeInput` event can be properly mapped to model ranges and fixes them if needed.
- *
- * This is using the same logic as the selection post-fixer.
- */
-function fixTargetRanges( mapper: Mapper, schema: ModelSchema, view: EditingView ): GetCallback<ViewDocumentInputEvent> {
-	return ( evt, data ) => {
-		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
-		// could be properly mapped to view and model because the DOM and view tree drifted apart.
-		if ( view.document.isComposing && !env.isAndroid ) {
-			return;
-		}
-
-		for ( let i = 0; i < data.targetRanges.length; i++ ) {
-			const viewRange = data.targetRanges[ i ];
-			const modelRange = mapper.toModelRange( viewRange );
-			const correctedRange = tryFixingRange( modelRange, schema );
-
-			if ( !correctedRange || correctedRange.isEqual( modelRange ) ) {
-				continue;
-			}
-
-			data.targetRanges[ i ] = mapper.toViewRange( correctedRange );
-		}
-	};
 }
