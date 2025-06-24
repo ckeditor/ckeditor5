@@ -28,6 +28,7 @@ import type {
 
 	ListFormatting,
 	ListItemFontFamilyIntegration,
+	ListItemBoldIntegration,
 	ListItemItalicIntegration,
 
 	LegacyList,
@@ -78,6 +79,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TodoListUI.pluginName ]: TodoListUI;
 		[ ListFormatting.pluginName ]: ListFormatting;
 		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
+		[ ListItemBoldIntegration.pluginName ]: ListItemBoldIntegration;
 		[ ListItemItalicIntegration.pluginName ]: ListItemItalicIntegration;
 
 		[ LegacyList.pluginName ]: LegacyList;
