@@ -80,11 +80,11 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
 		[ ListFormatting.pluginName ]: ListFormatting;
-		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
 		[ ListItemBoldIntegration.pluginName ]: ListItemBoldIntegration;
 		[ ListItemItalicIntegration.pluginName ]: ListItemItalicIntegration;
 		[ ListItemFontSizeIntegration.pluginName ]: ListItemFontSizeIntegration;
 		[ ListItemFontColorIntegration.pluginName ]: ListItemFontColorIntegration;
+		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
 
 		[ LegacyList.pluginName ]: LegacyList;
 		[ LegacyListEditing.pluginName ]: LegacyListEditing;
