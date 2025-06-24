@@ -125,8 +125,6 @@ export default class ListItemFontSizeIntegration extends Plugin {
 
 		for ( const option of fontSizeOptions ) {
 			if ( option.model && option.view ) {
-				const view = option.view as ElementObjectDefinition;
-
 				editor.conversion.for( 'upcast' ).elementToAttribute( {
 					model: {
 						key: 'listItemFontSize',
