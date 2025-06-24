@@ -26,6 +26,7 @@ As part of the transition to the New Installation Methods (NIM), we have standar
 
 <info-box info>
 Due to the large number of changed exports, manually updating all imports can be time-consuming and error-prone. We recommend using the tables with the changed import/export names provided in the migration guides as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
+You can directly access the migration guide content at: https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md
 </info-box>
 
 ### Content area CSS variables renamed to `--ck-content-*` prefix
@@ -92,4 +93,5 @@ Example:
 
 ### Major breaking changes in this release
 
+### Minor breaking changes in this release
 ### Minor breaking changes in this release
