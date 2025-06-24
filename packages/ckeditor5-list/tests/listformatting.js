@@ -13,6 +13,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import stubUid from './list/_utils/uid.js';
 import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
+import ListItemBoldIntegration from '../src/listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from '../src/listformatting/listitemitalicintegration.js';
+import ListItemFontSizeIntegration from '../src/listformatting/listitemfontsizeintegration.js';
+import ListItemFontColorIntegration from '../src/listformatting/listitemfontcolorintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -70,6 +74,10 @@ describe( 'ListFormatting', () => {
 
 	it( 'should require integration plugins', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
+			ListItemBoldIntegration,
+			ListItemItalicIntegration,
+			ListItemFontSizeIntegration,
+			ListItemFontColorIntegration,
 			ListItemFontFamilyIntegration
 		] );
 	} );
@@ -800,7 +808,7 @@ describe( 'ListFormatting', () => {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
 
-			ListFormatting.registerFormatAttribute( 'listItemFormat', 'inlineFormat' );
+			ListFormatting.registerFormatAttribute( 'inlineFormat', 'listItemFormat' );
 		}
 
 		afterInit() {
@@ -820,7 +828,7 @@ describe( 'ListFormatting', () => {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
 
-			ListFormatting.registerFormatAttribute( 'listItemFormat2', 'inlineFormat2' );
+			ListFormatting.registerFormatAttribute( 'inlineFormat2', 'listItemFormat2' );
 		}
 
 		afterInit() {

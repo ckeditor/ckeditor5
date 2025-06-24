@@ -8,7 +8,13 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+
+import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
+import ListItemFontSizeIntegration from './listformatting/listitemfontsizeintegration.js';
+import ListItemFontColorIntegration from './listformatting/listitemfontcolorintegration.js';
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
+
 import type {
 	Element,
 	Model,
@@ -19,7 +25,7 @@ import {
 	isListItemBlock,
 	getAllListItemBlocks,
 	isFirstBlockOfListItem
-} from '../src/list/utils/model.js';
+} from './list/utils/model.js';
 
 import '../theme/listformatting.css';
 
@@ -38,9 +44,9 @@ import '../theme/listformatting.css';
  */
 export default class ListFormatting extends Plugin {
 	/**
-	 * The list of loaded formattings.
+	 * The list of loaded formatting.
 	 */
-	private readonly _loadedFormattings: Record<string, string> = {};
+	private readonly _loadedFormatting: Record<string, string> = {};
 
 	/**
 	 * @inheritDoc
@@ -60,7 +66,13 @@ export default class ListFormatting extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ ListItemFontFamilyIntegration ] as const;
+		return [
+			ListItemBoldIntegration,
+			ListItemItalicIntegration,
+			ListItemFontSizeIntegration,
+			ListItemFontColorIntegration,
+			ListItemFontFamilyIntegration
+		] as const;
 	}
 
 	/**
@@ -135,28 +147,16 @@ export default class ListFormatting extends Plugin {
 			}
 
 			for ( const listItem of modifiedListItems ) {
-				for ( const listItemFormatAttributeName in this._loadedFormattings ) {
-					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
-					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
+				const formats = getListItemConsistentFormat( model, listItem, Object.keys( this._loadedFormatting ) );
 
-					if ( format ) {
-						if ( setFormattingToListItem(
-							writer,
-							listItem,
-							listItemFormatAttributeName,
-							format
-						) ) {
-							returnValue = true;
-						}
+				for ( const [ formatAttributeName, formatValue ] of Object.entries( formats ) ) {
+					const listItemFormatAttributeName = this._loadedFormatting[ formatAttributeName ];
+
+					if ( formatValue && setFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatValue ) ) {
+						returnValue = true;
 					}
-					else {
-						if ( removeFormattingFromListItem(
-							writer,
-							listItem,
-							listItemFormatAttributeName
-						) ) {
-							returnValue = true;
-						}
+					else if ( !formatValue && removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName ) ) {
+						returnValue = true;
 					}
 				}
 			}
@@ -173,12 +173,12 @@ export default class ListFormatting extends Plugin {
 	 * to the list item element, based on whether there is a consistent default formatting attribute
 	 * applied within its content.
 	 */
-	public registerFormatAttribute( listItemFormatAttribute: string, formatAttribute: string ): boolean {
+	public registerFormatAttribute( formatAttribute: string, listItemFormatAttribute: string ): boolean {
 		if ( !this.editor.config.get( 'list.enableListItemFormatting' ) ) {
 			return false;
 		}
 
-		this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
+		this._loadedFormatting[ formatAttribute ] = listItemFormatAttribute;
 
 		return true;
 	}
@@ -187,7 +187,7 @@ export default class ListFormatting extends Plugin {
 	 * Returns true if the given model attribute name is a supported inline formatting attribute.
 	 */
 	private _isInlineOrSelectionFormatting( attributeKey: string ): boolean {
-		return Object.values( this._loadedFormattings ).some( key => attributeKey === key || attributeKey === `selection:${ key }` );
+		return attributeKey.replace( /^selection:/, '' ) in this._loadedFormatting;
 	}
 }
 
@@ -195,58 +195,71 @@ export default class ListFormatting extends Plugin {
  * Returns the consistent format of the list item element.
  * If the list item contains multiple blocks, it checks only the first block.
  */
-function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
+function getListItemConsistentFormat( model: Model, listItem: Element, attributeKeys: Array<string> ) {
 	if ( isFirstBlockOfListItem( listItem ) ) {
-		return getSingleListItemConsistentFormat( model, listItem, attributeKey );
+		return getSingleListItemConsistentFormat( model, listItem, attributeKeys );
 	}
 
 	// Always the first block of the list item should be checked for consistent formatting.
 	const listItemBlocks = getAllListItemBlocks( listItem );
 
-	return getSingleListItemConsistentFormat( model, listItemBlocks[ 0 ], attributeKey );
+	return getSingleListItemConsistentFormat( model, listItemBlocks[ 0 ], attributeKeys );
 }
 
 /**
  * Returns the consistent format of a single list item element.
  */
-function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
+function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKeys: Array<string> ) {
 	// Do not check internals of limit elements (for example, do not check table cells).
 	if ( model.schema.isLimit( listItem ) ) {
-		return;
+		return Object.fromEntries( attributeKeys.map( attributeKey => [ attributeKey ] ) ) as Record<string, string | undefined>;
 	}
 
 	if ( listItem.isEmpty ) {
-		return listItem.getAttribute( `selection:${ attributeKey }` ) as string;
+		return Object.fromEntries( attributeKeys.map( attributeKey => (
+			[ attributeKey, listItem.getAttribute( `selection:${ attributeKey }` ) as string | undefined ]
+		) ) );
 	}
+
+	const attributesToCheck = new Set( attributeKeys );
+	const valuesMap: Record<string, string | undefined> = {};
 
 	const range = model.createRangeIn( listItem );
 	const walker = range.getWalker( { ignoreElementEnd: true } );
-	let value;
 
 	for ( const { item } of walker ) {
-		if ( model.schema.checkAttribute( item, attributeKey ) ) {
-			const formatAttribute = item.getAttribute( attributeKey ) as string;
+		for ( const attributeKey of attributesToCheck ) {
+			if ( model.schema.checkAttribute( item, attributeKey ) ) {
+				const formatAttribute = item.getAttribute( attributeKey ) as string;
 
-			if ( formatAttribute === undefined ) {
-				return;
+				if ( formatAttribute === undefined ) {
+					attributesToCheck.delete( attributeKey );
+					valuesMap[ attributeKey ] = undefined;
+				}
+				else if ( valuesMap[ attributeKey ] === undefined ) {
+					// First item inside a list item block.
+					valuesMap[ attributeKey ] = formatAttribute;
+				}
+				else if ( valuesMap[ attributeKey ] !== formatAttribute ) {
+					// Following items in the same block of a list item.
+					attributesToCheck.delete( attributeKey );
+					valuesMap[ attributeKey ] = undefined;
+				}
 			}
-			else if ( value === undefined ) {
-				// First item inside a list item block.
-				value = formatAttribute;
-			}
-			else if ( value !== formatAttribute ) {
-				// Following items in the same block of a list item.
-				return;
-			}
+		}
 
-			// Jump over inline limit elements as we expect only outside them to be the same formatting.
-			if ( model.schema.isLimit( item ) ) {
-				walker.jumpTo( model.createPositionAfter( item ) );
-			}
+		// End early if all attributes have been checked and are inconsistent.
+		if ( !attributesToCheck.size ) {
+			break;
+		}
+
+		// Jump over inline limit elements as we expect only outside them to be the same formatting.
+		if ( model.schema.isLimit( item ) ) {
+			walker.jumpTo( model.createPositionAfter( item ) );
 		}
 	}
 
-	return value;
+	return valuesMap;
 }
 
 /**
