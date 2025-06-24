@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
 import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
 import type {
 	Element,
 	Model,
@@ -64,7 +65,8 @@ export default class ListFormatting extends Plugin {
 	public static get requires() {
 		return [
 			ListItemFontFamilyIntegration,
-			ListItemBoldIntegration
+			ListItemBoldIntegration,
+			ListItemItalicIntegration
 		] as const;
 	}
 

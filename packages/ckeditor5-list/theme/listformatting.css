@@ -16,3 +16,7 @@
 .ck-content .ck-bold {
 	font-weight: bold;
 }
+
+.ck-content .ck-italic {
+	font-style: italic;
+}

@@ -14,6 +14,7 @@ import stubUid from './list/_utils/uid.js';
 import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
 import ListItemBoldIntegration from '../src/listformatting/listitemboldintegration.js';
+import ListItemItalicIntegration from '../src/listformatting/listitemitalicintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -72,7 +73,8 @@ describe( 'ListFormatting', () => {
 	it( 'should require integration plugins', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
 			ListItemFontFamilyIntegration,
-			ListItemBoldIntegration
+			ListItemBoldIntegration,
+			ListItemItalicIntegration
 		] );
 	} );
 

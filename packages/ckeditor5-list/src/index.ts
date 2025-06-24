@@ -30,6 +30,7 @@ export type { default as ListStyleCommand } from './listproperties/liststylecomm
 export { default as ListFormatting } from './listformatting.js';
 export { default as ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 export { default as ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
+export { default as ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
 
 // TodoList/
 export { default as TodoList } from './todolist.js';
