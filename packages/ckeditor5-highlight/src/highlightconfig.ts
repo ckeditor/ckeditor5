@@ -15,7 +15,7 @@
  * 	model: 'pinkMarker',
  * 	class: 'marker-pink',
  * 	title: 'Pink Marker',
- * 	color: 'var(--ck-highlight-marker-pink)',
+ * 	color: 'var(--ck-content-highlight-marker-pink)',
  * 	type: 'marker'
  * }
  * ```
@@ -75,42 +75,42 @@ export interface HighlightConfig {
 	 * 		model: 'yellowMarker',
 	 * 		class: 'marker-yellow',
 	 * 		title: 'Yellow marker',
-	 * 		color: 'var(--ck-highlight-marker-yellow)',
+	 * 		color: 'var(--ck-content-highlight-marker-yellow)',
 	 * 		type: 'marker'
 	 * 	},
 	 * 	{
 	 * 		model: 'greenMarker',
 	 * 		class: 'marker-green',
 	 * 		title: 'Green marker',
-	 * 		color: 'var(--ck-highlight-marker-green)',
+	 * 		color: 'var(--ck-content-highlight-marker-green)',
 	 * 		type: 'marker'
 	 * 	},
 	 * 	{
 	 * 		model: 'pinkMarker',
 	 * 		class: 'marker-pink',
 	 * 		title: 'Pink marker',
-	 * 		color: 'var(--ck-highlight-marker-pink)',
+	 * 		color: 'var(--ck-content-highlight-marker-pink)',
 	 * 		type: 'marker'
 	 * 	},
 	 * 	{
 	 * 		model: 'blueMarker',
 	 * 		class: 'marker-blue',
 	 * 		title: 'Blue marker',
-	 * 		color: 'var(--ck-highlight-marker-blue)',
+	 * 		color: 'var(--ck-content-highlight-marker-blue)',
 	 * 		type: 'marker'
 	 * 	},
 	 * 	{
 	 * 		model: 'redPen',
 	 * 		class: 'pen-red',
 	 * 		title: 'Red pen',
-	 * 		color: 'var(--ck-highlight-pen-red)',
+	 * 		color: 'var(--ck-content-highlight-pen-red)',
 	 * 		type: 'pen'
 	 * 	},
 	 * 	{
 	 * 		model: 'greenPen',
 	 * 		class: 'pen-green',
 	 * 		title: 'Green pen',
-	 * 		color: 'var(--ck-highlight-pen-green)',
+	 * 		color: 'var(--ck-content-highlight-pen-green)',
 	 * 		type: 'pen'
 	 * 	}
 	 * ]
@@ -126,12 +126,12 @@ export interface HighlightConfig {
 	 *
 	 * ```css
 	 * :root {
-	 * 	--ck-highlight-marker-yellow: #fdfd77;
-	 * 	--ck-highlight-marker-green: #63f963;
-	 * 	--ck-highlight-marker-pink: #fc7999;
-	 * 	--ck-highlight-marker-blue: #72cdfd;
-	 * 	--ck-highlight-pen-red: #e91313;
-	 * 	--ck-highlight-pen-green: #118800;
+	 * 	--ck-content-highlight-marker-yellow: #fdfd77;
+	 * 	--ck-content-highlight-marker-green: #63f963;
+	 * 	--ck-content-highlight-marker-pink: #fc7999;
+	 * 	--ck-content-highlight-marker-blue: #72cdfd;
+	 * 	--ck-content-highlight-pen-red: #e91313;
+	 * 	--ck-content-highlight-pen-green: #118800;
 	 * }
 	 *
 	 * .marker-yellow { ... }
@@ -159,14 +159,14 @@ export interface HighlightConfig {
 	 * 					model: 'pinkMarker',
 	 * 					class: 'marker-pink',
 	 * 					title: 'Pink Marker',
-	 * 					color: 'var(--ck-highlight-marker-pink)',
+	 * 					color: 'var(--ck-content-highlight-marker-pink)',
 	 * 					type: 'marker'
 	 * 				},
 	 * 				{
 	 * 					model: 'redPen',
 	 * 					class: 'pen-red',
 	 * 					title: 'Red Pen',
-	 * 					color: 'var(--ck-highlight-pen-red)',
+	 * 					color: 'var(--ck-content-highlight-pen-red)',
 	 * 					type: 'pen'
 	 * 				},
 	 * 			]
