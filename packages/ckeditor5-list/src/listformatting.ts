@@ -98,6 +98,7 @@ export default class ListFormatting extends Plugin {
 				if ( entry.type === 'attribute' ) {
 					if (
 						entry.attributeKey == 'listItemId' ||
+						entry.attributeKey == 'listType' ||
 						this._isInlineOrSelectionFormatting( entry.attributeKey )
 					) {
 						if ( isListItemBlock( entry.range.start.nodeAfter ) ) {
@@ -191,8 +192,9 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
  * Returns the consistent format of a single list item element.
  */
 function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKeys: Array<string> ) {
+	// Only bulleted and numbered lists can have formatting (to-do lists are not supported).
 	// Do not check internals of limit elements (for example, do not check table cells).
-	if ( model.schema.isLimit( listItem ) ) {
+	if ( !isNumberedOrBulletedList( listItem ) || model.schema.isLimit( listItem ) ) {
 		return Object.fromEntries( attributeKeys.map( attributeKey => [ attributeKey ] ) ) as Record<string, string | undefined>;
 	}
 
@@ -286,4 +288,11 @@ function removeFormattingFromListItem(
 	}
 
 	return wasChanged;
+}
+
+/**
+ * Checks if the given list type is a numbered or bulleted list.
+ */
+function isNumberedOrBulletedList( listItem: Element ): boolean {
+	return [ 'numbered', 'bulleted', 'customNumbered', 'customBulleted' ].includes( listItem.getAttribute( 'listType' ) as string );
 }
