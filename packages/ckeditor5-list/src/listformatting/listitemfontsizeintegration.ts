@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { ElementObjectDefinition, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewElement } from 'ckeditor5/src/engine.js';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
 
 import ListEditing from '../list/listediting.js';
