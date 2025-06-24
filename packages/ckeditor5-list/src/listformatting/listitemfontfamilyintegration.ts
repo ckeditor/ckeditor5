@@ -61,7 +61,7 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			return;
 		}
 
-		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
+		// Register the downcast strategy in init() so that the attribute name is registered before the list editing
 		// registers its converters.
 		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {

@@ -18,6 +18,11 @@ import type ListFormatting from '../listformatting.js';
  */
 export default class ListItemFontColorIntegration extends Plugin {
 	/**
+	 * Indicates whether the integration is enabled.
+	 */
+	private _integrationEnabled: boolean = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -50,9 +55,13 @@ export default class ListItemFontColorIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'fontColor', 'listItemFontColor' );
+		this._integrationEnabled = ListFormatting.registerFormatAttribute( 'fontColor', 'listItemFontColor' );
 
-		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
+		if ( !this._integrationEnabled ) {
+			return;
+		}
+
+		// Register the downcast strategy in init() so that the attribute name is registered before the list editing
 		// registers its converters.
 		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {
@@ -74,7 +83,7 @@ export default class ListItemFontColorIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'FontColorEditing' ) ) {
+		if ( !editor.plugins.has( 'FontColorEditing' ) || !this._integrationEnabled ) {
 			return;
 		}
 

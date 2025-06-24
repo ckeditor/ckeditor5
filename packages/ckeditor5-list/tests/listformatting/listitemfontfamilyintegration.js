@@ -509,17 +509,21 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		} );
 	} );
 
-	describe( 'when enableListItemFormattin is false', () => {
+	describe( 'when enableListItemFormatting is false', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					ListItemFontFamilyIntegration,
+					FontFamilyEditing,
 					Paragraph
 				],
 				fontFamily: {
 					supportAllValues: true
+				},
+				list: {
+					enableListItemFormatting: false
 				}
 			} );
 
@@ -542,7 +546,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'<ul>' +
 					'<li>' +
 						'<p>' +
-							'foo' +
+							'<span style="font-family:Arial">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
@@ -552,7 +556,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'<ul>' +
 					'<li>' +
 						'<p>' +
-							'foo' +
+							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
@@ -567,14 +571,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					ListItemFontFamilyIntegration,
-					FontFamilyEditing,
 					Paragraph
 				],
 				fontFamily: {
 					supportAllValues: true
-				},
-				list: {
-					enableListItemFormatting: false
 				}
 			} );
 
@@ -596,7 +596,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+					'foo' +
 				'</paragraph>'
 			);
 		} );

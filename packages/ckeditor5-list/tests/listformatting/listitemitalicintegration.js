@@ -474,7 +474,7 @@ describe( 'ListItemItalicIntegration', () => {
 			);
 		} );
 
-		// Post-fixer currently removes `listItemBold` attribute from table list items.
+		// Post-fixer currently removes `listItemItalic` attribute from table list items.
 		it.skip( 'should upcast class in <li> to listItemItalic attribute for table', () => {
 			editor.setData(
 				'<ul>' +
@@ -504,6 +504,58 @@ describe( 'ListItemItalicIntegration', () => {
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'when enableListItemFormatting is false', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemItalicIntegration,
+					ItalicEditing,
+					Paragraph
+				],
+				list: {
+					enableListItemFormatting: false
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemItalic attribute', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<i>foo</i>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<i>foo</i>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
 			);
 		} );
 	} );

@@ -506,6 +506,58 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 	} );
 
+	describe( 'when enableListItemFormatting is false', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontColorIntegration,
+					FontColorEditing,
+					Paragraph
+				],
+				list: {
+					enableListItemFormatting: false
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemFontColor attribute as style in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+					'<$text fontColor="red">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span style="color:red">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span style="color:red;">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
 	describe( 'when FontColorEditing is not loaded', () => {
 		let editor, model, view;
 
