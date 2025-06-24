@@ -7,7 +7,12 @@
  * @module typing/delete
  */
 
-import { BubblingEventInfo, ViewDocumentDomEventData, type ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
+import {
+	_tryFixingModelRange,
+	BubblingEventInfo,
+	ViewDocumentDomEventData,
+	type ViewDocumentKeyDownEvent
+} from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { DeleteCommand } from './deletecommand.js';
@@ -70,9 +75,9 @@ export class Delete extends Plugin {
 			const commandData: Parameters<DeleteCommand[ 'execute' ]>[ 0 ] = { sequence };
 
 			if ( unit == 'selection' ) {
-				const modelRanges = Array.from( selectionToRemove!.getRanges() ).map( viewRange => {
-					return editor.editing.mapper.toModelRange( viewRange );
-				} );
+				const modelRanges = Array.from( selectionToRemove!.getRanges() )
+					.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
+					.map( modelRange => _tryFixingModelRange( modelRange, editor.model.schema ) || modelRange );
 
 				commandData.selection = editor.model.createSelection( modelRanges );
 			} else {
