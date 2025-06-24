@@ -518,3 +518,7 @@ export {
 } from './view/matcher.js';
 
 export { injectUiElementHandling as _injectViewUIElementHandling } from './view/uielement.js';
+
+export {
+	tryFixingRange as _tryFixingModelRange
+} from './model/utils/selection-post-fixer.js';

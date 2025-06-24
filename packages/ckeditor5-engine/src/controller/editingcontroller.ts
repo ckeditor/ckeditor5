@@ -9,9 +9,7 @@
 
 import {
 	CKEditorError,
-	ObservableMixin,
-	env,
-	type GetCallback
+	ObservableMixin
 } from '@ckeditor/ckeditor5-utils';
 
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
@@ -46,7 +44,6 @@ import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
 import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
-import type { ViewDocumentInputEvent } from '../view/observer/inputobserver.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
