@@ -8,7 +8,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import FontFamilyEditing from '@ckeditor/ckeditor5-font/src/fontfamily/fontfamilyediting.js';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -17,9 +17,9 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import stubUid from '../list/_utils/uid.js';
 import ListEditing from '../../src/list/listediting.js';
-import ListItemFontFamilyIntegration from '../../src/listformatting/listitemfontfamilyintegration.js';
+import ListItemItalicIntegration from '../../src/listformatting/listitemitalicintegration.js';
 
-describe( 'ListItemFontFamilyIntegration', () => {
+describe( 'ListItemItalicIntegration', () => {
 	let editor, model, view;
 
 	testUtils.createSinonSandbox();
@@ -27,17 +27,14 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [
-				ListItemFontFamilyIntegration,
-				FontFamilyEditing,
+				ListItemItalicIntegration,
+				ItalicEditing,
 				Paragraph,
 				BlockQuoteEditing,
 				CodeBlockEditing,
 				HeadingEditing,
 				TableEditing
-			],
-			fontFamily: {
-				supportAllValues: true
-			}
+			]
 		} );
 
 		model = editor.model;
@@ -51,29 +48,29 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( ListItemFontFamilyIntegration.pluginName ).to.equal( 'ListItemFontFamilyIntegration' );
+		expect( ListItemItalicIntegration.pluginName ).to.equal( 'ListItemItalicIntegration' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ListItemFontFamilyIntegration.isOfficialPlugin ).to.be.true;
+		expect( ListItemItalicIntegration.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListItemFontFamilyIntegration.isPremiumPlugin ).to.be.false;
+		expect( ListItemItalicIntegration.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListItemFontFamilyIntegration ) ).to.be.instanceOf( ListItemFontFamilyIntegration );
+		expect( editor.plugins.get( ListItemItalicIntegration ) ).to.be.instanceOf( ListItemItalicIntegration );
 	} );
 
 	it( 'should require ListEditing plugin', () => {
-		expect( ListItemFontFamilyIntegration.requires ).to.deep.equal( [
+		expect( ListItemItalicIntegration.requires ).to.deep.equal( [
 			ListEditing
 		] );
 	} );
 
 	describe( 'schema', () => {
-		it( 'should allow listItemFontFamily attribute in $listItem', () => {
+		it( 'should allow listItemItalic attribute in $listItem', () => {
 			model.schema.register( 'myElement', {
 				inheritAllFrom: '$block',
 				allowAttributesOf: '$listItem'
@@ -81,11 +78,11 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
 
-			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemItalic' ) ).to.be.true;
 		} );
 
-		it( 'listItemFontFamily attribute should have isFormatting set to true', () => {
-			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
+		it( 'listItemItalic attribute should have isFormatting set to true', () => {
+			expect( model.schema.getAttributeProperties( 'listItemItalic' ) ).to.include( {
 				isFormatting: true
 			} );
 		} );
@@ -101,31 +98,31 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			const heading = new ModelElement( 'heading1' );
 			const table = new ModelElement( 'table' );
 
-			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontFamily' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemItalic' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemItalic' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemItalic' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemItalic' ) ).to.be.true;
 
-			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontFamily' ) ).to.be.false;
-			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemItalic' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemItalic' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemItalic' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemItalic' ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'downcast', () => {
-		it( 'should downcast listItemFontFamily attribute as style in <li>', () => {
+		it( 'should downcast listItemItalic attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
-							'<span style="font-family:Arial">foo</span>' +
+							'<i>foo</i>' +
 						'</span>' +
 					'</li>' +
 				'</ul>'
@@ -133,33 +130,33 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
-						'<span style="font-family:Arial;">foo</span>' +
+					'<li class="ck-italic">' +
+						'<i>foo</i>' +
 					'</li>' +
 				'</ul>'
 			);
 		} );
 
-		it( 'should downcast listItemFontFamily attribute as style in nested list', () => {
+		it( 'should downcast listItemItalic attribute as class in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="1" listItemId="b" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
-							'<span style="font-family:Arial">foo</span>' +
+							'<i>foo</i>' +
 						'</span>' +
 						'<ul>' +
-							'<li style="font-family:Arial">' +
+							'<li class="ck-italic">' +
 								'<span class="ck-list-bogus-paragraph">' +
-									'<span style="font-family:Arial">foo</span>' +
+									'<i>foo</i>' +
 								'</span>' +
 							'</li>' +
 						'</ul>' +
@@ -169,11 +166,13 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
-						'<span style="font-family:Arial;">foo</span>' +
+					'<li class="ck-italic">' +
+						'<i>foo</i>' +
 						'<ul>' +
-							'<li style="font-family:Arial;">' +
-								'<span style="font-family:Arial;">foo</span>' +
+							'<li class="ck-italic">' +
+								'<i>' +
+									'foo' +
+								'</i>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
@@ -181,24 +180,24 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
-		it( 'should downcast listItemFontFamily attribute as style in <li> in multi-block', () => {
+		it( 'should downcast listItemItalic attribute as class in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">bar</$text>' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">bar</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<p>' +
-							'<span style="font-family:Arial">foo</span>' +
+							'<i>foo</i>' +
 						'</p>' +
 						'<p>' +
-							'<span style="font-family:Arial">bar</span>' +
+							'<i>bar</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
@@ -206,33 +205,33 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<p>' +
-							'<span style="font-family:Arial;">foo</span>' +
+							'<i>foo</i>' +
 						'</p>' +
 						'<p>' +
-							'<span style="font-family:Arial;">bar</span>' +
+							'<i>bar</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
 			);
 		} );
 
-		it( 'should downcast listItemFontFamily attribute as style in <li> in blockquote list item', () => {
+		it( 'should downcast listItemItalic attribute as class in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemItalic="true">' +
 					'<paragraph>' +
-						'<$text fontFamily="Arial">foo</$text>' +
+						'<$text italic="true">foo</$text>' +
 					'</paragraph>' +
 				'</blockQuote>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<blockquote>' +
 							'<p>' +
-								'<span style="font-family:Arial">foo</span>' +
+								'<i>foo</i>' +
 							'</p>' +
 						'</blockquote>' +
 					'</li>' +
@@ -241,10 +240,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<blockquote>' +
 							'<p>' +
-								'<span style="font-family:Arial;">foo</span>' +
+								'<i>foo</i>' +
 							'</p>' +
 						'</blockquote>' +
 					'</li>' +
@@ -252,18 +251,18 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
-		it( 'should downcast listItemFontFamily attribute as style in <li> in heading list item', () => {
+		it( 'should downcast listItemItalic attribute as class in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<heading1 listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</heading1>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<h2>' +
-							'<span style="font-family:Arial">foo</span>' +
+							'<i>foo</i>' +
 						'</h2>' +
 					'</li>' +
 				'</ul>'
@@ -271,19 +270,19 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<h2>' +
-							'<span style="font-family:Arial;">foo</span>' +
+							'<i>foo</i>' +
 						'</h2>' +
 					'</li>' +
 				'</ul>'
 			);
 		} );
 
-		// Post-fixer currently remove `listItemFontFamily` attribute from table list items.
-		it.skip( 'should downcast listItemFontFamily attribute as style in <li> in table list item', () => {
+		// Post-fixer currently removes `listItemItalic` attribute from table list items.
+		it.skip( 'should downcast listItemItalic attribute as class in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+				'<table listIndent="0" listItemId="a" listItemItalic="true">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -296,7 +295,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-italic">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -318,7 +317,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -337,66 +336,66 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	} );
 
 	describe( 'upcast', () => {
-		it( 'should upcast style in <li> to listItemFontFamily attribute (unordered list)', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute (unordered list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
-						'<span style="font-family:Arial;">foo</span>' +
+					'<li class="ck-italic">' +
+						'<i>foo</i>' +
 					'</li>' +
 				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute (ordered list)', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute (ordered list)', () => {
 			editor.setData(
 				'<ol>' +
-					'<li style="font-family:Arial;">' +
-						'<span style="font-family:Arial;">foo</span>' +
+					'<li class="ck-italic">' +
+						'<i>foo</i>' +
 					'</li>' +
 				'</ol>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="numbered">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
 		} );
 
-		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
+		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul style="font-family:Tahoma;">' +
-					'<li style="font-family:Arial;">' +
-						'<p style="font-family:Verdana;">' +
-							'<span style="font-family:Arial;">foo</span>' +
+				'<ul class="ck-italic;">' +
+					'<li class="ck-italic">' +
+						'<p class="ck-italic;">' +
+							'<i>foo</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p style="font-family:Helvetica;">baz</p>'
+				'<p class="ck-italic;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
 				'<paragraph>baz</paragraph>'
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute (nested list)', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute (nested list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
-						'<span style="font-family:Arial;">foo</span>' +
+					'<li class="ck-italic">' +
+						'<i>foo</i>' +
 						'<ul>' +
-							'<li style="font-family:Arial;">' +
-								'<span style="font-family:Arial;">bar</span>' +
+							'<li class="ck-italic">' +
+								'<i>bar</i>' +
 							'</li>' +
 						'</ul>' +
 					'</li>' +
@@ -404,82 +403,82 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a01" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a01" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">bar</$text>' +
+				'<paragraph listIndent="1" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">bar</$text>' +
 				'</paragraph>'
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute in multi-block', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute in multi-block', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<p>' +
-							'<span style="font-family:Arial;">foo</span>' +
+							'<i>foo</i>' +
 						'</p>' +
 						'<p>' +
-							'<span style="font-family:Arial;">bar</span>' +
+							'<i>bar</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">bar</$text>' +
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">bar</$text>' +
 				'</paragraph>'
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute for blockquote', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute for blockquote', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<blockquote>' +
-							'<span style="font-family:Arial;">foo</span>' +
+							'<i>foo</i>' +
 						'</blockquote>' +
 					'</li>' +
 				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<blockQuote listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+				'<blockQuote listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<paragraph>' +
-						'<$text fontFamily="Arial">foo</$text>' +
+						'<$text italic="true">foo</$text>' +
 					'</paragraph>' +
 				'</blockQuote>'
 			);
 		} );
 
-		it( 'should upcast style in <li> to listItemFontFamily attribute for heading', () => {
+		it( 'should upcast class in <li> to listItemItalic attribute for heading', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<h2>' +
-							'<span style="font-family:Arial;">foo</span>' +
+							'<i>foo</i>' +
 						'</h2>' +
 					'</li>' +
 				'</ul>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<heading1 listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<heading1 listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
 				'</heading1>'
 			);
 		} );
 
-		// Post-fixer currently remove `listItemFontFamily` attribute from table list items.
-		it.skip( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
+		// Post-fixer currently removes `listItemBold` attribute from table list items.
+		it.skip( 'should upcast class in <li> to listItemItalic attribute for table', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-italic">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -496,7 +495,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
-				'<table listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+				'<table listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -509,18 +508,15 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		} );
 	} );
 
-	describe( 'when FontFamilyEditing is not loaded', () => {
+	describe( 'when ItalicEditing is not loaded', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
-					ListItemFontFamilyIntegration,
+					ListItemItalicIntegration,
 					Paragraph
-				],
-				fontFamily: {
-					supportAllValues: true
-				}
+				]
 			} );
 
 			model = editor.model;
@@ -531,10 +527,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should not downcast listItemFontFamily attribute as style in <li>', () => {
+		it( 'should not downcast listItemItalic attribute as class in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
-					'<$text fontFamily="Arial">foo</$text>' +
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
 				'</paragraph>'
 			);
 

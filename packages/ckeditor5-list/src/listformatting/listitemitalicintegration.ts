@@ -4,24 +4,23 @@
  */
 
 /**
- * @module list/listformatting/listitemfontfamilyintegration
+ * @module list/listformatting/listitemitalicintegration
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { type ViewElement } from 'ckeditor5/src/engine.js';
 
 import ListEditing from '../list/listediting.js';
 import type ListFormatting from '../listformatting.js';
 
 /**
- * The list item font family integration plugin.
+ * The list item italic integration plugin.
  */
-export default class ListItemFontFamilyIntegration extends Plugin {
+export default class ListItemItalicIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListItemFontFamilyIntegration' as const;
+		return 'ListItemItalicIntegration' as const;
 	}
 
 	/**
@@ -46,23 +45,22 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+		if ( !editor.plugins.has( 'ItalicEditing' ) ) {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'fontFamily', 'listItemFontFamily' );
+		ListFormatting.registerFormatAttribute( 'italic', 'listItemItalic' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.
 		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {
 			scope: 'item',
-			attributeName: 'listItemFontFamily',
+			attributeName: 'listItemItalic',
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
-				// There is no need of removing the style because downcast strategies handles it automatically.
 				if ( value ) {
-					writer.setStyle( 'font-family', value as string, viewElement );
+					writer.addClass( 'ck-italic', viewElement );
 				}
 			}
 		} );
@@ -75,12 +73,12 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+		if ( !editor.plugins.has( 'ItalicEditing' ) ) {
 			return;
 		}
 
-		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
-		model.schema.setAttributeProperties( 'listItemFontFamily', {
+		model.schema.extend( '$listItem', { allowAttributes: 'listItemItalic' } );
+		model.schema.setAttributeProperties( 'listItemItalic', {
 			isFormatting: true
 		} );
 
@@ -90,20 +88,13 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			if ( !item.getAttribute( 'listItemId' ) ) {
 				return false;
 			}
-		}, 'listItemFontFamily' );
+		}, 'listItemItalic' );
 
 		editor.conversion.for( 'upcast' ).attributeToAttribute( {
-			model: {
-				key: 'listItemFontFamily',
-				value: ( viewElement: ViewElement ) => {
-					return viewElement.getStyle( 'font-family' );
-				}
-			},
+			model: 'listItemItalic',
 			view: {
 				name: 'li',
-				styles: {
-					'font-family': /.*/
-				}
+				classes: 'ck-italic'
 			}
 		} );
 	}

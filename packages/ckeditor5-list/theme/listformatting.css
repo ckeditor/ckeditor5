@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content li {
+	& ol {
+		color: initial;
+		font-family: initial;
+		font-size: initial;
+		font-weight: initial;
+		font-style: initial;
+	}
+}
+
+.ck-content .ck-bold {
+	font-weight: bold;
+}
+
+.ck-content .ck-italic {
+	font-style: italic;
+}

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listformatting/listitemfontfamilyintegration
+ * @module list/listformatting/listitemfontcolorintegration
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -14,14 +14,14 @@ import ListEditing from '../list/listediting.js';
 import type ListFormatting from '../listformatting.js';
 
 /**
- * The list item font family integration plugin.
+ * The list item font color integration plugin.
  */
-export default class ListItemFontFamilyIntegration extends Plugin {
+export default class ListItemFontColorIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListItemFontFamilyIntegration' as const;
+		return 'ListItemFontColorIntegration' as const;
 	}
 
 	/**
@@ -46,23 +46,22 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+		if ( !editor.plugins.has( 'FontColorEditing' ) ) {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'fontFamily', 'listItemFontFamily' );
+		ListFormatting.registerFormatAttribute( 'fontColor', 'listItemFontColor' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.
 		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {
 			scope: 'item',
-			attributeName: 'listItemFontFamily',
+			attributeName: 'listItemFontColor',
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
-				// There is no need of removing the style because downcast strategies handles it automatically.
 				if ( value ) {
-					writer.setStyle( 'font-family', value as string, viewElement );
+					writer.setStyle( 'color', value as string, viewElement );
 				}
 			}
 		} );
@@ -75,12 +74,12 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+		if ( !editor.plugins.has( 'FontColorEditing' ) ) {
 			return;
 		}
 
-		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
-		model.schema.setAttributeProperties( 'listItemFontFamily', {
+		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontColor' } );
+		model.schema.setAttributeProperties( 'listItemFontColor', {
 			isFormatting: true
 		} );
 
@@ -90,19 +89,19 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			if ( !item.getAttribute( 'listItemId' ) ) {
 				return false;
 			}
-		}, 'listItemFontFamily' );
+		}, 'listItemFontColor' );
 
 		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 			model: {
-				key: 'listItemFontFamily',
+				key: 'listItemFontColor',
 				value: ( viewElement: ViewElement ) => {
-					return viewElement.getStyle( 'font-family' );
+					return viewElement.getStyle( 'color' );
 				}
 			},
 			view: {
 				name: 'li',
 				styles: {
-					'font-family': /.*/
+					'color': /.*/
 				}
 			}
 		} );
