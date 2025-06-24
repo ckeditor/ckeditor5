@@ -15,6 +15,7 @@ import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './insertte
 
 import {
 	LiveRange,
+	_tryFixingModelRange,
 	type Model,
 	type Mapper,
 	type Element,
@@ -91,6 +92,24 @@ export default class Input extends Plugin {
 				data.preventDefault();
 			}
 
+			// In case of typing on a non-collapsed range, we have to handle it ourselves as a browser
+			// could modify the DOM unpredictably.
+			// Noticed cases:
+			// * <pre><code>[foo</code></pre><p>]bar</p>
+			// * <p>[foo</p><pre>]<code>bar</code></pre>
+			// * <p>[foo</p><blockquote><p>]bar</p></blockquote>
+			//
+			// Especially tricky case is when a code block follows a paragraph as code block on the view side
+			// is rendered as a <code> element inside a <pre> element, but only the <code> element is mapped to the model.
+			// While mapping view position <pre>]<code> to model, the model position results before the <codeBlock> element,
+			// and this triggers selection fixer to cover only text in the previous paragraph.
+			//
+			// This is safe for composition as those events are not cancellable
+			// and the preventDefault() and defaultPrevented are not affected.
+			if ( viewSelection && Array.from( viewSelection.getRanges() ).some( range => !range.isCollapsed ) ) {
+				data.preventDefault();
+			}
+
 			if ( !insertTextCommand.isEnabled ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
@@ -108,7 +127,9 @@ export default class Input extends Plugin {
 
 			// If view selection was specified, translate it to model selection.
 			if ( viewSelection ) {
-				modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => mapper.toModelRange( viewRange ) );
+				modelRanges = Array.from( viewSelection.getRanges() )
+					.map( viewRange => mapper.toModelRange( viewRange ) )
+					.map( modelRange => _tryFixingModelRange( modelRange, model.schema ) || modelRange );
 			}
 			else {
 				modelRanges = Array.from( modelSelection.getRanges() );

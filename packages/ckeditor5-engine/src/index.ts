@@ -231,3 +231,7 @@ export {
 	parse as _parseView,
 	stringify as _stringifyView
 } from './dev-utils/view.js';
+
+export {
+	tryFixingRange as _tryFixingModelRange
+} from './model/utils/selection-post-fixer.js';
