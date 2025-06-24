@@ -14,9 +14,10 @@ import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { visit } from 'unist-util-visit';
+import { h } from 'hastscript';
 import { toHtml } from 'hast-util-to-html';
 import type { Handle, State } from 'hast-util-to-mdast';
-import type { Element, Node, Root, RootContent } from 'hast';
+import type { Element, Node, Root } from 'hast';
 
 export class MarkdownGfmHtmlToMd {
 	private _processor: any;
@@ -43,17 +44,22 @@ export class MarkdownGfmHtmlToMd {
 	 */
 	private _getRawTagsHandlers(): Record<string, Handle> {
 		return this._keepRawTags.reduce( ( handlers: Record<string, Handle>, tagName: string ) => {
-			handlers[ tagName ] = ( state: State, node: RootContent ) => {
-				const result = {
-					type: 'html' as const,
-					value: toHtml( node, { allowDangerousHtml: true } )
-				};
+			handlers[ tagName ] = ( state: State, node: Element ): any => {
+				const tag = toHtml( h( node.tagName, node.properties ), {
+					allowDangerousHtml: true,
+					closeSelfClosing: true
+				} );
 
-				state.patch( node, result );
+				const endOfOpeningTagIndex = tag.indexOf( '>' );
+				const openingTag = tag.slice( 0, endOfOpeningTagIndex + 1 );
+				const closingTag = tag.slice( endOfOpeningTagIndex + 1 );
 
-				return result;
+				return [
+					{ type: 'html', value: openingTag },
+					...state.all( node ),
+					{ type: 'html', value: closingTag }
+				];
 			};
-
 			return handlers;
 		}, {} as Record<string, Handle> );
 	}
@@ -75,7 +81,7 @@ export class MarkdownGfmHtmlToMd {
 			} )
 			// Replaces line breaks with `<br>` tags.
 			.use( remarkBreaks )
-			// Serializes HTML syntax tree.
+			// Serializes Markdown syntax tree to Markdown string.
 			.use( remarkStringify, {
 				resourceLink: true,
 				emphasis: '_',
@@ -95,9 +101,8 @@ export class MarkdownGfmHtmlToMd {
  */
 function removeLabelFromCheckboxes(): ReturnType<Plugin> {
 	return function( tree: Node ): void {
-		visit( tree, 'element', ( node: Element, index: number, parent: Root | Element ) => {
-			if ( node.tagName === 'label' && parent.type === 'element' && parent.tagName === 'li' ) {
-				parent.children[ index ] = node.children[ 0 ];
+		visit( tree, 'element', ( node: Element, index: number | null, parent: Root | Element ) => {
+			if ( index !== null && node.tagName === 'label' && parent.type === 'element' && parent.tagName === 'li' ) {
 				parent.children.splice( index, 1, ...node.children );
 			}
 		} );

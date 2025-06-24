@@ -21,6 +21,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * hast - Copyright (c) Titus Wormer
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>
 * hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>
+* hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>
 * rehype-remark - Copyright (c) Titus Wormer <tituswormer@gmail.com>
 * remark-breaks - Copyright (c) 2017 Titus Wormer <tituswormer@gmail.com>
 * remark-gfm - Copyright (c) Titus Wormer <tituswormer@gmail.com>

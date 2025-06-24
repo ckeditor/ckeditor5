@@ -26,6 +26,7 @@
     "hast-util-from-dom": "5.0.1",
     "hast-util-to-html": "9.0.5",
     "hast-util-to-mdast": "10.1.2",
+    "hastscript": "9.0.1",
     "rehype-dom-parse": "5.0.2",
     "rehype-dom-stringify": "4.0.2",
     "rehype-remark": "10.0.1",

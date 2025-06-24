@@ -38,7 +38,7 @@ export class MarkdownGfmMdToHtml {
 			.use( rehypeDomRaw )
 			// Removes classes from list elements.
 			.use( deleteClassesFromToDoLists )
-			// Serializes HTML syntax tree
+			// Serializes HTML syntax tree to HTML string.
 			.use( rehypeStringify );
 	}
 
