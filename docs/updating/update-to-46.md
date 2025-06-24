@@ -24,7 +24,7 @@ Below are the most important changes that require your attention when upgrading 
 
 #### Content area CSS variables renamed to --ck-content-* prefix
 
-To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and todo list checkmarks.
+To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
 
 | Old variable name                           | New variable name                                 |
 |---------------------------------------------|---------------------------------------------------|
@@ -48,8 +48,8 @@ To improve consistency, all CSS variables that affect the styles of the editor c
 | `--ck-table-of-contents-items-start-padding`    | `--ck-content-table-of-contents-items-start-padding`    |
 
 **Migration:**
-- Update your custom stylesheets, themes, and integrations to use the new variable names.
-- The old variable names are no longer supported and will not have any effect.
+* Update your custom style sheets, themes, and integrations to use the new variable names.
+* The old variable names are no longer supported and will not have any effect.
 
 Example:
 ```css
@@ -70,10 +70,11 @@ Some table-related CSS variables had improper naming with "-selector-" in their 
 | `--ck-color-selector-focused-cell-background` | `--ck-color-table-focused-cell-background`       |
 
 **Migration:**
-- Update your custom stylesheets and themes to use the new variable names.
-- The old variable names are no longer supported and will not have any effect.
+* Update your custom style sheets and themes to use the new variable names.
+* The old variable names are no longer supported and will not have any effect.
 
 Example:
+
 ```css
 :root {
   --ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
