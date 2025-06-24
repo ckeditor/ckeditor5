@@ -2,6 +2,7 @@
 menu-title: Inspector
 category: development-tools
 meta-title: CKEditor 5 inspector | CKEditor 5 Framework Documentation
+meta-desccription: Explore the CKEditor 5 Inspector tool to debug and understand editor internals, including model, view, and conversion processes.
 order: 1
 modified_at: 2022-08-16
 ---

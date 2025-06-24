@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 meta-title: Observables | CKEditor 5 Framework Documentation
+meta-description: Discover how to work with observable objects in CKEditor 5. Understand reactive properties and event binding. Implement observable patterns in your code.
 ---
 
 # Observables

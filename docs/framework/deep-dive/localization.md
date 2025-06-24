@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-ui
 meta-title: Localization | CKEditor 5 Framework Documentation
+meta-description: Learn how CKEditor 5 handles localization, including translating UI strings and managing multiple languages in the editor.
 order: 70
 ---
 

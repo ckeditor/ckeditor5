@@ -4,15 +4,15 @@
  */
 
 :root {
-	--ck-todo-list-checkmark-size: 16px;
+	--ck-content-todo-list-checkmark-size: 16px;
 }
 
 @define-mixin todo-list-checkbox {
 	-webkit-appearance: none;
 	display: inline-block;
 	position: relative;
-	width: var(--ck-todo-list-checkmark-size);
-	height: var(--ck-todo-list-checkmark-size);
+	width: var(--ck-content-todo-list-checkmark-size);
+	height: var(--ck-content-todo-list-checkmark-size);
 	vertical-align: middle;
 
 	/* Needed on iOS */
@@ -56,13 +56,13 @@
 		content: '';
 
 		/* Calculate tick position, size and border-width proportional to the checkmark size. */
-		left: calc( var(--ck-todo-list-checkmark-size) / 3 );
-		top: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
-		width: calc( var(--ck-todo-list-checkmark-size) / 5.3 );
-		height: calc( var(--ck-todo-list-checkmark-size) / 2.6 );
+		left: calc( var(--ck-content-todo-list-checkmark-size) / 3 );
+		top: calc( var(--ck-content-todo-list-checkmark-size) / 5.3 );
+		width: calc( var(--ck-content-todo-list-checkmark-size) / 5.3 );
+		height: calc( var(--ck-content-todo-list-checkmark-size) / 2.6 );
 		border-style: solid;
 		border-color: transparent;
-		border-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;
+		border-width: 0 calc( var(--ck-content-todo-list-checkmark-size) / 8 ) calc( var(--ck-content-todo-list-checkmark-size) / 8 ) 0;
 		transform: rotate(45deg);
 	}
 

@@ -1,6 +1,7 @@
 ---
 menu-title: Using package generator
 meta-title: Using the package generator | CKEditor 5 Framework Documentation
+meta-description: Learn how to easily create a new CKEditor 5 package using the package generator, including setup, configuration, and customization steps.
 category: package-generator
 order: 41
 modified_at: 2024-06-27

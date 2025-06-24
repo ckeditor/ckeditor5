@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Contributing | CKEditor 5 Framework Documentation
+meta-description: Discover how to contribute to CKEditor 5, including guidelines for reporting issues, submitting code, and joining the community.
 order: 10
 ---
 
