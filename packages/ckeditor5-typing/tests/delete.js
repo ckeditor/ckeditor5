@@ -166,9 +166,89 @@ describe( 'Delete feature', () => {
 
 		const commandName = spy.args[ 0 ][ 0 ];
 		const options = spy.args[ 0 ][ 1 ];
-		const expectedSelection = editor.model.createSelection( editor.model.createRangeIn( editor.model.document.getRoot() ) );
+		const expectedSelection = editor.model.createSelection(
+			editor.model.createRangeIn( editor.model.document.getRoot().getChild( 0 ) )
+		);
 
 		expect( commandName ).to.equal( 'delete' );
+		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+	} );
+
+	it( 'should fix options.selection parameter of delete command when it ends in block object (deleteContentBackward)', () => {
+		_setModelData( model,
+			'<paragraph>foo</paragraph>' +
+			'<widget></widget>' +
+			'<paragraph>bar</paragraph>'
+		);
+
+		const spy = sinon.spy( editor, 'execute' );
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const domEvt = getDomEvent();
+
+		const viewSelection = view.createSelection( view.createRange(
+			view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 ),
+			view.createPositionAt( viewDocument.getRoot().getChild( 2 ).getChild( 0 ), 0 )
+		) );
+
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, domEvt, {
+			direction: 'backward',
+			unit: 'selection',
+			sequence: 1,
+			selectionToRemove: viewSelection
+		} ) );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		const commandName = spy.args[ 0 ][ 0 ];
+		const options = spy.args[ 0 ][ 1 ];
+		const expectedSelection = editor.model.createSelection(
+			editor.model.createRange(
+				editor.model.createPositionAt( editor.model.document.getRoot(), 1 ),
+				editor.model.createPositionAt( editor.model.document.getRoot().getChild( 2 ), 0 )
+			)
+		);
+
+		expect( commandName ).to.equal( 'delete' );
+		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
+	} );
+
+	it( 'should fix options.selection parameter of delete command when it ends in block object (deleteContentForward)', () => {
+		_setModelData( model,
+			'<paragraph>foo</paragraph>' +
+			'<widget></widget>' +
+			'<paragraph>bar</paragraph>'
+		);
+
+		const spy = sinon.spy( editor, 'execute' );
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const domEvt = getDomEvent();
+
+		const viewSelection = view.createSelection( view.createRange(
+			view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 3 ),
+			view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 )
+		) );
+
+		viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, domEvt, {
+			direction: 'forward',
+			unit: 'selection',
+			sequence: 1,
+			selectionToRemove: viewSelection
+		} ) );
+
+		expect( spy.calledOnce ).to.be.true;
+
+		const commandName = spy.args[ 0 ][ 0 ];
+		const options = spy.args[ 0 ][ 1 ];
+		const expectedSelection = editor.model.createSelection(
+			editor.model.createRange(
+				editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 ),
+				editor.model.createPositionAt( editor.model.document.getRoot(), 2 )
+			)
+		);
+
+		expect( commandName ).to.equal( 'deleteForward' );
 		expect( options.selection.isEqual( expectedSelection ) ).to.be.true;
 	} );
 

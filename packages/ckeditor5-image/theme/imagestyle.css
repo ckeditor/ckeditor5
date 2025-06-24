@@ -4,8 +4,8 @@
  */
 
 :root {
-	--ck-image-style-spacing: 1.5em;
-	--ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2);
+	--ck-content-image-style-spacing: 1.5em;
+	--ck-content-inline-image-style-spacing: calc(var(--ck-content-image-style-spacing) / 2);
 }
 
 .ck-content {
@@ -16,7 +16,7 @@
 		See https://github.com/ckeditor/ckeditor5/issues/9342 */
 		&.image-style-block-align-left,
 		&.image-style-block-align-right {
-			max-width: calc(100% - var(--ck-image-style-spacing));
+			max-width: calc(100% - var(--ck-content-image-style-spacing));
 		}
 
 		/* Allows displaying multiple floating images in the same line.
@@ -28,18 +28,18 @@
 
 		&.image-style-side {
 			float: right;
-			margin-left: var(--ck-image-style-spacing);
+			margin-left: var(--ck-content-image-style-spacing);
 			max-width: 50%;
 		}
 
 		&.image-style-align-left {
 			float: left;
-			margin-right: var(--ck-image-style-spacing);
+			margin-right: var(--ck-content-image-style-spacing);
 		}
 
 		&.image-style-align-right {
 			float: right;
-			margin-left: var(--ck-image-style-spacing);
+			margin-left: var(--ck-content-image-style-spacing);
 		}
 
 		&.image-style-block-align-right {
@@ -60,12 +60,12 @@
 
 	& .image-style-align-left {
 		float: left;
-		margin-right: var(--ck-image-style-spacing);
+		margin-right: var(--ck-content-image-style-spacing);
 	}
 
 	& .image-style-align-right {
 		float: right;
-		margin-left: var(--ck-image-style-spacing);
+		margin-left: var(--ck-content-image-style-spacing);
 	}
 
 	/* Simulates margin collapsing with the preceding paragraph, which does not work for the floating elements. */
@@ -78,16 +78,16 @@
 	& .image-inline {
 		&.image-style-align-left,
 		&.image-style-align-right {
-			margin-top: var(--ck-inline-image-style-spacing);
-			margin-bottom: var(--ck-inline-image-style-spacing);
+			margin-top: var(--ck-content-inline-image-style-spacing);
+			margin-bottom: var(--ck-content-inline-image-style-spacing);
 		}
 
 		&.image-style-align-left {
-			margin-right: var(--ck-inline-image-style-spacing);
+			margin-right: var(--ck-content-inline-image-style-spacing);
 		}
 
 		&.image-style-align-right {
-			margin-left: var(--ck-inline-image-style-spacing);
+			margin-left: var(--ck-content-inline-image-style-spacing);
 		}
 	}
 }
