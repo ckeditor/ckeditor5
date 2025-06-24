@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 46.x | CKEditor 5 Documentation
 menu-title: Update to v46.x
 order: 78
-modified_at: 2025-06-16
+modified_at: 2025-06-24
 ---
 
 # Update to CKEditor&nbsp;5 v46.x
@@ -19,6 +19,14 @@ modified_at: 2025-06-16
 Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
+
+### New internal export names
+
+As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. It now uses a unified export policy via index.ts, with clearer, standardized public API names introducing some breaking changes. Find all the changes and the new exports introduced with NIM in this {@link updating/nim-migration/migrating-exports dedicated migration guide}.
+
+<info-box info>
+	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
+</info-box>
 
 ### Content area CSS variables renamed to `--ck-content-*` prefix
 
@@ -50,6 +58,7 @@ To improve consistency, all CSS variables that affect the styles of the editor c
 * The old variable names are no longer supported and will not have any effect.
 
 Example:
+
 ```css
 :root {
   --ck-content-highlight-marker-yellow: #fdfd77;
