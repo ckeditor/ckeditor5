@@ -9,6 +9,7 @@
 
 export { default as IconAccessibility } from '../theme/icons/accessibility.svg';
 export { default as IconAddComment } from '../theme/icons/add-comment.svg';
+export { default as IconAI } from '../theme/icons/ai.svg';
 export { default as IconAlignBottom } from '../theme/icons/align-bottom.svg';
 export { default as IconAlignCenter } from '../theme/icons/align-center.svg';
 export { default as IconAlignJustify } from '../theme/icons/align-justify.svg';
@@ -32,6 +33,7 @@ export { default as IconCheck } from '../theme/icons/check.svg';
 export { default as IconChevronDown } from '../theme/icons/chevron-down.svg';
 export { default as IconChevronUp } from '../theme/icons/chevron-up.svg';
 export { default as IconCkboxImageEdit } from '../theme/icons/ckbox-image-edit.svg';
+export { default as IconClose } from '../theme/icons/close.svg';
 export { default as IconCodeBlock } from '../theme/icons/code-block.svg';
 export { default as IconCode } from '../theme/icons/code.svg';
 export { default as IconCog } from '../theme/icons/cog.svg';
@@ -40,7 +42,9 @@ export { default as IconColorTileCheck } from '../theme/icons/color-tile-check.s
 export { default as IconCommentsArchive } from '../theme/icons/comments-archive.svg';
 export { default as IconContentLock } from '../theme/icons/content-lock.svg';
 export { default as IconContentUnlock } from '../theme/icons/content-unlock.svg';
+export { default as IconContext } from '../theme/icons/context.svg';
 export { default as IconCopy } from '../theme/icons/copy.svg';
+export { default as IconDocument } from '../theme/icons/document.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
 export { default as IconDropbox } from '../theme/icons/dropbox.svg';
@@ -52,6 +56,7 @@ export { default as IconError } from '../theme/icons/error.svg';
 export { default as IconExportPdf } from '../theme/icons/export-pdf.svg';
 export { default as IconExportWord } from '../theme/icons/export-word.svg';
 export { default as IconFacebook } from '../theme/icons/facebook.svg';
+export { default as IconFileUpload } from '../theme/icons/file-upload.svg';
 export { default as IconFindReplace } from '../theme/icons/find-replace.svg';
 export { default as IconFontBackground } from '../theme/icons/font-background.svg';
 export { default as IconFontColor } from '../theme/icons/font-color.svg';
@@ -140,6 +145,7 @@ export { default as IconReturnArrow } from '../theme/icons/return-arrow.svg';
 export { default as IconRevisionHistory } from '../theme/icons/revision-history.svg';
 export { default as IconRobotPencil } from '../theme/icons/robot-pencil.svg';
 export { default as IconSelectAll } from '../theme/icons/select-all.svg';
+export { default as IconSelection } from '../theme/icons/selection.svg';
 export { default as IconSettings } from '../theme/icons/settings.svg';
 export { default as IconShowBlocks } from '../theme/icons/show-blocks.svg';
 export { default as IconSource } from '../theme/icons/source.svg';
@@ -174,3 +180,4 @@ export { default as IconUploadcareImageUpload } from '../theme/icons/uploadcare-
 export { default as IconUploadcareLink } from '../theme/icons/uploadcare-link.svg';
 export { default as IconUser } from '../theme/icons/user.svg';
 export { default as IconWarning } from '../theme/icons/warning.svg';
+export { default as IconWeb } from '../theme/icons/web.svg';
