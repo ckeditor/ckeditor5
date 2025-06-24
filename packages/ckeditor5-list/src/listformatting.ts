@@ -203,7 +203,7 @@ function getSingleListItemConsistentFormat( model: Model, listItem: Element, att
 	}
 
 	const attributesToCheck = new Set( attributeKeys );
-	const valuesMap = {} as Record<string, string | undefined>;
+	const valuesMap: Record<string, string | undefined> = {};
 
 	const range = model.createRangeIn( listItem );
 	const walker = range.getWalker( { ignoreElementEnd: true } );

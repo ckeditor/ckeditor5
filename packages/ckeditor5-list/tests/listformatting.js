@@ -74,11 +74,11 @@ describe( 'ListFormatting', () => {
 
 	it( 'should require integration plugins', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
-			ListItemFontFamilyIntegration,
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
 			ListItemFontSizeIntegration,
-			ListItemFontColorIntegration
+			ListItemFontColorIntegration,
+			ListItemFontFamilyIntegration
 		] );
 	} );
 

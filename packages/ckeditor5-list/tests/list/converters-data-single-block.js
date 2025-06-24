@@ -345,7 +345,7 @@ describe( 'ListEditing (multiBlock=false) - converters - data pipeline', () => {
 				'</listItem>',
 
 				'<ol>' +
-					'<li class="ck-bold"><strong>foo</strong></li>' +
+					'<li class="ck-list-marker-bold"><strong>foo</strong></li>' +
 				'</ol>'
 			);
 		} );

@@ -123,7 +123,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="font-family:Arial">foo</span>' +
 						'</span>' +
@@ -133,7 +133,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -152,12 +152,12 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="font-family:Arial">foo</span>' +
 						'</span>' +
 						'<ul>' +
-							'<li style="font-family:Arial">' +
+							'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'<span style="font-family:Arial">foo</span>' +
 								'</span>' +
@@ -169,10 +169,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
 						'<ul>' +
-							'<li style="font-family:Arial;">' +
+							'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 								'<span style="font-family:Arial;">foo</span>' +
 							'</li>' +
 						'</ul>' +
@@ -193,7 +193,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<p>' +
 							'<span style="font-family:Arial">foo</span>' +
 						'</p>' +
@@ -206,7 +206,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<p>' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
@@ -229,7 +229,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<blockquote>' +
 							'<p>' +
 								'<span style="font-family:Arial">foo</span>' +
@@ -241,7 +241,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<blockquote>' +
 							'<p>' +
 								'<span style="font-family:Arial;">foo</span>' +
@@ -261,7 +261,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<h2>' +
 							'<span style="font-family:Arial">foo</span>' +
 						'</h2>' +
@@ -271,7 +271,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<h2>' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</h2>' +
@@ -296,7 +296,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="font-family:Arial">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -318,7 +318,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -340,7 +340,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute (unordered list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -356,7 +356,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute (ordered list)', () => {
 			editor.setData(
 				'<ol>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ol>'
@@ -371,14 +371,14 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul style="font-family:Tahoma;">' +
-					'<li style="font-family:Arial;">' +
-						'<p style="font-family:Verdana;">' +
+				'<ul class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
+						'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p style="font-family:Helvetica;">baz</p>'
+				'<p class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -392,10 +392,10 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute (nested list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<span style="font-family:Arial;">foo</span>' +
 						'<ul>' +
-							'<li style="font-family:Arial;">' +
+							'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 								'<span style="font-family:Arial;">bar</span>' +
 							'</li>' +
 						'</ul>' +
@@ -416,7 +416,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute in multi-block', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<p>' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
@@ -440,7 +440,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute for blockquote', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<blockquote>' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</blockquote>' +
@@ -460,7 +460,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontFamily attribute for heading', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<h2>' +
 							'<span style="font-family:Arial;">foo</span>' +
 						'</h2>' +
@@ -479,7 +479,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		it.skip( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-family:Arial;">' +
+					'<li class="ck-list-marker-font-family" style="--ck-content-list-marker-font-family:Arial;">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +

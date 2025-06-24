@@ -120,7 +120,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<strong>foo</strong>' +
 						'</span>' +
@@ -130,7 +130,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
 					'</li>' +
 				'</ul>'
@@ -149,12 +149,12 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<strong>foo</strong>' +
 						'</span>' +
 						'<ul>' +
-							'<li class="ck-bold">' +
+							'<li class="ck-list-marker-bold">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'<strong>foo</strong>' +
 								'</span>' +
@@ -166,10 +166,10 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
 						'<ul>' +
-							'<li class="ck-bold">' +
+							'<li class="ck-list-marker-bold">' +
 								'<strong>' +
 									'foo' +
 								'</strong>' +
@@ -192,7 +192,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<p>' +
 							'<strong>foo</strong>' +
 						'</p>' +
@@ -205,7 +205,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<p>' +
 							'<strong>foo</strong>' +
 						'</p>' +
@@ -228,7 +228,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<blockquote>' +
 							'<p>' +
 								'<strong>foo</strong>' +
@@ -240,7 +240,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<blockquote>' +
 							'<p>' +
 								'<strong>foo</strong>' +
@@ -260,7 +260,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<h2>' +
 							'<strong>foo</strong>' +
 						'</h2>' +
@@ -270,7 +270,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<h2>' +
 							'<strong>foo</strong>' +
 						'</h2>' +
@@ -295,7 +295,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -317,7 +317,7 @@ describe( 'ListItemBoldIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -339,7 +339,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute (unordered list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
 					'</li>' +
 				'</ul>'
@@ -355,7 +355,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute (ordered list)', () => {
 			editor.setData(
 				'<ol>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
 					'</li>' +
 				'</ol>'
@@ -371,7 +371,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute if text is formatted using font-weight numeric value', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<span style="font-weight:600;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -386,14 +386,14 @@ describe( 'ListItemBoldIntegration', () => {
 
 		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-bold;">' +
-					'<li class="ck-bold">' +
-						'<p class="ck-bold;">' +
+				'<ul class="ck-list-marker-bold;">' +
+					'<li class="ck-list-marker-bold">' +
+						'<p class="ck-list-marker-bold;">' +
 							'<strong>foo</strong>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-bold;">baz</p>'
+				'<p class="ck-list-marker-bold;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -407,10 +407,10 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute (nested list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<strong>foo</strong>' +
 						'<ul>' +
-							'<li class="ck-bold">' +
+							'<li class="ck-list-marker-bold">' +
 								'<strong>bar</strong>' +
 							'</li>' +
 						'</ul>' +
@@ -431,7 +431,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute in multi-block', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<p>' +
 							'<strong>foo</strong>' +
 						'</p>' +
@@ -455,7 +455,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute for blockquote', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<blockquote>' +
 							'<strong>foo</strong>' +
 						'</blockquote>' +
@@ -475,7 +475,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it( 'should upcast class in <li> to listItemBold attribute for heading', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<h2>' +
 							'<strong>foo</strong>' +
 						'</h2>' +
@@ -494,7 +494,7 @@ describe( 'ListItemBoldIntegration', () => {
 		it.skip( 'should upcast class in <li> to listItemBold attribute for table', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-bold">' +
+					'<li class="ck-list-marker-bold">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +

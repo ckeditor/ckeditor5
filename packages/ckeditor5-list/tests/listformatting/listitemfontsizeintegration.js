@@ -132,7 +132,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span class="text-tiny">foo</span>' +
 							'</span>' +
@@ -142,7 +142,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="text-tiny">foo</span>' +
 						'</li>' +
 					'</ul>'
@@ -161,12 +161,12 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span class="text-tiny">foo</span>' +
 							'</span>' +
 							'<ul>' +
-								'<li class="text-tiny">' +
+								'<li class="ck-list-marker-font-size-tiny">' +
 									'<span class="ck-list-bogus-paragraph">' +
 										'<span class="text-tiny">foo</span>' +
 									'</span>' +
@@ -178,10 +178,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="text-tiny">foo</span>' +
 							'<ul>' +
-								'<li class="text-tiny">' +
+								'<li class="ck-list-marker-font-size-tiny">' +
 									'<span class="text-tiny">foo</span>' +
 								'</li>' +
 							'</ul>' +
@@ -202,7 +202,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<p>' +
 								'<span class="text-tiny">foo</span>' +
 							'</p>' +
@@ -215,7 +215,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<p>' +
 								'<span class="text-tiny">foo</span>' +
 							'</p>' +
@@ -238,7 +238,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<blockquote>' +
 								'<p>' +
 									'<span class="text-tiny">foo</span>' +
@@ -250,7 +250,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<blockquote>' +
 								'<p>' +
 									'<span class="text-tiny">foo</span>' +
@@ -270,7 +270,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<h2>' +
 								'<span class="text-tiny">foo</span>' +
 							'</h2>' +
@@ -280,7 +280,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<h2>' +
 								'<span class="text-tiny">foo</span>' +
 							'</h2>' +
@@ -305,7 +305,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 								'<div class="ck ck-widget__selection-handle"></div>' +
 								'<table>' +
@@ -327,7 +327,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<figure class="table">' +
 								'<table>' +
 									'<tbody>' +
@@ -375,7 +375,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute (unordered list)', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="text-tiny">foo</span>' +
 						'</li>' +
 					'</ul>'
@@ -391,7 +391,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute (ordered list)', () => {
 				editor.setData(
 					'<ol>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="text-tiny">foo</span>' +
 						'</li>' +
 					'</ol>'
@@ -407,7 +407,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 				editor.setData(
 					'<ul class="text-small">' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<p class="text-big">' +
 								'<span class="text-tiny">foo</span>' +
 							'</p>' +
@@ -427,10 +427,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute (nested list)', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<span class="text-tiny">foo</span>' +
 							'<ul>' +
-								'<li class="text-tiny">' +
+								'<li class="ck-list-marker-font-size-tiny">' +
 									'<span class="text-tiny">bar</span>' +
 								'</li>' +
 							'</ul>' +
@@ -467,7 +467,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute in multi-block', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<p>' +
 								'<span class="text-tiny">foo</span>' +
 							'</p>' +
@@ -491,7 +491,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute for blockquote', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<blockquote>' +
 								'<span class="text-tiny">foo</span>' +
 							'</blockquote>' +
@@ -511,7 +511,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast class in <li> to listItemFontSize attribute for heading', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<h2>' +
 								'<span class="text-tiny">foo</span>' +
 							'</h2>' +
@@ -530,7 +530,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it.skip( 'should upcast class in <li> to listItemFontSize attribute for table', () => {
 				editor.setData(
 					'<ul>' +
-						'<li class="text-tiny">' +
+						'<li class="ck-list-marker-font-size-tiny">' +
 							'<figure class="table">' +
 								'<table>' +
 									'<tbody>' +
@@ -572,7 +572,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span style="font-size:10px">foo</span>' +
 							'</span>' +
@@ -582,7 +582,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<span style="font-size:10px;">foo</span>' +
 						'</li>' +
 					'</ul>'
@@ -601,12 +601,12 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<span class="ck-list-bogus-paragraph">' +
 								'<span style="font-size:10px">foo</span>' +
 							'</span>' +
 							'<ul>' +
-								'<li style="font-size:10px">' +
+								'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 									'<span class="ck-list-bogus-paragraph">' +
 										'<span style="font-size:10px">foo</span>' +
 									'</span>' +
@@ -618,10 +618,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<span style="font-size:10px;">foo</span>' +
 							'<ul>' +
-								'<li style="font-size:10px;">' +
+								'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 									'<span style="font-size:10px;">foo</span>' +
 								'</li>' +
 							'</ul>' +
@@ -642,7 +642,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<p>' +
 								'<span style="font-size:10px">foo</span>' +
 							'</p>' +
@@ -655,7 +655,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<p>' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</p>' +
@@ -678,7 +678,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<blockquote>' +
 								'<p>' +
 									'<span style="font-size:10px">foo</span>' +
@@ -690,7 +690,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<blockquote>' +
 								'<p>' +
 									'<span style="font-size:10px;">foo</span>' +
@@ -710,7 +710,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<h2>' +
 								'<span style="font-size:10px">foo</span>' +
 							'</h2>' +
@@ -720,7 +720,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<h2>' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</h2>' +
@@ -745,7 +745,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li style="font-size:10px">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px">' +
 							'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 								'<div class="ck ck-widget__selection-handle"></div>' +
 								'<table>' +
@@ -767,7 +767,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<figure class="table">' +
 								'<table>' +
 									'<tbody>' +
@@ -815,7 +815,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute (unordered list)', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<span style="font-size:10px;">foo</span>' +
 						'</li>' +
 					'</ul>'
@@ -831,7 +831,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute (ordered list)', () => {
 				editor.setData(
 					'<ol>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<span style="font-size:10px;">foo</span>' +
 						'</li>' +
 					'</ol>'
@@ -846,14 +846,14 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 				editor.setData(
-					'<ul style="font-size:11px;">' +
-						'<li style="font-size:10px;">' +
-							'<p style="font-size:12px;">' +
+					'<ul class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
+							'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</p>' +
 						'</li>' +
 					'</ul>' +
-					'<p style="font-size:13px;">baz</p>'
+					'<p class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">baz</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -867,10 +867,10 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute (nested list)', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<span style="font-size:10px;">foo</span>' +
 							'<ul>' +
-								'<li style="font-size:10px;">' +
+								'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 									'<span style="font-size:10px;">bar</span>' +
 								'</li>' +
 							'</ul>' +
@@ -891,7 +891,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute in multi-block', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<p>' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</p>' +
@@ -915,7 +915,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute for blockquote', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<blockquote>' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</blockquote>' +
@@ -935,7 +935,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it( 'should upcast style in <li> to listItemFontSize attribute for heading', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<h2>' +
 								'<span style="font-size:10px;">foo</span>' +
 							'</h2>' +
@@ -954,7 +954,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 			it.skip( 'should upcast style in <li> to listItemFontSize attribute for table', () => {
 				editor.setData(
 					'<ul>' +
-						'<li style="font-size:10px;">' +
+						'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 							'<figure class="table">' +
 								'<table>' +
 									'<tbody>' +
@@ -1015,7 +1015,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		it( 'should upcast a numeric value specified in config from <li> to listItemFontSize attribute', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-size:10px;">' +
+					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 						'<span style="font-size:10px;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -1029,7 +1029,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<ul>' +
-					'<li style="font-size:10px;">' +
+					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:10px;">' +
 						'<span style="font-size:10px;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -1039,7 +1039,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		it( 'should upcast a numeric value not specified in config from <li> to listItemFontSize attribute', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="font-size:11px;">' +
+					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:11px;">' +
 						'<span style="font-size:11px;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -1053,7 +1053,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<ul>' +
-					'<li style="font-size:11px;">' +
+					'<li class="ck-list-marker-font-size" style="--ck-content-list-marker-font-size:11px;">' +
 						'<span style="font-size:11px;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -1063,7 +1063,7 @@ describe( 'ListItemFontSizeIntegration', () => {
 		it( 'should not upcast a class from <li> to listItemFontSize attribute', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="text-tiny">' +
+					'<li class="ck-list-marker-font-size-tiny">' +
 						'<span class="text-tiny">foo</span>' +
 					'</li>' +
 				'</ul>'

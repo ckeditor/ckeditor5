@@ -120,7 +120,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<i>foo</i>' +
 						'</span>' +
@@ -130,7 +130,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
 					'</li>' +
 				'</ul>'
@@ -149,12 +149,12 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<i>foo</i>' +
 						'</span>' +
 						'<ul>' +
-							'<li class="ck-italic">' +
+							'<li class="ck-list-marker-italic">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'<i>foo</i>' +
 								'</span>' +
@@ -166,10 +166,10 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
 						'<ul>' +
-							'<li class="ck-italic">' +
+							'<li class="ck-list-marker-italic">' +
 								'<i>' +
 									'foo' +
 								'</i>' +
@@ -192,7 +192,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<p>' +
 							'<i>foo</i>' +
 						'</p>' +
@@ -205,7 +205,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<p>' +
 							'<i>foo</i>' +
 						'</p>' +
@@ -228,7 +228,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<blockquote>' +
 							'<p>' +
 								'<i>foo</i>' +
@@ -240,7 +240,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<blockquote>' +
 							'<p>' +
 								'<i>foo</i>' +
@@ -260,7 +260,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<h2>' +
 							'<i>foo</i>' +
 						'</h2>' +
@@ -270,7 +270,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<h2>' +
 							'<i>foo</i>' +
 						'</h2>' +
@@ -295,7 +295,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -317,7 +317,7 @@ describe( 'ListItemItalicIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -339,7 +339,7 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute (unordered list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
 					'</li>' +
 				'</ul>'
@@ -355,7 +355,7 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute (ordered list)', () => {
 			editor.setData(
 				'<ol>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
 					'</li>' +
 				'</ol>'
@@ -370,14 +370,14 @@ describe( 'ListItemItalicIntegration', () => {
 
 		it( 'should only upcast class set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul class="ck-italic;">' +
-					'<li class="ck-italic">' +
-						'<p class="ck-italic;">' +
+				'<ul class="ck-list-marker-italic;">' +
+					'<li class="ck-list-marker-italic">' +
+						'<p class="ck-list-marker-italic;">' +
 							'<i>foo</i>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p class="ck-italic;">baz</p>'
+				'<p class="ck-list-marker-italic;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -391,10 +391,10 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute (nested list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<i>foo</i>' +
 						'<ul>' +
-							'<li class="ck-italic">' +
+							'<li class="ck-list-marker-italic">' +
 								'<i>bar</i>' +
 							'</li>' +
 						'</ul>' +
@@ -415,7 +415,7 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute in multi-block', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<p>' +
 							'<i>foo</i>' +
 						'</p>' +
@@ -439,7 +439,7 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute for blockquote', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<blockquote>' +
 							'<i>foo</i>' +
 						'</blockquote>' +
@@ -459,7 +459,7 @@ describe( 'ListItemItalicIntegration', () => {
 		it( 'should upcast class in <li> to listItemItalic attribute for heading', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<h2>' +
 							'<i>foo</i>' +
 						'</h2>' +
@@ -474,11 +474,11 @@ describe( 'ListItemItalicIntegration', () => {
 			);
 		} );
 
-		// Post-fixer currently removes `listItemBold` attribute from table list items.
+		// Post-fixer currently removes `listItemItalic` attribute from table list items.
 		it.skip( 'should upcast class in <li> to listItemItalic attribute for table', () => {
 			editor.setData(
 				'<ul>' +
-					'<li class="ck-italic">' +
+					'<li class="ck-list-marker-italic">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
