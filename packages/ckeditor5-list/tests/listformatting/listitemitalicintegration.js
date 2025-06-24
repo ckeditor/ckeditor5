@@ -11,8 +11,13 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import {
+	setData as setModelData,
+	getData as getModelData,
+	stringify as stringifyModel
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import stubUid from '../list/_utils/uid.js';
@@ -33,7 +38,8 @@ describe( 'ListItemItalicIntegration', () => {
 				BlockQuoteEditing,
 				CodeBlockEditing,
 				HeadingEditing,
-				TableEditing
+				TableEditing,
+				ClipboardPipeline
 			]
 		} );
 
@@ -41,6 +47,7 @@ describe( 'ListItemItalicIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
+		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 	} );
 
 	afterEach( async () => {
@@ -506,6 +513,67 @@ describe( 'ListItemItalicIntegration', () => {
 				'</table>'
 			);
 		} );
+
+		it( 'should upcast and consume class', () => {
+			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-italic' } ) ).to.be.false;
+			} );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
+
+			editor.setData(
+				'<ul>' +
+					'<li class="ck-list-marker-italic">' +
+						'<i>foo</i>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( upcastCheck.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'clipboard integration', () => {
+		it( 'should upcast marker class without using post-fixer', () => {
+			const dataTransferMock = createDataTransfer( {
+				'text/html': '<ol><li class="ck-list-marker-italic">foo</li></ol>'
+			} );
+
+			const spy = sinon.stub( editor.model, 'insertContent' );
+
+			editor.editing.view.document.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock
+			} );
+
+			sinon.assert.calledOnce( spy );
+
+			const content = spy.firstCall.args[ 0 ];
+
+			expect( stringifyModel( content ) ).to.equal(
+				'<paragraph listIndent="0" listItemId="a00" listItemItalic="true" listType="numbered">' +
+					'foo' +
+				'</paragraph>'
+			);
+		} );
+
+		function createDataTransfer( data ) {
+			const state = Object.create( data || {} );
+
+			return {
+				getData( type ) {
+					return state[ type ];
+				},
+				setData( type, newData ) {
+					state[ type ] = newData;
+				}
+			};
+		}
 	} );
 
 	describe( 'when ItalicEditing is not loaded', () => {
