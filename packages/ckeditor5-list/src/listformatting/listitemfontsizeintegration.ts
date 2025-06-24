@@ -68,13 +68,15 @@ export default class ListItemFontSizeIntegration extends Plugin {
 
 					if ( fontSizeOption && fontSizeOption.view && typeof fontSizeOption.view != 'string' ) {
 						if ( fontSizeOption.view.styles ) {
-							writer.setStyle( fontSizeOption.view.styles, viewElement );
+							writer.addClass( 'ck-list-marker-font-size', viewElement );
+							writer.setStyle( '--ck-content-list-marker-font-size', fontSizeOption.view.styles[ 'font-size' ], viewElement );
 						}
 						else if ( fontSizeOption.view.classes ) {
-							writer.addClass( fontSizeOption.view.classes, viewElement );
+							writer.addClass( `ck-list-marker-font-size-${ value }`, viewElement );
 						}
 					} else {
-						writer.setStyle( 'font-size', value as string, viewElement );
+						writer.addClass( 'ck-list-marker-font-size', viewElement );
+						writer.setStyle( '--ck-content-list-marker-font-size', value as string, viewElement );
 					}
 				}
 			}
@@ -105,41 +107,36 @@ export default class ListItemFontSizeIntegration extends Plugin {
 			}
 		}, 'listItemFontSize' );
 
-		const supportAllValues = editor.config.get( 'fontSize.supportAllValues' );
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			model: {
+				key: 'listItemFontSize',
+				value: ( viewElement: ViewElement ) => viewElement.getStyle( '--ck-content-list-marker-font-size' )
+			},
+			view: {
+				name: 'li',
+				classes: 'ck-list-marker-font-size',
+				styles: {
+					'--ck-content-list-marker-font-size': /.*/
+				}
+			}
+		} );
 
-		// If the `supportAllValues` is set to `true`, we allow any value (in pixels) for the font size attribute.
-		if ( supportAllValues ) {
-			editor.conversion.for( 'upcast' ).elementToAttribute( {
-				model: {
-					key: 'listItemFontSize',
-					value: ( viewElement: ViewElement ) => viewElement.getStyle( 'font-size' )
-				},
-				view: {
-					name: 'li',
-					styles: {
-						'font-size': /.*/
+		const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
+
+		for ( const option of fontSizeOptions ) {
+			if ( option.model && option.view ) {
+				const view = option.view as ElementObjectDefinition;
+
+				editor.conversion.for( 'upcast' ).elementToAttribute( {
+					model: {
+						key: 'listItemFontSize',
+						value: option.model
+					},
+					view: {
+						name: 'li',
+						classes: `ck-list-marker-font-size-${ option.model }`
 					}
-				}
-			} );
-		} else {
-			const fontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
-
-			for ( const option of fontSizeOptions ) {
-				if ( option.model && option.view ) {
-					const view = option.view as ElementObjectDefinition;
-
-					editor.conversion.for( 'upcast' ).elementToAttribute( {
-						model: {
-							key: 'listItemFontSize',
-							value: option.model
-						},
-						view: {
-							name: 'li',
-							...( view.styles ? { styles: view.styles } : {} ),
-							...( view.classes ? { classes: view.classes } : {} )
-						}
-					} );
-				}
+				} );
 			}
 		}
 	}

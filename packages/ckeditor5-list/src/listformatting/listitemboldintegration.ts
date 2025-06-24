@@ -60,7 +60,7 @@ export default class ListItemBoldIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
-					writer.addClass( 'ck-bold', viewElement );
+					writer.addClass( 'ck-list-marker-bold', viewElement );
 				}
 			}
 		} );
@@ -94,7 +94,7 @@ export default class ListItemBoldIntegration extends Plugin {
 			model: 'listItemBold',
 			view: {
 				name: 'li',
-				classes: 'ck-bold'
+				classes: 'ck-list-marker-bold'
 			}
 		} );
 	}

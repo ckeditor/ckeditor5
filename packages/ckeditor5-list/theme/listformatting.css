@@ -3,20 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-content-list-marker-color: initial; /* TODO replace initial with var(--ck-content-font-color) */
+	--ck-content-list-marker-font-family: initial; /* TODO replace initial with var(--ck-content-font-family) */
+	--ck-content-list-marker-font-size: initial; /* TODO replace initial with var(--ck-content-font-size) */
+}
+
 .ck-content li {
-	& ol {
-		color: initial;
-		font-family: initial;
-		font-size: initial;
-		font-weight: initial;
-		font-style: initial;
+	&.ck-list-marker-bold::marker {
+		font-weight: bold;
 	}
-}
 
-.ck-content .ck-bold {
-	font-weight: bold;
-}
+	&.ck-list-marker-italic::marker {
+		font-style: italic;
+	}
 
-.ck-content .ck-italic {
-	font-style: italic;
+	&.ck-list-marker-color::marker {
+		color: var(--ck-content-list-marker-color);
+	}
+
+	&.ck-list-marker-font-family::marker {
+		font-family: var(--ck-content-list-marker-font-family);
+	}
+
+	&.ck-list-marker-font-size::marker {
+		font-size: var(--ck-content-list-marker-font-size);
+	}
+
+	&.ck-list-marker-font-size-tiny::marker {
+		font-size: var(--ck-content-font-size-tiny);
+	}
+
+	&.ck-list-marker-font-size-small::marker {
+		font-size: var(--ck-content-font-size-small);
+	}
+
+	&.ck-list-marker-font-size-big::marker {
+		font-size: var(--ck-content-font-size-big);
+	}
+
+	&.ck-list-marker-font-size-huge::marker {
+		font-size: var(--ck-content-font-size-huge);
+	}
 }

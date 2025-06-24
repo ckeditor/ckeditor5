@@ -60,7 +60,7 @@ export default class ListItemItalicIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
-					writer.addClass( 'ck-italic', viewElement );
+					writer.addClass( 'ck-list-marker-italic', viewElement );
 				}
 			}
 		} );
@@ -94,7 +94,7 @@ export default class ListItemItalicIntegration extends Plugin {
 			model: 'listItemItalic',
 			view: {
 				name: 'li',
-				classes: 'ck-italic'
+				classes: 'ck-list-marker-italic'
 			}
 		} );
 	}

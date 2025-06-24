@@ -62,7 +62,8 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				// There is no need of removing the style because downcast strategies handles it automatically.
 				if ( value ) {
-					writer.setStyle( 'font-family', value as string, viewElement );
+					writer.addClass( 'ck-list-marker-font-family', viewElement );
+					writer.setStyle( '--ck-content-list-marker-font-family', value as string, viewElement );
 				}
 			}
 		} );
@@ -96,13 +97,14 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			model: {
 				key: 'listItemFontFamily',
 				value: ( viewElement: ViewElement ) => {
-					return viewElement.getStyle( 'font-family' );
+					return viewElement.getStyle( '--ck-content-list-marker-font-family' );
 				}
 			},
 			view: {
 				name: 'li',
+				classes: 'ck-list-marker-font-family',
 				styles: {
-					'font-family': /.*/
+					'--ck-content-list-marker-font-family': /.*/
 				}
 			}
 		} );
