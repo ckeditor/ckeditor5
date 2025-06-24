@@ -31,6 +31,7 @@ export { default as ListFormatting } from './listformatting.js';
 export { default as ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 export { default as ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
 export { default as ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
+export { default as ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
 
 // TodoList/
 export { default as TodoList } from './todolist.js';

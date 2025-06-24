@@ -15,6 +15,7 @@ import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
 import ListItemBoldIntegration from '../src/listformatting/listitemboldintegration.js';
 import ListItemItalicIntegration from '../src/listformatting/listitemitalicintegration.js';
+import ListItemFontSizeIntegration from '../src/listformatting/listitemfontsizeintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -74,7 +75,8 @@ describe( 'ListFormatting', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
 			ListItemFontFamilyIntegration,
 			ListItemBoldIntegration,
-			ListItemItalicIntegration
+			ListItemItalicIntegration,
+			ListItemFontSizeIntegration
 		] );
 	} );
 
