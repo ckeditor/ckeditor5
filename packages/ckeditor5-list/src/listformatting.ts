@@ -13,6 +13,7 @@ import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyin
 import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
 import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
 import ListItemFontSizeIntegration from './listformatting/listitemfontsizeintegration.js';
+import ListItemFontColorIntegration from './listformatting/listitemfontcolorintegration.js';
 import type {
 	Element,
 	Model,
@@ -68,7 +69,8 @@ export default class ListFormatting extends Plugin {
 			ListItemFontFamilyIntegration,
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
-			ListItemFontSizeIntegration
+			ListItemFontSizeIntegration,
+			ListItemFontColorIntegration
 		] as const;
 	}
 

@@ -16,6 +16,7 @@ import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfam
 import ListItemBoldIntegration from '../src/listformatting/listitemboldintegration.js';
 import ListItemItalicIntegration from '../src/listformatting/listitemitalicintegration.js';
 import ListItemFontSizeIntegration from '../src/listformatting/listitemfontsizeintegration.js';
+import ListItemFontColorIntegration from '../src/listformatting/listitemfontcolorintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -76,7 +77,8 @@ describe( 'ListFormatting', () => {
 			ListItemFontFamilyIntegration,
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
-			ListItemFontSizeIntegration
+			ListItemFontSizeIntegration,
+			ListItemFontColorIntegration
 		] );
 	} );
 
