@@ -1,9 +1,9 @@
 ---
 category: update-guides
-meta-title: Update to version 45.x | CKEditor 5 Documentation
-menu-title: Update to v45.x
-order: 79
-modified_at: 2025-06-16
+meta-title: Update to version 46.x | CKEditor 5 Documentation
+menu-title: Update to v46.x
+order: 78
+modified_at: 2025-06-24
 ---
 
 # Update to CKEditor&nbsp;5 v46.x
@@ -20,8 +20,12 @@ Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/cke
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
-### First heading
+### New internal exports
+
+As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. It now uses a unified export policy via index.ts, with clearer, standardized public API names introducing some breaking changes. find all the changes and the new exports introduced with NIM in this {@link updating/nim-migration/migrating-exports dedicated migration guide}.
 
 ### Major breaking changes in this release
+
+* Mention exports changes
 
 ### Minor breaking changes in this release
