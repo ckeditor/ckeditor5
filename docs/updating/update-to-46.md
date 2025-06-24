@@ -24,6 +24,10 @@ Below are the most important changes that require your attention when upgrading 
 
 As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. It now uses a unified export policy via index.ts, with clearer, standardized public API names introducing some breaking changes. Find all the changes and the new exports introduced with NIM in this {@link updating/nim-migration/migrating-exports dedicated migration guide}.
 
+<info-box info>
+Due to the large number of changed exports, manually updating all imports can be time-consuming and error-prone. We recommend using the tables with the changed import/export names provided in the migration guides as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
+</info-box>
+
 ### Content area CSS variables renamed to `--ck-content-*` prefix
 
 To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
