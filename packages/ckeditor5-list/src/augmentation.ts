@@ -27,11 +27,11 @@ import type {
 	CheckTodoListCommand,
 
 	ListFormatting,
-	ListItemFontFamilyIntegration,
 	ListItemBoldIntegration,
 	ListItemItalicIntegration,
 	ListItemFontSizeIntegration,
 	ListItemFontColorIntegration,
+	ListItemFontFamilyIntegration,
 
 	LegacyList,
 	LegacyListEditing,

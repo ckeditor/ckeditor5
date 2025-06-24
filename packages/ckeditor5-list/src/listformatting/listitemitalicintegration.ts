@@ -49,7 +49,7 @@ export default class ListItemItalicIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'listItemItalic', 'italic' );
+		ListFormatting.registerFormatAttribute( 'italic', 'listItemItalic' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.

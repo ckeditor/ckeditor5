@@ -53,7 +53,7 @@ export default class ListItemFontSizeIntegration extends Plugin {
 
 		const normalizedFontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
-		ListFormatting.registerFormatAttribute( 'listItemFontSize', 'fontSize' );
+		ListFormatting.registerFormatAttribute( 'fontSize', 'listItemFontSize' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.

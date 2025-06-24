@@ -50,7 +50,7 @@ export default class ListItemFontColorIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'listItemFontColor', 'fontColor' );
+		ListFormatting.registerFormatAttribute( 'fontColor', 'listItemFontColor' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.

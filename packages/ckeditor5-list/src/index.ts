@@ -28,11 +28,11 @@ export type { default as ListStyleCommand } from './listproperties/liststylecomm
 
 // ListFormatting.
 export { default as ListFormatting } from './listformatting.js';
-export { default as ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 export { default as ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
 export { default as ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
 export { default as ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
 export { default as ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
+export { default as ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 
 // TodoList/
 export { default as TodoList } from './todolist.js';

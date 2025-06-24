@@ -49,7 +49,7 @@ export default class ListItemBoldIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting.registerFormatAttribute( 'listItemBold', 'bold' );
+		ListFormatting.registerFormatAttribute( 'bold', 'listItemBold' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.

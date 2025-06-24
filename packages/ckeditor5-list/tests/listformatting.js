@@ -766,7 +766,7 @@ describe( 'ListFormatting', () => {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
 
-			ListFormatting.registerFormatAttribute( 'listItemFormat', 'inlineFormat' );
+			ListFormatting.registerFormatAttribute( 'inlineFormat', 'listItemFormat' );
 		}
 
 		afterInit() {
@@ -786,7 +786,7 @@ describe( 'ListFormatting', () => {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
 
-			ListFormatting.registerFormatAttribute( 'listItemFormat2', 'inlineFormat2' );
+			ListFormatting.registerFormatAttribute( 'inlineFormat2', 'listItemFormat2' );
 		}
 
 		afterInit() {
