@@ -31,7 +31,7 @@ Starting this release, a new {@link module:html-support/emptyblock~EmptyBlock} p
 
 We have enhanced support for the `<hr>` element in the [General HTML Support](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) plugin. Now, the attributes of the `<hr>` element are properly preserved if configuration allows it.
 
-## Enhanced emoji support
+### Enhanced emoji support
 
 We enhanced emoji support for better compatibility with users' devices.
 
