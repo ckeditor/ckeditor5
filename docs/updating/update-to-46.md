@@ -20,15 +20,13 @@ Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/cke
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
-### New internal exports
+### New internal export names
 
-As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. It now uses a unified export policy via index.ts, with clearer, standardized public API names introducing some breaking changes. find all the changes and the new exports introduced with NIM in this {@link updating/nim-migration/migrating-exports dedicated migration guide}.
+As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. It now uses a unified export policy via index.ts, with clearer, standardized public API names introducing some breaking changes. Find all the changes and the new exports introduced with NIM in this {@link updating/nim-migration/migrating-exports dedicated migration guide}.
 
-### Major breaking changes in this release
+### Content area CSS variables renamed to `--ck-content-*` prefix
 
-#### Content area CSS variables renamed to --ck-content-* prefix
-
-To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and todo list checkmarks.
+To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
 
 | Old variable name                           | New variable name                                 |
 |---------------------------------------------|---------------------------------------------------|
@@ -56,6 +54,7 @@ To improve consistency, all CSS variables that affect the styles of the editor c
 * The old variable names are no longer supported and will not have any effect.
 
 Example:
+
 ```css
 :root {
   --ck-content-highlight-marker-yellow: #fdfd77;
@@ -63,9 +62,9 @@ Example:
 }
 ```
 
-#### Table-related CSS variables renamed for better clarity
+### Table-related CSS variables renamed for better clarity
 
-Some table-related CSS variables had improper naming with "-selector-" in their names, which was confusing and inconsistent. These variables have been renamed to use "-table-" prefix for better clarity and consistency.
+Some table-related CSS variables had improper naming with `-selector-` in their names, which was confusing and inconsistent. These variables have been renamed to use `-table-` for better clarity and consistency.
 
 | Old variable name                           | New variable name                                 |
 |---------------------------------------------|---------------------------------------------------|
@@ -86,5 +85,7 @@ Example:
   --ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 ```
+
+### Major breaking changes in this release
 
 ### Minor breaking changes in this release
