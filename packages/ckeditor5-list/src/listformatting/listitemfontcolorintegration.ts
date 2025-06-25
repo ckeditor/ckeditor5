@@ -61,7 +61,8 @@ export default class ListItemFontColorIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
-					writer.setStyle( 'color', value as string, viewElement );
+					writer.addClass( 'ck-list-marker-color', viewElement );
+					writer.setStyle( '--ck-content-list-marker-color', value as string, viewElement );
 				}
 			}
 		} );
@@ -95,13 +96,14 @@ export default class ListItemFontColorIntegration extends Plugin {
 			model: {
 				key: 'listItemFontColor',
 				value: ( viewElement: ViewElement ) => {
-					return viewElement.getStyle( 'color' );
+					return viewElement.getStyle( '--ck-content-list-marker-color' );
 				}
 			},
 			view: {
 				name: 'li',
+				classes: 'ck-list-marker-color',
 				styles: {
-					'color': /.*/
+					'--ck-content-list-marker-color': /.*/
 				}
 			}
 		} );

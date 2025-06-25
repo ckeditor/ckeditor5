@@ -530,14 +530,14 @@ describe( 'ListEditing - converters', () => {
 
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
-						'<li class="ck-bold"><span class="ck-list-bogus-paragraph"><strong></strong></span></li>' +
+						'<li class="ck-list-marker-bold"><span class="ck-list-bogus-paragraph"><strong></strong></span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 					'</ul>'
 				);
 
 				expect( editor.getData() ).to.equal(
 					'<ul>' +
-						'<li class="ck-bold">&nbsp;</li>' +
+						'<li class="ck-list-marker-bold">&nbsp;</li>' +
 						'<li>b</li>' +
 					'</ul>'
 				);

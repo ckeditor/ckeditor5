@@ -11,8 +11,13 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import {
+	setData as setModelData,
+	getData as getModelData,
+	stringify as stringifyModel
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import stubUid from '../list/_utils/uid.js';
@@ -33,7 +38,8 @@ describe( 'ListItemFontColorIntegration', () => {
 				BlockQuoteEditing,
 				CodeBlockEditing,
 				HeadingEditing,
-				TableEditing
+				TableEditing,
+				ClipboardPipeline
 			]
 		} );
 
@@ -41,6 +47,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		view = editor.editing.view;
 
 		stubUid();
+		sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 	} );
 
 	afterEach( async () => {
@@ -113,14 +120,14 @@ describe( 'ListItemFontColorIntegration', () => {
 	describe( 'downcast', () => {
 		it( 'should downcast listItemFontColor attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="color:red">foo</span>' +
 						'</span>' +
@@ -130,7 +137,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -139,22 +146,22 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in nested list', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listItemFontColor="red">' +
+				'<paragraph listIndent="1" listItemId="b" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="color:red">foo</span>' +
 						'</span>' +
 						'<ul>' +
-							'<li style="color:red">' +
+							'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 								'<span class="ck-list-bogus-paragraph">' +
 									'<span style="color:red">foo</span>' +
 								'</span>' +
@@ -166,10 +173,10 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
 						'<ul>' +
-							'<li style="color:red;">' +
+							'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 								'<span style="color:red;">foo</span>' +
 							'</li>' +
 						'</ul>' +
@@ -180,17 +187,17 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in multi-block', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">bar</$text>' +
 				'</paragraph>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<p>' +
 							'<span style="color:red">foo</span>' +
 						'</p>' +
@@ -203,7 +210,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<p>' +
 							'<span style="color:red;">foo</span>' +
 						'</p>' +
@@ -217,7 +224,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in blockquote list item', () => {
 			setModelData( model,
-				'<blockQuote listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<blockQuote listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontColor="red">foo</$text>' +
 					'</paragraph>' +
@@ -226,7 +233,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<blockquote>' +
 							'<p>' +
 								'<span style="color:red">foo</span>' +
@@ -238,7 +245,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<blockquote>' +
 							'<p>' +
 								'<span style="color:red;">foo</span>' +
@@ -251,14 +258,14 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in heading list item', () => {
 			setModelData( model,
-				'<heading1 listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<heading1 listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</heading1>'
 			);
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<h2>' +
 							'<span style="color:red">foo</span>' +
 						'</h2>' +
@@ -268,7 +275,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<h2>' +
 							'<span style="color:red;">foo</span>' +
 						'</h2>' +
@@ -280,7 +287,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		// Post-fixer currently removes `listItemFontColor` attribute from table list items.
 		it.skip( 'should downcast listItemFontColor attribute as style in <li> in table list item', () => {
 			setModelData( model,
-				'<table listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<table listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
@@ -293,7 +300,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="color:red">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -315,7 +322,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -337,7 +344,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute (unordered list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
 					'</li>' +
 				'</ul>'
@@ -353,7 +360,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute (ordered list)', () => {
 			editor.setData(
 				'<ol>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
 					'</li>' +
 				'</ol>'
@@ -368,14 +375,14 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
 			editor.setData(
-				'<ul style="color:blue;">' +
-					'<li style="color:red;">' +
-						'<p style="green:green;">' +
+				'<ul class="ck-list-marker-color" style="--ck-content-list-marker-color:blue;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
+						'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:green;">' +
 							'<span style="color:red;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>' +
-				'<p style="color:orange;">baz</p>'
+				'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:orange;">baz</p>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
@@ -389,10 +396,10 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute (nested list)', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
 						'<ul>' +
-							'<li style="color:red;">' +
+							'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 								'<span style="color:red;">bar</span>' +
 							'</li>' +
 						'</ul>' +
@@ -413,7 +420,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute in multi-block', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<p>' +
 							'<span style="color:red;">foo</span>' +
 						'</p>' +
@@ -437,7 +444,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute for blockquote', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<blockquote>' +
 							'<span style="color:red;">foo</span>' +
 						'</blockquote>' +
@@ -457,7 +464,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it( 'should upcast style in <li> to listItemFontColor attribute for heading', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<h2>' +
 							'<span style="color:red;">foo</span>' +
 						'</h2>' +
@@ -476,7 +483,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		it.skip( 'should upcast style in <li> to listItemFontColor attribute for table', () => {
 			editor.setData(
 				'<ul>' +
-					'<li style="color:red;">' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -504,6 +511,68 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</table>'
 			);
 		} );
+
+		it( 'should upcast and consume class', () => {
+			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-list-marker-color' } ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.viewItem, { styles: '--ck-content-list-marker-color' } ) ).to.be.false;
+			} );
+
+			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:li', upcastCheck, { priority: 'lowest' } ) );
+
+			editor.setData(
+				'<ul>' +
+					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
+						'<span style="color:red">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
+					'<$text fontColor="red">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( upcastCheck.calledOnce ).to.be.true;
+		} );
+	} );
+
+	describe( 'clipboard integration', () => {
+		it( 'should upcast marker class without using post-fixer', () => {
+			const dataTransferMock = createDataTransfer( {
+				'text/html': '<ol><li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">foo</li></ol>'
+			} );
+
+			const spy = sinon.stub( editor.model, 'insertContent' );
+
+			editor.editing.view.document.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock
+			} );
+
+			sinon.assert.calledOnce( spy );
+
+			const content = spy.firstCall.args[ 0 ];
+
+			expect( stringifyModel( content ) ).to.equal(
+				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
+					'foo' +
+				'</paragraph>'
+			);
+		} );
+
+		function createDataTransfer( data ) {
+			const state = Object.create( data || {} );
+
+			return {
+				getData( type ) {
+					return state[ type ];
+				},
+				setData( type, newData ) {
+					state[ type ] = newData;
+				}
+			};
+		}
 	} );
 
 	describe( 'when FontColorEditing is not loaded', () => {
@@ -527,7 +596,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		it( 'should not downcast listItemFontColor attribute as style in <li>', () => {
 			setModelData( model,
-				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
+				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);

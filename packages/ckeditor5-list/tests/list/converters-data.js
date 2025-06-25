@@ -310,7 +310,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'</paragraph>',
 
 				'<ol>' +
-					'<li class="ck-bold"><strong>foo</strong></li>' +
+					'<li class="ck-list-marker-bold"><strong>foo</strong></li>' +
 				'</ol>'
 			);
 		} );

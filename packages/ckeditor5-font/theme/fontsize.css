@@ -5,22 +5,29 @@
 
 /* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
 
+:root {
+	--ck-content-font-size-tiny: 0.7em;
+	--ck-content-font-size-small: 0.85em;
+	--ck-content-font-size-big: 1.4em;
+	--ck-content-font-size-huge: 1.8em;
+}
+
 /* Styles should be prefixed with the `.ck-content` class.
 See https://github.com/ckeditor/ckeditor5/issues/6636 */
 .ck-content {
 	& .text-tiny {
-		font-size: .7em;
+		font-size: var(--ck-content-font-size-tiny);
 	}
 
 	& .text-small {
-		font-size: .85em;
+		font-size: var(--ck-content-font-size-small);
 	}
 
 	& .text-big {
-		font-size: 1.4em;
+		font-size: var(--ck-content-font-size-big);
 	}
 
 	& .text-huge {
-		font-size: 1.8em;
+		font-size: var(--ck-content-font-size-huge);
 	}
 }
