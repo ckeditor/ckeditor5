@@ -20,34 +20,39 @@ Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/cke
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
-
 ## Release highlights
 
 CKEditor 5 v46.0.0 brings several major improvements and changes that enhance both the developer and end-user experience. This release includes significant API refinements, new features, and improvements to existing functionality.
 
 ### Line Height (⭐)
 
-The new Line Height feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
+The new line height<!-- link --> feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
 
 ### Remove Format improvements
 
-Unneeded styles on block elements, such as tables and images, and General HTML Support nodes and attributes are finally eliminated when you hit the remove format button. The feature now cleans what it should, leaving the document structure untouched.
+Unneeded styles on block elements, such as tables and images, and General HTML Support nodes and attributes are finally eliminated when you hit the {@link features/remove-format remove format} button. The feature now cleans what it should, leaving the document structure untouched.
 
 ### List markers styling
 
-Working with styled lists becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
+Working with {@link features/lists#list-styles styled lists} becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
 
 * Font size adjustments,
 * Text color changes,
 * Font weight modifications (bold, italic).
 
-This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports Multi-level lists.
+This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports {@link features/multi-level-lists multi-level lists}.
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, you can opt out.
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, you can opt out<!-- link -->.
 
 ### Markdown processor dependency refresh
 
-The Markdown feature dependencies have been modernized with a switch to the `unified` ecosystem, replacing the previous `marked` / `turndown` implementation. This change brings more consistent and symmetrical HTML ↔ Markdown conversion. By adopting `remark` and `rehype` from the same family of tools, we have created a more reliable and maintainable implementation that will better serve your document processing needs.
+The {@loink features/markdown Markdown} feature dependencies have been modernized with a switch to the `unified` ecosystem, replacing the previous `marked` / `turndown` implementation. This change brings more consistent and symmetrical HTML ↔ Markdown conversion. By adopting `remark` and `rehype` from the same family of tools, we have created a more reliable and maintainable implementation that will better serve your document processing needs.
+
+### Manual token refreshing
+
+We have added a configuration property: `config.cloudServices.autoRefresh` to disable the automatic token refresh mechanism. When it is set to `false`, the token must be refreshed manually.
+
+This property opens up the ability to implement custom token handling if a certain use case requires this.
 
 ### Unified exports & renames
 
