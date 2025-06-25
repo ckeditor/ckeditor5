@@ -9,7 +9,6 @@
  * Note: Run this script in root of ckeditor5.
  */
 
-import Table from 'cli-table';
 import chalk from 'chalk';
 
 const mapBase = ( pkg, module, item ) => ( {
@@ -80,7 +79,7 @@ export const mapper = {
 	} )
 };
 
-export function logData( items, format = 'table' ) {
+export function logData( items ) {
 	if ( !items.length ) {
 		console.warn( 'No entries found.' );
 	}
@@ -88,23 +87,36 @@ export function logData( items, format = 'table' ) {
 	const headers = Object.keys( items[ 0 ] );
 	const rows = items.map( item => Object.values( item ) );
 
-	if ( format == 'table' ) {
-		const table = new Table( {
-			head: headers,
-			style: {
-				compact: true
-			},
-			rows
-		} );
+	logInTable( rows, headers );
+}
 
-		console.log( table.toString() );
-	} else if ( format == 'csv' ) {
-		console.log( headers.join( ',' ) );
-		console.log( rows.map( row => row.join( ',' ) ).join( '\n' ) );
-	} else if ( format == 'tsv' ) {
-		console.log( headers.join( '\t' ) );
-		console.log( rows.map( row => row.join( '\t' ) ).join( '\n' ) );
-	}
+function logInTable( rows, headers ) {
+	// Strip ANSI color codes
+	// eslint-disable-next-line no-control-regex
+	const stripAnsi = str => str.replace( /\u001b\[\d+m/g, '' );
+
+	// Clean the data
+	const cleanRows = rows.map( row => row.map( cell => stripAnsi( cell ) ) );
+
+	// Compute column widths
+	const allRows = [ headers, ...cleanRows ];
+	const colWidths = headers.map( ( _, colIndex ) =>
+		Math.max( ...allRows.map( row => row[ colIndex ].length ) )
+	);
+
+	// Function to format a row
+	const formatRow = row => '│ ' + row.map( ( cell, i ) => cell.padEnd( colWidths[ i ] ) ).join( ' │ ' ) + ' │';
+
+	// Function to create a line
+	const createLine = ( left, mid, right, fill = '─' ) =>
+		left + colWidths.map( w => fill.repeat( w + 2 ) ).join( mid ) + right;
+
+	// Build and print the table
+	console.log( createLine( '┌', '┬', '┐' ) );
+	console.log( formatRow( headers ) );
+	console.log( createLine( '├', '┼', '┤' ) );
+	cleanRows.forEach( row => console.log( formatRow( row ) ) );
+	console.log( createLine( '└', '┴', '┘' ) );
 }
 
 function relativeImportPath( importFrom ) {

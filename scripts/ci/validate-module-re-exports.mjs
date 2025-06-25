@@ -43,7 +43,7 @@ async function main() {
 	const data = removeExpectedExceptions( dataToLogUnwrapped );
 
 	if ( data.length !== 0 ) {
-		logData( data, 'table' );
+		logData( data );
 
 		console.log( chalk.yellow(
 			'\n⚠️ If you want to exclude an export and mark it as valid, add it ' +
