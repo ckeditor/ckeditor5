@@ -576,6 +576,58 @@ describe( 'ListItemItalicIntegration', () => {
 		}
 	} );
 
+	describe( 'when enableListItemMarkerFormatting is false', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemItalicIntegration,
+					ItalicEditing,
+					Paragraph
+				],
+				list: {
+					enableListItemMarkerFormatting: false
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemItalic attribute', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true">' +
+					'<$text italic="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<i>foo</i>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<i>foo</i>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
 	describe( 'when ItalicEditing is not loaded', () => {
 		let editor, model, view;
 

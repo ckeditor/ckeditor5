@@ -592,6 +592,58 @@ describe( 'ListItemBoldIntegration', () => {
 		}
 	} );
 
+	describe( 'when enableListItemMarkerFormatting is false', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemBoldIntegration,
+					BoldEditing,
+					Paragraph
+				],
+				list: {
+					enableListItemMarkerFormatting: false
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemBold attribute', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true">' +
+					'<$text bold="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<strong>foo</strong>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<strong>foo</strong>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
 	describe( 'when BoldEditing is not loaded', () => {
 		let editor, model, view;
 

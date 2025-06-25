@@ -578,17 +578,21 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		}
 	} );
 
-	describe( 'when FontFamilyEditing is not loaded', () => {
+	describe( 'when enableListItemMarkerFormatting is false', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					ListItemFontFamilyIntegration,
+					FontFamilyEditing,
 					Paragraph
 				],
 				fontFamily: {
 					supportAllValues: true
+				},
+				list: {
+					enableListItemMarkerFormatting: false
 				}
 			} );
 
@@ -611,7 +615,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'<ul>' +
 					'<li>' +
 						'<p>' +
-							'foo' +
+							'<span style="font-family:Arial">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
@@ -621,10 +625,48 @@ describe( 'ListItemFontFamilyIntegration', () => {
 				'<ul>' +
 					'<li>' +
 						'<p>' +
-							'foo' +
+							'<span style="font-family:Arial;">foo</span>' +
 						'</p>' +
 					'</li>' +
 				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'when FontFamilyEditing is not loaded', () => {
+		let editor, model;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontFamilyIntegration,
+					Paragraph
+				],
+				fontFamily: {
+					supportAllValues: true
+				}
+			} );
+
+			model = editor.model;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not upcast style in <li> to listItemFontFamily attribute', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+					'foo' +
+				'</paragraph>'
 			);
 		} );
 	} );

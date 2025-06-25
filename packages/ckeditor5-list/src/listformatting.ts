@@ -7,7 +7,7 @@
  * @module list/listformatting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 
 import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
 import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
@@ -78,7 +78,20 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'list.enableListItemMarkerFormatting', true );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public afterInit(): void {
+		if ( !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
+			return;
+		}
+
 		this._registerPostfixerForListItemFormatting();
 	}
 

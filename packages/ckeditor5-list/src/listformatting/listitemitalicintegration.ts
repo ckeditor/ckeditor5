@@ -45,13 +45,13 @@ export default class ListItemItalicIntegration extends Plugin {
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'ItalicEditing' ) ) {
+		if ( !editor.plugins.has( 'ItalicEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
 		ListFormatting.registerFormatAttribute( 'italic', 'listItemItalic' );
 
-		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
+		// Register the downcast strategy in init() so that the attribute name is registered before the list editing
 		// registers its converters.
 		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {
@@ -73,7 +73,7 @@ export default class ListItemItalicIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'ItalicEditing' ) ) {
+		if ( !editor.plugins.has( 'ItalicEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 

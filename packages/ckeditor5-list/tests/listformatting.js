@@ -780,6 +780,48 @@ describe( 'ListFormatting', () => {
 		} );
 	} );
 
+	describe( 'enableListItemMarkerFormatting', () => {
+		it( 'should be enabled by default', () => {
+			expect( editor.config.get( 'list.enableListItemMarkerFormatting' ) ).to.be.true;
+		} );
+
+		describe( 'when enableListItemMarkerFormatting is false (postfixer should not run)', () => {
+			let editor, model, docSelection;
+
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ ListFormatting, Paragraph, MyPlugin ],
+					list: {
+						enableListItemMarkerFormatting: false
+					}
+				} );
+
+				model = editor.model;
+				docSelection = model.document.selection;
+
+				model.schema.extend( '$text', { allowAttributes: [ 'inlineFormat', 'inlineFormat2' ] } );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should not set attribute in li when adding formatting on the whole text', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">[<$text>foo</$text>]</paragraph>'
+				);
+
+				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>'
+				);
+			} );
+		} );
+	} );
+
 	class MyPlugin extends Plugin {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );

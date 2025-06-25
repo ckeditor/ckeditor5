@@ -1213,6 +1213,92 @@ describe( 'ListItemFontSizeIntegration', () => {
 		} );
 	} );
 
+	describe( 'when enableListItemMarkerFormatting is false', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontSizeIntegration,
+					FontSizeEditing,
+					Paragraph
+				],
+				fontSize: {
+					options: [
+						10,
+						'tiny'
+					]
+				},
+				list: {
+					enableListItemMarkerFormatting: false
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemFontSize attribute as class in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny">' +
+					'<$text fontSize="tiny">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span class="text-tiny">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span class="text-tiny">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not downcast listItemFontSize attribute as style in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontSize="10px">' +
+					'<$text fontSize="10px">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span style="font-size:10px">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'<span style="font-size:10px;">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
 	describe( 'when FontSizeEditing is not loaded', () => {
 		let editor, model, view;
 
