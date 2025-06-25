@@ -164,6 +164,19 @@ Example:
 }
 ```
 
+### Comment threads improvements
+
+We have introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
+
+#### Minor breaking change
+
+The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
+
+### Comments and suggestions annotations
+
+We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
+
+
 ### Major breaking changes in this release
 
 ### Minor breaking changes in this release
