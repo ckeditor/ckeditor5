@@ -8,11 +8,11 @@
  */
 
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
+import { addMarginStylesRules, type DowncastAttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
-import IndentBlockCommand from './indentblockcommand.js';
-import IndentUsingOffset from './indentcommandbehavior/indentusingoffset.js';
-import IndentUsingClasses from './indentcommandbehavior/indentusingclasses.js';
+import { IndentBlockCommand } from './indentblockcommand.js';
+import { IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
+import { IndentUsingClasses } from './indentcommandbehavior/indentusingclasses.js';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 
 const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ];
@@ -25,7 +25,7 @@ const DEFAULT_ELEMENTS = [ 'paragraph', 'heading1', 'heading2', 'heading3', 'hea
  * If the plugin {@link module:indent/indent~Indent} is defined, it also attaches the `'indentBlock'` and `'outdentBlock'` commands to
  * the `'indent'` and `'outdent'` commands.
  */
-export default class IndentBlock extends Plugin {
+export class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -72,7 +72,7 @@ export default class IndentBlock extends Plugin {
 				classes: configuration.classes
 			} ) ) );
 		} else {
-			editor.data.addStyleProcessorRules( addMarginRules );
+			editor.data.addStyleProcessorRules( addMarginStylesRules );
 			this._setupConversionUsingOffset();
 
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingOffset( {
@@ -160,7 +160,7 @@ export default class IndentBlock extends Plugin {
 	private _setupConversionUsingClasses( classes: Array<string> ) {
 		const definition: {
 			model: { key: string; values: Array<string> };
-			view: Record<string, AttributeDescriptor>;
+			view: Record<string, DowncastAttributeDescriptor>;
 		} = {
 			model: {
 				key: 'blockIndent',

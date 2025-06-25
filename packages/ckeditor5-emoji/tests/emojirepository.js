@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, console, Response */
-
 import { global } from '@ckeditor/ckeditor5-utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import EmojiRepository from '../src/emojirepository.js';
-import EmojiUtils from '../src/emojiutils.ts';
-import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
+import { EmojiRepository } from '../src/emojirepository.js';
+import { EmojiUtils } from '../src/emojiutils.ts';
+import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 class EmojiUtilsMockVersion15 extends EmojiUtils {
 	getEmojiSupportedVersionByOs() {
@@ -493,7 +491,7 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should log a warning about using CDN when self-hosting', async () => {
-			const { licenseKey } = generateKey( { licenseType: 'production' } );
+			const { licenseKey } = generateLicenseKey( { licenseType: 'production' } );
 
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
@@ -532,7 +530,7 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should not log a warning about using CDN when using `cloud` distribution channel', async () => {
-			const { licenseKey } = generateKey( {
+			const { licenseKey } = generateLicenseKey( {
 				licenseType: 'production',
 				distributionChannel: 'cloud'
 			} );
@@ -558,7 +556,7 @@ describe( 'EmojiRepository', () => {
 		} );
 
 		it( 'should not log a warning about using CDN when `emoji.definitionsUrl` is provided', async () => {
-			const { licenseKey } = generateKey( { licenseType: 'production' } );
+			const { licenseKey } = generateLicenseKey( { licenseType: 'production' } );
 
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [

@@ -7,19 +7,17 @@
  * @module html-support/integrations/customelement
  */
 
-/* globals document */
-
 import { Plugin } from 'ckeditor5/src/core.js';
-import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine.js';
 
-import DataSchema from '../dataschema.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataSchema } from '../dataschema.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, setViewAttributes } from '../utils.js';
 
 /**
  * Provides the General HTML Support for custom elements (not registered in the {@link module:html-support/dataschema~DataSchema}).
  */
-export default class CustomElementSupport extends Plugin {
+export class CustomElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -48,7 +46,7 @@ export default class CustomElementSupport extends Plugin {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:$customElement', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:$customElement', ( evt, definition ) => {
 			evt.stop();
 
 			const editor = this.editor;
@@ -113,8 +111,9 @@ export default class CustomElementSupport extends Plugin {
 					if ( viewElement.is( 'element', 'template' ) && viewElement.getCustomProperty( '$rawContent' ) ) {
 						htmlContent = viewElement.getCustomProperty( '$rawContent' );
 					} else {
-						// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
-						const viewWriter = new UpcastWriter( viewElement.document );
+						// Store the whole element in the attribute so that ViewDomConverter
+						// will be able to use the pre like element context.
+						const viewWriter = new ViewUpcastWriter( viewElement.document );
 						const documentFragment = viewWriter.createDocumentFragment( viewElement );
 						const domFragment = editor.data.htmlProcessor.domConverter.viewToDom( documentFragment );
 						const domElement = domFragment.firstChild!;
@@ -197,7 +196,7 @@ export default class CustomElementSupport extends Plugin {
 function isValidElementName( name: string ): boolean {
 	try {
 		document.createElement( name );
-	} catch ( error ) {
+	} catch {
 		return false;
 	}
 

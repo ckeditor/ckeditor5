@@ -7,10 +7,10 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import TablePropertyCommand from './tablepropertycommand.js';
+import { TablePropertyCommand } from './tablepropertycommand.js';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties.js';
 
 /**
@@ -37,7 +37,7 @@ import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-
  *
  * will set the `borderWidth` attribute to `'5px'` in the model.
  */
-export default class TableBorderWidthCommand extends TablePropertyCommand {
+export class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBorderWidthCommand` instance.
 	 *
@@ -51,7 +51,7 @@ export default class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	protected override _getValue( table: Element ): string | undefined {
+	protected override _getValue( table: ModelElement ): string | undefined {
 		if ( !table ) {
 			return;
 		}

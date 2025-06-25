@@ -20,7 +20,7 @@ import {
 
 import { debounce } from 'es-toolkit/compat';
 
-import TablePropertiesView from './ui/tablepropertiesview.js';
+import { TablePropertiesView } from './ui/tablepropertiesview.js';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -39,7 +39,7 @@ import {
 import type { Batch } from 'ckeditor5/src/engine.js';
 import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
-import type TableBorderStyleCommand from './commands/tableborderstylecommand.js';
+import { type TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -60,7 +60,7 @@ const propertyToCommandMap = {
  *
  * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
-export default class TablePropertiesUI extends Plugin {
+export class TablePropertiesUI extends Plugin {
 	/**
 	 * The default table properties.
 	 */

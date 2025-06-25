@@ -24,7 +24,7 @@ const HEX_NUMBERS = new Array( 256 ).fill( '' )
  *
  * @returns An unique id string.
  */
-export default function uid(): string {
+export function uid(): string {
 	// Let's create some positive random 32bit integers first.
 	const [ r1, r2, r3, r4 ] = crypto.getRandomValues( new Uint32Array( 4 ) );
 

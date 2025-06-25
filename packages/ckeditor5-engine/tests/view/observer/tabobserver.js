@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import TabObserver from '../../../src/view/observer/tabobserver.js';
-import View from '../../../src/view/view.js';
-import createViewRoot from '../../../tests/view/_utils/createroot.js';
+import { TabObserver } from '../../../src/view/observer/tabobserver.js';
+import { EditingView } from '../../../src/view/view.js';
+import { createViewRoot } from '../../../tests/view/_utils/createroot.js';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
@@ -15,7 +13,7 @@ describe( 'TabObserver', () => {
 	let view, viewDocument;
 
 	beforeEach( () => {
-		view = new View();
+		view = new EditingView();
 		viewDocument = view.document;
 		view.addObserver( TabObserver );
 	} );

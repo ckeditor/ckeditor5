@@ -3,6 +3,7 @@ category: features-html
 order: 30
 modified_at: 2021-10-25
 meta-title: HTML comments element | CKEditor 5 Documentation
+meta-description: Add and manage HTML comments in CKEditor 5 to include non-visible notes or instructions within your content for developers or editors.
 ---
 
 # HTML comment element

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
 
 describe( 'LegacyListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
@@ -57,13 +57,13 @@ describe( 'LegacyListStyleCommand', () => {
 
 	describe( '#value', () => {
 		it( 'should return null if selected a paragraph', () => {
-			setData( model, '<paragraph>Foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 			expect( listStyleCommand.value ).to.equal( null );
 		} );
 
 		it( 'should return null if selection starts in a paragraph and ends in a list item', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Fo[o</paragraph>' +
 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo]</listItem>'
 			);
@@ -72,19 +72,19 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (collapsed selection)', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">Foo[]</listItem>' );
+			_setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">Foo[]</listItem>' );
 
 			expect( listStyleCommand.value ).to.equal( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selection is inside a listItem (non-collapsed selection)', () => {
-			setData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">[Foo]</listItem>' );
+			_setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="default">[Foo]</listItem>' );
 
 			expect( listStyleCommand.value ).to.equal( 'default' );
 		} );
 
 		it( 'should return the value of `listStyle` attribute if selected more elements in the same list', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">[1.</listItem>' +
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.]</listItem>' +
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">3.</listItem>'
@@ -94,7 +94,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should return the value of `listStyle` attribute for the selection inside a nested list', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">1.</listItem>' +
 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">1.1.[]</listItem>' +
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.</listItem>'
@@ -104,7 +104,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should return the value of `listStyle` attribute from a list where the selection starts (selection over nested list)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">1.</listItem>' +
 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">1.1.[</listItem>' +
 				'<listItem listIndent="0" listType="bulleted" listStyle="square">2.]</listItem>'
@@ -116,31 +116,31 @@ describe( 'LegacyListStyleCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should set the `listStyle` attribute for collapsed selection', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 		} );
 
 		it( 'should set the `listStyle` attribute for non-collapsed selection', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">[1.]</listItem>'
 			);
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[1.]</listItem>'
 			);
 		} );
 
 		it( 'should set the `listStyle` attribute for all the same list items (collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">3.</listItem>'
@@ -148,7 +148,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -156,7 +156,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should set the `listStyle` attribute for all the same list items and ignores nested lists', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.</listItem>' +
@@ -167,7 +167,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.</listItem>' +
@@ -178,7 +178,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should set the `listStyle` attribute for all the same list items and ignores "parent" list (selection in nested list)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.[]</listItem>' +
@@ -189,7 +189,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.1.[]</listItem>' +
@@ -200,7 +200,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should stop searching for the list items when spotted non-listItem element', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -209,7 +209,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -218,7 +218,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should stop searching for the list items when spotted listItem with different listType attribute', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -227,7 +227,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -236,7 +236,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should stop searching for the list items when spotted listItem with different listStyle attribute', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -245,7 +245,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -254,7 +254,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should start searching for the list items from starting position (non-collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">[3.</listItem>' +
@@ -263,7 +263,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[3.</listItem>' +
@@ -272,7 +272,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should start searching for the list items from ending position (non-collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>[Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.]</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -281,7 +281,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
@@ -290,43 +290,43 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should use default type if not specified (no options passed)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
 			listStyleCommand.execute();
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
 
 		it( 'should use default type if not specified (passed an empty object)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
 			listStyleCommand.execute( {} );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
 
 		it( 'should use default type if not specified (passed null as value)', () => {
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 			);
 
 			listStyleCommand.execute( { type: null } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.[]</listItem>'
 			);
 		} );
 
 		it( 'should not update anything if no listItem found in the selection (default style)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>[Foo.]</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
@@ -335,7 +335,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute();
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[Foo.]</paragraph>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
@@ -344,7 +344,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (circle, non-collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>[Foo.</paragraph>' +
 				'<paragraph>Bar.]</paragraph>'
 			);
@@ -354,7 +354,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar.]</listItem>'
 			);
@@ -365,7 +365,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (square, collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Fo[]o.</paragraph>' +
 				'<paragraph>Bar.</paragraph>'
 			);
@@ -375,7 +375,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'circle' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Fo[]o.</listItem>' +
 				'<paragraph>Bar.</paragraph>'
 			);
@@ -386,7 +386,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>[Foo.</paragraph>' +
 				'<paragraph>Bar.]</paragraph>'
 			);
@@ -396,7 +396,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'decimal' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="decimal" listType="numbered">Bar.]</listItem>'
 			);
@@ -407,7 +407,7 @@ describe( 'LegacyListStyleCommand', () => {
 		} );
 
 		it( 'should create a list list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Fo[]o.</paragraph>' +
 				'<paragraph>Bar.</paragraph>'
 			);
@@ -417,7 +417,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'upper-roman' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="upper-roman" listType="numbered">Fo[]o.</listItem>' +
 				'<paragraph>Bar.</paragraph>'
 			);
@@ -445,7 +445,7 @@ describe( 'LegacyListStyleCommand', () => {
 			// [ ]         ▶ 3.1.1.
 			//
 			// "3.1" is not selected and this list should not be updated.
-			setData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">[2.</listItem>' +
 				'<listItem listIndent="1" listStyle="default" listType="bulleted">2.1.</listItem>' +
@@ -459,7 +459,7 @@ describe( 'LegacyListStyleCommand', () => {
 
 			listStyleCommand.execute( { type: 'disc' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listStyle="disc" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="disc" listType="bulleted">[2.</listItem>' +
 				'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.1.</listItem>' +

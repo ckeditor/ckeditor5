@@ -7,13 +7,11 @@
  * @module watchdog/editorwatchdog
  */
 
-/* globals console */
-
 import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
-import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
-import Watchdog, { type WatchdogConfig } from './watchdog.js';
+import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
+import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Node, Text, Element, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelNode, ModelText, ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
 import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
 
@@ -23,7 +21,7 @@ import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
-export default class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
+export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	/**
 	 * The current editor instance.
 	 */
@@ -78,7 +76,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 *
 	 * @see #setCreator
 	 */
-	declare protected _creator: EditorCreatorFunction<TEditor>;
+	declare protected _creator: EditorWatchdogCreatorFunction<TEditor>;
 
 	/**
 	 * The destruction method.
@@ -133,7 +131,7 @@ export default class EditorWatchdog<TEditor extends Editor = Editor> extends Wat
 	 * watchdog.setCreator( ( element, config ) => ClassicEditor.create( element, config ) );
 	 * ```
 	 */
-	public setCreator( creator: EditorCreatorFunction<TEditor> ): void {
+	public setCreator( creator: EditorWatchdogCreatorFunction<TEditor> ): void {
 		this._creator = creator;
 	}
 
@@ -493,7 +491,7 @@ class EditorWatchdogInitPlugin {
 	/**
 	 * Creates a model node (element or text) based on provided JSON.
 	 */
-	private _createNode( writer: Writer, jsonNode: any ): Text | Element {
+	private _createNode( writer: ModelWriter, jsonNode: any ): ModelText | ModelElement {
 		if ( 'name' in jsonNode ) {
 			// If child has name property, it is an Element.
 			const element = writer.createElement( jsonNode.name, jsonNode.attributes );
@@ -514,11 +512,11 @@ class EditorWatchdogInitPlugin {
 	/**
 	 * Restores the editor by setting the document data, roots attributes and markers.
 	 */
-	private _restoreEditorData( writer: Writer ): void {
+	private _restoreEditorData( writer: ModelWriter ): void {
 		const editor = this.editor!;
 
 		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
-			const parsedNodes: Array<Node | Element> = JSON.parse( content );
+			const parsedNodes: Array<ModelNode | ModelElement> = JSON.parse( content );
 			const parsedAttributes: Array<[ string, unknown ]> = JSON.parse( attributes );
 
 			const rootElement = editor.model.document.getRoot( rootName )!;
@@ -589,6 +587,9 @@ class EditorWatchdogInitPlugin {
 	}
 }
 
+/**
+ * @internal
+ */
 export type EditorData = {
 	roots: Record<string, {
 		content: string;
@@ -615,7 +616,7 @@ export type EditorWatchdogRestartEvent = {
 	return: undefined;
 };
 
-export type EditorCreatorFunction<TEditor = Editor> = (
+export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
 	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
 	config: EditorConfig
 ) => Promise<TEditor>;

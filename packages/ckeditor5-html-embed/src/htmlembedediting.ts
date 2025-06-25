@@ -14,14 +14,14 @@ import { logWarning, createElement } from 'ckeditor5/src/utils.js';
 import { IconCancel, IconCheck, IconPencil } from 'ckeditor5/src/icons.js';
 
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
-import HtmlEmbedCommand from './htmlembedcommand.js';
+import { HtmlEmbedCommand } from './htmlembedcommand.js';
 
 import '../theme/htmlembed.css';
 
 /**
  * The HTML embed editing feature.
  */
-export default class HtmlEmbedEditing extends Plugin {
+export class HtmlEmbedEditing extends Plugin {
 	/**
 	 * Keeps references to {@link module:ui/button/buttonview~ButtonView edit, save, and cancel} button instances created for
 	 * each widget so they can be destroyed if they are no longer in DOM after the editing view was re-rendered.
@@ -336,13 +336,13 @@ export default class HtmlEmbedEditing extends Plugin {
 			state,
 			props
 		}: {
-				domDocument: Document;
-				state: State;
-				props: {
-					isDisabled: boolean;
-					placeholder: string;
-				};
-			} ): HTMLTextAreaElement {
+			domDocument: Document;
+			state: State;
+			props: {
+				isDisabled: boolean;
+				placeholder: string;
+			};
+		} ): HTMLTextAreaElement {
 			const domTextarea = createElement( domDocument, 'textarea', {
 				placeholder: props.placeholder,
 				class: 'ck ck-reset ck-input ck-input-text raw-html-embed__source'
@@ -456,6 +456,11 @@ interface Props {
 	onCancelClick(): void;
 }
 
+/**
+ * The API exposed on each raw HTML embed widget so other features can control a particular widget.
+ *
+ * @internal
+ */
 export interface RawHtmlApi {
 	makeEditable(): void;
 	save( newValue: string ): void;

@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env commonjs, browser */
-
-import FileUploader from '../../src/uploadgateway/fileuploader.js';
-import Token from '../../src/token/token.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { FileUploader } from '../../src/uploadgateway/fileuploader.js';
+import { Token } from '../../src/token/token.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 const API_ADDRESS = 'https://example.dev';
 const BASE_64_FILE = 'data:image/gif;base64,R0lGODlhCQAJAPIAAGFhYZXK/1FRUf///' +

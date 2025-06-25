@@ -3,19 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window */
-
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
-import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
-import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import Schema from '@ckeditor/ckeditor5-engine/src/model/schema.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewAttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
+import { ViewContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { ModelSchema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import {
 	createLinkElement,
@@ -38,21 +36,21 @@ describe( 'utils', () => {
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
 
-		it( 'should return false for other AttributeElements', () => {
-			expect( isLinkElement( new AttributeElement( 'a' ) ) ).to.be.false;
+		it( 'should return false for other ViewAttributeElements', () => {
+			expect( isLinkElement( new ViewAttributeElement( 'a' ) ) ).to.be.false;
 		} );
 
-		it( 'should return false for ContainerElements', () => {
-			expect( isLinkElement( new ContainerElement( 'p' ) ) ).to.be.false;
+		it( 'should return false for ViewContainerElements', () => {
+			expect( isLinkElement( new ViewContainerElement( 'p' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for text nodes', () => {
-			expect( isLinkElement( new Text( 'foo' ) ) ).to.be.false;
+			expect( isLinkElement( new ViewText( 'foo' ) ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'createLinkElement()', () => {
-		it( 'should create link AttributeElement', () => {
+		it( 'should create link ViewAttributeElement', () => {
 			const writer = new ViewDowncastWriter( new ViewDocument() );
 			const element = createLinkElement( 'http://cksource.com', { writer } );
 
@@ -278,27 +276,27 @@ describe( 'utils', () => {
 
 	describe( 'isLinkableElement()', () => {
 		it( 'returns false when passed "null" as element', () => {
-			expect( isLinkableElement( null, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( null, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when passed an element that is not the image element', () => {
 			const element = new ModelElement( 'paragraph' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (block image)', () => {
 			const element = new ModelElement( 'imageBlock' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (inline image)', () => {
 			const element = new ModelElement( 'imageInline' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns true when passed a block image element and it can be linked', () => {
 			const element = new ModelElement( 'imageBlock' );
-			const schema = new Schema();
+			const schema = new ModelSchema();
 
 			schema.register( 'imageBlock', {
 				allowIn: '$root',
@@ -310,7 +308,7 @@ describe( 'utils', () => {
 
 		it( 'returns true when passed an inline image element and it can be linked', () => {
 			const element = new ModelElement( 'imageInline' );
-			const schema = new Schema();
+			const schema = new ModelSchema();
 
 			schema.register( 'imageInline', {
 				allowIn: '$root',
@@ -399,7 +397,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should extract text from range', () => {
-			setModelData( editor.model, '<paragraph>foo[bar]baz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[bar]baz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -407,7 +405,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should extract text from range even when split into multiple text nodes with different style', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>' +
 					'abc[fo' +
 					'<$text bold="true">ob</$text>' +
@@ -423,7 +421,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range includes an inline object', () => {
-			setModelData( editor.model, '<paragraph>foo[ba<inlineWidget></inlineWidget>r]baz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[ba<inlineWidget></inlineWidget>r]baz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -431,7 +429,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range is on an inline object', () => {
-			setModelData( editor.model, '<paragraph>fooba[<inlineWidget></inlineWidget>]rbaz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>fooba[<inlineWidget></inlineWidget>]rbaz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -439,7 +437,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range is spanning multiple blocks', () => {
-			setModelData( editor.model, '<paragraph>f[oo</paragraph><paragraph>ba]z</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[oo</paragraph><paragraph>ba]z</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 

@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals AbortController, AbortSignal */
-
-import wait from '../src/wait.js';
+import { wait } from '../src/wait.js';
 
 describe( 'utils', () => {
 	let clock;

@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { FontSize } from '../../src/fontsize.js';
 
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import FontSize from '../../src/fontsize.js';
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'FontSize - integration', () => {
 	let editor, model, element;
@@ -38,17 +36,17 @@ describe( 'FontSize - integration', () => {
 
 	describe( 'compatibility with highlight', () => {
 		it( 'the view "span" element should outer wrap the text', () => {
-			setModelData( model, '<paragraph>Foo [Bar] Baz.</paragraph>' );
+			_setModelData( model, '<paragraph>Foo [Bar] Baz.</paragraph>' );
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).to.equal(
 				'<p>Foo {<mark class="marker-yellow">Bar</mark>} Baz.</p>'
 			);
 
 			editor.execute( 'fontSize', { value: 'huge' } );
 
-			expect( getViewData( editor.editing.view ) ).to.equal(
+			expect( _getViewData( editor.editing.view ) ).to.equal(
 				'<p>Foo {<span class="text-huge"><mark class="marker-yellow">Bar</mark></span>} Baz.</p>'
 			);
 		} );

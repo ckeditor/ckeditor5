@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window */
-
-import CharacterGridView from '../../src/ui/charactergridview.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { CharacterGridView } from '../../src/ui/charactergridview.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'CharacterGridView', () => {

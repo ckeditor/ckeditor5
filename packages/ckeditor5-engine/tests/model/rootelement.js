@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import RootElement from '../../src/model/rootelement.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Model } from '../../src/model/model.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {
 		it( 'should create attached root element without attributes', () => {
 			const model = new Model();
 			const doc = model.document;
-			const root = new RootElement( doc );
+			const root = new ModelRootElement( doc );
 
-			expect( root ).to.be.an.instanceof( Element );
+			expect( root ).to.be.an.instanceof( ModelElement );
 			expect( root.isAttached() ).to.be.true;
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
 			expect( count( root.getAttributes() ) ).to.equal( 0 );
@@ -30,7 +30,7 @@ describe( 'RootElement', () => {
 			const model = new Model();
 			const doc = model.document;
 
-			root = new RootElement( doc, '$root' );
+			root = new ModelRootElement( doc, '$root' );
 		} );
 
 		it( 'should return true for rootElement, element, element with same name and element name', () => {

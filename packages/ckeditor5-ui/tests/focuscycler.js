@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import ViewCollection from '../src/viewcollection.js';
-import View from '../src/view.js';
-import FocusCycler, { isViewWithFocusCycler } from '../src/focuscycler.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { ViewCollection } from '../src/viewcollection.js';
+import { View } from '../src/view.js';
+import { FocusCycler, isViewWithFocusCycler } from '../src/focuscycler.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FocusTracker, wait } from '@ckeditor/ckeditor5-utils';
 
 describe( 'FocusCycler', () => {

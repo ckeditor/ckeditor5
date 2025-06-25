@@ -11,15 +11,15 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils.js';
 
 import type {
-	Element,
-	Position,
-	Writer
+	ModelElement,
+	ModelPosition,
+	ModelWriter
 } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Enter command used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> keystroke.
  */
-export default class EnterCommand extends Command {
+export class EnterCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -52,14 +52,14 @@ export default class EnterCommand extends Command {
 	 * @param writer Writer to use when performing the enter action.
 	 * @returns Boolean indicating if the block was split.
 	 */
-	public enterBlock( writer: Writer ): boolean {
+	public enterBlock( writer: ModelWriter ): boolean {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
 		const isSelectionEmpty = selection.isCollapsed;
 		const range = selection.getFirstRange()!;
-		const startElement = range.start.parent as Element;
-		const endElement = range.end.parent as Element;
+		const startElement = range.start.parent as ModelElement;
+		const endElement = range.end.parent as ModelElement;
 
 		// Don't touch the roots and other limit elements.
 		if ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) {
@@ -116,10 +116,10 @@ export default class EnterCommand extends Command {
  */
 export type EnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ { writer: Writer } ];
+	args: [ { writer: ModelWriter } ];
 };
 
-function splitBlock( writer: Writer, splitPos: Position ): void {
+function splitBlock( writer: ModelWriter, splitPos: ModelPosition ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

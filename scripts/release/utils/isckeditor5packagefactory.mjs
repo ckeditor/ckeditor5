@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import fs from 'fs-extra';
 import { glob } from 'glob';
 import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 // TODO change to new plugin
 import {
 	IconBulletedList,
@@ -19,17 +17,17 @@ import {
 	IconListStyleUpperLatin,
 	IconListStyleUpperRoman
 } from 'ckeditor5/src/icons.js';
-import ListProperties from '../../src/legacylistproperties.js';
-import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
+import { LegacyListProperties } from '../../src/legacylistproperties.js';
+import { ListPropertiesUI } from '../../src/listproperties/listpropertiesui.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { View, ButtonView, LabeledFieldView, SwitchButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'ListPropertiesUI', () => {
 	let editorElement, editor, model, listStyleCommand, listPropertiesView;
@@ -39,7 +37,7 @@ describe( 'ListPropertiesUI', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
+			plugins: [ Paragraph, BlockQuote, LegacyListProperties, UndoEditing ],
 			list: {
 				properties: {
 					styles: true,
@@ -563,7 +561,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if none was set', () => {
-							setData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -573,7 +571,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
-							setData( model, '<listItem listType="bulleted" listStyle="square" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listStyle="square" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -583,7 +581,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
-							setData( model, '<listItem listType="bulleted" listStyle="circle" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listStyle="circle" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -593,7 +591,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should execute the "bulletedList" command and apply the style if selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -604,17 +602,17 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<listItem listIndent="0" listStyle="circle" listType="bulleted">foo[]</listItem>'
 							);
 
 							editor.execute( 'undo' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -973,7 +971,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if none was set', () => {
-							setData( model, '<listItem listType="numbered" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="numbered" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -983,7 +981,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
-							setData( model, '<listItem listType="numbered" listStyle="square" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="numbered" listStyle="square" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -993,7 +991,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
-							setData(
+							_setModelData(
 								model,
 								'<listItem listType="numbered" listStyle="decimal-leading-zero" listIndent="0">[]foo</listItem>'
 							);
@@ -1006,7 +1004,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should execute the "numberedList" command and apply the style if selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1017,11 +1015,11 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<listItem ' +
 									'listIndent="0" ' +
 									'listReversed="false" ' +
@@ -1034,7 +1032,7 @@ describe( 'ListPropertiesUI', () => {
 
 							editor.execute( 'undo' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -1443,7 +1441,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if none was set', () => {
-							setData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1453,7 +1451,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
-							setData( model, '<listItem listType="bulleted" listStyle="square" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listStyle="square" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1463,7 +1461,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
-							setData( model, '<listItem listType="bulleted" listStyle="circle" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="bulleted" listStyle="circle" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1473,7 +1471,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should execute the "bulletedList" command and apply the style if selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1484,17 +1482,17 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<listItem listIndent="0" listStyle="circle" listType="bulleted">foo[]</listItem>'
 							);
 
 							editor.execute( 'undo' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -1776,7 +1774,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if none was set', () => {
-							setData( model, '<listItem listType="numbered" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="numbered" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1786,7 +1784,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should apply the new style if a different one was set', () => {
-							setData( model, '<listItem listType="numbered" listStyle="square" listIndent="0">[]foo</listItem>' );
+							_setModelData( model, '<listItem listType="numbered" listStyle="square" listIndent="0">[]foo</listItem>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1796,7 +1794,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should remove (toggle) the style if the same style was set', () => {
-							setData(
+							_setModelData(
 								model,
 								'<listItem listType="numbered" listStyle="decimal-leading-zero" listIndent="0">[]foo</listItem>'
 							);
@@ -1809,7 +1807,7 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should execute the "numberedList" command and apply the style if selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
@@ -1820,11 +1818,11 @@ describe( 'ListPropertiesUI', () => {
 						} );
 
 						it( 'should create the single undo step while selection was not anchored in a list', () => {
-							setData( model, '<paragraph>foo[]</paragraph>' );
+							_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 							styleButtonView.fire( 'execute' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<listItem ' +
 									'listIndent="0" ' +
 									'listReversed="false" ' +
@@ -1837,7 +1835,7 @@ describe( 'ListPropertiesUI', () => {
 
 							editor.execute( 'undo' );
 
-							expect( getData( model ) ).to.equal(
+							expect( _getModelData( model ) ).to.equal(
 								'<paragraph>foo[]</paragraph>'
 							);
 						} );
@@ -1852,7 +1850,7 @@ describe( 'ListPropertiesUI', () => {
 		document.body.appendChild( editorElement );
 
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ ListProperties ],
+			plugins: [ LegacyListProperties ],
 			list: {
 				properties: listPropertiesConfig
 			}

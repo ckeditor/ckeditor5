@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
-import preventDefault from '../../src/bindings/preventdefault.js';
-import View from '../../src/view.js';
+import { preventDefault } from '../../src/bindings/preventdefault.js';
+import { View } from '../../src/view.js';
 
 describe( 'preventDefault', () => {
 	it( 'prevents default of a native DOM event', () => {

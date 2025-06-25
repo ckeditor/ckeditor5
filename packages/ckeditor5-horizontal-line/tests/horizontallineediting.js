@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import HorizontalLineEditing from '../src/horizontallineediting.js';
-import HorizontalLineCommand from '../src/horizontallinecommand.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { HorizontalLineEditing } from '../src/horizontallineediting.js';
+import { HorizontalLineCommand } from '../src/horizontallinecommand.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'HorizontalLineEditing', () => {
 	let editor, model, view, viewDocument;
@@ -69,7 +69,7 @@ describe( 'HorizontalLineEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<horizontalLine></horizontalLine>' );
+				_setModelData( model, '<horizontalLine></horizontalLine>' );
 
 				expect( editor.getData() ).to.equal( '<hr>' );
 			} );
@@ -79,7 +79,7 @@ describe( 'HorizontalLineEditing', () => {
 			it( 'should convert the <hr> element', () => {
 				editor.setData( '<hr>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<horizontalLine></horizontalLine>' );
 			} );
 
@@ -95,7 +95,7 @@ describe( 'HorizontalLineEditing', () => {
 
 				editor.setData( '<div><hr></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
 			} );
 		} );
@@ -104,15 +104,15 @@ describe( 'HorizontalLineEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<horizontalLine></horizontalLine>' );
+				_setModelData( model, '<horizontalLine></horizontalLine>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<div class="ck-horizontal-line ck-widget" contenteditable="false"><hr></hr></div>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<horizontalLine></horizontalLine>' );
+				_setModelData( model, '<horizontalLine></horizontalLine>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
 				expect( widget.name ).to.equal( 'div' );

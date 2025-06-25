@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window */
-
-import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview.js';
+import { BalloonPanelView } from '../../../../src/panel/balloon/balloonpanelview.js';
 
 window.createPanel = selector => {
 	const view = new BalloonPanelView();

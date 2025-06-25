@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event */
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import ImageEditing from '../../src/image/imageediting.js';
-import ImageLoadObserver from '../../src/image/imageloadobserver.js';
-import InsertImageCommand from '../../src/image/insertimagecommand.js';
-import ImageTypeCommand from '../../src/image/imagetypecommand.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import { ImageEditing } from '../../src/image/imageediting.js';
+import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
+import { InsertImageCommand } from '../../src/image/insertimagecommand.js';
+import { ImageTypeCommand } from '../../src/image/imagetypecommand.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 describe( 'ImageEditing', () => {
 	let editor, model, doc, view, viewDocument;
@@ -148,27 +146,27 @@ describe( 'ImageEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 
 				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png"></imageBlock>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png"></figure>' );
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
 
 				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
@@ -179,7 +177,7 @@ describe( 'ImageEditing', () => {
 					'</figure>'
 				);
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>' +
 						'<imageInline src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
@@ -197,7 +195,7 @@ describe( 'ImageEditing', () => {
 					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -217,7 +215,7 @@ describe( 'ImageEditing', () => {
 					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -229,7 +227,7 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should not convert srcset attribute if has no data', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -247,7 +245,7 @@ describe( 'ImageEditing', () => {
 					'</figure>'
 				);
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -267,66 +265,66 @@ describe( 'ImageEditing', () => {
 			it( 'should convert image figure', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should convert image inline', () => {
 				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should convert image with `display:block` style', () => {
 				editor.setData( '<p><img src="/asserts/sample.png" alt="alt text" style="display:block" /></p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<imageBlock alt="alt text" src="/asserts/sample.png"></imageBlock>' );
 			} );
 
 			it( 'should not convert if there is no image class in figure', () => {
 				editor.setData( '<figure class="quote">My quote</figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph>My quote</paragraph>' );
 			} );
 
 			it( 'should not convert if there is no img inside figure #1', () => {
 				editor.setData( '<figure class="image"></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'should not convert if there is no img inside figure #2', () => {
 				editor.setData( '<figure class="image">test</figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph>test</paragraph>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 
 				editor.setData( '<p><img src="/assets/sample.png" /></p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<imageBlock alt="alt text"></imageBlock>' );
 
 				editor.setData( '<p><img alt="alt text" /></p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph><imageInline alt="alt text"></imageInline></paragraph>' );
 			} );
 
@@ -342,7 +340,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<div><figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
 
 				model.schema.addChildCheck( ( ctx, childDef ) => {
@@ -355,7 +353,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<div><img src="/assets/sample.png" alt="alt text" /></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
 			} );
 
@@ -367,7 +365,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
 
 				editor.data.upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
@@ -377,7 +375,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
 			} );
 
@@ -388,7 +386,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<figure class="image"><img src="/assets/sample.png" alt="alt text" /></figure>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
 			} );
 
@@ -408,7 +406,7 @@ describe( 'ImageEditing', () => {
 			it( 'should convert bare img element', () => {
 				editor.setData( '<img src="/assets/sample.png" alt="alt text" />' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
@@ -422,7 +420,7 @@ describe( 'ImageEditing', () => {
 
 				editor.setData( '<div alt="foo"></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div></div>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<div></div>' );
 			} );
 
 			it( 'should convert image with srcset attribute', () => {
@@ -432,7 +430,7 @@ describe( 'ImageEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
@@ -442,7 +440,7 @@ describe( 'ImageEditing', () => {
 					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
 							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
@@ -458,7 +456,7 @@ describe( 'ImageEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<imageBlock alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 						'</imageBlock>'
@@ -468,7 +466,7 @@ describe( 'ImageEditing', () => {
 					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
 							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
@@ -482,7 +480,7 @@ describe( 'ImageEditing', () => {
 					'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
 							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
@@ -500,7 +498,7 @@ describe( 'ImageEditing', () => {
 				it( 'image between non-hoisted elements', () => {
 					editor.setData( '<div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>bar</div>'
@@ -508,7 +506,7 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div>'
 					);
 				} );
@@ -521,7 +519,7 @@ describe( 'ImageEditing', () => {
 						'</div>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo</div>' +
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>ba</div>' +
@@ -531,7 +529,7 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo' +
 						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
 						'ba' +
@@ -544,7 +542,7 @@ describe( 'ImageEditing', () => {
 					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>foobar' +
 						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<div>foobar</div>' +
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>'
@@ -552,7 +550,7 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>' +
 						'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
 						'foobar' +
@@ -565,14 +563,14 @@ describe( 'ImageEditing', () => {
 					editor.setData( '<div><figure class="image"><img src="foo.jpg" alt="foo" /></figure>' +
 						'<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>' +
 						'<imageBlock alt="foo" src="foo.jpg"></imageBlock>'
 					);
 
 					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div><imageInline alt="foo" src="foo.jpg"></imageInline><imageInline alt="foo" src="foo.jpg"></imageInline></div>'
 					);
 				} );
@@ -582,7 +580,7 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<div>foo<div>xx<figure class="image"><img src="foo.jpg" alt="foo" /></figure></div>bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>' +
 							'foo' +
 							'<div>' +
@@ -595,7 +593,7 @@ describe( 'ImageEditing', () => {
 
 					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo<div>xx<imageInline alt="foo" src="foo.jpg"></imageInline></div>bar</div>'
 					);
 				} );
@@ -609,7 +607,7 @@ describe( 'ImageEditing', () => {
 						'<div>y</div>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>x</div><imageBlock alt="foo" src="foo.jpg"></imageBlock><div>y</div>'
 					);
 
@@ -619,7 +617,7 @@ describe( 'ImageEditing', () => {
 						'<div>y</div>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>x</div><div><div><div>' +
 							'<imageInline alt="foo" src="foo.jpg"></imageInline>' +
 						'</div></div></div><div>y</div>'
@@ -638,12 +636,12 @@ describe( 'ImageEditing', () => {
 					editor.setData( '<limit><div>foo<figure class="image"><img src="foo.jpg" alt="foo" /></figure>bar</div></limit>' );
 
 					// <limit> element does not have converters so it is not converted.
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
 
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
 					// <limit> element does not have converters so it is not converted.
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<limit><div>foo<imageInline alt="foo" src="foo.jpg"></imageInline>bar</div></limit>'
 					);
 				} );
@@ -651,7 +649,7 @@ describe( 'ImageEditing', () => {
 				it( 'should convert and autohoist image element without src attribute', () => {
 					editor.setData( '<div>foo<img alt="foo" />bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<div>foo<imageInline alt="foo"></imageInline>bar</div>'
 					);
 				} );
@@ -662,15 +660,15 @@ describe( 'ImageEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="/assets/sample.png"></img></figure>'
 				);
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</span></p>'
@@ -678,13 +676,13 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
 				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( figure ) ).to.be.true;
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 				expect( element.name ).to.equal( 'span' );
@@ -692,25 +690,25 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should convert attribute change', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				let image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.setAttribute( 'alt', 'new text', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="new text" src="/assets/sample.png"></img></figure>'
 				);
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 				image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				model.change( writer => {
 					writer.setAttribute( 'alt', 'new text', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 						'<img alt="new text" src="/assets/sample.png"></img>' +
 					'</span></p>'
@@ -718,31 +716,31 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should convert attribute removal (but keeps an empty "alt" to the data)', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				let image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="" src="/assets/sample.png"></img></figure>'
 				);
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 				image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false"><img alt="" src="/assets/sample.png"></img></span></p>'
 				);
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
-				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
+				_setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>' );
 				let image = doc.getRoot().getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:imageBlock', ( evt, data, conversionApi ) => {
@@ -753,11 +751,11 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="/assets/sample.png"></img></figure>'
 				);
 
-				setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
 				image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:imageInline', ( evt, data, conversionApi ) => {
@@ -768,7 +766,7 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</span></p>'
@@ -776,27 +774,27 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
 				);
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>' );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 					'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</span></p>'
@@ -804,7 +802,7 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should not convert srcset attribute if has no data', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -816,13 +814,13 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -834,7 +832,7 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</span></p>'
@@ -842,7 +840,7 @@ describe( 'ImageEditing', () => {
 			} );
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
 					'</imageBlock>'
 				);
@@ -852,13 +850,13 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>' +
 						'<imageInline src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" ></imageInline>' +
 					'</paragraph>'
@@ -869,7 +867,7 @@ describe( 'ImageEditing', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 					'<img src="/assets/sample.png"></img>' +
 					'</span></p>'
@@ -883,7 +881,7 @@ describe( 'ImageEditing', () => {
 					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -891,7 +889,7 @@ describe( 'ImageEditing', () => {
 					'</imageBlock>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
@@ -903,7 +901,7 @@ describe( 'ImageEditing', () => {
 					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><imageInline ' +
 						'src="/assets/sample.png" ' +
 						'alt="alt text" ' +
@@ -911,7 +909,7 @@ describe( 'ImageEditing', () => {
 					'</imageInline></paragraph>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
 					'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</span></p>'

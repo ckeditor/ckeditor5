@@ -12,7 +12,7 @@ import type { FocusableView } from '../focuscycler.js';
 /**
  * A view that can be filtered by a {@link module:ui/search/text/searchtextview~SearchTextView}.
  */
-export default interface FilteredView extends FocusableView {
+export interface FilteredView extends FocusableView {
 
 	/**
 	 * Filters the view by the given regular expression.

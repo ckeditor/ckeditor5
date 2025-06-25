@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document, console, Response */
-
 import { Typing } from '@ckeditor/ckeditor5-typing';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import EmojiMention from '../src/emojimention.js';
-import EmojiPicker from '../src/emojipicker.js';
-import EmojiRepository from '../src/emojirepository.js';
+import { EmojiMention } from '../src/emojimention.js';
+import { EmojiPicker } from '../src/emojipicker.js';
+import { EmojiRepository } from '../src/emojirepository.js';
 
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );
@@ -388,9 +386,9 @@ describe( 'EmojiMention', () => {
 
 			mockEmojiRepositoryValues( editor );
 
-			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
 			editor.commands.execute( 'mention', {
 				marker: '@',
@@ -399,8 +397,8 @@ describe( 'EmojiMention', () => {
 				range: editor.model.document.selection.getFirstRange()
 			} );
 
-			expect( getModelData( editor.model ) ).to.match(
-				// eslint-disable-next-line max-len
+			expect( _getModelData( editor.model ) ).to.match(
+				// eslint-disable-next-line @stylistic/max-len
 				/<paragraph>Hello world! <\$text mention="{"uid":"[a-z0-9]+","_text":"Barney","id":"@Barney"}">Barney<\/\$text> \[\]<\/paragraph>/
 			);
 
@@ -419,7 +417,7 @@ describe( 'EmojiMention', () => {
 				plugins: [ EmojiMention, EmojiPicker, Paragraph, Essentials, Mention ]
 			} );
 
-			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -440,7 +438,7 @@ describe( 'EmojiMention', () => {
 
 		describe( 'break the command execution', () => {
 			it( 'should stop the "mention" command when inserting an item from the list', () => {
-				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+				_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
 				const range = editor.model.document.selection.getFirstRange();
 
@@ -460,7 +458,7 @@ describe( 'EmojiMention', () => {
 			} );
 
 			it( 'should stop the "mention" command when selecting the "Keep on typing..." option', () => {
-				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+				_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
 				const range = editor.model.document.selection.getFirstRange();
 
@@ -480,7 +478,7 @@ describe( 'EmojiMention', () => {
 			} );
 
 			it( 'should stop the "mention" command when selecting the "Show all emoji" option', () => {
-				setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+				_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
 				const range = editor.model.document.selection.getFirstRange();
 
@@ -498,14 +496,14 @@ describe( 'EmojiMention', () => {
 
 				expect( eventStop.called ).to.equal( true );
 
-				expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 			} );
 		} );
 
 		it( 'should remove the auto-complete query when selecting an item from the list', () => {
-			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -519,13 +517,13 @@ describe( 'EmojiMention', () => {
 				mention: { id: ':raising hands:', text: '🙌' }
 			} );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! 🙌[]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! 🙌[]</paragraph>' );
 		} );
 
 		it( 'should use the "insertText" command when inserting the emoji', () => {
 			const spy = sinon.spy();
 
-			setModelData( editor.model, '<paragraph>[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -547,9 +545,9 @@ describe( 'EmojiMention', () => {
 		} );
 
 		it( 'should remove the auto-complete query when selecting the "Show all emoji" option from the list', () => {
-			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 
@@ -563,16 +561,16 @@ describe( 'EmojiMention', () => {
 				mention: { id: ':__EMOJI_SHOW_ALL:' }
 			} );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 		} );
 
 		it( 'should open the emoji picker UI when selecting the "Show all emojis" option from the list', () => {
 			const emojiPicker = editor.plugins.get( 'EmojiPicker' );
 			const stub = sinon.spy( emojiPicker, 'showUI' );
 
-			setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
+			_setModelData( editor.model, '<paragraph>Hello world! []</paragraph>' );
 
-			expect( getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>Hello world! []</paragraph>' );
 
 			const { startPosition, endPosition } = simulateTyping( ':raising' );
 

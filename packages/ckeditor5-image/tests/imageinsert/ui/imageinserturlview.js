@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+import { LabeledFieldView } from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import { ImageInsertUrlView } from '../../../src/imageinsert/ui/imageinserturlview.js';
 
-import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { InputTextView } from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
 
 describe( 'ImageInsertUrlView', () => {
 	let view;

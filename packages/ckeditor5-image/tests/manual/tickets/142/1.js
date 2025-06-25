@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console, window, setTimeout */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
-import Image from '../../../../src/image.js';
-import ImageCaption from '../../../../src/imagecaption.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
+import { Image } from '../../../../src/image.js';
+import { ImageCaption } from '../../../../src/imagecaption.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

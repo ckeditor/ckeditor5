@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+import { DecoupledEditorUIView } from '../src/decouplededitoruiview.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import { MenuBarView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
+import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DecoupledEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;
@@ -23,7 +21,7 @@ describe( 'DecoupledEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 		editingView = new EditingView();
-		editingViewRoot = createRoot( editingView.document );
+		editingViewRoot = createViewRoot( editingView.document );
 		view = new DecoupledEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
 	} );
@@ -55,7 +53,7 @@ describe( 'DecoupledEditorUIView', () => {
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
 					const locale = new Locale();
 					const editingView = new EditingView();
-					const editingViewRoot = createRoot( editingView.document );
+					const editingViewRoot = createViewRoot( editingView.document );
 					const view = new DecoupledEditorUIView( locale, editingView, {
 						shouldToolbarGroupWhenFull: true
 					} );
@@ -121,7 +119,7 @@ describe( 'DecoupledEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (string format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new DecoupledEditorUIView( locale, editingView, {
 					label: 'Foo'
 				} );
@@ -135,7 +133,7 @@ describe( 'DecoupledEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (object format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new DecoupledEditorUIView( locale, editingView, {
 					label: {
 						main: 'Foo'

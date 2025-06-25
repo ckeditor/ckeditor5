@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 /**
  * @module html-support/integrations/integrationutils
@@ -16,7 +16,7 @@ import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
  * @internal
  */
 export function getDescendantElement(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	containerElement: ViewElement,
 	elementName: string
 ): ViewElement | undefined {

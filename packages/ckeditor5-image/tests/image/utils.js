@@ -3,25 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { parse as parseView, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _parseView, _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import Image from '../../src/image.js';
-import ImageEditing from '../../src/image/imageediting.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
-import ImageUtils from '../../src/imageutils.js';
+import { Image } from '../../src/image.js';
+import { ImageEditing } from '../../src/image/imageediting.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
+import { ImageUtils } from '../../src/imageutils.js';
 
 import {
 	getImgViewElementMatcher,
@@ -91,37 +89,37 @@ describe( 'image utils', () => {
 		} );
 
 		it( 'should return "image" when there is no selected block in the selection', () => {
-			setModelData( model, 'f[]oo' );
+			_setModelData( model, 'f[]oo' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "image" when the selected block in the selection is empty', () => {
-			setModelData( model, '<block>[]</block>' );
+			_setModelData( model, '<block>[]</block>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when the selected listItem in the selection is empty', () => {
-			setModelData( model, '<listItem>[]</listItem>' );
+			_setModelData( model, '<listItem>[]</listItem>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 
 		it( 'should return "image" when the selected block is an object (a widget)', () => {
-			setModelData( model, '[<blockWidget></blockWidget>]' );
+			_setModelData( model, '[<blockWidget></blockWidget>]' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageBlock' );
 		} );
 
 		it( 'should return "imageInline" when selected block in the selection has some content', () => {
-			setModelData( model, '<block>[]a</block>' );
+			_setModelData( model, '<block>[]a</block>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
 
 		it( 'should return "imageInline" when an inline widget is selected', () => {
-			setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
+			_setModelData( model, '<block>[<inlineWidget></inlineWidget>]</block>' );
 
 			expect( determineImageTypeForInsertionAtSelection( schema, model.document.selection ) ).to.equal( 'imageInline' );
 		} );
@@ -138,7 +136,7 @@ describe( 'image utils', () => {
 
 				imageUtils = editor.plugins.get( 'ImageUtils' );
 
-				writer = new UpcastWriter( editor.editing.view.document );
+				writer = new ViewUpcastWriter( editor.editing.view.document );
 			} );
 
 			afterEach( async () => {
@@ -208,7 +206,7 @@ describe( 'image utils', () => {
 
 				imageUtils = editor.plugins.get( 'ImageUtils' );
 
-				writer = new UpcastWriter( editor.editing.view.document );
+				writer = new ViewUpcastWriter( editor.editing.view.document );
 			} );
 
 			afterEach( async () => {
@@ -245,7 +243,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return null if the element is an "imageInline" in a table', () => {
-						const fragment = parseView(
+						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
 								'[<img src="sample.jpg"></img>]' +
 							'</td></tr></tbody></table></figure>'
@@ -319,7 +317,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "imageInline" in a table', () => {
-						const fragment = parseView(
+						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
 								'[<img src="sample.jpg"></img>]' +
 							'</td></tr></tbody></table></figure>'
@@ -392,7 +390,7 @@ describe( 'image utils', () => {
 			writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foo' ) );
 			writer.wrap( writer.createRangeIn( paragraph ), attributeElement );
 
-			expect( stringifyView( paragraph ) ).to.equal(
+			expect( _stringifyView( paragraph ) ).to.equal(
 				'<p><a foo="bar">foo<span class="image-inline"><img></img></span></a></p>'
 			);
 		} );

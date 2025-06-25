@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, document, window */
-
-import MultiRootEditor from '../../src/multirooteditor.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import { MultiRootEditor } from '../../src/multirooteditor.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { AutoImage } from '@ckeditor/ckeditor5-image/src/autoimage.js';
+import { ImageInsert } from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
 
 const editorData = {
 	intro: document.querySelector( '#editor-intro' ),
@@ -46,7 +44,7 @@ function initEditor() {
 				]
 			},
 			ckfinder: {
-				// eslint-disable-next-line max-len
+				// eslint-disable-next-line @stylistic/max-len
 				uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 			}
 		} )

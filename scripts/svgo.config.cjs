@@ -5,32 +5,27 @@
 
 const svgoViewBoxPlugin = require( './utils/svgoviewboxplugin.cjs' );
 
-/* eslint-env node */
-
 module.exports = {
-	name: 'preset-default',
 	plugins: [
 		{
-			name: 'removeViewBox',
-			active: false
-		},
-		{ name: 'collapseGroups' },
-		{ name: 'removeDimensions' },
-		{
-			name: 'removeAttrs',
+			name: 'preset-default',
 			params: {
-				attrs: '(fill|stroke|fill-rule)'
+				overrides: {
+					removeViewBox: false,
+					collapseGroups: true,
+					removeDimensions: true,
+					removeAttrs: {
+						attrs: '(fill|stroke|fill-rule)'
+					},
+					convertPathData: {
+						noSpaceAfterFlags: false
+					},
+					removeTitle: true,
+					removeComments: true,
+					removeMetadata: true
+				}
 			}
 		},
-		{
-			name: 'convertPathData',
-			params: {
-				noSpaceAfterFlags: false
-			}
-		},
-		{ name: 'removeTitle' },
-		{ name: 'removeComments' },
-		{ name: 'removeMetadata' },
 		svgoViewBoxPlugin
 	]
 };

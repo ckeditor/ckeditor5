@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-
-import ArticlePluginSet from '../_utils/articlepluginset.js';
-import PendingActions from '../../src/pendingactions.js';
+import { ArticlePluginSet } from '../_utils/articlepluginset.js';
+import { PendingActions } from '../../src/pendingactions.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -3,24 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, setTimeout */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-
-import EasyImage from '../src/easyimage.js';
-import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter.js';
+import { EasyImage } from '../src/easyimage.js';
+import { CloudServicesUploadAdapter } from '../src/cloudservicesuploadadapter.js';
 import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 
-import UploadGatewayMock from './_utils/uploadgatewaymock.js';
+import { UploadGatewayMock } from './_utils/uploadgatewaymock.js';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import CloudServicesCore from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 // EasyImage requires the `CloudServicesCore` plugin as a soft-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin

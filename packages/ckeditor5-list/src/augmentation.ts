@@ -49,15 +49,11 @@ import type {
 	LegacyTodoListEditing,
 	LegacyCheckTodoListCommand,
 
-	ListConfig,
-
-	DocumentList,
-	DocumentListProperties,
-	TodoDocumentList
+	ListConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-  interface EditorConfig {
+	interface EditorConfig {
 
 		/**
 		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/legacylist~LegacyList} feature.
@@ -76,7 +72,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
 		[ ListPropertiesUtils.pluginName ]: ListPropertiesUtils;
 		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-		[ TodoList.pluginName ]: TodoDocumentList;
+		[ TodoList.pluginName ]: TodoList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
 		[ ListFormatting.pluginName ]: ListFormatting;
@@ -93,13 +89,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ LegacyListPropertiesEditing.pluginName ]: LegacyListPropertiesEditing;
 		[ LegacyTodoList.pluginName ]: LegacyTodoList;
 		[ LegacyTodoListEditing.pluginName ]: LegacyTodoListEditing;
-
-		[ DocumentList.pluginName ]: DocumentList;
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
-		[ TodoDocumentList.pluginName ]: TodoDocumentList;
 	}
 
-  interface CommandsMap {
+	interface CommandsMap {
 		numberedList: LegacyListCommand | ListCommand;
 		bulletedList: LegacyListCommand | ListCommand;
 		indentList: LegacyIndentCommand | ListIndentCommand;

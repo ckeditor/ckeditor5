@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Collection from '../src/collection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Collection } from '../src/collection.js';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 function getItem( id, idProperty ) {
@@ -807,9 +807,9 @@ describe( 'Collection', () => {
 
 			collection.on( 'remove', spy );
 
-			collection.remove( 1 );		// by index
-			collection.remove( item1 );	// by model
-			collection.remove( 'bom' );	// by id
+			collection.remove( 1 ); // by index
+			collection.remove( item1 ); // by model
+			collection.remove( 'bom' ); // by id
 
 			sinon.assert.calledThrice( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item1, 0 );

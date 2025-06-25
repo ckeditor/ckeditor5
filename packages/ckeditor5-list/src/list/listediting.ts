@@ -15,16 +15,16 @@ import {
 
 import type {
 	DowncastAttributeEvent,
-	DocumentChangeEvent,
-	DowncastWriter,
-	Element,
+	ModelDocumentChangeEvent,
+	ViewDowncastWriter,
+	ModelElement,
 	Model,
 	ModelInsertContentEvent,
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement,
 	ViewAttributeElement,
-	Writer,
+	ModelWriter,
 	DowncastRemoveEvent,
 	MapperModelToViewPositionEvent
 } from 'ckeditor5/src/engine.js';
@@ -33,12 +33,12 @@ import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import ListIndentCommand from './listindentcommand.js';
-import ListCommand from './listcommand.js';
+import { ListIndentCommand } from './listindentcommand.js';
+import { ListCommand } from './listcommand.js';
+import { ListMergeCommand } from './listmergecommand.js';
+import { ListSplitCommand } from './listsplitcommand.js';
 import ListFormatting from '../listformatting.js';
-import ListMergeCommand from './listmergecommand.js';
-import ListSplitCommand from './listsplitcommand.js';
-import ListUtils from './listutils.js';
+import { ListUtils } from './listutils.js';
 
 import {
 	bogusParagraphCreator,
@@ -69,7 +69,7 @@ import {
 	getViewElementNameForListType
 } from './utils/view.js';
 
-import ListWalker, { ListBlocksIterable } from './utils/listwalker.js';
+import { ListWalker, ListBlocksIterable } from './utils/listwalker.js';
 
 import {
 	ClipboardPipeline,
@@ -98,7 +98,7 @@ export interface ListItemAttributesMap {
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
  */
-export default class ListEditing extends Plugin {
+export class ListEditing extends Plugin {
 	/**
 	 * The list of registered downcast strategies.
 	 */
@@ -194,6 +194,7 @@ export default class ListEditing extends Plugin {
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
 		this._setupAccessibilityIntegration();
+		this._setupListItemIdConversionStrategy();
 	}
 
 	/**
@@ -245,7 +246,7 @@ export default class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
+	 * Attaches the listener to the {@link module:engine/view/document~ViewDocument#event:delete} event and handles backspace/delete
 	 * keys in and around document lists.
 	 */
 	private _setupDeleteIntegration() {
@@ -325,7 +326,7 @@ export default class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#event:enter} event and handles enter key press
+	 * Attaches a listener to the {@link module:engine/view/document~ViewDocument#event:enter} event and handles enter key press
 	 * in document lists.
 	 */
 	private _setupEnterIntegration() {
@@ -405,7 +406,7 @@ export default class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#event:tab} event and handles tab key and tab+shift keys
+	 * Attaches a listener to the {@link module:engine/view/document~ViewDocument#event:tab} event and handles tab key and tab+shift keys
 	 * presses in document lists.
 	 */
 	private _setupTabIntegration() {
@@ -506,7 +507,7 @@ export default class ListEditing extends Plugin {
 		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 
-		this.listenTo<DocumentChangeEvent>(
+		this.listenTo<ModelDocumentChangeEvent>(
 			model.document,
 			'change:data',
 			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ),
@@ -614,7 +615,7 @@ export default class ListEditing extends Plugin {
 					const isSingleListItemSelected = isSingleListItem( allChildren );
 
 					if ( isSingleListItemSelected ) {
-						removeListAttributes( allChildren as Array<Element>, writer );
+						removeListAttributes( allChildren as Array<ModelElement>, writer );
 					}
 				}
 			} );
@@ -643,6 +644,24 @@ export default class ListEditing extends Plugin {
 			]
 		} );
 	}
+
+	/**
+	 * Convert `listItemId` attribute to `data-list-item-id` attribute on the view element in both downcast pipelines.
+	 */
+	private _setupListItemIdConversionStrategy() {
+		this.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemId',
+
+			setAttributeOnDowncast( writer, attributeValue, viewElement, options ) {
+				if ( options && ( options.skipListItemIds || options.isClipboardPipeline ) ) {
+					return;
+				}
+
+				writer.setAttribute( 'data-list-item-id', attributeValue, viewElement );
+			}
+		} );
+	}
 }
 
 /**
@@ -663,7 +682,7 @@ export interface AttributeDowncastStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
 }
 
 /**
@@ -685,17 +704,17 @@ export interface ItemMarkerDowncastStrategy {
 	 * Creates a view element for a custom item marker.
 	 */
 	createElement(
-		writer: DowncastWriter,
-		modelElement: Element,
+		writer: ViewDowncastWriter,
+		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewElement | null;
 
 	/**
-	 * Creates an AttributeElement to be used for wrapping a first block of a list item.
+	 * Creates an ViewAttributeElement to be used for wrapping a first block of a list item.
 	 */
 	createWrapperElement?(
-		writer: DowncastWriter,
-		modelElement: Element,
+		writer: ViewDowncastWriter,
+		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewAttributeElement;
 
@@ -703,13 +722,13 @@ export interface ItemMarkerDowncastStrategy {
 	 * Should return true if the given list block can be wrapped with the wrapper created by `createWrapperElement()`
 	 * or only the marker element should be wrapped.
 	 */
-	canWrapElement?( modelElement: Element ): boolean;
+	canWrapElement?( modelElement: ModelElement ): boolean;
 
 	/**
 	 * Should return true if the custom marker can be injected into a given list block.
 	 * Otherwise, custom marker view element is always injected before the block element.
 	 */
-	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
+	canInjectMarkerIntoElement?( modelElement: ModelElement ): boolean;
 }
 
 /**
@@ -751,12 +770,12 @@ export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStr
  */
 function modelChangePostFixer(
 	model: Model,
-	writer: Writer,
+	writer: ModelWriter,
 	attributeNames: Array<string>,
 	listEditing: ListEditing
 ) {
 	const changes = model.document.differ.getChanges();
-	const visited = new Set<Element>();
+	const visited = new Set<ModelElement>();
 	const itemToListHead = new Set<ListElement>();
 	const multiBlock = listEditing.editor.config.get( 'list.multiBlock' );
 
@@ -785,7 +804,7 @@ function modelChangePostFixer(
 			}
 
 			// Check if there is no nested list.
-			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as Element ) ) {
+			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as ModelElement ) ) {
 				if ( isListItemBlock( innerItem ) ) {
 					findAndAddListHeadToMap( previousPosition, itemToListHead, visited );
 				}
@@ -900,7 +919,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 					 *
 					 * See https://github.com/ckeditor/ckeditor5/issues/13826.
 					 */
-					writer.rename( item as Element, 'listItem' );
+					writer.rename( item as ModelElement, 'listItem' );
 				}
 
 				writer.setAttributes( {
@@ -937,11 +956,11 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
 		return false;
 	}
 
-	if ( ( previousSibling as Element ).isEmpty ) {
+	if ( ( previousSibling as ModelElement ).isEmpty ) {
 		return true;
 	}
 
-	return isSingleListItem( [ positionParent as Element, previousSibling ] );
+	return isSingleListItem( [ positionParent as ModelElement, previousSibling ] );
 }
 
 /**
@@ -950,7 +969,6 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
  *
  * It allows triggering a re-wrapping of a list item.
  *
- * @internal
  * @eventName ~ListEditing#postFixer
  * @param listHead The head element of a list.
  * @param writer The writer to do changes with.
@@ -961,8 +979,8 @@ export type ListEditingPostFixerEvent = {
 	name: 'postFixer';
 	args: [ {
 		listNodes: ListBlocksIterable;
-		listHead: Element;
-		writer: Writer;
+		listHead: ModelElement;
+		writer: ModelWriter;
 		seenIds: Set<string>;
 	} ];
 	return: boolean;
@@ -1001,7 +1019,7 @@ export type ListEditingCheckElementEvent = {
 	name: 'checkElement';
 	args: [ {
 		viewElement: ViewElement;
-		modelElement: Element;
+		modelElement: ModelElement;
 	} ];
 	return: boolean;
 };

@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 
 const markerNames = [];
 let model = null;
@@ -87,7 +85,7 @@ ClassicEditor
 
 		model.change( writer => {
 			const root = model.document.getRoot();
-			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 10 ] ), new ModelPosition( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
@@ -136,7 +134,7 @@ function moveSelectionToStart() {
 
 	if ( range.isFlat ) {
 		model.change( writer => {
-			writer.move( range, new Position( model.document.getRoot(), [ 0, 0 ] ) );
+			writer.move( range, new ModelPosition( model.document.getRoot(), [ 0, 0 ] ) );
 		} );
 	}
 }

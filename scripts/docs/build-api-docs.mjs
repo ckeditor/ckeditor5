@@ -5,14 +5,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import path from 'path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 buildApiDocs()
-	.catch( () => {
+	.catch( err => {
+		console.error( err );
 		process.exitCode = 1;
 	} );
 

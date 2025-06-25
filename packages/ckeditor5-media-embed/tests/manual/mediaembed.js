@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import MediaEmbed from '../../src/mediaembed.js';
-import MediaEmbedToolbar from '../../src/mediaembedtoolbar.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { MediaEmbed } from '../../src/mediaembed.js';
+import { MediaEmbedToolbar } from '../../src/mediaembedtoolbar.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

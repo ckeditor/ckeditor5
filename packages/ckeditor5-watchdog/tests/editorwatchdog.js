@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals setTimeout, window, console, document */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import EditorWatchdog from '../src/editorwatchdog.js';
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { EditorWatchdog } from '../src/editorwatchdog.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 
 class CommentsRepository extends Plugin {
 	static get pluginName() {

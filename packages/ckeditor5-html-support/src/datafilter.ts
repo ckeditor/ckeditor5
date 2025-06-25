@@ -17,9 +17,9 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent,
-	type Element,
-	type Item
+	type ModelDocumentSelectionChangeAttributeEvent,
+	type ModelElement,
+	type ModelItem
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -44,10 +44,10 @@ import {
 } from './converters.js';
 
 import {
-	default as DataSchema,
-	type DataSchemaBlockElementDefinition,
-	type DataSchemaDefinition,
-	type DataSchemaInlineElementDefinition
+	DataSchema,
+	type HtmlSupportDataSchemaBlockElementDefinition,
+	type HtmlSupportDataSchemaDefinition,
+	type HtmlSupportDataSchemaInlineElementDefinition
 } from './dataschema.js';
 
 import {
@@ -91,7 +91,7 @@ import '../theme/datafilter.css';
  * To apply the information about allowed and disallowed attributes in custom integration plugin,
  * use the {@link module:html-support/datafilter~DataFilter#processViewAttributes `processViewAttributes()`} method.
  */
-export default class DataFilter extends Plugin {
+export class DataFilter extends Plugin {
 	/**
 	 * An instance of the {@link module:html-support/dataschema~DataSchema}.
 	 */
@@ -112,7 +112,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Allowed element definitions by {@link module:html-support/datafilter~DataFilter#allowElement} method.
 	*/
-	private readonly _allowedElements: Set<DataSchemaDefinition & { coupledAttribute?: string }>;
+	private readonly _allowedElements: Set<HtmlSupportDataSchemaDefinition & { coupledAttribute?: string }>;
 
 	/**
 	 * Disallowed element names by {@link module:html-support/datafilter~DataFilter#disallowElement} method.
@@ -332,7 +332,7 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Adds allowed element definition and fires registration event.
 	 */
-	private _addAllowedElement( definition: DataSchemaDefinition ): void {
+	private _addAllowedElement( definition: HtmlSupportDataSchemaDefinition ): void {
 		if ( this._allowedElements.has( definition ) ) {
 			return;
 		}
@@ -392,7 +392,7 @@ export default class DataFilter extends Plugin {
 	 * Registers default element handlers.
 	 */
 	private _registerElementHandlers() {
-		this.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
+		this.on<HtmlSupportDataFilterRegisterEvent>( 'register', ( evt, definition ) => {
 			const schema = this.editor.model.schema;
 
 			// Object element should be only registered for new features.
@@ -401,9 +401,9 @@ export default class DataFilter extends Plugin {
 			if ( definition.isObject && !schema.isRegistered( definition.model ) ) {
 				this._registerObjectElement( definition );
 			} else if ( definition.isBlock ) {
-				this._registerBlockElement( definition as DataSchemaBlockElementDefinition );
+				this._registerBlockElement( definition as HtmlSupportDataSchemaBlockElementDefinition );
 			} else if ( definition.isInline ) {
-				this._registerInlineElement( definition as DataSchemaInlineElementDefinition );
+				this._registerInlineElement( definition as HtmlSupportDataSchemaInlineElementDefinition );
 			} else {
 				/**
 				 * The definition cannot be handled by the data filter.
@@ -485,7 +485,7 @@ export default class DataFilter extends Plugin {
 			return changed;
 		} );
 
-		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+		this.listenTo<ModelDocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
 			const removeAttributes = new Set<string>();
 			const coupledAttributes = this._getCoupledAttributesMap();
 
@@ -607,18 +607,18 @@ export default class DataFilter extends Plugin {
 	/**
 	 * Fires `register` event for the given element definition.
 	 */
-	private _fireRegisterEvent( definition: DataSchemaDefinition ) {
+	private _fireRegisterEvent( definition: HtmlSupportDataSchemaDefinition ) {
 		if ( definition.view && this._disallowedElements.has( definition.view ) ) {
 			return;
 		}
 
-		this.fire<DataFilterRegisterEvent>( definition.view ? `register:${ definition.view }` : 'register', definition );
+		this.fire<HtmlSupportDataFilterRegisterEvent>( definition.view ? `register:${ definition.view }` : 'register', definition );
 	}
 
 	/**
 	 * Registers object element and attribute converters for the given data schema definition.
 	 */
-	private _registerObjectElement( definition: DataSchemaDefinition ) {
+	private _registerObjectElement( definition: HtmlSupportDataSchemaDefinition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -649,14 +649,15 @@ export default class DataFilter extends Plugin {
 			// `+ 2` is used to take priority over `_addDefaultH1Conversion` in the Heading plugin.
 			converterPriority: priorities.low + 2
 		} );
-		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition as DataSchemaBlockElementDefinition, this ) );
+		conversion.for( 'upcast' )
+			.add( viewToModelBlockAttributeConverter( definition as HtmlSupportDataSchemaBlockElementDefinition, this ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: modelName,
 				attributes: [ getHtmlAttributeName( viewName ) ]
 			},
-			view: toObjectWidgetConverter( editor, definition as DataSchemaInlineElementDefinition )
+			view: toObjectWidgetConverter( editor, definition as HtmlSupportDataSchemaInlineElementDefinition )
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
@@ -665,13 +666,14 @@ export default class DataFilter extends Plugin {
 				return createObjectView( viewName, modelElement, writer );
 			}
 		} );
-		conversion.for( 'dataDowncast' ).add( modelToViewBlockAttributeConverter( definition as DataSchemaBlockElementDefinition ) );
+		conversion.for( 'dataDowncast' )
+			.add( modelToViewBlockAttributeConverter( definition as HtmlSupportDataSchemaBlockElementDefinition ) );
 	}
 
 	/**
 	 * Registers block element and attribute converters for the given data schema definition.
 	 */
-	private _registerBlockElement( definition: DataSchemaBlockElementDefinition ) {
+	private _registerBlockElement( definition: HtmlSupportDataSchemaBlockElementDefinition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
@@ -724,13 +726,13 @@ export default class DataFilter extends Plugin {
 	 *
 	 * Extends `$text` model schema to allow the given definition model attribute and its properties.
 	 */
-	private _registerInlineElement( definition: DataSchemaInlineElementDefinition ) {
+	private _registerInlineElement( definition: HtmlSupportDataSchemaInlineElementDefinition ) {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
 
-		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		// This element is stored in the model as an attribute on a block element, for example Lists.
 		if ( definition.appliesToBlock ) {
 			return;
 		}
@@ -762,7 +764,7 @@ export default class DataFilter extends Plugin {
 			} );
 
 			// Helper function to check if an element has any HTML attributes.
-			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
+			const hasHtmlAttributes = ( element: ModelElement | ModelItem ): boolean =>
 				Array
 					.from( element.getAttributeKeys() )
 					.some( key => key.startsWith( 'html' ) );
@@ -771,7 +773,7 @@ export default class DataFilter extends Plugin {
 			// See: https://github.com/ckeditor/ckeditor5/issues/18089
 			editor.model.document.registerPostFixer( writer => {
 				const changes = editor.model.document.differ.getChanges();
-				const elementsToRemove = new Set<Element>();
+				const elementsToRemove = new Set<ModelElement>();
 
 				for ( const change of changes ) {
 					if ( change.type === 'remove' ) {
@@ -839,9 +841,9 @@ export default class DataFilter extends Plugin {
 
 /**
  * Fired when {@link module:html-support/datafilter~DataFilter} is registering element and attribute
- * converters for the {@link module:html-support/dataschema~DataSchemaDefinition element definition}.
+ * converters for the {@link module:html-support/dataschema~HtmlSupportDataSchemaDefinition element definition}.
  *
- * The event also accepts {@link module:html-support/dataschema~DataSchemaDefinition#view} value
+ * The event also accepts {@link module:html-support/dataschema~HtmlSupportDataSchemaDefinition#view} value
  * as an event namespace, e.g. `register:span`.
  *
  * ```ts
@@ -864,9 +866,9 @@ export default class DataFilter extends Plugin {
  *
  * @eventName ~DataFilter#register
  */
-export interface DataFilterRegisterEvent {
+export interface HtmlSupportDataFilterRegisterEvent {
 	name: 'register' | `register:${ string }`;
-	args: [ data: DataSchemaDefinition ];
+	args: [ data: HtmlSupportDataSchemaDefinition ];
 }
 
 /**
@@ -882,10 +884,10 @@ function matchAndConsumeAttributes(
 	matcher: Matcher,
 	consumable: ViewConsumable
 ): {
-	attributes: Array<string>;
-	classes: Array<string>;
-	styles: Array<string>;
-} {
+		attributes: Array<string>;
+		classes: Array<string>;
+		styles: Array<string>;
+	} {
 	const matches = matcher.matchAll( viewElement ) || [];
 	const stylesProcessor = viewElement.document.stylesProcessor;
 

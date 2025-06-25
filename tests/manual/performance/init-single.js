@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import { config } from '../../_utils/performance-config.js';
+import { makeData } from '../../_data/data-sets/mixed.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import config from '../../_utils/performance-config.js';
-import dataSet from '../../_data/data-sets/mixed.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-
-const initialData = dataSet();
+const initialData = makeData();
 const finalConfig = { initialData, ...config };
 const editorElement = document.querySelector( '#editor' );
 

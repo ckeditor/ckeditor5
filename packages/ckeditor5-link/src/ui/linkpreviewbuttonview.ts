@@ -15,7 +15,7 @@ import type { Locale } from 'ckeditor5/src/utils.js';
  *
  * Provides a custom `navigate` cancelable event.
  */
-export default class LinkPreviewButtonView extends ButtonView {
+export class LinkPreviewButtonView extends ButtonView {
 	/**
 	 * The value of the "href" attribute of the link.
 	 *

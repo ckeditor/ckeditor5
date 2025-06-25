@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document, Event */
-
-import ViewCollection from '../../../src/viewcollection.js';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
-import ButtonView from '../../../src/button/buttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ViewCollection } from '../../../src/viewcollection.js';
+import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js';
+import { ButtonView } from '../../../src/button/buttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, ResizeObserver, global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {

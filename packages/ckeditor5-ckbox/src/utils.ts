@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global atob */
-
 /**
  * @module ckbox/utils
  */
@@ -18,6 +16,8 @@ import { decode } from 'blurhash';
  * Converts image source set provided by the CKBox into an object containing:
  * - responsive URLs for the "webp" image format,
  * - one fallback URL for browsers that do not support the "webp" format.
+ *
+ * @internal
  */
 export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 	imageFallbackUrl: string;
@@ -58,6 +58,7 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
  * Returns a workspace id to use for communication with the CKBox service.
  *
  * @param defaultWorkspaceId The default workspace to use taken from editor config.
+ * @internal
  */
 export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: string ): string | null {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
@@ -83,6 +84,8 @@ const BLUR_RESOLUTION = 32;
 
 /**
  * Generates an image data URL from its `blurhash` representation.
+ *
+ * @internal
  */
 export function blurHashToDataUrl( hash?: string ): string | undefined {
 	if ( !hash ) {
@@ -110,7 +113,7 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
 		ctx.putImageData( imageData, 0, 0 );
 
 		return canvas.toDataURL();
-	} catch ( e ) {
+	} catch {
 		return undefined;
 	}
 }
@@ -207,6 +210,8 @@ const MIME_TO_EXTENSION: Record<string, string> = {
 
 /**
  * Returns an extension a typical file in the specified `mimeType` format would have.
+ *
+ * @internal
  */
 export function convertMimeTypeToExtension( mimeType: string ): string {
 	return MIME_TO_EXTENSION[ mimeType ];
@@ -214,6 +219,8 @@ export function convertMimeTypeToExtension( mimeType: string ): string {
 
 /**
  * Tries to fetch the given `url` and returns 'content-type' of the response.
+ *
+ * @internal
  */
 export async function getContentTypeOfUrl( url: string, options: { signal: AbortSignal } ): Promise<string> {
 	try {
@@ -235,6 +242,8 @@ export async function getContentTypeOfUrl( url: string, options: { signal: Abort
 
 /**
  * Returns an extension from the given value.
+ *
+ * @internal
  */
 export function getFileExtension( file: File ): string {
 	const fileName = file.name;

@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global setTimeout */
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-
-import ReplaceImageSourceCommand from '../../src/image/replaceimagesourcecommand.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import { ReplaceImageSourceCommand } from '../../src/image/replaceimagesourcecommand.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 describe( 'ReplaceImageSourceCommand', () => {
 	let editor, command, model;
@@ -38,7 +36,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should change image source', () => {
-			setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
 
 			const element = model.document.selection.getSelectedElement();
 
@@ -48,7 +46,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 		} );
 
 		it( 'should clean up some attributes in responsive image', () => {
-			setModelData( model, `[<imageBlock
+			_setModelData( model, `[<imageBlock
 				src="foo/bar.jpg"
 				width="100"
 				height="200"
@@ -80,7 +78,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 		} );
 
 		it( 'should set width and height on replaced image', done => {
-			setModelData( model, `[<imageBlock
+			_setModelData( model, `[<imageBlock
 				src="foo/bar.jpg"
 				width="100"
 				height="200"
@@ -103,19 +101,19 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 	describe( 'refresh()', () => {
 		it( 'should be enabled when selected element is an image', () => {
-			setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
 		it( 'should not enabled when selected element is not an image', () => {
-			setModelData( model, '[<paragraph>Foo</paragraph>]' );
+			_setModelData( model, '[<paragraph>Foo</paragraph>]' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
 		it( 'should store element src value', () => {
-			setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
 
 			const element = model.document.selection.getSelectedElement();
 

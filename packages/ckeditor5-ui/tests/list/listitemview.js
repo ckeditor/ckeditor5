@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ButtonView from '../../src/button/buttonview.js';
-import ListItemView from '../../src/list/listitemview.js';
-import ViewCollection from '../../src/viewcollection.js';
+import { ButtonView } from '../../src/button/buttonview.js';
+import { ListItemView } from '../../src/list/listitemview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 
 describe( 'ListItemView', () => {
 	let view;

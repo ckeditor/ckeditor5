@@ -7,13 +7,11 @@
  * @module list/legacytodolist/legacytodolistconverters
  */
 
-/* global document */
-
 import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
-	DowncastWriter,
-	Element,
+	ViewDowncastWriter,
+	ModelElement,
 	MapperModelToViewPositionEvent,
 	Model,
 	UpcastElementEvent,
@@ -28,11 +26,12 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
 /**
  * A model-to-view converter for the `listItem` model element insertion.
  *
- * It converts the `listItem` model element to an unordered list with a {@link module:engine/view/uielement~UIElement checkbox element}
+ * It converts the `listItem` model element to an unordered list with a {@link module:engine/view/uielement~ViewUIElement checkbox element}
  * at the beginning of each list item. It also merges the list with surrounding lists (if available).
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  * @param onCheckboxChecked Callback function.
@@ -40,8 +39,8 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
  */
 export function modelViewInsertion(
 	model: Model,
-	onCheckboxChecked: ( element: Element ) => void
-): GetCallback<DowncastInsertEvent<Element>> {
+	onCheckboxChecked: ( element: ModelElement ) => void
+): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -86,11 +85,12 @@ export function modelViewInsertion(
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  * @returns Returns a conversion callback.
  */
-export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
+export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -150,6 +150,7 @@ export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInse
  *
  * It is used by {@link module:engine/controller/datacontroller~DataController}.
  *
+ * @internal
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  */
 export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = ( evt, data, conversionApi ) => {
@@ -180,7 +181,7 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  * A model-to-view converter for the `listType` attribute change on the `listItem` model element.
  *
  * This change means that the `<li>` element parent changes to `<ul class="todo-list">` and a
- * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
+ * {@link module:engine/view/uielement~ViewUIElement checkbox UI element} is added at the beginning
  * of the list item element (or vice versa).
  *
  * This converter is preceded by {@link module:list/legacylist/legacyconverters~modelViewChangeType} and followed by
@@ -189,15 +190,16 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param onCheckedChange Callback fired after clicking the checkbox UI element.
  * @param view Editing view controller.
  * @returns Returns a conversion callback.
  */
 export function modelViewChangeType(
-	onCheckedChange: ( element: Element ) => void,
+	onCheckedChange: ( element: ModelElement ) => void,
 	view: EditingView
-): GetCallback<DowncastAttributeEvent<Element>> {
+): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
@@ -241,17 +243,18 @@ export function modelViewChangeType(
 /**
  * A model-to-view converter for the `todoListChecked` attribute change on the `listItem` model element.
  *
- * It marks the {@link module:engine/view/uielement~UIElement checkbox UI element} as checked.
+ * It marks the {@link module:engine/view/uielement~ViewUIElement checkbox UI element} as checked.
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *
+ * @internal
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param onCheckedChange Callback fired after clicking the checkbox UI element.
  * @returns Returns a conversion callback.
  */
 export function modelViewChangeChecked(
-	onCheckedChange: ( element: Element ) => void
-): GetCallback<DowncastAttributeEvent<Element>> {
+	onCheckedChange: ( element: ModelElement ) => void
+): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		// Do not convert `todoListChecked` attribute when to-do list item has changed to other list item.
 		// This attribute will be removed by the model post fixer.
@@ -281,6 +284,8 @@ export function modelViewChangeChecked(
  * This helper ensures that position inside todo-list in the view is mapped after the checkbox.
  *
  * It only handles the position at the beginning of a list item as other positions are properly mapped be the default mapper.
+ *
+ * @internal
  */
 export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
@@ -304,10 +309,10 @@ export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperM
  * Creates a checkbox UI element.
  */
 function createCheckmarkElement(
-	modelItem: Element,
-	viewWriter: DowncastWriter,
+	modelItem: ModelElement,
+	viewWriter: ViewDowncastWriter,
 	isChecked: boolean,
-	onChange: ( element: Element ) => void
+	onChange: ( element: ModelElement ) => void
 ) {
 	const uiElement = viewWriter.createUIElement(
 		'label',

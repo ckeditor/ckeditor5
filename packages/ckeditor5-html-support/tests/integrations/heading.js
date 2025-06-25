@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import HeadingElementSupport from '../../src/integrations/heading.js';
-
-/* global document */
+import { HeadingElementSupport } from '../../src/integrations/heading.js';
 
 describe( 'HeadingElementSupport', () => {
 	let editor, editorElement, model, doc, dataSchema, dataFilter, htmlSupport;
@@ -259,7 +257,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 style="background-color:blue;color:red">foobar</h1>'
 				);
 
@@ -282,7 +280,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h2 class="foo">foobar</h2>'
 				);
 
@@ -309,7 +307,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h5 data-foo="bar">foobar</h5>'
 				);
 
@@ -334,7 +332,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 style="background-color:blue">foobar</h1>'
 				);
 
@@ -357,7 +355,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h2 class="foo">foobar</h2>'
 				);
 
@@ -382,7 +380,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h5 data-foo="bar">foobar</h5>'
 				);
 
@@ -417,7 +415,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 class="foo" data-foo="bar" style="background-color:blue">' +
 						'foobar' +
 					'</h1>'
@@ -453,7 +451,7 @@ describe( 'HeadingElementSupport', () => {
 					attributes: {}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1>foobar</h1>'
 				);
 
@@ -669,7 +667,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 style="background-color:blue;color:red">foobar</h1>'
 				);
 
@@ -692,7 +690,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h2 class="foo">foobar</h2>'
 				);
 
@@ -719,7 +717,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h3 data-foo="bar">foobar</h3>'
 				);
 
@@ -744,7 +742,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 style="background-color:blue">foobar</h1>'
 				);
 
@@ -767,7 +765,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h2 class="foo">foobar</h2>'
 				);
 
@@ -792,7 +790,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h3 data-foo="bar">foobar</h3>'
 				);
 
@@ -827,7 +825,7 @@ describe( 'HeadingElementSupport', () => {
 					}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1 class="foo" data-foo="bar" style="background-color:blue">' +
 						'foobar' +
 					'</h1>'
@@ -863,7 +861,7 @@ describe( 'HeadingElementSupport', () => {
 					attributes: {}
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<h1>foobar</h1>'
 				);
 

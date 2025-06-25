@@ -15,7 +15,7 @@ import {
 	type ObservableSetEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor.js';
+import { type Editor } from './editor/editor.js';
 
 /**
  * Base class for the CKEditor commands.
@@ -30,7 +30,7 @@ import type Editor from './editor/editor.js';
  * By default, commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  */
-export default class Command extends /* #__PURE__ */ ObservableMixin() {
+export class Command extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor on which this command will be used.
 	 */
@@ -166,7 +166,7 @@ export default class Command extends /* #__PURE__ */ ObservableMixin() {
 	 * in this method.
 	 *
 	 * This method is automatically called when
-	 * {@link module:engine/model/document~Document#event:change any changes are applied to the document}.
+	 * {@link module:engine/model/document~ModelDocument#event:change any changes are applied to the document}.
 	 */
 	public refresh(): void {
 		this.isEnabled = true;

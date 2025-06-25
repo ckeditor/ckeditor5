@@ -14,7 +14,7 @@ Check out the {@link features/markdown#demo demo in the Markdown output feature 
 
 ## Documentation
 
-See the {@link features/markdown Markdown output guide} and the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} documentation. Read the {@link features/paste-markdown Paste Markdown feature guide} and the {@link module:markdown-gfm/pastefrommarkdownexperimental~PasteFromMarkdownExperimental} documentation.
+See the {@link features/markdown Markdown output guide} and the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor} documentation. Read the {@link features/paste-markdown Paste Markdown feature guide} and the {@link module:markdown-gfm/pastefrommarkdownexperimental~PasteFromMarkdownExperimental} documentation.
 
 ## Installation
 

@@ -7,10 +7,8 @@
  * @module ui/template
  */
 
-/* global document */
-
-import View from './view.js';
-import ViewCollection from './viewcollection.js';
+import { View } from './view.js';
+import { ViewCollection } from './viewcollection.js';
 
 import {
 	CKEditorError,
@@ -65,7 +63,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
  * template definitions.
  */
-export default class Template extends /* #__PURE__ */ EmitterMixin() {
+export class Template extends /* #__PURE__ */ EmitterMixin() {
 	public ns?: string;
 
 	/**
@@ -648,7 +646,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 * }
 	 * ```
 	 *
-	 * or values bound to {@link module:ui/model~Model} properties:
+	 * or values bound to {@link module:ui/model~UIModel} properties:
 	 *
 	 * ```ts
 	 * attributes: {
@@ -861,7 +859,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	}
 }
 
-type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
+export type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
 	[ NamespacedValue<Array<TemplateSimpleValue | TemplateBinding>> ];
 
 /**
@@ -1815,8 +1813,8 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 // So let's invent some opaque types for outside use and only keep using `TemplateBinding` internally. They can be different for
 // `attribute` and `on` contexts.
 // To make them opaque, a non-exported symbol is used, so it's not possible to accidentally create an instance outside.
-declare const AttributeBindingSymbol: unique symbol;
-declare const ListenerBindingSymbol: unique symbol;
+declare const AttributeBindingSymbol: unique symbol; // eslint-disable-line @typescript-eslint/no-unused-vars
+declare const ListenerBindingSymbol: unique symbol; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface AttributeBinding { _opaqueAttributeBinding: typeof AttributeBindingSymbol }
 export interface ListenerBinding { _opaqueListenerBinding: typeof ListenerBindingSymbol }
@@ -2014,6 +2012,7 @@ export interface BindChain<TObservable> {
 
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
+ * @internal
  */
 export interface RenderData {
 

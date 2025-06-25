@@ -35,7 +35,7 @@ import type { DiffResult } from './diff.js';
  * @returns Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.
  */
-export default function diffToChanges<T>( diff: ReadonlyArray<DiffResult>, output: ArrayLike<T> ): Array<Change<T>> {
+export function diffToChanges<T>( diff: ReadonlyArray<DiffResult>, output: ArrayLike<T> ): Array<Change<T>> {
 	const changes: Array<Change<T>> = [];
 	let index = 0;
 	let lastOperation: Change<T> | null = null;

@@ -21,7 +21,7 @@ import type { EditingView } from 'ckeditor5/src/engine.js';
  * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more about this view.
  */
-export default class DecoupledEditorUIView extends EditorUIView {
+export class DecoupledEditorUIView extends EditorUIView {
 	/**
 	 * The main toolbar of the decoupled editor UI.
 	 */

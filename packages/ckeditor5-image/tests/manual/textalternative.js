@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console, window */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter.js';
-import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing.js';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading.js';
-import ImagePlugin from '../../src/image.js';
-import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo.js';
-import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import ImageToolbar from '../../src/imagetoolbar.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Image } from '../../src/image.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ImageToolbar } from '../../src/imagetoolbar.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageToolbar ],
+		plugins: [ Enter, Typing, Paragraph, Heading, Image, Undo, Clipboard, ImageToolbar ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', '|', 'imageTextAlternative' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]

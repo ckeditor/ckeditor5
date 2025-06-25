@@ -11,23 +11,24 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Consumables,
-	DowncastWriter,
-	Element,
-	Item,
+	ViewDowncastWriter,
+	ModelElement,
+	ModelItem,
 	UpcastElementEvent,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import ListEditing, {
+import {
+	ListEditing,
 	type ListType,
 	type ListEditingCheckAttributesEvent,
 	type ListEditingPostFixerEvent,
 	type ListItemAttributesMap
 } from '../list/listediting.js';
 
-import ListStartCommand from './liststartcommand.js';
-import ListStyleCommand from './liststylecommand.js';
-import ListReversedCommand from './listreversedcommand.js';
+import { ListStartCommand } from './liststartcommand.js';
+import { ListStyleCommand } from './liststylecommand.js';
+import { ListReversedCommand } from './listreversedcommand.js';
 import { listPropertiesUpcastConverter } from './converters.js';
 import {
 	getAllSupportedStyleTypes,
@@ -36,7 +37,7 @@ import {
 	getTypeAttributeFromListStyleType,
 	normalizeListStyle
 } from './utils/style.js';
-import ListPropertiesUtils from './listpropertiesutils.js';
+import { ListPropertiesUtils } from './listpropertiesutils.js';
 import {
 	isNumberedListType
 } from '../list/utils/model.js';
@@ -53,7 +54,7 @@ const DEFAULT_LIST_TYPE = 'default';
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
  */
-export default class ListPropertiesEditing extends Plugin {
+export class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -242,17 +243,17 @@ export interface AttributeStrategy {
 	/**
 	 * Verifies whether the strategy is applicable for the specified model element.
 	 */
-	appliesToListItem( element: Item ): boolean;
+	appliesToListItem( element: ModelItem ): boolean;
 
 	/**
 	 * Verifies whether the model attribute value is valid.
 	 */
-	hasValidAttribute( element: Element ): boolean;
+	hasValidAttribute( element: ModelElement ): boolean;
 
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement ): void;
 
 	/**
 	 * Retrieves the property value from the view element.

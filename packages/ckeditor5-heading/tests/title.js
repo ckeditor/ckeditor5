@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Title } from '../src/title.js';
+import { Heading } from '../src/heading.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 
-import Title from '../src/title.js';
-import Heading from '../src/heading.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-
-import { setData, getData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
 describe( 'Title', () => {
@@ -77,7 +75,7 @@ describe( 'Title', () => {
 	} );
 
 	it( 'should convert title to h1', () => {
-		setData( model,
+		_setModelData( model,
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -88,7 +86,7 @@ describe( 'Title', () => {
 	it( 'should convert h1 to the title if it is the first root child', () => {
 		editor.setData( '<h1>Foo</h1><p>Bar</p>' );
 
-		expect( getData( model ) ).to.equal(
+		expect( _getModelData( model ) ).to.equal(
 			'<title><title-content>[]Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -97,7 +95,7 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h1)', () => {
 		const modelFrag = editor.data.parse( '<h1>Foo</h1><p>Bar</p>' );
 
-		expect( stringify( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).to.equal(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -106,7 +104,7 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h2)', () => {
 		const modelFrag = editor.data.parse( '<h2>Foo</h2><p>Bar</p>' );
 
-		expect( stringify( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).to.equal(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -115,7 +113,7 @@ describe( 'Title', () => {
 	it( 'should avoid calling post-fixers to parse view to correct model (h3)', () => {
 		const modelFrag = editor.data.parse( '<h3>Foo</h3><p>Bar</p>' );
 
-		expect( stringify( modelFrag ) ).to.equal(
+		expect( _stringifyModel( modelFrag ) ).to.equal(
 			'<title><title-content>Foo</title-content></title>' +
 			'<paragraph>Bar</paragraph>'
 		);
@@ -136,91 +134,91 @@ describe( 'Title', () => {
 
 	describe( 'model post-fixing', () => {
 		it( 'should set title and content elements', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'should create a content element when only title has been set', () => {
-			setData( model, '<title><title-content>Foo</title-content></title>' );
+			_setModelData( model, '<title><title-content>Foo</title-content></title>' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph></paragraph>'
 			);
 		} );
 
 		it( 'should create a title and content elements when are missing', () => {
-			setData( model, '' );
+			_setModelData( model, '' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]</title-content></title>' +
 				'<paragraph></paragraph>'
 			);
 		} );
 
 		it( 'should change heading element to title when is set as a first root child', () => {
-			setData( model,
+			_setModelData( model,
 				'<heading1>Foo</heading1>' +
 				'<heading1>Bar</heading1>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<heading1>Bar</heading1>'
 			);
 		} );
 
 		it( 'should change paragraph element to title when is set as a first root child', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'should change paragraph element to title and then change additional title elements to paragraphs', () => {
-			setData( model,
+			_setModelData( model,
 				'<paragraph>Foo</paragraph>' +
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'should change title element to a paragraph when is not a first root child #1', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'should change title element to a paragraph when is not a first root child #2', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>' +
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>' +
 				'<paragraph>Biz</paragraph>'
@@ -228,25 +226,25 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #1', () => {
-			setData( model,
+			_setModelData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<title><title-content>Bar</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Bar</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>'
 			);
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #2', () => {
-			setData( model,
+			_setModelData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>Bar</paragraph></blockQuote>' +
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Biz</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
@@ -254,13 +252,13 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should move title at the beginning of the root when first root child is not allowed to be a title #3', () => {
-			setData( model,
+			_setModelData( model,
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<paragraph>Bar</paragraph>' +
 				'<title><title-content>Biz</title-content></title>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]Biz</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
 				'<paragraph>Bar</paragraph>'
@@ -268,9 +266,9 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should create a missing title element before an element that cannot to be a title element', () => {
-			setData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			_setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]</title-content></title>' +
 				'<blockQuote><paragraph>Foo</paragraph></blockQuote>'
 			);
@@ -280,12 +278,12 @@ describe( 'Title', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 			model.schema.extend( 'paragraph', { allowAttributes: [ 'foo', 'alignment' ] } );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph alignment="justify" foo="true">F<$text foo="true">o</$text>o</paragraph>' +
 				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content alignment="justify">[]Foo</title-content></title>' +
 				'<paragraph foo="true">B<$text foo="true">a</$text>r</paragraph>'
 			);
@@ -294,7 +292,7 @@ describe( 'Title', () => {
 
 	describe( 'removes extra paragraph', () => {
 		it( 'should remove the extra paragraph when pasting to the editor with body placeholder', () => {
-			setData( model, '<title><title-content>[]</title-content></title>' );
+			_setModelData( model, '<title><title-content>[]</title-content></title>' );
 
 			const dataTransferMock = {
 				getData: type => {
@@ -312,14 +310,14 @@ describe( 'Title', () => {
 				preventDefault() {}
 			} );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>Title</title-content></title>' +
 				'<paragraph>Body[]</paragraph>'
 			);
 		} );
 
 		it( 'should not remove the extra paragraph when pasting to the editor with directly created body element', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>[]</title-content></title>' +
 				'<paragraph></paragraph>'
 			);
@@ -340,7 +338,7 @@ describe( 'Title', () => {
 				preventDefault() {}
 			} );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>Title</title-content></title>' +
 				'<paragraph>Body[]</paragraph>' +
 				'<paragraph></paragraph>'
@@ -348,25 +346,25 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should remove the extra paragraph when pressing enter in the title', () => {
-			setData( model, '<title><title-content>fo[]o</title-content></title>' );
+			_setModelData( model, '<title><title-content>fo[]o</title-content></title>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>fo</title-content></title>' +
 				'<paragraph>[]o</paragraph>'
 			);
 		} );
 
 		it( 'should not remove the extra paragraph when pressing enter in the title when body is created directly', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>fo[]o</title-content></title>' +
 				'<paragraph></paragraph>'
 			);
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>fo</title-content></title>' +
 				'<paragraph>[]o</paragraph>' +
 				'<paragraph></paragraph>'
@@ -376,7 +374,7 @@ describe( 'Title', () => {
 
 	describe( 'getTitle()', () => {
 		it( 'should return content of a title element', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -385,7 +383,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should return content of an empty title element', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content></title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -396,7 +394,7 @@ describe( 'Title', () => {
 		it( 'should return marker - starts and ends inside a title', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model, '<title><title-content>Foo Bar</title-content></title>' );
+			_setModelData( model, '<title><title-content>Foo Bar</title-content></title>' );
 
 			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -415,7 +413,7 @@ describe( 'Title', () => {
 		it( 'should return marker - starts inside a title ends inside a body', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo Bar</title-content></title>' +
 				'<paragraph>Biz</paragraph>'
 			);
@@ -442,7 +440,7 @@ describe( 'Title', () => {
 				usedOptions = conversionApi.options;
 			} );
 
-			setData( model, '<title><title-content>Foo Bar</title-content></title>' );
+			_setModelData( model, '<title><title-content>Foo Bar</title-content></title>' );
 
 			const title = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -463,7 +461,7 @@ describe( 'Title', () => {
 
 	describe( 'getBody()', () => {
 		it( 'should return all data except the title element', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>' +
 				'<paragraph>Biz</paragraph>'
@@ -473,7 +471,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should return empty paragraph when body is empty', () => {
-			setData( model, '<title><title-content>Foo</title-content></title>' );
+			_setModelData( model, '<title><title-content>Foo</title-content></title>' );
 
 			expect( editor.plugins.get( 'Title' ).getBody() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -481,7 +479,7 @@ describe( 'Title', () => {
 		it( 'should return marker - starts and ends inside a body', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content></title-content></title>' +
 				'<paragraph>Foo Bar</paragraph>'
 			);
@@ -503,7 +501,7 @@ describe( 'Title', () => {
 		it( 'should return marker - starts inside a title ends inside a body', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -526,7 +524,7 @@ describe( 'Title', () => {
 		it( 'should return marker - starts at the beginning of the body ends inside the body', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -548,7 +546,7 @@ describe( 'Title', () => {
 		it( 'should do nothing when marker is fully out of the body range', () => {
 			editor.conversion.for( 'downcast' ).markerToElement( { model: 'comment', view: 'comment' } );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -572,7 +570,7 @@ describe( 'Title', () => {
 				usedOptions = conversionApi.options;
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<title><title-content></title-content></title>' +
 				'<paragraph>Foo Bar</paragraph>'
 			);
@@ -602,7 +600,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should attach placeholder placeholder to title and body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -618,7 +616,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should show placeholder in empty title and body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content></title-content></title>' +
 				'<paragraph></paragraph>'
 			);
@@ -634,7 +632,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should hide placeholder from body with more than one child elements', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph></paragraph>' +
 				'<paragraph></paragraph>'
@@ -647,7 +645,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should hide placeholder from body with element other than paragraph', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<heading1></heading1>'
 			);
@@ -659,7 +657,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should hide placeholder when title element become not empty', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content></title-content></title>' +
 				'<paragraph>[]</paragraph>'
 			);
@@ -674,7 +672,7 @@ describe( 'Title', () => {
 		} );
 
 		it( 'should hide placeholder when body element become not empty', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>Foo</title-content></title>' +
 				'<paragraph></paragraph>'
 			);
@@ -693,7 +691,7 @@ describe( 'Title', () => {
 			const domConverter = editor.editing.view.domConverter;
 			let bodyDomElement;
 
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<title><title-content>[Foo</title-content></title>' +
 				'<paragraph>Bar</paragraph>' +
 				'<paragraph>Baz]</paragraph>'
@@ -739,7 +737,7 @@ describe( 'Title', () => {
 			it( 'should show custom placeholder in title and body', () => {
 				const viewRoot = editor.editing.view.document.getRoot();
 
-				setData( model,
+				_setModelData( model,
 					'<title><title-content></title-content></title>' +
 					'<paragraph></paragraph>'
 				);
@@ -781,7 +779,7 @@ describe( 'Title', () => {
 			it( 'should show custom placeholder in title and body', () => {
 				const viewRoot = editor.editing.view.document.getRoot();
 
-				setData( model,
+				_setModelData( model,
 					'<title><title-content></title-content></title>' +
 					'<paragraph></paragraph>'
 				);
@@ -800,7 +798,7 @@ describe( 'Title', () => {
 
 	describe( 'Tab press handling', () => {
 		it( 'should handle tab key when the selection is at the beginning of the title', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
 			);
@@ -811,14 +809,14 @@ describe( 'Title', () => {
 
 			sinon.assert.calledOnce( eventData.preventDefault );
 			sinon.assert.calledOnce( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
 			);
 		} );
 
 		it( 'should handle tab key when the selection is at the end of the title', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>foo[]</title-content></title>' +
 				'<paragraph>bar</paragraph>'
 			);
@@ -829,14 +827,14 @@ describe( 'Title', () => {
 
 			sinon.assert.calledOnce( eventData.preventDefault );
 			sinon.assert.calledOnce( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
 			);
 		} );
 
 		it( 'should not handle tab key when the selection is in the title and body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>fo[o</title-content></title>' +
 				'<paragraph>b]ar</paragraph>'
 			);
@@ -847,14 +845,14 @@ describe( 'Title', () => {
 
 			sinon.assert.notCalled( eventData.preventDefault );
 			sinon.assert.notCalled( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>fo[o</title-content></title>' +
 				'<paragraph>b]ar</paragraph>'
 			);
 		} );
 
 		it( 'should not handle tab key when the selection is in the body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
 			);
@@ -865,7 +863,7 @@ describe( 'Title', () => {
 
 			sinon.assert.notCalled( eventData.preventDefault );
 			sinon.assert.notCalled( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
 			);
@@ -874,7 +872,7 @@ describe( 'Title', () => {
 
 	describe( 'Shift + Tab press handling', () => {
 		it( 'should handle shift + tab keys when the selection is at the beginning of the body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[]bar</paragraph>'
 			);
@@ -885,14 +883,14 @@ describe( 'Title', () => {
 
 			sinon.assert.calledOnce( eventData.preventDefault );
 			sinon.assert.calledOnce( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
 			);
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is not at the beginning of the body', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>b[]ar</paragraph>'
 			);
@@ -903,14 +901,14 @@ describe( 'Title', () => {
 
 			sinon.assert.notCalled( eventData.preventDefault );
 			sinon.assert.notCalled( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>b[]ar</paragraph>'
 			);
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is not collapsed', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[b]ar</paragraph>'
 			);
@@ -921,14 +919,14 @@ describe( 'Title', () => {
 
 			sinon.assert.notCalled( eventData.preventDefault );
 			sinon.assert.notCalled( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>foo</title-content></title>' +
 				'<paragraph>[b]ar</paragraph>'
 			);
 		} );
 
 		it( 'should not handle shift + tab keys when the selection is in the title', () => {
-			setData( model,
+			_setModelData( model,
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
 			);
@@ -939,7 +937,7 @@ describe( 'Title', () => {
 
 			sinon.assert.notCalled( eventData.preventDefault );
 			sinon.assert.notCalled( eventData.stopPropagation );
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>[]foo</title-content></title>' +
 				'<paragraph>bar</paragraph>'
 			);

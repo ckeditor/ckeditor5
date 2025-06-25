@@ -7,12 +7,10 @@
  * @module utils/areconnectedthroughproperties
  */
 
-/* globals EventTarget, Event */
-
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
  */
-export default function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
+export function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
 	if ( obj1 === obj2 && isObject( obj1 ) ) {
 		return true;
 	}
@@ -54,9 +52,9 @@ function getSubNodes( head: unknown ): Set<unknown> {
 			// The custom editor iterators might cause some problems if the editor is crashed.
 			try {
 				nodes.push( ...( node as Iterable<unknown> ) );
-			} catch ( err ) {
-				// eslint-disable-line no-empty
 			}
+			// eslint-disable-next-line no-empty
+			catch {}
 		} else {
 			nodes.push( ...Object.values( node as any ) );
 		}

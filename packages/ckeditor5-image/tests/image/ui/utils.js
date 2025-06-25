@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Image from '../../../src/image.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Image } from '../../../src/image.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { repositionContextualBalloon, getBalloonPositionData } from '../../../src/image/ui/utils.js';
-import ImageCaption from '../../../src/imagecaption.js';
+import { ImageCaption } from '../../../src/imagecaption.js';
 
 describe( 'Utils', () => {
 	const defaultPositions = BalloonPanelView.defaultPositions;
@@ -64,7 +64,7 @@ describe( 'Utils', () => {
 				}
 			} );
 
-			setData( editor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
@@ -86,7 +86,7 @@ describe( 'Utils', () => {
 				}
 			} );
 
-			setData( editor.model, '<imageBlock src=""><caption>[Foo]</caption></imageBlock>' );
+			_setModelData( editor.model, '<imageBlock src=""><caption>[Foo]</caption></imageBlock>' );
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
@@ -98,7 +98,7 @@ describe( 'Utils', () => {
 		it( 'should not engage with no image is selected', () => {
 			const spy = sinon.spy( balloon, 'updatePosition' );
 
-			setData( editor.model, '<paragraph>foo</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 			repositionContextualBalloon( editor );
 			sinon.assert.notCalled( spy );
@@ -107,7 +107,7 @@ describe( 'Utils', () => {
 
 	describe( 'getBalloonPositionData', () => {
 		it( 'returns the position data if selection is on an image', () => {
-			setData( editor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
@@ -117,7 +117,7 @@ describe( 'Utils', () => {
 		} );
 
 		it( 'returns the position data if selection is in a block image caption', () => {
-			setData( editor.model, '<imageBlock src=""><caption>Foo[]</caption></imageBlock>' );
+			_setModelData( editor.model, '<imageBlock src=""><caption>Foo[]</caption></imageBlock>' );
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {

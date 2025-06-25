@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
-import RemoveFormat from '../src/removeformat.js';
-import RemoveFormatUI from '../src/removeformatui.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { RemoveFormat } from '../src/removeformat.js';
+import { RemoveFormatUI } from '../src/removeformatui.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import {
 	_clear as clearTranslations,

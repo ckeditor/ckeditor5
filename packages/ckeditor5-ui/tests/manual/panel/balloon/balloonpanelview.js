@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, setTimeout */
-
-import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview.js';
+import { BalloonPanelView } from '../../../../src/panel/balloon/balloonpanelview.js';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );

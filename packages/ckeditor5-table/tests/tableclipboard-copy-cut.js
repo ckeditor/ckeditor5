@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable, viewTable } from './_utils/utils.js';
 
-import TableEditing from '../src/tableediting.js';
-import TableClipboard from '../src/tableclipboard.js';
+import { TableEditing } from '../src/tableediting.js';
+import { TableClipboard } from '../src/tableclipboard.js';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -30,7 +28,7 @@ describe( 'table clipboard', () => {
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( 'TableSelection' );
 
-		setModelData( model, modelTable( [
+		_setModelData( model, modelTable( [
 			[ '00[]', '01', '02' ],
 			[ '10', '11', '12' ],
 			[ '20', '21', '22' ]
@@ -80,7 +78,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should trim selected table to a selection rectangle (inner cell with colspan, no colspan after trim)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01', '02' ],
 				[ '10', { contents: '11', colspan: 2 } ],
 				[ '20', '21', '22' ]
@@ -99,7 +97,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should trim selected table to a selection rectangle (inner cell with colspan, has colspan after trim)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01', '02' ],
 				[ { contents: '10', colspan: 3 } ],
 				[ '20', '21', '22' ]
@@ -118,7 +116,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should trim selected table to a selection rectangle (inner cell with rowspan, no colspan after trim)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01', '02' ],
 				[ '10', { contents: '11', rowspan: 2 }, '12' ],
 				[ '20', '21', '22' ]
@@ -136,7 +134,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should trim selected table to a selection rectangle (inner cell with rowspan, has rowspan after trim)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', { contents: '01', rowspan: 3 }, '02' ],
 				[ '10', '12' ],
 				[ '20', '22' ]
@@ -154,7 +152,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should prepend spanned columns with empty cells (outside cell with colspan)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01', '02' ],
 				[ { contents: '10', colspan: 2 }, '12' ],
 				[ '20', '21', '22' ]
@@ -173,7 +171,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should prepend spanned columns with empty cells (outside cell with rowspan)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { contents: '01', rowspan: 2 }, '02' ],
 				[ '10', '12' ],
 				[ '20', '21', '22' ]
@@ -198,7 +196,7 @@ describe( 'table clipboard', () => {
 			// +    +    +----+
 			// |    |    | 22 |
 			// +----+----+----+
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ { contents: '10', rowspan: 2 }, { contents: '11', rowspan: 2 }, '12' ],
 				[ '22' ]
@@ -242,7 +240,7 @@ describe( 'table clipboard', () => {
 			//   | 80 |    | 82 | 83 | 84 | 85 |    | 87 | 88 |
 			//   +----+----+----+----+----+----+----+----+----+
 			//
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', { contents: '02', rowspan: 4 }, '03', { contents: '04', colspan: 2, rowspan: 7 }, '06', '07', '08' ],
 				[ '10', '11', '13', '16', '17', '18' ],
 				[ '20', '21', '23', { contents: '26', colspan: 3 } ],
@@ -270,7 +268,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should update table heading attributes (selection with headings)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03', '04' ],
 				[ '10', '11', '12', '13', '14' ],
 				[ '20', '21', '22', '23', '24' ],
@@ -291,7 +289,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'should update table heading attributes (selection without headings)', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03', '04' ],
 				[ '10', '11', '12', '13', '14' ],
 				[ '20', '21', '22', '23', '24' ],
@@ -313,7 +311,7 @@ describe( 'table clipboard', () => {
 
 	describe( 'Clipboard integration - cut', () => {
 		it( 'should not block clipboardOutput if no multi-cell selection', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[00]', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
@@ -342,7 +340,7 @@ describe( 'table clipboard', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
 				[ '20', '21', '22' ]
@@ -364,7 +362,7 @@ describe( 'table clipboard', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '02' ],
 				[ '', '[]', '12' ],
 				[ '20', '21', '22' ]
@@ -411,7 +409,7 @@ describe( 'table clipboard', () => {
 			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.be.undefined;
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]

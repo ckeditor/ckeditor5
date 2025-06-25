@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Autosave from '../src/autosave.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Autosave } from '../src/autosave.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { PendingActions } from '@ckeditor/ckeditor5-core/src/pendingactions.js';
 
 describe( 'Autosave', () => {
 	let editor, element, autosave;

@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Text */
-
-import isText from '../../src/dom/istext.js';
+import { isText } from '../../src/dom/istext.js';
 
 describe( 'isText()', () => {
 	it( 'detects native DOM Text', () => {

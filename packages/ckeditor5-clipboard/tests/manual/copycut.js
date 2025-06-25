@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -42,7 +40,7 @@ ClassicEditor
 
 		function onPipelineEvent( evt, data ) {
 			console.log( `----- ${ evt.name } -----` );
-			console.log( 'stringify( data.content )\n', stringifyView( data.content ) );
+			console.log( 'stringify( data.content )\n', _stringifyView( data.content ) );
 		}
 	} )
 	.catch( err => {

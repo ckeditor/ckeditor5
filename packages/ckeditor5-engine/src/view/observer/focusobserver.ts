@@ -7,24 +7,22 @@
  * @module engine/view/observer/focusobserver
  */
 
-/* globals setTimeout, clearTimeout */
-
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
-import type View from '../view.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type ViewDocumentDomEventData } from './domeventdata.js';
+import { type EditingView } from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
 /**
- * {@link module:engine/view/document~Document#event:focus Focus}
- * and {@link module:engine/view/document~Document#event:blur blur} events observer.
- * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
- * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
+ * {@link module:engine/view/document~ViewDocument#event:focus Focus}
+ * and {@link module:engine/view/document~ViewDocument#event:blur blur} events observer.
+ * Focus observer handle also {@link module:engine/view/rooteditableelement~ViewRootEditableElement#isFocused isFocused} property of the
+ * {@link module:engine/view/rooteditableelement~ViewRootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
-export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
+export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */
@@ -45,7 +43,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.useCapture = true;
@@ -158,7 +156,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * The `blur` event handler.
 	 */
-	private _handleBlur( data: DomEventData<FocusEvent> ): void {
+	private _handleBlur( data: ViewDocumentDomEventData<FocusEvent> ): void {
 		const selectedEditable = this.document.selection.editableElement;
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -205,15 +203,15 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName module:engine/view/document~Document#focus
+ * @eventName module:engine/view/document~ViewDocument#focus
  * @param data Event data.
  */
 export type ViewDocumentFocusEvent = {
 	name: 'focus';
-	args: [ data: DomEventData<FocusEvent> ];
+	args: [ data: ViewDocumentDomEventData<FocusEvent> ];
 };
 
 /**
@@ -222,13 +220,13 @@ export type ViewDocumentFocusEvent = {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName module:engine/view/document~Document#blur
+ * @eventName module:engine/view/document~ViewDocument#blur
  * @param data Event data.
  */
 export type ViewDocumentBlurEvent = {
 	name: 'blur';
-	args: [ data: DomEventData<FocusEvent> ];
+	args: [ data: ViewDocumentDomEventData<FocusEvent> ];
 };

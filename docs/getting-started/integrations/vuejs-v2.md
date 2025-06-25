@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 2.x
 meta-title: Using CKEditor 5 with Vue.js 2.x rich text editor component from npm | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with npm.
+meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 2.x component with npm.
 category: self-hosted
 order: 60
 ---
@@ -297,7 +297,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 ### `focus`
 
-Corresponds to the {@link module:engine/view/document~Document#event:focus `focus`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
 ```html
 <ckeditor :editor="editor" @focus="onEditorFocus" />
@@ -305,7 +305,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:focus `focu
 
 ### `blur`
 
-Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
 ```html
 <ckeditor :editor="editor" @blur="onEditorBlur" />
@@ -313,7 +313,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`
 
 ### `input`
 
-Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
+Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
 
 ```html
 <ckeditor :editor="editor" @input="onEditorInput" />

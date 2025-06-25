@@ -7,13 +7,44 @@
  * @module emoji
  */
 
-export { default as Emoji } from './emoji.js';
-export { default as EmojiMention } from './emojimention.js';
-export { default as EmojiPicker } from './emojipicker.js';
-export { default as EmojiRepository } from './emojirepository.js';
-export { default as EmojiUtils } from './emojiutils.js';
-export { default as EmojiCommand } from './emojicommand.js';
+export { Emoji } from './emoji.js';
 
-export type { EmojiConfig } from './emojiconfig.js';
+export { EmojiMention } from './emojimention.js';
+
+export { EmojiPicker } from './emojipicker.js';
+
+export {
+	EmojiRepository,
+	type EmojiCategory,
+	type EmojiCdnResource,
+	type EmojiEntry,
+	type EmojiMap,
+	type EmojiSkinTone
+} from './emojirepository.js';
+
+export { EmojiUtils } from './emojiutils.js';
+
+export { EmojiCommand } from './emojicommand.js';
+
+export type { EmojiConfig, EmojiSkinToneId, EmojiVersion } from './emojiconfig.js';
+
+export { EmojiCategoriesView } from './ui/emojicategoriesview.js';
+
+export {
+	EmojiGridView,
+	type EmojiGridViewEventData,
+	type EmojiGridViewExecuteEvent,
+	type EmojiSearchQueryCallback
+} from './ui/emojigridview.js';
+
+export { EmojiPickerFormView, type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
+
+export { EmojiPickerView, type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
+
+export { EmojiSearchView } from './ui/emojisearchview.js';
+
+export { EmojiToneView } from './ui/emojitoneview.js';
+
+export { isEmojiSupported as _isEmojiSupported } from './utils/isemojisupported.js';
 
 import './augmentation.js';

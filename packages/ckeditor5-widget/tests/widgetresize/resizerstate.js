@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import ResizerState from '../../src/widgetresize/resizerstate.js';
+import { WidgetResizeState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'ResizerState', () => {
 	describe( 'constructor', () => {
 		it( 'sets up proper default values', () => {
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 
 			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.be.null;
 			expect( state.proposedWidthPercents, 'proposedWidthPercents' ).to.be.null;
@@ -21,7 +19,7 @@ describe( 'ResizerState', () => {
 		} );
 
 		it( 'sets up observable properties', () => {
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 
 			expect( isObservable( 'activeHandlePosition' ), 'activeHandlePosition' ).to.be.true;
 			expect( isObservable( 'proposedWidthPercents' ), 'proposedWidthPercents' ).to.be.true;
@@ -64,7 +62,7 @@ describe( 'ResizerState', () => {
 			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
 			const domResizeHost = domHandleHost;
 
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
 			expect( state.activeHandlePosition, 'activeHandlePosition' ).to.equal( 'bottom-right' );
@@ -99,7 +97,7 @@ describe( 'ResizerState', () => {
 			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
 			const domResizeHost = domHandleHost;
 
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
 			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
@@ -120,7 +118,7 @@ describe( 'ResizerState', () => {
 			const domHandleHost = domContentWrapper.querySelector( '.dom-element' );
 			const domResizeHost = domHandleHost;
 
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 			state.begin( domResizeHandle, domHandleHost, domResizeHost );
 
 			expect( state.originalWidthPercents, 'originalWidthPercents' ).to.not.be.NaN;
@@ -131,7 +129,7 @@ describe( 'ResizerState', () => {
 
 	describe( 'update()', () => {
 		it( 'changes the properties', () => {
-			const state = new ResizerState();
+			const state = new WidgetResizeState();
 
 			state.update( {
 				width: 100,

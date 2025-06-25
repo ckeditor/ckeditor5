@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document */
-
-import DecoupledEditor from '../../src/decouplededitor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { DecoupledEditor } from '../../src/decouplededitor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 const editorData = '<h2>Hello world</h2><p>This is the decoupled editor.</p><img src="sample.jpg" />';
 

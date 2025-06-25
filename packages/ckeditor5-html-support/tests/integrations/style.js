@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import StyleElementSupport from '../../src/integrations/style.js';
-
-/* global console, document */
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { StyleElementSupport } from '../../src/integrations/style.js';
 
 describe( 'StyleElementSupport', () => {
 	const STYLE = 'div { color: red; }';
@@ -54,7 +52,7 @@ describe( 'StyleElementSupport', () => {
 	it( 'should allow element', () => {
 		editor.setData( `<p>Foo</p><style>${ STYLE }</style>` );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			`<paragraph>Foo</paragraph><htmlStyle htmlContent="${ STYLE }"></htmlStyle>`
 		);
 
@@ -107,7 +105,7 @@ describe( 'StyleElementSupport', () => {
 	it( 'should allow element in the empty editor', () => {
 		editor.setData( `<style>${ STYLE }</style>` );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			`<htmlStyle htmlContent="${ STYLE }"></htmlStyle>`
 		);
 
@@ -151,7 +149,7 @@ describe( 'StyleElementSupport', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
 
 				expect( editor.getData() ).to.equal( data );
 			} );

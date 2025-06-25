@@ -3,14 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
 import { IconMarker, IconPen, IconEraser } from 'ckeditor5/src/icons.js';
 
-import HighlightEditing from '../src/highlightediting.js';
-import HighlightUI from '../src/highlightui.js';
+import { HighlightEditing } from '../src/highlightediting.js';
+import { HighlightUI } from '../src/highlightui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import { ListSeparatorView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
@@ -128,12 +127,12 @@ describe( 'HighlightUI', () => {
 			const toolbar = dropdown.toolbarView;
 
 			expect( toolbar.items.map( item => item.iconView && item.iconView.fillColor ) ).to.deep.equal( [
-				'var(--ck-highlight-marker-yellow)',
-				'var(--ck-highlight-marker-green)',
-				'var(--ck-highlight-marker-pink)',
-				'var(--ck-highlight-marker-blue)',
-				'var(--ck-highlight-pen-red)',
-				'var(--ck-highlight-pen-green)',
+				'var(--ck-content-highlight-marker-yellow)',
+				'var(--ck-content-highlight-marker-green)',
+				'var(--ck-content-highlight-marker-pink)',
+				'var(--ck-content-highlight-marker-blue)',
+				'var(--ck-content-highlight-pen-red)',
+				'var(--ck-content-highlight-pen-green)',
 				undefined,
 				''
 			] );

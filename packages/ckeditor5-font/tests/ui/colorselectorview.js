@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ColorSelectorView } from '@ckeditor/ckeditor5-ui';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import TestColorPlugin from '../_utils/testcolorplugin.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { TestColorPlugin } from '../_utils/testcolorplugin.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ColorSelectorView', () => {
 	let locale, colorSelectorView;
@@ -124,7 +122,7 @@ describe( 'ColorSelectorView', () => {
 		it( 'should not create document colors section', () => {
 			const colorSelectorView = dropdown.colorSelectorView.colorGridsFragmentView;
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +

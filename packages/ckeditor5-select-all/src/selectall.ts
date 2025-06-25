@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import SelectAllEditing from './selectallediting.js';
-import SelectAllUI from './selectallui.js';
+import { SelectAllEditing } from './selectallediting.js';
+import { SelectAllUI } from './selectallui.js';
 
 /**
  * The select all feature.
@@ -19,7 +19,7 @@ import SelectAllUI from './selectallui.js';
  *
  * Please refer to the documentation of individual features to learn more.
  */
-export default class SelectAll extends Plugin {
+export class SelectAll extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,25 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event, console */
-
-import ToolbarView from '../../src/toolbar/toolbarview.js';
-import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import ComponentFactory from '../../src/componentfactory.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '../../src/focuscycler.js';
+import { ToolbarView } from '../../src/toolbar/toolbarview.js';
+import { ToolbarSeparatorView } from '../../src/toolbar/toolbarseparatorview.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { ComponentFactory } from '../../src/componentfactory.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusCycler } from '../../src/focuscycler.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import ViewCollection from '../../src/viewcollection.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import View from '../../src/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ViewCollection } from '../../src/viewcollection.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { View } from '../../src/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
-import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview.js';
-import DropdownView from '../../src/dropdown/dropdownview.js';
+import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
+import { ToolbarLineBreakView } from '../../src/toolbar/toolbarlinebreakview.js';
+import { DropdownView } from '../../src/dropdown/dropdownview.js';
 import {
 	IconAlignLeft,
 	IconBold,

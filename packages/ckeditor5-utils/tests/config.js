@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import Config from '../src/config.js';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
+import { Config } from '../src/config.js';
+import { areConnectedThroughProperties } from '../src/areconnectedthroughproperties.js';
 
 describe( 'Config', () => {
 	let config;
@@ -205,6 +203,7 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should override and expand deep configurations', () => {
+			/* eslint-disable @stylistic/no-multi-spaces */
 			config.set( {
 				resize: {
 					minHeight: 400,		// Override
@@ -225,9 +224,11 @@ describe( 'Config', () => {
 					url: true		// Expanded
 				}
 			} );
+			/* eslint-enable @stylistic/no-multi-spaces */
 		} );
 
 		it( 'should override and expand object when passing an object', () => {
+			/* eslint-disable @stylistic/no-multi-spaces */
 			config.set( 'resize', {
 				minHeight: 400,		// Override
 				hidden: true,		// Expand
@@ -246,6 +247,7 @@ describe( 'Config', () => {
 					url: true		// Expanded
 				}
 			} );
+			/* eslint-enable @stylistic/no-multi-spaces */
 		} );
 
 		it( 'should not create object for non-pure objects', () => {
@@ -299,6 +301,7 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should expand but not override deep configurations', () => {
+			/* eslint-disable @stylistic/no-multi-spaces */
 			config.define( {
 				resize: {
 					minHeight: 400,		// No override
@@ -319,9 +322,11 @@ describe( 'Config', () => {
 					url: true		// Expanded
 				}
 			} );
+			/* eslint-enable @stylistic/no-multi-spaces */
 		} );
 
 		it( 'should expand but not override when passing an object', () => {
+			/* eslint-disable @stylistic/no-multi-spaces */
 			config.define( 'resize', {
 				minHeight: 400,		// No override
 				hidden: true,		// Expand
@@ -340,6 +345,7 @@ describe( 'Config', () => {
 					url: true		// Expanded
 				}
 			} );
+			/* eslint-enable @stylistic/no-multi-spaces */
 		} );
 
 		it( 'should not create an object for non-pure objects', () => {

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global CKEditorInspector, document, window */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -13,7 +11,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Bold, Code, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import EmptyBlock from '../../src/emptyblock.js';
+import { EmptyBlock } from '../../src/emptyblock.js';
 
 const config = {
 	plugins: [ Table, Essentials, List, ListProperties, Bold, Italic, Code, Paragraph, Heading, SourceEditing, EmptyBlock ],

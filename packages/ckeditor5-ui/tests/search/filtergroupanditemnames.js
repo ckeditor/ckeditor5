@@ -4,7 +4,7 @@
  */
 
 import { Locale, global } from '@ckeditor/ckeditor5-utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	ButtonLabelWithHighlightView,
 	ButtonView,

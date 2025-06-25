@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console */
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-
-import UploadImageCommand from '../../src/imageupload/uploadimagecommand.js';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import { UploadImageCommand } from '../../src/imageupload/uploadimagecommand.js';
+import { FileRepository } from '@ckeditor/ckeditor5-upload/src/filerepository.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 describe( 'UploadImageCommand', () => {
 	let editor, command, model, fileRepository;
@@ -63,7 +61,7 @@ describe( 'UploadImageCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
 			model.enqueueChange( { isUndoable: false }, () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				command.refresh();
 				expect( command.isEnabled ).to.be.true;
@@ -71,13 +69,13 @@ describe( 'UploadImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection directly in a paragraph', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -86,12 +84,12 @@ describe( 'UploadImageCommand', () => {
 			model.schema.extend( '$text', { allowIn: 'block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block>foo[]</block>' );
+			_setModelData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is on other image', () => {
-			setModelData( model, '[<imageBlock></imageBlock>]' );
+			_setModelData( model, '[<imageBlock></imageBlock>]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -102,7 +100,7 @@ describe( 'UploadImageCommand', () => {
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
-			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -110,7 +108,7 @@ describe( 'UploadImageCommand', () => {
 		it( 'should be true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
-			setModelData( model, '[<object></object>]' );
+			_setModelData( model, '[<object></object>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -124,7 +122,7 @@ describe( 'UploadImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
-			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 		} );
 
 		it( 'should be false when schema disallows image', () => {
@@ -141,7 +139,7 @@ describe( 'UploadImageCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -150,18 +148,18 @@ describe( 'UploadImageCommand', () => {
 	describe( 'execute()', () => {
 		it( 'should insert image at selection position as other widgets', () => {
 			const file = createNativeFileMock();
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( `<paragraph>f[<imageInline uploadId="${ id }"></imageInline>]o</paragraph>` );
 		} );
 
 		it( 'should insert multiple images at selection position, one after another', () => {
 			const file = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { file } );
 
@@ -169,7 +167,7 @@ describe( 'UploadImageCommand', () => {
 			const idB = fileRepository.getLoader( file[ 1 ] ).id;
 			const idC = fileRepository.getLoader( file[ 2 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f' +
 					`<imageInline uploadId="${ idA }"></imageInline>` +
 					`<imageInline uploadId="${ idB }"></imageInline>` +
@@ -181,7 +179,7 @@ describe( 'UploadImageCommand', () => {
 		it( 'should use parent batch', () => {
 			const file = createNativeFileMock();
 
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			model.change( writer => {
 				expect( writer.batch.operations ).to.length( 0 );
@@ -203,11 +201,11 @@ describe( 'UploadImageCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
-			setModelData( model, '<other>[]</other>' );
+			_setModelData( model, '<other>[]</other>' );
 
 			command.execute( { file } );
 
-			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway)', () => {
@@ -217,13 +215,13 @@ describe( 'UploadImageCommand', () => {
 
 			const consoleWarnStub = sinon.stub( console, 'warn' );
 
-			setModelData( model, '<paragraph>fo[]o</paragraph>' );
+			_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
 				command.execute( { file } );
 			} ).to.not.throw();
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
 			sinon.assert.calledOnce( consoleWarnStub );
 		} );
 
@@ -231,13 +229,13 @@ describe( 'UploadImageCommand', () => {
 			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
 
 			const file = createNativeFileMock();
-			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
 
 			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					`[<imageInline bar="b" baz="c" foo="a" uploadId="${ id }"></imageInline>]` +
@@ -250,7 +248,7 @@ describe( 'UploadImageCommand', () => {
 			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
 
 			const file = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
-			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
 
 			command.execute( { file } );
 
@@ -258,7 +256,7 @@ describe( 'UploadImageCommand', () => {
 			const idB = fileRepository.getLoader( file[ 1 ] ).id;
 			const idC = fileRepository.getLoader( file[ 2 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					`<imageInline bar="b" baz="c" foo="a" uploadId="${ idA }"></imageInline>` +

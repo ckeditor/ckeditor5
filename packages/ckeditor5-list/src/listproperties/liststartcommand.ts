@@ -20,7 +20,7 @@ import {
  * letting the user to choose the starting point of an ordered list.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
-export default class ListStartCommand extends Command {
+export class ListStartCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

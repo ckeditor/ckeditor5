@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Table from '../../src/table.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Table } from '../../src/table.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable } from '../_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableColumnResize from '../../src/tablecolumnresize.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import {
 	getColumnEdgesIndexes,
 	getChangedResizedTables,
@@ -29,8 +29,6 @@ import {
 	getTableColumnsWidths,
 	translateColSpanAttribute
 } from '../../src/tablecolumnresize/utils.js';
-
-/* globals window, document */
 
 describe( 'TableColumnResize utils', () => {
 	let editorElement, editor, model, root, tableUtils;
@@ -65,7 +63,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should do nothing if there is no table affected while inserting', () => {
 			model.change( writer => {
 				writer.insert(
-					new Element( 'paragraph' ),
+					new ModelElement( 'paragraph' ),
 					root.getNodeByPath( [ 2, 0, 0 ] )
 				);
 
@@ -142,7 +140,7 @@ describe( 'TableColumnResize utils', () => {
 				const firstTable = root.getChild( 0 );
 
 				writer.insert(
-					new Element( 'tableRow', {}, createTableCells( 3 ) ),
+					new ModelElement( 'tableRow', {}, createTableCells( 3 ) ),
 					firstTable
 				);
 
@@ -158,7 +156,7 @@ describe( 'TableColumnResize utils', () => {
 				const firstTable = root.getChild( 0 );
 
 				writer.insert(
-					new Element( 'tableRow', {}, createTableCells( 3 ) ),
+					new ModelElement( 'tableRow', {}, createTableCells( 3 ) ),
 					firstTable,
 					2
 				);
@@ -394,7 +392,7 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getColumnMinWidthAsPercentage()', () => {
 		it( 'should return the correct value', () => {
-			setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
+			_setModelData( model, modelTable( [ [ '00' ] ], { 'tableWidth': '401px' } ) );
 
 			expect( getColumnMinWidthAsPercentage( model.document.getRoot().getChild( 0 ), editor ) ).to.equal( 10 );
 		} );
@@ -402,7 +400,7 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getColumnIndex()', () => {
 		it( 'should properly calculate column edge indexes', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
 			], { columnWidths: '25%,25%,50%' } ) );
@@ -423,7 +421,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 2', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '00', { contents: '01', colspan: 2 } ],
 				[ '10', '11', '12' ]
 			], { columnWidths: '25%,25%,50%' } ) );
@@ -438,7 +436,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 3', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '00', { contents: '01', colspan: 3 } ],
 				[ '10', '11', '12', '13' ]
 			], { columnWidths: '25%,25%,25%,25%' } ) );
@@ -453,7 +451,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should properly calculate column edge indexes when colspan = 4', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '00', '01', { contents: '02', colspan: 4 } ],
 				[ '10', '11', '12', '13', '14', '15' ]
 			], { columnWidths: '20%,20%,20%,20%,10%,10%' } ) );
@@ -646,19 +644,19 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getTableColumnGroup()', () => {
 		it( 'should return tableColumnGroup when it exists', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.not.be.undefined;
 		} );
 
 		it( 'should not return anything if tableColumnGroup does not exists', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
 
 			expect( getColumnGroupElement( model.document.getRoot().getChild( 0 ) ) ).to.be.undefined;
 		} );
 
 		it( 'should return the same tableColumnGroup element if it was passed as an argument', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			const tableColumnGroup = model.document.getRoot().getChild( 0 ).getChild( 1 );
 
@@ -668,13 +666,13 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getTableColumnElements()', () => {
 		it( 'should return tableColumn array when there are columns', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.have.length( 2 );
 		} );
 
 		it( 'should return an empty array when there is no tableColumnGroup element', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ] ) );
 
 			expect( getTableColumnElements( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [] );
 		} );
@@ -682,7 +680,7 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'getTableColumnsWidths()', () => {
 		it( 'should return tableColumnGroup count when there are columns', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '50%', '50%' ] );
 		} );
@@ -690,7 +688,7 @@ describe( 'TableColumnResize utils', () => {
 
 	describe( 'translateColSpanAttribute()', () => {
 		it( 'should return the unchanged column widths if there is no colSpan attribute on any element', () => {
-			setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
+			_setModelData( model, modelTable( [ [ '01', '02' ] ], { columnWidths: '50%,50%' } ) );
 
 			model.change( writer => {
 				expect( translateColSpanAttribute( model.document.getRoot().getChild( 0 ), writer ) ).to.deep.equal( [ '50%', '50%' ] );
@@ -698,7 +696,7 @@ describe( 'TableColumnResize utils', () => {
 		} );
 
 		it( 'should return the modified column widths if there are colSpan attributes set', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -732,7 +730,7 @@ describe( 'TableColumnResize utils', () => {
 } );
 
 function createTable( rows, cols ) {
-	return new Element( 'table', {}, [
+	return new ModelElement( 'table', {}, [
 		...createTableRows( rows, cols ),
 		createColGroupRow( cols )
 	] );
@@ -742,15 +740,15 @@ function createColGroupRow( cols ) {
 	const colWidth = `${ 100 / cols }%`;
 	const columns = new Array( cols )
 		.fill( colWidth )
-		.map( columnWidth => new Element( 'tableColumn', { columnWidth } ) );
+		.map( columnWidth => new ModelElement( 'tableColumn', { columnWidth } ) );
 
-	return new Element( 'tableColumnGroup', {}, columns );
+	return new ModelElement( 'tableColumnGroup', {}, columns );
 }
 
 function createTableRows( rows, cols ) {
-	return [ ...Array( rows ) ].map( () => new Element( 'tableRow', {}, createTableCells( cols ) ) );
+	return [ ...Array( rows ) ].map( () => new ModelElement( 'tableRow', {}, createTableCells( cols ) ) );
 }
 
 function createTableCells( cols ) {
-	return [ ...Array( cols ) ].map( () => new Element( 'tableCell' ) );
+	return [ ...Array( cols ) ].map( () => new ModelElement( 'tableCell' ) );
 }

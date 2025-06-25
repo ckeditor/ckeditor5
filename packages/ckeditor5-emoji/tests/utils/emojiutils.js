@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import EmojiUtils from '../../src/emojiutils.ts';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-
-/* global document */
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EmojiUtils } from '../../src/emojiutils.ts';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'EmojiUtils', () => {
 	let editor, emojiUtils, editorElement;

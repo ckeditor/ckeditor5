@@ -9,12 +9,12 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
-import { LivePosition, LiveRange } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, ModelLiveRange } from 'ckeditor5/src/engine.js';
 import { Undo } from 'ckeditor5/src/undo.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { global } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from './imageutils.js';
+import { ImageUtils } from './imageutils.js';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
@@ -26,7 +26,7 @@ const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
  * them shortly after they are injected into the document.
  */
-export default class AutoImage extends Plugin {
+export class AutoImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -58,7 +58,7 @@ export default class AutoImage extends Plugin {
 	 * The position where the `<imageBlock>` element will be inserted after the timeout,
 	 * determined each time a new content is pasted into the document.
 	 */
-	private _positionToInsert: LivePosition | null;
+	private _positionToInsert: ModelLivePosition | null;
 
 	/**
 	 * @inheritDoc
@@ -85,10 +85,10 @@ export default class AutoImage extends Plugin {
 		this.listenTo( clipboardPipeline, 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange()!;
 
-			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
+			const leftLivePosition = ModelLivePosition.fromPosition( firstRange.start );
 			leftLivePosition.stickiness = 'toPrevious';
 
-			const rightLivePosition = LivePosition.fromPosition( firstRange.end );
+			const rightLivePosition = ModelLivePosition.fromPosition( firstRange.end );
 			rightLivePosition.stickiness = 'toNext';
 
 			modelDocument.once( 'change:data', () => {
@@ -117,10 +117,10 @@ export default class AutoImage extends Plugin {
 	 * @param leftPosition Left position of the selection.
 	 * @param rightPosition Right position of the selection.
 	 */
-	private _embedImageBetweenPositions( leftPosition: LivePosition, rightPosition: LivePosition ): void {
+	private _embedImageBetweenPositions( leftPosition: ModelLivePosition, rightPosition: ModelLivePosition ): void {
 		const editor = this.editor;
-		// TODO: Use a marker instead of LiveRange & LivePositions.
-		const urlRange = new LiveRange( leftPosition, rightPosition );
+		// TODO: Use a marker instead of ModelLiveRange & LivePositions.
+		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 		const selectionAttributes = Object.fromEntries( editor.model.document.selection.getAttributes() );
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
@@ -143,7 +143,7 @@ export default class AutoImage extends Plugin {
 		}
 
 		// Position will not be available in the `setTimeout` function so let's clone it.
-		this._positionToInsert = LivePosition.fromPosition( leftPosition );
+		this._positionToInsert = ModelLivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = setTimeout( () => {

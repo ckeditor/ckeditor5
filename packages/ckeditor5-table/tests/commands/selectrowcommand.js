@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
-import TableSelection from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import SelectRowCommand from '../../src/commands/selectrowcommand.js';
+import { SelectRowCommand } from '../../src/commands/selectrowcommand.js';
 
 describe( 'SelectRowCommand', () => {
 	let editor, model, modelRoot, command, tableSelection;
@@ -39,7 +39,7 @@ describe( 'SelectRowCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true if the selection is inside table cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -48,7 +48,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should be true if the selection contains multiple cells', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -63,7 +63,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should be true if the selection is inside the table and the editor is read-only', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00[]' ]
 			] ) );
 
@@ -73,7 +73,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should be false if the selection is outside a table', () => {
-			setData( model, '<paragraph>11[]</paragraph>' );
+			_setModelData( model, '<paragraph>11[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -81,7 +81,7 @@ describe( 'SelectRowCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should select a row of a table cell with a collapsed selection', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ],
 				[ '20', '21' ]
@@ -97,7 +97,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should select a row of table cell with a collapsed selection in first table cell', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -113,7 +113,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should select a row of table cell with a collapsed selection in last cell in the first column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]' ],
 				[ '10', '11' ],
 				[ '20', '21' ]
@@ -129,7 +129,7 @@ describe( 'SelectRowCommand', () => {
 		} );
 
 		it( 'should select a row of table cell with collapsed selection in the first cell of the last column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ]
 			] ) );
@@ -153,7 +153,7 @@ describe( 'SelectRowCommand', () => {
 				// +    +----+----+----+----+
 				// |    | 31 | 32 | 33 | 34 |
 				// +----+----+----+----+----+
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 					[ { rowspan: 2, contents: '13' }, '14' ],
 					[ '22', '23', '24' ],
@@ -168,25 +168,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 1, 0, 0, 0 ],
 					[          0, 0 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
 					[          0, 0 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should not select row-spanned rows that start in other row', () => {
@@ -196,25 +196,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 0 ],
 					[       0,    1 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 0 ],
 					[       1,    1 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should not select row-spanned rows that start in other row but include those that start in selected row', () => {
@@ -224,25 +224,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should select properly for multiple not spanned cells selected', () => {
@@ -252,25 +252,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 1 ],
 					[          0, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
 					[          1, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should select properly for multiple cells selected including spanned one', () => {
@@ -280,31 +280,31 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 0 ],
 					[       0,    0 ],
 					[    0, 0, 1, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 1 ],
 					[       1,    1 ],
 					[    1, 1, 1, 1 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 		} );
 
 		describe( 'with multiple rows selected', () => {
 			it( 'should properly select middle rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -327,7 +327,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select middle rows in reversed order', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -350,7 +350,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select tailing rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -373,7 +373,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select beginning rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ],
@@ -396,7 +396,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select multiple rows from square selection', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '11', '12' ],
 					[ '20', '21', '22' ],
@@ -419,7 +419,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should support selecting mixed heading and cell rows', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -440,7 +440,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select more than 10 rows selected (array sort bug)', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '0', 'x' ],
 					[ '1', 'x' ],
 					[ '2', 'x' ],
@@ -489,7 +489,7 @@ describe( 'SelectRowCommand', () => {
 
 		describe( 'with entire row selected', () => {
 			it( 'should select a row if all its cells are selected', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ],
 					[ '20', '21' ]
@@ -510,7 +510,7 @@ describe( 'SelectRowCommand', () => {
 			} );
 
 			it( 'should properly select row if reversed selection is made', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );

@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import StrikeThrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
+import { FontSize } from '@ckeditor/ckeditor5-font/src/fontsize.js';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 
 import smallFixture from '../_data/small.html';
 import mediumFixture from '../_data/medium.html';
@@ -78,7 +76,7 @@ export function getPerformanceData() {
  */
 export function createPerformanceEditor( domElement ) {
 	const config = {
-		plugins: [ ArticlePluginSet, FontColor, FontBackgroundColor, FontFamily, FontSize, Underline, StrikeThrough ],
+		plugins: [ ArticlePluginSet, FontColor, FontBackgroundColor, FontFamily, FontSize, Underline, Strikethrough ],
 		toolbar: [
 			'heading',
 			'|',

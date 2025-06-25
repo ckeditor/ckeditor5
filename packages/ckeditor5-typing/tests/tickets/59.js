@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Typing from '../../src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Typing } from '../../src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5-typing#59', () => {
 	let editor;
@@ -37,7 +35,7 @@ describe( 'Bug ckeditor5-typing#59', () => {
 	it( 'editor does not blow up when deleting last styled character', () => {
 		editor.model.change( () => {
 			editor.editing.view.getDomRoot().focus();
-			setData( editor.model, '<paragraph><$text bold="true">foo</$text> x <$text bold="true">bar</$text>.[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text bold="true">foo</$text> x <$text bold="true">bar</$text>.[]</paragraph>' );
 		} );
 
 		while ( editor.model.document.selection.anchor.offset > 0 ) {
@@ -52,7 +50,7 @@ describe( 'Bug ckeditor5-typing#59', () => {
 	it( 'editor does not blow up when deleting last styled character, forcing bold switch', () => {
 		editor.model.change( () => {
 			editor.editing.view.getDomRoot().focus();
-			setData( editor.model, '<paragraph><$text bold="true">foo</$text> x <$text bold="true">bar</$text>.[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text bold="true">foo</$text> x <$text bold="true">bar</$text>.[]</paragraph>' );
 		} );
 
 		while ( editor.model.document.selection.anchor.offset > 0 ) {

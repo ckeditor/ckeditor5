@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-
-import DropdownMenuRootListView from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
+import { DropdownMenuRootListView } from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
 import { DropdownRootMenuBehaviors } from '../../../src/dropdown/menu/dropdownmenubehaviors.js';
 import {
 	DropdownMenuListItemButtonView,

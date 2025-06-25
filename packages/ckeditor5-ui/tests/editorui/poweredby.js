@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event, window, HTMLElement, getComputedStyle  */
-
 import { Editor } from '@ckeditor/ckeditor5-core';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
-import EditorUI from '../../src/editorui/editorui.js';
+import { EditorUI } from '../../src/editorui/editorui.js';
 import { BalloonPanelView } from '../../src/index.js';
-import View from '../../src/view.js';
+import { View } from '../../src/view.js';
 
 describe( 'PoweredBy', () => {
 	let editor, element;
@@ -118,7 +116,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should not create the balloon when a white-label license key is configured', async () => {
-				const { licenseKey } = generateKey( { whiteLabel: true } );
+				const { licenseKey } = generateLicenseKey( { whiteLabel: true } );
 				const editor = await createEditor( element, {
 					licenseKey
 				} );
@@ -133,7 +131,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should create the balloon when a white-label license key is configured and `forceVisible` is set to true', async () => {
-				const { licenseKey } = generateKey( { whiteLabel: true } );
+				const { licenseKey } = generateLicenseKey( { whiteLabel: true } );
 				const editor = await createEditor( element, {
 					licenseKey,
 					ui: {
@@ -153,7 +151,7 @@ describe( 'PoweredBy', () => {
 			} );
 
 			it( 'should create the balloon when a non-white-label license key is configured', async () => {
-				const { licenseKey } = generateKey();
+				const { licenseKey } = generateLicenseKey();
 				const editor = await createEditor( element, {
 					licenseKey
 				} );
@@ -1069,7 +1067,7 @@ describe( 'PoweredBy', () => {
 			}
 		} );
 
-		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+		_setModelData( editor.model, '<heading2>foo[]bar</heading2>' );
 
 		focusEditor( editor );
 

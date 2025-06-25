@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconFontColor } from 'ckeditor5/src/icons.js';
-import FontColorEditing from './../../src/fontcolor/fontcolorediting.js';
-import FontColorUI from './../../src/fontcolor/fontcolorui.js';
-import ColorUI from './../../src/ui/colorui.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { FontColorEditing } from './../../src/fontcolor/fontcolorediting.js';
+import { FontColorUI } from './../../src/fontcolor/fontcolorui.js';
+import { FontColorUIBase } from './../../src/ui/colorui.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'FontColorUI', () => {
 	let element, editor;
@@ -33,8 +31,8 @@ describe( 'FontColorUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'is ColorUI', () => {
-		expect( FontColorUI.prototype ).to.be.instanceOf( ColorUI );
+	it( 'is FontColorUIBase', () => {
+		expect( FontColorUI.prototype ).to.be.instanceOf( FontColorUIBase );
 	} );
 
 	it( 'has properly set initial values', () => {

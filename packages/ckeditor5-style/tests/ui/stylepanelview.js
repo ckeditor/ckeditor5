@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import { FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import StyleGroupView from '../../src/ui/stylegroupview.js';
-import StylePanelView from '../../src/ui/stylepanelview.js';
+import { StyleGroupView } from '../../src/ui/stylegroupview.js';
+import { StylePanelView } from '../../src/ui/stylepanelview.js';
 
 describe( 'StylePanelView', () => {
 	let locale, panel;

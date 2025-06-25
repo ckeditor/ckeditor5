@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
 
 describe( 'table selection', () => {
 	describe( 'MouseEventsObserver', () => {
 		let view, viewDocument, observer;
 
 		beforeEach( () => {
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			observer = view.addObserver( MouseEventsObserver );
 		} );

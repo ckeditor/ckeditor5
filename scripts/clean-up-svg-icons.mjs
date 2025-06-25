@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 // Cleans up and optimizes SVG files using the SVGO utility. The configuration file is located in svgo.config.json.
 //
 // Usage:

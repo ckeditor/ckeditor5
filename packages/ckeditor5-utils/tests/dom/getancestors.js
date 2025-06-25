@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import getAncestors from '../../src/dom/getancestors.js';
-import createElement from '../../src/dom/createelement.js';
+import { getAncestors } from '../../src/dom/getancestors.js';
+import { createElement } from '../../src/dom/createelement.js';
 
 describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {

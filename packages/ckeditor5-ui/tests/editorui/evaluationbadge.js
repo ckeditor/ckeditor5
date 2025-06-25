@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, HTMLElement, getComputedStyle, console  */
-
 import { Editor } from '@ckeditor/ckeditor5-core';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import EditorUI from '../../src/editorui/editorui.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { EditorUI } from '../../src/editorui/editorui.js';
 import { BalloonPanelView } from '../../src/index.js';
-import View from '../../src/view.js';
+import { View } from '../../src/view.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import generateKey from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { generateLicenseKey } from '@ckeditor/ckeditor5-core/tests/_utils/generatelicensekey.js';
 
 describe( 'EvaluationBadge', () => {
 	let editor, element, developmentLicenseKey;
@@ -28,7 +26,7 @@ describe( 'EvaluationBadge', () => {
 		sinon.stub( console, 'info' );
 		sinon.stub( console, 'warn' );
 
-		developmentLicenseKey = generateKey( { licenseType: 'development' } ).licenseKey;
+		developmentLicenseKey = generateLicenseKey( { licenseType: 'development' } ).licenseKey;
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 		editor = await createEditor( element, {
@@ -92,7 +90,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `evaluation`', async () => {
-				const { licenseKey, todayTimestamp } = generateKey( {
+				const { licenseKey, todayTimestamp } = generateLicenseKey( {
 					licenseType: 'evaluation',
 					isExpired: false,
 					daysAfterExpiration: -1
@@ -123,7 +121,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should create the balloon when license type is `trial`', async () => {
-				const { licenseKey, todayTimestamp } = generateKey( {
+				const { licenseKey, todayTimestamp } = generateLicenseKey( {
 					licenseType: 'trial',
 					isExpired: false,
 					daysAfterExpiration: -1
@@ -174,7 +172,7 @@ describe( 'EvaluationBadge', () => {
 			} );
 
 			it( 'should not depend on white-label', async () => {
-				const { licenseKey } = generateKey( { whiteLabel: true, licenseType: 'development' } );
+				const { licenseKey } = generateLicenseKey( { whiteLabel: true, licenseType: 'development' } );
 				const editor = await createEditor( element, {
 					licenseKey
 				} );
@@ -954,7 +952,7 @@ describe( 'EvaluationBadge', () => {
 			licenseKey: developmentLicenseKey
 		} );
 
-		setData( editor.model, '<heading2>foo[]bar</heading2>' );
+		_setModelData( editor.model, '<heading2>foo[]bar</heading2>' );
 
 		focusEditor( editor );
 

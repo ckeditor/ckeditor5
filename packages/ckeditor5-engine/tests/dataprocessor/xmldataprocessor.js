@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, DOMParser */
-
-import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor.js';
-import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter.js';
-import DomConverter from '../../src/view/domconverter.js';
-import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates.js';
-import ViewDocumentFragment from '../../src/view/documentfragment.js';
-import ViewDocument from '../../src/view/document.js';
-import { stringify, parse } from '../../src/dev-utils/view.js';
+import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
+import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
+import { ViewDomConverter } from '../../src/view/domconverter.js';
+import { xssTemplates } from '../../tests/dataprocessor/_utils/xsstemplates.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { _stringifyView, _parseView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'XmlDataProcessor', () => {
@@ -32,7 +30,7 @@ describe( 'XmlDataProcessor', () => {
 
 			expect( dataProcessor.namespaces ).to.be.an.instanceOf( Array );
 			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
-			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).to.be.true;
 		} );
@@ -48,19 +46,19 @@ describe( 'XmlDataProcessor', () => {
 		it( 'should convert XML to DocumentFragment with single text node', () => {
 			const fragment = dataProcessor.toView( 'foo bar' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo bar' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
 			const fragment = dataProcessor.toView( '<p>foo</p><p>bar</p>' );
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should not add any additional nodes', () => {
 			const fragment = dataProcessor.toView( 'foo <b>bar</b> text' );
 
-			expect( stringify( fragment ) ).to.equal( 'foo <b>bar</b> text' );
+			expect( _stringifyView( fragment ) ).to.equal( 'foo <b>bar</b> text' );
 		} );
 
 		it( 'should allow to use registered namespaces', () => {
@@ -70,7 +68,7 @@ describe( 'XmlDataProcessor', () => {
 
 			const fragment = dataProcessor.toView( '<foo:a><bar:b></bar:b></foo:a><bar:b><foo:a></foo:a></bar:b>' );
 
-			expect( stringify( fragment ) ).to.equal( '<foo:a><bar:b></bar:b></foo:a><bar:b><foo:a></foo:a></bar:b>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<foo:a><bar:b></bar:b></foo:a><bar:b><foo:a></foo:a></bar:b>' );
 		} );
 
 		it( 'should throw an error when use not registered namespaces', () => {
@@ -110,13 +108,13 @@ describe( 'XmlDataProcessor', () => {
 
 		it( 'should return text if document fragment with single text node is passed', () => {
 			const fragment = new ViewDocumentFragment( viewDocument );
-			fragment._appendChild( parse( 'foo bar' ) );
+			fragment._appendChild( _parseView( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with multiple child nodes', () => {
-			const fragment = parse( '<p>foo</p><p>bar</p>' );
+			const fragment = _parseView( '<p>foo</p><p>bar</p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -136,14 +134,14 @@ describe( 'XmlDataProcessor', () => {
 				'<p>bar</p>'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
 		} );
 	} );
 
 	describe( 'useFillerType()', () => {
 		it( 'should turn on and off using marked block fillers', () => {
-			const fragment = parse( '<container:p></container:p>' );
+			const fragment = _parseView( '<container:p></container:p>' );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 
@@ -169,7 +167,7 @@ describe( 'XmlDataProcessor', () => {
 				'<!-- Comment 3 -->'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<foo>barbaz</foo>' );
+			expect( _stringifyView( fragment ) ).to.equal( '<foo>barbaz</foo>' );
 		} );
 
 		it( 'should preserve comments when `false`', () => {
@@ -185,7 +183,9 @@ describe( 'XmlDataProcessor', () => {
 				'<!-- Comment 3 -->'
 			);
 
-			expect( stringify( fragment ) ).to.equal( '<$comment></$comment><foo>bar<$comment></$comment>baz</foo><$comment></$comment>' );
+			expect(
+				_stringifyView( fragment )
+			).to.equal( '<$comment></$comment><foo>bar<$comment></$comment>baz</foo><$comment></$comment>' );
 		} );
 	} );
 } );

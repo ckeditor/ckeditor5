@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 meta-title: Event system | CKEditor 5 Framework Documentation
+meta-description: Explore the CKEditor 5 event system, including event types, bubbling, delegation, and how to create and handle custom events.
 ---
 # Event system
 
@@ -249,7 +250,7 @@ emitterA.fire( 'foo' );
 
 ## View events bubbling
 
-The {@link module:engine/view/document~Document `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and an {@link module:utils/emittermixin~Emitter emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
+The {@link module:engine/view/document~ViewDocument `view.Document`} is not only an {@link module:utils/observablemixin~Observable Observable} and an {@link module:utils/emittermixin~Emitter emitter} but it also implements the special {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitter} interface (implemented by {@link module:engine/view/observer/bubblingemittermixin~BubblingEmitterMixin}). It provides a mechanism for bubbling events over the virtual DOM tree.
 
 It is different from the bubbling that you know from the DOM tree event bubbling. You do not register listeners on specific instances of the elements in the view document tree. Instead, you can register handlers for specific contexts. A context is either a name of an element, or one of the virtual contexts (`'$capture'`, `'$text'`, `'$root'`, `'$document'`), or a callback to match desired nodes.
 
@@ -399,9 +400,9 @@ In some events the first parameter is not the standard `EventInfo`, but {@link m
 
 Currently, this information is available for the following events:
 
-* {@link module:engine/view/document~Document#event:enter `enter`},
-* {@link module:engine/view/document~Document#event:delete `delete`},
-* {@link module:engine/view/document~Document#event:arrowKey `arrowKey`}.
+* {@link module:engine/view/document~ViewDocument#event:enter `enter`},
+* {@link module:engine/view/document~ViewDocument#event:delete `delete`},
+* {@link module:engine/view/document~ViewDocument#event:arrowKey `arrowKey`}.
 
 Hence the events from the above example would be extended with the following `eventPhase` data:
 

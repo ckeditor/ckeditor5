@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, AbortController, URL, window */
-
 /**
  * @module ckbox/ckboximageedit/ckboximageeditcommand
  */
@@ -18,7 +16,7 @@ import {
 	delay,
 	type AbortableFunc
 } from 'ckeditor5/src/utils.js';
-import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import { isEqual } from 'es-toolkit/compat';
 
@@ -28,14 +26,14 @@ import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ck
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 import { createEditabilityChecker } from './utils.js';
-import CKBoxUtils from '../ckboxutils.js';
+import { CKBoxUtils } from '../ckboxutils.js';
 
 /**
  * The CKBox edit image command.
  *
  * Opens the CKBox dialog for editing the image.
  */
-export default class CKBoxImageEditCommand extends Command {
+export class CKBoxImageEditCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active, i.e. dialog is open.
 	 */

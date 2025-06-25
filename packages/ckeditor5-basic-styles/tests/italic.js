@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Italic from '../src/italic.js';
-import ItalicEditing from '../src/italic/italicediting.js';
-import ItalicUI from '../src/italic/italicui.js';
+import { Italic } from '../src/italic.js';
+import { ItalicEditing } from '../src/italic/italicediting.js';
+import { ItalicUI } from '../src/italic/italicui.js';
 
 describe( 'Italic', () => {
 	it( 'should require ItalicEditing and ItalicUI', () => {

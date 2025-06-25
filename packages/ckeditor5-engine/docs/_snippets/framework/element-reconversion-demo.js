@@ -175,7 +175,7 @@ const downcastSideCard = ( editor, { asWidget } ) => {
 		if ( asWidget ) {
 			const actionsView = writer.createRawElement( 'div', {
 				class: 'side-card-actions',
-				contenteditable: 'false', 			// Prevents editing of the element.
+				contenteditable: 'false', // Prevents editing of the element.
 				'data-cke-ignore-events': 'true'	// Allows using custom UI elements inside the editing view.
 			}, createActionsView( editor, modelElement ) ); // See the full code for details.
 

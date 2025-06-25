@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals XMLHttpRequest, FormData */
-
 /**
  * @module adapter-ckfinder/uploadadapter
  */
@@ -30,7 +28,7 @@ import { getCsrfToken } from './utils.js';
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} guide to learn
  * about other ways to upload images into CKEditor 5.
  */
-export default class CKFinderUploadAdapter extends Plugin {
+export class CKFinderUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

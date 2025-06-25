@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, document, window */
-
-import InlineEditor from '../../src/inlineeditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { InlineEditor } from '../../src/inlineeditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { createObserver } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 window.editors = {};

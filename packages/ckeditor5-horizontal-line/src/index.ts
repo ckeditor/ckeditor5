@@ -7,9 +7,9 @@
  * @module horizontal-line
  */
 
-export { default as HorizontalLine } from './horizontalline.js';
-export { default as HorizontalLineEditing } from './horizontallineediting.js';
-export { default as HorizontalLineUI } from './horizontallineui.js';
-export type { default as HorizontalLineCommand } from './horizontallinecommand.js';
+export { HorizontalLine } from './horizontalline.js';
+export { HorizontalLineEditing } from './horizontallineediting.js';
+export { HorizontalLineUI } from './horizontallineui.js';
+export { HorizontalLineCommand } from './horizontallinecommand.js';
 
 import './augmentation.js';

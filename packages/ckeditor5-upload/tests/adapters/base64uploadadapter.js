@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, setTimeout */
-
-import Base64UploadAdapter from '../../src/adapters/base64uploadadapter.js';
-import FileRepository from '../../src/filerepository.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Base64UploadAdapter } from '../../src/adapters/base64uploadadapter.js';
+import { FileRepository } from '../../src/filerepository.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { createNativeFileMock } from '../_utils/mocks.js';
 
 describe( 'Base64UploadAdapter', () => {

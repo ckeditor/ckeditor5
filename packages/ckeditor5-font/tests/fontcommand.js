@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FontCommand from '../src/fontcommand.js';
+import { FontCommand } from '../src/fontcommand.js';
 
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;
@@ -44,13 +44,13 @@ describe( 'FontCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is set to font value when selection is in text with font attribute', () => {
-			setData( model, '<paragraph><$text font="foo">fo[]o</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text font="foo">fo[]o</$text></paragraph>' );
 
 			expect( command ).to.have.property( 'value', 'foo' );
 		} );
 
 		it( 'is undefined when selection is not in text with font attribute', () => {
-			setData( model, '<paragraph>fo[]o</paragraph>' );
+			_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'value', undefined );
 		} );
@@ -58,7 +58,7 @@ describe( 'FontCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'is true when selection is on text which can have font added', () => {
-			setData( model, '<paragraph>fo[]o</paragraph>' );
+			_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
@@ -66,17 +66,17 @@ describe( 'FontCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should do nothing if the command is disabled', () => {
-			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			command.isEnabled = false;
 
 			command.execute( { value: 'foo' } );
 
-			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should add font attribute on selected text', () => {
-			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+			_setModelData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
 
 			expect( command.value ).to.be.undefined;
 
@@ -84,11 +84,11 @@ describe( 'FontCommand', () => {
 
 			expect( command.value ).to.equal( 'foo' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
 		} );
 
 		it( 'should add font attribute on selected nodes (multiple nodes)', () => {
-			setData(
+			_setModelData(
 				model,
 				'<paragraph>abcabc[abc</paragraph>' +
 				'<paragraph>foofoofoo</paragraph>' +
@@ -99,7 +99,7 @@ describe( 'FontCommand', () => {
 
 			expect( command.value ).to.equal( 'foo' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>abcabc[<$text font="foo">abc</$text></paragraph>' +
 				'<paragraph><$text font="foo">foofoofoo</$text></paragraph>' +
 				'<paragraph><$text font="foo">barbar</$text>]bar</paragraph>'
@@ -107,7 +107,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should change font attribute on selected nodes', () => {
-			setData(
+			_setModelData(
 				model,
 				'<paragraph>abc[abc<$text font="text-small">abc</$text></paragraph>' +
 				'<paragraph><$text font="text-small">foofoofoo</$text></paragraph>' +
@@ -118,7 +118,7 @@ describe( 'FontCommand', () => {
 
 			expect( command.value ).to.equal( 'foo' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>abc[<$text font="foo">abcabc</$text></paragraph>' +
 				'<paragraph><$text font="foo">foofoofoo</$text></paragraph>' +
 				'<paragraph><$text font="foo">bar</$text>]<$text font="text-small">bar</$text>bar</paragraph>'
@@ -126,7 +126,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should remove font attribute on selected nodes when passing undefined value', () => {
-			setData(
+			_setModelData(
 				model,
 				'<paragraph>abcabc[<$text font="foo">abc</$text></paragraph>' +
 				'<paragraph><$text font="foo">foofoofoo</$text></paragraph>' +
@@ -138,7 +138,7 @@ describe( 'FontCommand', () => {
 
 			expect( command.value ).to.be.undefined;
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>abcabc[abc</paragraph>' +
 				'<paragraph>foofoofoo</paragraph>' +
 				'<paragraph>barbar]bar</paragraph>'
@@ -146,7 +146,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
-			setData( model, '<paragraph>a[]bc<$text font="foo">foobar</$text>xyz</paragraph><paragraph></paragraph>' );
+			_setModelData( model, '<paragraph>a[]bc<$text font="foo">foobar</$text>xyz</paragraph><paragraph></paragraph>' );
 
 			expect( command.value ).to.be.undefined;
 
@@ -162,7 +162,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
-			setData( model, '<paragraph>a[]bc<$text font="foo">foobar</$text>xyz</paragraph>' );
+			_setModelData( model, '<paragraph>a[]bc<$text font="foo">foobar</$text>xyz</paragraph>' );
 
 			command.execute( { value: 'foo' } );
 
@@ -180,7 +180,7 @@ describe( 'FontCommand', () => {
 		} );
 
 		it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
-			setData( model, '<paragraph>abc<$text font="foo">foobar</$text>xyz</paragraph><paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>abc<$text font="foo">foobar</$text>xyz</paragraph><paragraph>[]</paragraph>' );
 
 			expect( command.value ).to.be.undefined;
 
@@ -213,19 +213,19 @@ describe( 'FontCommand', () => {
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
 			model.schema.register( 'imageBlock', { inheritAllFrom: '$block' } );
-			setData( model, '<paragraph>ab[c<img></img><$text font="foo">foobar</$text>xy<img></img>]z</paragraph>' );
+			_setModelData( model, '<paragraph>ab[c<img></img><$text font="foo">foobar</$text>xy<img></img>]z</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
 
 			command.execute( { value: 'foo' } );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>ab[<$text font="foo">c</$text><img></img><$text font="foo">foobarxy</$text><img></img>]z</paragraph>'
 			);
 		} );
 
 		it( 'should use parent batch for storing undo steps', () => {
-			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+			_setModelData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
 
 			model.change( writer => {
 				expect( writer.batch.operations.length ).to.equal( 0 );
@@ -233,11 +233,11 @@ describe( 'FontCommand', () => {
 				expect( writer.batch.operations.length ).to.equal( 1 );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
 		} );
 
 		it( 'should use provided batch', () => {
-			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
+			_setModelData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
 			const batch = model.createBatch();
 			const spy = sinon.spy( model, 'enqueueChange' );
 
@@ -253,7 +253,7 @@ describe( 'FontCommand', () => {
 			} );
 
 			it( 'collapsed selection in non-empty parent', () => {
-				setData( model, '<paragraph>x[]y</paragraph>' );
+				_setModelData( model, '<paragraph>x[]y</paragraph>' );
 
 				model.document.on( 'change', spy );
 
@@ -263,7 +263,7 @@ describe( 'FontCommand', () => {
 			} );
 
 			it( 'non-collapsed selection', () => {
-				setData( model, '<paragraph>[xy]</paragraph>' );
+				_setModelData( model, '<paragraph>[xy]</paragraph>' );
 
 				model.document.on( 'change', spy );
 
@@ -273,7 +273,7 @@ describe( 'FontCommand', () => {
 			} );
 
 			it( 'in empty parent', () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				model.document.on( 'change', spy );
 

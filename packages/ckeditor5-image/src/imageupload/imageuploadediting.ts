@@ -10,13 +10,13 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
-	UpcastWriter,
-	type Element,
-	type Item,
-	type Writer,
-	type DataTransfer,
+	ViewUpcastWriter,
+	type ModelElement,
+	type ModelItem,
+	type ModelWriter,
+	type ViewDataTransfer,
 	type ViewElement,
-	type NodeAttributes,
+	type ModelNodeAttributes,
 	type DowncastAttributeEvent,
 	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
@@ -26,8 +26,8 @@ import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckedito
 import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload.js';
 import { env } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from '../imageutils.js';
-import UploadImageCommand from './uploadimagecommand.js';
+import { ImageUtils } from '../imageutils.js';
+import { UploadImageCommand } from './uploadimagecommand.js';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils.js';
 import { createImageTypeRegExp } from './utils.js';
 
@@ -36,9 +36,9 @@ import { createImageTypeRegExp } from './utils.js';
  * and the `imageUpload` command as an aliased name.
  *
  * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete`} event
- * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
+ * that allows adding custom attributes to the {@link module:engine/model/element~ModelElement image element}.
  */
-export default class ImageUploadEditing extends Plugin {
+export class ImageUploadEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -66,7 +66,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
 	 * after image type changed).
 	 */
-	private readonly _uploadImageElements: Map<string, Set<Element>>;
+	private readonly _uploadImageElements: Map<string, Set<ModelElement>>;
 
 	/**
 	 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
@@ -154,7 +154,7 @@ export default class ImageUploadEditing extends Plugin {
 		this.listenTo<ViewDocumentClipboardInputEvent>( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			// Skip if non empty HTML data is included.
 			// https://github.com/ckeditor/ckeditor5-upload/issues/68
-			if ( isHtmlIncluded( data.dataTransfer ) ) {
+			if ( isHtmlInDataTransfer( data.dataTransfer ) ) {
 				return;
 			}
 
@@ -188,7 +188,6 @@ export default class ImageUploadEditing extends Plugin {
 				const notification: Notification = editor.plugins.get( 'Notification' );
 				const t = editor.locale.t;
 
-				// eslint-disable-next-line max-len
 				notification.showWarning( t( 'You have no image upload permissions.' ), {
 					namespace: 'image'
 				} );
@@ -211,7 +210,7 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			const writer = new UpcastWriter( editor.editing.view.document );
+			const writer = new ViewUpcastWriter( editor.editing.view.document );
 
 			for ( const fetchableImage of fetchableImages ) {
 				// Set attribute marking that the image was processed already.
@@ -266,7 +265,7 @@ export default class ImageUploadEditing extends Plugin {
 
 									this.fire<ImageUploadCompleteEvent>( 'uploadComplete', {
 										data: this._uploadedImages.get( uploadId )!,
-										imageElement: imageElement as Element
+										imageElement: imageElement as ModelElement
 									} );
 								} );
 
@@ -305,9 +304,9 @@ export default class ImageUploadEditing extends Plugin {
 							// change for the same upload if one image was replaced by another (e.g. image type was changed),
 							// so this may also replace an existing mapping.
 							if ( !this._uploadImageElements.has( uploadId ) ) {
-								this._uploadImageElements.set( uploadId, new Set( [ imageElement as Element ] ) );
+								this._uploadImageElements.set( uploadId, new Set( [ imageElement as ModelElement ] ) );
 							} else {
-								this._uploadImageElements.get( uploadId )!.add( imageElement as Element );
+								this._uploadImageElements.get( uploadId )!.add( imageElement as ModelElement );
 							}
 
 							if ( loader.status == 'idle' ) {
@@ -499,7 +498,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * @param data Data object from which `srcset` will be created.
 	 * @param image The image element on which the `srcset` attribute will be set.
 	 */
-	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: Element, writer: Writer ): void {
+	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: ModelElement, writer: ModelWriter ): void {
 		// Srcset attribute for responsive images support.
 		let maxWidth = 0;
 
@@ -522,7 +521,7 @@ export default class ImageUploadEditing extends Plugin {
 			.join( ', ' );
 
 		if ( srcsetAttribute != '' ) {
-			const attributes: NodeAttributes = {
+			const attributes: ModelNodeAttributes = {
 				srcset: srcsetAttribute
 			};
 
@@ -560,7 +559,7 @@ export default class ImageUploadEditing extends Plugin {
 					return null;
 				}
 
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const img = imageUtils.findViewImgElement( viewElement );
 
 				if ( img ) {
@@ -575,21 +574,21 @@ export default class ImageUploadEditing extends Plugin {
 /**
  * Returns `true` if non-empty `text/html` is included in the data transfer.
  */
-export function isHtmlIncluded( dataTransfer: DataTransfer ): boolean {
+export function isHtmlInDataTransfer( dataTransfer: ViewDataTransfer ): boolean {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }
 
-function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
+function getImagesFromChangeItem( editor: Editor, item: ModelItem ): Array<ModelItem> {
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return Array.from( editor.model.createRangeOn( item ) )
-		.filter( value => imageUtils.isImage( value.item as Element ) )
+		.filter( value => imageUtils.isImage( value.item as ModelElement ) )
 		.map( value => value.item );
 }
 
 /**
  * An event fired when an image is uploaded. You can hook into this event to provide
- * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
+ * custom attributes to the {@link module:engine/model/element~ModelElement image element} based on the data from
  * the server.
  *
  * ```ts
@@ -629,7 +628,7 @@ export type ImageUploadCompleteData = {
 	data: UploadResponse;
 
 	/**
-	 * The model {@link module:engine/model/element~Element image element} that can be customized.
+	 * The model {@link module:engine/model/element~ModelElement image element} that can be customized.
 	 */
-	imageElement: Element;
+	imageElement: ModelElement;
 };

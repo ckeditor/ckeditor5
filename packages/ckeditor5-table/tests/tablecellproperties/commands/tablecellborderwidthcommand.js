@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils.js';
-import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
-import TableCellBorderWidthCommand from '../../../src/tablecellproperties/commands/tablecellborderwidthcommand.js';
+import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellBorderWidthCommand } from '../../../src/tablecellproperties/commands/tablecellborderwidthcommand.js';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -33,31 +33,31 @@ describe( 'table cell properties', () => {
 			describe( 'isEnabled', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
-						setData( model, '<paragraph>foo[]</paragraph>' );
+						_setModelData( model, '<paragraph>foo[]</paragraph>' );
 						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
-						setData( model, '<paragraph>f[oo]</paragraph>' );
+						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 						expect( command.isEnabled ).to.be.false;
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ] ) );
+						_setModelData( model, modelTable( [ [ 'f[o]o' ] ] ) );
 						expect( command.isEnabled ).to.be.true;
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
 					it( 'should be true if the selection contains some table cells', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[ { contents: '00', isSelected: true }, '01' ],
 							[ '10', { contents: '11', isSelected: true } ]
 						] ) );
@@ -70,13 +70,13 @@ describe( 'table cell properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table cell has no tableCellBorderWidth property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table cell has tableCellBorderWidth property (single string)', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
@@ -109,13 +109,13 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be false if selection does not have table cell', () => {
-						setData( model, '<paragraph>f[oo]</paragraph>' );
+						_setModelData( model, '<paragraph>f[oo]</paragraph>' );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: 'f[o]o' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
@@ -123,7 +123,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					it( 'should be undefined if no table cells have the "borderWidth" property', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
 								{ contents: '01', isSelected: true }
@@ -138,7 +138,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be undefined if only some table cells have the "borderWidth" property', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
 								{ contents: '01', isSelected: true }
@@ -153,7 +153,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be undefined if one of selected table cells has a different "borderWidth" property value', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
 								{ contents: '01', isSelected: true, tableCellBorderWidth: '20px' }
@@ -168,7 +168,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be set if all table cells have the same "borderWidth" property value', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
 								{ contents: '01', isSelected: true, tableCellBorderWidth: '1px' }
@@ -186,7 +186,7 @@ describe( 'table cell properties', () => {
 
 			describe( 'execute()', () => {
 				it( 'should use provided batch', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 					const batch = model.createBatch();
 					const spy = sinon.spy( model, 'enqueueChange' );
 
@@ -195,7 +195,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should add default unit for numeric values (number passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25 } );
 
@@ -203,7 +203,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should add default unit for numeric values (string passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25 } );
 
@@ -211,7 +211,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should not add default unit for numeric values with unit', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '25pt' } );
 
@@ -219,7 +219,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should add default unit to floats (number passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 25.1 } );
 
@@ -227,7 +227,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should add default unit to floats (string passed)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '0.1' } );
 
@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should pass invalid values', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: 'bar' } );
 
@@ -243,7 +243,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should pass invalid value (string passed, CSS float without leading 0)', () => {
-					setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+					_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 					command.execute( { value: '.2' } );
 
@@ -252,7 +252,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'collapsed selection', () => {
 					it( 'should set selected table cell tableCellBorderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
+						_setModelData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: '1px' } );
 
@@ -260,7 +260,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should change selected table cell tableCellBorderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: '1px' } );
 
@@ -268,7 +268,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should remove tableCellBorderWidth from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -278,7 +278,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should set selected table cell tableCellBorderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '1px' } );
 
@@ -286,7 +286,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should change selected table cell tableCellBorderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '1px' } );
 
@@ -294,7 +294,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should remove tableCellBorderWidth from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
 
@@ -304,7 +304,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					beforeEach( () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[ { contents: '00', isSelected: true }, '01' ],
 							[ '10', { contents: '11', isSelected: true } ]
 						] ) );
@@ -326,7 +326,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should remove "borderWidth" from selected table cells if no value is passed', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[ { contents: '00', isSelected: true, tableCellBorderWidth: '1px' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, tableCellBorderWidth: '1px' } ]
 						] ) );
@@ -361,7 +361,7 @@ describe( 'table cell properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table cell has the default tableCellBorderWidth property (single string)', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -382,7 +382,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined is selection contains the default valuel', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: 'f[o]o' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -392,7 +392,7 @@ describe( 'table cell properties', () => {
 					it(
 						'should be undefined if all table cells have the same "borderWidth" property value which is the default value',
 						() => {
-							setData( model, modelTable( [
+							_setModelData( model, modelTable( [
 								[
 									{ contents: '00', isSelected: true, tableCellBorderWidth: '3px' },
 									{ contents: '01', isSelected: true, tableCellBorderWidth: '3px' }
@@ -412,7 +412,7 @@ describe( 'table cell properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove tableCellBorderWidth from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
+						_setModelData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: '3px' } );
 
@@ -422,7 +422,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove tableCellBorderWidth from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+						_setModelData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '3px' } );
 
@@ -432,7 +432,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					it( 'should remove "borderWidth" from selected table cells if the default value is passed', () => {
-						setData( model, modelTable( [
+						_setModelData( model, modelTable( [
 							[ { contents: '00', isSelected: true, tableCellBorderWidth: '1px' }, '01' ],
 							[ '10', { contents: '11', isSelected: true, tableCellBorderWidth: '1px' } ]
 						] ) );

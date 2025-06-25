@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
-import TableCaptionUI from '../../src/tablecaption/tablecaptionui.js';
-import TableEditing from '../../src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
+import { TableCaptionUI } from '../../src/tablecaption/tablecaptionui.js';
+import { TableEditing } from '../../src/tableediting.js';
 
 describe( 'TableCaptionUI', () => {
 	let editor, tableCaption, editorElement;

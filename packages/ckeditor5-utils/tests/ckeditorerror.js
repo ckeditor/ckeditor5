@@ -3,13 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable ckeditor5-rules/ckeditor-error-message */
-
-/* global console */
-
-import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.js';
+import { CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {
@@ -143,6 +139,22 @@ describe( 'CKEditorError', () => {
 			expectToThrowCKEditorError( () => {
 				CKEditorError.rethrowUnexpectedError( error, context );
 			}, /foo/, context );
+		} );
+
+		it( 'should rethrow an unexpected error wrapped in CKEditorError with original error details', () => {
+			const error = new TypeError( 'Some unexpected error' );
+			error.stack = 'bar';
+			const context = {};
+
+			const expectedMessage = [
+				'unexpected-error',
+				`Read more: ${ DOCUMENTATION_URL }#error-unexpected-error`,
+				'Original error: TypeError: Some unexpected error'
+			].join( '\n' );
+
+			expectToThrowCKEditorError( () => {
+				CKEditorError.rethrowUnexpectedError( error, context );
+			}, expectedMessage, context );
 		} );
 	} );
 

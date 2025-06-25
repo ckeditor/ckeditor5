@@ -7,8 +7,6 @@
  * @module utils/delay
  */
 
-/* globals setTimeout, clearTimeout */
-
 /**
  * Returns a function wrapper that will trigger a function after a specified wait time.
  * The timeout can be canceled by calling the cancel function on the returned wrapped function.
@@ -16,7 +14,7 @@
  * @param func The function to wrap.
  * @param wait The timeout in ms.
  */
-export default function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
+export function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
 	let timer: ReturnType<typeof setTimeout>;
 
 	function delayed( ...args: Parameters<T> ) {

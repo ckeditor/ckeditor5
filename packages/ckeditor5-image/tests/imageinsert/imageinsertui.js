@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import Image from '../../src/image.js';
-import ImageInsertUI from '../../src/imageinsert/imageinsertui.js';
-import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview.js';
+import { Image } from '../../src/image.js';
+import { ImageInsertUI } from '../../src/imageinsert/imageinsertui.js';
+import { ImageInsertFormView } from '../../src/imageinsert/ui/imageinsertformview.js';
 import { MenuBarMenuListItemButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageInsertUI', () => {
@@ -89,7 +87,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should be false if image is not selected', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>[foo]</paragraph>' +
 				'<imageBlock></imageBlock>'
 			);
@@ -104,7 +102,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should be true if block image is selected', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
 				'[<imageBlock></imageBlock>]'
 			);
@@ -113,7 +111,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should change on selection change', () => {
-			setData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo[]</paragraph>' +
 				'<imageBlock></imageBlock>'
 			);
@@ -140,7 +138,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should store the integration definition', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new UIModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -165,7 +163,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should store the integration definition (with optional data)', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new UIModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -191,7 +189,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should warn if multiple integrations with the same name are registered', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new UIModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -458,7 +456,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		function registerUrlIntegration( observableAsFunc ) {
-			observableUrl = new Model( { isEnabled: true } );
+			observableUrl = new UIModel( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'url',
@@ -489,7 +487,7 @@ describe( 'ImageInsertUI', () => {
 		}
 
 		function registerUploadIntegration( observableAsFunc ) {
-			observableUpload = new Model( { isEnabled: true } );
+			observableUpload = new UIModel( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'upload',

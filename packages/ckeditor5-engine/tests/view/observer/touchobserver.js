@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import TouchObserver from '../../../src/view/observer/touchobserver.js';
-import View from '../../../src/view/view.js';
+import { TouchObserver } from '../../../src/view/observer/touchobserver.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'TouchObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.addObserver( TouchObserver );
 	} );

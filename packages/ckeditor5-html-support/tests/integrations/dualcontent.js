@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import DualContentModelElementSupport from '../../src/integrations/dualcontent.js';
-
-/* global document */
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { DualContentModelElementSupport } from '../../src/integrations/dualcontent.js';
 
 describe( 'DualContentModelElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
@@ -60,7 +58,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><p>foobar</p></div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<paragraph>foobar</paragraph>'
 		);
 
@@ -72,7 +70,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><i>foo</i>bar<b>baz</b></div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDivParagraph>' +
 			'<$text italic="true">foo</$text>bar<$text bold="true">baz</$text>' +
 			'</htmlDivParagraph>'
@@ -86,7 +84,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div>foo<br>bar</div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDivParagraph>foo<softBreak></softBreak>bar</htmlDivParagraph>'
 		);
 
@@ -98,7 +96,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><a href="example.com"><i>foo</i>bar</a>baz</div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDivParagraph>' +
 				'<$text italic="true" linkHref="example.com">foo</$text>' +
 				'<$text linkHref="example.com">bar</$text>' +
@@ -114,7 +112,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><p>foobar</p></div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv><paragraph>foobar</paragraph></htmlDiv>'
 		);
 
@@ -126,7 +124,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><a href="example.com"><p>foo</p></a>bar</div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv>' +
 				'<paragraph><$text linkHref="example.com">foo</$text></paragraph>' +
 				'<paragraph>bar</paragraph>' +
@@ -141,7 +139,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div>foo<p>bar</p>baz</div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv><paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph></htmlDiv>'
 		);
 
@@ -153,7 +151,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		editor.setData( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>'
 		);
 
@@ -257,7 +255,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDl>' +
 					'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
 					'<htmlDd><paragraph>Godzilla</paragraph></htmlDd>' +
@@ -281,7 +279,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDl>' +
 					'<htmlDivDl>' +
 						'<htmlDt><paragraph>Name</paragraph></htmlDt>' +
@@ -310,7 +308,7 @@ describe( 'DualContentModelElementSupport', () => {
 				'</dl>'
 			);
 
-			expect( getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( allowAllModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>' +
 				'<htmlDl>' +
 					'<htmlDivDl>' +

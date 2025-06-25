@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import secureSourceElement from '../../../src/editor/utils/securesourceelement.js';
-import Editor from '../../../src/editor/editor.js';
+import { secureSourceElement } from '../../../src/editor/utils/securesourceelement.js';
+import { Editor } from '../../../src/editor/editor.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'secureSourceElement()', () => {

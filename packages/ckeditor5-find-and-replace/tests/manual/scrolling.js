@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { FindAndReplace } from '../../src/findandreplace.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import FindAndReplace from '../../src/findandreplace.js';
-
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
 
 // Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor

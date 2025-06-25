@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ImageResizeEditing from '../../../src/imageresize/imageresizeediting.js';
-import ImageCaptionEditing from '../../../src/imagecaption/imagecaptionediting.js';
-import Image from '../../../src/image.js';
-import ImageStyle from '../../../src/imagestyle.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ImageResizeEditing } from '../../../src/imageresize/imageresizeediting.js';
+import { ImageCaptionEditing } from '../../../src/imagecaption/imagecaptionediting.js';
+import { Image } from '../../../src/image.js';
+import { ImageStyle } from '../../../src/imagestyle.js';
 import { IMAGE_SRC_FIXTURE } from '../_utils/utils.js';
 import { getSelectedImageWidthInUnits } from '../../../src/imageresize/utils/getselectedimagewidthinunits.js';
-
-/* eslint-disable no-undef */
 
 describe( 'getSelectedImageWidthInUnits', () => {
 	let editor, model, editorElement;
@@ -33,7 +31,7 @@ describe( 'getSelectedImageWidthInUnits', () => {
 	} );
 
 	it( 'should return selected image width in pixels', () => {
-		setData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
+		_setModelData( model, '[<imageBlock resizedWidth="50px"></imageBlock>]' );
 
 		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.deep.equal( {
 			value: 50,
@@ -42,19 +40,19 @@ describe( 'getSelectedImageWidthInUnits', () => {
 	} );
 
 	it( 'should return null if image is not selected', () => {
-		setData( model, '<imageBlock resizedWidth="0px"></imageBlock><paragraph>[abc]</paragraph>' );
+		_setModelData( model, '<imageBlock resizedWidth="0px"></imageBlock><paragraph>[abc]</paragraph>' );
 
 		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.equal( null );
 	} );
 
 	it( 'should return null if resizeWidth is malformed', () => {
-		setData( model, '[<imageBlock resizedWidth="sdasdpx"></imageBlock>]' );
+		_setModelData( model, '[<imageBlock resizedWidth="sdasdpx"></imageBlock>]' );
 
 		expect( getSelectedImageWidthInUnits( editor, 'px' ) ).to.equal( null );
 	} );
 
 	it( 'should return casted percentage value to pixels', () => {
-		setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="62%"></imageBlock>]` );
+		_setModelData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="62%"></imageBlock>]` );
 
 		const { unit, value } = getSelectedImageWidthInUnits( editor, 'px' );
 
@@ -63,7 +61,7 @@ describe( 'getSelectedImageWidthInUnits', () => {
 	} );
 
 	it( 'should return casted pixels value to percentage', () => {
-		setData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="250px"></imageBlock>]` );
+		_setModelData( model, `[<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="250px"></imageBlock>]` );
 
 		const { unit, value } = getSelectedImageWidthInUnits( editor, '%' );
 

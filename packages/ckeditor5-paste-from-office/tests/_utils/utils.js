@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
-
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import normalizeClipboardData from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { normalizeClipboardData } from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -214,7 +212,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		} );
 
 		beforeEach( () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 			const editorModel = editor.model;
 			const insertContent = editorModel.insertContent;
@@ -224,7 +222,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 			sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
 				// Save model string representation now as it may change after `insertContent()` function call
 				// so accessing it later may not work as it may have emptied/changed structure.
-				data.actual = stringifyModel( content );
+				data.actual = _stringifyModel( content );
 				insertContent.call( editorModel, content, selection );
 			} );
 		} );
@@ -285,13 +283,13 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 //
 // 	because tab preceding `03` text will be treated as formatting character and will be removed.
 //
-// @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
+// @param {module:engine/view/text~ViewText|module:engine/view/element~ViewElement|module:engine/view/documentfragment~ViewDocumentFragment}
 // actualView Actual HTML.
 // @param {String} expectedHtml Expected HTML.
 function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
-	const actualNormalized = stringifyView( actualView ).replace( /\u00A0/g, ' ' );
+	const actualNormalized = _stringifyView( actualView ).replace( /\u00A0/g, ' ' );
 	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ), { skipComments: true } );
 
 	compareContentWithBase64Images( actualNormalized, expectedNormalized );

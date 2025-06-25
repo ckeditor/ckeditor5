@@ -7,23 +7,23 @@
  * @module engine/model/rootelement
  */
 
-import Element from './element.js';
+import { ModelElement } from './element.js';
 
-import type Document from './document.js';
+import { type ModelDocument } from './document.js';
 
 /**
- * Type of {@link module:engine/model/element~Element} that is a root of a model tree.
+ * Type of {@link module:engine/model/element~ModelElement} that is a root of a model tree.
  */
-export default class RootElement extends Element {
+export class ModelRootElement extends ModelElement {
 	/**
-	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
 	public override readonly rootName: string;
 
 	/**
 	 * Document that is an owner of this root.
 	 */
-	private readonly _document: Document;
+	private readonly _document: ModelDocument;
 
 	/**
 	 * @internal
@@ -42,9 +42,9 @@ export default class RootElement extends Element {
 	 *
 	 * @param document Document that is an owner of this root.
 	 * @param name Node name.
-	 * @param rootName Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * @param rootName Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
-	constructor( document: Document, name: string, rootName: string = 'main' ) {
+	constructor( document: ModelDocument, name: string, rootName: string = 'main' ) {
 		super( name );
 
 		this._document = document;
@@ -52,9 +52,9 @@ export default class RootElement extends Element {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this root element.
+	 * {@link module:engine/model/document~ModelDocument Document} that owns this root element.
 	 */
-	public override get document(): Document {
+	public override get document(): ModelDocument {
 		return this._document;
 	}
 
@@ -64,8 +64,8 @@ export default class RootElement extends Element {
 	 * A detached root is equivalent to being removed and cannot contain any children or markers.
 	 *
 	 * By default, a newly added root is attached. It can be detached using
-	 * {@link module:engine/model/writer~Writer#detachRoot `Writer#detachRoot`}. A detached root can be re-attached again using
-	 * {@link module:engine/model/writer~Writer#addRoot `Writer#addRoot`}.
+	 * {@link module:engine/model/writer~ModelWriter#detachRoot `Writer#detachRoot`}. A detached root can be re-attached again using
+	 * {@link module:engine/model/writer~ModelWriter#addRoot `Writer#addRoot`}.
 	 */
 	public override isAttached(): boolean {
 		return this._isAttached;
@@ -91,7 +91,7 @@ export default class RootElement extends Element {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-RootElement.prototype.is = function( type: string, name?: string ): boolean {
+ModelRootElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'model:rootElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.

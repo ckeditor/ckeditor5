@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, HTMLElement  */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { BalloonPanelView } from '../../src/index.js';
-import View from '../../src/view.js';
-import Badge from '../../src/badge/badge.js';
+import { View } from '../../src/view.js';
+import { Badge } from '../../src/badge/badge.js';
 
 class BadgeExtended extends Badge {
 	_isEnabled() {

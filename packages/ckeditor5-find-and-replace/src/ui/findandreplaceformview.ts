@@ -43,7 +43,7 @@ import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
  *
  * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
  */
-export default class FindAndReplaceFormView extends View {
+export class FindAndReplaceFormView extends View {
 	/**
 	 * A collection of child views.
 	 */

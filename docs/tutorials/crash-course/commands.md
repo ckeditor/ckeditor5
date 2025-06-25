@@ -3,6 +3,7 @@ category: crash-course
 order: 50
 menu-title: Commands
 meta-title: CKEditor 5 crash course - Commands | CKEditor 5 Documentation
+meta-description: Discover how to create and use commands in CKEditor 5 to define editor actions and enable custom functionality in your plugins.
 modified_at: 2025-03-14
 ---
 
@@ -100,7 +101,7 @@ execute() {
 }
 ```
 
-All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so we will use it.
+All changes to the model are made using the {@link module:engine/model/writer~ModelWriter model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so we will use it.
 
 In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, the collapsed selection is just a caret.
 

@@ -11,27 +11,27 @@ import {
 	createDropdown,
 	addListToDropdown,
 	View,
-	ViewModel,
+	UIModel,
 	type ButtonExecuteEvent,
 	type DropdownView,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { Collection, type Locale } from 'ckeditor5/src/utils.js';
-import type { SkinToneId } from '../emojiconfig.js';
-import type { SkinTone } from '../emojirepository.js';
+import type { EmojiSkinToneId } from '../emojiconfig.js';
+import type { EmojiSkinTone } from '../emojirepository.js';
 
 import '../../theme/emojitone.css';
 
 /**
  * A view responsible for selecting a skin tone for an emoji.
  */
-export default class EmojiToneView extends View {
+export class EmojiToneView extends View {
 	/**
 	 * Active skin tone.
 	 *
 	 * @observable
 	 */
-	declare public skinTone: SkinToneId;
+	declare public skinTone: EmojiSkinToneId;
 
 	/**
 	 * A dropdown element for selecting an active skin tone.
@@ -41,12 +41,12 @@ export default class EmojiToneView extends View {
 	/**
 	 * An array of available skin tones.
 	 */
-	private readonly _skinTones: Array<SkinTone>;
+	private readonly _skinTones: Array<EmojiSkinTone>;
 
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale: Locale, { skinTone, skinTones }: { skinTone: SkinToneId; skinTones: Array<SkinTone> } ) {
+	constructor( locale: Locale, { skinTone, skinTones }: { skinTone: EmojiSkinToneId; skinTones: Array<EmojiSkinTone> } ) {
 		super( locale );
 
 		this.set( 'skinTone', skinTone );
@@ -61,7 +61,7 @@ export default class EmojiToneView extends View {
 		for ( const { id, icon, tooltip } of this._skinTones ) {
 			const def: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new ViewModel( {
+				model: new UIModel( {
 					value: id,
 					label: icon,
 					ariaLabel: tooltip,
@@ -133,7 +133,7 @@ export default class EmojiToneView extends View {
 	/**
 	 * Helper method for receiving an object describing the active skin tone.
 	 */
-	private _getSkinTone(): SkinTone {
+	private _getSkinTone(): EmojiSkinTone {
 		return this._skinTones.find( tone => tone.id === this.skinTone )!;
 	}
 }

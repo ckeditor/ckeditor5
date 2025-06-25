@@ -7,17 +7,17 @@
  * @module utils/dom/isvalidattributename
  */
 
-import global from './global.js';
+import { global } from './global.js';
 
 /**
  * Checks if the given attribute name is valid in terms of HTML.
  *
  * @param name Attribute name.
  */
-export default function isValidAttributeName( name: string ): boolean {
+export function isValidAttributeName( name: string ): boolean {
 	try {
 		global.document.createAttribute( name );
-	} catch ( error ) {
+	} catch {
 		return false;
 	}
 

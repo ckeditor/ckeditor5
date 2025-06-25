@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document, setTimeout, Event, console */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import MentionUI, { createRegExp } from '../src/mentionui.js';
-import MentionEditing from '../src/mentionediting.js';
-import MentionsView from '../src/ui/mentionsview.js';
+import { MentionUI, createRegExp } from '../src/mentionui.js';
+import { MentionEditing } from '../src/mentionediting.js';
+import { MentionsView } from '../src/ui/mentionsview.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'MentionUI', () => {
@@ -114,7 +112,7 @@ describe( 'MentionUI', () => {
 		beforeEach( () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 					const contextualBalloon = editor.plugins.get( ContextualBalloon );
 
 					balloonAddSpy = sinon.spy( contextualBalloon, 'add' );
@@ -182,7 +180,7 @@ describe( 'MentionUI', () => {
 		it( 'should properly calculate position data', () => {
 			const editableElement = editingView.document.selection.editableElement;
 
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
 			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
@@ -263,7 +261,7 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should re-calculate position on typing and stay on selected position', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
 			model.change( writer => {
@@ -300,7 +298,7 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'does not fail if selection has no #editableElement', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
 			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
@@ -331,7 +329,7 @@ describe( 'MentionUI', () => {
 					return createClassicTestEditor( { ...staticConfig } )
 						.then( () => {
 							const contextualBalloon = editor.plugins.get( ContextualBalloon );
-							setData( model, '<paragraph>foo []</paragraph>' );
+							_setModelData( model, '<paragraph>foo []</paragraph>' );
 							editor.locale.uiLanguageDirection = 'rtl';
 							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
 
@@ -363,7 +361,7 @@ describe( 'MentionUI', () => {
 					return createClassicTestEditor( { ...staticConfig } )
 						.then( () => {
 							const contextualBalloon = editor.plugins.get( ContextualBalloon );
-							setData( model, '<paragraph>foo []</paragraph>' );
+							_setModelData( model, '<paragraph>foo []</paragraph>' );
 							contextualBaloonSpy = sinon.spy( contextualBalloon, 'add' );
 
 							model.change( writer => {
@@ -450,7 +448,7 @@ describe( 'MentionUI', () => {
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -495,7 +493,7 @@ describe( 'MentionUI', () => {
 				feeds: [ { marker: '@@', feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ] } ]
 			} )
 				.then( () => {
-					setData( editor.model, '<paragraph>foo []</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -534,7 +532,7 @@ describe( 'MentionUI', () => {
 
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo @ bar []</paragraph>' );
+					_setModelData( model, '<paragraph>foo @ bar []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -560,7 +558,7 @@ describe( 'MentionUI', () => {
 		it( 'should not show panel when command is disabled', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					const mentionCommand = editor.commands.get( 'mention' );
 					mentionCommand.forceDisabled( 'mentionCommandDisableTest' );
@@ -589,7 +587,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel with no more then 10 items for default static feed', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -603,7 +601,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should scroll mention panel to the selected item', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -688,7 +686,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 
@@ -705,7 +703,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker at the beginning of paragraph', () => {
-				setData( model, '<paragraph>[] foo</paragraph>' );
+				_setModelData( model, '<paragraph>[] foo</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -737,7 +735,7 @@ describe( 'MentionUI', () => {
 						view: ( modelElement, { writer } ) => writer.createEmptyElement( 'br' )
 					} );
 
-				setData( model, '<paragraph>abc<softBreak></softBreak>[] foo</paragraph>' );
+				_setModelData( model, '<paragraph>abc<softBreak></softBreak>[] foo</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -767,7 +765,7 @@ describe( 'MentionUI', () => {
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
-				setData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -781,7 +779,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
 					const range = writer.createRange(
@@ -811,7 +809,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
 					const range = writer.createRange(
@@ -835,7 +833,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is not collapsed', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -858,7 +856,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is changing (non-collapsed)', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -891,7 +889,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is after existing mention', () => {
-				setData( model, '<paragraph>foo [@Lily] bar[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo [@Lily] bar[]</paragraph>' );
 				model.change( writer => {
 					writer.setAttribute( 'mention', { id: '@Lily', uid: 1234 }, doc.selection.getFirstRange() );
 				} );
@@ -911,7 +909,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection moves inside existing mention', () => {
-				setData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo @Lily bar[]</paragraph>' );
 
 				model.change( writer => {
 					const range = writer.createRange(
@@ -942,7 +940,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show filtered results for matched text', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -961,7 +959,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should focus the first item in panel', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -976,7 +974,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should hide panel if no matched items', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -998,7 +996,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should hide panel when text was unmatched', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1040,7 +1038,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when the selection is at the whitespace after an existing mention', async () => {
-				setData( model, '<paragraph>foo @marry bar[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo @marry bar[]</paragraph>' );
 
 				model.change( writer => {
 					const range = writer.createRange(
@@ -1072,7 +1070,7 @@ describe( 'MentionUI', () => {
 
 			it( 'should show the panel when the selection is at the whitespace after a matching marker and text', async () => {
 				// This should match all "Marry *" because there's no marker for @marry yet.
-				setData( model, '<paragraph>foo @marry []bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo @marry []bar</paragraph>' );
 
 				await waitForDebounce();
 
@@ -1100,7 +1098,7 @@ describe( 'MentionUI', () => {
 					this.skip();
 				}
 
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@ס', doc.selection.getFirstPosition() );
@@ -1131,7 +1129,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should bind the instance panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1177,7 +1175,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1192,7 +1190,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fire requestFeed:response when request feed return a response', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 				const eventSpy = sinon.spy();
 				mentionUI.on( 'requestFeed:response', eventSpy );
 
@@ -1219,7 +1217,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show filtered results for matched text', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1238,7 +1236,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should hide panel if no matched items', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1260,7 +1258,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should hide panel when text was unmatched', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1281,7 +1279,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel debounced', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1320,7 +1318,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should discard requested feed if they came out of order', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1371,7 +1369,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fire requestFeed:discarded event when requested feed came out of order', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1434,7 +1432,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should discard requested feed if mention UI is hidden', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '#', doc.selection.getFirstPosition() );
@@ -1463,7 +1461,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fire requestFeed:error and log warning if requested feed failed', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				feedCallbackStub.returns( Promise.reject( 'Request timeout' ) );
 
@@ -1491,7 +1489,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not fail if marker was removed', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 				const selectFirstMentionSpy = sinon.spy( mentionsView, 'selectFirst' );
 
 				model.change( writer => {
@@ -1528,7 +1526,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel if selection was moved during fetching a feed', () => {
-				setData( model, '<paragraph>foo [#101] bar</paragraph><paragraph></paragraph>' );
+				_setModelData( model, '<paragraph>foo [#101] bar</paragraph><paragraph></paragraph>' );
 
 				model.change( writer => {
 					writer.setAttribute( 'mention', { id: '#101', uid: 1234 }, doc.selection.getFirstRange() );
@@ -1570,7 +1568,7 @@ describe( 'MentionUI', () => {
 					this.skip();
 				}
 
-				setData( model, '<paragraph>[] foo</paragraph>' );
+				_setModelData( model, '<paragraph>[] foo</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( character, doc.selection.getFirstPosition() );
@@ -1594,7 +1592,7 @@ describe( 'MentionUI', () => {
 		it( 'should close the opened panel on esc', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1619,7 +1617,7 @@ describe( 'MentionUI', () => {
 		it( 'should close the opened panel when click outside the panel', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1640,7 +1638,7 @@ describe( 'MentionUI', () => {
 		it( 'should hide the panel on selection change', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1665,7 +1663,7 @@ describe( 'MentionUI', () => {
 		it( 'should hide the panel on selection change triggered by mouse click', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1703,7 +1701,7 @@ describe( 'MentionUI', () => {
 
 			describe( 'on arrows', () => {
 				it( 'should cycle down on arrow down', () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1737,7 +1735,7 @@ describe( 'MentionUI', () => {
 				} );
 
 				it( 'should cycle up on arrow up', () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1771,7 +1769,7 @@ describe( 'MentionUI', () => {
 				} );
 
 				it( 'should not cycle with only one item in the list', () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					const keyDownEvtData = {
 						keyCode: keyCodes.arrowdown,
@@ -1812,7 +1810,7 @@ describe( 'MentionUI', () => {
 
 			describe( 'on other keys', () => {
 				it( 'should do nothing on space', async () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+					_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
 						writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1856,7 +1854,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1893,7 +1891,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1910,7 +1908,7 @@ describe( 'MentionUI', () => {
 			describe( 'keys', () => {
 				describe( 'on arrows', () => {
 					it( 'should cycle down on arrow down', () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -1944,7 +1942,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					it( 'should cycle up on arrow up', () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2016,7 +2014,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2033,7 +2031,7 @@ describe( 'MentionUI', () => {
 			describe( 'keys', () => {
 				describe( 'on arrows', () => {
 					it( 'should cycle down on arrow down', () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2067,7 +2065,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					it( 'should cycle up on arrow up', () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2109,7 +2107,7 @@ describe( 'MentionUI', () => {
 
 				describe( 'mouse', () => {
 					it( 'should execute selected button on mouse click', () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2166,7 +2164,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2216,7 +2214,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should show panel for matched marker if it contains the other configured marker', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2253,7 +2251,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should match a feed', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@a3', doc.selection.getFirstPosition() );
@@ -2268,7 +2266,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should match a feed with space', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@a4 xyz', doc.selection.getFirstPosition() );
@@ -2283,7 +2281,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should match a feed with multiple spaces', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@a5 x y z', doc.selection.getFirstPosition() );
@@ -2298,7 +2296,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should match a feed with spaces and other mention character', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@a6 x$z', doc.selection.getFirstPosition() );
@@ -2315,7 +2313,7 @@ describe( 'MentionUI', () => {
 
 		function testExecuteKey( name, keyCode, feedItems ) {
 			it( 'should execute selected button on ' + name, () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2354,7 +2352,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should do nothing if panel is not visible on ' + name, () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2416,7 +2414,7 @@ describe( 'MentionUI', () => {
 			testExecuteKey( 'a', keyCodes.a, issues );
 
 			it( 'should no longer commit on enter (default)', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2438,7 +2436,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should no longer commit on tab (default)', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2492,7 +2490,7 @@ describe( 'MentionUI', () => {
 					dropdownLimit: mentionsLimit,
 					feeds: [ customFunctionFeed ] } )
 					.then( () => {
-						setData( editor.model, '<paragraph>foo []</paragraph>' );
+						_setModelData( editor.model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2510,7 +2508,7 @@ describe( 'MentionUI', () => {
 					dropdownLimit: 25,
 					feeds: [ simpleArrayFeed ] } )
 					.then( () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2528,7 +2526,7 @@ describe( 'MentionUI', () => {
 					dropdownLimit: Infinity,
 					feeds: [ simpleArrayFeed ] } )
 					.then( () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2546,7 +2544,7 @@ describe( 'MentionUI', () => {
 					dropdownLimit: 25,
 					feeds: [ limitedArrayFeed ] } )
 					.then( () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+						_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2565,7 +2563,7 @@ describe( 'MentionUI', () => {
 		beforeEach( () => createClassicTestEditor( staticConfig ) );
 
 		it( 'should call the mention command with proper options', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2592,7 +2590,7 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should hide panel on execute', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2611,7 +2609,7 @@ describe( 'MentionUI', () => {
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			setData( model, '<paragraph>foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -2656,7 +2654,7 @@ describe( 'MentionUI', () => {
 
 	function fireKeyDownEvent( options ) {
 		const eventInfo = new EventInfo( editingView.document, 'keydown' );
-		const eventData = new DomEventData( editingView.document, {
+		const eventData = new ViewDocumentDomEventData( editingView.document, {
 			target: document.body
 		}, options );
 

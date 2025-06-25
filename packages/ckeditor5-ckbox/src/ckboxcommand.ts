@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, setTimeout, URL */
-
 /**
  * @module ckbox/ckboxcommand
  */
 
-import type { Writer } from 'ckeditor5/src/engine.js';
+import type { ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { createElement, toMap } from 'ckeditor5/src/utils.js';
 
@@ -44,7 +42,7 @@ const ASSET_INSERTION_WAIT_TIMEOUT = 1000;
  * - To insert links to other files it uses the {@link module:link/linkcommand~LinkCommand 'link'} command from the
  * {@link module:link/link~Link Link feature}.
  */
-export default class CKBoxCommand extends Command {
+export class CKBoxCommand extends Command {
 	declare public value: boolean;
 
 	/**
@@ -282,7 +280,7 @@ export default class CKBoxCommand extends Command {
 	private _insertAsset(
 		asset: CKBoxAssetDefinition,
 		isLastAsset: boolean,
-		writer: Writer,
+		writer: ModelWriter,
 		isSingleAsset: boolean
 	) {
 		const editor = this.editor;
@@ -340,7 +338,7 @@ export default class CKBoxCommand extends Command {
 	 * @param writer An instance of the model writer.
 	 * @param isSingleAsset It's true when only one asset is processed.
 	 */
-	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: Writer, isSingleAsset: boolean ): void {
+	private _insertLink( asset: CKBoxAssetLinkDefinition, writer: ModelWriter, isSingleAsset: boolean ): void {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;

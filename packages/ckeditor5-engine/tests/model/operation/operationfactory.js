@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import NoOperation from '../../../src/model/operation/nooperation.js';
-import OperationFactory from '../../../src/model/operation/operationfactory.js';
+import { Model } from '../../../src/model/model.js';
+import { NoOperation } from '../../../src/model/operation/nooperation.js';
+import { OperationFactory } from '../../../src/model/operation/operationfactory.js';
 
 describe( 'OperationFactory', () => {
 	let model;

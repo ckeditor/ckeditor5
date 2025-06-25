@@ -7,10 +7,12 @@
  * @module html-embed
  */
 
-export { default as HtmlEmbed } from './htmlembed.js';
-export { default as HtmlEmbedEditing } from './htmlembedediting.js';
-export { default as HtmlEmbedUI } from './htmlembedui.js';
-export type { default as HtmlEmbedCommand } from './htmlembedcommand.js';
-export type { HtmlEmbedConfig } from './htmlembedconfig.js';
+export { HtmlEmbed } from './htmlembed.js';
+export { HtmlEmbedEditing } from './htmlembedediting.js';
+export { HtmlEmbedUI } from './htmlembedui.js';
+export { HtmlEmbedCommand } from './htmlembedcommand.js';
+export type { HtmlEmbedConfig, HtmlEmbedSanitizeOutput } from './htmlembedconfig.js';
+
+export type { RawHtmlApi as _RawHtmlEmbedApi } from './htmlembedediting.js';
 
 import './augmentation.js';

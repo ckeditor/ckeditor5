@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ContextPlugin from '@ckeditor/ckeditor5-core/src/contextplugin.js';
-import Notification from '../../src/notification/notification.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ContextPlugin } from '@ckeditor/ckeditor5-core/src/contextplugin.js';
+import { Notification } from '../../src/notification/notification.js';
 
 describe( 'Notification', () => {
 	let editor, notification;

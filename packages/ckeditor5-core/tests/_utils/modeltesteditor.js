@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable new-cap */
-
-import Editor from '../../src/editor/editor.js';
+import { Editor } from '../../src/editor/editor.js';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).
@@ -15,7 +13,7 @@ import Editor from '../../src/editor/editor.js';
  *
  * @memberOf tests.core._utils
  */
-export default class ModelTestEditor extends Editor {
+export class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 

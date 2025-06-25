@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
 import { IconView, ListItemButtonView } from '../../../src/index.js';
-import DropdownMenuButtonView from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
+import { DropdownMenuButtonView } from '../../../src/dropdown/menu/dropdownmenubuttonview.js';
 
 describe( 'DropdownMenuButtonView', () => {
 	let buttonView, locale;

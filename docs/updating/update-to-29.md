@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 29.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 29.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v29.x
 order: 95
 ---
@@ -276,7 +277,7 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 
 * The {@link module:image/imageutils~ImageUtils#insertImage `insertImage()`} function:
 	* No longer requires the `model` model instance to run.
-	* Allows {@link module:engine/model/selection~Selectable} as a second argument (before only {@link module:engine/model/position~Position} was accepted).
+	* Allows {@link module:engine/model/selection~ModelSelectable} as a second argument (before only {@link module:engine/model/position~ModelPosition} was accepted).
 	* Supports the optional `imageType` argument to force the type of the image to be inserted.
 
 	```js

@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Position from '../../../src/view/position.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { ViewPosition } from '../../../src/view/position.js';
 
 function createEndingUIElement( writer ) {
 	const element = writer.createUIElement( 'span', null, function( domDocument ) {
@@ -67,10 +65,10 @@ ClassicEditor
 		const viewText2 = viewRoot.getChild( 1 ).getChild( 0 );
 
 		view.change( writer => {
-			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
-			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText2, 0 ), createMiddleUIElement( writer ) );
+			writer.insert( new ViewPosition( viewText2, 6 ), createMiddleUIElement( writer ) );
 		} );
 
 		document.querySelector( '#insert-ui-element' ).addEventListener( 'click', () => {

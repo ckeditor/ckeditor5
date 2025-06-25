@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import Indent from '../src/indent.js';
-import IndentEditing from '../src/indentediting.js';
-import IndentUI from '../src/indentui.js';
+import { Indent } from '../src/indent.js';
+import { IndentEditing } from '../src/indentediting.js';
+import { IndentUI } from '../src/indentui.js';
 
 describe( 'Indent', () => {
 	let editor, element;

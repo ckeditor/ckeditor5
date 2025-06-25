@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document, window */
-
-import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import FindAndReplace from '../../src/findandreplace.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { FindAndReplace } from '../../src/findandreplace.js';
 
 MultiRootEditor
 	.create( {

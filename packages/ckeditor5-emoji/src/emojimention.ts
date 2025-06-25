@@ -10,11 +10,11 @@
 import { logWarning, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
-import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
+import type { MentionFeed, MentionFeedObjectItem, MentionItemRenderer } from '@ckeditor/ckeditor5-mention';
 
-import EmojiRepository from './emojirepository.js';
-import type EmojiPicker from './emojipicker.js';
-import type { SkinToneId } from './emojiconfig.js';
+import { EmojiRepository } from './emojirepository.js';
+import { type EmojiPicker } from './emojipicker.js';
+import type { EmojiSkinToneId } from './emojiconfig.js';
 
 const EMOJI_MENTION_MARKER = ':';
 const EMOJI_SHOW_ALL_OPTION_ID = ':__EMOJI_SHOW_ALL:';
@@ -25,7 +25,7 @@ const EMOJI_HINT_OPTION_ID = ':__EMOJI_HINT:';
  *
  * Introduces the autocomplete of emojis while typing.
  */
-export default class EmojiMention extends Plugin {
+export class EmojiMention extends Plugin {
 	/**
 	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
 	 */
@@ -51,7 +51,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Defines a skin tone that is set in the emoji config.
 	 */
-	private readonly _skinTone: SkinToneId;
+	private readonly _skinTone: EmojiSkinToneId;
 
 	/**
 	 * @inheritDoc
@@ -152,7 +152,7 @@ export default class EmojiMention extends Plugin {
 	/**
 	 * Returns the `itemRenderer()` callback for mention config.
 	 */
-	private _customItemRendererFactory( t: LocaleTranslate ): ItemRenderer {
+	private _customItemRendererFactory( t: LocaleTranslate ): MentionItemRenderer {
 		return ( item: MentionFeedObjectItem ) => {
 			const itemElement = document.createElement( 'button' );
 

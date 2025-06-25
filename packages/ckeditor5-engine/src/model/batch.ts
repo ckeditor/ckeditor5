@@ -8,7 +8,7 @@
  */
 
 import { logWarning } from '@ckeditor/ckeditor5-utils';
-import type Operation from './operation/operation.js';
+import { type Operation } from './operation/operation.js';
 
 /**
  * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations
@@ -24,7 +24,7 @@ import type Operation from './operation/operation.js';
  * @see module:engine/model/model~Model#enqueueChange
  * @see module:engine/model/model~Model#change
  */
-export default class Batch implements BatchType {
+export class Batch implements BatchType {
 	/**
 	 * An array of operations that compose this batch.
 	 */
@@ -79,30 +79,6 @@ export default class Batch implements BatchType {
 		this.isLocal = isLocal;
 		this.isUndo = isUndo;
 		this.isTyping = isTyping;
-	}
-
-	/**
-	 * The type of the batch.
-	 *
-	 * **This property has been deprecated and is always set to the `'default'` value.**
-	 *
-	 * It can be one of the following values:
-	 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
-	 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
-	 * changes.
-	 *
-	 * @deprecated
-	 */
-	public get type(): 'default' {
-		/**
-		 * The {@link module:engine/model/batch~Batch#type `Batch#type` } property has been deprecated and will be removed in the near
-		 * future. Use `Batch#isLocal`, `Batch#isUndoable`, `Batch#isUndo` and `Batch#isTyping` instead.
-		 *
-		 * @error batch-type-deprecated
-		 */
-		logWarning( 'batch-type-deprecated' );
-
-		return 'default';
 	}
 
 	/**

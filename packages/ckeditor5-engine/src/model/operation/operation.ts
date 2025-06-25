@@ -9,24 +9,24 @@
  * @module engine/model/operation/operation
  */
 
-import type Batch from '../batch.js';
-import type Document from '../document.js';
-import type { Selectable } from '../selection.js';
+import { type Batch } from '../batch.js';
+import { type ModelDocument } from '../document.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Abstract base operation class.
  */
-export default abstract class Operation {
+export abstract class Operation {
 	/**
-	 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
+	 * {@link module:engine/model/document~ModelDocument#version} on which operation can be applied. If you try to
 	 * {@link module:engine/model/model~Model#applyOperation apply} operation with different base version than the
-	 * {@link module:engine/model/document~Document#version document version} the
+	 * {@link module:engine/model/document~ModelDocument#version document version} the
 	 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 	 */
 	public baseVersion: number | null;
 
 	/**
-	 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+	 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~ModelItem items}.
 	 */
 	public readonly isDocumentOperation: boolean;
 
@@ -47,7 +47,7 @@ export default abstract class Operation {
 	/**
 	 * Base operation constructor.
 	 *
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( baseVersion: number | null ) {
@@ -61,7 +61,7 @@ export default abstract class Operation {
 	 *
 	 * The exact returned parameter differs between operation types.
 	 */
-	public abstract get affectedSelectable(): Selectable;
+	public abstract get affectedSelectable(): ModelSelectable;
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
@@ -133,7 +133,7 @@ export default abstract class Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static fromJSON( json: any, document: Document ): Operation {
+	public static fromJSON( json: any, document: ModelDocument ): Operation {
 		return new ( this as any )( json.baseVersion );
 	}
 

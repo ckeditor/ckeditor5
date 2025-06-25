@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, window, document */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 /**
  * Client custom plugin extending HTML support for compatibility.

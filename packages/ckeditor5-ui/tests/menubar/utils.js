@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event, KeyboardEvent, MouseEvent */
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	Locale,
 	keyCodes,
@@ -25,8 +23,6 @@ import {
 	getMenuByLabel
 } from './_utils/utils.js';
 import { MenuBarMenuViewPanelPositioningFunctions, processMenuBarConfig } from '../../src/menubar/utils.js';
-
-/* globals console */
 
 describe( 'MenuBarView utils', () => {
 	const locale = new Locale();

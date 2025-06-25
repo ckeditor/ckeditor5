@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
-import BalloonEditor from '../src/ballooneditor.js';
-import BalloonEditorUI from '../src/ballooneditorui.js';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
-import BalloonEditorUIView from '../src/ballooneditoruiview.js';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import { BalloonEditor } from '../src/ballooneditor.js';
+import { BalloonEditorUI } from '../src/ballooneditorui.js';
+import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { isElement } from 'es-toolkit/compat';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -256,7 +254,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		it( 'should focus the main toolbar when the focus is in the editing root', () => {
 			const spy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			ui.focusTracker.isFocused = true;
 			ui.focusTracker.focusedElement = domRoot;
@@ -270,7 +268,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
 			pressAltF10();
@@ -290,7 +288,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const toolbarSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 			const imageToolbarSpy = testUtils.sinon.spy( imageToolbar, 'focus' );
 
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>foo</paragraph>' +
 				'[<imageBlock src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/warsaw.jpg"><caption>bar</caption></imageBlock>]' +
 				'<paragraph>baz</paragraph>'
@@ -315,7 +313,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Focus the toolbar.
 			pressAltF10();
@@ -330,7 +328,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 			const domRootFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
 			const toolbarFocusSpy = testUtils.sinon.spy( toolbarView, 'focus' );
 
-			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			pressEsc();
 

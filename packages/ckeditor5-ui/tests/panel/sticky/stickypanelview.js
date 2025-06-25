@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals visualViewport, document, Event */
-
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
-import StickyPanelView from '../../../src/panel/sticky/stickypanelview.js';
-import View from '../../../src/view.js';
-import LabelView from '../../../src/label/labelview.js';
-import ViewCollection from '../../../src/viewcollection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { StickyPanelView } from '../../../src/panel/sticky/stickypanelview.js';
+import { View } from '../../../src/view.js';
+import { LabelView } from '../../../src/label/labelview.js';
+import { ViewCollection } from '../../../src/viewcollection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'StickyPanelView', () => {
 	let view, element, contentPanelElement, placeholderElement, limiterElement, locale;

@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import SpecialCharacters from '../src/specialcharacters.js';
-import SpecialCharactersMathematical from '../src/specialcharactersmathematical.js';
-import SpecialCharactersArrows from '../src/specialcharactersarrows.js';
-import CharacterGridView from '../src/ui/charactergridview.js';
-import CharacterInfoView from '../src/ui/characterinfoview.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { SpecialCharacters } from '../src/specialcharacters.js';
+import { SpecialCharactersMathematical } from '../src/specialcharactersmathematical.js';
+import { SpecialCharactersArrows } from '../src/specialcharactersarrows.js';
+import { CharacterGridView } from '../src/ui/charactergridview.js';
+import { CharacterInfoView } from '../src/ui/characterinfoview.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import SpecialCharactersCategoriesView from '../src/ui/specialcharacterscategoriesview.js';
+import { SpecialCharactersCategoriesView } from '../src/ui/specialcharacterscategoriesview.js';
 import { Dialog } from '@ckeditor/ckeditor5-ui';
-import SpecialCharactersView from '../src/ui/specialcharactersview.js';
+import { SpecialCharactersView } from '../src/ui/specialcharactersview.js';
 
 describe( 'SpecialCharacters', () => {
 	let editor, element, command, plugin, button, dialog;

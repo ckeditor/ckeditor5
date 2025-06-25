@@ -7,10 +7,10 @@
  * @module ui/menubar/utils
  */
 
-import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import type MenuBarMenuView from './menubarmenuview.js';
+import { MenuBarMenuListItemView } from './menubarmenulistitemview.js';
+import { type MenuBarMenuView } from './menubarmenuview.js';
 import type {
-	default as MenuBarView,
+	MenuBarView,
 	MenuBarConfig,
 	MenuBarMenuMouseEnterEvent,
 	MenuBarMenuChangeIsOpenEvent,
@@ -24,9 +24,9 @@ import type {
 	NormalizedMenuBarConfigObject,
 	MenuBarConfigAddedItem
 } from './menubarview.js';
-import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
+import { clickOutsideHandler } from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
-import type ComponentFactory from '../componentfactory.js';
+import { type ComponentFactory } from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
 import {
 	logWarning,
@@ -40,6 +40,7 @@ const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ * @internal
  */
 export const MenuBarBehaviors = {
 	/**
@@ -202,6 +203,7 @@ export const MenuBarBehaviors = {
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} component.
+ * @internal
  */
 export const MenuBarMenuBehaviors = {
 	/**
@@ -396,6 +398,9 @@ export const MenuBarMenuBehaviors = {
  *	│               ├──────┐
  *	│               │      │
  *	└───────────────┴──────┘
+ */
+/**
+ * @internal
  */
 export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	southEast: buttonRect => {
@@ -1048,6 +1053,7 @@ export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): Norma
  * * Removed obsolete separators,
  * * Purged empty menus,
  * * Localized top-level menu labels.
+ * @internal
  */
 export function processMenuBarConfig( {
 	normalizedConfig,

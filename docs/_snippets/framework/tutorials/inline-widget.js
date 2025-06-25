@@ -16,7 +16,7 @@ import {
 	Widget,
 	toWidget,
 	viewToModelPositionOutsideModelElement,
-	ViewModel,
+	UIModel,
 	addListToDropdown,
 	createDropdown,
 	Collection
@@ -106,7 +106,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				commandParam: name,
 				label: name,
 				withText: true

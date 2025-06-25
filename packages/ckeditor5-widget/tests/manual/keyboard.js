@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import Widget from '../../src/widget.js';
+import { Widget } from '../../src/widget.js';
 import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 function BlockWidget( editor ) {
 	editor.model.schema.register( 'div', {

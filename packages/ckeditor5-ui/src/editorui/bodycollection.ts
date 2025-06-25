@@ -7,11 +7,9 @@
  * @module ui/editorui/bodycollection
  */
 
-/* globals document */
-
-import Template from '../template.js';
-import ViewCollection from '../viewcollection.js';
-import type View from '../view.js';
+import { Template } from '../template.js';
+import { ViewCollection } from '../viewcollection.js';
+import { type View } from '../view.js';
 
 import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -62,7 +60,7 @@ import { createElement, type Locale } from '@ckeditor/ckeditor5-utils';
  * **Note**: The shared collection wrapper (`<div class="ck-body-wrapper">...</div>`) gets automatically removed from DOM when the
  * last body collection is {@link ~BodyCollection#detachFromDom detached} and does not require any special handling.
  */
-export default class BodyCollection extends ViewCollection {
+export class BodyCollection extends ViewCollection {
 	/**
 	 * The {@link module:core/editor/editor~Editor#locale editor's locale} instance.
 	 * See the view {@link module:ui/view~View#locale locale} property.

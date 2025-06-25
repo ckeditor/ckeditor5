@@ -7,7 +7,7 @@
  * @module engine/view/node
  */
 
-import TypeCheckable from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 
 import {
 	CKEditorError,
@@ -17,34 +17,34 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-import type { default as Document, ChangeType } from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
+import type { ViewDocument, ViewDocumentChangeType } from './document.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
+import { type ViewElement } from './element.js';
 
 /**
  * Abstract view node class.
  *
  * This is an abstract class. Its constructor should not be used directly.
- * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
+ * Use the {@link module:engine/view/downcastwriter~ViewDowncastWriter} or {@link module:engine/view/upcastwriter~ViewUpcastWriter}
  * to create new instances of view nodes.
  */
-export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckable ) {
 	/**
 	 * The document instance to which this node belongs.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
-	 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
+	 * Parent element. Null by default. Set by {@link module:engine/view/element~ViewElement#_insertChild}.
 	 */
-	public readonly parent: Element | DocumentFragment | null;
+	public readonly parent: ViewElement | ViewDocumentFragment | null;
 
 	/**
 	 * Creates a tree view node.
 	 *
 	 * @param document The document instance to which this node belongs.
 	 */
-	protected constructor( document: Document ) {
+	protected constructor( document: ViewDocument ) {
 		super();
 
 		this.document = document;
@@ -80,7 +80,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	/**
 	 * Node's next sibling, or `null` if it is the last child.
 	 */
-	public get nextSibling(): Node | null {
+	public get nextSibling(): ViewNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index + 1 ) ) || null;
@@ -89,7 +89,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	/**
 	 * Node's previous sibling, or `null` if it is the first child.
 	 */
-	public get previousSibling(): Node | null {
+	public get previousSibling(): ViewNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index - 1 ) ) || null;
@@ -98,9 +98,9 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	/**
 	 * Top-most ancestor of the node. If the node has no parent it is the root itself.
 	 */
-	public get root(): Element | DocumentFragment {
+	public get root(): ViewElement | ViewDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let root: Node | DocumentFragment = this;
+		let root: ViewNode | ViewDocumentFragment = this;
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -118,7 +118,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,
-	 * beginning from {@link module:engine/view/node~Node#root root}, down to this node's index.
+	 * beginning from {@link module:engine/view/node~ViewNode#root root}, down to this node's index.
 	 *
 	 * ```ts
 	 * const abc = downcastWriter.createText( 'abc' );
@@ -136,7 +136,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | DocumentFragment = this;
+		let node: ViewNode | ViewDocumentFragment = this;
 
 		while ( node.parent ) {
 			path.unshift( node.index! );
@@ -155,8 +155,8 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
-		const ancestors: Array<Node | DocumentFragment> = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<ViewNode | ViewDocumentFragment> {
+		const ancestors: Array<ViewNode | ViewDocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -168,7 +168,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/element~Element} or {@link module:engine/view/documentfragment~DocumentFragment}
+	 * Returns a {@link module:engine/view/element~ViewElement} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param node The second node.
@@ -176,7 +176,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | DocumentFragment | null {
+	public getCommonAncestor( node: ViewNode, options: { includeSelf?: boolean } = {} ): ViewElement | ViewDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -186,16 +186,16 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | DocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( ViewElement | ViewDocumentFragment );
 	}
 
 	/**
 	 * Returns whether this node is before given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/view/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/view/documentfragment~ViewDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isBefore( node: Node ): boolean {
+	public isBefore( node: ViewNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -225,11 +225,11 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 
 	/**
 	 * Returns whether this node is after given node. `false` is returned if nodes are in different trees (for example,
-	 * in different {@link module:engine/view/documentfragment~DocumentFragment}s).
+	 * in different {@link module:engine/view/documentfragment~ViewDocumentFragment}s).
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isAfter( node: Node ): boolean {
+	public isAfter( node: ViewNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -260,7 +260,7 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @param data Additional data.
 	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node, data?: { index: number } ): void {
+	public _fireChange( type: ViewDocumentChangeType, node: ViewNode, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 
 		if ( this.parent ) {
@@ -288,24 +288,24 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @internal
 	 * @returns Clone of this node.
 	 */
-	public abstract _clone( deep?: boolean ): Node;
+	public abstract _clone( deep?: boolean ): ViewNode;
 
 	/**
 	 * Checks if provided node is similar to this node.
 	 *
 	 * @returns True if nodes are similar.
 	 */
-	public abstract isSimilar( other: Node ): boolean;
+	public abstract isSimilar( other: ViewNode ): boolean;
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Node.prototype.is = function( type: string ): boolean {
+ViewNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'view:node';
 };
 
 /**
- * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.
+ * Fired when list of {@link module:engine/view/element~ViewElement elements} children, attributes or text changes.
  *
  * Change event is bubbled – it is fired on all ancestors.
  *
@@ -313,12 +313,12 @@ Node.prototype.is = function( type: string ): boolean {
  *
  * If `change:children` event is fired, there is an additional second parameter, which is an object with additional data related to change.
  *
- * @eventName ~Node#change
- * @eventName ~Node#change:children
- * @eventName ~Node#change:attributes
- * @eventName ~Node#change:text
+ * @eventName ~ViewNode#change
+ * @eventName ~ViewNode#change:children
+ * @eventName ~ViewNode#change:attributes
+ * @eventName ~ViewNode#change:text
  */
 export type ViewNodeChangeEvent = {
-	name: 'change' | `change:${ ChangeType }`;
-	args: [ changedNode: Node, data?: { index: number } ];
+	name: 'change' | `change:${ ViewDocumentChangeType }`;
+	args: [ changedNode: ViewNode, data?: { index: number } ];
 };

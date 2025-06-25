@@ -7,8 +7,27 @@
  * @module watchdog
  */
 
-export { default as ContextWatchdog } from './contextwatchdog.js';
-export { default as EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
-export { default as Watchdog, type WatchdogConfig } from './watchdog.js';
+export {
+	ContextWatchdog,
+	type ContextWatchdogRestartEvent,
+	type ContextWatchdogItemErrorEvent,
+	type ContextWatchdogItemErrorEventData,
+	type ContextWatchdogItemRestartEvent,
+	type ContextWatchdogItemRestartEventData,
+	type ContextWatchdogItemConfiguration
+} from './contextwatchdog.js';
+
+export { EditorWatchdog, type EditorWatchdogCreatorFunction, type EditorWatchdogRestartEvent } from './editorwatchdog.js';
+export { Watchdog, type WatchdogConfig } from './watchdog.js';
+
+export type {
+	EventMap,
+	EventArgs,
+	EventCallback,
+	WatchdogErrorEvent,
+	WatchdogErrorEventData,
+	WatchdogStateChangeEvent,
+	WatchdogState
+} from './watchdog.js';
 
 import './augmentation.js';

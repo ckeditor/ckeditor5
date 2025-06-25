@@ -7,8 +7,6 @@
  * @module source-editing/sourceediting
  */
 
-/* global console */
-
 import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
 import { IconSource } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
@@ -26,7 +24,7 @@ const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
  * For a detailed overview, check the {@glink features/source-editing/source-editing source editing feature documentation} and the
  * {@glink api/source-editing package page}.
  */
-export default class SourceEditing extends Plugin {
+export class SourceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

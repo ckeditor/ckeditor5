@@ -7,8 +7,6 @@
  * @module upload/filereader
  */
 
-/* globals window */
-
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 type DomFileReader = globalThis.FileReader;
@@ -16,7 +14,7 @@ type DomFileReader = globalThis.FileReader;
 /**
  * Wrapper over the native `FileReader`.
  */
-export default class FileReader extends /* #__PURE__ */ ObservableMixin() {
+export class FileReader extends /* #__PURE__ */ ObservableMixin() {
 	public total!: number;
 
 	/**

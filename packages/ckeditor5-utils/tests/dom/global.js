@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document */
-
-import global from '../../src/dom/global.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '../../src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'global', () => {
 	testUtils.createSinonSandbox();

@@ -8,11 +8,13 @@
  */
 
 import type { Editor, Plugin } from 'ckeditor5/src/core.js';
-import type AttributeCommand from './attributecommand.js';
+import { type AttributeCommand } from './attributecommand.js';
 import { MenuBarMenuListItemButtonView, type ButtonView } from 'ckeditor5/src/ui.js';
 
 /**
  * Returns a function that creates a (toolbar or menu bar) button for a basic style feature.
+ *
+ * @internal
  */
 export function getButtonCreator( {
 	editor, commandName, plugin, icon, label, keystroke

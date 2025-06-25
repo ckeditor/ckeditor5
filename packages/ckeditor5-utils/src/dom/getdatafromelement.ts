@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals HTMLTextAreaElement */
-
 /**
  * @module utils/dom/getdatafromelement
  */
@@ -15,7 +13,7 @@
  * @param el The element from which the data will be retrieved.
  * @returns The data string.
  */
-export default function getDataFromElement( el: HTMLElement ): string {
+export function getDataFromElement( el: HTMLElement ): string {
 	if ( el instanceof HTMLTextAreaElement ) {
 		return el.value;
 	}

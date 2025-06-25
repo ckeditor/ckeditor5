@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { EditorUIView } from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview.js';
 import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
 
 describe( 'cleanup util', () => {

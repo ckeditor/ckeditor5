@@ -7,31 +7,31 @@
  * @module engine/model/writer
  */
 
-import AttributeOperation from './operation/attributeoperation.js';
-import DetachOperation from './operation/detachoperation.js';
-import InsertOperation from './operation/insertoperation.js';
-import MarkerOperation from './operation/markeroperation.js';
-import MergeOperation from './operation/mergeoperation.js';
-import MoveOperation from './operation/moveoperation.js';
-import RenameOperation from './operation/renameoperation.js';
-import RootAttributeOperation from './operation/rootattributeoperation.js';
-import RootOperation from './operation/rootoperation.js';
-import SplitOperation from './operation/splitoperation.js';
+import { AttributeOperation } from './operation/attributeoperation.js';
+import { DetachOperation } from './operation/detachoperation.js';
+import { InsertOperation } from './operation/insertoperation.js';
+import { MarkerOperation } from './operation/markeroperation.js';
+import { MergeOperation } from './operation/mergeoperation.js';
+import { MoveOperation } from './operation/moveoperation.js';
+import { RenameOperation } from './operation/renameoperation.js';
+import { RootAttributeOperation } from './operation/rootattributeoperation.js';
+import { RootOperation } from './operation/rootoperation.js';
+import { SplitOperation } from './operation/splitoperation.js';
 
-import DocumentFragment from './documentfragment.js';
-import DocumentSelection from './documentselection.js';
-import Element from './element.js';
-import Position, { type PositionOffset, type PositionStickiness } from './position.js';
-import Range from './range.js';
-import RootElement from './rootelement.js';
-import Text from './text.js';
+import { ModelDocumentFragment } from './documentfragment.js';
+import { ModelDocumentSelection } from './documentselection.js';
+import { ModelElement } from './element.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
+import { ModelRange } from './range.js';
+import { ModelRootElement } from './rootelement.js';
+import { ModelText } from './text.js';
 
 import type { Marker } from './markercollection.js';
-import type { default as Selection, PlaceOrOffset, Selectable } from './selection.js';
-import type Batch from './batch.js';
-import type Item from './item.js';
-import type Model from './model.js';
-import type { default as Node, NodeAttributes } from './node.js';
+import type { ModelSelection, ModelPlaceOrOffset, ModelSelectable } from './selection.js';
+import { type Batch } from './batch.js';
+import { type ModelItem } from './item.js';
+import { type Model } from './model.js';
+import type { ModelNode, ModelNodeAttributes } from './node.js';
 
 import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -51,14 +51,14 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.
  *
- * Note that writer's methods do not check the {@link module:engine/model/schema~Schema}. It is possible
+ * Note that writer's methods do not check the {@link module:engine/model/schema~ModelSchema}. It is possible
  * to create incorrect model structures by using the writer. Read more about in
  * {@glink framework/deep-dive/schema#who-checks-the-schema "Who checks the schema?"}.
  *
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange
  */
-export default class Writer {
+export class ModelWriter {
 	/**
 	 * Instance of the model on which this writer operates.
 	 */
@@ -83,7 +83,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/text~Text text node}.
+	 * Creates a new {@link module:engine/model/text~ModelText text node}.
 	 *
 	 * ```ts
 	 * writer.createText( 'foo' );
@@ -92,17 +92,17 @@ export default class Writer {
 	 *
 	 * @param data Text data.
 	 * @param attributes Text attributes.
-	 * @returns {module:engine/model/text~Text} Created text node.
+	 * @returns {module:engine/model/text~ModelText} Created text node.
 	 */
 	public createText(
 		data: string,
-		attributes?: NodeAttributes
-	): Text {
-		return new Text( data, attributes );
+		attributes?: ModelNodeAttributes
+	): ModelText {
+		return new ModelText( data, attributes );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/element~Element element}.
+	 * Creates a new {@link module:engine/model/element~ModelElement element}.
 	 *
 	 * ```ts
 	 * writer.createElement( 'paragraph' );
@@ -115,18 +115,18 @@ export default class Writer {
 	 */
 	public createElement(
 		name: string,
-		attributes?: NodeAttributes
-	): Element {
-		return new Element( name, attributes );
+		attributes?: ModelNodeAttributes
+	): ModelElement {
+		return new ModelElement( name, attributes );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+	 * Creates a new {@link module:engine/model/documentfragment~ModelDocumentFragment document fragment}.
 	 *
 	 * @returns Created document fragment.
 	 */
-	public createDocumentFragment(): DocumentFragment {
-		return new DocumentFragment();
+	public createDocumentFragment(): ModelDocumentFragment {
+		return new ModelDocumentFragment();
 	}
 
 	/**
@@ -137,7 +137,7 @@ export default class Writer {
 	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any child.
 	 */
-	public cloneElement( element: Element, deep: boolean = true ): Element {
+	public cloneElement( element: ModelElement, deep: boolean = true ): ModelElement {
 		return element._clone( deep );
 	}
 
@@ -177,34 +177,34 @@ export default class Writer {
 	 * Note that you cannot re-insert a node from a document to a different document or a document fragment. In this case,
 	 * `model-writer-insert-forbidden-move` is thrown.
 	 *
-	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~ModelWriter#move `Writer#move()`}.
 	 *
 	 * **Note:** For a paste-like content insertion mechanism see
 	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`}.
 	 *
 	 * @param item Item or document fragment to insert.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insert(
-		item: Item | DocumentFragment,
-		itemOrPosition: Item | DocumentFragment | Position,
-		offset: PositionOffset = 0
+		item: ModelItem | ModelDocumentFragment,
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
+		offset: ModelPositionOffset = 0
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( item instanceof Text && item.data == '' ) {
+		if ( item instanceof ModelText && item.data == '' ) {
 			return;
 		}
 
-		const position = Position._createAt( itemOrPosition, offset );
+		const position = ModelPosition._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
 		if ( item.parent ) {
 			// We need to check if item is going to be inserted within the same document.
 			if ( isSameTree( item.root, position.root ) ) {
 				// If it's we just need to move it.
-				this.move( Range._createOn( item ), position );
+				this.move( ModelRange._createOn( item ), position );
 
 				return;
 			}
@@ -231,25 +231,25 @@ export default class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		const children = item instanceof DocumentFragment ?
+		const children = item instanceof ModelDocumentFragment ?
 			item._removeChildren( 0, item.childCount ) :
 			item;
 
 		const insert = new InsertOperation( position, children, version );
 
-		if ( item instanceof Text ) {
+		if ( item instanceof ModelText ) {
 			insert.shouldReceiveAttributes = true;
 		}
 
 		this.batch.addOperation( insert );
 		this.model.applyOperation( insert );
 
-		// When element is a DocumentFragment we need to move its markers to Document#markers.
-		if ( item instanceof DocumentFragment ) {
+		// When element is a ModelDocumentFragment we need to move its markers to Document#markers.
+		if ( item instanceof ModelDocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
-				// We need to migrate marker range from DocumentFragment to Document.
-				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
-				const range = new Range(
+				// We need to migrate marker range from ModelDocumentFragment to Document.
+				const rangeRootPosition = ModelPosition._createAt( markerRange.root, 0 );
+				const range = new ModelRange(
 					markerRange.start._getCombined( rangeRootPosition, position ),
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
@@ -288,12 +288,12 @@ export default class Writer {
 	 *
 	 * @label WITHOUT_ATTRIBUTES
 	 * @param text Text data.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertText(
 		text: string,
-		itemOrPosition?: Item | Position,
-		offset?: PositionOffset
+		itemOrPosition?: ModelItem | ModelPosition,
+		offset?: ModelPositionOffset
 	): void;
 
 	/**
@@ -320,13 +320,13 @@ export default class Writer {
 	 * @label WITH_ATTRIBUTES
 	 * @param text Text data.
 	 * @param attributes Text attributes.
-	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertText(
 		text: string,
-		attributes?: NodeAttributes,
-		itemOrPosition?: Item | Position,
-		offset?: PositionOffset
+		attributes?: ModelNodeAttributes,
+		itemOrPosition?: ModelItem | ModelPosition,
+		offset?: ModelPositionOffset
 	): void;
 
 	public insertText(
@@ -335,7 +335,7 @@ export default class Writer {
 		itemOrPosition?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof ModelPosition ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
 		} else {
 			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
@@ -365,12 +365,12 @@ export default class Writer {
 	 *
 	 * @label WITHOUT_ATTRIBUTES
 	 * @param name Name of the element.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertElement(
 		name: string,
-		itemOrPosition: Item | DocumentFragment | Position,
-		offset?: PositionOffset
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
+		offset?: ModelPositionOffset
 	): void;
 
 	/**
@@ -397,13 +397,13 @@ export default class Writer {
 	 * @label WITH_ATTRIBUTES
 	 * @param name Name of the element.
 	 * @param attributes Elements attributes.
-	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertElement(
 		name: string,
-		attributes: NodeAttributes,
-		itemOrPosition: Item | DocumentFragment | Position,
-		offset?: PositionOffset
+		attributes: ModelNodeAttributes,
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
+		offset?: ModelPositionOffset
 	): void;
 
 	public insertElement(
@@ -412,7 +412,7 @@ export default class Writer {
 		itemOrPositionOrOffset?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof ModelPosition ) {
 			this.insert( this.createElement( name ), attributes, itemOrPositionOrOffset );
 		} else {
 			this.insert( this.createElement( name, attributes ), itemOrPositionOrOffset, offset );
@@ -429,12 +429,12 @@ export default class Writer {
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
-	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~ModelWriter#move `Writer#move()`}.
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
-	public append( item: Item | DocumentFragment, parent: Element | DocumentFragment ): void {
+	public append( item: ModelItem | ModelDocumentFragment, parent: ModelElement | ModelDocumentFragment ): void {
 		this.insert( item, parent, 'end' );
 	}
 
@@ -450,7 +450,7 @@ export default class Writer {
 	 */
 	public appendText(
 		text: string,
-		parent: Element | DocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	/**
@@ -466,16 +466,16 @@ export default class Writer {
 	 */
 	public appendText(
 		text: string,
-		attributes: NodeAttributes,
-		parent: Element | DocumentFragment
+		attributes: ModelNodeAttributes,
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendText(
 		text: string,
-		attributes: NodeAttributes | Element | DocumentFragment,
-		parent?: Element | DocumentFragment
+		attributes: ModelNodeAttributes | ModelElement | ModelDocumentFragment,
+		parent?: ModelElement | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
 			this.insert( this.createText( text ), attributes, 'end' );
 		} else {
 			this.insert( this.createText( text, attributes ), parent!, 'end' );
@@ -494,7 +494,7 @@ export default class Writer {
 	 */
 	public appendElement(
 		name: string,
-		parent: Element | DocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	/**
@@ -510,16 +510,16 @@ export default class Writer {
 	 */
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes,
-		parent: Element | DocumentFragment
+		attributes: ModelNodeAttributes,
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes | Element | DocumentFragment,
-		parent?: Element | DocumentFragment
+		attributes: ModelNodeAttributes | ModelElement | ModelDocumentFragment,
+		parent?: ModelElement | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
 			this.insert( this.createElement( name ), attributes, 'end' );
 		} else {
 			this.insert( this.createElement( name, attributes ), parent!, 'end' );
@@ -527,17 +527,17 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
-	 * or on a {@link module:engine/model/range~Range range}.
+	 * Sets value of the attribute with given key on a {@link module:engine/model/item~ModelItem model item}
+	 * or on a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param key Attribute key.
 	 * @param value Attribute new value.
 	 * @param itemOrRange Model item or range on which the attribute will be set.
 	 */
-	public setAttribute( key: string, value: unknown, itemOrRange: Item | Range ): void {
+	public setAttribute( key: string, value: unknown, itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange instanceof Range ) {
+		if ( itemOrRange instanceof ModelRange ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -549,8 +549,8 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets values of attributes on a {@link module:engine/model/item~Item model item}
-	 * or on a {@link module:engine/model/range~Range range}.
+	 * Sets values of attributes on a {@link module:engine/model/item~ModelItem model item}
+	 * or on a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * ```ts
 	 * writer.setAttributes( {
@@ -563,8 +563,8 @@ export default class Writer {
 	 * @param itemOrRange Model item or range on which the attributes will be set.
 	 */
 	public setAttributes(
-		attributes: NodeAttributes,
-		itemOrRange: Item | Range
+		attributes: ModelNodeAttributes,
+		itemOrRange: ModelItem | ModelRange
 	): void {
 		for ( const [ key, val ] of toMap( attributes ) ) {
 			this.setAttribute( key, val, itemOrRange );
@@ -572,16 +572,16 @@ export default class Writer {
 	}
 
 	/**
-	 * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
-	 * or from a {@link module:engine/model/range~Range range}.
+	 * Removes an attribute with given key from a {@link module:engine/model/item~ModelItem model item}
+	 * or from a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param key Attribute key.
 	 * @param itemOrRange Model item or range from which the attribute will be removed.
 	 */
-	public removeAttribute( key: string, itemOrRange: Item | Range ): void {
+	public removeAttribute( key: string, itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange instanceof Range ) {
+		if ( itemOrRange instanceof ModelRange ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -597,16 +597,16 @@ export default class Writer {
 	 *
 	 * @param itemOrRange Model item or range from which all attributes will be removed.
 	 */
-	public clearAttributes( itemOrRange: Item | Range ): void {
+	public clearAttributes( itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		const removeAttributesFromItem = ( item: Item ) => {
+		const removeAttributesFromItem = ( item: ModelItem ) => {
 			for ( const attribute of item.getAttributeKeys() ) {
 				this.removeAttribute( attribute, item );
 			}
 		};
 
-		if ( !( itemOrRange instanceof Range ) ) {
+		if ( !( itemOrRange instanceof ModelRange ) ) {
 			removeAttributesFromItem( itemOrRange );
 		} else {
 			for ( const item of itemOrRange.getItems() ) {
@@ -637,21 +637,21 @@ export default class Writer {
 	 * These parameters work the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
-	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
+	 * (element or document fragment) or between {@link module:engine/model/document~ModelDocument#roots documents roots},
 	 * but you cannot move items from document fragment to the document or from one detached element to another. Use
-	 * {@link module:engine/model/writer~Writer#insert} in such cases.
+	 * {@link module:engine/model/writer~ModelWriter#insert} in such cases.
 	 *
 	 * @param range Source range.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public move(
-		range: Range,
-		itemOrPosition: Item | Position,
-		offset?: PositionOffset
+		range: ModelRange,
+		itemOrPosition: ModelItem | ModelPosition,
+		offset?: ModelPositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( range instanceof Range ) ) {
+		if ( !( range instanceof ModelRange ) ) {
 			/**
 			 * Invalid range to move.
 			 *
@@ -669,7 +669,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-move-range-not-flat', this );
 		}
 
-		const position = Position._createAt( itemOrPosition, offset );
+		const position = ModelPosition._createAt( itemOrPosition, offset );
 
 		// Do not move anything if the move target is same as moved range start.
 		if ( position.isEqual( range.start ) ) {
@@ -682,7 +682,7 @@ export default class Writer {
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
 			 * Range is going to be moved within not the same document. Please use
-			 * {@link module:engine/model/writer~Writer#insert insert} instead.
+			 * {@link module:engine/model/writer~ModelWriter#insert insert} instead.
 			 *
 			 * @error writer-move-different-document
 			 */
@@ -697,14 +697,14 @@ export default class Writer {
 	}
 
 	/**
-	 * Removes given model {@link module:engine/model/item~Item item} or {@link module:engine/model/range~Range range}.
+	 * Removes given model {@link module:engine/model/item~ModelItem item} or {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param itemOrRange Model item or range to remove.
 	 */
-	public remove( itemOrRange: Item | Range ): void {
+	public remove( itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
+		const rangeToRemove = itemOrRange instanceof ModelRange ? itemOrRange : ModelRange._createOn( itemOrRange );
 		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
@@ -723,7 +723,7 @@ export default class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	public merge( position: Position ): void {
+	public merge( position: ModelPosition ): void {
 		this._assertWriterUsedCorrectly();
 
 		const nodeBefore = position.nodeBefore;
@@ -732,7 +732,7 @@ export default class Writer {
 		// If part of the marker is removed, create additional marker operation for undo purposes.
 		this._addOperationForAffectedMarkers( 'merge', position );
 
-		if ( !( nodeBefore instanceof Element ) ) {
+		if ( !( nodeBefore instanceof ModelElement ) ) {
 			/**
 			 * Node before merge position must be an element.
 			 *
@@ -741,7 +741,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-merge-no-element-before', this );
 		}
 
-		if ( !( nodeAfter instanceof Element ) ) {
+		if ( !( nodeAfter instanceof ModelElement ) ) {
 			/**
 			 * Node after merge position must be an element.
 			 *
@@ -761,26 +761,26 @@ export default class Writer {
 	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath `Model#createPositionFromPath()`}.
 	 *
 	 * @param root Root of the position.
-	 * @param path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
+	 * @param stickiness Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
 	public createPositionFromPath(
-		root: Element | DocumentFragment,
+		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness?: PositionStickiness
-	): Position {
+		stickiness?: ModelPositionStickiness
+	): ModelPosition {
 		return this.model.createPositionFromPath( root, path, stickiness );
 	}
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}.
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | Position | DocumentFragment,
-		offset?: PositionOffset
-	): Position {
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
+		offset?: ModelPositionOffset
+	): ModelPosition {
 		return this.model.createPositionAt( itemOrPosition, offset );
 	}
 
@@ -789,7 +789,7 @@ export default class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionAfter( item: Item ): Position {
+	public createPositionAfter( item: ModelItem ): ModelPosition {
 		return this.model.createPositionAfter( item );
 	}
 
@@ -798,7 +798,7 @@ export default class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionBefore( item: Item ): Position {
+	public createPositionBefore( item: ModelItem ): ModelPosition {
 		return this.model.createPositionBefore( item );
 	}
 
@@ -808,7 +808,7 @@ export default class Writer {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end?: Position ): Range {
+	public createRange( start: ModelPosition, end?: ModelPosition ): ModelRange {
 		return this.model.createRange( start, end );
 	}
 
@@ -817,7 +817,7 @@ export default class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
+	public createRangeIn( element: ModelElement | ModelDocumentFragment ): ModelRange {
 		return this.model.createRangeIn( element );
 	}
 
@@ -826,7 +826,7 @@ export default class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeOn( element: Item ): Range {
+	public createRangeOn( element: ModelItem ): ModelRange {
 		return this.model.createRangeOn( element );
 	}
 
@@ -835,16 +835,16 @@ export default class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection:SELECTABLE `Model#createSelection()`}.
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable?: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
 
-	public createSelection( ...args: [ any?, any?, any? ] ): Selection {
+	public createSelection( ...args: [ any?, any?, any? ] ): ModelSelection {
 		return this.model.createSelection( ...args );
 	}
 
@@ -853,11 +853,11 @@ export default class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	private _mergeDetached( position: Position ): void {
+	private _mergeDetached( position: ModelPosition ): void {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range._createIn( nodeAfter as any ), Position._createAt( nodeBefore!, 'end' ) );
+		this.move( ModelRange._createIn( nodeAfter as any ), ModelPosition._createAt( nodeBefore!, 'end' ) );
 		this.remove( nodeAfter! );
 	}
 
@@ -866,12 +866,12 @@ export default class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	private _merge( position: Position ): void {
-		const targetPosition = Position._createAt( position.nodeBefore!, 'end' );
-		const sourcePosition = Position._createAt( position.nodeAfter!, 0 );
+	private _merge( position: ModelPosition ): void {
+		const targetPosition = ModelPosition._createAt( position.nodeBefore!, 'end' );
+		const sourcePosition = ModelPosition._createAt( position.nodeAfter!, 0 );
 
 		const graveyard = position.root.document!.graveyard;
-		const graveyardPosition = new Position( graveyard, [ 0 ] );
+		const graveyardPosition = new ModelPosition( graveyard, [ 0 ] );
 
 		const version = position.root.document!.version;
 
@@ -893,10 +893,10 @@ export default class Writer {
 	 * @param element The element to rename.
 	 * @param newName New element name.
 	 */
-	public rename( element: Element | DocumentFragment, newName: string ): void {
+	public rename( element: ModelElement | ModelDocumentFragment, newName: string ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( element instanceof Element ) ) {
+		if ( !( element instanceof ModelElement ) ) {
 			/**
 			 * Trying to rename an object which is not an instance of Element.
 			 *
@@ -909,7 +909,7 @@ export default class Writer {
 		}
 
 		const version = element.root.document ? element.root.document.version : null;
-		const renameOperation = new RenameOperation( Position._createBefore( element ), element.name, newName, version );
+		const renameOperation = new RenameOperation( ModelPosition._createBefore( element ), element.name, newName, version );
 
 		this.batch.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
@@ -928,7 +928,10 @@ export default class Writer {
 	 * * `position` - Position between split elements.
 	 * * `range` - Range that stars from the end of the first split element and ends at the beginning of the first copy element.
 	 */
-	public split( position: Position, limitElement?: Node | DocumentFragment ): { position: Position; range: Range } {
+	public split(
+		position: ModelPosition,
+		limitElement?: ModelNode | ModelDocumentFragment
+	): { position: ModelPosition; range: ModelRange } {
 		this._assertWriterUsedCorrectly();
 
 		let splitElement = position.parent;
@@ -958,9 +961,9 @@ export default class Writer {
 
 		// We need to cache elements that will be created as a result of the first split because
 		// we need to create a range from the end of the first split element to the beginning of the
-		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
-		let firstSplitElement: Element | DocumentFragment | undefined;
-		let firstCopyElement: Node | null | undefined;
+		// first copy element. This should be handled by ModelLiveRange but it doesn't work on detached nodes.
+		let firstSplitElement: ModelElement | ModelDocumentFragment | undefined;
+		let firstCopyElement: ModelNode | null | undefined;
 
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
@@ -984,20 +987,20 @@ export default class Writer {
 
 		return {
 			position,
-			range: new Range( Position._createAt( firstSplitElement!, 'end' ), Position._createAt( firstCopyElement!, 0 ) )
+			range: new ModelRange( ModelPosition._createAt( firstSplitElement!, 'end' ), ModelPosition._createAt( firstCopyElement!, 0 ) )
 		};
 	}
 
 	/**
 	 * Wraps the given range with the given element or with a new element (if a string was passed).
 	 *
-	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat `Range#isFlat`}).
+	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~ModelRange#isFlat `Range#isFlat`}).
 	 * If not, an error will be thrown.
 	 *
 	 * @param range Range to wrap.
 	 * @param elementOrString Element or name of element to wrap the range with.
 	 */
-	public wrap( range: Range, elementOrString: Element | string ): void {
+	public wrap( range: ModelRange, elementOrString: ModelElement | string ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( !range.isFlat ) {
@@ -1009,7 +1012,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-wrap-range-not-flat', this );
 		}
 
-		const element = elementOrString instanceof Element ? elementOrString : new Element( elementOrString );
+		const element = elementOrString instanceof ModelElement ? elementOrString : new ModelElement( elementOrString );
 
 		if ( element.childCount > 0 ) {
 			/**
@@ -1032,9 +1035,9 @@ export default class Writer {
 		this.insert( element, range.start );
 
 		// Shift the range-to-wrap because we just inserted an element before that range.
-		const shiftedRange = new Range( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
+		const shiftedRange = new ModelRange( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
 
-		this.move( shiftedRange, Position._createAt( element, 0 ) );
+		this.move( shiftedRange, ModelPosition._createAt( element, 0 ) );
 	}
 
 	/**
@@ -1043,7 +1046,7 @@ export default class Writer {
 	 *
 	 * @param element Element to unwrap.
 	 */
-	public unwrap( element: Element ): void {
+	public unwrap( element: ModelElement ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( element.parent === null ) {
@@ -1055,7 +1058,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent', this );
 		}
 
-		this.move( Range._createIn( element ), this.createPositionAfter( element ) );
+		this.move( ModelRange._createIn( element ), this.createPositionAfter( element ) );
 		this.remove( element );
 	}
 
@@ -1072,8 +1075,8 @@ export default class Writer {
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by the
 	 * {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
-	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
-	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
+	 * When set to `true` it fires the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~ModelDocument#event:change `change`} event.
 	 *
 	 * Create marker directly base on marker's name:
 	 *
@@ -1108,7 +1111,7 @@ export default class Writer {
 		options: {
 			usingOperation: boolean;
 			affectsData?: boolean;
-			range: Range;
+			range: ModelRange;
 		}
 	): Marker {
 		this._assertWriterUsedCorrectly();
@@ -1161,7 +1164,8 @@ export default class Writer {
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * **Note**: If you want to change the {@link module:engine/view/element~Element view element} of the marker while its data in the model
+	 * **Note**: If you want to change the {@link module:engine/view/element~ViewElement view element}
+	 * of the marker while its data in the model
 	 * remains the same, use the dedicated {@link module:engine/controller/editingcontroller~EditingController#reconvertMarker} method.
 	 *
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
@@ -1171,8 +1175,8 @@ export default class Writer {
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by
 	 * the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
-	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
-	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
+	 * When set to `true` it fires the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~ModelDocument#event:change `change`} event.
 	 *
 	 * Update marker directly base on marker's name:
 	 *
@@ -1211,7 +1215,7 @@ export default class Writer {
 	public updateMarker(
 		markerOrName: string | Marker,
 		options?: {
-			range?: Range;
+			range?: ModelRange;
 			usingOperation?: boolean;
 			affectsData?: boolean;
 		}
@@ -1336,7 +1340,7 @@ export default class Writer {
 	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
 	 * @returns The added root element.
 	 */
-	public addRoot( rootName: string, elementName = '$root' ): RootElement {
+	public addRoot( rootName: string, elementName = '$root' ): ModelRootElement {
 		this._assertWriterUsedCorrectly();
 
 		const root = this.model.document.getRoot( rootName );
@@ -1374,7 +1378,7 @@ export default class Writer {
 	 *
 	 * @param rootOrName Name of the detached root.
 	 */
-	public detachRoot( rootOrName: string | RootElement ): void {
+	public detachRoot( rootOrName: string | ModelRootElement ): void {
 		this._assertWriterUsedCorrectly();
 
 		const root = typeof rootOrName == 'string' ? this.model.document.getRoot( rootOrName ) : rootOrName;
@@ -1414,21 +1418,21 @@ export default class Writer {
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
+	 * {@link module:engine/model/selection~ModelSelectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
 	 * // Sets collapsed selection at the position of the given node and an offset.
 	 * writer.setSelection( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'on' );
@@ -1447,11 +1451,11 @@ export default class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
+	 * {@link module:engine/model/selection~ModelSelectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
 	 * // Sets selection to the given range.
@@ -1491,26 +1495,26 @@ export default class Writer {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): void;
 
-	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public setSelection( ...args: Parameters<ModelSelection[ 'setTo' ]> ): void {
 		this._assertWriterUsedCorrectly();
 
 		this.model.document.selection._setTo( ...args );
 	}
 
 	/**
-	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
 	 * {@link #createPositionAt `writer.createPositionAt()`} parameters.
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public setSelectionFocus(
-		itemOrPosition: Item | Position,
-		offset?: PositionOffset
+		itemOrPosition: ModelItem | ModelPosition,
+		offset?: ModelPositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
 
@@ -1548,10 +1552,10 @@ export default class Writer {
 	 * @label OBJECT
 	 * @param objectOrIterable Object / iterable of key => value attribute pairs.
 	 */
-	public setSelectionAttribute( objectOrIterable: NodeAttributes ): void;
+	public setSelectionAttribute( objectOrIterable: ModelNodeAttributes ): void;
 
 	public setSelectionAttribute(
-		keyOrObjectOrIterable: string | NodeAttributes,
+		keyOrObjectOrIterable: string | ModelNodeAttributes,
 		value?: unknown
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -1595,7 +1599,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Temporarily changes the {@link module:engine/model/documentselection~DocumentSelection#isGravityOverridden gravity}
+	 * Temporarily changes the {@link module:engine/model/documentselection~ModelDocumentSelection#isGravityOverridden gravity}
 	 * of the selection from left to right.
 	 *
 	 * The gravity defines from which direction the selection inherits its attributes. If it's the default left gravity,
@@ -1621,13 +1625,13 @@ export default class Writer {
 	}
 
 	/**
-	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
+	 * Restores {@link ~ModelWriter#overrideSelectionGravity} gravity to default.
 	 *
 	 * Restoring the gravity is only possible using the unique identifier returned by
-	 * {@link ~Writer#overrideSelectionGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * {@link ~ModelWriter#overrideSelectionGravity}. Note that the gravity remains overridden as long as won't be restored
 	 * the same number of times it was overridden.
 	 *
-	 * @param uid The unique id returned by {@link ~Writer#overrideSelectionGravity}.
+	 * @param uid The unique id returned by {@link ~ModelWriter#overrideSelectionGravity}.
 	 */
 	public restoreSelectionGravity( uid: string ): void {
 		this.model.document.selection._restoreGravity( uid );
@@ -1642,7 +1646,7 @@ export default class Writer {
 
 		// Store attribute in parent element if the selection is collapsed in an empty node.
 		if ( selection.isCollapsed && selection.anchor!.parent.isEmpty ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = ModelDocumentSelection._getStoreAttributeKey( key );
 
 			this.setAttribute( storeKey, value, selection.anchor!.parent as any );
 		}
@@ -1658,7 +1662,7 @@ export default class Writer {
 
 		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
 		if ( selection.isCollapsed && selection.anchor!.parent.isEmpty ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = ModelDocumentSelection._getStoreAttributeKey( key );
 
 			this.removeAttribute( storeKey, selection.anchor!.parent as any );
 		}
@@ -1694,7 +1698,7 @@ export default class Writer {
 	 */
 	private _addOperationForAffectedMarkers(
 		type: 'move' | 'merge',
-		positionOrRange: Position | Range
+		positionOrRange: ModelPosition | ModelRange
 	): void {
 		for ( const marker of this.model.markers ) {
 			if ( !marker.managedUsingOperations ) {
@@ -1705,7 +1709,7 @@ export default class Writer {
 			let isAffected = false;
 
 			if ( type === 'move' ) {
-				const range = positionOrRange as Range;
+				const range = positionOrRange as ModelRange;
 				isAffected =
 					range.containsPosition( markerRange.start ) ||
 					range.start.isEqual( markerRange.start ) ||
@@ -1713,7 +1717,7 @@ export default class Writer {
 					range.end.isEqual( markerRange.end );
 			} else {
 				// if type === 'merge'.
-				const position = positionOrRange as Position;
+				const position = positionOrRange as ModelPosition;
 				const elementBefore = position.nodeBefore;
 				const elementAfter = position.nodeAfter;
 
@@ -1759,7 +1763,7 @@ export default class Writer {
  *
  * Given `range` must be flat.
  */
-function setAttributeOnRange( writer: Writer, key: string, value: unknown, range: Range ) {
+function setAttributeOnRange( writer: ModelWriter, key: string, value: unknown, range: ModelRange ) {
 	const model = writer.model;
 	const doc = model.document;
 
@@ -1768,7 +1772,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 
 	// Currently position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
-	let position: Position | undefined;
+	let position: ModelPosition | undefined;
 
 	// Value before the currently position.
 	let valueBefore: unknown;
@@ -1796,12 +1800,12 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 
 	// Because position in the loop is not the iterator position (see let position comment), the last position in
 	// the while loop will be last but one position in the range. We need to check the last position manually.
-	if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
+	if ( position instanceof ModelPosition && position != lastSplitPosition && valueBefore != value ) {
 		addOperation();
 	}
 
 	function addOperation() {
-		const range = new Range( lastSplitPosition, position );
+		const range = new ModelRange( lastSplitPosition, position );
 		const version = range.root.document ? doc.version : null;
 		const operation = new AttributeOperation( range, key, valueBefore, value, version );
 
@@ -1813,7 +1817,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 /**
  * Sets given attribute to the given node. When attribute value is null then attribute will be removed.
  */
-function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: Item ) {
+function setAttributeOnItem( writer: ModelWriter, key: string, value: unknown, item: ModelItem ) {
 	const model = writer.model;
 	const doc = model.document;
 	const previousValue = item.getAttribute( key );
@@ -1828,7 +1832,7 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
 
 			operation = new RootAttributeOperation( item as any, key, previousValue, value, version );
 		} else {
-			range = new Range( Position._createBefore( item ), writer.createPositionAfter( item ) );
+			range = new ModelRange( ModelPosition._createBefore( item ), writer.createPositionAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 
@@ -1844,10 +1848,10 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
  * Creates and applies marker operation to {@link module:engine/model/operation/operation~Operation operation}.
  */
 function applyMarkerOperation(
-	writer: Writer,
+	writer: ModelWriter,
 	name: string,
-	oldRange: Range | null,
-	newRange: Range | null,
+	oldRange: ModelRange | null,
+	newRange: ModelRange | null,
 	affectsData: boolean | undefined
 ) {
 	const model = writer.model;
@@ -1868,12 +1872,12 @@ function applyMarkerOperation(
  * @param batch Batch to which the operation will be added.
  * @param model Model instance on which operation will be applied.
  */
-function applyRemoveOperation( position: Position, howMany: number, batch: Batch, model: Model ) {
+function applyRemoveOperation( position: ModelPosition, howMany: number, batch: Batch, model: Model ) {
 	let operation;
 
 	if ( position.root.document ) {
 		const doc = model.document;
-		const graveyardPosition = new Position( doc.graveyard, [ 0 ] );
+		const graveyardPosition = new ModelPosition( doc.graveyard, [ 0 ] );
 
 		operation = new MoveOperation( position, howMany, graveyardPosition, doc.version );
 	} else {
@@ -1893,14 +1897,14 @@ function applyRemoveOperation( position: Position, howMany: number, batch: Batch
  * collaboration may track changes on the document but ignore changes on detached fragments and should not get
  * unexpected `move` operation.
  */
-function isSameTree( rootA: Node | DocumentFragment, rootB: Node | DocumentFragment ): boolean {
+function isSameTree( rootA: ModelNode | ModelDocumentFragment, rootB: ModelNode | ModelDocumentFragment ): boolean {
 	// If it is the same root this is the same tree.
 	if ( rootA === rootB ) {
 		return true;
 	}
 
 	// If both roots are documents root it is operation within the document what we still treat as the same tree.
-	if ( rootA instanceof RootElement && rootB instanceof RootElement ) {
+	if ( rootA instanceof ModelRootElement && rootB instanceof ModelRootElement ) {
 		return true;
 	}
 

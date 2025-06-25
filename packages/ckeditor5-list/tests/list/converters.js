@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../src/list/listediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import stubUid from './_utils/uid.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stubUid } from './_utils/uid.js';
 
 describe( 'ListEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -469,12 +469,12 @@ describe( 'ListEditing - converters', () => {
 	describe( 'other', () => {
 		describe( 'bogus paragraph', () => {
 			it( 'should refresh bogus paragraph on setting attribute from a different feature', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
@@ -487,14 +487,14 @@ describe( 'ListEditing - converters', () => {
 					writer.setAttribute( 'alignment', 'right', modelRoot.getChild( 0 ) );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li><p style="text-align:right">a</p></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li><p style="text-align:right;">a</p></li>' +
 						'<li>b</li>' +
@@ -505,12 +505,12 @@ describe( 'ListEditing - converters', () => {
 			} );
 
 			it( 'should not refresh bogus paragraph on setting selection attribute in an empty block', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted"></paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph"></span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
@@ -523,19 +523,19 @@ describe( 'ListEditing - converters', () => {
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph listIndent="0" listItemBold="true" listItemId="a" listType="bulleted" selection:bold="true"></paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li class="ck-list-marker-bold"><span class="ck-list-bogus-paragraph"><strong></strong></span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li class="ck-list-marker-bold">&nbsp;</li>' +
 						'<li>b</li>' +
@@ -546,12 +546,12 @@ describe( 'ListEditing - converters', () => {
 			} );
 
 			it( 'should not refresh bogus paragraph on setting attribute from a different feature on non-item element', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p>a</p>' +
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
@@ -564,14 +564,14 @@ describe( 'ListEditing - converters', () => {
 					writer.setAttribute( 'alignment', 'right', modelRoot.getChild( 0 ) );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p style="text-align:right">a</p>' +
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<p style="text-align:right;">a</p>' +
 					'<ul>' +
 						'<li>b</li>' +
@@ -590,7 +590,7 @@ describe( 'ListEditing - converters', () => {
 							converterPriority: 'highest'
 						} );
 
-					const input = parseModel(
+					const input = _parseModel(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
 						model.schema
 					);
@@ -600,11 +600,11 @@ describe( 'ListEditing - converters', () => {
 						writer.insert( input, modelRoot, 0 );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<ul><li><div>foo</div></li></ul>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 						'<ul><li><div>foo</div></li></ul>'
 					);
 				} );
@@ -617,7 +617,7 @@ describe( 'ListEditing - converters', () => {
 					conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
 				}, { priority: 'highest' } );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 				);
@@ -626,7 +626,7 @@ describe( 'ListEditing - converters', () => {
 					writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<span class="ck-list-bogus-paragraph">a</span>' +
 					'<span class="ck-list-bogus-paragraph">b</span>'
 				);
@@ -639,7 +639,7 @@ describe( 'ListEditing - converters', () => {
 
 				editor.setData( '<p></p><ul><li></li></ul>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'view li converter should not set list attributes if change was already consumed to some non listable element', () => {
@@ -653,7 +653,7 @@ describe( 'ListEditing - converters', () => {
 
 				editor.setData( '<ul><li></li></ul>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<heading1></heading1>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<heading1></heading1>' );
 			} );
 
 			it( 'view ul converter should not fire if change was already consumed', () => {
@@ -663,7 +663,7 @@ describe( 'ListEditing - converters', () => {
 
 				editor.setData( '<p></p><ul><li></li></ul>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 			} );
 
 			it( 'view converter should pass model range in data.modelRange', () => {
@@ -691,7 +691,7 @@ describe( 'ListEditing - converters', () => {
 					writer.insert( writer.createPositionAt( firstChild, 'end' ), writer.createUIElement( 'span' ) );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">Foo<span></span></span></li>' +
 						'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
@@ -704,7 +704,7 @@ describe( 'ListEditing - converters', () => {
 				} );
 
 				// Check if the new <ul> was added at correct position.
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">Foo<span></span></span>' +
@@ -737,7 +737,7 @@ describe( 'ListEditing - converters', () => {
 					writer.insert( writer.createPositionAt( firstChild, 'end' ), writer.createUIElement( 'span' ) );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li><span class="ck-list-bogus-paragraph">Foo<span></span></span></li>' +
 						'<li>' +
@@ -756,7 +756,7 @@ describe( 'ListEditing - converters', () => {
 				} );
 
 				// Check if the <ul> was added at correct position.
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<ul>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">Foo<span></span></span>' +
@@ -789,7 +789,7 @@ describe( 'ListEditing - converters', () => {
 						writer.remove( liFoo );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<span></span>' +
 						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
@@ -807,7 +807,7 @@ describe( 'ListEditing - converters', () => {
 						writer.remove( liFoo );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<ul>' +
 							'<span></span>' +
 							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
@@ -825,7 +825,7 @@ describe( 'ListEditing - converters', () => {
 						writer.remove( liBar );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
 							'<span></span>' +
@@ -836,7 +836,7 @@ describe( 'ListEditing - converters', () => {
 		} );
 
 		it( 'outdent outer list item with nested blockquote', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b1</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b2</paragraph>' +
@@ -853,7 +853,7 @@ describe( 'ListEditing - converters', () => {
 				writer.setAttribute( 'listItemId', 'b', modelRoot.getChild( 3 ) );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b1</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b2</paragraph>' +
@@ -863,7 +863,7 @@ describe( 'ListEditing - converters', () => {
 				'</blockQuote>'
 			);
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
 						'<span class="ck-list-bogus-paragraph">a</span>' +
@@ -903,7 +903,7 @@ describe( 'ListEditing - converters', () => {
 
 			editor.data.set( { title: '<ul><li>foo</li></ul>' } );
 
-			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+			expect( _getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
@@ -920,7 +920,7 @@ describe( 'ListEditing - converters', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
@@ -940,7 +940,7 @@ describe( 'ListEditing - converters', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>'
 			);
@@ -959,7 +959,7 @@ describe( 'ListEditing - converters', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
 			);
@@ -975,7 +975,7 @@ describe( 'ListEditing - converters', () => {
 				'c'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">b</paragraph>' +
 				'<paragraph>c</paragraph>'

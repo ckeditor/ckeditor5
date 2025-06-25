@@ -3,31 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../src/list/listediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
-import ListIndentCommand from '../../src/list/listindentcommand.js';
-import ListSplitCommand from '../../src/list/listsplitcommand.js';
-import ListCommand from '../../src/list/listcommand.js';
+import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
+import { ListIndentCommand } from '../../src/list/listindentcommand.js';
+import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
+import { ListCommand } from '../../src/list/listcommand.js';
 import { isFirstBlockOfListItem } from '../../src/list/utils/model.js';
 
-import stubUid from './_utils/uid.js';
+import { stubUid } from './_utils/uid.js';
 import { modelList, prepareTest } from './_utils/utils.js';
 
 describe( 'ListEditing', () => {
@@ -224,11 +224,11 @@ describe( 'ListEditing', () => {
 
 				model.change( () => {
 					model.change( writer => {
-						writer.insert( parseModel( inserted, model.schema ), selection.getFirstPosition() );
+						writer.insert( _parseModel( inserted, model.schema ), selection.getFirstPosition() );
 					} );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
 			it( 'element before nested list', () => {
@@ -352,17 +352,17 @@ describe( 'ListEditing', () => {
 					'<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>' +
 					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
-				setModelData( model, input );
+				_setModelData( model, input );
 
 				const item1 = '<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>';
 				const item2 = '<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 				model.change( writer => {
-					writer.append( parseModel( item1, model.schema ), modelRoot );
-					writer.append( parseModel( item2, model.schema ), modelRoot );
+					writer.append( _parseModel( item1, model.schema ), modelRoot );
+					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			} );
 
 			it( 'paragraph between list item blocks', () => {
@@ -380,15 +380,15 @@ describe( 'ListEditing', () => {
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">d</paragraph>';
 
-				setModelData( model, input );
+				_setModelData( model, input );
 
 				const item = '<paragraph>x</paragraph><paragraph>x</paragraph>';
 
 				model.change( writer => {
-					writer.insert( parseModel( item, model.schema ), modelRoot, 1 );
+					writer.insert( _parseModel( item, model.schema ), modelRoot, 1 );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 			} );
 		} );
 
@@ -400,7 +400,7 @@ describe( 'ListEditing', () => {
 					writer.remove( selection.getFirstRange() );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
 			it( 'first list item', () => {
@@ -457,7 +457,7 @@ describe( 'ListEditing', () => {
 					writer.move( selection.getFirstRange(), targetPosition );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
 			it( 'nested list item out of list structure', () => {
@@ -628,7 +628,7 @@ describe( 'ListEditing', () => {
 					writer.rename( selection.getFirstPosition().nodeAfter, 'nonListable' );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
 		} );
 
@@ -665,7 +665,7 @@ describe( 'ListEditing', () => {
 					writer.removeAttribute( 'listType', element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'add list attributes', () => {
@@ -697,7 +697,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle block indent', () => {
@@ -718,7 +718,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 1, element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle blocks indent', () => {
@@ -742,7 +742,7 @@ describe( 'ListEditing', () => {
 					}
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle block outdent', () => {
@@ -763,7 +763,7 @@ describe( 'ListEditing', () => {
 					writer.setAttribute( 'listIndent', 0, element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 		} );
 	} );
@@ -790,12 +790,12 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			}
 		} );
 
-		setModelData( model, modelList( `
+		_setModelData( model, modelList( `
 			* <paragraph someFoo="123">foo</paragraph>
 			* <paragraph someFoo="123">bar</paragraph>
 		` ) );
 
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 			'<ul data-foo="123">' +
 				'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -817,12 +817,12 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			}
 		} );
 
-		setModelData( model, modelList( `
+		_setModelData( model, modelList( `
 			* <paragraph someFoo="123">foo</paragraph>
 			* <paragraph someFoo="321">bar</paragraph>
 		` ) );
 
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 			'<ul>' +
 				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
@@ -852,19 +852,19 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			} );
 
 			it( 'single block in a list item', () => {
-				setModelData( model, modelList( `
+				_setModelData( model, modelList( `
 					* <paragraph someFoo="123">foo</paragraph>
 					* <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123"></input><span class="ck-list-bogus-paragraph">foo</span></li>' +
 						'<li><input type="checkbox" value="321"></input><span class="ck-list-bogus-paragraph">bar</span></li>' +
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123" disabled="disabled">foo</li>' +
 						'<li><input type="checkbox" value="321" disabled="disabled">bar</li>' +
@@ -873,12 +873,12 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			} );
 
 			it( 'multiple blocks in a single list item', () => {
-				setModelData( model, modelList( `
+				_setModelData( model, modelList( `
 					* <paragraph someFoo="123">foo</paragraph>
 					  <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123"></input>' +
@@ -888,7 +888,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123" disabled="disabled">' +
@@ -939,12 +939,12 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			} );
 
 			it( 'single block in a list item', () => {
-				setModelData( model, modelList( `
+				_setModelData( model, modelList( `
 					* <paragraph someFoo="123">foo</paragraph>
 					* <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -961,7 +961,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -980,12 +980,12 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			} );
 
 			it( 'multiple blocks in a single list item', () => {
-				setModelData( model, modelList( `
+				_setModelData( model, modelList( `
 					* <paragraph someFoo="123">foo</paragraph>
 					  <paragraph someFoo="321">bar</paragraph>
 				` ) );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -997,7 +997,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -1011,11 +1011,11 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			} );
 
 			it( 'single block (non paragraph) in a list item', () => {
-				setModelData( model, modelList( `
+				_setModelData( model, modelList( `
 					* <heading1 someFoo="123">foo</heading1>
 				` ) );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<span class="label">' +
@@ -1026,7 +1026,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +

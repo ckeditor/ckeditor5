@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, window */
-
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
-import EditorWatchdog from '../../src/editorwatchdog.js';
+import { EditorWatchdog } from '../../src/editorwatchdog.js';
 
 class TypingError {
 	constructor( editor ) {

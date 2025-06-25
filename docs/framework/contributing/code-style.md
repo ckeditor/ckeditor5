@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
+meta-description: Learn about CKEditor 5's code style guidelines to ensure consistency and quality when contributing to the project.
 order: 40
 modified_at: 2022-11-03
 ---
@@ -348,7 +349,7 @@ CKEditor&nbsp;5 development environment uses [ESLint](https://eslint.org) and [s
 A couple of useful links:
 
 * [Disabling ESLint with inline comments](https://eslint.org/docs/latest/use/configure/).
-* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/.eslintrc.js) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
+* [CKEditor&nbsp;5 ESLint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/eslint-config-ckeditor5/eslint.config.mjs) (npm: [`eslint-config-ckeditor5`](http://npmjs.com/package/eslint-config-ckeditor5)).
 * [CKEditor&nbsp;5 stylelint preset](https://github.com/ckeditor/ckeditor5-linters-config/blob/master/packages/stylelint-config-ckeditor5/.stylelintrc) (npm: [`stylelint-config-ckeditor5`](https://www.npmjs.com/package/stylelint-config-ckeditor5)).
 
 <info-box>

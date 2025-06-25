@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import formatHtml from '../src/formathtml.js';
+import { formatHtml } from '../src/formathtml.js';
 
 describe( 'formatHtml()', () => {
 	it( 'should format table', () => {

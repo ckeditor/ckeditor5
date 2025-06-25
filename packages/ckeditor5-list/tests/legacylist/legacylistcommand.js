@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'LegacyListCommand', () => {
 	let editor, command, model, doc, root;
@@ -37,7 +37,7 @@ describe( 'LegacyListCommand', () => {
 			}
 		} );
 
-		setData(
+		_setModelData(
 			model,
 			'<paragraph>foo</paragraph>' +
 			'<listItem listType="bulleted" listIndent="0">bulleted</listItem>' +
@@ -96,28 +96,28 @@ describe( 'LegacyListCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
-				setData( model, '<listItem listType="bulleted" listIndent="0">[a]</listItem>' );
+				_setModelData( model, '<listItem listType="bulleted" listIndent="0">[a]</listItem>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
-				setData( model, '<paragraph>[a]</paragraph>' );
+				_setModelData( model, '<paragraph>[a]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if selection first position is in a block which can be turned into a list', () => {
-				setData( model, '<paragraph>[a</paragraph><widget>b]</widget>' );
+				_setModelData( model, '<paragraph>[a</paragraph><widget>b]</widget>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if selection first position is in an element which cannot be converted to a list item', () => {
-				setData( model, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
+				_setModelData( model, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'should be false in a root which does not allow blocks at all', () => {
 				doc.createRoot( 'paragraph', 'inlineOnlyRoot' );
-				setData( model, 'a[]b', { rootName: 'inlineOnlyRoot' } );
+				_setModelData( model, 'a[]b', { rootName: 'inlineOnlyRoot' } );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
@@ -135,59 +135,59 @@ describe( 'LegacyListCommand', () => {
 
 			describe( 'options.forceValue', () => {
 				it( 'should force converting into the list if the `options.forceValue` is set to `true`', () => {
-					setData( model, '<paragraph>fo[]o</paragraph>' );
+					_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should force converting into the paragraph if the `options.forceValue` is set to `false`', () => {
-					setData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 					command.execute( { forceValue: false } );
 
 					// Attributes will be removed by post fixer.
-					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 			} );
 
 			describe( 'collapsed selection', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
-					setData( model, '<paragraph>fo[]o</paragraph>' );
+					_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
-					setData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 					command.execute();
 
 					// Attributes will be removed by post fixer.
-					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
-					setData( model, '<listItem listIndent="0" listType="numbered">fo[]o</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="numbered">fo[]o</listItem>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
-					/* eslint-disable max-len */
+					/* eslint-disable @stylistic/max-len */
 					// Taken from docs.
 					//
 					// 1  * --------
@@ -223,9 +223,9 @@ describe( 'LegacyListCommand', () => {
 					// 12 * --------
 					// 13    * --------
 					// 14       * --------
-					/* eslint-enable max-len */
+					/* eslint-enable @stylistic/max-len */
 
-					setData(
+					_setModelData(
 						model,
 						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
@@ -261,13 +261,13 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
 				beforeEach( () => {
-					setData(
+					_setModelData(
 						model,
 						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
@@ -288,7 +288,7 @@ describe( 'LegacyListCommand', () => {
 					model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 					model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
 
-					setData(
+					_setModelData(
 						model,
 						'<paragraph>a[bc</paragraph>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
@@ -297,7 +297,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
@@ -311,7 +311,7 @@ describe( 'LegacyListCommand', () => {
 						allowIn: '$root'
 					} );
 
-					setData(
+					_setModelData(
 						model,
 						'<paragraph>a[bc</paragraph>' +
 						'<imageBlock></imageBlock>' +
@@ -320,7 +320,7 @@ describe( 'LegacyListCommand', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<imageBlock></imageBlock>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
@@ -349,7 +349,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
@@ -375,7 +375,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should change closest listItem\'s type', () => {
@@ -400,7 +400,7 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="1" listType="bulleted">]---</listItem>' +
 						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
@@ -425,12 +425,12 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 
 				// Example from docs.
 				it( 'should change type of all items in nested list if one of items changed', () => {
-					setData(
+					_setModelData(
 						model,
 						'<listItem listIndent="0" listType="numbered">---</listItem>' +
 						'<listItem listIndent="1" listType="numbered">---</listItem>' +
@@ -478,12 +478,12 @@ describe( 'LegacyListCommand', () => {
 						'<listItem listIndent="2" listType="numbered">---</listItem>' +
 						'<listItem listIndent="0" listType="numbered">---</listItem>';
 
-					expect( getData( model ) ).to.equal( expectedData );
+					expect( _getModelData( model ) ).to.equal( expectedData );
 				} );
 			} );
 
 			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
-				setData( model,
+				_setModelData( model,
 					'<paragraph>Foo 1.</paragraph>' +
 					'<paragraph>[Foo 2.</paragraph>' +
 					'<paragraph>Foo 3.]</paragraph>' +
@@ -492,7 +492,7 @@ describe( 'LegacyListCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>Foo 1.</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">[Foo 2.</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">Foo 3.]</listItem>' +

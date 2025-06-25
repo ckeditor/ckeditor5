@@ -19,7 +19,7 @@ import '../theme/showblocks.css';
  * It registers the `'showBlocks'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * that toggles the visibility of the HTML element names of content blocks.
  */
-export default class ShowBlocksUI extends Plugin {
+export class ShowBlocksUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

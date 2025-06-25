@@ -3,26 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Image from '../../src/image.js';
-import FileDialogButtonView from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.js';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
-import ImageUploadUI from '../../src/imageupload/imageuploadui.js';
-import ImageUploadEditing from '../../src/imageupload/imageuploadediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Image } from '../../src/image.js';
+import { FileDialogButtonView } from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.js';
+import { FileRepository } from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import { ImageUploadUI } from '../../src/imageupload/imageuploadui.js';
+import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Notification } from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageUploadUI', () => {
@@ -216,7 +214,7 @@ describe( 'ImageUploadUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new UIModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'assetManager',
@@ -312,13 +310,13 @@ describe( 'ImageUploadUI', () => {
 		it( 'should optimize the insertion position', () => {
 			const files = [ createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			button.fire( 'done', files );
 
 			const id = fileRepository.getLoader( files[ 0 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`[<imageBlock uploadId="${ id }" uploadStatus="reading"></imageBlock>]` +
 			'<paragraph>foo</paragraph>'
 			);
@@ -327,14 +325,14 @@ describe( 'ImageUploadUI', () => {
 		it( 'should correctly insert multiple files', () => {
 			const files = [ createNativeFileMock(), createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 			button.fire( 'done', files );
 
 			const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 			const id2 = fileRepository.getLoader( files[ 1 ] ).id;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 			`<imageBlock uploadId="${ id1 }" uploadStatus="reading"></imageBlock>` +
 			`[<imageBlock uploadId="${ id2 }" uploadStatus="reading"></imageBlock>]` +
@@ -370,7 +368,7 @@ describe( 'ImageUploadUI', () => {
 			const spy = sinon.spy( editor.editing.view, 'focus' );
 			const file = [ createNativeFileMock() ];
 
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			button.fire( 'done', file );
 

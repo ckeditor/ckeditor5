@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import NodeList from '../../src/model/nodelist.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
+import { ModelNodeList } from '../../src/model/nodelist.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -13,15 +13,15 @@ describe( 'NodeList', () => {
 	let nodes, p, foo, img;
 
 	beforeEach( () => {
-		p = new Element( 'p' );
-		foo = new Text( 'foo' );
-		img = new Element( 'imageBlock' );
-		nodes = new NodeList( [ p, foo, img ] );
+		p = new ModelElement( 'p' );
+		foo = new ModelText( 'foo' );
+		img = new ModelElement( 'imageBlock' );
+		nodes = new ModelNodeList( [ p, foo, img ] );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create empty node list', () => {
-			expect( new NodeList().length ).to.equal( 0 );
+			expect( new ModelNodeList().length ).to.equal( 0 );
 		} );
 
 		it( 'should create node list with passed nodes', () => {
@@ -74,7 +74,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should return null if node is not in the node list', () => {
-			expect( nodes.getNodeIndex( new Element( 'p' ) ) ).to.be.null;
+			expect( nodes.getNodeIndex( new ModelElement( 'p' ) ) ).to.be.null;
 		} );
 	} );
 
@@ -86,7 +86,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should return null if node is not in the node list', () => {
-			expect( nodes.getNodeStartOffset( new Element( 'p' ) ) ).to.be.null;
+			expect( nodes.getNodeStartOffset( new ModelElement( 'p' ) ) ).to.be.null;
 		} );
 	} );
 
@@ -138,9 +138,9 @@ describe( 'NodeList', () => {
 
 	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index and refresh its nodes index and startOffset values', () => {
-			const newImg = new Element( 'imageBlock' );
-			const bar = new Text( 'bar', { bold: true } );
-			const xyz = new Text( 'xyz' );
+			const newImg = new ModelElement( 'imageBlock' );
+			const bar = new ModelText( 'bar', { bold: true } );
+			const xyz = new ModelText( 'xyz' );
 
 			expect( newImg.index ).to.equal( null );
 			expect( bar.index ).to.equal( null );
@@ -198,7 +198,7 @@ describe( 'NodeList', () => {
 
 		it( 'should insert large number of nodes (250 000) without throwing an error', () => {
 			const numberOfNodes = 250000;
-			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new Text( el ) );
+			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new ModelText( el ) );
 			const expectedLength = nodes.length + largeArray.length;
 
 			nodes._insertNodes( 0, largeArray );
@@ -287,7 +287,7 @@ describe( 'NodeList', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize empty node list', () => {
-			expect( ( new NodeList() ).toJSON() ).to.deep.equal( [] );
+			expect( ( new ModelNodeList() ).toJSON() ).to.deep.equal( [] );
 		} );
 
 		it( 'should serialize node list with nodes', () => {

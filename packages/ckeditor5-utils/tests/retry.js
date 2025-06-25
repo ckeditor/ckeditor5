@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals AbortController, AbortSignal, setTimeout */
-
-import retry, { exponentialDelay } from '../src/retry.js';
+import { retry, exponentialDelay } from '../src/retry.js';
 
 describe( 'utils', () => {
 	let clock;

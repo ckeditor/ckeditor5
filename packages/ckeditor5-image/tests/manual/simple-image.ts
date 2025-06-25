@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
@@ -16,9 +14,9 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type { ViewElement, Element, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
+import type { ViewElement, ModelElement, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import { AutoImage, ImageInsert, ImageResize, type ImageUtils } from '@ckeditor/ckeditor5-image';
-import ImageLoadObserver, { type ImageLoadedEvent } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
+import { ImageLoadObserver, type ImageLoadedEvent } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
 
 declare global {
 	interface Window {
@@ -280,7 +278,7 @@ function SimpleImage( editor: Editor ) {
 	// Post-fixer to ensure we do not have redundant resizedX attributes if image is in original size.
 	editor.model.document.registerPostFixer( writer => {
 		const changes = writer.model.document.differ.getChanges();
-		const images: Array<Element> = [];
+		const images: Array<ModelElement> = [];
 		let wasFixed = false;
 
 		for ( const change of changes ) {

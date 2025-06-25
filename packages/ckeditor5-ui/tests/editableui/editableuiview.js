@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
-import EditableUIView from '../../src/editableui/editableuiview.js';
-import View from '../../src/view.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ViewRootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
+import { EditableUIView } from '../../src/editableui/editableuiview.js';
+import { View } from '../../src/view.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'EditableUIView', () => {
 	let view, editableElement, editingView, editingViewRoot, locale;

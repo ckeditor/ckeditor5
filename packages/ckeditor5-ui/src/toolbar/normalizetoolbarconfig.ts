@@ -35,14 +35,14 @@ import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core'
  * @param config The value of `config.toolbar`.
  * @returns A normalized toolbar config object.
  */
-export default function normalizeToolbarConfig(
+export function normalizeToolbarConfig(
 	config: ToolbarConfig | undefined
 ): {
-	items: Array<ToolbarConfigItem>;
-	removeItems: Array<string>;
-	shouldNotGroupWhenFull?: boolean;
-	icon?: string;
-} {
+		items: Array<ToolbarConfigItem>;
+		removeItems: Array<string>;
+		shouldNotGroupWhenFull?: boolean;
+		icon?: string;
+	} {
 	if ( Array.isArray( config ) ) {
 		return {
 			items: config,

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TextWatcher from '../src/textwatcher.js';
+import { TextWatcher } from '../src/textwatcher.js';
 
 describe( 'TextWatcher', () => {
 	let editor, model, doc;
@@ -29,7 +29,7 @@ describe( 'TextWatcher', () => {
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-				setData( model, '<paragraph>foo []</paragraph>' );
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
 
 				watcher = new TextWatcher( model, testCallbackStub, () => {} );
 				watcher.on( 'matched:data', matchedDataSpy );

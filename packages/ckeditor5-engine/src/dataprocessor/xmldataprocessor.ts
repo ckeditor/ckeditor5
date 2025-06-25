@@ -7,15 +7,13 @@
  * @module engine/dataprocessor/xmldataprocessor
  */
 
-/* globals DOMParser */
+import { BasicHtmlWriter } from './basichtmlwriter.js';
+import { ViewDomConverter } from '../view/domconverter.js';
 
-import BasicHtmlWriter from './basichtmlwriter.js';
-import DomConverter from '../view/domconverter.js';
-
-import type DataProcessor from './dataprocessor.js';
-import type HtmlWriter from './htmlwriter.js';
-import type ViewDocument from '../view/document.js';
-import type ViewDocumentFragment from '../view/documentfragment.js';
+import { type DataProcessor } from './dataprocessor.js';
+import { type DataProcessorHtmlWriter } from './htmlwriter.js';
+import { type ViewDocument } from '../view/document.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -24,7 +22,7 @@ import type { MatcherPattern } from '../view/matcher.js';
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
  * For example, `<link>Text</link>` is a valid XML but invalid HTML.
  */
-export default class XmlDataProcessor implements DataProcessor {
+export class XmlDataProcessor implements DataProcessor {
 	/**
 	 * A list of namespaces allowed to use in the XML input.
 	 *
@@ -41,13 +39,13 @@ export default class XmlDataProcessor implements DataProcessor {
 	/**
 	 * DOM converter used to convert DOM elements to view elements.
 	 */
-	public domConverter: DomConverter;
+	public domConverter: ViewDomConverter;
 
 	/**
 	 * A basic HTML writer instance used to convert DOM elements to an XML string.
 	 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
 	 */
-	public htmlWriter: HtmlWriter;
+	public htmlWriter: DataProcessorHtmlWriter;
 
 	public skipComments: boolean = true;
 
@@ -61,12 +59,12 @@ export default class XmlDataProcessor implements DataProcessor {
 	constructor( document: ViewDocument, options: { namespaces?: Array<string> } = {} ) {
 		this.namespaces = options.namespaces || [];
 		this.domParser = new DOMParser();
-		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
+		this.domConverter = new ViewDomConverter( document, { renderingMode: 'data' } );
 		this.htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
-	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * Converts the provided {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}
 	 * to data format &ndash; in this case an XML string.
 	 *
 	 * @returns An XML string.
@@ -105,7 +103,7 @@ export default class XmlDataProcessor implements DataProcessor {
 	 * and not processed during the conversion from XML to view elements.
 	 *
 	 * The raw data can be later accessed by a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param pattern Pattern matching all view elements whose content should be treated as raw data.
 	 */

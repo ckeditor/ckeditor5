@@ -8,14 +8,14 @@
  */
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
-import InputBase from './inputbase.js';
+import { InputBase } from './inputbase.js';
 
 import '../../theme/components/input/input.css';
 
 /**
  * The input view class.
  */
-export default class InputView extends InputBase {
+export class InputView extends InputBase {
 	/**
 	 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc.
 	 *

@@ -3,28 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
-import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
-import LegacyIndentCommand from '../../src/legacylist/legacyindentcommand.js';
+/* eslint-disable @stylistic/no-multi-spaces */
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
+import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
+import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { TableKeyboard } from '@ckeditor/ckeditor5-table/src/tablekeyboard.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 
 describe( 'LegacyListEditing', () => {
@@ -170,7 +172,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
@@ -184,7 +186,7 @@ describe( 'LegacyListEditing', () => {
 			const enterCommandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
 			const outdentCommandExecuteSpy = sinon.stub( editor.commands.get( 'outdentList' ), 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
@@ -199,7 +201,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -211,7 +213,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>foo</paragraph><listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<paragraph>foo</paragraph><listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -223,7 +225,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -236,7 +238,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[fo]o</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[fo]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -249,7 +251,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -262,7 +264,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<listItem listType="bulleted" listIndent="0">foo</listItem><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
 			);
@@ -278,7 +280,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -291,7 +293,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<blockQuote><paragraph>x</paragraph></blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
 			);
@@ -306,7 +308,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem></blockQuote>'
 			);
@@ -321,7 +323,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]</listItem></blockQuote>'
 			);
@@ -340,7 +342,7 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<listItem listType="bulleted" listIndent="0"><listItemSub>[]foo</listItemSub></listItem>'
 			);
@@ -370,7 +372,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should execute indentList command on tab key', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
@@ -387,7 +389,7 @@ describe( 'LegacyListEditing', () => {
 		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
 			domEvtDataStub.shiftKey = true;
 
-			setModelData(
+			_setModelData(
 				model,
 				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">[]bar</listItem>'
@@ -402,7 +404,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should not indent if command is disabled', () => {
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -414,7 +416,7 @@ describe( 'LegacyListEditing', () => {
 		it( 'should not indent or outdent if alt+tab is pressed', () => {
 			domEvtDataStub.keyCode += getCode( 'alt' );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
@@ -442,14 +444,14 @@ describe( 'LegacyListEditing', () => {
 				[ listOutputModel, 'bar' ]
 			] );
 
-			setModelData( model, input );
+			_setModelData( model, input );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( getModelData( model ) ).to.equalMarkup( output );
+			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );
 
 		it( 'should execute list outdent command when in a li context and nested in an element that also listens to Tab', () => {
@@ -467,7 +469,7 @@ describe( 'LegacyListEditing', () => {
 				[ listOutputModel, 'bar' ]
 			] );
 
-			setModelData( model, input );
+			_setModelData( model, input );
 
 			domEvtDataStub.shiftKey = true;
 
@@ -476,7 +478,7 @@ describe( 'LegacyListEditing', () => {
 			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( getModelData( model ) ).to.equalMarkup( output );
+			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );
 
 		it( 'should not capture event when list cannot be indented and allow other listeners to capture it', () => {
@@ -492,7 +494,7 @@ describe( 'LegacyListEditing', () => {
 				[ '[]', '' ]
 			] );
 
-			setModelData( model, input );
+			_setModelData( model, input );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -500,7 +502,7 @@ describe( 'LegacyListEditing', () => {
 			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( getModelData( model ) ).to.equalMarkup( output );
+			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );
 
 		it( 'should not capture event when not in a list and should allow other listeners to capture it', () => {
@@ -513,7 +515,7 @@ describe( 'LegacyListEditing', () => {
 				[ '[]', '' ]
 			] );
 
-			setModelData( model, input );
+			_setModelData( model, input );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -521,7 +523,7 @@ describe( 'LegacyListEditing', () => {
 			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-			expect( getModelData( model ) ).to.equalMarkup( output );
+			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );
 	} );
 
@@ -573,7 +575,7 @@ describe( 'LegacyListEditing', () => {
 					'<paragraph>yyy</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">d</listItem>';
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
 			} );
 
 			describe( 'block elements inside list items', () => {
@@ -613,7 +615,7 @@ describe( 'LegacyListEditing', () => {
 					);
 				} );
 
-				describe.skip( 'multiple blocks', () => { // Skip due to #112 issue.
+				describe.skip( 'multiple blocks (skipped due to #112)', () => { // Skip due to #112 issue.
 					testList(
 						'nested items #1',
 						'<ol><li><p>123</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul><p>456</p></li></ol>',
@@ -2075,7 +2077,7 @@ describe( 'LegacyListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">2</listItem>' +
 						'<paragraph>bar</paragraph>';
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 
 				it( 'should properly listIndent when list nested in other block', () => {
@@ -2133,7 +2135,7 @@ describe( 'LegacyListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">f</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">g</listItem>';
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 			} );
 		} );
@@ -2638,8 +2640,8 @@ describe( 'LegacyListEditing', () => {
 						const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 						model.change( writer => {
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);
@@ -3709,14 +3711,14 @@ describe( 'LegacyListEditing', () => {
 					// Wrap all changes in one block to avoid post-fixing the selection
 					// (which may be incorret) in the meantime.
 					model.change( () => {
-						setModelData( model, input );
+						_setModelData( model, input );
 
 						model.change( writer => {
-							writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
+							writer.insert( _parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
 						} );
 					} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				};
 			}
 
@@ -3829,17 +3831,17 @@ describe( 'LegacyListEditing', () => {
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">d</listItem>';
 
-				setModelData( model, input );
+				_setModelData( model, input );
 
 				const item1 = '<listItem listIndent="1" listType="numbered">c</listItem>';
 				const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 				model.change( writer => {
-					writer.append( parseModel( item1, model.schema ), modelRoot );
-					writer.append( parseModel( item2, model.schema ), modelRoot );
+					writer.append( _parseModel( item1, model.schema ), modelRoot );
+					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			} );
 		} );
 
@@ -3847,12 +3849,12 @@ describe( 'LegacyListEditing', () => {
 			function testList( input, output ) {
 				return () => {
 					model.change( writer => {
-						setModelData( model, input );
+						_setModelData( model, input );
 
 						writer.remove( modelDoc.selection.getFirstRange() );
 					} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				};
 			}
 
@@ -3898,14 +3900,14 @@ describe( 'LegacyListEditing', () => {
 			function testList( input, offset, output ) {
 				return () => {
 					model.change( writer => {
-						setModelData( model, input );
+						_setModelData( model, input );
 
 						const targetPosition = writer.createPositionAt( modelRoot, offset );
 
 						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 				};
 			}
 
@@ -4060,35 +4062,35 @@ describe( 'LegacyListEditing', () => {
 					'<listItem listIndent="1" listType="bulleted">i</listItem>';
 
 				model.change( writer => {
-					setModelData( model, modelBefore );
+					_setModelData( model, modelBefore );
 
 					const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 					writer.rename( element, 'paragraph' );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
 		} );
 	} );
 
 	describe( 'paste and insertContent integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			editor.model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
 				)
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
@@ -4097,14 +4099,14 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should be triggered when selectable is passed', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
@@ -4115,7 +4117,7 @@ describe( 'LegacyListEditing', () => {
 				)
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B[]X</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y</listItem>' +
@@ -4125,7 +4127,7 @@ describe( 'LegacyListEditing', () => {
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4138,7 +4140,7 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( listItem );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
@@ -4147,7 +4149,7 @@ describe( 'LegacyListEditing', () => {
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent() - case #69', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4157,7 +4159,7 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
@@ -4170,13 +4172,13 @@ describe( 'LegacyListEditing', () => {
 				model.insertContent( listItem, modelRoot, 'in' );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">[]</listItem>'
 			);
 		} );
 
 		it( 'should fix indents of pasted list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4185,10 +4187,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
@@ -4197,7 +4199,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should not fix indents of list items that are separated by non-list element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4206,10 +4208,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
@@ -4220,7 +4222,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should co-work correctly with post fixer', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4229,10 +4231,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
+				content: _parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
@@ -4244,7 +4246,7 @@ describe( 'LegacyListEditing', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
 					'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4253,11 +4255,11 @@ describe( 'LegacyListEditing', () => {
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+					content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
@@ -4267,7 +4269,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should create correct model when list items are pasted in top-level list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B</listItem>'
 			);
@@ -4275,10 +4277,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">AX</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">Y[]</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">B</listItem>'
@@ -4286,7 +4288,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should create correct model when list items are pasted in non-list context', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>A[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
@@ -4294,10 +4296,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>AX</paragraph>' +
 				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
@@ -4305,7 +4307,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should not crash when "empty content" is inserted', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
 				model.change( writer => {
@@ -4318,7 +4320,7 @@ describe( 'LegacyListEditing', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listIndent="1">B</listItem>' +
@@ -4329,11 +4331,11 @@ describe( 'LegacyListEditing', () => {
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X</li>' )
+					content: _parseView( '<li>X</li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listType="numbered">B</listItem>' +
@@ -4346,7 +4348,7 @@ describe( 'LegacyListEditing', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listIndent="1">B</listItem>' +
@@ -4357,11 +4359,11 @@ describe( 'LegacyListEditing', () => {
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+					content: _parseView( '<li>X<ul><li>Y</li></ul></li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listType="numbered">B</listItem>' +
@@ -4372,7 +4374,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should handle block elements inside pasted list #1', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4381,10 +4383,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
@@ -4395,7 +4397,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should handle block elements inside pasted list #2', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4404,10 +4406,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
 				'<paragraph>Y</paragraph>' +
@@ -4418,7 +4420,7 @@ describe( 'LegacyListEditing', () => {
 		} );
 
 		it( 'should handle block elements inside pasted list #3', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4427,10 +4429,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
+				content: _parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
 				'<paragraph>X</paragraph>' +
 				'<paragraph>Y</paragraph>' +
@@ -4442,7 +4444,7 @@ describe( 'LegacyListEditing', () => {
 
 		// https://github.com/ckeditor/ckeditor5-list/issues/126#issuecomment-518206743
 		it( 'should properly handle split of list items with non-standard converters', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
@@ -4465,10 +4467,10 @@ describe( 'LegacyListEditing', () => {
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
+				content: _parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">Aa</listItem>' +
 				'<splitBlock></splitBlock>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
@@ -4489,9 +4491,9 @@ describe( 'LegacyListEditing', () => {
 				.elementToElement( { model: 'listItem', view: 'p', converterPriority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
-			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
+			_setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
 		} );
 
 		it( 'model remove converter should be possible to overwrite', () => {
@@ -4500,13 +4502,13 @@ describe( 'LegacyListEditing', () => {
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed to prevent autoparagraphing of empty editor.
-			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted"></listItem>' );
+			_setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted"></listItem>' );
 
 			model.change( writer => {
 				writer.remove( modelRoot.getChild( 1 ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
@@ -4514,13 +4516,13 @@ describe( 'LegacyListEditing', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:listType' );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem listIndent="0" listType="bulleted"></listItem>' );
+			_setModelData( model, '<listItem listIndent="0" listType="bulleted"></listItem>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
@@ -4528,7 +4530,7 @@ describe( 'LegacyListEditing', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
 			}, { priority: 'highest' } );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<listItem listIndent="0" listType="bulleted">a</listItem><listItem listIndent="0" listType="bulleted">b</listItem>'
 			);
@@ -4537,7 +4539,7 @@ describe( 'LegacyListEditing', () => {
 				writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
 		} );
 
 		// See #11490.
@@ -4562,9 +4564,9 @@ describe( 'LegacyListEditing', () => {
 				}
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<container><caption>foo</caption></container>' );
+			_setModelData( model, '<container><caption>foo</caption></container>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<custom-container></custom-container>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<custom-container></custom-container>' );
 		} );
 
 		it( 'view li converter should not fire if change was already consumed', () => {
@@ -4574,7 +4576,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
@@ -4584,7 +4586,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view converter should pass model range in data.modelRange', () => {
@@ -4607,7 +4609,7 @@ describe( 'LegacyListEditing', () => {
 				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
 
 			model.change( writer => {
@@ -4616,7 +4618,7 @@ describe( 'LegacyListEditing', () => {
 			} );
 
 			// Check if the new <ul> was added at correct position.
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span><ul><li>Bar</li></ul></li></ul>' );
 		} );
 
@@ -4632,7 +4634,7 @@ describe( 'LegacyListEditing', () => {
 				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
 			model.change( writer => {
@@ -4641,7 +4643,7 @@ describe( 'LegacyListEditing', () => {
 			} );
 
 			// Check if the <ul> was added at correct position.
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
 
@@ -4664,7 +4666,7 @@ describe( 'LegacyListEditing', () => {
 					writer.remove( liFoo );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
 			} );
 
@@ -4678,7 +4680,7 @@ describe( 'LegacyListEditing', () => {
 					writer.remove( liFoo );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
 			} );
 
@@ -4692,7 +4694,7 @@ describe( 'LegacyListEditing', () => {
 					writer.remove( liBar );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
 			} );
 		} );
@@ -4714,7 +4716,7 @@ describe( 'LegacyListEditing', () => {
 
 			editor.data.set( { title: '<ul><li>foo</li></ul>' } );
 
-			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+			expect( _getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
@@ -4731,7 +4733,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
@@ -4751,7 +4753,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>'
 			);
@@ -4770,7 +4772,7 @@ describe( 'LegacyListEditing', () => {
 				'</div>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
 			);
@@ -4786,7 +4788,7 @@ describe( 'LegacyListEditing', () => {
 				'c'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<paragraph>c</paragraph>'
@@ -4804,7 +4806,7 @@ describe( 'LegacyListEditing', () => {
 				.then( editor => {
 					editor.setData( '<ul><li><div><h2>Foo</h2></div></li></ul>' );
 
-					expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<heading1>Foo</heading1>' );
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<heading1>Foo</heading1>' );
 				} );
 		} );
 	} );
@@ -4841,7 +4843,7 @@ describe( 'LegacyListEditing', () => {
 
 		const actionCallback = selection => {
 			model.change( writer => {
-				writer.insert( parseModel( item, model.schema ), selection.getFirstPosition() );
+				writer.insert( _parseModel( item, model.schema ), selection.getFirstPosition() );
 			} );
 		};
 
@@ -4930,30 +4932,30 @@ describe( 'LegacyListEditing', () => {
 
 			actionCallback( callbackSelection );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		if ( testUndo ) {
 			it( testName + ' (undo integration)', () => {
 				const callbackSelection = prepareTest( model, input );
 
-				const modelBefore = getModelData( model );
-				const viewBefore = getViewData( view, { withoutSelection: true } );
+				const modelBefore = _getModelData( model );
+				const viewBefore = _getViewData( view, { withoutSelection: true } );
 
 				actionCallback( callbackSelection );
 
-				const modelAfter = getModelData( model );
-				const viewAfter = getViewData( view, { withoutSelection: true } );
+				const modelAfter = _getModelData( model );
+				const viewAfter = _getViewData( view, { withoutSelection: true } );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ) ).to.equal( modelBefore );
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
+				expect( _getModelData( model ) ).to.equal( modelBefore );
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( getModelData( model ) ).to.equal( modelAfter );
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
+				expect( _getModelData( model ) ).to.equal( modelAfter );
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
 			} );
 		}
 
@@ -4961,7 +4963,7 @@ describe( 'LegacyListEditing', () => {
 			const modelRoot = model.document.getRoot( 'main' );
 
 			// Parse data string to model.
-			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+			const parsedResult = _parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
 			// Retrieve DocumentFragment and Selection from parsed model.
 			const modelDocumentFragment = parsedResult.model;

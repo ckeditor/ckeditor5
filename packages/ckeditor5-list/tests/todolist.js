@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TodoList from '../src/todolist.js';
-import TodoListEditing from '../src/todolist/todolistediting.js';
-import TodoListUI from '../src/todolist/todolistui.js';
+import { TodoList } from '../src/todolist.js';
+import { TodoListEditing } from '../src/todolist/todolistediting.js';
+import { TodoListUI } from '../src/todolist/todolistui.js';
 
 describe( 'TodoList', () => {
 	it( 'should be named', () => {

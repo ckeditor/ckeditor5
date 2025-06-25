@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, XMLHttpRequest */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import CloudServices from '../../src/cloudservices.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CloudServices } from '../../src/cloudservices.js';
 
 import { TOKEN_URL, UPLOAD_URL } from '../_utils/cloud-services-config.js';
-import CloudServicesCore from '../../src/cloudservicescore.js';
+import { CloudServicesCore } from '../../src/cloudservicescore.js';
 
 const output = document.getElementById( 'output' );
 const requestOutput = document.getElementById( 'request' );

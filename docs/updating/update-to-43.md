@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 43.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 43.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v43.x
 order: 81
 modified_at: 2024-07-31

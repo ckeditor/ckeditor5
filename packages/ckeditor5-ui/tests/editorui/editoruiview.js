@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import EditorUIView from '../../src/editorui/editoruiview.js';
-import ViewCollection from '../../src/viewcollection.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EditorUIView } from '../../src/editorui/editoruiview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
 
 describe( 'EditorUIView', () => {
 	let view, locale;

@@ -3,30 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import ListEditing from '../../../src/list/listediting.js';
-import stubUid from '../_utils/uid.js';
+import { ListEditing } from '../../../src/list/listediting.js';
+import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
-import WidgetTypeAround from '@ckeditor/ckeditor5-widget/src/widgettypearound/widgettypearound.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { WidgetTypeAround } from '@ckeditor/ckeditor5-widget/src/widgettypearound/widgettypearound.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Inserting widgets in document lists', () => {
@@ -1003,7 +1001,7 @@ describe( 'Inserting widgets in document lists', () => {
 		} );
 
 		it( 'should insert a paragraph before an image block as a first block of a list item', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* <imageBlock src=""></imageBlock>'
 			] ) );
 
@@ -1012,11 +1010,11 @@ describe( 'Inserting widgets in document lists', () => {
 			const expectedModel = '<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block as a second block', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* <imageBlock src=""></imageBlock>'
 			] ) );
 
@@ -1025,11 +1023,11 @@ describe( 'Inserting widgets in document lists', () => {
 			const expectedModel = '<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph before an image block as a second block of a list item', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* foo',
 				'  [<imageBlock src=""></imageBlock>]'
 			] ) );
@@ -1040,11 +1038,11 @@ describe( 'Inserting widgets in document lists', () => {
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block as a third block of a list item', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* Foo',
 				'  <imageBlock src=""></imageBlock>'
 			] ) );
@@ -1055,11 +1053,11 @@ describe( 'Inserting widgets in document lists', () => {
 			'<imageBlock listIndent="0" listItemId="000" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[]</paragraph>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph before an image block in and indented list item', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* foo',
 				'  * [<imageBlock src=""></imageBlock>]'
 			] ) );
@@ -1070,11 +1068,11 @@ describe( 'Inserting widgets in document lists', () => {
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>' +
 			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 
 		it( 'should insert a paragraph after an image block in and indented list item', () => {
-			setModelData( model, modelList( [
+			_setModelData( model, modelList( [
 				'* foo',
 				'  * [<imageBlock src=""></imageBlock>]'
 			] ) );
@@ -1085,14 +1083,14 @@ describe( 'Inserting widgets in document lists', () => {
 			'<imageBlock listIndent="1" listItemId="001" listType="bulleted" src=""></imageBlock>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">[]</paragraph>';
 
-			expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+			expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 		} );
 	} );
 
 	// @param {Iterable.<String>} input
 	// @param {Iterable.<String>} expected
 	function runTest( { input, expected } ) {
-		setModelData( model, modelList( input ) );
+		_setModelData( model, modelList( input ) );
 
 		insertCommand();
 
@@ -1102,6 +1100,6 @@ describe( 'Inserting widgets in document lists', () => {
 			expectedModel = modelList( expected );
 		}
 
-		expect( getModelData( model ) ).to.equalMarkup( expectedModel );
+		expect( _getModelData( model ) ).to.equalMarkup( expectedModel );
 	}
 } );

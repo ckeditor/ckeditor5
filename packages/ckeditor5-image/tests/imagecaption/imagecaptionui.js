@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { IconCaption } from 'ckeditor5/src/icons.js';
 
-import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
-import ImageCaptionUI from '../../src/imagecaption/imagecaptionui.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
+import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
+import { ImageCaptionUI } from '../../src/imagecaption/imagecaptionui.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 
 describe( 'ImageCaptionUI', () => {
 	let editor, editorElement;

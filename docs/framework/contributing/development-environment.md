@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Development environment | CKEditor 5 Framework Documentation
+meta-description: Learn how to set up a development environment for CKEditor 5, including cloning, building, and running the editor locally.
 order: 20
 modified_at: 2022-09-29
 ---
@@ -27,7 +28,7 @@ You can find all the official packages listed in the [CKEditor&nbsp;5 repository
 
 To start developing CKEditor&nbsp;5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 20.0.0+
+* [Node.js](https://nodejs.org/en/) 22.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment

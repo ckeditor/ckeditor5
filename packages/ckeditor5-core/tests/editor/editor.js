@@ -3,25 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, setTimeout */
-
-import Editor from '../../src/editor/editor.js';
-import Context from '../../src/context.js';
-import Plugin from '../../src/plugin.js';
-import Config from '@ckeditor/ckeditor5-utils/src/config.js';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
-import PluginCollection from '../../src/plugincollection.js';
-import CommandCollection from '../../src/commandcollection.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import Command from '../../src/command.js';
-import EditingKeystrokeHandler from '../../src/editingkeystrokehandler.js';
+import { Editor } from '../../src/editor/editor.js';
+import { Context } from '../../src/context.js';
+import { Plugin } from '../../src/plugin.js';
+import { Config } from '@ckeditor/ckeditor5-utils/src/config.js';
+import { EditingController } from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
+import { PluginCollection } from '../../src/plugincollection.js';
+import { CommandCollection } from '../../src/commandcollection.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Command } from '../../src/command.js';
+import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import testUtils from '../../tests/_utils/utils.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Accessibility from '../../src/accessibility.js';
-import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { testUtils } from '../../tests/_utils/utils.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Accessibility } from '../../src/accessibility.js';
+import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
+import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -799,7 +797,6 @@ describe( 'Editor', () => {
 					this.isEnabled = true;
 				}
 				execute() {
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', editor );
 				}
 			}
@@ -1410,7 +1407,6 @@ describe( 'Editor', () => {
 		let editor;
 
 		beforeEach( () => {
-			// eslint-disable-next-line new-cap
 			class CustomEditor extends Editor {}
 
 			editor = new CustomEditor();
@@ -1432,7 +1428,7 @@ describe( 'Editor', () => {
 			it( 'should set data of the first root', () => {
 				editor.setData( 'foo' );
 
-				expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+				expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 			} );
 		} );
 
@@ -1444,13 +1440,13 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should get data of the first root', () => {
-				setData( editor.model, 'foo' );
+				_setModelData( editor.model, 'foo' );
 
 				expect( editor.getData() ).to.equal( 'foo' );
 			} );
 
 			it( 'should get data of the second root', () => {
-				setData( editor.model, 'bar', { rootName: 'secondRoot' } );
+				_setModelData( editor.model, 'bar', { rootName: 'secondRoot' } );
 
 				expect( editor.getData( { rootName: 'secondRoot' } ) ).to.equal( 'bar' );
 			} );
@@ -1459,7 +1455,7 @@ describe( 'Editor', () => {
 				const spy = testUtils.sinon.spy( editor.data, 'get' );
 				const options = { rootName: 'main', trim: 'none' };
 
-				setData( editor.model, 'foo' );
+				_setModelData( editor.model, 'foo' );
 
 				expect( editor.getData( options ) ).to.equal( 'foo' );
 

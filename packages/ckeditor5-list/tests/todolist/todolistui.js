@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 // TODO use new list
-import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
-import TodoListUI from '../../src/todolist/todolistui.js';
+import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
+import { TodoListUI } from '../../src/todolist/todolistui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'TodoListUI', () => {
@@ -62,7 +60,7 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should bind button to command', () => {
-			setData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
 
 			const command = editor.commands.get( 'todoList' );
 
@@ -96,7 +94,7 @@ describe( 'TodoListUI', () => {
 		} );
 
 		it( 'should bind button to command', () => {
-			setData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
+			_setModelData( model, '<listItem listType="todo" listIndent="0">[]foo</listItem>' );
 
 			const command = editor.commands.get( 'todoList' );
 

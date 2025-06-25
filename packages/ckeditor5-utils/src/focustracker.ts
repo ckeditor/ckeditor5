@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global setTimeout, clearTimeout */
-
 /**
  * @module utils/focustracker
  */
 
-import DomEmitterMixin from './dom/emittermixin.js';
-import ObservableMixin from './observablemixin.js';
-import CKEditorError from './ckeditorerror.js';
+import { DomEmitterMixin } from './dom/emittermixin.js';
+import { ObservableMixin } from './observablemixin.js';
+import { CKEditorError } from './ckeditorerror.js';
 import type { View } from '@ckeditor/ckeditor5-ui';
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -28,7 +26,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  *
  * Check out the {@glink framework/deep-dive/ui/focus-tracking "Deep dive into focus tracking"} guide to learn more.
  */
-export default class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+export class FocusTracker extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
 	 * True when one of the registered {@link #elements} or {@link #externalViews} is focused.
 	 *

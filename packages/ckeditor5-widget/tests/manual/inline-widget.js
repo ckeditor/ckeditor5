@@ -3,26 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console, window */
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Widget from '../../src/widget.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Widget } from '../../src/widget.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -139,7 +137,7 @@ ClassicEditor
 const modelDiv = global.document.querySelector( '#model' );
 
 function printModelContents( editor ) {
-	modelDiv.innerText = formatData( getData( editor.model ) );
+	modelDiv.innerText = formatData( _getModelData( editor.model ) );
 }
 
 function formatData( data ) {

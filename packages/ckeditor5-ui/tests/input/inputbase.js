@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import InputBase from '../../src/input/inputbase.js';
-import InputView from '../../src/input/inputview.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { InputBase } from '../../src/input/inputbase.js';
+import { InputView } from '../../src/input/inputview.js';
 
 describe( 'InputBase', () => {
 	let view, ariaDescribedById;

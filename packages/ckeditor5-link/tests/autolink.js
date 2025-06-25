@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Input from '@ckeditor/ckeditor5-typing/src/input.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import LinkEditing from '../src/linkediting.js';
-import AutoLink from '../src/autolink.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { LinkEditing } from '../src/linkediting.js';
+import { AutoLink } from '../src/autolink.js';
 
 describe( 'AutoLink', () => {
 	let editor;
@@ -59,25 +59,25 @@ describe( 'AutoLink', () => {
 		} );
 
 		describe( 'pasting on selected text', () => {
-			beforeEach( () => setData( model, '<paragraph>some [selected] text</paragraph>' ) );
+			beforeEach( () => _setModelData( model, '<paragraph>some [selected] text</paragraph>' ) );
 
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
 				);
 			} );
 
 			it( 'paste text including a link', () => {
 				pasteText( ' http://hello.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some  http://hello.com[] text</paragraph>'
 				);
 			} );
 
 			it( 'paste not a link', () => {
 				pasteText( 'hello' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some hello[] text</paragraph>'
 				);
 			} );
@@ -87,7 +87,7 @@ describe( 'AutoLink', () => {
 					'text/plain': 'http://hello.com',
 					'text/html': '<a href="http://hello.com">http://hello.com</a>'
 				} );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>'
 				);
 			} );
@@ -97,7 +97,7 @@ describe( 'AutoLink', () => {
 					'text/plain': 'hello.com',
 					'text/html': '<a href="http://hello.com">hello.com</a>'
 				} );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some <$text linkHref="http://hello.com">hello.com</$text>[] text</paragraph>'
 				);
 			} );
@@ -106,25 +106,25 @@ describe( 'AutoLink', () => {
 				pasteData( {
 					'text/html': '<span style="font-color: blue">http://hello.com</span>'
 				} );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
 
 			it( 'should omit the `drop` clipboard method', () => {
 				pasteText( 'http://hello.com', 'drop' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
 		} );
 
 		describe( 'pasting on collapsed selection', () => {
-			beforeEach( () => setData( model, '<paragraph>some [] text</paragraph>' ) );
+			beforeEach( () => _setModelData( model, '<paragraph>some [] text</paragraph>' ) );
 
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some http://hello.com[] text</paragraph>'
 				);
 			} );
@@ -132,7 +132,7 @@ describe( 'AutoLink', () => {
 
 		describe( 'pasting with multiple selection', () => {
 			beforeEach( () => {
-				setData( model, '<paragraph>some text</paragraph>' );
+				_setModelData( model, '<paragraph>some text</paragraph>' );
 				const paragraph = model.document.getRoot().getChild( 0 );
 				const firstRange = editor.model.createRange(
 					editor.model.createPositionAt( paragraph, 0 ),
@@ -151,7 +151,7 @@ describe( 'AutoLink', () => {
 			it( 'paste link', () => {
 				pasteText( 'http://hello.com' );
 				// Default behaviour: overwrites the first selection
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>http://hello.com[] text</paragraph>'
 				);
 			} );
@@ -159,46 +159,46 @@ describe( 'AutoLink', () => {
 
 		describe( 'pasting on a link', () => {
 			it( 'paste with entire link selected', () => {
-				setData( model, '<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>' );
+				_setModelData( model, '<paragraph>some [<$text linkHref="http://hello.com">selected</$text>] text</paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>some [<$text linkHref="http://world.com">selected</$text>] text</paragraph>'
 				);
 			} );
 
 			it( 'paste with partially selected link updates and selects the entire link', () => {
-				setData( model, '<paragraph><$text linkHref="http://hello.com">some [selected] text</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="http://hello.com">some [selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 
 			it( 'paste with selection overlapping the start of the link extends the link', () => {
-				setData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
+				_setModelData( model, '<paragraph>[some <$text linkHref="http://hello.com">selected] text</$text></paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 
 			it( 'paste with selection overlapping the end of the link extends the link', () => {
-				setData( model, '<paragraph><$text linkHref="http://hello.com">some [selected</$text> text]</paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="http://hello.com">some [selected</$text> text]</paragraph>' );
 				pasteText( 'http://world.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<$text linkHref="http://world.com">some selected text</$text>]</paragraph>'
 				);
 			} );
 
 			it( 'paste with two partially selected links overwrites both', () => {
-				setData( model,
+				_setModelData( model,
 					`<paragraph>
 						<$text linkHref="http://one.com">here [are</$text>
 						<$text linkHref="http://two.com">two] links</$text>
 					</paragraph>`
 				);
 				pasteText( 'http://world.com' );
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<$text linkHref="http://world.com">here are two links</$text>]</paragraph>'
 				);
 			} );
@@ -238,13 +238,13 @@ describe( 'AutoLink', () => {
 
 			model = editor.model;
 
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does nothing on typing normal text', () => {
 			simulateTyping( 'Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Cupcake ipsum dolor. Sit amet caramels. Pie jelly-o lemon drops fruitcake.[]</paragraph>'
 			);
 		} );
@@ -252,7 +252,7 @@ describe( 'AutoLink', () => {
 		it( 'does not add linkHref attribute to a text link while typing', () => {
 			simulateTyping( 'https://www.cksource.com' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com[]</paragraph>'
 			);
 		} );
@@ -260,7 +260,7 @@ describe( 'AutoLink', () => {
 		it( 'adds linkHref attribute to a text link after space', () => {
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -270,7 +270,7 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -280,113 +280,113 @@ describe( 'AutoLink', () => {
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute if plugin is force-disabled (on enter)', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 			editor.plugins.get( 'AutoLink' ).forceDisabled( 'test' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute if plugin is force-disabled (on shift enter)', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 			editor.plugins.get( 'AutoLink' ).forceDisabled( 'test' );
 
 			editor.execute( 'shiftEnter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute on enter when the link is selected', () => {
-			setData( model, '<paragraph>[https://www.cksource.com]</paragraph>' );
+			_setModelData( model, '<paragraph>[https://www.cksource.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute on enter when the whole paragraph containing the link is selected', () => {
-			setData( model, '<paragraph>[This feature also works with e-mail addresses: https://www.cksource.com]</paragraph>' );
+			_setModelData( model, '<paragraph>[This feature also works with e-mail addresses: https://www.cksource.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'adds linkHref attribute on enter when the link (containing www) is partially selected (end)' +
 			'and the remaining fragment is a proper URL', () => {
-			setData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.foo.ba[r.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.foo.ba">https://www.foo.ba</$text></paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add a linkHref attribute for links with www subdomain only, pressing enter with part of its end selected', () => {
 			// https://github.com/ckeditor/ckeditor5/issues/8050.
-			setData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute on enter when the link (that does not contain www) is partially selected (end)', () => {
-			setData( model, '<paragraph>https://ckso[urce.com]</paragraph>' );
+			_setModelData( model, '<paragraph>https://ckso[urce.com]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://ckso</paragraph><paragraph>[]</paragraph>'
 			);
 		} );
 
 		it( 'does not add linkHref attribute on enter when the link is partially selected (beginning)', () => {
-			setData( model, '<paragraph>[https://www.ckso]urce.com</paragraph>' );
+			_setModelData( model, '<paragraph>[https://www.ckso]urce.com</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph></paragraph><paragraph>[]urce.com</paragraph>'
 			);
 		} );
 
 		it( 'adds linkHref attribute to a text link after space (inside paragraph)', () => {
-			setData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo Bar [] Baz</paragraph>' );
 
 			simulateTyping( 'https://www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>Foo Bar <$text linkHref="https://www.cksource.com">https://www.cksource.com</$text> [] Baz</paragraph>'
 			);
 		} );
 
 		it( 'adds linkHref attribute to a text link on shift enter', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 
 			editor.execute( 'shiftEnter' );
 
 			// TODO: should test with selection but master has a bug. See: https://github.com/ckeditor/ckeditor5/issues/7459.
-			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
 				'<softBreak></softBreak>' +
@@ -395,21 +395,21 @@ describe( 'AutoLink', () => {
 		} );
 
 		it( 'does not add linkHref attribute to a text link after double soft break', () => {
-			setData( model, '<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>' );
 
 			editor.execute( 'shiftEnter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak><softBreak></softBreak>[]</paragraph>'
 			);
 		} );
 
 		it( 'adds linkHref attribute to a text link on enter', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>' +
 				'</paragraph>' +
@@ -432,7 +432,7 @@ describe( 'AutoLink', () => {
 				}
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>outer text' +
 				'<limit>inner text https://www.cksource.com[] inner text</limit>' +
 				'outer text</paragraph>'
@@ -440,7 +440,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>outer text' +
 				'<limit>inner text <$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text> inner text</limit>' +
 				'outer text</paragraph>'
@@ -449,7 +449,7 @@ describe( 'AutoLink', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/15862
 		it( 'adds linkHref to a text link inside a block limit element on enter', () => {
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 
 			editor.model.schema.extend( 'paragraph', {
 				isLimit: true
@@ -457,7 +457,7 @@ describe( 'AutoLink', () => {
 
 			editor.execute( 'enter' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 				'<$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text>' +
 				'</paragraph>'
@@ -467,7 +467,7 @@ describe( 'AutoLink', () => {
 		it( 'adds "mailto:" to link of detected email addresses', () => {
 			simulateTyping( 'newsletter@cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="mailto:newsletter@cksource.com">newsletter@cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -476,7 +476,7 @@ describe( 'AutoLink', () => {
 			editor.config.set( 'link.defaultProtocol', 'http://' );
 			simulateTyping( 'www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="http://www.cksource.com">www.cksource.com</$text> []</paragraph>'
 			);
 		} );
@@ -485,13 +485,13 @@ describe( 'AutoLink', () => {
 			editor.config.set( 'link.defaultProtocol', '' );
 			simulateTyping( 'www.cksource.com ' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>www.cksource.com []</paragraph>'
 			);
 		} );
 
 		it( 'does not autolink if link is already created', () => {
-			setData( model, '<paragraph><$text linkHref="http://www.cksource.com">http://www.cksource.com</$text>[]</paragraph>' );
+			_setModelData( model, '<paragraph><$text linkHref="http://www.cksource.com">http://www.cksource.com</$text>[]</paragraph>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
 			const spy = sinon.spy( plugin, '_persistAutoLink' );
@@ -505,7 +505,7 @@ describe( 'AutoLink', () => {
 			it( `does not include "${ punctuation }" at the end of the link after space`, () => {
 				simulateTyping( `https://www.cksource.com${ punctuation } ` );
 
-				expect( getData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					`<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>${ punctuation } []</paragraph>`
 				);
 			} );
@@ -572,7 +572,7 @@ describe( 'AutoLink', () => {
 				it( `should detect "${ supportedURL }" as a valid URL`, () => {
 					simulateTyping( supportedURL + ' ' );
 
-					expect( getData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						`<paragraph><$text linkHref="${ supportedURL }">${ supportedURL }</$text> []</paragraph>` );
 				} );
 			}
@@ -613,7 +613,7 @@ describe( 'AutoLink', () => {
 				it( `should not detect "${ unsupportedURL }" as a valid URL`, () => {
 					simulateTyping( unsupportedURL + ' ' );
 
-					expect( getData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						`<paragraph>${ unsupportedURL } []</paragraph>` );
 				} );
 			}
@@ -630,7 +630,7 @@ describe( 'AutoLink', () => {
 
 			model = editor.model;
 
-			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+			_setModelData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
 		} );
 
 		it( 'should undo auto-linking (after space)', () => {
@@ -638,7 +638,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -648,7 +648,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com<softBreak></softBreak>[]</paragraph>'
 			);
 		} );
@@ -658,7 +658,7 @@ describe( 'AutoLink', () => {
 
 			editor.commands.execute( 'undo' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com</paragraph>' +
 				'<paragraph>[]</paragraph>'
 			);
@@ -666,7 +666,7 @@ describe( 'AutoLink', () => {
 
 		it( 'should undo auto-linking by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
@@ -676,7 +676,7 @@ describe( 'AutoLink', () => {
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>https://www.cksource.com []</paragraph>'
 			);
 		} );
@@ -684,7 +684,7 @@ describe( 'AutoLink', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/12447
 		it( 'should not undo auto-linking by pressing backspace after any other change has been made', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
@@ -698,7 +698,7 @@ describe( 'AutoLink', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.co</$text>[]</paragraph>'
 			);
 		} );
@@ -716,40 +716,40 @@ describe( 'AutoLink', () => {
 		} );
 
 		it( 'should be disabled inside code blocks (on space)', () => {
-			setData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">some [] code</codeBlock>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
 
 			simulateTyping( 'www.cksource.com' );
 
 			expect( plugin.isEnabled ).to.be.false;
-			expect( getData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<codeBlock language="plaintext">some www.cksource.com code</codeBlock>' );
 		} );
 
 		it( 'should be disabled inside code blocks (on enter)', () => {
-			setData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
 
 			editor.execute( 'enter' );
 
 			expect( plugin.isEnabled ).to.be.false;
-			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<codeBlock language="plaintext">some www.cksource.com</codeBlock>' +
 				'<codeBlock language="plaintext"> code</codeBlock>'
 			);
 		} );
 
 		it( 'should be disabled inside code blocks (on shift-enter)', () => {
-			setData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
+			_setModelData( model, '<codeBlock language="plaintext">some www.cksource.com[] code</codeBlock>' );
 
 			const plugin = editor.plugins.get( 'AutoLink' );
 
 			editor.execute( 'shiftEnter' );
 
 			expect( plugin.isEnabled ).to.be.false;
-			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<codeBlock language="plaintext">some www.cksource.com<softBreak></softBreak> code</codeBlock>'
 			);
 		} );

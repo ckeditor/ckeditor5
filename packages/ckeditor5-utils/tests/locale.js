@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console */
-
-import Locale from '../src/locale.js';
+import { Locale } from '../src/locale.js';
 import {
 	add as addTranslations,
 	_clear as clearTranslations
@@ -252,24 +250,6 @@ describe( 'Locale', () => {
 				t( { string: 'Add %0' }, [ 'space' ] );
 				t( { string: 'Add %0' }, 'space' );
 			} ).to.not.throw();
-		} );
-	} );
-
-	describe( 'language()', () => {
-		it( 'should return #uiLanguage', () => {
-			const stub = sinon.stub( console, 'warn' );
-			const locale = new Locale();
-
-			expect( locale.language ).to.equal( locale.uiLanguage );
-			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
-		} );
-
-		it( 'should warn about deprecation', () => {
-			const stub = sinon.stub( console, 'warn' );
-			const locale = new Locale();
-
-			expect( locale.language ).to.equal( 'en' );
-			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
 		} );
 	} );
 } );

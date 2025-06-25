@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils.js';
-import MinimapView, { type MinimapDragEvent, type MinimapClickEvent } from './minimapview.js';
+import { MinimapView, type MinimapDragEvent, type MinimapClickEvent } from './minimapview.js';
 import {
 	cloneEditingViewDomRoot,
 	getClientHeight,
@@ -25,7 +25,7 @@ import '../theme/minimap.css';
 /**
  * The content minimap feature.
  */
-export default class Minimap extends Plugin {
+export class Minimap extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

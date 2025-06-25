@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import parseBase64EncodedObject from '../src/parsebase64encodedobject.js';
-
-/* globals btoa */
+import { parseBase64EncodedObject } from '../src/parsebase64encodedobject.js';
 
 describe( 'parseBase64EncodedObject', () => {
 	it( 'should return a decoded object', () => {

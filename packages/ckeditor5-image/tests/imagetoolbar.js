@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import ImageToolbar from '../src/imagetoolbar.js';
-import ImageCaption from '../src/imagecaption.js';
-import Image from '../src/image.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ImageStyle from '../src/imagestyle.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { ImageToolbar } from '../src/imagetoolbar.js';
+import { ImageCaption } from '../src/imagecaption.js';
+import { Image } from '../src/image.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ImageStyle } from '../src/imagestyle.js';
 
 describe( 'ImageToolbar', () => {
 	let editor, model, doc, toolbar, balloon, widgetToolbarRepository, editorElement;
@@ -96,7 +94,7 @@ describe( 'ImageToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			expect( toolbar.items ).to.have.length( 2 );
 			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
@@ -108,7 +106,7 @@ describe( 'ImageToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			expect( toolbar.items.get( 1 ).buttonView.label ).to.equal( 'Fake dropdown: Centered image' );
 			expect( toolbar.items.get( 1 ).buttonView.arrowView.label ).to.equal( 'Fake dropdown' );
@@ -119,7 +117,7 @@ describe( 'ImageToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 				return view === toolbar && balloonClassName === 'ck-toolbar-container';
@@ -139,7 +137,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -151,7 +149,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the image is selected', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -163,7 +161,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the selection is in a caption', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<imageBlock src=""><caption>[foo]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src=""><caption>[foo]</caption></imageBlock>' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -175,7 +173,7 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the selection is in a caption', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( model, '<imageBlock src=""><caption>[]foo</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src=""><caption>[]foo</caption></imageBlock>' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -191,7 +189,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the image is selected', () => {
-			setData( model, '<paragraph>[foo]</paragraph><imageBlock src=""></imageBlock>' );
+			_setModelData( model, '<paragraph>[foo]</paragraph><imageBlock src=""></imageBlock>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -215,7 +213,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the inline image is selected', () => {
-			setData( model, '<paragraph>[foo]<imageInline src=""></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph>[foo]<imageInline src=""></imageInline></paragraph>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -239,7 +237,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the linked inline image is selected', () => {
-			setData( model, '<paragraph>[foo]<imageInline linkHref="https://ckeditor.com" src=""></imageInline></paragraph>' );
+			_setModelData( model, '<paragraph>[foo]<imageInline linkHref="https://ckeditor.com" src=""></imageInline></paragraph>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -263,7 +261,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the selection is in a caption', () => {
-			setData( model, '<paragraph>[foo]</paragraph><imageBlock src=""><caption>bar</caption></imageBlock>' );
+			_setModelData( model, '<paragraph>[foo]</paragraph><imageBlock src=""><caption>bar</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -287,7 +285,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -309,7 +307,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on ui#update if the image is de–selected', () => {
-			setData( model, '<paragraph>foo</paragraph>[<imageBlock src=""></imageBlock>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src=""></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -329,7 +327,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on ui#update if the selection is being moved outside of a caption', () => {
-			setData( model, '<paragraph>foo</paragraph><imageBlock src=""><caption>[]</caption></imageBlock>' );
+			_setModelData( model, '<paragraph>foo</paragraph><imageBlock src=""><caption>[]</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -349,7 +347,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not hide the toolbar on ui#update if the selection is being moved from an image to a caption', () => {
-			setData( model, '[<imageBlock src=""><caption>bar</caption></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src=""><caption>bar</caption></imageBlock>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -369,7 +367,7 @@ describe( 'ImageToolbar', () => {
 		} );
 
 		it( 'should not hide the toolbar on ui#update if the selection is being moved from a caption to an image', () => {
-			setData( model, '<imageBlock src=""><caption>[b]ar</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src=""><caption>[b]ar</caption></imageBlock>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 

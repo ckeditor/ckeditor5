@@ -3,24 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document,Event */
-
 import { IconEraser, IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
-import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
-import ColorTileView from '../../src/colorgrid/colortileview.js';
-import FocusCycler from '../../src/focuscycler.js';
-import ColorPickerView from '../../src/colorpicker/colorpickerview.js';
-import ColorGridsFragmentView from '../../src/colorselector/colorgridsfragmentview.js';
+import { ColorSelectorView } from './../../src/colorselector/colorselectorview.js';
+import { ColorTileView } from '../../src/colorgrid/colortileview.js';
+import { FocusCycler } from '../../src/focuscycler.js';
+import { ColorPickerView } from '../../src/colorpicker/colorpickerview.js';
+import { ColorGridsFragmentView } from '../../src/colorselector/colorgridsfragmentview.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
 const colorDefinitions = [
@@ -279,7 +277,7 @@ describe( 'ColorSelectorView', () => {
 
 		it( 'should call updateDocumentColors in colorGridsFragmentView', () => {
 			const spy = sinon.spy( colorSelectorView.colorGridsFragmentView, 'updateDocumentColors' );
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -301,7 +299,7 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should unset selected color', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -320,7 +318,7 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should has colors', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document */
-
 declare global {
 	interface Window { CKEditorInspector: any }
 }
@@ -25,10 +23,10 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
+import { SpecialCharacters } from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
+import { SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { ButtonView, Dialog, DialogViewPosition, SwitchButtonView, View } from '../../../src/index.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconColorPalette } from '@ckeditor/ckeditor5-icons';

@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals setTimeout */
-
-import Editor from '../src/editor/editor.js';
-import PluginCollection from '../src/plugincollection.js';
-import Context from '../src/context.js';
-import Plugin from '../src/plugin.js';
-import ContextPlugin from '../src/contextplugin.js';
+import { Editor } from '../src/editor/editor.js';
+import { PluginCollection } from '../src/plugincollection.js';
+import { Context } from '../src/context.js';
+import { Plugin } from '../src/plugin.js';
+import { ContextPlugin } from '../src/contextplugin.js';
 import { expectToThrowCKEditorError, assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let editor, availablePlugins;

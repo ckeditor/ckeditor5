@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals globalThis, localStorage */
-
 import { global, env } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BalloonToolbar, BlockToolbar } from '@ckeditor/ckeditor5-ui';
@@ -12,9 +10,9 @@ import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import testUtils from '../../_utils/utils.js';
-import ClassicTestEditor from '../../_utils/classictesteditor.js';
-import Plugin from '../../../src/plugin.js';
+import { testUtils } from '../../_utils/utils.js';
+import { ClassicTestEditor } from '../../_utils/classictesteditor.js';
+import { Plugin } from '../../../src/plugin.js';
 import { getEditorUsageData } from '../../../src/editor/utils/editorusagedata.js';
 
 describe( 'getEditorUsageData()', () => {

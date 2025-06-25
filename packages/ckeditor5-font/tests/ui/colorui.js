@@ -3,19 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import TestColorPlugin from '../_utils/testcolorplugin.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { TestColorPlugin } from '../_utils/testcolorplugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ColorGridView } from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-describe( 'ColorUI', () => {
+describe( 'FontColorUIBase', () => {
 	const testColorConfig = {
 		colors: [
 			'yellow',
@@ -352,7 +350,7 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'adds to model colors from editor and not duplicates it', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -387,7 +385,7 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'reacts on document model changes', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>'
 				);
 
@@ -404,7 +402,7 @@ describe( 'ColorUI', () => {
 
 				dropdown.isOpen = false;
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
 				);
@@ -599,7 +597,7 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'adds to model colors from editor and not duplicates it', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
 					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
@@ -635,7 +633,7 @@ describe( 'ColorUI', () => {
 			} );
 
 			it( 'reacts on document model changes', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>'
 				);
 
@@ -651,7 +649,7 @@ describe( 'ColorUI', () => {
 					}
 				} );
 
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
 					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
 				);

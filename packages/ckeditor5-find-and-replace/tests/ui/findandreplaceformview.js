@@ -3,29 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, Event */
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { LabeledFieldView } from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { FocusCycler } from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import { CollapsibleView } from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
+import { SwitchButtonView } from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
 
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import CollapsibleView from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
-import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
-
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 
-import FindAndReplace from '../../src/findandreplace.js';
-import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
+import { FindAndReplace } from '../../src/findandreplace.js';
+import { FindAndReplaceFormView } from '../../src/ui/findandreplaceformview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 describe( 'FindAndReplaceFormView', () => {

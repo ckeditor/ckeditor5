@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, console:false, document */
-
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { BalloonToolbar } from '../../../src/toolbar/balloon/balloontoolbar.js';
 
 // Plugin that watches for addRoot and detachRoot events and creates or removes editable elements.
 class MultiRootWatchEditables {

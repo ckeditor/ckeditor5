@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console, setTimeout */
-
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ImageBlockEditing from '../src/image/imageblockediting.js';
-import ImageInlineEditing from '../src/image/imageinlineediting.js';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
+import { ImageBlockEditing } from '../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../src/image/imageinlineediting.js';
+import { ImageCaptionEditing } from '../src/imagecaption/imagecaptionediting.js';
 
-import ImageUtils from '../src/imageutils.js';
+import { ImageUtils } from '../src/imageutils.js';
 
 describe( 'ImageUtils plugin', () => {
 	let editor, imageUtils, element, image, writer, viewDocument;
@@ -196,19 +194,19 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return null if no element is selected and the selection has no image ancestor', () => {
-			setModelData( model, '<paragraph>F[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>F[]oo</paragraph>' );
 
 			expect( imageUtils.getClosestSelectedImageElement( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return null if a non-image element is selected', () => {
-			setModelData( model, '[<blockWidget></blockWidget>]' );
+			_setModelData( model, '[<blockWidget></blockWidget>]' );
 
 			expect( imageUtils.getClosestSelectedImageElement( model.document.selection ) ).to.be.null;
 		} );
 
 		it( 'should return an imageInline element if it is selected', () => {
-			setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+			_setModelData( model, '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
@@ -216,7 +214,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return an image element if it is selected', () => {
-			setModelData( model, '[<imageBlock></imageBlock>]' );
+			_setModelData( model, '[<imageBlock></imageBlock>]' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
@@ -224,7 +222,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return an image element if the selection range is inside its caption', () => {
-			setModelData( model, '<imageBlock><caption>F[oo]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock><caption>F[oo]</caption></imageBlock>' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
@@ -232,7 +230,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return an image element if the selection position is inside its caption', () => {
-			setModelData( model, '<imageBlock><caption>Foo[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock><caption>Foo[]</caption></imageBlock>' );
 
 			const image = imageUtils.getClosestSelectedImageElement( model.document.selection );
 
@@ -397,20 +395,20 @@ describe( 'ImageUtils plugin', () => {
 
 		it( 'should return true when the selection directly in the root', () => {
 			model.enqueueChange( { isUndoable: false }, () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				expect( imageUtils.isImageAllowed() ).to.be.true;
 			} );
 		} );
 
 		it( 'should return true when the selection is in empty block', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return true when the selection directly in a paragraph', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
@@ -419,12 +417,12 @@ describe( 'ImageUtils plugin', () => {
 			model.schema.extend( '$text', { allowIn: 'block' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block>foo[]</block>' );
+			_setModelData( model, '<block>foo[]</block>' );
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
 		it( 'should return true when the selection is on other image', () => {
-			setModelData( model, '[<imageBlock></imageBlock>]' );
+			_setModelData( model, '[<imageBlock></imageBlock>]' );
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
 
@@ -435,14 +433,14 @@ describe( 'ImageUtils plugin', () => {
 				isLimit: true
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
-			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 			expect( imageUtils.isImageAllowed() ).to.be.false;
 		} );
 
 		it( 'should return true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
-			setModelData( model, '[<object></object>]' );
+			_setModelData( model, '[<object></object>]' );
 
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
@@ -456,7 +454,7 @@ describe( 'ImageUtils plugin', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
-			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
 			expect( imageUtils.isImageAllowed() ).to.be.true;
 		} );
@@ -475,7 +473,7 @@ describe( 'ImageUtils plugin', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( imageUtils.isImageAllowed() ).to.be.false;
 		} );
@@ -495,35 +493,35 @@ describe( 'ImageUtils plugin', () => {
 			} ) );
 
 			it( 'should insert inline image in a paragraph with text', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				imageUtils.insertImage( editor );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should insert a block image when the selection is inside an empty paragraph', () => {
-				setModelData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				imageUtils.insertImage( editor );
 
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 			} );
 
 			it( 'should insert a block image in the document root', () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				imageUtils.insertImage( editor );
 
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 			} );
 
 			it( 'should insert image with given attributes', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				imageUtils.insertImage( { src: 'bar' } );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="bar"></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="bar"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
@@ -535,12 +533,12 @@ describe( 'ImageUtils plugin', () => {
 					image: { insert: { type: 'auto' } }
 				} );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
 				expect( consoleWarnStub.called ).to.be.false;
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
 				console.warn.restore();
 			} );
@@ -554,59 +552,59 @@ describe( 'ImageUtils plugin', () => {
 					image: { insert: { type: 'auto' } }
 				} );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
 				expect( consoleWarnStub.called ).to.be.false;
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
 				console.warn.restore();
 			} );
 
 			it( 'should pass the allowed custom attributes to the inserted block image', () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 				model.schema.extend( 'imageBlock', { allowAttributes: 'customAttribute' } );
 
 				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
-				expect( getModelData( model ) )
+				expect( _getModelData( model ) )
 					.to.equal( '[<imageBlock customAttribute="value" src="foo"></imageBlock>]' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting a block image', () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
-				expect( getModelData( model ) )
+				expect( _getModelData( model ) )
 					.to.equal( '[<imageBlock src="foo"></imageBlock>]' );
 			} );
 
 			it( 'should pass the allowed custom attributes to the inserted inline image', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 				model.schema.extend( 'imageInline', { allowAttributes: 'customAttribute' } );
 
 				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
-				expect( getModelData( model ) )
+				expect( _getModelData( model ) )
 					.to.equal( '<paragraph>f[<imageInline customAttribute="value" src="foo"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting an inline image', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should return the inserted image element', () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				const imageElement = imageUtils.insertImage( editor );
 
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 				expect( imageElement.is( 'element', 'imageBlock' ) ).to.be.true;
 				expect( imageElement ).to.equal( model.document.getRoot().getChild( 0 ) );
 			} );
@@ -620,22 +618,22 @@ describe( 'ImageUtils plugin', () => {
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
-				setModelData( model, '<other>[]</other>' );
+				_setModelData( model, '<other>[]</other>' );
 
 				const imageElement = imageUtils.insertImage();
 
-				expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+				expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 
 				expect( imageElement ).to.be.null;
 			} );
 
 			it( 'should set image width and height', done => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				imageUtils.insertImage( { src: '/assets/sample.png' } );
 
 				setTimeout( () => {
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>f[<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>]o</paragraph>'
 					);
 
@@ -644,12 +642,12 @@ describe( 'ImageUtils plugin', () => {
 			} );
 
 			it( 'should not set image width and height if `setImageSizes` parameter is false', done => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				imageUtils.insertImage( { src: '/assets/sample.png' }, null, null, { setImageSizes: false } );
 
 				setTimeout( () => {
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>'
 					);
 
@@ -665,11 +663,11 @@ describe( 'ImageUtils plugin', () => {
 			} ) );
 
 			it( 'should use the block image type', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage( editor );
 
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 			} );
 
 			it( 'should use the inline image type when ImageBlockEditing plugin is not enabled', async () => {
@@ -681,13 +679,13 @@ describe( 'ImageUtils plugin', () => {
 					image: { insert: { type: 'block' } }
 				} );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
 				expect( consoleWarnStub.calledOnce ).to.be.true;
 				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-block-plugin-required' );
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
 				console.warn.restore();
 			} );
@@ -700,19 +698,19 @@ describe( 'ImageUtils plugin', () => {
 			} ) );
 
 			it( 'should use the inline image type', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should use the inline image type in an empty paragraph', () => {
-				setModelData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[<imageInline></imageInline>]</paragraph>' );
 			} );
 
 			it( 'should use the block image type when ImageInlineEditing plugin is not enabled', async () => {
@@ -724,13 +722,13 @@ describe( 'ImageUtils plugin', () => {
 					image: { insert: { type: 'inline' } }
 				} );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
 				expect( consoleWarnStub.calledOnce ).to.be.true;
 				expect( consoleWarnStub.firstCall.args[ 0 ] ).to.equal( 'image-inline-plugin-required' );
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 
 				console.warn.restore();
 			} );
@@ -750,11 +748,11 @@ describe( 'ImageUtils plugin', () => {
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
-				setModelData( model, '<other>[]</other>' );
+				_setModelData( model, '<other>[]</other>' );
 
 				imageUtils.insertImage();
 
-				expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+				expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 			} );
 
 			it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
@@ -765,22 +763,22 @@ describe( 'ImageUtils plugin', () => {
 					plugins: [ ImageInlineEditing, Paragraph ]
 				} );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
 				expect( consoleWarnStub.called ).to.be.false;
-				expect( getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline></imageInline>]o</paragraph>' );
 
 				console.warn.restore();
 			} );
 
 			it( 'should use the block image type by default', () => {
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 				editor.plugins.get( 'ImageUtils' ).insertImage();
 
-				expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]<paragraph>foo</paragraph>' );
 			} );
 		} );
 

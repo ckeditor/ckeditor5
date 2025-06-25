@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
-import HighlightCommand from './highlightcommand.js';
+import { HighlightCommand } from './highlightcommand.js';
 import type { HighlightOption } from './highlightconfig.js';
 
 /**
@@ -18,7 +18,7 @@ import type { HighlightOption } from './highlightconfig.js';
  * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
  * on the {@link module:highlight/highlightconfig~HighlightConfig configuration}.
  */
-export default class HighlightEditing extends Plugin {
+export class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -45,42 +45,42 @@ export default class HighlightEditing extends Plugin {
 					model: 'yellowMarker',
 					class: 'marker-yellow',
 					title: 'Yellow marker',
-					color: 'var(--ck-highlight-marker-yellow)',
+					color: 'var(--ck-content-highlight-marker-yellow)',
 					type: 'marker'
 				},
 				{
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: 'var(--ck-highlight-marker-green)',
+					color: 'var(--ck-content-highlight-marker-green)',
 					type: 'marker'
 				},
 				{
 					model: 'pinkMarker',
 					class: 'marker-pink',
 					title: 'Pink marker',
-					color: 'var(--ck-highlight-marker-pink)',
+					color: 'var(--ck-content-highlight-marker-pink)',
 					type: 'marker'
 				},
 				{
 					model: 'blueMarker',
 					class: 'marker-blue',
 					title: 'Blue marker',
-					color: 'var(--ck-highlight-marker-blue)',
+					color: 'var(--ck-content-highlight-marker-blue)',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: 'var(--ck-highlight-pen-red)',
+					color: 'var(--ck-content-highlight-pen-red)',
 					type: 'pen'
 				},
 				{
 					model: 'greenPen',
 					class: 'pen-green',
 					title: 'Green pen',
-					color: 'var(--ck-highlight-pen-green)',
+					color: 'var(--ck-content-highlight-pen-green)',
 					type: 'pen'
 				}
 			]

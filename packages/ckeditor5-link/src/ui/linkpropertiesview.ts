@@ -32,7 +32,7 @@ import '../../theme/linkproperties.css';
  *
  * See {@link module:link/ui/linkpropertiesview~LinkPropertiesView}.
  */
-export default class LinkPropertiesView extends View {
+export class LinkPropertiesView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -119,7 +119,7 @@ export default class LinkPropertiesView extends View {
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<BackEvent>( 'back' );
+			this.fire<LinkPropertiesBackEvent>( 'back' );
 			cancel();
 		} );
 	}
@@ -230,7 +230,7 @@ export default class LinkPropertiesView extends View {
  *
  * @eventName ~LinkPropertiesView#back
  */
-export type BackEvent = {
+export type LinkPropertiesBackEvent = {
 	name: 'back';
 	args: [];
 };

@@ -26,6 +26,7 @@ import { getLanguageDirection, type LanguageDirection } from 'ckeditor5/src/util
  *
  * @param languageCode The language code in the ISO 639-1 format.
  * @param textDirection The language text direction. Automatically detected if omitted.
+ * @internal
  */
 export function stringifyLanguageAttribute( languageCode: string, textDirection?: LanguageDirection ): string {
 	textDirection = textDirection || getLanguageDirection( languageCode );
@@ -36,6 +37,7 @@ export function stringifyLanguageAttribute( languageCode: string, textDirection?
  * Retrieves language properties converted to attribute value by the
  * {@link module:language/utils~stringifyLanguageAttribute stringifyLanguageAttribute} function.
  *
+ * @internal
  * @param str The attribute value.
  * @returns The object with properties:
  * * languageCode - The language code in the ISO 639 format.

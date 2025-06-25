@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import EnterObserver from '../src/enterobserver.js';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EnterObserver } from '../src/enterobserver.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils.js';
 import { getCode, env } from '@ckeditor/ckeditor5-utils';
 
@@ -21,7 +19,7 @@ describe( 'EnterObserver', () => {
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
 
-		view = new View();
+		view = new EditingView();
 		viewDocument = view.document;
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
@@ -38,7 +36,7 @@ describe( 'EnterObserver', () => {
 	// See #10.
 	it( 'can be initialized', () => {
 		expect( () => {
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			createViewRoot( viewDocument );
 			view.attachDomRoot( document.createElement( 'div' ) );

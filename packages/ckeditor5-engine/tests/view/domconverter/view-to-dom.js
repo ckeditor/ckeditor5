@@ -3,29 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
-
-import ViewText from '../../../src/view/text.js';
-import ViewElement from '../../../src/view/element.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewPosition from '../../../src/view/position.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import ViewAttributeElement from '../../../src/view/attributeelement.js';
-import ViewEmptyElement from '../../../src/view/emptyelement.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocumentFragment from '../../../src/view/documentfragment.js';
-import ViewDocument from '../../../src/view/document.js';
-import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { ViewText } from '../../../src/view/text.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 
-import { parse, getData as getViewData } from '../../../src/dev-utils/view.js';
-import { setData as setModelData } from '../../../src/dev-utils/model.js';
+import { _parseView, _getViewData } from '../../../src/dev-utils/view.js';
+import { _setModelData } from '../../../src/dev-utils/model.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -36,7 +34,7 @@ describe( 'DomConverter', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {
@@ -230,7 +228,7 @@ describe( 'DomConverter', () => {
 					new ViewElement( viewDocument, 'audio', { src: 'x', onerror: 'alert(1)' } )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -247,7 +245,7 @@ describe( 'DomConverter', () => {
 					new ViewText( viewDocument, 'foobar' )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -266,7 +264,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -297,7 +295,7 @@ describe( 'DomConverter', () => {
 
 				const domImg = document.createElement( 'img' );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -321,7 +319,7 @@ describe( 'DomConverter', () => {
 			it( 'should warn when an unsafe attribute was filtered out', () => {
 				const viewP = new ViewElement( viewDocument, 'p', { onclick: 'bar' } );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -347,7 +345,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -372,7 +370,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -393,7 +391,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -418,7 +416,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewStyle );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -439,7 +437,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -462,8 +460,8 @@ describe( 'DomConverter', () => {
 				let writer;
 
 				beforeEach( () => {
-					writer = new DowncastWriter( viewDocument );
-					converter = new DomConverter( viewDocument, {
+					writer = new ViewDowncastWriter( viewDocument );
+					converter = new ViewDomConverter( viewDocument, {
 						renderingMode: 'editing'
 					} );
 				} );
@@ -599,9 +597,9 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on src attribute of img element', () => {
-					setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
+					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p>' +
 							`<img src="${ svgBase64 }" srcset="${ svgBase64 }"></img>` +
 						'</p>'
@@ -610,9 +608,9 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'script included in encoded SVG should not be executed when set on src attribute of img element', () => {
-					setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
+					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p>' +
 							`<img src="${ svgEncoded }" srcset="${ svgEncoded }"></img>` +
 						'</p>'
@@ -622,11 +620,11 @@ describe( 'DomConverter', () => {
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
 					() => {
-						setModelData( editor.model,
+						_setModelData( editor.model,
 							`<paragraph><fakePicture srcset='${ svgBase64 }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgBase64 }"></source>` +
@@ -640,11 +638,11 @@ describe( 'DomConverter', () => {
 
 				it( 'script included in encoded SVG should not be executed when set on srcset attribute of source element',
 					() => {
-						setModelData( editor.model,
+						_setModelData( editor.model,
 							`<paragraph><fakePicture srcset='${ svgEncoded }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgEncoded }"></source>` +
@@ -742,6 +740,8 @@ describe( 'DomConverter', () => {
 			function showNbsp( html ) {
 				return html.replace( /&nbsp;/g, '_' );
 			}
+
+			/* eslint-disable @stylistic/no-multi-spaces */
 
 			// At the beginning.
 			testConvert( ' x', '_x' );
@@ -888,6 +888,8 @@ describe( 'DomConverter', () => {
 			testConvert( [ '  ', '   ' ], '__ __' );
 			testConvert( [ '   ', '  ' ], '_ _ _' );
 			testConvert( [ '   ', '   ' ], '_ _ __' );
+
+			/* eslint-enable @stylistic/no-multi-spaces */
 
 			it( 'not in preformatted blocks', () => {
 				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, [
@@ -1105,7 +1107,7 @@ describe( 'DomConverter', () => {
 
 	describe( 'viewChildrenToDom()', () => {
 		it( 'should convert children', () => {
-			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+			const viewP = _parseView( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
@@ -1116,7 +1118,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should add filler', () => {
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
@@ -1125,7 +1127,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should add filler according to fillerPositionOffset', () => {
-			const viewP = parse( '<container:p>foo</container:p>' );
+			const viewP = _parseView( '<container:p>foo</container:p>' );
 			viewP.getFillerOffset = () => 0;
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
@@ -1138,7 +1140,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - br', () => {
 			converter.blockFillerMode = 'br';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1149,7 +1151,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - nbsp', () => {
 			converter.blockFillerMode = 'nbsp';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1160,7 +1162,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - markedNbsp', () => {
 			converter.blockFillerMode = 'markedNbsp';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1169,7 +1171,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should pass options', () => {
-			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+			const viewP = _parseView( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, { withChildren: false } ) );
 
@@ -1186,7 +1188,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1233,8 +1235,8 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should yield the `RawElement` children properly', () => {
-				const downcastWriter = new DowncastWriter( viewDocument );
-				const dataConverter = new DomConverter( viewDocument, {
+				const downcastWriter = new ViewDowncastWriter( viewDocument );
+				const dataConverter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 				const parentElement = downcastWriter.createContainerElement( 'p' );
@@ -1256,7 +1258,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1316,7 +1318,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1378,7 +1380,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert the position in the text', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{}o</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1392,7 +1394,7 @@ describe( 'DomConverter', () => {
 		it( 'should support unicode', () => {
 			const domText = document.createTextNode( 'நிலைக்கு' );
 			const domP = createElement( document, 'p', null, domText );
-			const { view: viewP, selection } = parse( '<container:p>நிலை{}க்கு</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>நிலை{}க்கு</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1405,7 +1407,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position in the empty element', () => {
 			const domP = createElement( document, 'p' );
-			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1419,7 +1421,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert the position in the non-empty element', () => {
 			const domB = createElement( document, 'b', null, 'foo' );
 			const domP = createElement( document, 'p', null, domB );
-			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
@@ -1433,7 +1435,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position after text', () => {
 			const domP = createElement( document, 'p', null, 'foo' );
-			const { view: viewP, selection } = parse( '<container:p>foo[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>foo[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1446,7 +1448,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position before text', () => {
 			const domP = createElement( document, 'p', null, 'foo' );
-			const { view: viewP, selection } = parse( '<container:p>[]foo</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]foo</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1460,7 +1462,7 @@ describe( 'DomConverter', () => {
 		it( 'should update offset if DOM text node starts with inline filler', () => {
 			const domFoo = document.createTextNode( INLINE_FILLER + 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{}o</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1471,10 +1473,44 @@ describe( 'DomConverter', () => {
 			expect( domPosition.parent ).to.equal( domFoo );
 		} );
 
+		it( 'should convert the position in the text even if offset is after the text', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, domFoo );
+			const { view: viewP } = _parseView( '<container:p>f{}oo</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 40 ); // This offset is after the text.
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 3 );
+			expect( domPosition.parent ).to.equal( domFoo );
+		} );
+
+		it( 'should not crash for position in text on not yet updated DOM tree', () => {
+			// Note this is a case when renderer is verifying whether the selection is inside an inline filler,
+			// so the DOM tree is not yet updated.
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domFoo = document.createTextNode( 'foo' );
+			const domSpan = createElement( document, 'span', null, domFoo );
+			const domStrong = createElement( document, 'strong', null, [ domFiller, domSpan ] );
+			const domP = createElement( document, 'p', null, domStrong );
+			const { view: viewP } = _parseView( '<container:p>{}foo</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 0 );
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 0 );
+			expect( domPosition.parent ).to.equal( domStrong );
+			// This should be in a text node but since DOM is not yet updated, it is in the strong element.
+		} );
+
 		it( 'should move the position to the text node if the position is where inline filler is', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domP = createElement( document, 'p', null, domFiller );
-			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1487,7 +1523,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return null if view position is after a view element that has not been rendered to DOM', () => {
 			const domP = createElement( document, 'p', null );
-			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1518,7 +1554,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert view range to DOM range', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{o]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{o]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 

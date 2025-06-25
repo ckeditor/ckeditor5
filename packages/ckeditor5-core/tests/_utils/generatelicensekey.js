@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals btoa */
-
 import { releaseDate, crc32 } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Generates a license key for testing purposes.
  */
-export default function generateKey( options = {} ) {
+export function generateLicenseKey( options = {} ) {
 	const {
 		isExpired = false,
 		jtiExist = true,

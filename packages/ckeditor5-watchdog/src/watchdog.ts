@@ -7,8 +7,6 @@
  * @module watchdog/watchdog
  */
 
-/* globals window */
-
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { EditorWatchdogRestartEvent } from './editorwatchdog.js';
 import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } from './contextwatchdog.js';
@@ -20,7 +18,7 @@ import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } f
  *
  * @internal
  */
-export default abstract class Watchdog {
+export abstract class Watchdog {
 	/**
 	 * An array of crashes saved as an object with the following properties:
 	 *

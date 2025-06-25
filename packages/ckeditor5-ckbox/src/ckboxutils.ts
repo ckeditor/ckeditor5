@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 /**
  * @module ckbox/ckboxutils
  */
@@ -25,7 +23,7 @@ const DEFAULT_CKBOX_THEME_NAME = 'lark';
 /**
  * The CKBox utilities plugin.
  */
-export default class CKBoxUtils extends Plugin {
+export class CKBoxUtils extends Plugin {
 	/**
 	 * CKEditor Cloud Services access token.
 	 */

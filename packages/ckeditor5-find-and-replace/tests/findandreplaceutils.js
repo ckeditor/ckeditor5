@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 
-import FindAndReplace from '../src/findandreplace.js';
-import FindAndReplaceUI from '../src/findandreplaceui.js';
-import FindAndReplaceEditing from '../src/findandreplaceediting.js';
-import FindAndReplaceUtils from '../src/findandreplaceutils.js';
+import { FindAndReplace } from '../src/findandreplace.js';
+import { FindAndReplaceUI } from '../src/findandreplaceui.js';
+import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
+import { FindAndReplaceUtils } from '../src/findandreplaceutils.js';
 
 describe( 'FindAndReplace', () => {
 	let editor, findAndReplaceUtils, model, editorElement, root;

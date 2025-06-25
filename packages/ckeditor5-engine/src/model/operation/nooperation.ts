@@ -7,8 +7,8 @@
  * @module engine/model/operation/nooperation
  */
 
-import Operation from './operation.js';
-import type { Selectable } from '../selection.js';
+import { Operation } from './operation.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop"). This is an operation,
@@ -18,7 +18,7 @@ import type { Selectable } from '../selection.js';
  * {@link module:engine/model/operation/nooperation~NoOperation} it means that changes done by the transformed operation
  * have already been applied.
  */
-export default class NoOperation extends Operation {
+export class NoOperation extends Operation {
 	public get type(): 'noop' {
 		return 'noop';
 	}
@@ -26,7 +26,7 @@ export default class NoOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return null;
 	}
 

@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 
-import DropdownMenuNestedMenuPanelView from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
-import ViewCollection from '../../../src/viewcollection.js';
-import View from '../../../src/view.js';
+import { DropdownMenuNestedMenuPanelView } from '../../../src/dropdown/menu/dropdownmenunestedmenupanelview.js';
+import { ViewCollection } from '../../../src/viewcollection.js';
+import { View } from '../../../src/view.js';
 import {
 	LabeledFieldView,
 	createLabeledInputText

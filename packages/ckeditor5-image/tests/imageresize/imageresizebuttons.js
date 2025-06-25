@@ -3,28 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import {
 	IconObjectSizeSmall,
 	IconObjectSizeMedium,
 	IconObjectSizeLarge,
 	IconObjectSizeFull
 } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Image from '../../src/image.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
-import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
-import ImageStyle from '../../src/imagestyle.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Image } from '../../src/image.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';
+import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
+import { ImageStyle } from '../../src/imagestyle.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'ImageResizeButtons', () => {

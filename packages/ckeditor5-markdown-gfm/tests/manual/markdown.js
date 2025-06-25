@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import Markdown from '../../src/markdown.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import { TodoList } from '@ckeditor/ckeditor5-list/src/todolist.js';
+import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import { Markdown } from '../../src/markdown.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

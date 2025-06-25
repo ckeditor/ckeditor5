@@ -3,6 +3,7 @@ category: abbreviation-plugin
 menu-title: Improving accessibility and adding a command
 order: 26
 meta-title: Creating an advanced plugin tutorial pt. 3 | CKEditor 5 Documentation
+meta-description: Build a basic abbreviation plugin in CKEditor 5 to insert and manage abbreviations with accessible tooltips in your content, part 3.
 modified_at: 2022-07-15
 ---
 
@@ -184,7 +185,7 @@ When the user selects a range (a letter, a word, or a whole document fragment) a
 
 To display the text from the user's selection in the form field, we need to first grab and concatenate all text from the selected range. If the user selects a couple of paragraphs, a heading, and an image, we need to go through all the nodes, and use only the ones containing text.
 
-Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from the {@link module:engine/model/text~Text `text`} and {@link module:engine/model/textproxy~TextProxy `textProxy`} nodes, and skip all the others.
+Let's create a helper `getRangeText()` function in a separate `/utils.js` file. It will grab all items from a range using its `getItems()` method. Then, it will concatenate all text from the {@link module:engine/model/text~ModelText `text`} and {@link module:engine/model/textproxy~ModelTextProxy `textProxy`} nodes, and skip all the others.
 
 ```js
 // abbreviation/utils.js
@@ -408,7 +409,7 @@ Then, we change the value of the command. We will get the abbreviation text usin
 ```js
 // abbreviation/abbreviationcommand.js
 
-import { 
+import {
 	Command,
 	findAttributeRange						// ADDED
 } from 'ckeditor5';

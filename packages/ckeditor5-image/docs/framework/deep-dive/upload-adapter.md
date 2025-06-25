@@ -2,6 +2,7 @@
 category: framework-deep-dive
 menu-title: Custom upload adapter
 meta-title: Custom image upload adapter | CKEditor 5 Framework Documentation
+meta-description: Understand CKEditor 5 upload adapters, their role in handling file uploads, and how to create and integrate custom adapters.
 classes: custom-adapter
 ---
 

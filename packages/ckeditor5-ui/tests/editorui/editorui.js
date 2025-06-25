@@ -3,24 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EditorUI from '../../src/editorui/editorui.js';
+import { EditorUI } from '../../src/editorui/editorui.js';
 
-import ComponentFactory from '../../src/componentfactory.js';
-import ToolbarView from '../../src/toolbar/toolbarview.js';
-import TooltipManager from '../../src/tooltipmanager.js';
-import PoweredBy from '../../src/editorui/poweredby.js';
-import EvaluationBadge from '../../src/editorui/evaluationbadge.js';
-import AriaLiveAnnouncer from '../../src/arialiveannouncer.js';
+import { ComponentFactory } from '../../src/componentfactory.js';
+import { ToolbarView } from '../../src/toolbar/toolbarview.js';
+import { TooltipManager } from '../../src/tooltipmanager.js';
+import { PoweredBy } from '../../src/editorui/poweredby.js';
+import { EvaluationBadge } from '../../src/editorui/evaluationbadge.js';
+import { AriaLiveAnnouncer } from '../../src/arialiveannouncer.js';
 import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src/index.js';
 
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-
-/* global document, window, console */
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor, ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 class MyEditorUI extends EditorUI {
 	constructor( editor ) {
@@ -390,16 +388,6 @@ describe( 'EditorUI', () => {
 			const ui = new MyEditorUI( editor );
 
 			expect( ui.getEditableElementsNames() ).to.be.empty;
-		} );
-	} );
-
-	describe( '_editableElements()', () => {
-		it( 'should warn about deprecation', () => {
-			const ui = new MyEditorUI( editor );
-			const stub = testUtils.sinon.stub( console, 'warn' );
-
-			expect( ui._editableElements ).to.be.instanceOf( Map );
-			sinon.assert.calledWithMatch( stub, 'editor-ui-deprecated-editable-elements' );
 		} );
 	} );
 

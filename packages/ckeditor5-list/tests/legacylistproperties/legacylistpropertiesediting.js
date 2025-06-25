@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
-import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
-import LegacyListStyleCommand from '../../src/legacylistproperties/legacyliststylecommand.js';
-import LegacyListReversedCommand from '../../src/legacylistproperties/legacylistreversedcommand.js';
-import LegacyListStartCommand from '../../src/legacylistproperties/legacyliststartcommand.js';
+import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
+import { LegacyListStyleCommand } from '../../src/legacylistproperties/legacyliststylecommand.js';
+import { LegacyListReversedCommand } from '../../src/legacylistproperties/legacylistreversedcommand.js';
+import { LegacyListStartCommand } from '../../src/legacylistproperties/legacyliststartcommand.js';
 
 describe( 'LegacyListPropertiesEditing', () => {
 	let editor, model, view;
@@ -122,7 +120,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in data pipeline', () => {
 			describe( 'model to data', () => {
 				it( 'should convert single list (type: bulleted)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
@@ -131,7 +129,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: numbered)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered">Bar</listItem>'
 					);
@@ -140,7 +138,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: bulleted, style: default)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
@@ -149,7 +147,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: numbered, style: default)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="default">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStyle="default">Bar</listItem>'
 					);
@@ -158,7 +156,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
@@ -167,7 +165,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="upper-latin">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStyle="upper-latin">Bar</listItem>'
 					);
@@ -176,7 +174,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
@@ -199,7 +197,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: decimal-leading-zero, nested: lower-latin)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 2</listItem>' +
@@ -222,7 +220,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested mixed lists (ul>ol, main: square, nested: lower-roman)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 2</listItem>' +
@@ -245,7 +243,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce nested lists (different `listIndent` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 1</listItem>' +
@@ -266,7 +264,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce two different lists (different `listType` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
@@ -286,7 +284,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce two different lists (different `listStyle` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 2</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 1</listItem>' +
@@ -310,7 +308,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Bar</listItem>'
 					);
@@ -319,7 +317,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
 					);
@@ -328,7 +326,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
 					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
@@ -337,7 +335,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, style: upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>'
 					);
@@ -357,7 +355,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
@@ -376,7 +374,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="upper-latin" listType="numbered">Bar</listItem>' +
@@ -431,29 +429,29 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in editing pipeline', () => {
 			describe( 'model to view', () => {
 				it( 'should convert single list (type: bulleted, style: default)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
 
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul style="list-style-type:circle"><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
 
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
@@ -461,7 +459,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul style="list-style-type:circle">' +
 							'<li>Foo 1' +
 								'<ul style="list-style-type:disc">' +
@@ -482,7 +480,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					//         ○ Level 0.1.1
 					//     ▶ Level 0.2
 					//         ○ Level 0.2.1
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Level 0</listItem>' +
 						'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.1</listItem>' +
 						'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.1.1</listItem>' +
@@ -490,7 +488,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul>' +
 							'<li>Level 0' +
 								'<ul>' +
@@ -515,7 +513,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'integrations', () => {
 			describe( 'merging a list into a styled list', () => {
 				it( 'should inherit the list style attribute when merging the same kind of lists (from top, merge a single item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -523,7 +521,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -531,7 +529,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the list style attribute when merging the same kind of lists (from top, merge a few items)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>[Foo Bar 1.</paragraph>' +
 						'<paragraph>Foo Bar 2.]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
@@ -540,7 +538,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
@@ -549,27 +547,27 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
 				it( 'should not inherit anything if replacing the entire content with a list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -577,7 +575,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the list style attribute when merging different kind of lists (from top, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
@@ -585,7 +583,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
@@ -595,7 +593,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the list style attribute when merging different kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -603,7 +601,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
@@ -614,7 +612,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the list style attribute when merging the same kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -622,7 +620,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
@@ -632,7 +630,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the list style attribute from listIndent=0 element when merging the same kind of lists (from bottom)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
@@ -641,7 +639,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
@@ -653,7 +651,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'modifying "listType" attribute', () => {
 				it( 'should inherit the list style attribute when the modified list is the same kind of the list as next sibling', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -661,7 +659,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -671,7 +669,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the list style attribute when the modified list is the same kind of the list as previous sibling',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>'
@@ -679,7 +677,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
@@ -689,7 +687,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the list style attribute when the modified list already has defined it (next sibling check)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -697,7 +695,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -707,7 +705,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the list style attribute when the modified list already has defined it (previous sibling check)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
@@ -715,7 +713,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
@@ -726,7 +724,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indenting lists', () => {
 				it( 'should restore the default value for the list style attribute when indenting a single item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -736,7 +734,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -746,7 +744,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should restore the default value for the list style attribute when indenting a few items', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.]</listItem>'
@@ -754,7 +752,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.]</listItem>'
@@ -764,7 +762,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value for the list style attribute when indenting a single item into a nested list (default value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
@@ -773,7 +771,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>' +
@@ -785,7 +783,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value for the list style attribute when indenting a single item into a nested list (changed value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
@@ -794,7 +792,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">3.[]</listItem>' +
@@ -804,7 +802,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should copy the value for the list style attribute when indenting a single item into a nested list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -813,7 +811,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -825,7 +823,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should copy the value for the list style attribute when indenting a single item into a nested list ' +
 				'(many nested lists check)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -834,7 +832,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -844,7 +842,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should inherit the list style attribute from nested list if the `listType` is other than indenting element', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
@@ -852,7 +850,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">3.[]</listItem>'
@@ -861,14 +859,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8072.
 				it( 'should not throw when indenting a list without any other content in the editor', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">[]</listItem>'
 					);
@@ -877,7 +875,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'outdenting lists', () => {
 				it( 'should inherit the list style attribute from parent list (change the first nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -885,7 +883,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -893,7 +891,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the list style attribute from parent list (change the second nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>'
@@ -901,7 +899,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
@@ -909,7 +907,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the list style attribute from parent list (modifying nested lists)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>'
@@ -917,7 +915,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>'
@@ -927,7 +925,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the list style attribute from parent list (outdenting many items, including the first one in the list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">[1.</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>' +
@@ -936,7 +934,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>' +
@@ -948,7 +946,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the list style attribute from parent list (outdenting the first item that is a parent for next list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -958,7 +956,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -969,7 +967,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not inherit the list style if outdented the only one item in the list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>'
@@ -977,7 +975,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>'
@@ -985,7 +983,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit the list style if outdented the only one item in the list (a paragraph below the list)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
 						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -994,7 +992,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -1005,7 +1003,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the list style attribute from parent list if the `listType` is other than outdenting element',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1013,7 +1011,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1021,13 +1019,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					} );
 
 				it( 'should not do anything if there is no list after outdenting', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -1035,7 +1033,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indent/outdent + undo', () => {
 				it( 'should use the same batch for indenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -1046,7 +1044,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
@@ -1056,7 +1054,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should use the same batch for outdenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1065,7 +1063,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -1103,7 +1101,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				// <paragraph>
 				// ■ 1.
 				// ■ 2.
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>' +
@@ -1112,7 +1110,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1133,7 +1131,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1152,7 +1150,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ul style="list-style-type:circle">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -1190,31 +1188,31 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not add the `listStyle` attribute while creating a todo list', () => {
-					setModelData( model, '<paragraph>Foo[]</paragraph>' );
+					_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listStyle` attribute while switching the list type', () => {
-					setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listStyle` attribute while switching the list type that uses the list style feature', () => {
-					setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should  not inherit the list style attribute when inserting a todo list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1222,7 +1220,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1230,7 +1228,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not allow to set the `listStyle` attribute in to-do list item', () => {
-					setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
@@ -1266,7 +1264,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything while removing a letter inside a listItem', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -1276,7 +1274,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -1286,7 +1284,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem before the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo</paragraph>' +
 						'<paragraph>[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
@@ -1295,7 +1293,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
@@ -1303,7 +1301,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 						'<paragraph>[]</paragraph>' +
@@ -1312,7 +1310,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -1320,7 +1318,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is no element after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 						'<paragraph>[]</paragraph>'
@@ -1328,7 +1326,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>'
 					);
@@ -1337,7 +1335,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStyle` attribute for the merged (second) list when removing content between those lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -1347,7 +1345,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
@@ -1357,7 +1355,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should read the `listStyle` attribute from the most outer list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1369,7 +1367,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1383,7 +1381,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should not modify the the `listStyle` attribute for the merged (second) list ' +
 					'if merging different `listType` attribute',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -1393,7 +1391,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
@@ -1405,7 +1403,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStyle` attribute for the merged (second) list when removing content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
@@ -1416,7 +1414,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">[]</listItem>' +
@@ -1428,7 +1426,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStyle` attribute for the merged (second) list when typing over content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
@@ -1439,7 +1437,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">Foo[]</listItem>' +
@@ -1451,7 +1449,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not modify the the `listStyle` if lists were not merged but the content was partially removed',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">[333.</listItem>' +
@@ -1462,7 +1460,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">[]11.</listItem>' +
@@ -1472,7 +1470,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not do anything while typing in a list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -1488,7 +1486,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// Each character calls `editor.model.change()`.
 					expect( modelChangeStub.callCount ).to.equal( 4 );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
@@ -1500,7 +1498,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8073.
 				it( 'should not crash when removing a content between intended lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[bb</listItem>' +
 						'<listItem listIndent="2" listStyle="default" listType="bulleted">cc]cc</listItem>' +
@@ -1509,7 +1507,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listStyle="default" listType="bulleted">dddd</listItem>'
@@ -1517,7 +1515,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should read the `listStyle` attribute from the most outer selected list while removing content between lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1529,7 +1527,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
@@ -1539,7 +1537,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8642.
 				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">[bbbb</listItem>' +
 						'<paragraph>]foo</paragraph>' +
@@ -1548,7 +1546,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -1595,7 +1593,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
@@ -1609,7 +1607,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1619,7 +1617,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo]</listItem>' +
@@ -1633,7 +1631,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1643,7 +1641,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo 1.</listItem>' +
@@ -1659,7 +1657,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
@@ -1669,7 +1667,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should do nothing when pasting the similar list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
@@ -1682,7 +1680,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
@@ -1691,7 +1689,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should replace the entire list if selected', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo Bar]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1703,7 +1701,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
@@ -1731,7 +1729,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 			describe( 'toggling list', () => {
 				// #11408
 				it( 'should copy the `listStyle` attribute from the previous list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
@@ -1741,7 +1739,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStyle="decimal" listType="numbered">Apollo</listItem>' +
@@ -1810,7 +1808,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in data pipeline', () => {
 			describe( 'model to data', () => {
 				it( 'should convert single list (type: numbered, reversed: true)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
 					);
@@ -1819,7 +1817,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: numbered, reversed: false)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
 					);
@@ -1828,7 +1826,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
@@ -1851,7 +1849,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 2</listItem>' +
@@ -1874,7 +1872,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested mixed lists (ul>ol, main: square, nested: reversed)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
@@ -1897,7 +1895,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce nested lists (different `listIndent` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
@@ -1918,7 +1916,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce two different lists (different `listReversed` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar 1</listItem>' +
@@ -1942,7 +1940,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
@@ -1951,7 +1949,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: false)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
 					);
@@ -1960,7 +1958,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: true)', () => {
 					editor.setData( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
 					);
@@ -1969,7 +1967,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, reversed: true) (attribute without value)', () => {
 					editor.setData( '<ol reversed><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
 					);
@@ -1989,7 +1987,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">UL 1</listItem>' +
@@ -2008,7 +2006,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
@@ -2061,40 +2059,40 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in editing pipeline', () => {
 			describe( 'model to view', () => {
 				it( 'should convert single list (type: bulleted)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
 
 				it( 'should convert single list (type: numbered, reversed: true)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
 				it( 'should convert single list (type: numbered, reversed: false)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
 				it( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
@@ -2102,7 +2100,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 3</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol>' +
 							'<li>Foo 1' +
 								'<ol reversed="reversed">' +
@@ -2117,7 +2115,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 2</listItem>' +
@@ -2125,7 +2123,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 3</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol reversed="reversed">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -2147,7 +2145,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the reversed attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, reversed: true)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2155,7 +2153,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2167,7 +2165,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the reversed attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, reversed: false)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2175,7 +2173,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2187,7 +2185,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the reversed attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, bulleted)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2195,7 +2193,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2204,7 +2202,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should inherit the reversed attribute when merging the same kind of lists (from top, merge a few items)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>[Foo Bar 1.</paragraph>' +
 						'<paragraph>Foo Bar 2.]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
@@ -2213,7 +2211,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
@@ -2222,41 +2220,41 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list (numbered)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list (bulleted)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
 				it( 'should not inherit anything if replacing the entire content with a list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -2264,7 +2262,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the reversed attribute when merging different kind of lists (from top, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2272,7 +2270,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -2282,7 +2280,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the reversed attribute when merging different kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -2290,7 +2288,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
@@ -2301,7 +2299,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the reversed attribute when merging the same kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -2309,7 +2307,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
@@ -2319,7 +2317,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the reversed attribute from listIndent=0 element when merging the same kind of lists (from bottom)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">Foo Bar</listItem>' +
@@ -2328,7 +2326,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">Foo Bar</listItem>' +
@@ -2340,7 +2338,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'modifying "listType" attribute', () => {
 				it( 'should inherit the reversed attribute when the modified list is the same kind of the list as next sibling', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2348,7 +2346,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
@@ -2358,7 +2356,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the reversed attribute when the modified list is the same kind of the list as previous sibling',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
@@ -2366,7 +2364,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
@@ -2375,25 +2373,25 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should remove the reversed attribute when changing `listType` to `bulleted`', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 				} );
 
 				it( 'should add default reversed attribute when changing `listType` to `numbered`', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -2401,7 +2399,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indenting lists', () => {
 				it( 'should restore the default value of the reversed attribute when indenting a single item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2411,7 +2409,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2421,7 +2419,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should restore the default value of the reversed attribute when indenting a few items', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.]</listItem>'
@@ -2429,7 +2427,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>'
@@ -2439,7 +2437,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value of the reversed attribute when indenting a single item into a nested list (default value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">3.[]</listItem>' +
@@ -2448,7 +2446,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.[]</listItem>' +
@@ -2460,7 +2458,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value of the reversed attribute when indenting a single item into a nested list (changed value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">3.[]</listItem>' +
@@ -2469,7 +2467,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>' +
@@ -2479,7 +2477,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should set default value of the reversed attribute when indenting a single item into a nested list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2488,7 +2486,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="2" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2500,7 +2498,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should copy the value of the reversed attribute when indenting a single item into a nested list ' +
 					'(many nested lists check)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2509,7 +2507,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2519,7 +2517,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should inherit the reversed attribute from nested list if the `listType` is other than indenting element', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -2527,7 +2525,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>'
@@ -2537,7 +2535,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'outdenting lists', () => {
 				it( 'should inherit the reversed attribute from parent list (change the first nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2545,7 +2543,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2553,7 +2551,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the reversed attribute from parent list (change the second nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">3.[]</listItem>'
@@ -2561,7 +2559,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.[]</listItem>'
@@ -2569,7 +2567,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the reversed attribute from parent list (modifying nested lists)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="2" listReversed="true" listType="numbered">3.]</listItem>'
@@ -2577,7 +2575,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">3.]</listItem>'
@@ -2587,7 +2585,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the reversed attribute from parent list (outdenting many items, including the first one in the list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[1.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">3.]</listItem>' +
@@ -2596,7 +2594,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>' +
@@ -2608,7 +2606,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the reversed attribute from parent list (outdenting the first item that is a parent for next list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2618,7 +2616,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">3.</listItem>' +
@@ -2629,7 +2627,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not inherit the reversed if outdented the only one item in the list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>'
@@ -2637,7 +2635,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>'
@@ -2647,7 +2645,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the reversed attribute if outdented the only one item in the list (a paragraph below the list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2656,7 +2654,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2666,7 +2664,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not inherit the reversed attribute if outdented bulleted list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">3.[]</listItem>'
@@ -2674,7 +2672,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -2684,7 +2682,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the reversed attribute from parent list if the `listType` is other than outdenting element',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listReversed="true" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -2692,7 +2690,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -2700,13 +2698,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					} );
 
 				it( 'should not do anything if there is no list after outdenting', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -2714,7 +2712,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indent/outdent + undo', () => {
 				it( 'should use the same batch for indenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2725,7 +2723,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
@@ -2735,7 +2733,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should use the same batch for outdenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2744,7 +2742,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
@@ -2782,7 +2780,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				// <paragraph>
 				// ■ 1.
 				// ■ 2.
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">3.</listItem>' +
@@ -2791,7 +2789,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2812,7 +2810,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2831,7 +2829,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ol>' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -2868,31 +2866,31 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not add the `listReversed` attribute while creating a todo list', () => {
-					setModelData( model, '<paragraph>Foo[]</paragraph>' );
+					_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listReversed` attribute while switching the list type', () => {
-					setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listReversed` attribute while switching the list type that uses the list style feature', () => {
-					setModelData( model, '<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not inherit the `listReversed` attribute when inserting a todo list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2900,7 +2898,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
@@ -2908,7 +2906,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not allow to set the `listReversed` attribute in to-do list item', () => {
-					setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
@@ -2944,7 +2942,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything while removing a letter inside a listItem', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -2954,7 +2952,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -2964,7 +2962,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem before the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo</paragraph>' +
 						'<paragraph>[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -2973,7 +2971,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
@@ -2981,7 +2979,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 						'<paragraph>[]</paragraph>' +
@@ -2990,7 +2988,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -2998,7 +2996,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is no element after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<paragraph>[]</paragraph>'
@@ -3006,7 +3004,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>'
 					);
@@ -3015,7 +3013,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listReversed` attribute for the merged (second) list when removing content between those lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -3025,7 +3023,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -3035,7 +3033,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should read the `listReversed` attribute from the most outer list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3047,7 +3045,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3061,7 +3059,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should not modify the the `listReversed` attribute for the merged (second) list ' +
 					'if merging different `listType` attribute',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -3071,7 +3069,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
@@ -3083,7 +3081,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listReversed` attribute for the merged (second) list when removing content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[3.</listItem>' +
@@ -3094,7 +3092,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
@@ -3106,7 +3104,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listReversed` attribute for the merged (second) list when typing over content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[3.</listItem>' +
@@ -3117,7 +3115,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' +
@@ -3129,7 +3127,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not modify the the `listReversed` if lists were not merged but the content was partially removed',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">[333.</listItem>' +
@@ -3140,7 +3138,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">[]11.</listItem>' +
@@ -3150,7 +3148,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not do anything while typing in a list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>' +
@@ -3166,7 +3164,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// Each character calls `editor.model.change()`.
 					expect( modelChangeStub.callCount ).to.equal( 4 );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>' +
@@ -3178,7 +3176,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8073.
 				it( 'should not crash when removing a content between intended lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="false" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">bb[bb</listItem>' +
 						'<listItem listIndent="2" listReversed="false" listType="numbered">cc]cc</listItem>' +
@@ -3187,7 +3185,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listReversed="false" listType="numbered">dddd</listItem>'
@@ -3196,7 +3194,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8642.
 				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[bbbb</listItem>' +
 						'<paragraph>]foo</paragraph>' +
@@ -3205,7 +3203,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -3216,7 +3214,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should read the `listReversed` attribute from the most outer selected list while removing content between lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3228,7 +3226,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
@@ -3276,7 +3274,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">[]</listItem>' +
@@ -3290,7 +3288,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3300,7 +3298,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">[Foo]</listItem>' +
@@ -3314,7 +3312,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3324,7 +3322,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">[Foo 1.</listItem>' +
@@ -3340,7 +3338,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
@@ -3350,7 +3348,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should do nothing when pasting the similar list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">[]</listItem>' +
@@ -3363,7 +3361,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo[]</listItem>' +
@@ -3372,7 +3370,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should replace the entire list if selected', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">[Foo Bar]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3384,7 +3382,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">Foo[]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3412,7 +3410,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 			describe( 'toggling list', () => {
 				// #11408
 				it( 'should copy the `listReversed` attribute from the previous list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
@@ -3422,7 +3420,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">Apollo</listItem>' +
@@ -3491,7 +3489,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in data pipeline', () => {
 			describe( 'model to data', () => {
 				it( 'should convert single list (type: numbered, start: 2)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="2">Bar</listItem>'
 					);
@@ -3500,7 +3498,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (type: numbered, start: 1)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="1">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="1">Bar</listItem>'
 					);
@@ -3509,7 +3507,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: 2, nested: 3)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="3">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="3">Bar 2</listItem>' +
@@ -3532,7 +3530,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: 2, nested: 1)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="1">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="1">Bar 2</listItem>' +
@@ -3555,7 +3553,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested mixed lists (ul>ol, main: square, nested: 2)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="2">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="2">Bar 2</listItem>' +
@@ -3578,7 +3576,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce nested lists (different `listIndent` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 2</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="3">Bar 1</listItem>' +
@@ -3599,7 +3597,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce two different lists (different `listStart` attribute)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 2</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="4">Bar 1</listItem>' +
@@ -3619,7 +3617,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should allow 0 as list start index', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="0">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="0">Bar</listItem>'
 					);
@@ -3628,7 +3626,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not allow a negative start index', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="-3">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="-3">Bar</listItem>'
 					);
@@ -3641,7 +3639,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
@@ -3650,7 +3648,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 1)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
@@ -3659,7 +3657,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 2)', () => {
 					editor.setData( '<ol start="2"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>'
 					);
@@ -3668,7 +3666,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list (type: numbered, start: 0)', () => {
 					editor.setData( '<ol start="0"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="0" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="0" listType="numbered">Bar</listItem>'
 					);
@@ -3677,7 +3675,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it( 'should convert single list and change negative start index (type: numbered, start: -3)', () => {
 					editor.setData( '<ol start="-3"><li>Foo</li><li>Bar</li></ol>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
 					);
@@ -3697,7 +3695,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStart="3" listType="numbered">OL 1</listItem>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">OL 2</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">UL 1</listItem>' +
@@ -3716,7 +3714,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<p>Paragraph.</p>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>Paragraph.</paragraph>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>' +
@@ -3769,40 +3767,40 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in editing pipeline', () => {
 			describe( 'model to view', () => {
 				it( 'should convert single list (type: bulleted)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul><li>Foo</li><li>Bar</li></ul>'
 					);
 				} );
 
 				it( 'should convert single list (type: numbered, start: 2)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="2">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="2">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol start="2"><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
 				it( 'should convert single list (type: numbered, start: 1)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="1">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listStart="1">Bar</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol><li>Foo</li><li>Bar</li></ol>'
 					);
 				} );
 
 				it( 'should convert nested numbered lists (main: 1, nested: 2)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="1">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="2">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="2">Bar 2</listItem>' +
@@ -3810,7 +3808,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="1">Foo 3</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol>' +
 							'<li>Foo 1' +
 								'<ol start="2">' +
@@ -3825,7 +3823,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested numbered lists (main: 3, nested: 1)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="1">Bar 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listStart="1">Bar 2</listItem>' +
@@ -3833,7 +3831,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listType="numbered" listStart="3">Foo 3</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ol start="3">' +
 							'<li>Foo 1' +
 								'<ol>' +
@@ -3855,7 +3853,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the start attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, start: 3)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>'
@@ -3863,7 +3861,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>'
@@ -3875,7 +3873,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the start attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, start: 1)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
@@ -3883,7 +3881,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Bar</listItem>'
@@ -3895,7 +3893,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should inherit the start attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, bulleted)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3903,7 +3901,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'bulletedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3912,7 +3910,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should inherit the start attribute when merging the same kind of lists (from top, merge a few items)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>[Foo Bar 1.</paragraph>' +
 						'<paragraph>Foo Bar 2.]</paragraph>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
@@ -3921,7 +3919,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="5" listType="numbered">[Foo Bar 1.</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo Bar 2.]</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
@@ -3930,41 +3928,41 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list (numbered)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list (bulleted)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar 1.[]</listItem>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
 				it( 'should not inherit anything if replacing the entire content with a list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar 1.[]</listItem>'
 					);
 				} );
@@ -3972,7 +3970,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the start attribute when merging different kind of lists (from top, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3980,7 +3978,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -3990,7 +3988,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the start attribute when merging different kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -3998,7 +3996,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>'
@@ -4009,7 +4007,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the start attribute when merging the same kind of lists (from bottom, merge a single item)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>' +
 							'<paragraph>Foo Bar.[]</paragraph>'
@@ -4017,7 +4015,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">Foo Bar.[]</listItem>'
@@ -4027,7 +4025,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the start attribute from listIndent=0 element when merging the same kind of lists (from bottom)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listStart="5" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listStart="5" listType="numbered">Foo Bar</listItem>' +
@@ -4036,7 +4034,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="1" listStart="5" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="2" listStart="5" listType="numbered">Foo Bar</listItem>' +
@@ -4048,7 +4046,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'modifying "listType" attribute', () => {
 				it( 'should inherit the start attribute when the modified list is the same kind of the list as next sibling', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Bar</listItem>'
@@ -4056,7 +4054,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="4" listType="numbered">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">Bar</listItem>'
@@ -4066,7 +4064,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the start attribute when the modified list is the same kind of the list as previous sibling',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
@@ -4074,7 +4072,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo Bar.[]</listItem>'
@@ -4083,25 +4081,25 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should remove the start attribute when changing `listType` to `bulleted`', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo Bar.[]</listItem>'
 					);
 
 					editor.execute( 'bulletedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 				} );
 
 				it( 'should add default start attribute when changing `listType` to `numbered`', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">Foo Bar.[]</listItem>'
 					);
 				} );
@@ -4109,7 +4107,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indenting lists', () => {
 				it( 'should restore the default value of the start attribute when indenting a single item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">2B.</listItem>' +
@@ -4119,7 +4117,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">2B.</listItem>' +
@@ -4129,7 +4127,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should restore the default value of the start attribute when indenting a few items', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.]</listItem>'
@@ -4137,7 +4135,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">3.]</listItem>'
@@ -4147,7 +4145,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value of the start attribute when indenting a single item into a nested list (default value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="1" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">3.[]</listItem>' +
@@ -4156,7 +4154,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="1" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="1" listType="numbered">3.[]</listItem>' +
@@ -4168,7 +4166,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value of the start attribute when indenting a single item into a nested list (changed value)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="4" listType="numbered">3.[]</listItem>' +
@@ -4177,7 +4175,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">3.[]</listItem>' +
@@ -4187,7 +4185,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should set default value of the start attribute when indenting a single item into a nested list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">3.</listItem>' +
@@ -4196,7 +4194,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="2" listStart="2" listType="numbered">3.</listItem>' +
@@ -4208,7 +4206,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should copy the value of the start attribute when indenting a single item into a nested list ' +
 					'(many nested lists check)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>' +
@@ -4217,7 +4215,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>' +
@@ -4227,7 +4225,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should inherit the start attribute from nested list if the `listType` is other than indenting element', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -4235,7 +4233,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">3.[]</listItem>'
@@ -4245,7 +4243,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'outdenting lists', () => {
 				it( 'should inherit the start attribute from parent list (change the first nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4253,7 +4251,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4261,7 +4259,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the start attribute from parent list (change the second nested item)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">3.[]</listItem>'
@@ -4269,7 +4267,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.[]</listItem>'
@@ -4277,7 +4275,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit the start attribute from parent list (modifying nested lists)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="2" listStart="3" listType="numbered">3.]</listItem>'
@@ -4285,7 +4283,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">[2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">3.]</listItem>'
@@ -4295,7 +4293,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the start attribute from parent list (outdenting many items, including the first one in the list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">[1.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.]</listItem>' +
@@ -4304,7 +4302,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>[1.</paragraph>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.]</listItem>' +
@@ -4316,7 +4314,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the start attribute from parent list (outdenting the first item that is a parent for next list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>' +
@@ -4326,7 +4324,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>' +
@@ -4337,7 +4335,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not inherit the start if outdented the only one item in the list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>'
@@ -4345,7 +4343,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>'
@@ -4355,7 +4353,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the start attribute if outdented the only one item in the list (a paragraph below the list)',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="2" listStart="4" listType="numbered">3.</listItem>' +
@@ -4364,7 +4362,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="4" listType="numbered">3.</listItem>' +
@@ -4374,7 +4372,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not inherit the start attribute if outdented bulleted list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">3.[]</listItem>'
@@ -4382,7 +4380,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
@@ -4392,7 +4390,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not inherit the start attribute from parent list if the `listType` is other than outdenting element',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="1" listStart="2" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -4400,7 +4398,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'outdentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
@@ -4408,13 +4406,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 					} );
 
 				it( 'should not do anything if there is no list after outdenting', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="5" listType="numbered">1.[]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -4422,7 +4420,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indent/outdent + undo', () => {
 				it( 'should use the same batch for indenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2B.</listItem>' +
@@ -4433,7 +4431,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'indentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">1A.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2B.</listItem>' +
@@ -4443,7 +4441,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should use the same batch for outdenting a list and updating `listType` attribute', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4452,7 +4450,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					editor.execute( 'outdentList' );
 					editor.execute( 'undo' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
@@ -4490,7 +4488,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				// <paragraph>
 				// ■ 1.
 				// ■ 2.
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>' +
@@ -4499,7 +4497,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStart="3" listType="numbered">2.</listItem>'
 					);
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4520,7 +4518,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ○ 2.
 					editor.execute( 'delete' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4539,7 +4537,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// ■ 2.
 					editor.execute( 'undo' );
 
-					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+					expect( _getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ol start="2">' +
 							'<li>1.</li>' +
 							'<li>2.</li>' +
@@ -4576,31 +4574,31 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not add the `listStart` attribute while creating a todo list', () => {
-					setModelData( model, '<paragraph>Foo[]</paragraph>' );
+					_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not add the `listStart` attribute while switching the list type', () => {
-					setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should remove the `listStart` attribute while switching the list type that uses the list style feature', () => {
-					setModelData( model, '<listItem listIndent="0" listStart="2" listType="numbered">Foo[]</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listStart="2" listType="numbered">Foo[]</listItem>' );
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 
 				it( 'should not inherit the `listStart` attribute when inserting a todo list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Bar</listItem>'
@@ -4608,7 +4606,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Bar</listItem>'
@@ -4616,7 +4614,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not allow to set the `listStart` attribute in to-do list item', () => {
-					setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
+					_setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
 
 					const listItem = model.document.getRoot().getChild( 0 );
 
@@ -4652,7 +4650,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything while removing a letter inside a listItem', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -4662,7 +4660,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2[]</listItem>' +
 						'<paragraph></paragraph>' +
@@ -4672,7 +4670,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem before the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo</paragraph>' +
 						'<paragraph>[]</paragraph>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4681,7 +4679,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>Foo[]</paragraph>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>'
@@ -4689,7 +4687,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is a non-listItem after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 						'<paragraph>[]</paragraph>' +
@@ -4698,7 +4696,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<paragraph>Foo</paragraph>'
@@ -4706,7 +4704,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is no element after the removed content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">2.</listItem>' +
 						'<paragraph>[]</paragraph>'
@@ -4714,7 +4712,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="4" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="4" listType="numbered">2.[]</listItem>'
 					);
@@ -4723,7 +4721,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStart` attribute for the merged (second) list when removing content between those lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -4733,7 +4731,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4743,7 +4741,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should read the `listStart` attribute from the most outer list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4755,7 +4753,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4769,7 +4767,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					'should not modify the the `listStart` attribute for the merged (second) list ' +
 					'if merging different `listType` attribute',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.</listItem>' +
 							'<paragraph>[]</paragraph>' +
@@ -4779,7 +4777,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
 							'<listItem listIndent="0" listType="bulleted">2.[]</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
@@ -4791,7 +4789,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStart` attribute for the merged (second) list when removing content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">[3.</listItem>' +
@@ -4802,7 +4800,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">[]</listItem>' +
@@ -4814,7 +4812,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should modify the the `listStart` attribute for the merged (second) list when typing over content from both lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">[3.</listItem>' +
@@ -4825,7 +4823,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'insertText', { text: 'Foo' } );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">Foo[]</listItem>' +
@@ -4837,7 +4835,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should not modify the the `listStart` attribute if lists were not merged but the content was partially removed',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">[333.</listItem>' +
@@ -4848,7 +4846,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">111.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">222.</listItem>' +
 							'<listItem listIndent="0" listStart="3" listType="numbered">[]11.</listItem>' +
@@ -4858,7 +4856,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should not do anything while typing in a list item', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>' +
@@ -4874,7 +4872,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 					// Each character calls `editor.model.change()`.
 					expect( modelChangeStub.callCount ).to.equal( 4 );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">2. Foo[]</listItem>' +
 						'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>' +
@@ -4886,7 +4884,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8073.
 				it( 'should not crash when removing a content between intended lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">bb[bb</listItem>' +
 						'<listItem listIndent="2" listStart="1" listType="numbered">cc]cc</listItem>' +
@@ -4895,7 +4893,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listStart="1" listType="numbered">dddd</listItem>'
@@ -4904,7 +4902,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 				// See: #8642.
 				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">[bbbb</listItem>' +
 						'<paragraph>]foo</paragraph>' +
@@ -4913,7 +4911,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'delete' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="0" listStart="1" listType="numbered">[]</listItem>' +
 						'<paragraph>foo</paragraph>' +
@@ -4924,7 +4922,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should read the `listStart` attribute from the most outer selected list while removing content between lists',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4936,7 +4934,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'delete' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>' +
 							'<listItem listIndent="0" listStart="2" listType="numbered">2.</listItem>' +
 							'<listItem listIndent="1" listStart="3" listType="numbered">2.1.</listItem>' +
@@ -4984,7 +4982,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">[]</listItem>' +
@@ -4998,7 +4996,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="2" listType="numbered">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="3" listType="numbered">Foo 1</listItem>' +
@@ -5008,7 +5006,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">[Foo]</listItem>' +
@@ -5022,7 +5020,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo 1</listItem>' +
@@ -5032,7 +5030,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">[Foo 1.</listItem>' +
@@ -5048,7 +5046,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ul>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="2" listType="numbered">Foo 1</listItem>' +
@@ -5058,7 +5056,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should do nothing when pasting the similar list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">[]</listItem>' +
@@ -5071,7 +5069,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">Foo Bar</listItem>' +
 						'<listItem listIndent="1" listStart="5" listType="numbered">Foo[]</listItem>' +
@@ -5080,7 +5078,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should replace the entire list if selected', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listType="bulleted">[Foo Bar]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -5092,7 +5090,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">Foo[]</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
@@ -5120,7 +5118,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 			describe( 'toggling list', () => {
 				// #11408
 				it( 'should copy the `listStart` attribute from the previous list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
@@ -5130,7 +5128,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStart="5" listType="numbered">Mercury</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Gemini</listItem>' +
 						'<listItem listIndent="0" listStart="5" listType="numbered">Apollo</listItem>' +
@@ -5199,7 +5197,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'conversion in data pipeline', () => {
 			describe( 'model to data', () => {
 				it( 'should convert single list (default values)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
 							'Foo' +
 						'</listItem>' +
@@ -5212,7 +5210,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert single list (non-default values)', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="5" listReversed="true" listStyle="circle">' +
 							'Foo' +
 						'</listItem>' +
@@ -5227,7 +5225,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should convert nested lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
 							'1' +
 						'</listItem>' +
@@ -5281,7 +5279,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should produce different lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
 							'A1' +
 						'</listItem>' +
@@ -5345,7 +5343,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'<ol reversed="reversed" start="5" style="list-style-type:lower-latin;"><li>Foo</li><li>Bar</li></ol>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
 							'Foo' +
 						'</listItem>' +
@@ -5380,7 +5378,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 						'</ol>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
 							'1' +
 						'</listItem>' +
@@ -5430,7 +5428,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.setData( '<div class="disallowed-context"><ul><li>foo</li></ul></div>' );
 
-					expect( getModelData( editor.model ) ).to.equal( '[<disallowedContext></disallowedContext>]' );
+					expect( _getModelData( editor.model ) ).to.equal( '[<disallowedContext></disallowedContext>]' );
 				} );
 			} );
 		} );
@@ -5438,7 +5436,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 		describe( 'integrations', () => {
 			describe( 'merging a list into a reversed list', () => {
 				it( 'should inherit the attributes when merging the same kind of lists', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo' +
@@ -5450,7 +5448,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'Foo Bar.[]' +
 						'</listItem>' +
@@ -5464,14 +5462,14 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
 						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
 							'Foo Bar 1.[]' +
 						'</listItem>' +
@@ -5484,7 +5482,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should inherit the attributes when the modified list is the same kind of the list as previous sibling',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 								'Foo' +
 							'</listItem>' +
@@ -5496,7 +5494,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'numberedList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 								'Foo' +
 							'</listItem>' +
@@ -5511,13 +5509,13 @@ describe( 'LegacyListPropertiesEditing', () => {
 				);
 
 				it( 'should add default attributes when changing `listType` to `numbered`', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
 					);
 
 					editor.execute( 'numberedList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
 							'Foo Bar.[]' +
 						'</listItem>'
@@ -5527,7 +5525,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'indenting lists', () => {
 				it( 'should restore the default value of the start attribute when indenting', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5547,7 +5545,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'indentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5569,7 +5567,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				it(
 					'should copy the value of the start attribute when indenting a single item into a nested list',
 					() => {
-						setModelData( model,
+						_setModelData( model,
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
 								'1.' +
 							'</listItem>' +
@@ -5586,7 +5584,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 						editor.execute( 'indentList' );
 
-						expect( getModelData( model ) ).to.equal(
+						expect( _getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
 								'1.' +
 							'</listItem>' +
@@ -5606,7 +5604,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 			describe( 'outdenting lists', () => {
 				it( 'should inherit the attributes from parent list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5620,7 +5618,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.' +
 						'</listItem>' +
@@ -5634,7 +5632,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not inherit the attributes if outdented the only one item in the list', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
 							'1.[]' +
 						'</listItem>' +
@@ -5648,7 +5646,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
 						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
 							'2.' +
@@ -5660,7 +5658,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should not do anything if there is no list after outdenting', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
 							'1.[]' +
 						'</listItem>'
@@ -5668,7 +5666,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'outdentList' );
 
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>'
 					);
 				} );
@@ -5696,7 +5694,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 				} );
 
 				it( 'should remove the attributes while switching the list type that uses the list style feature', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<listItem listIndent="0" listStart="2" listReversed="true" listStyle="lower-latin" listType="numbered">' +
 							'Foo[]' +
 						'</listItem>'
@@ -5704,7 +5702,7 @@ describe( 'LegacyListPropertiesEditing', () => {
 
 					editor.execute( 'todoList' );
 
-					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+					expect( _getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
 				} );
 			} );
 		} );

@@ -3,31 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ListProperties } from '@ckeditor/ckeditor5-list/src/listproperties.js';
+import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
+import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
+import { TableColumnResize } from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { Bookmark } from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import PasteFromOffice from '../../src/pastefromoffice.js';
+import { PasteFromOffice } from '../../src/pastefromoffice.js';
 
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -101,9 +99,9 @@ ClassicEditor
 
 		clipboard.on( 'inputTransformation', ( evt, data ) => {
 			console.log( '----- clipboardInput -----' );
-			console.log( 'stringify( data.dataTransfer )\n', stringifyView( data.content ) );
+			console.log( 'stringify( data.dataTransfer )\n', _stringifyView( data.content ) );
 
-			dataDiv.innerText = stringifyView( data.content );
+			dataDiv.innerText = _stringifyView( data.content );
 		} );
 	} )
 	.catch( err => {

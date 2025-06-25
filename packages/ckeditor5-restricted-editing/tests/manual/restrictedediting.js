@@ -3,19 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document */
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ImageInsert } from '@ckeditor/ckeditor5-image/src/imageinsert.js';
+import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-
-import StandardEditingMode from '../../src/standardeditingmode.js';
-import RestrictedEditingMode from '../../src/restrictededitingmode.js';
+import { StandardEditingMode } from '../../src/standardeditingmode.js';
+import { RestrictedEditingMode } from '../../src/restrictededitingmode.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

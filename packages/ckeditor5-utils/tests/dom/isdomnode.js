@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window */
-
-import isNode from '../../src/dom/isnode.js';
+import { isNode } from '../../src/dom/isnode.js';
 
 describe( 'isNode()', () => {
 	it( 'detects native DOM nodes', () => {

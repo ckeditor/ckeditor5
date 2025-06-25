@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
-import Matcher from '../../src/view/matcher.js';
-import Element from '../../src/view/element.js';
-import Document from '../../src/view/document.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Matcher } from '../../src/view/matcher.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import { addMarginRules } from '../../src/view/styles/margin.js';
-import { addBorderRules } from '../../src/view/styles/border.js';
-import { addBackgroundRules } from '../../src/view/styles/background.js';
+import { addMarginStylesRules } from '../../src/view/styles/margin.js';
+import { addBorderStylesRules } from '../../src/view/styles/border.js';
+import { addBackgroundStylesRules } from '../../src/view/styles/background.js';
 
 describe( 'Matcher', () => {
 	let document;
@@ -20,17 +18,17 @@ describe( 'Matcher', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 
-		addMarginRules( document.stylesProcessor );
-		addBorderRules( document.stylesProcessor );
-		addBackgroundRules( document.stylesProcessor );
+		addMarginStylesRules( document.stylesProcessor );
+		addBorderStylesRules( document.stylesProcessor );
+		addBackgroundStylesRules( document.stylesProcessor );
 	} );
 
 	describe( 'add', () => {
 		it( 'should allow to add pattern to matcher', () => {
 			const matcher = new Matcher( 'div' );
-			const el = new Element( document, 'p', { title: 'foobar' } );
+			const el = new ViewElement( document, 'p', { title: 'foobar' } );
 
 			expect( matcher.match( el ) ).to.be.null;
 			const pattern = { name: 'p', attributes: { title: 'foobar' } };
@@ -46,8 +44,8 @@ describe( 'Matcher', () => {
 
 		it( 'should allow to add more than one pattern', () => {
 			const matcher = new Matcher();
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'div' );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'div' );
 
 			matcher.add( 'p', 'div' );
 
@@ -66,8 +64,8 @@ describe( 'Matcher', () => {
 	describe( 'match', () => {
 		it( 'should match element name', () => {
 			const matcher = new Matcher( 'p' );
-			const el = new Element( document, 'p' );
-			const el2 = new Element( document, 'div' );
+			const el = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'div' );
 
 			const result = matcher.match( el );
 
@@ -83,8 +81,8 @@ describe( 'Matcher', () => {
 		it( 'should match element name with RegExp', () => {
 			const pattern = /^text...a$/;
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'textarea' );
-			const el2 = new Element( document, 'div' );
+			const el1 = new ViewElement( document, 'textarea' );
+			const el2 = new ViewElement( document, 'div' );
 
 			const result = matcher.match( el1 );
 
@@ -100,9 +98,9 @@ describe( 'Matcher', () => {
 				attributes: true
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar' } );
-			const el2 = new Element( document, 'p', { title: '', alt: 'alternative'	} );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el2 = new ViewElement( document, 'p', { title: '', alt: 'alternative'	} );
+			const el3 = new ViewElement( document, 'p' );
 
 			let result = matcher.match( el1 );
 
@@ -128,9 +126,9 @@ describe( 'Matcher', () => {
 				attributes: [ true ]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar' } );
-			const el2 = new Element( document, 'p', { title: '', alt: 'alternative'	} );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el2 = new ViewElement( document, 'p', { title: '', alt: 'alternative'	} );
+			const el3 = new ViewElement( document, 'p' );
 
 			let result = matcher.match( el1 );
 
@@ -156,9 +154,9 @@ describe( 'Matcher', () => {
 				attributes: true
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;' } );
-			const el2 = new Element( document, 'p', { class: 'foobar' } );
-			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;' } );
+			const el2 = new ViewElement( document, 'p', { class: 'foobar' } );
+			const el3 = new ViewElement( document, 'p', { style: 'color:red;', class: 'foobar' } );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			expect( matcher.match( el2 ) ).to.be.null;
@@ -170,9 +168,9 @@ describe( 'Matcher', () => {
 				attributes: [ 'style', 'class' ]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;' } );
-			const el2 = new Element( document, 'p', { class: 'foobar' } );
-			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;' } );
+			const el2 = new ViewElement( document, 'p', { class: 'foobar' } );
+			const el3 = new ViewElement( document, 'p', { style: 'color:red;', class: 'foobar' } );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			expect( matcher.match( el2 ) ).to.be.null;
@@ -184,9 +182,9 @@ describe( 'Matcher', () => {
 				attributes: /.*/
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;' } );
-			const el2 = new Element( document, 'p', { class: 'foobar' } );
-			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;' } );
+			const el2 = new ViewElement( document, 'p', { class: 'foobar' } );
+			const el3 = new ViewElement( document, 'p', { style: 'color:red;', class: 'foobar' } );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			expect( matcher.match( el2 ) ).to.be.null;
@@ -203,7 +201,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;', class: 'foobar' } );
 
 			const result = matcher.match( el1 );
 
@@ -223,7 +221,7 @@ describe( 'Matcher', () => {
 			};
 			const warnStub = sinon.stub( console, 'warn' );
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;' } );
 
 			matcher.match( el1 );
 
@@ -242,7 +240,7 @@ describe( 'Matcher', () => {
 			};
 			const warnStub = sinon.stub( console, 'warn' );
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { class: 'foobar' } );
 
 			matcher.match( el1 );
 
@@ -260,7 +258,7 @@ describe( 'Matcher', () => {
 				styles: true
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar', 'data-foo': 'foo' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color:red;', class: 'foobar', 'data-foo': 'foo' } );
 
 			const result = matcher.match( el1 );
 
@@ -278,9 +276,9 @@ describe( 'Matcher', () => {
 				attributes: /data-.*/
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { title: 'foobar' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			const result = matcher.match( el1 );
 
@@ -302,9 +300,9 @@ describe( 'Matcher', () => {
 				]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { title: 'foobar' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			const result = matcher.match( el1 );
 
@@ -326,9 +324,9 @@ describe( 'Matcher', () => {
 				]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { 'data-foo': 'foo', title: 'foobar' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new ViewElement( document, 'p', { 'data-foo': 'foo', title: 'foobar' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			const result = matcher.match( el1 );
 
@@ -350,9 +348,9 @@ describe( 'Matcher', () => {
 				]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
-			const el2 = new Element( document, 'p', { title: 'foobar' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			const result = matcher.match( el1 );
 
@@ -373,7 +371,7 @@ describe( 'Matcher', () => {
 				attributes: 1
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el1 = new ViewElement( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 		} );
@@ -385,9 +383,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar'	} );
-			const el2 = new Element( document, 'p', { title: 'foobaz'	} );
-			const el3 = new Element( document, 'p', { name: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { title: 'foobar'	} );
+			const el2 = new ViewElement( document, 'p', { title: 'foobaz'	} );
+			const el3 = new ViewElement( document, 'p', { name: 'foobar' } );
 
 			const result = matcher.match( el1 );
 
@@ -409,9 +407,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar'	} );
-			const el2 = new Element( document, 'p', { title: 'foobaz'	} );
-			const el3 = new Element( document, 'p', { title: 'qux' } );
+			const el1 = new ViewElement( document, 'p', { title: 'foobar'	} );
+			const el2 = new ViewElement( document, 'p', { title: 'foobaz'	} );
+			const el3 = new ViewElement( document, 'p', { title: 'qux' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -436,9 +434,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foobar' } );
-			const el2 = new Element( document, 'p', { title: '' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { title: 'foobar' } );
+			const el2 = new ViewElement( document, 'p', { title: '' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -462,9 +460,9 @@ describe( 'Matcher', () => {
 				attributes: [ 'title', 'id' ]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { title: 'foo', id: 'bar' } );
-			const el2 = new Element( document, 'p', { title: 'foo' } );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p', { title: 'foo', id: 'bar' } );
+			const el2 = new ViewElement( document, 'p', { title: 'foo' } );
+			const el3 = new ViewElement( document, 'p' );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -480,7 +478,7 @@ describe( 'Matcher', () => {
 		it( 'should match element class names', () => {
 			const pattern = { classes: 'foobar' };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foobar' } );
+			const el1 = new ViewElement( document, 'p', { class: 'foobar' } );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -494,9 +492,9 @@ describe( 'Matcher', () => {
 		it( 'should match element class names using an array', () => {
 			const pattern = { classes: [ 'foo', 'bar' ] };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foo bar' } );
-			const el2 = new Element( document, 'p', { class: 'bar'	} );
-			const el3 = new Element( document, 'p', { class: 'qux'	} );
+			const el1 = new ViewElement( document, 'p', { class: 'foo bar' } );
+			const el2 = new ViewElement( document, 'p', { class: 'bar'	} );
+			const el3 = new ViewElement( document, 'p', { class: 'qux'	} );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -519,9 +517,9 @@ describe( 'Matcher', () => {
 			};
 
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foo bar' } );
-			const el2 = new Element( document, 'p', { class: 'bar'	} );
-			const el3 = new Element( document, 'p', { class: 'qux'	} );
+			const el1 = new ViewElement( document, 'p', { class: 'foo bar' } );
+			const el2 = new ViewElement( document, 'p', { class: 'bar'	} );
+			const el3 = new ViewElement( document, 'p', { class: 'qux'	} );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -544,9 +542,9 @@ describe( 'Matcher', () => {
 			};
 
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foo bar' } );
-			const el2 = new Element( document, 'p', { class: 'bar'	} );
-			const el3 = new Element( document, 'p', { class: 'qux'	} );
+			const el1 = new ViewElement( document, 'p', { class: 'foo bar' } );
+			const el2 = new ViewElement( document, 'p', { class: 'bar'	} );
+			const el3 = new ViewElement( document, 'p', { class: 'qux'	} );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -563,9 +561,9 @@ describe( 'Matcher', () => {
 		it( 'should match element class names using RegExp', () => {
 			const pattern = { classes: /fooba./ };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { class: 'foobar'	} );
-			const el2 = new Element( document, 'p', { class: 'foobaz'	} );
-			const el3 = new Element( document, 'p', { class: 'qux'	} );
+			const el1 = new ViewElement( document, 'p', { class: 'foobar'	} );
+			const el2 = new ViewElement( document, 'p', { class: 'foobaz'	} );
+			const el3 = new ViewElement( document, 'p', { class: 'qux'	} );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -590,8 +588,8 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color: red' } );
-			const el2 = new Element( document, 'p', { style: 'position: absolute' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color: red' } );
+			const el2 = new ViewElement( document, 'p', { style: 'position: absolute' } );
 
 			const result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -610,9 +608,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color: blue' } );
-			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
-			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color: blue' } );
+			const el2 = new ViewElement( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new ViewElement( document, 'p', { style: 'border: 1px solid' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -639,9 +637,9 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 
-			const el1 = new Element( document, 'p', { style: 'margin: 1px' } );
-			const el2 = new Element( document, 'p', { style: 'margin-left: 10px' } );
-			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el1 = new ViewElement( document, 'p', { style: 'margin: 1px' } );
+			const el2 = new ViewElement( document, 'p', { style: 'margin-left: 10px' } );
+			const el3 = new ViewElement( document, 'p', { style: 'border: 1px solid' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -668,9 +666,9 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 
-			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
-			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
-			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+			const el1 = new ViewElement( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new ViewElement( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new ViewElement( document, 'p', { style: 'margin-left: darkblue' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -700,9 +698,9 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 
-			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
-			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
-			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+			const el1 = new ViewElement( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new ViewElement( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new ViewElement( document, 'p', { style: 'margin-left: darkblue' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -726,9 +724,9 @@ describe( 'Matcher', () => {
 				styles: [ 'color' ]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color: blue' } );
-			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
-			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color: blue' } );
+			const el2 = new ViewElement( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new ViewElement( document, 'p', { style: 'border: 1px solid' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -754,9 +752,9 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'color: blue' } );
-			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
-			const el3 = new Element( document, 'p', { style: 'color: red' } );
+			const el1 = new ViewElement( document, 'p', { style: 'color: blue' } );
+			const el2 = new ViewElement( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new ViewElement( document, 'p', { style: 'color: red' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -781,9 +779,9 @@ describe( 'Matcher', () => {
 				]
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
-			const el2 = new Element( document, 'p', { style: 'border-top-width: 3px' } );
-			const el3 = new Element( document, 'p', { style: 'color: red' } );
+			const el1 = new ViewElement( document, 'p', { style: 'border-top: 1px solid blue' } );
+			const el2 = new ViewElement( document, 'p', { style: 'border-top-width: 3px' } );
+			const el3 = new ViewElement( document, 'p', { style: 'color: red' } );
 
 			let result = matcher.match( el1 );
 			expect( result ).to.be.an( 'object' );
@@ -822,7 +820,7 @@ describe( 'Matcher', () => {
 			};
 			const warnStub = sinon.stub( console, 'warn' );
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+			const el1 = new ViewElement( document, 'p', { style: 'border-top: 1px solid blue' } );
 
 			matcher.match( el1 );
 
@@ -841,7 +839,7 @@ describe( 'Matcher', () => {
 			};
 			const warnStub = sinon.stub( console, 'warn' );
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+			const el1 = new ViewElement( document, 'p', { style: 'border-top: 1px solid blue' } );
 
 			matcher.match( el1 );
 
@@ -861,8 +859,8 @@ describe( 'Matcher', () => {
 				return null;
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'div', null, [ el1 ] );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'div', null, [ el1 ] );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			const result = matcher.match( el2 );
@@ -876,8 +874,8 @@ describe( 'Matcher', () => {
 				return element.name === 'div' && element.childCount > 0;
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'div', null, [ el1 ] );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'div', null, [ el1 ] );
 
 			expect( matcher.match( el1 ) ).to.be.null;
 			const result = matcher.match( el2 );
@@ -890,9 +888,9 @@ describe( 'Matcher', () => {
 			const pattern = {
 				name: 'p'
 			};
-			const el1 = new Element( document, 'div' );
-			const el2 = new Element( document, 'p' );
-			const el3 = new Element( document, 'span' );
+			const el1 = new ViewElement( document, 'div' );
+			const el2 = new ViewElement( document, 'p' );
+			const el3 = new ViewElement( document, 'span' );
 			const matcher = new Matcher( pattern );
 
 			const result = matcher.match( el1, el2, el3 );
@@ -912,7 +910,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( document, 'a', {
+			const el = new ViewElement( document, 'a', {
 				name: 'foo',
 				title: 'bar'
 			} );
@@ -932,7 +930,7 @@ describe( 'Matcher', () => {
 				classes: [ 'foo', 'bar' ]
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( document, 'a' );
+			const el = new ViewElement( document, 'a' );
 			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const result = matcher.match( el );
@@ -953,7 +951,7 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el = new Element( document, 'a' );
+			const el = new ViewElement( document, 'a' );
 			el._setStyle( {
 				color: 'red',
 				position: 'relative'
@@ -972,9 +970,9 @@ describe( 'Matcher', () => {
 	describe( 'matchAll', () => {
 		it( 'should return all matched elements with correct patterns', () => {
 			const matcher = new Matcher( 'p', 'div' );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'div' );
-			const el3 = new Element( document, 'span' );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'div' );
+			const el3 = new ViewElement( document, 'span' );
 
 			const result = matcher.matchAll( el1, el2, el3 );
 			expect( result ).to.be.an( 'array' );
@@ -997,9 +995,9 @@ describe( 'Matcher', () => {
 		it( 'should return all matched elements when using RegExp pattern', () => {
 			const pattern = { classes: /^red-.*/ };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'p' );
-			const el3 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'p' );
+			const el3 = new ViewElement( document, 'p' );
 
 			el1._addClass( 'red-foreground' );
 			el2._addClass( 'red-background' );
@@ -1026,8 +1024,8 @@ describe( 'Matcher', () => {
 		it( 'should match classes when using global flag in matcher pattern', () => {
 			const pattern = { classes: /foo/g };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'p' );
 
 			el1._addClass( 'foobar' );
 			el2._addClass( 'foobaz' );
@@ -1052,7 +1050,7 @@ describe( 'Matcher', () => {
 		it( 'should match many classes on single element when using global flag in matcher pattern', () => {
 			const pattern = { classes: /foo/g };
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p' );
 
 			el1._addClass( 'foobar' );
 			el1._addClass( 'foobaz' );
@@ -1076,8 +1074,8 @@ describe( 'Matcher', () => {
 				}
 			};
 			const matcher = new Matcher( pattern );
-			const el1 = new Element( document, 'p' );
-			const el2 = new Element( document, 'p' );
+			const el1 = new ViewElement( document, 'p' );
+			const el2 = new ViewElement( document, 'p' );
 
 			el1._setAttribute( 'data-attribute', 'foobar' );
 			el2._setAttribute( 'data-attribute', 'foobaz' );

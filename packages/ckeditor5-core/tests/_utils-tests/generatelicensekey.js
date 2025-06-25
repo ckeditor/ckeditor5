@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals atob */
-
-import generateLicenseKey from '../_utils/generatelicensekey.js';
+import { generateLicenseKey } from '../_utils/generatelicensekey.js';
 
 describe( 'generateLicenseKey util', () => {
 	describe( 'generateLicenseKey()', () => {

@@ -3,26 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import Table from '../../src/table.js';
-import TableLayout from '../../src/tablelayout.js';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
-import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting.js';
-import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui.js';
-import TableCellPropertiesUIView from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
+import { Table } from '../../src/table.js';
+import { TableLayout } from '../../src/tablelayout.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
+import { TableCellPropertiesUI } from '../../src/tablecellproperties/tablecellpropertiesui.js';
+import { TableCellPropertiesView } from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
 import { defaultColors } from '../../src/utils/ui/table-properties.js';
 import { modelTable } from '../_utils/utils.js';
 
@@ -107,7 +105,7 @@ describe( 'table cell properties', () => {
 
 				it( 'should be created on first show', () => {
 					tableCellPropertiesUI._showView();
-					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesUIView );
+					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesView );
 				} );
 
 				it( 'should be rendered', () => {
@@ -227,7 +225,7 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesView.borderStyle = 'dotted';
 					tableCellPropertiesView.backgroundColor = 'red';
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell tableCellBackgroundColor="red" tableCellBorderStyle="dotted">' +
@@ -240,7 +238,7 @@ describe( 'table cell properties', () => {
 
 					tableCellPropertiesView.fire( 'cancel' );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
@@ -613,7 +611,8 @@ describe( 'table cell properties', () => {
 			} );
 
 			it( 'should show the ui for multi-cell selection', () => {
-				setData( editor.model, modelTable( [ [ '01', '02' ] ] ) );
+				_setModelData( editor.model, modelTable( [ [ '01', '02' ] ] ) );
+
 				editor.model.change( writer => {
 					writer.setSelection( [
 						writer.createRangeOn( editor.model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] ) ),

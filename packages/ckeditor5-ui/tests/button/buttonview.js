@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Event, document */
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ButtonView from '../../src/button/buttonview.js';
-import IconView from '../../src/icon/iconview.js';
-import View from '../../src/view.js';
-import ViewCollection from '../../src/viewcollection.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonView } from '../../src/button/buttonview.js';
+import { IconView } from '../../src/icon/iconview.js';
+import { View } from '../../src/view.js';
+import { ViewCollection } from '../../src/viewcollection.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { ButtonLabelView } from '../../src/index.js';
 
 describe( 'ButtonView', () => {

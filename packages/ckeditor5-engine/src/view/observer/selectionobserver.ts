@@ -7,18 +7,16 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
-
-import Observer from './observer.js';
-import MutationObserver from './mutationobserver.js';
-import FocusObserver from './focusobserver.js';
+import { Observer } from './observer.js';
+import { MutationObserver } from './mutationobserver.js';
+import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
-import type View from '../view.js';
-import type DocumentSelection from '../documentselection.js';
-import type DomConverter from '../domconverter.js';
-import type Selection from '../selection.js';
+import { type EditingView } from '../view.js';
+import { type ViewDocumentSelection } from '../documentselection.js';
+import { type ViewDomConverter } from '../domconverter.js';
+import { type ViewSelection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -27,19 +25,19 @@ type DomSelection = globalThis.Selection;
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
- * observer checks if the DOM selection is different from the {@link module:engine/view/document~Document#selection view selection}.
- * The selection observer fires {@link module:engine/view/document~Document#event:selectionChange} event only if
+ * observer checks if the DOM selection is different from the {@link module:engine/view/document~ViewDocument#selection view selection}.
+ * The selection observer fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event only if
  * a selection change was the only change in the document and the DOM selection is different from the view selection.
  *
- * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
+ * This observer also manages the {@link module:engine/view/document~ViewDocument#isSelecting} property of the view document.
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
-export default class SelectionObserver extends Observer {
+export class SelectionObserver extends Observer {
 	/**
 	 * Instance of the mutation observer. Selection observer calls
 	 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
-	 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+	 * before the {@link module:engine/view/document~ViewDocument#event:selectionChange} event is fired.
 	 */
 	public readonly mutationObserver: MutationObserver;
 
@@ -50,15 +48,15 @@ export default class SelectionObserver extends Observer {
 	public readonly focusObserver: FocusObserver;
 
 	/**
-	 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
+	 * Reference to the view {@link module:engine/view/documentselection~ViewDocumentSelection} object used to compare
 	 * new selection with it.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
-	 * Reference to the {@link module:engine/view/view~View#domConverter}.
+	 * Reference to the {@link module:engine/view/view~EditingView#domConverter}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
@@ -96,7 +94,7 @@ export default class SelectionObserver extends Observer {
 	 */
 	private _pendingSelectionChange = new Set<Document>();
 
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this.mutationObserver = view.getObserver( MutationObserver );
@@ -213,7 +211,7 @@ export default class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
-		// Update the model DocumentSelection just after the Renderer and the SelectionObserver are locked.
+		// Update the model ViewDocumentSelection just after the Renderer and the SelectionObserver are locked.
 		// We do this synchronously (without waiting for the `selectionchange` DOM event) as browser updates
 		// the DOM selection (but not visually) to span the text that is under composition and could be replaced.
 		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
@@ -267,8 +265,8 @@ export default class SelectionObserver extends Observer {
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
-	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
+	 * a selection changes and fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~ViewDocument#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @param domDocument DOM document.
 	 */
@@ -379,14 +377,14 @@ export default class SelectionObserver extends Observer {
 export type ViewDocumentSelectionEventData = {
 
 	/**
-	 * Old View selection which is {@link module:engine/view/document~Document#selection}.
+	 * Old View selection which is {@link module:engine/view/document~ViewDocument#selection}.
 	 */
-	oldSelection: DocumentSelection;
+	oldSelection: ViewDocumentSelection;
 
 	/**
 	 * New View selection which is converted DOM selection.
 	 */
-	newSelection: Selection;
+	newSelection: ViewSelection;
 
 	/**
 	 * Native DOM selection.
@@ -401,10 +399,10 @@ export type ViewDocumentSelectionEventData = {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName module:engine/view/document~Document#selectionChange
+ * @eventName module:engine/view/document~ViewDocument#selectionChange
  */
 export type ViewDocumentSelectionChangeEvent = {
 	name: 'selectionChange';
@@ -417,10 +415,10 @@ export type ViewDocumentSelectionChangeEvent = {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/view~View} this event is available by default.
+ * {@link module:engine/view/view~EditingView} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName module:engine/view/document~Document#selectionChangeDone
+ * @eventName module:engine/view/document~ViewDocument#selectionChangeDone
  */
 export type ViewDocumentSelectionChangeDoneEvent = {
 	name: 'selectionChangeDone';

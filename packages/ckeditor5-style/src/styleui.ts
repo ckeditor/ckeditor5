@@ -11,9 +11,9 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { createDropdown } from 'ckeditor5/src/ui.js';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
-import StylePanelView from './ui/stylepanelview.js';
-import StyleUtils from './styleutils.js';
-import type StyleCommand from './stylecommand.js';
+import { StylePanelView } from './ui/stylepanelview.js';
+import { StyleUtils } from './styleutils.js';
+import { type StyleCommand } from './stylecommand.js';
 
 import '../theme/style.css';
 
@@ -23,7 +23,7 @@ import '../theme/style.css';
  * It registers the `'style'` UI dropdown in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * that displays a grid of styles and allows changing styles of the content.
  */
-export default class StyleUI extends Plugin {
+export class StyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

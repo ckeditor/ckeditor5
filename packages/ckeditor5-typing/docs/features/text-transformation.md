@@ -173,7 +173,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTransformationDescription}.
+You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTypingTransformationDescription}.
 
 You can test these custom rules in the demo. Try typing `:)` or `:+1:` and see how the text gets transformed into emojis. You can also write some sentences to test how the editor capitalizes words after a period, a quotation mark, or an exclamation mark.
 

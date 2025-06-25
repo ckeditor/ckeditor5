@@ -7,14 +7,14 @@
  * @module watchdog/utils/areconnectedthroughproperties
  */
 
-/* globals console */
-
-import getSubNodes from './getsubnodes.js';
+import { getSubNodes } from './getsubnodes.js';
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
+ *
+ * @internal
  */
-export default function areConnectedThroughProperties( target1: unknown, target2: unknown, excludedNodes = new Set() ): boolean {
+export function areConnectedThroughProperties( target1: unknown, target2: unknown, excludedNodes = new Set() ): boolean {
 	if ( target1 === target2 && isObject( target1 ) ) {
 		return true;
 	}

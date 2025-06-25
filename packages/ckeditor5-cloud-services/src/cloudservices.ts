@@ -9,7 +9,7 @@
 
 import { ContextPlugin } from 'ckeditor5/src/core.js';
 import { CKEditorError } from 'ckeditor5/src/utils.js';
-import CloudServicesCore from './cloudservicescore.js';
+import { CloudServicesCore } from './cloudservicescore.js';
 import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig.js';
 import type { InitializedToken } from './token/token.js';
 
@@ -19,7 +19,7 @@ import type { InitializedToken } from './token/token.js';
  * It initializes the token provider based on
  * the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudService`}.
  */
-export default class CloudServices extends ContextPlugin implements CloudServicesConfig {
+export class CloudServices extends ContextPlugin implements CloudServicesConfig {
 	/**
 	 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
 	 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} for more details.
@@ -48,6 +48,11 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	 * the new bundle (build + configuration) from the old ones.
 	 */
 	public readonly bundleVersion?: string;
+
+	/**
+	 * Specifies whether the token should be automatically refreshed when it expires.
+	 */
+	public readonly autoRefresh: boolean = true;
 
 	/**
 	 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
@@ -107,7 +112,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 		// behavior we need to catch the exception and destroy the uninitialized token instance.
 		// See: https://github.com/ckeditor/ckeditor5/issues/17531
 		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
-		const uninitializedToken = cloudServicesCore.createToken( this.tokenUrl );
+		const uninitializedToken = cloudServicesCore.createToken( this.tokenUrl, { autoRefresh: this.autoRefresh } );
 
 		try {
 			this.token = await uninitializedToken.init();
@@ -131,7 +136,7 @@ export default class CloudServices extends ContextPlugin implements CloudService
 		}
 
 		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
-		const token = await cloudServicesCore.createToken( tokenUrl ).init();
+		const token = await cloudServicesCore.createToken( tokenUrl, { autoRefresh: this.autoRefresh } ).init();
 
 		this._tokens.set( tokenUrl, token );
 

@@ -7,7 +7,9 @@
  * @module word-count
  */
 
-export { default as WordCount, type WordCountUpdateEvent } from './wordcount.js';
+export { WordCount, type WordCountUpdateEvent } from './wordcount.js';
 export type { WordCountConfig } from './wordcountconfig.js';
+
+export { modelElementToPlainText as _modelElementToPlainText } from './utils.js';
 
 import './augmentation.js';

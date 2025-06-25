@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import global from '../../src/dom/global.js';
-import ResizeObserver from '../../src/dom/resizeobserver.js';
+import { global } from '../../src/dom/global.js';
+import { ResizeObserver } from '../../src/dom/resizeobserver.js';
 
 describe( 'ResizeObserver()', () => {
 	let elementA, elementB;

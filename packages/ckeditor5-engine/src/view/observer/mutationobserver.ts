@@ -7,37 +7,35 @@
  * @module engine/view/observer/mutationobserver
  */
 
-/* globals window */
-
-import Observer from './observer.js';
+import { Observer } from './observer.js';
 import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'es-toolkit/compat';
 
-import type DomConverter from '../domconverter.js';
-import type View from '../view.js';
-import type ViewElement from '../element.js';
-import type ViewNode from '../node.js';
-import type ViewText from '../text.js';
-import type { ChangeType } from '../document.js';
+import { type ViewDomConverter } from '../domconverter.js';
+import { type EditingView } from '../view.js';
+import { type ViewElement } from '../element.js';
+import { type ViewNode } from '../node.js';
+import { type ViewText } from '../text.js';
+import type { ViewDocumentChangeType } from '../document.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
 /**
  * Mutation observer's role is to watch for any DOM changes inside the editor that weren't
- * done by the editor's {@link module:engine/view/renderer~Renderer} itself and reverting these changes.
+ * done by the editor's {@link module:engine/view/renderer~ViewRenderer} itself and reverting these changes.
  *
  * It does this by observing all mutations in the DOM, marking related view elements as changed and calling
- * {@link module:engine/view/renderer~Renderer#render}. Because all mutated nodes are marked as
- * "to be rendered" and the {@link module:engine/view/renderer~Renderer#render `render()`} method is called,
+ * {@link module:engine/view/renderer~ViewRenderer#render}. Because all mutated nodes are marked as
+ * "to be rendered" and the {@link module:engine/view/renderer~ViewRenderer#render `render()`} method is called,
  * all changes are reverted in the DOM (the DOM is synced with the editor's view structure).
  *
- * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~EditingView} and is available by default.
  */
-export default class MutationObserver extends Observer {
+export class MutationObserver extends Observer {
 	/**
-	 * Reference to the {@link module:engine/view/view~View#domConverter}.
+	 * Reference to the {@link module:engine/view/view~EditingView#domConverter}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Native mutation observer config.
@@ -57,7 +55,7 @@ export default class MutationObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this._config = {
@@ -201,7 +199,7 @@ export default class MutationObserver extends Observer {
 		// Now we build the list of mutations to mark elements. We did not do it earlier to avoid marking the
 		// same node multiple times in case of duplication.
 
-		const mutations: Array<MutationData> = [];
+		const mutations: Array<ObserverMutationData> = [];
 
 		for ( const textNode of mutatedTextNodes ) {
 			mutations.push( { type: 'text', node: textNode } );
@@ -281,32 +279,32 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  * Event fired on DOM mutations detected.
  *
  * This event is introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver} and available
- * by default in all editor instances (attached by {@link module:engine/view/view~View}).
+ * by default in all editor instances (attached by {@link module:engine/view/view~EditingView}).
  *
- * @eventName module:engine/view/document~Document#mutations
+ * @eventName module:engine/view/document~ViewDocument#mutations
  * @param data Event data containing detailed information about the event.
  */
 export type ViewDocumentMutationsEvent = {
 	name: 'mutations';
-	args: [ data: MutationsEventData ];
+	args: [ data: ViewDocumentMutationEventData ];
 };
 
 /**
  * The value of {@link ~ViewDocumentMutationsEvent}.
  */
-export type MutationsEventData = {
-	mutations: Array<MutationData>;
+export type ViewDocumentMutationEventData = {
+	mutations: Array<ObserverMutationData>;
 };
 
 /**
- * A single entry in {@link ~MutationsEventData} mutations array.
+ * A single entry in {@link ~ViewDocumentMutationEventData} mutations array.
  */
-export type MutationData = {
+export type ObserverMutationData = {
 
 	/**
 	 * Type of mutation detected.
 	 */
-	type: ChangeType;
+	type: ViewDocumentChangeType;
 
 	/**
 	 * The view node related to the detected mutation.

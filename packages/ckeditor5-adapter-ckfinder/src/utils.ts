@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document */
-
 /**
  * @module adapter-ckfinder/utils
  */
@@ -17,6 +15,8 @@ const tokenCharset = 'abcdefghijklmnopqrstuvwxyz0123456789';
  * Returns the CSRF token value. The value is a hash stored in `document.cookie`
  * under the `ckCsrfToken` key. The CSRF token can be used to secure the communication
  * between the web browser and the CKFinder server.
+ *
+ * @internal
  */
 export function getCsrfToken(): string {
 	let token = getCookie( TOKEN_COOKIE_NAME );
@@ -31,6 +31,8 @@ export function getCsrfToken(): string {
 
 /**
  * Returns the value of the cookie with a given name or `null` if the cookie is not found.
+ *
+ * @internal
  */
 export function getCookie( name: string ): string | null {
 	name = name.toLowerCase();
@@ -50,6 +52,8 @@ export function getCookie( name: string ): string | null {
 
 /**
  * Sets the value of the cookie with a given name.
+ *
+ * @internal
  */
 export function setCookie( name: string, value: string ): void {
 	document.cookie = encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + ';path=/';

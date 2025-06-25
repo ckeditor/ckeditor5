@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console */
+import { transform, transformOperationSets } from '../../../src/model/operation/transform.js';
 
-import { transform, transformSets } from '../../../src/model/operation/transform.js';
+import { Model } from '../../../src/model/model.js';
+import { ModelRootElement } from '../../../src/model/rootelement.js';
+import { ModelNode } from '../../../src/model/node.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
 
-import Model from '../../../src/model/model.js';
-import RootElement from '../../../src/model/rootelement.js';
-import Node from '../../../src/model/node.js';
-import Position from '../../../src/model/position.js';
-import Range from '../../../src/model/range.js';
-
-import InsertOperation from '../../../src/model/operation/insertoperation.js';
-import AttributeOperation from '../../../src/model/operation/attributeoperation.js';
-import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation.js';
-import MarkerOperation from '../../../src/model/operation/markeroperation.js';
-import MoveOperation from '../../../src/model/operation/moveoperation.js';
-import RenameOperation from '../../../src/model/operation/renameoperation.js';
-import NoOperation from '../../../src/model/operation/nooperation.js';
+import { InsertOperation } from '../../../src/model/operation/insertoperation.js';
+import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
+import { RootAttributeOperation } from '../../../src/model/operation/rootattributeoperation.js';
+import { MarkerOperation } from '../../../src/model/operation/markeroperation.js';
+import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
+import { RenameOperation } from '../../../src/model/operation/renameoperation.js';
+import { NoOperation } from '../../../src/model/operation/nooperation.js';
 
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;
@@ -29,8 +27,8 @@ describe( 'transform', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		nodeA = new Node();
-		nodeB = new Node();
+		nodeA = new ModelNode();
+		nodeB = new ModelNode();
 	} );
 
 	afterEach( () => {
@@ -48,7 +46,7 @@ describe( 'transform', () => {
 					for ( let j = 0; j < params[ i ].length; j++ ) {
 						expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
 					}
-				} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
+				} else if ( params[ i ] instanceof ModelPosition || params[ i ] instanceof ModelRange ) {
 					expect( op[ i ].isEqual( params[ i ] ), i ).to.be.true;
 				} else {
 					expect( op[ i ], i ).to.equal( params[ i ] );
@@ -65,10 +63,10 @@ describe( 'transform', () => {
 		// Catches the 'Error during operation transformation!' warning in the CK_DEBUG mode.
 		sinon.stub( console, 'warn' );
 
-		const nodeA = new Node();
-		const nodeB = new Node();
+		const nodeA = new ModelNode();
+		const nodeB = new ModelNode();
 
-		const position = new Position( root, [ 0 ] );
+		const position = new ModelPosition( root, [ 0 ] );
 
 		const a = new InsertOperation( position, [ nodeA ], 0 );
 		const b = new InsertOperation( position, [ nodeB ], 0 );
@@ -91,10 +89,10 @@ describe( 'transform', () => {
 		let nodeC, nodeD, position;
 
 		beforeEach( () => {
-			nodeC = new Node();
-			nodeD = new Node();
+			nodeC = new ModelNode();
+			nodeD = new ModelNode();
 
-			position = new Position( root, [ 0, 2, 2 ] );
+			position = new ModelPosition( root, [ 0, 2, 2 ] );
 
 			op = new InsertOperation( position, [ nodeA, nodeB ], 0 );
 
@@ -107,7 +105,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'target at different position: no position update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 1, 3, 2 ] ),
+					new ModelPosition( root, [ 1, 3, 2 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -120,7 +118,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset before: increment offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -134,7 +132,7 @@ describe( 'transform', () => {
 
 			it( 'target at same offset and is important: increment offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -148,7 +146,7 @@ describe( 'transform', () => {
 
 			it( 'target at same offset and is less important: no position update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -161,7 +159,7 @@ describe( 'transform', () => {
 
 			it( 'target at same offset and context.insertBefore = false: increment offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -175,7 +173,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset after: no position update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 3 ] ),
+					new ModelPosition( root, [ 0, 2, 3 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -188,7 +186,7 @@ describe( 'transform', () => {
 
 			it( 'target before node from path: increment index on path', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -202,7 +200,7 @@ describe( 'transform', () => {
 
 			it( 'target after node from path: no position update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 6 ] ),
+					new ModelPosition( root, [ 0, 6 ] ),
 					[ nodeC, nodeD ],
 					0
 				);
@@ -217,7 +215,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
 				const transformBy = new AttributeOperation(
-					Range._createFromPositionAndShift( position, 2 ),
+					ModelRange._createFromPositionAndShift( position, 2 ),
 					'foo',
 					null,
 					'bar',
@@ -251,9 +249,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'range and target are different than insert position: no position update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 3, 2 ] ),
+					new ModelPosition( root, [ 1, 3, 2 ] ),
 					2,
-					new Position( root, [ 2, 1 ] ),
+					new ModelPosition( root, [ 2, 1 ] ),
 					0
 				);
 
@@ -265,9 +263,9 @@ describe( 'transform', () => {
 
 			it( 'range is before insert position offset: decrement offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					1,
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					0
 				);
 
@@ -280,9 +278,9 @@ describe( 'transform', () => {
 
 			it( 'range offset is after insert position offset: no position update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 5 ] ),
+					new ModelPosition( root, [ 0, 2, 5 ] ),
 					1,
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					0
 				);
 
@@ -294,9 +292,9 @@ describe( 'transform', () => {
 
 			it( 'target offset before insert position offset: increment offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					0
 				);
 
@@ -309,9 +307,9 @@ describe( 'transform', () => {
 
 			it( 'target offset after insert position offset: no position update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 5 ] ),
+					new ModelPosition( root, [ 0, 2, 5 ] ),
 					0
 				);
 
@@ -323,9 +321,9 @@ describe( 'transform', () => {
 
 			it( 'target offset same as insert position offset and is important: increment offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					0
 				);
 
@@ -338,9 +336,9 @@ describe( 'transform', () => {
 
 			it( 'target offset same as insert position offset and is less important: increment offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					0
 				);
 
@@ -353,9 +351,9 @@ describe( 'transform', () => {
 
 			it( 'range is before node from insert position path: decrement index on path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] ),
 					1,
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					0
 				);
 
@@ -368,9 +366,9 @@ describe( 'transform', () => {
 
 			it( 'range is after node from insert position path: no position update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 4 ] ),
+					new ModelPosition( root, [ 0, 4 ] ),
 					2,
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					0
 				);
 
@@ -382,9 +380,9 @@ describe( 'transform', () => {
 
 			it( 'target before node from insert position path: increment index on path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					2,
-					new Position( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] ),
 					0
 				);
 
@@ -397,9 +395,9 @@ describe( 'transform', () => {
 
 			it( 'target after node from insert position path: no position update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					2,
-					new Position( root, [ 0, 4 ] ),
+					new ModelPosition( root, [ 0, 4 ] ),
 					0
 				);
 
@@ -411,9 +409,9 @@ describe( 'transform', () => {
 
 			it( 'range has node that contains insert position: update position', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					2,
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					0
 				);
 
@@ -426,9 +424,9 @@ describe( 'transform', () => {
 
 			it( 'range contains insert position (on same level): update position', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					4,
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					0
 				);
 
@@ -453,7 +451,7 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
+				const transformBy = new RenameOperation( new ModelPosition( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -464,7 +462,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 4 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -479,10 +477,10 @@ describe( 'transform', () => {
 		let start, end, range;
 
 		beforeEach( () => {
-			start = new Position( root, [ 0, 2, 1 ] );
-			end = new Position( root, [ 0, 2, 4 ] );
+			start = new ModelPosition( root, [ 0, 2, 1 ] );
+			end = new ModelPosition( root, [ 0, 2, 4 ] );
 
-			range = new Range( start, end );
+			range = new ModelRange( start, end );
 
 			op = new AttributeOperation( range, 'foo', 'abc', 'bar', 0 );
 
@@ -498,7 +496,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'target at offset before: increment offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -514,7 +512,7 @@ describe( 'transform', () => {
 
 			it( 'target at same offset: increment offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -532,9 +530,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'range offset is before change range start offset: decrement offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					1,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -549,9 +547,9 @@ describe( 'transform', () => {
 
 			it( 'target offset is before change range start offset: increment offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					0
 				);
 
@@ -566,9 +564,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects on left with change range: split into two operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					4,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -588,9 +586,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects on right with change range: split into two operation', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					2,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -611,9 +609,9 @@ describe( 'transform', () => {
 
 			it( 'range contains change range: update change range', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					3,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -628,9 +626,9 @@ describe( 'transform', () => {
 
 			it( 'range is inside change range: split into two operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					1,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -656,9 +654,9 @@ describe( 'transform', () => {
 
 			it( 'range is same as change range: update change range', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					3,
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					0
 				);
 
@@ -673,9 +671,9 @@ describe( 'transform', () => {
 
 			it( 'target inside change range: split into two operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 4, 1 ] ),
 					2,
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					0
 				);
 
@@ -695,9 +693,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects change range and target inside change range: split into three operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					2,
-					new Position( root, [ 0, 2, 3 ] ),
+					new ModelPosition( root, [ 0, 2, 3 ] ),
 					0
 				);
 
@@ -724,7 +722,7 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'RootAttributeOperation', () => {
-		const diffRoot = new RootElement( null );
+		const diffRoot = new ModelRootElement( null );
 
 		beforeEach( () => {
 			expected = {
@@ -740,7 +738,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0 ] ),
+					new ModelPosition( root, [ 0 ] ),
 					'a',
 					0
 				);
@@ -755,9 +753,9 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
-						new Position( root, [ 0 ] ),
-						new Position( root, [ 1 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0 ] ),
+						new ModelPosition( root, [ 1 ] )
 					),
 					'foo',
 					'bar',
@@ -858,9 +856,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0 ] ),
+					new ModelPosition( root, [ 0 ] ),
 					2,
-					new Position( root, [ 1 ] ),
+					new ModelPosition( root, [ 1 ] ),
 					0
 				);
 
@@ -884,7 +882,7 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0 ] ), 'oldName', 'newName', 0 );
+				const transformBy = new RenameOperation( new ModelPosition( root, [ 0 ] ), 'oldName', 'newName', 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -895,7 +893,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -910,8 +908,8 @@ describe( 'transform', () => {
 		let sourcePosition, targetPosition, rangeEnd, howMany;
 
 		beforeEach( () => {
-			sourcePosition = new Position( root, [ 2, 2, 4 ] );
-			targetPosition = new Position( root, [ 3, 3, 3 ] );
+			sourcePosition = new ModelPosition( root, [ 2, 2, 4 ] );
+			targetPosition = new ModelPosition( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
 			rangeEnd = sourcePosition.clone();
@@ -930,7 +928,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'target at different position than move range and target: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 1, 3, 2 ] ),
+					new ModelPosition( root, [ 1, 3, 2 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -943,7 +941,7 @@ describe( 'transform', () => {
 
 			it( 'target inside node from move range: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 4, 1 ] ),
+					new ModelPosition( root, [ 2, 2, 4, 1 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -956,7 +954,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset before range offset: increment range offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 0 ] ),
+					new ModelPosition( root, [ 2, 2, 0 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -971,7 +969,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset after range offset: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 7 ] ),
+					new ModelPosition( root, [ 2, 2, 7 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -984,7 +982,7 @@ describe( 'transform', () => {
 
 			it( 'target before node from range start path: increment index on range start path', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 0 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -999,7 +997,7 @@ describe( 'transform', () => {
 
 			it( 'target after node from range start path: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 3 ] ),
+					new ModelPosition( root, [ 2, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1012,7 +1010,7 @@ describe( 'transform', () => {
 
 			it( 'target offset before move target offset: increment target offset', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 2 ] ),
+					new ModelPosition( root, [ 3, 3, 2 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1027,7 +1025,7 @@ describe( 'transform', () => {
 
 			it( 'target offset after move target offset: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 4 ] ),
+					new ModelPosition( root, [ 3, 3, 4 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1040,7 +1038,7 @@ describe( 'transform', () => {
 
 			it( 'target before node from move target position path: increment index on move target position path', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3 ] ),
+					new ModelPosition( root, [ 3, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1055,7 +1053,7 @@ describe( 'transform', () => {
 
 			it( 'target after node from move target position path: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 6 ] ),
+					new ModelPosition( root, [ 3, 6 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1068,7 +1066,7 @@ describe( 'transform', () => {
 
 			it( 'target offset same as move target offset and is important: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 3 ] ),
+					new ModelPosition( root, [ 3, 3, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1081,7 +1079,7 @@ describe( 'transform', () => {
 
 			it( 'target offset same as move target offset and is less important: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 3 ] ),
+					new ModelPosition( root, [ 3, 3, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1094,7 +1092,7 @@ describe( 'transform', () => {
 
 			it( 'target inside move range: expand range', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1110,7 +1108,7 @@ describe( 'transform', () => {
 
 			it( 'target at offset same as range end boundary: no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 6 ] ),
+					new ModelPosition( root, [ 2, 2, 6 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -1125,7 +1123,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range( sourcePosition, rangeEnd ),
+					new ModelRange( sourcePosition, rangeEnd ),
 					'abc',
 					true,
 					false,
@@ -1159,9 +1157,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'range and target different than transforming range and target: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 2 ] ),
+					new ModelPosition( root, [ 1, 2 ] ),
 					3,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1173,9 +1171,9 @@ describe( 'transform', () => {
 
 			it( 'target offset before transforming range start offset: increment range offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 0 ] ),
+					new ModelPosition( root, [ 2, 2, 0 ] ),
 					0
 				);
 
@@ -1189,9 +1187,9 @@ describe( 'transform', () => {
 
 			it( 'target offset after transforming range start offset: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 7 ] ),
+					new ModelPosition( root, [ 2, 2, 7 ] ),
 					0
 				);
 
@@ -1203,9 +1201,9 @@ describe( 'transform', () => {
 
 			it( 'range start offset before transforming range start offset: decrement range offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 0 ] ),
+					new ModelPosition( root, [ 2, 2, 0 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1219,9 +1217,9 @@ describe( 'transform', () => {
 
 			it( 'range start offset after transforming range start offset: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 9 ] ),
+					new ModelPosition( root, [ 2, 2, 9 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1233,9 +1231,9 @@ describe( 'transform', () => {
 
 			it( 'target before node from transforming range start path: increment index on range start path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 1 ] ),
+					new ModelPosition( root, [ 2, 1 ] ),
 					0
 				);
 
@@ -1249,9 +1247,9 @@ describe( 'transform', () => {
 
 			it( 'target after node from transforming range start path: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -1263,9 +1261,9 @@ describe( 'transform', () => {
 
 			it( 'range before node from transforming range start path: decrement index on range start path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 0 ] ),
 					1,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1279,9 +1277,9 @@ describe( 'transform', () => {
 
 			it( 'range after node from transforming range start path: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 3 ] ),
+					new ModelPosition( root, [ 2, 3 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1293,9 +1291,9 @@ describe( 'transform', () => {
 
 			it( 'target offset before transforming target offset: increment target offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 3, 3, 0 ] ),
+					new ModelPosition( root, [ 3, 3, 0 ] ),
 					0
 				);
 
@@ -1309,9 +1307,9 @@ describe( 'transform', () => {
 
 			it( 'target offset after transforming target offset: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 3, 3, 5 ] ),
+					new ModelPosition( root, [ 3, 3, 5 ] ),
 					0
 				);
 
@@ -1323,9 +1321,9 @@ describe( 'transform', () => {
 
 			it( 'range offset before transforming target offset: decrement target offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 3, 0 ] ),
+					new ModelPosition( root, [ 3, 3, 0 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1339,9 +1337,9 @@ describe( 'transform', () => {
 
 			it( 'range offset after transforming target offset: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 3, 5 ] ),
+					new ModelPosition( root, [ 3, 3, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1353,9 +1351,9 @@ describe( 'transform', () => {
 
 			it( 'target before node from transforming target path: increment index on target path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 3, 1 ] ),
+					new ModelPosition( root, [ 3, 1 ] ),
 					0
 				);
 
@@ -1369,9 +1367,9 @@ describe( 'transform', () => {
 
 			it( 'target after node from transforming target path: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 3, 5 ] ),
+					new ModelPosition( root, [ 3, 5 ] ),
 					0
 				);
 
@@ -1383,9 +1381,9 @@ describe( 'transform', () => {
 
 			it( 'range before node from transforming target path: decrement index on target path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 0 ] ),
+					new ModelPosition( root, [ 3, 0 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1399,9 +1397,9 @@ describe( 'transform', () => {
 
 			it( 'range after node from transforming target path: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 5 ] ),
+					new ModelPosition( root, [ 3, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1413,9 +1411,9 @@ describe( 'transform', () => {
 
 			it( 'target inside transforming move range: split into two operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					0
 				);
 
@@ -1433,9 +1431,9 @@ describe( 'transform', () => {
 
 			it( 'target at start boundary of transforming move range: increment source offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 4 ] ),
+					new ModelPosition( root, [ 2, 2, 4 ] ),
 					0
 				);
 
@@ -1450,9 +1448,9 @@ describe( 'transform', () => {
 
 			it( 'target at end boundary of transforming move range: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 6 ] ),
+					new ModelPosition( root, [ 2, 2, 6 ] ),
 					0
 				);
 
@@ -1464,9 +1462,9 @@ describe( 'transform', () => {
 
 			it( 'target inside a node from transforming range: no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					2,
-					new Position( root, [ 2, 2, 5, 1 ] ),
+					new ModelPosition( root, [ 2, 2, 5, 1 ] ),
 					0
 				);
 
@@ -1478,9 +1476,9 @@ describe( 'transform', () => {
 
 			it( 'range has node that contains transforming range: update range path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 1 ] ),
+					new ModelPosition( root, [ 2, 1 ] ),
 					3,
-					new Position( root, [ 4, 2 ] ),
+					new ModelPosition( root, [ 4, 2 ] ),
 					0
 				);
 
@@ -1494,9 +1492,9 @@ describe( 'transform', () => {
 
 			it( 'range has node that contains transforming target: update target path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 2 ] ),
+					new ModelPosition( root, [ 3, 2 ] ),
 					3,
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					0
 				);
 
@@ -1510,9 +1508,9 @@ describe( 'transform', () => {
 
 			it( 'target inside a node from transforming range and vice versa: reverse transform-by operation', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 3, 2 ] ),
+					new ModelPosition( root, [ 3, 2 ] ),
 					3,
-					new Position( root, [ 2, 2, 5, 0 ] ),
+					new ModelPosition( root, [ 2, 2, 5, 0 ] ),
 					0
 				);
 
@@ -1531,7 +1529,7 @@ describe( 'transform', () => {
 				const transformBy = new MoveOperation(
 					op.sourcePosition,
 					op.howMany,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1547,7 +1545,7 @@ describe( 'transform', () => {
 				const transformBy = new MoveOperation(
 					op.sourcePosition,
 					op.howMany,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1561,9 +1559,9 @@ describe( 'transform', () => {
 
 			it( 'range contains transforming range and is important: convert to NoOperation', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					4,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1577,9 +1575,9 @@ describe( 'transform', () => {
 
 			it( 'range contains transforming range and is less important: update range path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					4,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1595,9 +1593,9 @@ describe( 'transform', () => {
 				op.targetPosition.path = [ 2, 2, 7 ];
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					5,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1615,9 +1613,9 @@ describe( 'transform', () => {
 				op.targetPosition.path = [ 2, 2, 7 ];
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					5,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1633,9 +1631,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects on left side of transforming range and is important: shrink range', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1650,12 +1648,12 @@ describe( 'transform', () => {
 
 			it( 'range intersects on left side of transforming range and is less important: split into two operations', () => {
 				// Get more test cases and better code coverage
-				const otherRoot = new RootElement( null );
+				const otherRoot = new ModelRootElement( null );
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					2,
-					new Position( otherRoot, [ 4, 1, 0 ] ),
+					new ModelPosition( otherRoot, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1663,12 +1661,12 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 2 );
 
-				expected.sourcePosition = new Position( otherRoot, [ 4, 1, 1 ] );
+				expected.sourcePosition = new ModelPosition( otherRoot, [ 4, 1, 1 ] );
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition = new Position( root, [ 2, 2, 3 ] );
+				expected.sourcePosition = new ModelPosition( root, [ 2, 2, 3 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 
 				expectOperation( transOp[ 1 ], expected );
@@ -1676,9 +1674,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects on right side of transforming range and is important: shrink range', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1692,9 +1690,9 @@ describe( 'transform', () => {
 
 			it( 'range intersects on right side of transforming range and is less important: split into two operations', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1707,7 +1705,7 @@ describe( 'transform', () => {
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition = new Position( root, [ 4, 1, 0 ] );
+				expected.sourcePosition = new ModelPosition( root, [ 4, 1, 0 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 
 				expectOperation( transOp[ 1 ], expected );
@@ -1717,9 +1715,9 @@ describe( 'transform', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					2,
-					new Position( root, [ 2, 2, 6 ] ),
+					new ModelPosition( root, [ 2, 2, 6 ] ),
 					0
 				);
 
@@ -1743,9 +1741,9 @@ describe( 'transform', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 3 ] ),
+					new ModelPosition( root, [ 2, 2, 3 ] ),
 					2,
-					new Position( root, [ 2, 2, 6 ] ),
+					new ModelPosition( root, [ 2, 2, 6 ] ),
 					0
 				);
 
@@ -1775,9 +1773,9 @@ describe( 'transform', () => {
 				op.targetPosition.path = [ 2, 2, 7 ];
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					4,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1801,9 +1799,9 @@ describe( 'transform', () => {
 				op.targetPosition.path = [ 2, 2, 7 ];
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					4,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1822,9 +1820,9 @@ describe( 'transform', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1846,9 +1844,9 @@ describe( 'transform', () => {
 				op.howMany = 4;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 4, 1, 0 ] ),
+					new ModelPosition( root, [ 4, 1, 0 ] ),
 					0
 				);
 
@@ -1878,9 +1876,9 @@ describe( 'transform', () => {
 				op.howMany = 6;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 2, 2, 9 ] ),
+					new ModelPosition( root, [ 2, 2, 9 ] ),
 					0
 				);
 
@@ -1897,9 +1895,9 @@ describe( 'transform', () => {
 				op.howMany = 6;
 
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 2, 5 ] ),
+					new ModelPosition( root, [ 2, 2, 5 ] ),
 					2,
-					new Position( root, [ 2, 2, 9 ] ),
+					new ModelPosition( root, [ 2, 2, 9 ] ),
 					0
 				);
 
@@ -1920,7 +1918,7 @@ describe( 'transform', () => {
 				transformBy = new MoveOperation(
 					op.sourcePosition.clone(),
 					op.howMany,
-					new Position( doc.graveyard, [ 0 ] ),
+					new ModelPosition( doc.graveyard, [ 0 ] ),
 					0
 				);
 			} );
@@ -1949,7 +1947,7 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 2, 2, 4 ] ), 'oldName', 'newName', 0 );
+				const transformBy = new RenameOperation( new ModelPosition( root, [ 2, 2, 4 ] ), 'oldName', 'newName', 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -1960,7 +1958,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new Position( root, [ 2, 2, 3 ] ), new Position( root, [ 2, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 2, 2, 3 ] ), new ModelPosition( root, [ 2, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -1974,11 +1972,11 @@ describe( 'transform', () => {
 	describe( 'MoveOperation to graveyard', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'should force removing content even if was less important', () => {
-				const op = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
+				const op = new MoveOperation( new ModelPosition( root, [ 8 ] ), 2, new ModelPosition( doc.graveyard, [ 0 ] ), 0 );
 
 				const targetPosition = op.targetPosition.clone();
 
-				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), 0 );
+				const transformBy = new MoveOperation( new ModelPosition( root, [ 8 ] ), 2, new ModelPosition( root, [ 1 ] ), 0 );
 
 				const sourcePosition = transformBy.targetPosition.clone();
 
@@ -2008,7 +2006,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0 ] ),
+					new ModelPosition( root, [ 0 ] ),
 					'a',
 					0
 				);
@@ -2023,9 +2021,9 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
-						new Position( root, [ 0 ] ),
-						new Position( root, [ 1 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0 ] ),
+						new ModelPosition( root, [ 1 ] )
 					),
 					'foo',
 					'bar',
@@ -2060,9 +2058,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0 ] ),
+					new ModelPosition( root, [ 0 ] ),
 					2,
-					new Position( root, [ 1 ] ),
+					new ModelPosition( root, [ 1 ] ),
 					0
 				);
 
@@ -2086,7 +2084,7 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
+				const transformBy = new RenameOperation( new ModelPosition( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2097,7 +2095,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2110,7 +2108,7 @@ describe( 'transform', () => {
 
 	describe( 'RenameOperation', () => {
 		beforeEach( () => {
-			const position = new Position( root, [ 0, 2, 2 ] );
+			const position = new ModelPosition( root, [ 0, 2, 2 ] );
 
 			op = new RenameOperation( position, 'oldName', 'newName', 0 );
 
@@ -2124,7 +2122,7 @@ describe( 'transform', () => {
 		describe( 'by InsertOperation', () => {
 			it( 'target before renamed element: offset update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -2140,7 +2138,7 @@ describe( 'transform', () => {
 
 			it( 'target after renamed element: no change', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 3 ] ),
+					new ModelPosition( root, [ 0, 2, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -2153,7 +2151,7 @@ describe( 'transform', () => {
 
 			it( 'target before a node on path to renamed element: path update', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -2169,7 +2167,7 @@ describe( 'transform', () => {
 
 			it( 'target after a node on path to renamed element: no change', () => {
 				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 3 ] ),
+					new ModelPosition( root, [ 0, 3 ] ),
 					[ nodeA, nodeB ],
 					0
 				);
@@ -2184,9 +2182,9 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
-						new Position( root, [ 0, 2, 1 ] ),
-						new Position( root, [ 1, 3 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0, 2, 1 ] ),
+						new ModelPosition( root, [ 1, 3 ] )
 					),
 					'foo',
 					'bar',
@@ -2220,7 +2218,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no operation update', () => {
-				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2233,7 +2231,7 @@ describe( 'transform', () => {
 		describe( 'by RenameOperation', () => {
 			it( 'different element: no change', () => {
 				const transformBy = new RenameOperation(
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					'foo',
 					'bar',
 					0
@@ -2247,7 +2245,7 @@ describe( 'transform', () => {
 
 			it( 'same element and is important: convert to NoOperation', () => {
 				const transformBy = new RenameOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					'oldName',
 					'otherName',
 					0
@@ -2263,7 +2261,7 @@ describe( 'transform', () => {
 
 			it( 'same element and is not important: change old name to new name', () => {
 				const transformBy = new RenameOperation(
-					new Position( root, [ 0, 2, 2 ] ),
+					new ModelPosition( root, [ 0, 2, 2 ] ),
 					'oldName',
 					'otherName',
 					0
@@ -2281,9 +2279,9 @@ describe( 'transform', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'moved range before renamed element: update offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					2,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -2298,9 +2296,9 @@ describe( 'transform', () => {
 
 			it( 'moved range before an element on path to renamed element: update path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] ),
 					2,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -2315,9 +2313,9 @@ describe( 'transform', () => {
 
 			it( 'moved range contains renamed element: update path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					3,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -2332,9 +2330,9 @@ describe( 'transform', () => {
 
 			it( 'moved range contains renamed element parent: updated path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					3,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -2349,9 +2347,9 @@ describe( 'transform', () => {
 
 			it( 'move target before renamed element: update offset', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					2,
-					new Position( root, [ 0, 2, 1 ] ),
+					new ModelPosition( root, [ 0, 2, 1 ] ),
 					0
 				);
 
@@ -2366,9 +2364,9 @@ describe( 'transform', () => {
 
 			it( 'move target before an element on path to renamed element: update path', () => {
 				const transformBy = new MoveOperation(
-					new Position( root, [ 0, 2, 0 ] ),
+					new ModelPosition( root, [ 0, 2, 0 ] ),
 					2,
-					new Position( root, [ 2, 5 ] ),
+					new ModelPosition( root, [ 2, 5 ] ),
 					0
 				);
 
@@ -2387,8 +2385,8 @@ describe( 'transform', () => {
 		let oldRange, newRange;
 
 		beforeEach( () => {
-			oldRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 4 ) );
-			newRange = new Range( Position._createAt( root, 10 ), Position._createAt( root, 12 ) );
+			oldRange = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 4 ) );
+			newRange = new ModelRange( ModelPosition._createAt( root, 10 ), ModelPosition._createAt( root, 12 ) );
 			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, false, 0 );
 
 			expected = {
@@ -2402,7 +2400,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting oldRange: update oldRange', () => {
 				// Just CC things.
 				op.newRange = null;
-				const transformBy = new InsertOperation( Position._createAt( root, 0 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( ModelPosition._createAt( root, 0 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2417,7 +2415,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting newRange: update newRange', () => {
 				// Just CC things.
 				op.oldRange = null;
-				const transformBy = new InsertOperation( Position._createAt( root, 8 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( ModelPosition._createAt( root, 8 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2433,9 +2431,9 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
-						new Position( root, [ 2 ] ),
-						new Position( root, [ 11 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 2 ] ),
+						new ModelPosition( root, [ 11 ] )
 					),
 					'foo',
 					'bar',
@@ -2455,7 +2453,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.newRange = null;
 
-				const transformBy = new MoveOperation( Position._createAt( root, 0 ), 1, Position._createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( ModelPosition._createAt( root, 0 ), 1, ModelPosition._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.newRange = null;
@@ -2467,7 +2465,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'moved range contains oldRange and is before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position._createAt( root, 2 ), 2, Position._createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( ModelPosition._createAt( root, 2 ), 2, ModelPosition._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
@@ -2483,7 +2481,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.oldRange = null;
 
-				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 2, Position._createAt( root, 11 ), 0 );
+				const transformBy = new MoveOperation( ModelPosition._createAt( root, 20 ), 2, ModelPosition._createAt( root, 11 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange = null;
@@ -2495,7 +2493,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'target position is inside oldRange and before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 4, Position._createAt( root, 2 ), 0 );
+				const transformBy = new MoveOperation( ModelPosition._createAt( root, 20 ), 4, ModelPosition._createAt( root, 2 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
@@ -2527,7 +2525,7 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 1 ] ), 'oldName', 'newName', 0 );
+				const transformBy = new RenameOperation( new ModelPosition( root, [ 1 ] ), 'oldName', 'newName', 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2547,7 +2545,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
-				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
+				const anotherRange = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2559,7 +2557,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
-				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
+				const anotherRange = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy, strongContext );
@@ -2573,7 +2571,7 @@ describe( 'transform', () => {
 	} );
 } );
 
-describe( 'transformSets', () => {
+describe( 'transformOperationSets', () => {
 	let model, doc, root, node;
 
 	beforeEach( () => {
@@ -2581,15 +2579,15 @@ describe( 'transformSets', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		node = new Node();
+		node = new ModelNode();
 	} );
 
 	it( 'originalOperations should correctly link transformed operations with original operations #1', () => {
-		const position = new Position( root, [ 0 ] );
+		const position = new ModelPosition( root, [ 0 ] );
 
 		const a = new InsertOperation( position, [ node ], 0 );
 
-		const { operationsA, originalOperations } = transformSets( [ a ], [], {
+		const { operationsA, originalOperations } = transformOperationSets( [ a ], [], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false
@@ -2599,11 +2597,11 @@ describe( 'transformSets', () => {
 	} );
 
 	it( 'originalOperations should correctly link transformed operations with original operations #2', () => {
-		const position = new Position( root, [ 0 ] );
+		const position = new ModelPosition( root, [ 0 ] );
 
 		const b = new InsertOperation( position, [ node ], 0 );
 
-		const { operationsB, originalOperations } = transformSets( [], [ b ], {
+		const { operationsB, originalOperations } = transformOperationSets( [], [ b ], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false
@@ -2613,13 +2611,13 @@ describe( 'transformSets', () => {
 	} );
 
 	it( 'originalOperations should correctly link transformed operations with original operations #3', () => {
-		const position = new Position( root, [ 4 ] );
+		const position = new ModelPosition( root, [ 4 ] );
 
 		const a = new InsertOperation( position, [ node ], 0 );
 		const b = new AttributeOperation(
-			new Range(
-				new Position( root, [ 2 ] ),
-				new Position( root, [ 11 ] )
+			new ModelRange(
+				new ModelPosition( root, [ 2 ] ),
+				new ModelPosition( root, [ 11 ] )
 			),
 			'foo',
 			'bar',
@@ -2627,7 +2625,7 @@ describe( 'transformSets', () => {
 			0
 		);
 
-		const { operationsA, operationsB, originalOperations } = transformSets( [ a ], [ b ], {
+		const { operationsA, operationsB, originalOperations } = transformOperationSets( [ a ], [ b ], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false

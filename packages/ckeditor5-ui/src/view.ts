@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable @typescript-eslint/no-invalid-void-type */
-
 /**
  * @module ui/view
  */
 
-import ViewCollection from './viewcollection.js';
-import Template, { type BindChain, type TemplateDefinition } from './template.js';
+import { ViewCollection } from './viewcollection.js';
+import { Template, type BindChain, type TemplateDefinition } from './template.js';
 
 import {
 	CKEditorError,
@@ -91,7 +89,7 @@ import '../theme/globals/globals.css';
  * } );
  * ```
  */
-export default class View<TElement extends HTMLElement = HTMLElement>
+export class View<TElement extends HTMLElement = HTMLElement>
 	extends /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ ObservableMixin() )
 {
 	/**

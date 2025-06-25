@@ -3,22 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageBlockEditing, ImageResizeEditing } from '@ckeditor/ckeditor5-image';
 
-import TableEditing from '../../src/tableediting.js';
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
 
-import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand.js';
-import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand.js';
-import TableBorderWidthCommand from '../../src/tableproperties/commands/tableborderwidthcommand.js';
-import TableAlignmentCommand from '../../src/tableproperties/commands/tablealignmentcommand.js';
-import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcommand.js';
-import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand.js';
-import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
+import { TableBorderColorCommand } from '../../src/tableproperties/commands/tablebordercolorcommand.js';
+import { TableBorderStyleCommand } from '../../src/tableproperties/commands/tableborderstylecommand.js';
+import { TableBorderWidthCommand } from '../../src/tableproperties/commands/tableborderwidthcommand.js';
+import { TableAlignmentCommand } from '../../src/tableproperties/commands/tablealignmentcommand.js';
+import { TableWidthCommand } from '../../src/tableproperties/commands/tablewidthcommand.js';
+import { TableHeightCommand } from '../../src/tableproperties/commands/tableheightcommand.js';
+import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
@@ -96,10 +97,18 @@ describe( 'table properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
 				it( 'should not upcast border shorthand when values are the same as default values', () => {
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'border' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
 					editor.setData( '<table style="border:1px double hsl(0, 0%, 70%)"><tr><td>foo</td></tr></table>' );
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
@@ -261,7 +270,7 @@ describe( 'table properties', () => {
 
 						// Also check the entire structure of the model.
 						// Previously the test was too loose in that regard.
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -307,7 +316,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -340,7 +349,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -388,7 +397,7 @@ describe( 'table properties', () => {
 							);
 						} ).not.to.throw();
 
-						expect( getModelData( editor.model ) ).to.equal(
+						expect( _getModelData( editor.model ) ).to.equal(
 							'[<table>' +
 								'<tableRow>' +
 									'<tableCell>' +
@@ -437,7 +446,7 @@ describe( 'table properties', () => {
 							expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
 							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '2px' );
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="2px">' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -477,7 +486,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -504,7 +513,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -542,7 +551,7 @@ describe( 'table properties', () => {
 								);
 							} ).not.to.throw();
 
-							expect( getModelData( editor.model ) ).to.equal(
+							expect( _getModelData( editor.model ) ).to.equal(
 								'[<table>' +
 									'<tableRow>' +
 										'<tableCell>' +
@@ -879,6 +888,7 @@ describe( 'table properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -901,6 +911,65 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+				} );
+
+				it( 'should upcast bgcolor attribute', () => {
+					editor.setData( '<table bgcolor="#f00"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should consume background color style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									backgroundColor: '#f00'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'background-color' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableBackgroundColor' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume bgcolor attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									backgroundColor: '#f00'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'bgcolor' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table bgcolor="#f00"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableBackgroundColor' ) ).to.be.false;
+
+					await editor.destroy();
 				} );
 			} );
 
@@ -960,6 +1029,7 @@ describe( 'table properties', () => {
 		describe( 'tableWidth', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -999,6 +1069,106 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast width attribute from <table>', () => {
+					editor.setData( '<table width="1337"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast width from style not <table> attribute', () => {
+					editor.setData( '<table width="1337" style="width: 654px;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '654px' );
+				} );
+
+				it( 'should upcast width from <figure> style and ignore table width attribute', () => {
+					editor.setData(
+						'<figure class="table" style="width: 543px">' +
+							'<table width="234"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableWidth' ) ).to.equal( '543px' );
+				} );
+
+				it( 'should consume width style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									width: '50%'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'width' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table style="width:50%"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableWidth' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume width attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									width: '123px'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'width' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table width=123><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableWidth' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume width style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing, ImageResizeEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									width: '50%'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<figure class="image" style="width:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" resizedWidth="50%" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
 				} );
 			} );
 
@@ -1058,6 +1228,7 @@ describe( 'table properties', () => {
 		describe( 'tableHeight', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1097,6 +1268,106 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast height attribute from <table>', () => {
+					editor.setData( '<table height="1337"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '1337px' );
+				} );
+
+				it( 'should upcast height from style not <table> attribute', () => {
+					editor.setData( '<table height="1337" style="height: 654px;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '654px' );
+				} );
+
+				it( 'should upcast height from <figure> style and ignore table height attribute', () => {
+					editor.setData(
+						'<figure class="table" style="height: 543px">' +
+							'<table height="234"><tbody><tr><td>1</td></tr></tbody></table>' +
+						'</figure>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '543px' );
+				} );
+
+				it( 'should consume height style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									height: '123px'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'height' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table style="height:123px"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableHeight' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume height attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									height: '123px'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'height' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table height=123><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableHeight' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume height style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing, ImageResizeEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									height: '50%'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<figure class="image" style="height:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" resizedHeight="50%" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
 				} );
 			} );
 
@@ -1156,6 +1427,7 @@ describe( 'table properties', () => {
 		describe( 'tableAlignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1195,7 +1467,24 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should discard align=center attribute', () => {
+					// But it should consume it as it is the default alignment, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
 					editor.setData( '<table align="center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should consume default align style', () => {
+					// But it should consume it as it is the default alignment, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'margin-left', 'margin-right' ] } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table style="margin-left: auto; margin-right: auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
@@ -1206,6 +1495,117 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+				} );
+
+				it( 'should consume alignment style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table style="float:left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume align attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table align="left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume alignmnent float style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'right'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// Make sure that float style is not consumed from other figure elements.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.true;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<figure class="image" style="float:right"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume alignment margins style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// Make sure that float style is not consumed from other figure elements.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).to.be.true;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData(
+						'<figure class="image" style="margin-left:auto;margin-right:auto;">' +
+							'<img src="/assets/sample.png" alt="alt text">' +
+						'</figure>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
 				} );
 			} );
 
@@ -1270,7 +1670,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should downcast "center" alignment for content table using float:none', () => {
-						setModelData( model,
+						_setModelData( model,
 							'<table headingRows="0" headingColumns="0">' +
 								'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
 							'</table>'
@@ -1291,7 +1691,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should downcast "center" alignment for layout table using auto margins', () => {
-						setModelData( model,
+						_setModelData( model,
 							'<table tableType="layout" headingRows="0" headingColumns="0">' +
 								'<tableRow><tableCell><paragraph>layout table</paragraph></tableCell></tableRow>' +
 							'</table>'
@@ -1785,7 +2185,7 @@ describe( 'table properties', () => {
 		} );
 
 		function createEmptyTable() {
-			setModelData(
+			_setModelData(
 				model,
 				'<table headingRows="0" headingColumns="0">' +
 					'<tableRow>' +

@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import KeyObserver from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { KeyObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver.js';
 
 import { toWidget } from '../src/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget - Events', () => {
 	const EVENT_NAME = 'keyup';
@@ -51,7 +49,7 @@ describe( 'Widget - Events', () => {
 	async function createEditor( element ) {
 		const editor = await ClassicEditor.create( element, { plugins: [ simpleWidgetPlugin ] } );
 
-		setModelData( editor.model, '[<simpleWidgetElement></simpleWidgetElement>]' );
+		_setModelData( editor.model, '[<simpleWidgetElement></simpleWidgetElement>]' );
 
 		const container = Array
 			.from( editor.editing.view.document.getRoot().getChildren() )

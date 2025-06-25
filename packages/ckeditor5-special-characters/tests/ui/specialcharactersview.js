@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import SpecialCharactersView from '../../src/ui/specialcharactersview.js';
-import CharacterGridView from '../../src/ui/charactergridview.js';
-import CharacterInfoView from '../../src/ui/characterinfoview.js';
+import { SpecialCharactersView } from '../../src/ui/specialcharactersview.js';
+import { CharacterGridView } from '../../src/ui/charactergridview.js';
+import { CharacterInfoView } from '../../src/ui/characterinfoview.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import SpecialCharactersCategoriesView from '../../src/ui/specialcharacterscategoriesview.js';
+import { SpecialCharactersCategoriesView } from '../../src/ui/specialcharacterscategoriesview.js';
 
 describe( 'SpecialCharactersView', () => {
 	let view, categoriesView, gridView, infoView, locale;

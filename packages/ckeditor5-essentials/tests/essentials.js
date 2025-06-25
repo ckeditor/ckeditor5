@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+import { Essentials } from '../src/essentials.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Essentials from '../src/essentials.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { SelectAll } from '@ckeditor/ckeditor5-select-all/src/selectall.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { AccessibilityHelp } from '@ckeditor/ckeditor5-ui';
 
 describe( 'Essentials preset', () => {

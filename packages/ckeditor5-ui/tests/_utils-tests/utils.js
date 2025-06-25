@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import testUtils from '../../tests/_utils/utils.js';
+import { testUtils } from '../../tests/_utils/utils.js';
 
 describe( 'utils', () => {
 	describe( 'createTestUIView', () => {

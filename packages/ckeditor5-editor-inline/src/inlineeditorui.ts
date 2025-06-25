@@ -18,16 +18,16 @@ import {
 	type EditorUIUpdateEvent
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 
-import type InlineEditorUIView from './inlineeditoruiview.js';
+import { type InlineEditorUIView } from './inlineeditoruiview.js';
 
 /**
  * The inline editor UI class.
  *
  * @extends module:ui/editorui/editorui~EditorUI
  */
-export default class InlineEditorUI extends EditorUI {
+export class InlineEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */
@@ -170,7 +170,7 @@ export default class InlineEditorUI extends EditorUI {
 			}
 		}
 
-		enablePlaceholder( {
+		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
 			isDirectHost: false,

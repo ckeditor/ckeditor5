@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, document, window */
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '../../src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '../../src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -34,10 +32,10 @@ ClassicEditor
 		editor.model.document.on( 'change', () => {
 			console.clear();
 
-			const modelData = getModelData( editor.model, { withoutSelection: true } );
+			const modelData = _getModelData( editor.model, { withoutSelection: true } );
 			console.log( 'model:', modelData.replace( /\u00A0/g, '&nbsp;' ) );
 
-			const viewData = getViewData( editor.editing.view, { withoutSelection: true } );
+			const viewData = _getViewData( editor.editing.view, { withoutSelection: true } );
 			console.log( 'view:', viewData.replace( /\u00A0/g, '&nbsp;' ) );
 
 			console.log( 'dom:', editable.innerHTML );
