@@ -40,7 +40,7 @@ import { type ModelTextProxy } from '../model/textproxy.js';
 import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
-import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
+import type { ViewDocumentObserverSelectionChangeEvent } from '../view/observer/selectionobserver.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -116,7 +116,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
+		this.listenTo<ViewDocumentObserverSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
 		);
 

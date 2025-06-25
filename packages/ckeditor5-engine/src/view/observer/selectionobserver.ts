@@ -67,7 +67,7 @@ export class SelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentObserverSelectionEventData ) => void>;
 
 	/**
 	 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
@@ -103,7 +103,7 @@ export class SelectionObserver extends Observer {
 		this.domConverter = view.domConverter;
 
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentObserverSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
 
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
@@ -339,7 +339,7 @@ export class SelectionObserver extends Observer {
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
 		} else {
-			const data: ViewDocumentSelectionEventData = {
+			const data: ViewDocumentObserverSelectionEventData = {
 				oldSelection: this.selection,
 				newSelection: newViewSelection,
 				domSelection
@@ -353,7 +353,7 @@ export class SelectionObserver extends Observer {
 			// @if CK_DEBUG_TYPING // }
 
 			// Prepare data for new selection and fire appropriate events.
-			this.document.fire<ViewDocumentSelectionChangeEvent>( 'selectionChange', data );
+			this.document.fire<ViewDocumentObserverSelectionChangeEvent>( 'selectionChange', data );
 
 			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
@@ -372,9 +372,9 @@ export class SelectionObserver extends Observer {
 }
 
 /**
- * The value of {@link ~ViewDocumentSelectionChangeEvent} and {@link ~ViewDocumentSelectionChangeDoneEvent} events.
+ * The value of {@link ~ViewDocumentObserverSelectionChangeEvent} and {@link ~ViewDocumentObserverSelectionChangeDoneEvent} events.
  */
-export type ViewDocumentSelectionEventData = {
+export type ViewDocumentObserverSelectionEventData = {
 
 	/**
 	 * Old View selection which is {@link module:engine/view/document~ViewDocument#selection}.
@@ -404,9 +404,9 @@ export type ViewDocumentSelectionEventData = {
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @eventName module:engine/view/document~ViewDocument#selectionChange
  */
-export type ViewDocumentSelectionChangeEvent = {
+export type ViewDocumentObserverSelectionChangeEvent = {
 	name: 'selectionChange';
-	args: [ ViewDocumentSelectionEventData ];
+	args: [ ViewDocumentObserverSelectionEventData ];
 };
 
 /**
@@ -420,7 +420,7 @@ export type ViewDocumentSelectionChangeEvent = {
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @eventName module:engine/view/document~ViewDocument#selectionChangeDone
  */
-export type ViewDocumentSelectionChangeDoneEvent = {
+export type ViewDocumentObserverSelectionChangeDoneEvent = {
 	name: 'selectionChangeDone';
-	args: [ ViewDocumentSelectionEventData ];
+	args: [ ViewDocumentObserverSelectionEventData ];
 };

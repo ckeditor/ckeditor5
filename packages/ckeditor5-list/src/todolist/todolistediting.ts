@@ -17,7 +17,7 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment,
-	type SelectionChangeRangeEvent,
+	type ModelSelectionChangeRangeEvent,
 	type ModelDocumentFragment,
 	type ModelElement
 } from 'ckeditor5/src/engine.js';
@@ -387,7 +387,7 @@ export class TodoListEditing extends Plugin {
 			return;
 		}
 
-		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+		model.document.selection.on<ModelSelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 			const lastElementIsTodoList = isTodoListItemElement( lastFocusedCodeBlock );
 			const currentElementIsTodoList = isTodoListItemElement( focusParent );

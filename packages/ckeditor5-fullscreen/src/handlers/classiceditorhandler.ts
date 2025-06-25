@@ -10,12 +10,12 @@
 import { MenuBarView } from 'ckeditor5/src/ui.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { AbstractEditorHandler } from './abstracteditorhandler.js';
+import { FullscreenAbstractEditorHandler } from './abstracteditorhandler.js';
 
 /**
  * The classic editor fullscreen mode handler.
  */
-export class ClassicEditorHandler extends AbstractEditorHandler {
+export class FullscreenClassicEditorHandler extends FullscreenAbstractEditorHandler {
 	/**
 	 * An editor instance.
 	 */
