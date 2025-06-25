@@ -45,7 +45,7 @@ Below, you will find several examples of practical server-side API applications.
 
 This guide explains how to write scripts that can be executed through the Server-side Editor API endpoint. The following sections provide examples of such scripts, each demonstrating a specific use case that can be automated on the server side.
 
-For information about setting up and using the endpoint itself, see the [link Cloud Services Server-side Editor API](todo) documentation.
+For information about setting up and using the endpoint itself, see the [link Cloud Services Server-side Editor API](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html) documentation.
 
 ### Working with content
 
