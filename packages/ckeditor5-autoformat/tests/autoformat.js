@@ -19,6 +19,7 @@ import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line/src/h
 import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
@@ -90,6 +91,7 @@ describe( 'Autoformat', () => {
 			editor = await VirtualTestEditor.create( {
 				plugins: [
 					Enter,
+					Typing,
 					Paragraph,
 					Autoformat,
 					ListEditing,
@@ -176,6 +178,21 @@ describe( 'Autoformat', () => {
 
 				expect( _getModelData( model ) ).to.equal(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]</paragraph>'
+				);
+			} );
+
+			it( 'should restore selection attributes', () => {
+				_setModelData( model, '<paragraph></paragraph>' );
+
+				editor.execute( 'bold' );
+				editor.execute( 'italic' );
+				editor.execute( 'insertText', { text: '*' } );
+				editor.execute( 'insertText', { text: ' ' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted" selection:bold="true" selection:italic="true">' +
+						'<$text bold="true" italic="true">[]</$text>' +
+					'</paragraph>'
 				);
 			} );
 
@@ -359,6 +376,21 @@ describe( 'Autoformat', () => {
 					'<paragraph>1. []</paragraph>'
 				);
 			} );
+
+			it( 'should restore selection attributes', () => {
+				_setModelData( model, '<paragraph></paragraph>' );
+
+				editor.execute( 'bold' );
+				editor.execute( 'italic' );
+				editor.execute( 'insertText', { text: '1.' } );
+				editor.execute( 'insertText', { text: ' ' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="a00" listType="numbered" selection:bold="true" selection:italic="true">' +
+					'<$text bold="true" italic="true">[]</$text>' +
+					'</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'To-do list', () => {
@@ -484,6 +516,21 @@ describe( 'Autoformat', () => {
 					expect( _getModelData( model ) ).to.equal(
 						'<paragraph></paragraph>' +
 						'<paragraph>[] []</paragraph>'
+					);
+				} );
+
+				it( 'should restore selection attributes', () => {
+					_setModelData( model, '<paragraph></paragraph>' );
+
+					editor.execute( 'bold' );
+					editor.execute( 'italic' );
+					editor.execute( 'insertText', { text: '[]' } );
+					editor.execute( 'insertText', { text: ' ' } );
+
+					expect( _getModelData( model ) ).to.equal(
+						'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true" selection:italic="true">' +
+							'<$text bold="true" italic="true">[]</$text>' +
+						'</paragraph>'
 					);
 				} );
 			} );
@@ -618,6 +665,22 @@ describe( 'Autoformat', () => {
 						'<paragraph>[x] []</paragraph>'
 					);
 				} );
+
+				it( 'should restore selection attributes', () => {
+					_setModelData( model, '<paragraph></paragraph>' );
+
+					editor.execute( 'bold' );
+					editor.execute( 'italic' );
+					editor.execute( 'insertText', { text: '[x]' } );
+					editor.execute( 'insertText', { text: ' ' } );
+
+					expect( _getModelData( model ) ).to.equal(
+						'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true" selection:italic="true"' +
+							' todoListChecked="true">' +
+							'<$text bold="true" italic="true">[]</$text>' +
+						'</paragraph>'
+					);
+				} );
 			} );
 		} );
 
@@ -712,6 +775,21 @@ describe( 'Autoformat', () => {
 
 				expect( _getModelData( model ) ).to.equal( '<heading3>[]foo</heading3>' );
 			} );
+
+			it( 'should restore selection attributes', () => {
+				_setModelData( model, '<paragraph></paragraph>' );
+
+				editor.execute( 'bold' );
+				editor.execute( 'italic' );
+				editor.execute( 'insertText', { text: '#' } );
+				editor.execute( 'insertText', { text: ' ' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<heading1 selection:bold="true" selection:italic="true">' +
+						'<$text bold="true" italic="true">[]</$text>' +
+					'</heading1>'
+				);
+			} );
 		} );
 
 		describe( 'Block quote', () => {
@@ -779,6 +857,23 @@ describe( 'Autoformat', () => {
 				insertSpace();
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>Foo<softBreak></softBreak>> []</paragraph>' );
+			} );
+
+			it( 'should restore selection attributes', () => {
+				_setModelData( model, '<paragraph></paragraph>' );
+
+				editor.execute( 'bold' );
+				editor.execute( 'italic' );
+				editor.execute( 'insertText', { text: '>' } );
+				editor.execute( 'insertText', { text: ' ' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph selection:bold="true" selection:italic="true">' +
+							'<$text bold="true" italic="true">[]</$text>' +
+						'</paragraph>' +
+					'</blockQuote>'
+				);
 			} );
 		} );
 
@@ -858,6 +953,19 @@ describe( 'Autoformat', () => {
 				} );
 
 				expect( _getModelData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
+			} );
+
+			it( 'should not restore selection attributes', () => {
+				_setModelData( model, '<paragraph></paragraph>' );
+
+				editor.execute( 'bold' );
+				editor.execute( 'italic' );
+				editor.execute( 'insertText', { text: '``' } );
+				editor.execute( 'insertText', { text: '`' } );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<codeBlock language="plaintext">[]</codeBlock>'
+				);
 			} );
 		} );
 

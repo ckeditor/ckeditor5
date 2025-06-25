@@ -46,6 +46,8 @@ import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedat
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';
 import type { EditorConfig } from './editorconfig.js';
 
+import '../../theme/core.css';
+
 declare global {
 	// eslint-disable-next-line no-var
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;

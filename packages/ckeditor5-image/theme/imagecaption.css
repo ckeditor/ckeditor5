@@ -6,8 +6,8 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_mediacolors.css";
 
 :root {
-	--ck-color-image-caption-background: hsl(0, 0%, 97%);
-	--ck-color-image-caption-text: hsl(0, 0%, 20%);
+	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
 	--ck-color-image-caption-highlighted-background: hsl(52deg 100% 50%);
 }
 
@@ -17,8 +17,8 @@
 	caption-side: bottom;
 	word-break: normal;
 	overflow-wrap: anywhere;
-	color: var(--ck-color-image-caption-text);
-	background-color: var(--ck-color-image-caption-background);
+	color: var(--ck-content-color-image-caption-text);
+	background-color: var(--ck-content-color-image-caption-background);
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;
@@ -47,6 +47,6 @@
 	}
 
 	100% {
-		background-color: var(--ck-color-image-caption-background);
+		background-color: var(--ck-content-color-image-caption-background);
 	}
 }
