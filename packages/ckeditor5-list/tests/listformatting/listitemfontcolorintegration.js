@@ -3,26 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { FontColorEditing } from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import {
-	setData as setModelData,
-	getData as getModelData,
-	stringify as stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import stubUid from '../list/_utils/uid.js';
-import ListEditing from '../../src/list/listediting.js';
-import ListItemFontColorIntegration from '../../src/listformatting/listitemfontcolorintegration.js';
+import { stubUid } from '../list/_utils/uid.js';
+import { ListEditing } from '../../src/list/listediting.js';
+import { ListItemFontColorIntegration } from '../../src/listformatting/listitemfontcolorintegration.js';
 
 describe( 'ListItemFontColorIntegration', () => {
 	let editor, model, view;
@@ -119,13 +115,13 @@ describe( 'ListItemFontColorIntegration', () => {
 
 	describe( 'downcast', () => {
 		it( 'should downcast listItemFontColor attribute as style in <li>', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
@@ -135,7 +131,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
@@ -145,7 +141,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should downcast listItemFontColor attribute as style in nested list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -154,7 +150,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<span class="ck-list-bogus-paragraph">' +
@@ -171,7 +167,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<span style="color:red;">foo</span>' +
@@ -186,7 +182,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in multi-block', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -195,7 +191,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<p>' +
@@ -208,7 +204,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<p>' +
@@ -223,7 +219,7 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in blockquote list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<blockQuote listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontColor="red">foo</$text>' +
@@ -231,7 +227,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</blockQuote>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<blockquote>' +
@@ -243,7 +239,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<blockquote>' +
@@ -257,13 +253,13 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should downcast listItemFontColor attribute as style in <li> in heading list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<heading1 listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</heading1>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<h2>' +
@@ -273,7 +269,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<h2>' +
@@ -286,7 +282,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 		// Post-fixer currently removes `listItemFontColor` attribute from table list items.
 		it.skip( 'should downcast listItemFontColor attribute as style in <li> in table list item', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -298,7 +294,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</table>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
@@ -320,7 +316,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li class="ck-list-marker-color" style="--ck-content-list-marker-color:red;">' +
 						'<figure class="table">' +
@@ -350,7 +346,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -366,7 +362,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -385,7 +381,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'<p class="ck-list-marker-color" style="--ck-content-list-marker-color:orange;">baz</p>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -407,7 +403,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a01" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -431,7 +427,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>' +
@@ -452,7 +448,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<blockQuote listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<paragraph>' +
 						'<$text fontColor="red">foo</$text>' +
@@ -472,7 +468,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<heading1 listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</heading1>'
@@ -499,7 +495,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -528,7 +524,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
@@ -554,7 +550,7 @@ describe( 'ListItemFontColorIntegration', () => {
 
 			const content = spy.firstCall.args[ 0 ];
 
-			expect( stringifyModel( content ) ).to.equal(
+			expect( _stringifyModel( content ) ).to.equal(
 				'<paragraph listIndent="0" listItemFontColor="red" listItemId="a00" listType="numbered">' +
 					'foo' +
 				'</paragraph>'
@@ -599,13 +595,13 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should not downcast listItemFontColor attribute as style in <li>', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -615,7 +611,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -647,13 +643,13 @@ describe( 'ListItemFontColorIntegration', () => {
 		} );
 
 		it( 'should not downcast listItemFontColor attribute as style in <li>', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontColor="red" listType="bulleted">' +
 					'<$text fontColor="red">foo</$text>' +
 				'</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
@@ -663,7 +659,7 @@ describe( 'ListItemFontColorIntegration', () => {
 				'</ul>'
 			);
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li>' +
 						'<p>' +
