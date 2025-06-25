@@ -24,8 +24,8 @@ const DIALOG_OFFSET = 28;
  * or if you wish to heavily customize the default behavior.
  *
  * The only method that is necessary to provide when extending this class is {@link #defaultOnEnter}. However, make sure to
- * familiarize yourself with the below full list of actions taken by `AbstractEditorHandler` to understand what is covered by default,
- * and what should be provided by you.
+ * familiarize yourself with the below full list of actions taken by `FullscreenAbstractEditorHandler` to understand
+ * what is covered by default, and what should be provided by you.
  *
  * When entering the fullscreen mode, the {@link #enable} method is called. It creates the properly styled container
  * and handles the editor features that need it, in the following order:
