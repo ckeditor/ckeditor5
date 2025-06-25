@@ -6,7 +6,8 @@
 :root {
 	--ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
 	--ck-content-font-size: medium;
-	--ck-content-font-color: hsl(0, 0%, 0%);
+	/* stylelint-disable-next-line declaration-property-value-disallowed-list */
+	--ck-content-font-color: #000;
 	--ck-content-line-height: 1.5;
 }
 
