@@ -20,7 +20,7 @@ import {
 	type UpcastElementEvent,
 	type UpcastTextEvent,
 	type ModelElement,
-	type SelectionChangeRangeEvent
+	type ModelSelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
@@ -318,7 +318,7 @@ export class CodeBlockEditing extends Plugin {
 
 		let lastFocusedCodeBlock: ModelElement | null = null;
 
-		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+		model.document.selection.on<ModelSelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 
 			if ( !ui || lastFocusedCodeBlock === focusParent || !focusParent.is( 'element' ) ) {

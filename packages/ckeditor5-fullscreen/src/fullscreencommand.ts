@@ -11,9 +11,9 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
-import { AbstractEditorHandler } from './handlers/abstracteditorhandler.js';
-import { ClassicEditorHandler } from './handlers/classiceditorhandler.js';
-import { DecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
+import { FullscreenAbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+import { FullscreenClassicEditorHandler } from './handlers/classiceditorhandler.js';
+import { FullscreenDecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
 
 /**
  * A command toggling the fullscreen mode.
@@ -43,7 +43,7 @@ export class FullscreenCommand extends Command {
 	 * 	} );
 	 * ```
 	 */
-	public fullscreenHandler: AbstractEditorHandler;
+	public fullscreenHandler: FullscreenAbstractEditorHandler;
 
 	/**
 	 * @inheritDoc
@@ -59,11 +59,11 @@ export class FullscreenCommand extends Command {
 		// Currently only `ClassicEditor` and `DecoupledEditor` are supported. For other editor types, you should create a custom handler
 		// that extends `AbstractEditorHandler` and replace `fullscreenHandler` with it.
 		if ( isClassicEditor( editor ) ) {
-			this.fullscreenHandler = new ClassicEditorHandler( editor );
+			this.fullscreenHandler = new FullscreenClassicEditorHandler( editor );
 		} else if ( isDecoupledEditor( editor ) ) {
-			this.fullscreenHandler = new DecoupledEditorHandler( editor );
+			this.fullscreenHandler = new FullscreenDecoupledEditorHandler( editor );
 		} else {
-			this.fullscreenHandler = new AbstractEditorHandler( editor );
+			this.fullscreenHandler = new FullscreenAbstractEditorHandler( editor );
 		}
 	}
 

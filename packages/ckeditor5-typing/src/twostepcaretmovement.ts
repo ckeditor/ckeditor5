@@ -21,7 +21,7 @@ import {
 	type ModelPosition,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
-	type ViewDocumentSelectionChangeEvent,
+	type ViewDocumentObserverSelectionChangeEvent,
 	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
 	type ModelDeleteContentEvent
@@ -520,7 +520,7 @@ export class TwoStepCaretMovement extends Plugin {
 		} );
 
 		// When the selection has changed...
-		this.listenTo<ViewDocumentSelectionChangeEvent>( document, 'selectionChange', () => {
+		this.listenTo<ViewDocumentObserverSelectionChangeEvent>( document, 'selectionChange', () => {
 			const attributes = this.attributes;
 
 			if ( !clicked && !touched ) {

@@ -42,14 +42,15 @@ import {
 	env,
 	ObservableMixin,
 	scrollViewportToShowTarget,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type IfTrue
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
 
 import { cloneDeep } from 'es-toolkit/compat';
 
-type IfTrue<T> = T extends true ? true : never;
+// type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;
 
 /**
