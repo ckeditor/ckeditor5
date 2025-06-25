@@ -211,6 +211,23 @@ describe( 'Token', () => {
 
 			clock.restore();
 		} );
+
+		it( 'should warn when token expiration time exceeds 32-bit integer range', () => {
+			const consoleStub = sinon.stub( console, 'warn' );
+			const tokenValue = `header.${ btoa( JSON.stringify( { exp: 2147483648 } ) ) }.signature`;
+			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
+
+			token.init();
+
+			sinon.assert.calledWithMatch( consoleStub,
+				'Token expiration time exceeds 32-bit integer range. This might cause unpredictable token refresh timing. ' +
+				'Token expiration time should always be provided in seconds.',
+				{ tokenExpireTime: 2147483648 }
+			);
+
+			consoleStub.restore();
+			token.destroy();
+		} );
 	} );
 
 	describe( 'destroy', () => {
