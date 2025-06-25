@@ -20,7 +20,6 @@ import { PluginCollection } from './plugincollection.js';
 import { type Editor } from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
-import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -178,19 +177,19 @@ export class Context {
 			 * Since _translate is called often and has no access to the editor config, this is the better place
 			 * to check if translations will be taken from the global variable and update config.language.ui accordingly.
 			 */
-			const devTranslations = cloneDeep( global.window.CKEDITOR_TRANSLATIONS );
+			const globalTranslations = global.window.CKEDITOR_TRANSLATIONS;
 			const uiLanguageFromConfig = typeof languageConfig === 'string' ? languageConfig : languageConfig.ui;
-			const hasMatchingTranslations = devTranslations[ uiLanguageFromConfig! ];
-			const defaultDevTranslationsLanguage = Object.keys( devTranslations )[ 0 ];
+			const hasMatchingTranslations = globalTranslations[ uiLanguageFromConfig! ];
+			const defaultGlobalTranslationsLanguage = Object.keys( globalTranslations )[ 0 ];
 
 			this.locale = new Locale( {
-				uiLanguage: hasMatchingTranslations ? uiLanguageFromConfig : defaultDevTranslationsLanguage,
+				uiLanguage: hasMatchingTranslations ? uiLanguageFromConfig : defaultGlobalTranslationsLanguage,
 				contentLanguage: this.config.get( 'language.content' ),
-				translations: devTranslations
+				translations: globalTranslations
 			} );
 
-			if ( !hasMatchingTranslations && this.config.get( 'language.ui' ) !== defaultDevTranslationsLanguage ) {
-				this.config.define( 'language.ui', defaultDevTranslationsLanguage );
+			if ( !hasMatchingTranslations && this.config.get( 'language.ui' ) !== defaultGlobalTranslationsLanguage ) {
+				this.config.define( 'language.ui', defaultGlobalTranslationsLanguage );
 			}
 		} else {
 			this.locale = new Locale( {
