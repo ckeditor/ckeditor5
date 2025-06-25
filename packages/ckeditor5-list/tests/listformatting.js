@@ -762,19 +762,19 @@ describe( 'ListFormatting', () => {
 		} );
 	} );
 
-	describe( 'enableListItemFormatting', () => {
+	describe( 'enableListItemMarkerFormatting', () => {
 		it( 'should be enabled by default', () => {
-			expect( editor.config.get( 'list.enableListItemFormatting' ) ).to.be.true;
+			expect( editor.config.get( 'list.enableListItemMarkerFormatting' ) ).to.be.true;
 		} );
 
-		describe( 'when enableListItemFormatting is false (postfixer should not run)', () => {
+		describe( 'when enableListItemMarkerFormatting is false (postfixer should not run)', () => {
 			let editor, model, docSelection;
 
 			beforeEach( async () => {
 				editor = await VirtualTestEditor.create( {
 					plugins: [ ListFormatting, Paragraph, MyPlugin ],
 					list: {
-						enableListItemFormatting: false
+						enableListItemMarkerFormatting: false
 					}
 				} );
 

@@ -508,7 +508,7 @@ describe( 'ListItemItalicIntegration', () => {
 		} );
 	} );
 
-	describe( 'when enableListItemFormatting is false', () => {
+	describe( 'when enableListItemMarkerFormatting is false', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
@@ -519,7 +519,7 @@ describe( 'ListItemItalicIntegration', () => {
 					Paragraph
 				],
 				list: {
-					enableListItemFormatting: false
+					enableListItemMarkerFormatting: false
 				}
 			} );
 

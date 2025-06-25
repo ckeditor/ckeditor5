@@ -17,11 +17,6 @@ import type ListFormatting from '../listformatting.js';
  */
 export default class ListItemBoldIntegration extends Plugin {
 	/**
-	 * Indicates whether the integration is enabled.
-	 */
-	private _integrationEnabled: boolean = false;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -50,15 +45,11 @@ export default class ListItemBoldIntegration extends Plugin {
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'BoldEditing' ) ) {
+		if ( !editor.plugins.has( 'BoldEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
-		this._integrationEnabled = ListFormatting.registerFormatAttribute( 'bold', 'listItemBold' );
-
-		if ( !this._integrationEnabled ) {
-			return;
-		}
+		ListFormatting.registerFormatAttribute( 'bold', 'listItemBold' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered before the list editing
 		// registers its converters.
@@ -82,7 +73,7 @@ export default class ListItemBoldIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'BoldEditing' ) || !this._integrationEnabled ) {
+		if ( !editor.plugins.has( 'BoldEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 

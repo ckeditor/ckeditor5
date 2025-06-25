@@ -524,7 +524,7 @@ describe( 'ListItemBoldIntegration', () => {
 		} );
 	} );
 
-	describe( 'when enableListItemFormatting is false', () => {
+	describe( 'when enableListItemMarkerFormatting is false', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
@@ -535,7 +535,7 @@ describe( 'ListItemBoldIntegration', () => {
 					Paragraph
 				],
 				list: {
-					enableListItemFormatting: false
+					enableListItemMarkerFormatting: false
 				}
 			} );
 

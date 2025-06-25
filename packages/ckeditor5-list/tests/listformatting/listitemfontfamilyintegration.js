@@ -509,7 +509,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 		} );
 	} );
 
-	describe( 'when enableListItemFormatting is false', () => {
+	describe( 'when enableListItemMarkerFormatting is false', () => {
 		let editor, model, view;
 
 		beforeEach( async () => {
@@ -523,7 +523,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 					supportAllValues: true
 				},
 				list: {
-					enableListItemFormatting: false
+					enableListItemMarkerFormatting: false
 				}
 			} );
 

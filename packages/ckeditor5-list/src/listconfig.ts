@@ -48,7 +48,7 @@ export interface ListConfig {
 	multiBlock?: boolean;
 
 	/**
-	 * Enables list item formatting. Current list of integrated formatting plugins includes:
+	 * Enables list item marker formatting. Current list of integrated formatting plugins includes:
 	 * * {@link module:list/listformatting/listitemfontfamilyintegration~ListItemFontFamilyIntegration Font family}
 	 * * {@link module:list/listformatting/listitemfontsizeintegration~ListItemFontSizeIntegration Font size}
 	 * * {@link module:list/listformatting/listitemfontcolorintegration~ListItemFontColorIntegration Font color}
@@ -59,7 +59,7 @@ export interface ListConfig {
 	 *
 	 * @default true
 	 */
-	enableListItemFormatting?: boolean;
+	enableListItemMarkerFormatting?: boolean;
 }
 
 /**

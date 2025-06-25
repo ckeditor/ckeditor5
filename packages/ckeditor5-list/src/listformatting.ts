@@ -81,14 +81,14 @@ export default class ListFormatting extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'list.enableListItemFormatting', true );
+		editor.config.define( 'list.enableListItemMarkerFormatting', true );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		if ( !this.editor.config.get( 'list.enableListItemFormatting' ) ) {
+		if ( !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
@@ -173,14 +173,8 @@ export default class ListFormatting extends Plugin {
 	 * to the list item element, based on whether there is a consistent default formatting attribute
 	 * applied within its content.
 	 */
-	public registerFormatAttribute( formatAttribute: string, listItemFormatAttribute: string ): boolean {
-		if ( !this.editor.config.get( 'list.enableListItemFormatting' ) ) {
-			return false;
-		}
-
+	public registerFormatAttribute( formatAttribute: string, listItemFormatAttribute: string ): void {
 		this._loadedFormatting[ formatAttribute ] = listItemFormatAttribute;
-
-		return true;
 	}
 
 	/**

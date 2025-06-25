@@ -19,11 +19,6 @@ import type ListFormatting from '../listformatting.js';
  */
 export default class ListItemFontSizeIntegration extends Plugin {
 	/**
-	 * Indicates whether the integration is enabled.
-	 */
-	private _integrationEnabled: boolean = false;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -52,17 +47,13 @@ export default class ListItemFontSizeIntegration extends Plugin {
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'FontSizeEditing' ) ) {
+		if ( !editor.plugins.has( 'FontSizeEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
 		const normalizedFontSizeOptions = _normalizeFontSizeOptions( editor.config.get( 'fontSize.options' )! );
 
-		this._integrationEnabled = ListFormatting.registerFormatAttribute( 'fontSize', 'listItemFontSize' );
-
-		if ( !this._integrationEnabled ) {
-			return;
-		}
+		ListFormatting.registerFormatAttribute( 'fontSize', 'listItemFontSize' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered before the list editing
 		// registers its converters.
@@ -97,7 +88,7 @@ export default class ListItemFontSizeIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		if ( !editor.plugins.has( 'FontSizeEditing' ) || !this._integrationEnabled ) {
+		if ( !editor.plugins.has( 'FontSizeEditing' ) || !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
