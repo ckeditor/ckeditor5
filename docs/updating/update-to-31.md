@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 31.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 31.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v31.x
 order: 93
 modified_at: 2021-11-03

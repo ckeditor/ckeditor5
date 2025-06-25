@@ -1,6 +1,7 @@
 ---
 menu-title: Testing helpers
 meta-title: Testing helpers | CKEditor 5 Framework Documentation
+meta-description: Discover CKEditor 5 testing helpers to simplify writing, managing, and running unit tests for editor features and plugins.
 category: development-tools
 order: 2
 modified_at: 2022-08-16

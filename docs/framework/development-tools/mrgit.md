@@ -2,6 +2,7 @@
 menu-title: Mr. Git
 category: development-tools
 meta-title: Mr. Git | CKEditor 5 Framework Documentation
+meta-description: Learn how to use Mr. Git, a tool for managing multiple CKEditor 5 repositories, streamlining cloning, updating, and linking packages.
 order: 4
 modified_at: 2022-08-16
 ---

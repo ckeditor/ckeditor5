@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 meta-title: Event system | CKEditor 5 Framework Documentation
+meta-description: Explore the CKEditor 5 event system, including event types, bubbling, delegation, and how to create and handle custom events.
 ---
 # Event system
 

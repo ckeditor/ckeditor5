@@ -2,6 +2,7 @@
 category: widget-tutorials
 order: 15
 meta-title: Implementing an inline widget tutorial | CKEditor 5 Documentation
+meta-description: Discover how to create a custom inline widget in CKEditor 5 with steps on schema, view integration, conversion, and user interaction.
 ---
 
 # Implementing an inline widget

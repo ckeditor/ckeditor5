@@ -20,7 +20,7 @@ import type {
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation,
-	SelectionChangeRangeEvent,
+	ModelSelectionChangeRangeEvent,
 	ModelDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
@@ -235,7 +235,7 @@ export class LegacyTodoListEditing extends Plugin {
 			return;
 		}
 
-		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+		model.document.selection.on<ModelSelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 			const lastElementIsTodoList = isLegacyTodoListItemElement( lastFocusedCodeBlock );
 			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );

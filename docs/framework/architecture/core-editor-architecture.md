@@ -1,6 +1,7 @@
 ---
 category: framework-architecture
 meta-title: Core editor architecture | CKEditor 5 Framework Documentation
+meta-description: Understand the core editor architecture of CKEditor 5, including its modular design, editing layers, and plugin-based extensibility.
 order: 20
 modified_at: 2021-10-25
 ---

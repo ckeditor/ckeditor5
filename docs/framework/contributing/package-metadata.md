@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Package metadata | CKEditor 5 Framework Documentation
+meta-description: Understand CKEditor 5 package metadata, including configuration, dependencies, and guidelines for maintaining consistent package information.
 order: 50
 modified_at: 2021-06-07
 ---

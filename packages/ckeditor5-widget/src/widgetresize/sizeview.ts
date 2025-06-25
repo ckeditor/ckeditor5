@@ -9,7 +9,7 @@
 
 import { View } from '@ckeditor/ckeditor5-ui';
 import type { WidgetResizerOptions } from '../widgetresize.js';
-import { type ResizeState } from './resizerstate.js';
+import { type WidgetResizeState } from './resizerstate.js';
 
 /**
  * A view displaying the proposed new element size during the resizing.
@@ -75,7 +75,7 @@ export class SizeView extends View {
 	 * @param options An object defining the resizer options, used for setting the proper size label.
 	 * @param resizeState The `ResizeState` class instance, used for keeping the `SizeView` state up to date.
 	 */
-	public _bindToState( options: WidgetResizerOptions, resizeState: ResizeState ): void {
+	public _bindToState( options: WidgetResizerOptions, resizeState: WidgetResizeState ): void {
 		this.bind( '_isVisible' ).to( resizeState, 'proposedWidth', resizeState, 'proposedHeight', ( width, height ) =>
 			width !== null && height !== null );
 

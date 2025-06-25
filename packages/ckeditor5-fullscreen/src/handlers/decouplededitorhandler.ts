@@ -9,12 +9,12 @@
 
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
-import { AbstractEditorHandler } from './abstracteditorhandler.js';
+import { FullscreenAbstractEditorHandler } from './abstracteditorhandler.js';
 
 /**
  * The decoupled editor fullscreen mode handler.
  */
-export class DecoupledEditorHandler extends AbstractEditorHandler {
+export class FullscreenDecoupledEditorHandler extends FullscreenAbstractEditorHandler {
 	/**
 	 * An editor instance.
 	 */

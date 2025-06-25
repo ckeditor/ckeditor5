@@ -28,6 +28,7 @@ export {
 
 export { WidgetHighlightStack, type WidgetHighlightStackChangeEvent, type WidgetHighlightStackChangeEventData } from './highlightstack.js';
 export { verticalWidgetNavigationHandler } from './verticalnavigation.js';
+export { WidgetResizeState } from './widgetresize/resizerstate.js';
 export {
 	WidgetResizer,
 	type WidgetResizerBeginEvent,

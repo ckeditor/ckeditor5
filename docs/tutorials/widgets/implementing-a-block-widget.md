@@ -2,6 +2,7 @@
 category: widget-tutorials
 order: 10
 meta-title: Implementing a block widget tutorial | CKEditor 5 Documentation
+meta-description: Learn how to implement a custom block widget in CKEditor 5, covering schema definition, editing view, conversion, and UI integration.
 ---
 
 # Implementing a block widget

@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
+meta-description: Learn about CKEditor 5's code style guidelines to ensure consistency and quality when contributing to the project.
 order: 40
 modified_at: 2022-11-03
 ---
