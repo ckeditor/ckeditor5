@@ -164,12 +164,19 @@ export class Context {
 
 		if ( !translations && global.window.CKEDITOR_TRANSLATIONS ) {
 			/**
-			 * Function _translate from translation-service.ts gets translations from
+			 * When translations are not provided directly but available via global.window.CKEDITOR_TRANSLATIONS
+			 * (which can be set by CKEditorTranslationsPlugin during manual tests with --language flag,
+			 * or loaded from CDN translation files), we need to ensure the config.language.ui value is properly set.
+			 *
+			 * When translations are loaded via the global variable, the config.language.ui might be missing
+			 * or incorrect, which can cause issues with utilities that depend on the language configuration
+			 * (e.g., date formatting utilities). To fix this, we check if the configured language has matching
+			 * translations, and if not, fall back to the first available language from the global translations object.
+			 *
+			 * Note: The _translate function from translation-service.ts gets translations from
 			 * global.window.CKEDITOR_TRANSLATIONS when translations injected into Locale are empty.
-			 * Value of global.window.CKEDITOR_TRANSLATIONS is provided by CKEditorTranslationsPlugin from
-			 * ckeditor5-dev-translations package (for example in manual tests) when --language flag is used.
-			 * Function _translate is called often and has no access to the editing editor config, so here is a better place to
-			 * check if translations will be taken from dev-translations, and if yes – update config.language.ui value.
+			 * Since _translate is called often and has no access to the editor config, this is the better place
+			 * to check if translations will be taken from the global variable and update config.language.ui accordingly.
 			 */
 			const devTranslations = cloneDeep( global.window.CKEDITOR_TRANSLATIONS );
 			const uiLanguageFromConfig = typeof languageConfig === 'string' ? languageConfig : languageConfig.ui;
