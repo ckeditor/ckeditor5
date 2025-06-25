@@ -9,11 +9,11 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import SpecialCharactersCurrency from './specialcharacterscurrency.js';
-import SpecialCharactersMathematical from './specialcharactersmathematical.js';
-import SpecialCharactersArrows from './specialcharactersarrows.js';
-import SpecialCharactersLatin from './specialcharacterslatin.js';
-import SpecialCharactersText from './specialcharacterstext.js';
+import { SpecialCharactersCurrency } from './specialcharacterscurrency.js';
+import { SpecialCharactersMathematical } from './specialcharactersmathematical.js';
+import { SpecialCharactersArrows } from './specialcharactersarrows.js';
+import { SpecialCharactersLatin } from './specialcharacterslatin.js';
+import { SpecialCharactersText } from './specialcharacterstext.js';
 
 /**
  * A plugin combining a basic set of characters for the special characters plugin.
@@ -27,7 +27,7 @@ import SpecialCharactersText from './specialcharacterstext.js';
  *   .catch( ... );
  * ```
  */
-export default class SpecialCharactersEssentials extends Plugin {
+export class SpecialCharactersEssentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

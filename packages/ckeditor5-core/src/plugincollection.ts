@@ -13,7 +13,7 @@ import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginIn
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
  */
-export default class PluginCollection<TContext extends object>
+export class PluginCollection<TContext extends object>
 	extends /* #__PURE__ */ EmitterMixin()
 	implements Iterable<PluginEntry<TContext>> {
 	private _context: TContext;

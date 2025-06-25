@@ -40,7 +40,7 @@ import '../../theme/linkform.css';
 /**
  * The link form view.
  */
-export default class LinkFormView extends View {
+export class LinkFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */
@@ -407,7 +407,7 @@ export type LinkFormValidatorCallback = ( form: LinkFormView ) => string | undef
  *
  * @eventName ~LinkFormView#submit
  */
-export type SubmitEvent = {
+export type LinkFormSubmitEvent = {
 	name: 'submit';
 	args: [];
 };
@@ -417,7 +417,7 @@ export type SubmitEvent = {
  *
  * @eventName ~LinkFormView#cancel
  */
-export type CancelEvent = {
+export type LinkFormCancelEvent = {
 	name: 'cancel';
 	args: [];
 };

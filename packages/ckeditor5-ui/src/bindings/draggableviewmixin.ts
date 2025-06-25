@@ -7,7 +7,7 @@
  * @module ui/bindings/draggableviewmixin
  */
 
-import type View from '../view.js';
+import { type View } from '../view.js';
 import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -15,7 +15,7 @@ import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/
  * The view has to implement the {@link ~DraggableView} interface to use it:
  *
  * ```js
- * export default class MyDraggableView extends DraggableViewMixin( View ) implements DraggableView {
+ * export class MyDraggableView extends DraggableViewMixin( View ) implements DraggableView {
  * 		// ...
  * }
  * ```
@@ -28,7 +28,7 @@ import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/
  * The mixin itself does not provide a visual feedback (that is, the dragged element does not change its position) -
  * it is up to the developer to implement it.
  */
-export default function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
+export function DraggableViewMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, DraggableView> {
 	abstract class DraggableMixin extends view implements DraggableView {
 		/**
 		 * A flag indicating whether the view is currently being dragged.

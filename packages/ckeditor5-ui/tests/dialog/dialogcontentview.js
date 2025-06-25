@@ -4,7 +4,7 @@
  */
 
 import { View, ViewCollection } from '../../src/index.js';
-import DialogContentView from '../../src/dialog/dialogcontentview.js';
+import { DialogContentView } from '../../src/dialog/dialogcontentview.js';
 
 describe( 'DialogContentView', () => {
 	let view;

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Rect from '../../src/dom/rect.js';
-import createElement from '../../src/dom/createelement.js';
-import RectDrawer from '../../tests/_utils/rectdrawer.js';
+import { Rect } from '../../src/dom/rect.js';
+import { createElement } from '../../src/dom/createelement.js';
+import { RectDrawer } from '../../tests/_utils/rectdrawer.js';
 
 const DEFAULT_STYLES = 'position: fixed; ' +
 	'outline: blue solid 1px; ' +

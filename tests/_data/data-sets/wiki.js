@@ -2042,8 +2042,8 @@ Zobacz szczegółowe informacje o <a class="external text" href="https://foundat
 </footer>
 
 \t\t</div>
-\t</div> 
-</div> 
+\t</div>
+</div>
 <div class="vector-settings" id="p-dock-bottom">
 \t<ul></ul>
 </div><div class="vector-header-container">
@@ -4080,8 +4080,8 @@ Zobacz szczegółowe informacje o <a class="external text" href="https://foundat
 </footer>
 
 \t\t</div>
-\t</div> 
-</div> 
+\t</div>
+</div>
 <div class="vector-settings" id="p-dock-bottom">
 \t<ul></ul>
 </div><div class="vector-header-container">
@@ -6118,8 +6118,8 @@ Zobacz szczegółowe informacje o <a class="external text" href="https://foundat
 </footer>
 
 \t\t</div>
-\t</div> 
-</div> 
+\t</div>
+</div>
 <div class="vector-settings" id="p-dock-bottom">
 \t<ul></ul>
 </div><div class="vector-header-container">
@@ -8156,12 +8156,12 @@ Zobacz szczegółowe informacje o <a class="external text" href="https://foundat
 </footer>
 
 \t\t</div>
-\t</div> 
-</div> 
+\t</div>
+</div>
 <div class="vector-settings" id="p-dock-bottom">
 \t<ul></ul>
 </div>`;
 
-export default function makeData() {
+export function makeData() {
 	return initialData;
 }

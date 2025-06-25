@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
-import defaultConfig from './schemadefinitions.js';
+import { defaultConfig } from './schemadefinitions.js';
 import { mergeWith } from 'es-toolkit/compat';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
+import type { ModelAttributeProperties, ModelSchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -45,11 +45,11 @@ import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/en
  * } );
  * ```
  */
-export default class DataSchema extends Plugin {
+export class DataSchema extends Plugin {
 	/**
 	 * A map of registered data schema definitions.
 	 */
-	private readonly _definitions: Array<DataSchemaDefinition> = [];
+	private readonly _definitions: Array<HtmlSupportDataSchemaDefinition> = [];
 
 	/**
 	 * @inheritDoc
@@ -81,14 +81,14 @@ export default class DataSchema extends Plugin {
 	/**
 	 * Add new data schema definition describing block element.
 	 */
-	public registerBlockElement( definition: DataSchemaBlockElementDefinition ): void {
+	public registerBlockElement( definition: HtmlSupportDataSchemaBlockElementDefinition ): void {
 		this._definitions.push( { ...definition, isBlock: true } );
 	}
 
 	/**
 	 * Add new data schema definition describing inline element.
 	 */
-	public registerInlineElement( definition: DataSchemaInlineElementDefinition ): void {
+	public registerInlineElement( definition: HtmlSupportDataSchemaInlineElementDefinition ): void {
 		this._definitions.push( { ...definition, isInline: true } );
 	}
 
@@ -100,7 +100,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param definition Definition update.
 	 */
-	public extendBlockElement( definition: DataSchemaBlockElementDefinition ): void {
+	public extendBlockElement( definition: HtmlSupportDataSchemaBlockElementDefinition ): void {
 		this._extendDefinition( { ...definition, isBlock: true } );
 	}
 
@@ -112,7 +112,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param definition Definition update.
 	 */
-	public extendInlineElement( definition: DataSchemaInlineElementDefinition ): void {
+	public extendInlineElement( definition: HtmlSupportDataSchemaInlineElementDefinition ): void {
 		this._extendDefinition( { ...definition, isInline: true } );
 	}
 
@@ -121,8 +121,8 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param includeReferences Indicates if this method should also include definitions of referenced models.
 	 */
-	public getDefinitionsForView( viewName: string | RegExp, includeReferences: boolean = false ): Set<DataSchemaDefinition> {
-		const definitions = new Set<DataSchemaDefinition>();
+	public getDefinitionsForView( viewName: string | RegExp, includeReferences: boolean = false ): Set<HtmlSupportDataSchemaDefinition> {
+		const definitions = new Set<HtmlSupportDataSchemaDefinition>();
 
 		for ( const definition of this._getMatchingViewDefinitions( viewName ) ) {
 			if ( includeReferences ) {
@@ -140,14 +140,14 @@ export default class DataSchema extends Plugin {
 	/**
 	 * Returns definitions matching the given model name.
 	 */
-	public getDefinitionsForModel( modelName: string ): Array<DataSchemaDefinition> {
+	public getDefinitionsForModel( modelName: string ): Array<HtmlSupportDataSchemaDefinition> {
 		return this._definitions.filter( definition => definition.model == modelName );
 	}
 
 	/**
 	 * Returns definitions matching the given view name.
 	 */
-	private _getMatchingViewDefinitions( viewName: string | RegExp ): Array<DataSchemaDefinition> {
+	private _getMatchingViewDefinitions( viewName: string | RegExp ): Array<HtmlSupportDataSchemaDefinition> {
 		return this._definitions.filter( def => def.view && testViewName( viewName, def.view ) );
 	}
 
@@ -156,7 +156,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param modelName Data schema model name.
 	 */
-	private* _getReferences( modelName: string ): Iterable<DataSchemaDefinition> {
+	private* _getReferences( modelName: string ): Iterable<HtmlSupportDataSchemaDefinition> {
 		const inheritProperties = [
 			'inheritAllFrom',
 			'inheritTypesFrom',
@@ -195,7 +195,7 @@ export default class DataSchema extends Plugin {
 	 *
 	 * @param definition Definition update.
 	 */
-	private _extendDefinition( definition: DataSchemaDefinition ): void {
+	private _extendDefinition( definition: HtmlSupportDataSchemaDefinition ): void {
 		const currentDefinitions = Array.from( this._definitions.entries() )
 			.filter( ( [ , currentDefinition ] ) => currentDefinition.model == definition.model );
 
@@ -231,7 +231,7 @@ function testViewName( pattern: string | RegExp, viewName: string ): boolean {
 /**
  * A base definition of {@link module:html-support/dataschema~DataSchema data schema}.
  */
-export interface DataSchemaDefinition {
+export interface HtmlSupportDataSchemaDefinition {
 
 	/**
 	 * Name of the model.
@@ -251,7 +251,7 @@ export interface DataSchemaDefinition {
 	/**
 	 * The model schema item definition describing registered model.
 	 */
-	modelSchema?: SchemaItemDefinition;
+	modelSchema?: ModelSchemaItemDefinition;
 
 	/**
 	 * Indicates that the definition describes block element.
@@ -273,7 +273,7 @@ export interface DataSchemaDefinition {
 /**
  * A definition of {@link module:html-support/dataschema~DataSchema data schema} for block elements.
  */
-export interface DataSchemaBlockElementDefinition extends DataSchemaDefinition {
+export interface HtmlSupportDataSchemaBlockElementDefinition extends HtmlSupportDataSchemaDefinition {
 
 	/**
 	 * Should be used when an element can behave both as a sectioning element (e.g. article) and
@@ -286,16 +286,16 @@ export interface DataSchemaBlockElementDefinition extends DataSchemaDefinition {
 /**
  * A definition of {@link module:html-support/dataschema~DataSchema data schema} for inline elements.
  */
-export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition {
+export interface HtmlSupportDataSchemaInlineElementDefinition extends HtmlSupportDataSchemaDefinition {
 
 	/**
 	 *  Additional metadata describing the model attribute.
 	 */
-	attributeProperties?: AttributeProperties;
+	attributeProperties?: ModelAttributeProperties;
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by
-	 * {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
 	 */
 	priority?: number;

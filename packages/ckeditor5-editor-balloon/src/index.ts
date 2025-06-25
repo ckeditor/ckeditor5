@@ -7,4 +7,6 @@
  * @module editor-balloon
  */
 
-export { default as BalloonEditor } from './ballooneditor.js';
+export { BalloonEditor } from './ballooneditor.js';
+export { BalloonEditorUI } from './ballooneditorui.js';
+export { BalloonEditorUIView } from './ballooneditoruiview.js';

@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import FontBackgroundColorEditing from './fontbackgroundcolor/fontbackgroundcolorediting.js';
-import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui.js';
+import { FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
+import { FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
 
 /**
  * The font background color plugin.
@@ -21,7 +21,7 @@ import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui.j
  * the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} and
  * {@link module:font/fontbackgroundcolor/fontbackgroundcolorui~FontBackgroundColorUI} features in the editor.
  */
-export default class FontBackgroundColor extends Plugin {
+export class FontBackgroundColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

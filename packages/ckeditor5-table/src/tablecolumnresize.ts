@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import TableColumnResizeEditing from './tablecolumnresize/tablecolumnresizeediting.js';
-import TableCellWidthEditing from './tablecellwidth/tablecellwidthediting.js';
+import { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
+import { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 
 import '../theme/tablecolumnresize.css';
 
@@ -18,7 +18,7 @@ import '../theme/tablecolumnresize.css';
  *
  * It provides the possibility to set the width of each column in a table using a resize handler.
  */
-export default class TableColumnResize extends Plugin {
+export class TableColumnResize extends Plugin {
 	/**
 	 * @inheritDoc
  	 */

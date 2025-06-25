@@ -31,7 +31,7 @@ import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ArticlePluginSet extends Plugin {
+export class ArticlePluginSet extends Plugin {
 	static get pluginName() {
 		return 'ArticlePluginSet';
 	}

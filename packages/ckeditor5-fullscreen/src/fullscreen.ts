@@ -9,13 +9,13 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import FullscreenEditing from './fullscreenediting.js';
-import FullscreenUI from './fullscreenui.js';
+import { FullscreenEditing } from './fullscreenediting.js';
+import { FullscreenUI } from './fullscreenui.js';
 
 /**
  * The fullscreen mode feature.
  */
-export default class Fullscreen extends Plugin {
+export class Fullscreen extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

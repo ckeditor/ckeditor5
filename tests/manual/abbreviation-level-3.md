@@ -385,7 +385,7 @@ We will create a simple command to insert a text with our abbreviation attribute
 	Read more about {@link framework/architecture/core-editor-architecture#commands commands}.
 </info-box>
 
-We will pass an object with the title value and the abbreviation value into the command. We will use the {link module:engine/model/writer~Writer#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We will also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we will remove that and replace it with our abbreviation.
+We will pass an object with the title value and the abbreviation value into the command. We will use the {link module:engine/model/writer~ModelWriter#insertText `writer.insertText()`} method to add the abbreviation to the model, along with the title attribute. We will also need to give it a position of the user's current selection to indicate where to insert our abbreviation. Finally, if the user's selection has a range (so it's a letter, word, or a whole text fragment), we will remove that and replace it with our abbreviation.
 
 Create a new file `abbreviationcommand.js` in the `abbreviation/` directory.
 

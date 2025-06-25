@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyListProperties from '../src/legacylistproperties.js';
-import LegacyListPropertiesEditing from '../src/legacylistproperties/legacylistpropertiesediting.js';
-import ListPropertiesUI from '../src/listproperties/listpropertiesui.js';
+import { LegacyListProperties } from '../src/legacylistproperties.js';
+import { LegacyListPropertiesEditing } from '../src/legacylistproperties/legacylistpropertiesediting.js';
+import { ListPropertiesUI } from '../src/listproperties/listpropertiesui.js';
 
 describe( 'LegacyListProperties', () => {
 	it( 'should be named', () => {

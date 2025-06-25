@@ -17,7 +17,7 @@ const SUBSCRIPT = 'subscript';
 /**
  * The subscript UI feature. It introduces the Subscript button.
  */
-export default class SubscriptUI extends Plugin {
+export class SubscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

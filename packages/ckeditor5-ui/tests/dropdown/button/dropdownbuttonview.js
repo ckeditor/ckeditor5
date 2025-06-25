@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import IconView from '../../../src/icon/iconview.js';
-import DropdownButtonView from '../../../src/dropdown/button/dropdownbuttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { IconView } from '../../../src/icon/iconview.js';
+import { DropdownButtonView } from '../../../src/dropdown/button/dropdownbuttonview.js';
 
 describe( 'DropdownButtonView', () => {
 	let locale, view;

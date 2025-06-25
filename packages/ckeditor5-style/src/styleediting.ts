@@ -10,13 +10,13 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
-import StyleCommand from './stylecommand.js';
-import StyleUtils from './styleutils.js';
+import { StyleCommand } from './stylecommand.js';
+import { StyleUtils } from './styleutils.js';
 import type { StyleConfig } from './styleconfig.js';
 
-import ListStyleSupport from './integrations/list.js';
-import TableStyleSupport from './integrations/table.js';
-import LinkStyleSupport from './integrations/link.js';
+import { ListStyleSupport } from './integrations/list.js';
+import { TableStyleSupport } from './integrations/table.js';
+import { LinkStyleSupport } from './integrations/link.js';
 
 /**
  * The style engine feature.
@@ -25,7 +25,7 @@ import LinkStyleSupport from './integrations/link.js';
  * {@link module:style/styleconfig~StyleConfig#definitions configured style definitions} and introduces the
  * {@link module:style/stylecommand~StyleCommand style command} that applies styles to the content of the document.
  */
-export default class StyleEditing extends Plugin {
+export class StyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

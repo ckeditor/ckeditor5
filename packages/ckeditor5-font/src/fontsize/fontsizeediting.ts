@@ -9,9 +9,13 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { CKEditorError } from 'ckeditor5/src/utils.js';
-import { isLength, isPercentage, type ViewElement } from 'ckeditor5/src/engine.js';
+import {
+	isLengthStyleValue,
+	isPercentageStyleValue,
+	type ViewElement
+} from 'ckeditor5/src/engine.js';
 
-import FontSizeCommand from './fontsizecommand.js';
+import { FontSizeCommand } from './fontsizecommand.js';
 import { normalizeOptions } from './utils.js';
 import { buildDefinition, FONT_SIZE, type FontConverterDefinition } from '../utils.js';
 
@@ -38,7 +42,7 @@ const styleFontSize = [
  *
  * depending on the {@link module:font/fontconfig~FontSizeConfig configuration}.
  */
-export default class FontSizeEditing extends Plugin {
+export class FontSizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -115,7 +119,7 @@ export default class FontSizeEditing extends Plugin {
 
 		// If `fontSize.supportAllValues=true`, we do not allow to use named presets in the plugin's configuration.
 		const presets = definition.model!.values.filter( ( value: any ) => {
-			return !isLength( String( value ) ) && !isPercentage( String( value ) );
+			return !isLengthStyleValue( String( value ) ) && !isPercentageStyleValue( String( value ) );
 		} );
 
 		if ( presets.length ) {

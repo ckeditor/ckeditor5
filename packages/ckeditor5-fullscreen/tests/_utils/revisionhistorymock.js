@@ -5,7 +5,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-export default class RevisionHistoryMock extends Plugin {
+export class RevisionHistoryMock extends Plugin {
 	static get pluginName() {
 		return 'RevisionHistory';
 	}

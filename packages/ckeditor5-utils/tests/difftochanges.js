@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import diff from '../src/diff.js';
-import diffToChanges from '../src/difftochanges.js';
+import { diff } from '../src/diff.js';
+import { diffToChanges } from '../src/difftochanges.js';
 
 describe( 'diffToChanges', () => {
 	/* eslint-disable @stylistic/no-multi-spaces */

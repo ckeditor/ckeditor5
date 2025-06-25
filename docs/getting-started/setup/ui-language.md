@@ -2,7 +2,7 @@
 category: setup
 menu-title: UI language
 meta-title: Setting the UI language | CKEditor 5 Documentation
-meta-description: Configuring and handling the language of the editor user interface and content.
+meta-description: Configuring and handling the language of the editor fot both the user interface and content.
 order: 60
 modified_at: 2024-06-25
 ---

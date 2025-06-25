@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import remove from '../../src/dom/remove.js';
+import { remove } from '../../src/dom/remove.js';
 
 describe( 'remove', () => {
 	it( 'should remove element form parent', () => {

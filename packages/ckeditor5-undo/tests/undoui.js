@@ -5,12 +5,12 @@
 
 import { IconUndo, IconRedo } from '@ckeditor/ckeditor5-icons';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import UndoEditing from '../src/undoediting.js';
-import UndoUI from '../src/undoui.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { UndoEditing } from '../src/undoediting.js';
+import { UndoUI } from '../src/undoui.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'UndoUI', () => {
 	let editor, editorElement, button;

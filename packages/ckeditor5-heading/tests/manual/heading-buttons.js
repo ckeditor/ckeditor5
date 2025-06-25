@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Heading from '../../src/heading.js';
-import HeadingButtonsUI from '../../src/headingbuttonsui.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Heading } from '../../src/heading.js';
+import { HeadingButtonsUI } from '../../src/headingbuttonsui.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

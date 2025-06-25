@@ -7,23 +7,23 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy.js';
+import { ModelTextProxy } from '../model/textproxy.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Item from '../model/item.js';
-import type Selection from '../model/selection.js';
-import type DocumentSelection from '../model/documentselection.js';
-import type Range from '../model/range.js';
+import { type ModelItem } from '../model/item.js';
+import { type ModelSelection } from '../model/selection.js';
+import { type ModelDocumentSelection } from '../model/documentselection.js';
+import { type ModelRange } from '../model/range.js';
 
 /**
- * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.
+ * Manages a list of consumable values for the {@link module:engine/model/item~ModelItem model items}.
  *
  * Consumables are various aspects of the model. A model item can be broken down into separate, single properties that might be
  * taken into consideration when converting that item.
  *
  * `ModelConsumable` is used by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} while analyzing the changed
- * parts of {@link module:engine/model/document~Document the document}. The added / changed / removed model items are broken down
+ * parts of {@link module:engine/model/document~ModelDocument the document}. The added / changed / removed model items are broken down
  * into singular properties (the item itself and its attributes). All those parts are saved in `ModelConsumable`. Then,
  * during conversion, when the given part of a model item is converted (i.e. the view element has been inserted into the view,
  * but without attributes), the consumable value is removed from `ModelConsumable`.
@@ -96,19 +96,19 @@ import type Range from '../model/range.js';
  * } );
  * ```
  */
-export default class ModelConsumable {
+export class ModelConsumable {
 	/**
 	 * Contains list of consumable values.
 	 */
 	private _consumable = new Map<any, Map<string, boolean>>();
 
 	/**
-	 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds a parent
-	 * of that `TextProxy` and the start and end indices of that `TextProxy`. This allows identification of the `TextProxy`
-	 * instances that point to the same part of the model but are different instances. Each distinct `TextProxy`
+	 * For each {@link module:engine/model/textproxy~ModelTextProxy} added to `ModelConsumable`, this registry holds a parent
+	 * of that `ModelTextProxy` and the start and end indices of that `ModelTextProxy`. This allows identification of the `ModelTextProxy`
+	 * instances that point to the same part of the model but are different instances. Each distinct `ModelTextProxy`
 	 * is given a unique `Symbol` which is then registered as consumable. This process is transparent for the `ModelConsumable`
-	 * API user because whenever `TextProxy` is added, tested, consumed or reverted, the internal mechanisms of
-	 * `ModelConsumable` translate `TextProxy` to that unique `Symbol`.
+	 * API user because whenever `ModelTextProxy` is added, tested, consumed or reverted, the internal mechanisms of
+	 * `ModelConsumable` translate `ModelTextProxy` to that unique `Symbol`.
 	 */
 	private _textProxyRegistry = new Map<number | null, Map<number | null, Map<unknown, symbol>>>();
 
@@ -128,12 +128,12 @@ export default class ModelConsumable {
 	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 */
 	public add(
-		item: Item | Selection | DocumentSelection | Range,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): void {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -161,12 +161,12 @@ export default class ModelConsumable {
 	 * @returns `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
 	public consume(
-		item: Item | Selection | DocumentSelection | Range,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -197,12 +197,12 @@ export default class ModelConsumable {
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	public test(
-		item: Item | Selection | DocumentSelection | Range,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean | null {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -238,12 +238,12 @@ export default class ModelConsumable {
 	 * never been added.
 	 */
 	public revert(
-		item: Item | Selection | DocumentSelection | Range,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean | null {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -283,7 +283,7 @@ export default class ModelConsumable {
 
 		if ( items.length ) {
 			/**
-			 * Some of the {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 * Some of the {@link module:engine/model/item~ModelItem model items} were not consumed while downcasting the model to view.
 			 *
 			 * This might be the effect of:
 			 *
@@ -296,23 +296,23 @@ export default class ModelConsumable {
 			 * attributes and child nodes.
 			 *
 			 * @error conversion-model-consumable-not-consumed
-			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
+			 * @param {Array.<module:engine/model/item~ModelItem>} items Items that were not consumed.
 			 */
 			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
 		}
 	}
 
 	/**
-	 * Gets a unique symbol for the passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
-	 * have same parent, same start index and same end index will get the same symbol.
+	 * Gets a unique symbol for the passed {@link module:engine/model/textproxy~ModelTextProxy} instance.
+	 * All `ModelTextProxy` instances that have same parent, same start index and same end index will get the same symbol.
 	 *
-	 * Used internally to correctly consume `TextProxy` instances.
+	 * Used internally to correctly consume `ModelTextProxy` instances.
 	 *
 	 * @internal
-	 * @param textProxy `TextProxy` instance to get a symbol for.
-	 * @returns Symbol representing all equal instances of `TextProxy`.
+	 * @param textProxy `ModelTextProxy` instance to get a symbol for.
+	 * @returns Symbol representing all equal instances of `ModelTextProxy`.
 	 */
-	public _getSymbolForTextProxy( textProxy: TextProxy ): symbol {
+	public _getSymbolForTextProxy( textProxy: ModelTextProxy ): symbol {
 		let symbol = null;
 
 		const startMap = this._textProxyRegistry.get( textProxy.startOffset );
@@ -333,14 +333,14 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Adds a symbol for the given {@link module:engine/model/textproxy~TextProxy} instance.
+	 * Adds a symbol for the given {@link module:engine/model/textproxy~ModelTextProxy} instance.
 	 *
-	 * Used internally to correctly consume `TextProxy` instances.
+	 * Used internally to correctly consume `ModelTextProxy` instances.
 	 *
 	 * @param textProxy Text proxy instance.
-	 * @returns Symbol generated for given `TextProxy`.
+	 * @returns Symbol generated for given `ModelTextProxy`.
 	 */
-	private _addSymbolForTextProxy( textProxy: TextProxy ): symbol {
+	private _addSymbolForTextProxy( textProxy: ModelTextProxy ): symbol {
 		const start = textProxy.startOffset;
 		const end = textProxy.endOffset;
 		const parent = textProxy.parent;

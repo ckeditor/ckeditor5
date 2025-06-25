@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import toUnit from '../../src/dom/tounit.js';
+import { toUnit } from '../../src/dom/tounit.js';
 
 describe( 'toUnit', () => {
 	it( 'should be a function', () => {

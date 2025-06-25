@@ -7,11 +7,11 @@
  * @module utils/dom/scroll
  */
 
-import isRange from './isrange.js';
-import Rect from './rect.js';
-import isText from './istext.js';
+import { isRange } from './isrange.js';
+import { Rect } from './rect.js';
+import { isText } from './istext.js';
 
-type IfTrue<T> = T extends true ? true : never;
+export type IfTrue<T> = T extends true ? true : never;
 
 /**
  * Makes any page `HTMLElement` or `Range` (`target`) visible inside the browser viewport.

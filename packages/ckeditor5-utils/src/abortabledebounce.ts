@@ -12,7 +12,7 @@
  *
  * @param func The function to be called. It will be provided with `AbortSignal` as the first parameter.
  */
-export default function abortableDebounce<Args extends Array<any>, Ret>(
+export function abortableDebounce<Args extends Array<any>, Ret>(
 	func: ( signal: AbortSignal, ...args: Args ) => Ret
 ): AbortableFunc<Args, Ret> {
 	let controller = new AbortController();

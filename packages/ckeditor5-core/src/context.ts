@@ -16,8 +16,8 @@ import {
 	type LocaleTranslate
 } from '@ckeditor/ckeditor5-utils';
 
-import PluginCollection from './plugincollection.js';
-import type Editor from './editor/editor.js';
+import { PluginCollection } from './plugincollection.js';
+import { type Editor } from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
 import { cloneDeep } from 'es-toolkit/compat';
@@ -49,7 +49,7 @@ import { cloneDeep } from 'es-toolkit/compat';
  *
  * See {@link ~Context.create `Context.create()`} for usage examples.
  */
-export default class Context {
+export class Context {
 	/**
 	 * Stores all the configurations specific to this context instance.
 	 */

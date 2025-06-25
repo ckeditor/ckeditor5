@@ -73,7 +73,7 @@ const DIALOG_OFFSET = 28;
  *
  * This class is exported to allow for custom extensions.
  */
-export default class AbstractEditorHandler {
+export class AbstractEditorHandler {
 	/**
 	 * Maps placeholder names to placeholder elements and moved elements.
 	 */

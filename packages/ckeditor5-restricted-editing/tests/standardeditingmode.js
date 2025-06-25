@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import StandardEditingMode from './../src/standardeditingmode.js';
-import StandardEditingModeUI from './../src/standardeditingmodeui.js';
-import StandardEditingModeEditing from './../src/standardeditingmodeediting.js';
+import { StandardEditingMode } from './../src/standardeditingmode.js';
+import { StandardEditingModeUI } from './../src/standardeditingmodeui.js';
+import { StandardEditingModeEditing } from './../src/standardeditingmodeediting.js';
 
 describe( 'StandardEditingMode', () => {
 	let editor, element;

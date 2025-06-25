@@ -4,9 +4,9 @@
  */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
-import SearchResultsView from '../../src/search/searchresultsview.js';
+import { SearchResultsView } from '../../src/search/searchresultsview.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, View, ViewCollection } from '../../src/index.js';
 
 describe( 'SearchResultsView', () => {

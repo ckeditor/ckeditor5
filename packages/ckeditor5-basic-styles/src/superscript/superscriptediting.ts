@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const SUPERSCRIPT = 'superscript';
 
@@ -18,7 +18,7 @@ const SUPERSCRIPT = 'superscript';
  * It registers the `super` command and introduces the `super` attribute in the model which renders to the view
  * as a `<super>` element.
  */
-export default class SuperscriptEditing extends Plugin {
+export class SuperscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

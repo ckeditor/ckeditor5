@@ -10,19 +10,19 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
-	Element,
+	ModelElement,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import ImageUtils from '../imageutils.js';
-import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver.js';
+import { ImageUtils } from '../imageutils.js';
+import { ImageLoadObserver, type ImageLoadedEvent } from './imageloadobserver.js';
 
 import '../../theme/imageplaceholder.css';
 
 /**
  * Adds support for image placeholder that is automatically removed when the image is loaded.
  */
-export default class ImagePlaceholder extends Plugin {
+export class ImagePlaceholder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -83,7 +83,7 @@ export default class ImagePlaceholder extends Plugin {
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:placeholder', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:placeholder', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}

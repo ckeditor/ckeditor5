@@ -109,13 +109,13 @@ export interface GeneralHtmlSupportConfig {
 	 * 	.catch( ... );
 	 * ```
 	 */
-	fullPage?: FullPageConfig;
+	fullPage?: GHSFullPageConfig;
 }
 
 /**
  * The configuration of the Full page editing feature.
  */
-export interface FullPageConfig {
+export interface GHSFullPageConfig {
 
 	/**
 	 * Whether the feature should allow the editor to render styles from the `<head>` section of editor data content.
@@ -146,7 +146,7 @@ export interface FullPageConfig {
 	 * We strongly recommend overwriting the default function to avoid XSS vulnerabilities.
 	 *
 	 * The function receives the CSS (as a string), and should return an object
-	 * that matches the {@link module:html-support/generalhtmlsupportconfig~CssSanitizeOutput} interface.
+	 * that matches the {@link module:html-support/generalhtmlsupportconfig~GHSCssSanitizeOutput} interface.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -172,10 +172,10 @@ export interface FullPageConfig {
 	 * ```
 	 *
 	 */
-	sanitizeCss?: ( css: string ) => CssSanitizeOutput;
+	sanitizeCss?: ( css: string ) => GHSCssSanitizeOutput;
 }
 
-export interface CssSanitizeOutput {
+export interface GHSCssSanitizeOutput {
 
 	/**
 	 * An output (safe) CSS that will be inserted into the document.

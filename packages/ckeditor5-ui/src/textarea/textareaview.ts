@@ -8,7 +8,7 @@
  */
 
 import { Rect, type Locale, toUnit, getBorderWidths, global, CKEditorError, isVisible, ResizeObserver } from '@ckeditor/ckeditor5-utils';
-import InputBase from '../input/inputbase.js';
+import { InputBase } from '../input/inputbase.js';
 
 import '../../theme/components/input/input.css';
 import '../../theme/components/textarea/textarea.css';
@@ -27,7 +27,7 @@ import '../../theme/components/textarea/textarea.css';
  * document.body.append( textareaView.element );
  * ```
  */
-export default class TextareaView extends InputBase<HTMLTextAreaElement> {
+export class TextareaView extends InputBase<HTMLTextAreaElement> {
 	/**
 	 * Specifies the visible height of a text area, in lines.
 	 *

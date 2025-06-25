@@ -4,14 +4,14 @@
  */
 
 import { IconAlignLeft, IconAlignCenter, IconAlignRight } from '@ckeditor/ckeditor5-icons';
-import Model from '../../../src/model.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { UIModel } from '../../../src/model.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import testUtils from '../../_utils/utils.js';
-import ButtonView from '../../../src/button/buttonview.js';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
+import { testUtils } from '../../_utils/utils.js';
+import { ButtonView } from '../../../src/button/buttonview.js';
+import { SplitButtonView } from '../../../src/dropdown/button/splitbuttonview.js';
 
-import BodyCollection from '../../../src/editorui/bodycollection.js';
+import { BodyCollection } from '../../../src/editorui/bodycollection.js';
 
 import {
 	createDropdown,
@@ -51,7 +51,7 @@ function testList() {
 	[ '0.8em', '1em', '1.2em', '1.5em', '2.0em', '3.0em' ].forEach( font => {
 		collection.add( {
 			type: 'button',
-			model: new Model( {
+			model: new UIModel( {
 				label: font,
 				labelStyle: `font-size: ${ font }`,
 				withText: true
@@ -77,7 +77,7 @@ function testList() {
 	ui.listDropdown.add( dropdownView );
 
 	window.listDropdownCollection = collection;
-	window.Model = Model;
+	window.UIModel = UIModel;
 }
 
 function testListWithGroups() {
@@ -86,7 +86,7 @@ function testListWithGroups() {
 	collection.addMany( [
 		{
 			type: 'button',
-			model: new Model( {
+			model: new UIModel( {
 				label: 'Item 1',
 				withText: true
 			} )
@@ -97,14 +97,14 @@ function testListWithGroups() {
 			items: new Collection( [
 				{
 					type: 'button',
-					model: new Model( {
+					model: new UIModel( {
 						label: 'Group 1, Item 1',
 						withText: true
 					} )
 				},
 				{
 					type: 'button',
-					model: new Model( {
+					model: new UIModel( {
 						label: 'Group 1, Item 1',
 						withText: true
 					} )
@@ -117,14 +117,14 @@ function testListWithGroups() {
 			items: new Collection( [
 				{
 					type: 'button',
-					model: new Model( {
+					model: new UIModel( {
 						label: 'Group 2, Item 1',
 						withText: true
 					} )
 				},
 				{
 					type: 'button',
-					model: new Model( {
+					model: new UIModel( {
 						label: 'Group 2, Item 1',
 						withText: true
 					} )
@@ -151,7 +151,7 @@ function testListWithGroups() {
 	ui.listDropdownWithGroups.add( dropdownView );
 
 	window.listDropdownWithGroupsCollection = collection;
-	window.Model = Model;
+	window.UIModel = UIModel;
 }
 
 function testLongLabel() {
@@ -175,15 +175,15 @@ function testToolbar() {
 	const icons = { left: IconAlignLeft, right: IconAlignRight, center: IconAlignCenter };
 
 	// Buttons to be obtained from factory later on.
-	const buttons = Object.keys( icons ).map( icon => new Model( { label: icon, isEnabled: true, isOn: false, icon: icons[ icon ] } ) );
+	const buttons = Object.keys( icons ).map( icon => new UIModel( { label: icon, isEnabled: true, isOn: false, icon: icons[ icon ] } ) );
 
 	const buttonViews = buttons
-		.map( buttonModel => {
+		.map( buttonUIModel => {
 			const buttonView = new ButtonView( locale );
 
-			buttonView.bind( 'isEnabled', 'isOn', 'icon', 'label' ).to( buttonModel );
+			buttonView.bind( 'isEnabled', 'isOn', 'icon', 'label' ).to( buttonUIModel );
 
-			buttonView.on( 'execute', () => console.log( `Execute: ${ buttonModel.label }` ) );
+			buttonView.on( 'execute', () => console.log( `Execute: ${ buttonUIModel.label }` ) );
 
 			return buttonView;
 		} );

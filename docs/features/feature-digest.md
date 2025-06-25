@@ -2,7 +2,7 @@
 category: features
 menu-title: Feature digest
 meta-title: Feature digest | CKEditor 5 Documentation
-meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page collects them all.
+meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page lists them all.
 modified_at: 2024-11-20
 order: -998
 ---
@@ -1962,6 +1962,14 @@ Customize your editor even further. Use components and helpers from our UI libra
 				dedicated resources such as a package generator and the CKEditor 5
 				Inspector - a comprehensive suite of debugging tools - are provided,
 				helping accelerate development work.
+			</td>
+		</tr>
+		<tr id="custom-components" class="subfeature background-gray">
+			<td>
+				{@link features/custom-components Custom Widgets and Components}
+			</td>
+			<td>
+				Build custom interactive components using CKEditor 5's widget system. Create block widgets, inline elements, external data integrations, and framework components (React, Vue, Angular) that seamlessly integrate with the editor's content model and UI.
 			</td>
 		</tr>
 		<tr id="ckeditor5-inspector" class="subfeature background-gray">

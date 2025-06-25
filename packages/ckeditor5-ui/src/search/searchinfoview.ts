@@ -8,14 +8,14 @@
 */
 
 import type { FocusableView } from '../focuscycler.js';
-import View from '../view.js';
+import { View } from '../view.js';
 
 /**
  * A view displaying an information text related to different states of {@link module:ui/search/text/searchtextview~SearchTextView}.
  *
  * @internal
  */
-export default class SearchInfoView extends View implements FocusableView {
+export class SearchInfoView extends View implements FocusableView {
 	/**
 	 * Controls whether the view is visible.
 	 *

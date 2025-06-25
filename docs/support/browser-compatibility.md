@@ -1,6 +1,7 @@
 ---
 category: support
 meta-title: Browser compatibility | CKEditor 5 Documentation
+meta-description: Check browser compatibility for CKEditor 5 to ensure reliable performance across supported desktop and mobile web browsers.
 order: 30
 ---
 

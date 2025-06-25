@@ -7,11 +7,16 @@
  * @module language
  */
 
-export { default as TextPartLanguage } from './textpartlanguage.js';
-export { default as TextPartLanguageEditing } from './textpartlanguageediting.js';
-export { default as TextPartLanguageUI } from './textpartlanguageui.js';
+export { TextPartLanguage } from './textpartlanguage.js';
+export { TextPartLanguageEditing } from './textpartlanguageediting.js';
+export { TextPartLanguageUI } from './textpartlanguageui.js';
+export { TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 export type { TextPartLanguageOption } from './textpartlanguageconfig.js';
-export type { default as TextPartLanguageCommand } from './textpartlanguagecommand.js';
+
+export {
+	stringifyLanguageAttribute as _stringifyLanguageAttribute,
+	parseLanguageAttribute as _parseLanguageAttribute
+} from './utils.js';
 
 import './augmentation.js';

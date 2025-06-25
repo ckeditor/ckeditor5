@@ -7,14 +7,14 @@
  * @module table/tableproperties/commands/tablepropertycommand
  */
 
-import type { Batch, Element } from 'ckeditor5/src/engine.js';
+import type { Batch, ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
 export interface TablePropertyCommandExecuteOptions {
 	batch?: Batch;
 	columnWidths?: string;
-	table?: Element;
+	table?: ModelElement;
 	tableWidth?: string;
 	value?: string;
 }
@@ -24,7 +24,7 @@ export interface TablePropertyCommandExecuteOptions {
  *
  * This command is a base command for other table property commands.
  */
-export default class TablePropertyCommand extends Command {
+export class TablePropertyCommand extends Command {
 	/**
 	 * The attribute that will be set by the command.
 	 */
@@ -109,7 +109,7 @@ export default class TablePropertyCommand extends Command {
 	/**
 	 * Returns the attribute value for a table.
 	 */
-	protected _getValue( table: Element ): unknown {
+	protected _getValue( table: ModelElement ): unknown {
 		if ( !table ) {
 			return;
 		}

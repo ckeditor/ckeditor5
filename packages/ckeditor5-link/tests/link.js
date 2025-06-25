@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Link from '../src/link.js';
-import AutoLink from '../src/autolink.js';
-import LinkEditing from '../src/linkediting.js';
-import LinkUI from '../src/linkui.js';
+import { Link } from '../src/link.js';
+import { AutoLink } from '../src/autolink.js';
+import { LinkEditing } from '../src/linkediting.js';
+import { LinkUI } from '../src/linkui.js';
 
 describe( 'Link', () => {
 	it( 'should require LinkEditing, LinkUI and AutoLink', () => {

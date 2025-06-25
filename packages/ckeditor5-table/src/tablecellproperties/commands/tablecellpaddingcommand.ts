@@ -8,9 +8,9 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
 import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-properties.js';
 
 /**
@@ -37,7 +37,7 @@ import { addDefaultUnitToNumericValue, getSingleValue } from '../../utils/table-
  *
  * will set the `padding` attribute to `'5px'` in the model.
  */
-export default class TableCellPaddingCommand extends TableCellPropertyCommand {
+export class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellPaddingCommand` instance.
 	 *
@@ -51,7 +51,7 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	protected override _getAttribute( tableCell: Element ): unknown {
+	protected override _getAttribute( tableCell: ModelElement ): unknown {
 		if ( !tableCell ) {
 			return;
 		}

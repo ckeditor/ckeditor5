@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import MoveOperation from '../../../src/model/operation/moveoperation.js';
-import Position from '../../../src/model/position.js';
-import Element from '../../../src/model/element.js';
-import Text from '../../../src/model/text.js';
+import { Model } from '../../../src/model/model.js';
+import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelElement } from '../../../src/model/element.js';
+import { ModelText } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -22,30 +22,30 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should have proper type', () => {
-		const move = new MoveOperation( new Position( root, [ 0, 0 ] ), 1, new Position( root, [ 1, 0 ] ), 0 );
+		const move = new MoveOperation( new ModelPosition( root, [ 0, 0 ] ), 1, new ModelPosition( root, [ 1, 0 ] ), 0 );
 		expect( move.type ).to.equal( 'move' );
 
-		const remove1 = new MoveOperation( new Position( root, [ 0, 0 ] ), 1, new Position( gy, [ 0 ] ), 0 );
+		const remove1 = new MoveOperation( new ModelPosition( root, [ 0, 0 ] ), 1, new ModelPosition( gy, [ 0 ] ), 0 );
 		expect( remove1.type ).to.equal( 'remove' );
 
-		const remove2 = new MoveOperation( new Position( gy, [ 0 ] ), 1, new Position( gy, [ 1 ] ), 0 );
+		const remove2 = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( gy, [ 1 ] ), 0 );
 		expect( remove2.type ).to.equal( 'remove' );
 
-		const reinsert = new MoveOperation( new Position( gy, [ 0 ] ), 1, new Position( root, [ 0, 0 ] ), 0 );
+		const reinsert = new MoveOperation( new ModelPosition( gy, [ 0 ] ), 1, new ModelPosition( root, [ 0, 0 ] ), 0 );
 		expect( reinsert.type ).to.equal( 'reinsert' );
 	} );
 
 	it( 'should move from one node to another', () => {
-		const p1 = new Element( 'p1', [], new Element( 'x' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', [], new ModelElement( 'x' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
 		model.applyOperation(
 			new MoveOperation(
-				new Position( root, [ 0, 0 ] ),
+				new ModelPosition( root, [ 0, 0 ] ),
 				1,
-				new Position( root, [ 1, 0 ] ),
+				new ModelPosition( root, [ 1, 0 ] ),
 				doc.version
 			)
 		);
@@ -60,13 +60,13 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node backward', () => {
-		root._insertChild( 0, new Text( 'xbarx' ) );
+		root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 		model.applyOperation(
 			new MoveOperation(
-				new Position( root, [ 2 ] ),
+				new ModelPosition( root, [ 2 ] ),
 				2,
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				doc.version
 			)
 		);
@@ -77,13 +77,13 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node forward', () => {
-		root._insertChild( 0, new Text( 'xbarx' ) );
+		root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 		model.applyOperation(
 			new MoveOperation(
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				2,
-				new Position( root, [ 4 ] ),
+				new ModelPosition( root, [ 4 ] ),
 				doc.version
 			)
 		);
@@ -94,8 +94,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should create a proper MoveOperation as a reverse', () => {
-		const sourcePosition = new Position( root, [ 0 ] );
-		const targetPosition = new Position( root, [ 4 ] );
+		const sourcePosition = new ModelPosition( root, [ 0 ] );
+		const targetPosition = new ModelPosition( root, [ 4 ] );
 
 		let operation = new MoveOperation( sourcePosition, 3, targetPosition, doc.version );
 		let reverse = operation.getReversed();
@@ -114,15 +114,15 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should undo move node by applying reverse operation', () => {
-		const p1 = new Element( 'p1', [], new Element( 'x' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', [], new ModelElement( 'x' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
 		const operation = new MoveOperation(
-			new Position( root, [ 0, 0 ] ),
+			new ModelPosition( root, [ 0, 0 ] ),
 			1,
-			new Position( root, [ 1, 0 ] ),
+			new ModelPosition( root, [ 1, 0 ] ),
 			doc.version
 		);
 
@@ -145,12 +145,12 @@ describe( 'MoveOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
-			root._insertChild( 0, new Text( 'xbarx' ) );
+			root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 			const operation = new MoveOperation(
-				new Position( root, [ 3 ] ),
+				new ModelPosition( root, [ 3 ] ),
 				3,
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				doc.version
 			);
 
@@ -158,14 +158,14 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
-			const p = new Element( 'p' );
-			p._insertChild( 0, new Text( 'foo' ) );
-			root._insertChild( 0, [ new Text( 'ab' ), p ] );
+			const p = new ModelElement( 'p' );
+			p._insertChild( 0, new ModelText( 'foo' ) );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p ] );
 
 			const operation = new MoveOperation(
-				new Position( root, [ 2, 0 ] ),
+				new ModelPosition( root, [ 2, 0 ] ),
 				3,
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				doc.version
 			);
 
@@ -175,12 +175,12 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
-			root._insertChild( 0, new Text( 'xbarx' ) );
+			root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 			const operation = new MoveOperation(
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				3,
-				new Position( root, [ 2 ] ),
+				new ModelPosition( root, [ 2 ] ),
 				doc.version
 			);
 
@@ -188,13 +188,13 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
-			const p = new Element( 'p', [], [ new Element( 'p' ) ] );
-			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			const p = new ModelElement( 'p', [], [ new ModelElement( 'p' ) ] );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p, new ModelText( 'xy' ) ] );
 
 			const operation = new MoveOperation(
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				3,
-				new Position( root, [ 2, 0, 0 ] ),
+				new ModelPosition( root, [ 2, 0, 0 ] ),
 				doc.version
 			);
 
@@ -202,13 +202,13 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should not throw an error if operation move a range into a sibling', () => {
-			const p = new Element( 'p' );
-			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			const p = new ModelElement( 'p' );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p, new ModelText( 'xy' ) ] );
 
 			const operation = new MoveOperation(
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				1,
-				new Position( root, [ 2, 0 ] ),
+				new ModelPosition( root, [ 2, 0 ] ),
 				doc.version
 			);
 
@@ -216,14 +216,14 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
-			const p = new Element( 'p' );
-			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
-			doc.graveyard._insertChild( 0, new Text( 'abc' ) );
+			const p = new ModelElement( 'p' );
+			root._insertChild( 0, [ new ModelText( 'a' ), p, new ModelText( 'b' ) ] );
+			doc.graveyard._insertChild( 0, new ModelText( 'abc' ) );
 
 			const operation = new MoveOperation(
-				new Position( doc.graveyard, [ 0 ] ),
+				new ModelPosition( doc.graveyard, [ 0 ] ),
 				2,
-				new Position( root, [ 1, 0 ] ),
+				new ModelPosition( root, [ 1, 0 ] ),
 				doc.version
 			);
 
@@ -232,8 +232,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should create MoveOperation with the same parameters when cloned', () => {
-		const sourcePosition = new Position( root, [ 0 ] );
-		const targetPosition = new Position( root, [ 1 ] );
+		const sourcePosition = new ModelPosition( root, [ 0 ] );
+		const targetPosition = new ModelPosition( root, [ 1 ] );
 		const howMany = 4;
 		const baseVersion = doc.version;
 
@@ -253,8 +253,8 @@ describe( 'MoveOperation', () => {
 
 	describe( 'getMovedRangeStart', () => {
 		it( 'should return move operation target position transformed by removing move operation source range', () => {
-			const sourcePosition = new Position( root, [ 0, 2 ] );
-			const targetPosition = new Position( root, [ 0, 6 ] );
+			const sourcePosition = new ModelPosition( root, [ 0, 2 ] );
+			const targetPosition = new ModelPosition( root, [ 0, 6 ] );
 			const howMany = 3;
 			const baseVersion = doc.version;
 
@@ -266,8 +266,8 @@ describe( 'MoveOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
-			const sourcePosition = new Position( root, [ 0, 0 ] );
-			const targetPosition = new Position( root, [ 1, 0 ] );
+			const sourcePosition = new ModelPosition( root, [ 0, 0 ] );
+			const targetPosition = new ModelPosition( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
 			const serialized = op.toJSON();
@@ -284,8 +284,8 @@ describe( 'MoveOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper MoveOperation from json object', () => {
-			const sourcePosition = new Position( root, [ 0, 0 ] );
-			const targetPosition = new Position( root, [ 1, 0 ] );
+			const sourcePosition = new ModelPosition( root, [ 0, 0 ] );
+			const targetPosition = new ModelPosition( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
 			const serialized = op.toJSON();

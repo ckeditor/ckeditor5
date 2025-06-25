@@ -5,18 +5,18 @@
 
 import { toWidget, toWidgetEditable } from '../src/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	let editorElement, editor, model, styleElement;
@@ -89,7 +89,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	it( 'should do nothing if pressed left-arrow key', () => {
-		setModelData( model,
+		_setModelData( model,
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -101,7 +101,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
 
 		expect(
-			getModelData( model ) ).to.equalMarkup(
+			_getModelData( model ) ).to.equalMarkup(
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -109,7 +109,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	it( 'should do nothing if pressed right-arrow key', () => {
-		setModelData( model,
+		_setModelData( model,
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -121,7 +121,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
 
 		expect(
-			getModelData( model ) ).to.equalMarkup(
+			_getModelData( model ) ).to.equalMarkup(
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -129,7 +129,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	it( 'should do nothing if shrinking non-collapsed forward selection', () => {
-		setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
+		_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 		upArrowDomEvtDataStub.shiftKey = true;
 		editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
@@ -139,7 +139,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 	} );
 
 	it( 'should do nothing if shrinking non-collapsed backward selection', () => {
-		setModelData( model, '<paragraph>fo[ob]ar</paragraph>', { lastRangeBackward: true } );
+		_setModelData( model, '<paragraph>fo[ob]ar</paragraph>', { lastRangeBackward: true } );
 
 		downArrowDomEvtDataStub.shiftKey = true;
 		editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
@@ -152,7 +152,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		describe( 'single paragraph surrounded with objects', () => {
 			describe( 'collapsed selection', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foo[]bar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -165,7 +165,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -178,7 +178,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -188,7 +188,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'non-collapsed forward selection', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>fo[ob]ar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -201,7 +201,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -214,7 +214,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -229,7 +229,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>fo[obar]</paragraph>' +
 							'<horizontalLine></horizontalLine>'
@@ -248,7 +248,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'non-collapsed backward selection', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>fo[ob]ar</paragraph>' +
 						'<horizontalLine></horizontalLine>',
@@ -262,7 +262,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -275,7 +275,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -298,7 +298,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>[foob]ar</paragraph>' +
 							'<horizontalLine></horizontalLine>'
@@ -311,7 +311,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		describe( 'multiple paragraphs with object inside', () => {
 			describe( 'caret in the first paragraph', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>fo[]oo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -337,7 +337,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'caret in the second paragraph', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>ba[]ar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -352,7 +352,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>baar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -371,7 +371,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'caret in the third paragraph', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -393,7 +393,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -405,7 +405,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'caret in the forth paragraph', () => {
 				beforeEach( () => {
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -431,7 +431,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		} );
 
 		it( 'should integrate with the blockquote (forward navigation)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<blockQuote>' +
 					'<paragraph>f[]oo</paragraph>' +
 				'</blockQuote>' +
@@ -444,7 +444,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<blockQuote>' +
 					'<paragraph>foo[]</paragraph>' +
 				'</blockQuote>' +
@@ -454,7 +454,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		} );
 
 		it( 'should integrate with the blockquote (backward navigation)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<horizontalLine></horizontalLine>' +
 				'<blockQuote>' +
@@ -467,7 +467,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>foo</paragraph>' +
 				'<horizontalLine></horizontalLine>' +
 				'<blockQuote>' +
@@ -481,7 +481,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		describe( 'simple text content', () => {
 			describe( 'with collapsed selection', () => {
 				beforeEach( () => {
-					setModelData( model, '<widget><nested><paragraph>foo[]bar</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>foo[]bar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the beginning of the nested editable content', () => {
@@ -490,7 +490,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -499,7 +499,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -514,7 +514,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>'
 						);
 					} );
@@ -525,7 +525,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>'
 						);
 					} );
@@ -534,7 +534,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'with selection at the edge of limit element', () => {
 				it( 'should do nothing if caret is at the beginning of the nested editable content', () => {
-					setModelData( model, '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -543,7 +543,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should do nothing if caret is at the end of the nested editable content', () => {
-					setModelData( model, '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
@@ -552,25 +552,25 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should collapse selection if selection is at the beginning of the nested editable content', () => {
-					setModelData( model, '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should collapse selection if selection is at the end of the nested editable content', () => {
-					setModelData( model, '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -580,7 +580,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					} );
 
 					it( 'should expand selection to the beginning of the nested editable content', () => {
-						setModelData( model, '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
+						_setModelData( model, '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -589,7 +589,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					} );
 
 					it( 'should expand selection to the end of the nested editable content', () => {
-						setModelData( model, '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
+						_setModelData( model, '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
@@ -601,7 +601,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'with non-collapsed forward selection', () => {
 				beforeEach( () => {
-					setModelData( model, '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>' );
+					_setModelData( model, '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the beginning of the nested editable content', () => {
@@ -610,7 +610,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -619,7 +619,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -634,7 +634,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
 						);
 					} );
@@ -645,7 +645,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>fo[obar]</paragraph></nested></widget>'
 						);
 					} );
@@ -654,7 +654,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			describe( 'with non-collapsed backward selection', () => {
 				beforeEach( () => {
-					setModelData( model, '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>', { lastRangeBackward: true } );
+					_setModelData( model, '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>', {
+						lastRangeBackward: true
+					} );
 				} );
 
 				it( 'should move caret to the beginning of the nested editable content', () => {
@@ -663,7 +665,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -672,7 +674,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -687,7 +689,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>[foob]ar</paragraph></nested></widget>'
 						);
 					} );
@@ -698,7 +700,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
 						);
 					} );
@@ -710,7 +712,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			const text = new Array( 20 ).fill( 0 ).map( () => 'word' ).join( ' ' );
 
 			it( 'should not prevent default browser behavior if caret is in the middle line of a text', () => {
-				setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
+				_setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
 
 				editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -719,7 +721,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not prevent default browser behavior if caret is in the middle line of a text with formatting', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested><paragraph>' +
 					'word word word[] word <$text bold="true">bolded</$text> word ' + text +
 					'</paragraph></nested></widget>'
@@ -732,27 +734,27 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move caret to beginning of nested editable content if caret is in the first line of a text', () => {
-				setModelData( model, `<widget><nested><paragraph>${ 'word[] word' + text }</paragraph></nested></widget>` );
+				_setModelData( model, `<widget><nested><paragraph>${ 'word[] word' + text }</paragraph></nested></widget>` );
 
 				editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					`<widget><nested><paragraph>${ '[]word word' + text }</paragraph></nested></widget>`
 				);
 			} );
 
 			it( 'should move caret to end of nested editable content if caret is in the last line of a text', () => {
-				setModelData( model, `<widget><nested><paragraph>${ text + 'word[] word' }</paragraph></nested></widget>` );
+				_setModelData( model, `<widget><nested><paragraph>${ text + 'word[] word' }</paragraph></nested></widget>` );
 
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					`<widget><nested><paragraph>${ text + 'word word[]' }</paragraph></nested></widget>`
 				);
 			} );
@@ -764,7 +766,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should not prevent default browser behavior for the up arrow in the middle lines of the text', () => {
-					setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -773,7 +775,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should not prevent default browser behavior for the down arrow in the middle lines of text', () => {
-					setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + '[] ' + text }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
@@ -782,20 +784,20 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand collapsed selection to the beginning of the nested editable content', () => {
-					setModelData( model, `<widget><nested><paragraph>${ 'word[] word' + text }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ 'word[] word' + text }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ '[word] word' + text }</paragraph></nested></widget>`
 					);
 				} );
 
 				it( 'should not prevent default browser behavior for shrinking selection (up arrow)', () => {
-					setModelData( model, `<widget><nested><paragraph>${ 'word [word]' + text }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ 'word [word]' + text }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -804,7 +806,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand not collapsed selection to the beginning of the editable content from the selection anchor', () => {
-					setModelData( model,
+					_setModelData( model,
 						`<widget><nested><paragraph>${ 'word [word]' + text }</paragraph></nested></widget>`,
 						{ lastRangeBackward: true }
 					);
@@ -814,26 +816,26 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ '[word word]' + text }</paragraph></nested></widget>`
 					);
 				} );
 
 				it( 'should expand collapsed selection to the end of the nested editable content', () => {
-					setModelData( model, `<widget><nested><paragraph>${ text + 'word[] word' }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + 'word[] word' }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + 'word[ word]' }</paragraph></nested></widget>`
 					);
 				} );
 
 				it( 'should not prevent default browser behavior for shrinking selection (down arrow)', () => {
-					setModelData( model,
+					_setModelData( model,
 						`<widget><nested><paragraph>${ text + '[word] word' }</paragraph></nested></widget>`,
 						{ lastRangeBackward: true }
 					);
@@ -845,14 +847,14 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand not collapsed selection to the end of the nested editable content from the selection anchor', () => {
-					setModelData( model, `<widget><nested><paragraph>${ text + '[word] word' }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + '[word] word' }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + '[word word]' }</paragraph></nested></widget>`
 					);
 				} );
@@ -868,33 +870,33 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				it( 'should move the caret to end if the caret is after the last space in the line next to the last one', () => {
 					// This is also first position in the last line.
-					setModelData( model, `<widget><nested><paragraph>${ text + ' []word word word' }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + ' []word word word' }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + ' word word word[]' }</paragraph></nested></widget>`
 					);
 				} );
 
 				it( 'should move the caret to end if the caret is at the last space in the line next to last one', () => {
-					setModelData( model, `<widget><nested><paragraph>${ text + '[] word word word' }</paragraph></nested></widget>` );
+					_setModelData( model, `<widget><nested><paragraph>${ text + '[] word word word' }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + ' word word word[]' }</paragraph></nested></widget>`
 					);
 				} );
 
 				it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<widget><nested><paragraph>' +
 							text.substring( 0, text.length - 2 ) + '[]rd word word word' +
 						'</paragraph></nested></widget>'
@@ -913,27 +915,27 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					} );
 
 					it( 'should expand collapsed selection to the end of the nested editable content', () => {
-						setModelData( model, `<widget><nested><paragraph>${ text + '[] word word word' }</paragraph></nested></widget>` );
+						_setModelData( model, `<widget><nested><paragraph>${ text + '[] word word word' }</paragraph></nested></widget>` );
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							`<widget><nested><paragraph>${ text + '[ word word word]' }</paragraph></nested></widget>`
 						);
 					} );
 
 					it( 'should expand not collapsed selection to the end of the nested editable content from the selection anchor', () => {
-						setModelData( model, `<widget><nested><paragraph>${ text + '[ word] word word' }</paragraph></nested></widget>` );
+						_setModelData( model, `<widget><nested><paragraph>${ text + '[ word] word word' }</paragraph></nested></widget>` );
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						expect( getModelData( model ) ).to.equalMarkup(
+						expect( _getModelData( model ) ).to.equalMarkup(
 							`<widget><nested><paragraph>${ text + '[ word word word]' }</paragraph></nested></widget>`
 						);
 					} );
@@ -945,7 +947,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
 
 			it( 'should not prevent default browser behavior if caret is in the middle of a line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>${ text }[]${ text }</paragraph>` +
 						'<paragraph>foobar</paragraph>' +
@@ -959,7 +961,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move the caret to the beginning of a nested editable content if the caret is in the first line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>word[]${ text }</paragraph>` +
 						'<paragraph>foobar</paragraph>' +
@@ -971,7 +973,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>[]word${ text }</paragraph>` +
 						'<paragraph>foobar</paragraph>' +
@@ -980,7 +982,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not move the caret to the end of a nested editable content if the caret is not in the last line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>${ text }word []word</paragraph>` +
 						'<paragraph>foobar</paragraph>' +
@@ -994,7 +996,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move the caret to end of a nested editable content if the caret is in the last line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						'<paragraph>foobar</paragraph>' +
 						`<paragraph>${ text }word []word</paragraph>` +
@@ -1006,7 +1008,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						'<paragraph>foobar</paragraph>' +
 						`<paragraph>${ text }word word[]</paragraph>` +
@@ -1021,7 +1023,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand selection to the beginning of the nested editable content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<widget><nested>' +
 							`<paragraph>word[] ${ text }</paragraph>` +
 							`<paragraph>${ text }</paragraph>` +
@@ -1033,7 +1035,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							`<paragraph>[word] ${ text }</paragraph>` +
 							`<paragraph>${ text }</paragraph>` +
@@ -1042,7 +1044,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand selection to the end of the nested editable content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<widget><nested>' +
 							`<paragraph>${ text }</paragraph>` +
 							`<paragraph>${ text } []word</paragraph>` +
@@ -1054,7 +1056,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							`<paragraph>${ text }</paragraph>` +
 							`<paragraph>${ text } [word]</paragraph>` +
@@ -1068,7 +1070,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			const text = new Array( 100 ).fill( 0 ).map( () => 'word' ).join( ' ' );
 
 			it( 'should not navigate if the caret is in the middle line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						'<horizontalLine></horizontalLine>' +
 						`<paragraph>${ text }[]${ text }</paragraph>` +
@@ -1082,7 +1084,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move the caret to the beginning of the editable non-object content if it\'s is in the first line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						'<horizontalLine></horizontalLine>' +
 						`<paragraph>word[] ${ text }</paragraph>` +
@@ -1094,7 +1096,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						'<horizontalLine></horizontalLine>' +
 						`<paragraph>[]word ${ text }</paragraph>` +
@@ -1103,7 +1105,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move the caret to the end of the editable non-object content if the caret is in the last line of text', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>${ text } word []word</paragraph>` +
 						'<horizontalLine></horizontalLine>' +
@@ -1115,7 +1117,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text } word word[]</paragraph>` +
 						'<horizontalLine></horizontalLine>' +
@@ -1124,7 +1126,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not move the caret to the end of nested editable content if widget is selected in middle of that content', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'[<horizontalLine></horizontalLine>]' +
@@ -1138,7 +1140,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'<horizontalLine></horizontalLine>' +
@@ -1149,7 +1151,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not move the caret to the end of nested editable content if widget is next to the selection', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'[]<horizontalLine></horizontalLine>' +
@@ -1158,7 +1160,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'[<horizontalLine></horizontalLine>]' +
@@ -1173,7 +1175,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand selection to the beginning of the nested editable content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<widget><nested>' +
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>foo[]bar</paragraph>' +
@@ -1185,7 +1187,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>[foo]bar</paragraph>' +
@@ -1194,7 +1196,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				} );
 
 				it( 'should expand selection to the end of the nested editable content', () => {
-					setModelData( model,
+					_setModelData( model,
 						'<widget><nested>' +
 							'<paragraph>foo[]bar</paragraph>' +
 							'<horizontalLine></horizontalLine>' +
@@ -1206,7 +1208,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					expect( getModelData( model ) ).to.equalMarkup(
+					expect( _getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							'<paragraph>foo[bar]</paragraph>' +
 							'<horizontalLine></horizontalLine>' +
@@ -1218,7 +1220,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 		describe( 'contains image widget with caption and selection inside the caption', () => {
 			it( 'should move caret to the closest limit boundary', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						'<paragraph>foo</paragraph>' +
 						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
@@ -1230,7 +1232,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup( '<widget><nested>' +
+				expect( _getModelData( model ) ).to.equalMarkup( '<widget><nested>' +
 					'<paragraph>foo</paragraph>' +
 					`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 					'</nested></widget>'
@@ -1238,7 +1240,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not prevent default browser behavior when caret at the beginning of nested editable', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						'<paragraph>foo</paragraph>' +
 						`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
@@ -1252,7 +1254,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move the caret to the first position of the image caption', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1264,7 +1266,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1273,7 +1275,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move caret to the end of image caption', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1285,7 +1287,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
@@ -1294,7 +1296,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should move caret to the end of image caption when caret is on the position next to the last one', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>barba[]z</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1306,7 +1308,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
@@ -1315,7 +1317,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			} );
 
 			it( 'should not prevent default browser behavior when caret inside image caption when followed by a paragraph', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1332,7 +1334,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 	describe( 'with selection on nested editable', () => {
 		it( 'should not move the selection if there is no selectable in the limit (up arrow)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<widget>' +
 					'<nested>' +
 						'<paragraph>foo</paragraph>' +
@@ -1345,7 +1347,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<widget>' +
 					'<nested>' +
 						'<paragraph>foo</paragraph>' +
@@ -1361,7 +1363,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		} );
 
 		it( 'should not move the selection if there is no selectable in the limit (down arrow)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<widget>' +
 					'[<nested>' +
 						'<paragraph>foo</paragraph>' +
@@ -1374,7 +1376,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<widget>' +
 					'[<nested>' +
 						'<paragraph>foo</paragraph>' +

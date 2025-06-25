@@ -7,9 +7,9 @@
  * @module table/tablekeyboard
  */
 
-import TableSelection from './tableselection.js';
-import TableWalker from './tablewalker.js';
-import TableUtils from './tableutils.js';
+import { TableSelection } from './tableselection.js';
+import { TableWalker } from './tablewalker.js';
+import { TableUtils } from './tableutils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
@@ -21,10 +21,10 @@ import {
 
 import type {
 	BubblingEventInfo,
-	DocumentSelection,
-	DomEventData,
-	Element,
-	Selection,
+	ModelDocumentSelection,
+	ViewDocumentDomEventData,
+	ModelElement,
+	ModelSelection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
@@ -33,7 +33,7 @@ import type {
  * This plugin enables keyboard navigation for tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
  */
-export default class TableKeyboard extends Plugin {
+export class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -111,10 +111,10 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 */
-	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData ) {
+	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -128,15 +128,15 @@ export default class TableKeyboard extends Plugin {
 		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
-			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as Element ).getChild( 0 ) as Element ) );
+			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as ModelElement ).getChild( 0 ) as ModelElement ) );
 		} );
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
-	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData & KeystrokeInfo ) {
+	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const tableUtils: TableUtils = this.editor.plugins.get( TableUtils );
 		const tableSelection: TableSelection = this.editor.plugins.get( 'TableSelection' );
@@ -144,7 +144,7 @@ export default class TableKeyboard extends Plugin {
 		const selection = editor.model.document.selection;
 		const isForward = !domEventData.shiftKey;
 
-		let tableCell: Element | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
+		let tableCell: ModelElement | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 		if ( !tableCell ) {
 			tableCell = tableSelection.getFocusCell();
@@ -158,8 +158,8 @@ export default class TableKeyboard extends Plugin {
 		domEventData.stopPropagation();
 		bubblingEventInfo.stop();
 
-		const tableRow = tableCell.parent as Element;
-		const table = tableRow.parent as Element;
+		const tableRow = tableCell.parent as ModelElement;
+		const table = tableRow.parent as ModelElement;
 
 		const currentRowIndex = table.getChildIndex( tableRow )!;
 		const currentCellIndex = tableRow.getChildIndex( tableCell )!;
@@ -192,23 +192,23 @@ export default class TableKeyboard extends Plugin {
 			}
 		}
 
-		let cellToFocus: Element;
+		let cellToFocus: ModelElement;
 
 		// Move to the first cell in the next row.
 		if ( isForward && isLastCellInRow ) {
-			const nextRow = table.getChild( currentRowIndex + 1 ) as Element;
+			const nextRow = table.getChild( currentRowIndex + 1 ) as ModelElement;
 
-			cellToFocus = nextRow.getChild( 0 ) as Element;
+			cellToFocus = nextRow.getChild( 0 ) as ModelElement;
 		}
 		// Move to the last cell in the previous row.
 		else if ( !isForward && isFirstCellInRow ) {
-			const previousRow = table.getChild( currentRowIndex - 1 ) as Element;
+			const previousRow = table.getChild( currentRowIndex - 1 ) as ModelElement;
 
-			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as Element;
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as ModelElement;
 		}
 		// Move to the next/previous cell.
 		else {
-			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as Element;
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as ModelElement;
 		}
 
 		editor.model.change( writer => {
@@ -217,9 +217,9 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
+	 * Handles {@link module:engine/view/document~ViewDocument#event:keydown keydown} events.
 	 */
-	private _onArrowKey( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
+	private _onArrowKey( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
 
@@ -311,7 +311,7 @@ export default class TableKeyboard extends Plugin {
 	 * @param tableCell The current table cell element.
 	 * @param isForward The expected navigation direction.
 	 */
-	private _isSelectionAtCellEdge( selection: Selection | DocumentSelection, tableCell: Element, isForward: boolean ) {
+	private _isSelectionAtCellEdge( selection: ModelSelection | ModelDocumentSelection, tableCell: ModelElement, isForward: boolean ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
@@ -340,7 +340,7 @@ export default class TableKeyboard extends Plugin {
 	 * @param direction Direction in which selection should move.
 	 * @param expandSelection If the current selection should be expanded. Default value is false.
 	 */
-	protected _navigateFromCellInDirection( focusCell: Element, direction: ArrowKeyCodeDirection, expandSelection = false ): void {
+	protected _navigateFromCellInDirection( focusCell: ModelElement, direction: ArrowKeyCodeDirection, expandSelection = false ): void {
 		const model = this.editor.model;
 
 		const table = focusCell.findAncestor( 'table' )!;

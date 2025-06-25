@@ -9,7 +9,7 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
 
 /**
  * The table cell vertical alignment command.
@@ -33,7 +33,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand.js';
  *
  * The `'middle'` value is the default one so there is no need to set it.
  */
-export default class TableCellVerticalAlignmentCommand extends TableCellPropertyCommand {
+export class TableCellVerticalAlignmentCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellVerticalAlignmentCommand` instance.
 	 *

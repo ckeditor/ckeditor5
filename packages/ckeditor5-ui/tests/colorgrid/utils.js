@@ -7,7 +7,7 @@ import {
 	normalizeColorOptions,
 	getLocalizedColorOptions
 } from '../../src/colorgrid/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();

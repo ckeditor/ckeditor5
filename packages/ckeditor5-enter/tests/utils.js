@@ -4,7 +4,7 @@
  */
 
 import { getCopyOnEnterAttributes } from '../src/utils.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'utils', () => {
 	describe( 'getCopyOnEnterAttributes()', () => {

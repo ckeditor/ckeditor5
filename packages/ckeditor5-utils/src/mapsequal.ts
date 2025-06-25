@@ -14,7 +14,7 @@
  * @param mapB The second map to compare.
  * @returns `true` if given maps are equal, `false` otherwise.
  */
-export default function mapsEqual<Key>( mapA: Map<Key, unknown>, mapB: Map<Key, unknown> ): boolean {
+export function mapsEqual<Key>( mapA: Map<Key, unknown>, mapB: Map<Key, unknown> ): boolean {
 	if ( mapA.size != mapB.size ) {
 		return false;
 	}

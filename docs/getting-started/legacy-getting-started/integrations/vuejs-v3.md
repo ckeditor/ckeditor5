@@ -877,7 +877,7 @@ Allows disabling the two-way data binding mechanism. The default value is `false
 
 The reason for introducing this option is performance issues in large documents. After enabling this flag, the `v-model` directive will no longer update the connected value whenever the editor's data is changed.
 
-This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
+This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
 ```html
 <ckeditor :editor="editor" :disableTwoWayDataBinding="true"></ckeditor>
@@ -895,7 +895,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 ### `focus`
 
-Corresponds to the {@link module:engine/view/document~Document#event:focus `focus`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
 ```html
 <ckeditor :editor="editor" @focus="onEditorFocus"></ckeditor>
@@ -903,7 +903,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:focus `focu
 
 ### `blur`
 
-Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
 ```html
 <ckeditor :editor="editor" @blur="onEditorBlur"></ckeditor>
@@ -911,7 +911,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`
 
 ### `input`
 
-Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event.
+Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event.
 
 ```html
 <ckeditor :editor="editor" @input="onEditorInput"></ckeditor>

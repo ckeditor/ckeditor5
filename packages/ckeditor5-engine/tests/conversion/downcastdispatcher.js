@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
-import Mapper from '../../src/conversion/mapper.js';
+import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
+import { Mapper } from '../../src/conversion/mapper.js';
 
-import Model from '../../src/model/model.js';
-import ModelText from '../../src/model/text.js';
-import ModelElement from '../../src/model/element.js';
-import ModelRootElement from '../../src/model/rootelement.js';
-import ModelDocumentFragment from '../../src/model/documentfragment.js';
-import ModelRange from '../../src/model/range.js';
-import ModelConsumable from '../../src/conversion/modelconsumable.js';
+import { Model } from '../../src/model/model.js';
+import { ModelText } from '../../src/model/text.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelConsumable } from '../../src/conversion/modelconsumable.js';
 
-import View from '../../src/view/view.js';
-import ViewRootEditableElement from '../../src/view/rooteditableelement.js';
-import ViewContainerElement from '../../src/view/containerelement.js';
-import DowncastWriter from '../../src/view/downcastwriter.js';
+import { EditingView } from '../../src/view/view.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
+import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { insertAttributesAndChildren } from '../../src/conversion/downcasthelpers.js';
 
@@ -28,7 +28,7 @@ describe( 'DowncastDispatcher', () => {
 
 	beforeEach( () => {
 		model = new Model();
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		doc = model.document;
 		mapper = new Mapper();
 		apiObj = {};
@@ -1523,7 +1523,7 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	function assertConversionApi( conversionApi ) {
-		expect( conversionApi ).to.have.property( 'writer' ).that.is.instanceof( DowncastWriter );
+		expect( conversionApi ).to.have.property( 'writer' ).that.is.instanceof( ViewDowncastWriter );
 		expect( conversionApi ).to.have.property( 'consumable' ).that.is.instanceof( ModelConsumable );
 		expect( conversionApi ).to.have.property( 'mapper' ).that.is.equal( mapper );
 		expect( conversionApi ).to.have.property( 'apiObj' ).that.is.equal( apiObj );

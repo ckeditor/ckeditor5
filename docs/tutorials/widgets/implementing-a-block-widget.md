@@ -2,6 +2,7 @@
 category: widget-tutorials
 order: 10
 meta-title: Implementing a block widget tutorial | CKEditor 5 Documentation
+meta-description: Learn how to implement a custom block widget in CKEditor 5, covering schema definition, editing view, conversion, and UI integration.
 ---
 
 # Implementing a block widget
@@ -422,7 +423,7 @@ See what else you can improve.
 	CKEditor&nbsp;5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
 </info-box>
 
-The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ContainerElement `ContainerElement`}s in the view (and back during upcasting).
+The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ViewContainerElement `ContainerElement`}s in the view (and back during upcasting).
 
 You want to change this behavior a bit so the structure created in the editing view is enhanced with the {@link module:widget/utils~toWidget `toWidget()`} and {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} utilities. You do not want to affect the data view, though. Therefore, you will need to define converters for the editing and data downcasting separately.
 
@@ -661,7 +662,7 @@ console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
 
 It is always `true` except when the selection is in one place &ndash; in other simple box's title. You can also observe that executing the command when the selection is in that place takes no effect.
 
-Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~Schema#addChildCheck defining a custom child check}:
+Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~ModelSchema#addChildCheck defining a custom child check}:
 
 ```js
 // simplebox/simpleboxediting.js

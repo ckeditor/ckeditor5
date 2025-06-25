@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKBoxUI from './ckboxui.js';
-import CKBoxEditing from './ckboxediting.js';
+import { CKBoxUI } from './ckboxui.js';
+import { CKBoxEditing } from './ckboxediting.js';
 
 /**
  * The CKBox feature, a bridge between the CKEditor 5 WYSIWYG editor and the CKBox file manager and uploader.
@@ -25,7 +25,7 @@ import CKBoxEditing from './ckboxediting.js';
  * Check out the {@glink features/images/image-upload/image-upload Image upload} guide to learn about other ways to upload
  * images into CKEditor 5.
  */
-export default class CKBox extends Plugin {
+export class CKBox extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

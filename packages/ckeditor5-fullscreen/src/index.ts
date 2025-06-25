@@ -7,12 +7,15 @@
  * @module fullscreen
  */
 
-export { default as Fullscreen } from './fullscreen.js';
-export { default as FullscreenEditing } from './fullscreenediting.js';
-export { default as FullscreenUI } from './fullscreenui.js';
-export { default as AbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+export { Fullscreen } from './fullscreen.js';
+export { FullscreenEditing } from './fullscreenediting.js';
+export { FullscreenUI } from './fullscreenui.js';
+export { FullscreenCommand } from './fullscreencommand.js';
 
-export type { default as FullscreenConfig } from './fullscreenconfig.js';
-export type { default as FullscreenCommand } from './fullscreencommand.js';
+export { AbstractEditorHandler as FullscreenAbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+export { ClassicEditorHandler as FullscreenClassicEditorHandler } from './handlers/classiceditorhandler.js';
+export { DecoupledEditorHandler as FullscreenDecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
+
+export type { FullscreenConfig } from './fullscreenconfig.js';
 
 import './augmentation.js';

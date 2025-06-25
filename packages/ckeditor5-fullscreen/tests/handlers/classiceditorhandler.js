@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditorHandler from '../../src/handlers/classiceditorhandler.js';
-import FullscreenEditing from '../../src/fullscreenediting.js';
+import { ClassicEditorHandler } from '../../src/handlers/classiceditorhandler.js';
+import { FullscreenEditing } from '../../src/fullscreenediting.js';
 
 describe( 'ClassicEditorHandler', () => {
 	let classicEditorHandler, domElement, editor;

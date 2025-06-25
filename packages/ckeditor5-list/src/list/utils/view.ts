@@ -7,7 +7,7 @@
  * @module list/list/utils/view
  */
 
-import type { DowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewAttributeElement, ViewDocumentFragment, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 import { type ListType } from '../listediting.js';
 
 /**
@@ -95,7 +95,7 @@ export function getIndent( listItem: ViewElement ): number {
  * @internal
  */
 export function createListElement(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	indent: number,
 	type: ListType,
 	id = getViewElementIdForListType( type, indent )
@@ -113,7 +113,7 @@ export function createListElement(
  * @internal
  */
 export function createListItemElement(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	indent: number,
 	id: string
 ): ViewAttributeElement {

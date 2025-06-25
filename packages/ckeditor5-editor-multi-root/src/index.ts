@@ -7,12 +7,17 @@
  * @module editor-multi-root
  */
 
-export { default as MultiRootEditor } from './multirooteditor.js';
+export { MultiRootEditor } from './multirooteditor.js';
+export { MultiRootEditorUI } from './multirooteditorui.js';
+export { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 export type {
 	RootAttributes,
 	AddRootEvent,
-	DetachRootEvent
+	DetachRootEvent,
+	LoadRootEvent,
+	AddRootOptions,
+	LoadRootOptions
 } from './multirooteditor.js';
 
 import './augmentation.js';

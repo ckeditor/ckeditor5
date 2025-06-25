@@ -7,6 +7,11 @@
  * @module adapter-ckfinder
  */
 
-export { default as CKFinderUploadAdapter } from './uploadadapter.js';
+export { CKFinderUploadAdapter } from './uploadadapter.js';
+export {
+	getCsrfToken as _getCKFinderCsrfToken,
+	getCookie as _getCKFinderCookie,
+	setCookie as _setCKFinderCookie
+} from './utils.js';
 
 import './augmentation.js';

@@ -9,7 +9,7 @@
 
 import {
 	Matcher,
-	UpcastWriter,
+	ViewUpcastWriter,
 	type ViewDocumentFragment,
 	type ViewElement,
 	type ViewNode,
@@ -34,6 +34,7 @@ import {
  *
  * @param documentFragment The view structure to be transformed.
  * @param stylesString Styles from which list-like elements styling will be extracted.
+ * @internal
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
@@ -44,7 +45,7 @@ export function transformListItemLikeElementsIntoLists(
 		return;
 	}
 
-	const writer = new UpcastWriter( documentFragment.document );
+	const writer = new ViewUpcastWriter( documentFragment.document );
 	const itemLikeElements = findAllItemLikeElements( documentFragment, writer );
 
 	if ( !itemLikeElements.length ) {
@@ -180,10 +181,12 @@ export function transformListItemLikeElementsIntoLists(
 
 /**
  * Removes paragraph wrapping content inside a list item.
+ *
+ * @internal
  */
 export function unwrapParagraphInListItem(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	for ( const value of writer.createRangeIn( documentFragment ) ) {
 		const element = value.item;
@@ -203,11 +206,12 @@ export function unwrapParagraphInListItem(
  * Finds all list-like elements in a given document fragment.
  *
  * @param documentFragment Document fragment in which to look for list-like nodes.
- * @returns Array of found list-like items. Each item is an object containing:
+ * @returns Array of found list-like items. Each item is an object containing
+ * @internal
  */
 function findAllItemLikeElements(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): Array<ListLikeElement> {
 	const range = writer.createRangeIn( documentFragment );
 	const itemLikeElements: Array<ListLikeElement> = [];
@@ -459,7 +463,7 @@ function mapListStyleDefinition( value: string ) {
  */
 function createNewEmptyList(
 	listStyle: ReturnType<typeof detectListStyle>,
-	writer: UpcastWriter,
+	writer: ViewUpcastWriter,
 	hasMultiLevelListPlugin: boolean
 ) {
 	const list = writer.createElement( listStyle.type );
@@ -525,7 +529,7 @@ function getListItemData( element: ViewElement ): ListItemData {
 /**
  * Removes span with a numbering/bullet from a given element.
  */
-function removeBulletElement( element: ViewElement, writer: UpcastWriter ) {
+function removeBulletElement( element: ViewElement, writer: ViewUpcastWriter ) {
 	// Matcher for finding `span` elements holding lists numbering/bullets.
 	const bulletMatcher = new Matcher( {
 		name: 'span',

@@ -8,14 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine.js';
-import ImageUtils from './imageutils.js';
+import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, ModelElement } from 'ckeditor5/src/engine.js';
+import { ImageUtils } from './imageutils.js';
 import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils.js';
 
 /**
  * This plugin enables `width` and `height` attributes in inline and block image elements.
  */
-export default class ImageSizeAttributes extends Plugin {
+export class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -50,12 +50,14 @@ export default class ImageSizeAttributes extends Plugin {
 	 * Registers the `width` and `height` attributes for inline and block images.
 	 */
 	private _registerSchema(): void {
+		const schema = this.editor.model.schema;
+
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
+			schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
 		}
 	}
 
@@ -155,7 +157,7 @@ export default class ImageSizeAttributes extends Plugin {
 				}
 
 				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const img = imageUtils.findViewImgElement( viewElement )!;
 
 				if ( data.attributeNewValue !== null ) {
@@ -191,4 +193,3 @@ export default class ImageSizeAttributes extends Plugin {
 		}
 	}
 }
-

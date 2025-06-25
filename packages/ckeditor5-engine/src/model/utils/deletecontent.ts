@@ -7,17 +7,17 @@
  * @module engine/model/utils/deletecontent
  */
 
-import DocumentSelection from '../documentselection.js';
-import LivePosition from '../liveposition.js';
-import Range from '../range.js';
+import { ModelDocumentSelection } from '../documentselection.js';
+import { ModelLivePosition } from '../liveposition.js';
+import { ModelRange } from '../range.js';
 
-import type DocumentFragment from '../documentfragment.js';
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Position from '../position.js';
-import type Schema from '../schema.js';
-import type Selection from '../selection.js';
-import type Writer from '../writer.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
+import { type ModelElement } from '../element.js';
+import { type Model } from '../model.js';
+import { type ModelPosition } from '../position.js';
+import { type ModelSchema } from '../schema.js';
+import { type ModelSelection } from '../selection.js';
+import { type ModelWriter } from '../writer.js';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -36,7 +36,7 @@ import type Writer from '../writer.js';
  * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
  * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
  *
- * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
+ * Note: {@link module:engine/model/schema~ModelSchema#isObject object} and {@link module:engine/model/schema~ModelSchema#isLimit limit}
  * elements will not be merged.
  *
  * @param options.doNotResetEntireContent Whether to skip replacing the entire content with a
@@ -73,10 +73,12 @@ import type Writer from '../writer.js';
  *
  * However, in some cases, it is expected to remove content exactly as selected in the selection, without any fixing. In these cases,
  * this flag can be set to `true`, which will prevent fixing the selection.
+ *
+ * @internal
  */
-export default function deleteContent(
+export function deleteContent(
 	model: Model,
-	selection: Selection | DocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	options: {
 		leaveUnmerged?: boolean;
 		doNotResetEntireContent?: boolean;
@@ -123,8 +125,8 @@ export default function deleteContent(
 		if ( !options.doNotFixSelection ) {
 			[ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 		} else {
-			startPosition = LivePosition.fromPosition( selRange.start, 'toPrevious' );
-			endPosition = LivePosition.fromPosition( selRange.end, 'toNext' );
+			startPosition = ModelLivePosition.fromPosition( selRange.start, 'toPrevious' );
+			endPosition = ModelLivePosition.fromPosition( selRange.end, 'toNext' );
 		}
 
 		// 2. Remove the content if there is any.
@@ -177,7 +179,7 @@ export default function deleteContent(
  *
  * This is the same behavior as in Selection#getSelectedBlocks() "special case".
  */
-function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: LivePosition, endPosition: LivePosition ] {
+function getLivePositionsForSelectedBlocks( range: ModelRange ): [ startPosition: ModelLivePosition, endPosition: ModelLivePosition ] {
 	const model = range.root.document!.model;
 
 	const startPosition = range.start;
@@ -214,8 +216,8 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Liv
 	}
 
 	return [
-		LivePosition.fromPosition( startPosition, 'toPrevious' ),
-		LivePosition.fromPosition( endPosition, 'toNext' )
+		ModelLivePosition.fromPosition( startPosition, 'toPrevious' ),
+		ModelLivePosition.fromPosition( endPosition, 'toNext' )
 	];
 }
 
@@ -223,7 +225,7 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Liv
  * Finds the lowest element in position's ancestors which is a block.
  * Returns null if a limit element is encountered before reaching a block element.
  */
-function getParentBlock( position: Position ): Element | null | undefined {
+function getParentBlock( position: ModelPosition ): ModelElement | null | undefined {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 	const ancestors = element.getAncestors( { parentFirst: true, includeSelf: true } );
@@ -234,7 +236,7 @@ function getParentBlock( position: Position ): Element | null | undefined {
 		}
 
 		if ( schema.isBlock( element ) ) {
-			return element as Element;
+			return element as ModelElement;
 		}
 	}
 }
@@ -243,7 +245,7 @@ function getParentBlock( position: Position ): Element | null | undefined {
  * This function is a result of reaching the Ballmer's peak for just the right amount of time.
  * Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
  */
-function mergeBranches( writer: Writer, startPosition: Position, endPosition: Position ) {
+function mergeBranches( writer: ModelWriter, startPosition: ModelPosition, endPosition: ModelPosition ) {
 	const model = writer.model;
 
 	// Verify if there is a need and possibility to merge.
@@ -318,13 +320,13 @@ function mergeBranches( writer: Writer, startPosition: Position, endPosition: Po
  * ```
  */
 function mergeBranchesLeft(
-	writer: Writer,
-	startPosition: Position,
-	endPosition: Position,
-	commonAncestor: Element | DocumentFragment | null
+	writer: ModelWriter,
+	startPosition: ModelPosition,
+	endPosition: ModelPosition,
+	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
-	const startElement = startPosition.parent as Element;
-	const endElement = endPosition.parent as Element;
+	const startElement = startPosition.parent as ModelElement;
+	const endElement = endPosition.parent as ModelElement;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -372,7 +374,7 @@ function mergeBranchesLeft(
 	//     </blockBlock>                     ->
 	//
 	while ( endPosition.parent.isEmpty ) {
-		const parentToRemove = endPosition.parent as Element;
+		const parentToRemove = endPosition.parent as ModelElement;
 
 		endPosition = writer.createPositionBefore( parentToRemove );
 
@@ -409,13 +411,13 @@ function mergeBranchesLeft(
  * ```
  */
 function mergeBranchesRight(
-	writer: Writer,
-	startPosition: Position,
-	endPosition: Position,
-	commonAncestor: Element | DocumentFragment | null
+	writer: ModelWriter,
+	startPosition: ModelPosition,
+	endPosition: ModelPosition,
+	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
-	const startElement = startPosition.parent as Element;
-	const endElement = endPosition.parent as Element;
+	const startElement = startPosition.parent as ModelElement;
+	const endElement = endPosition.parent as ModelElement;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -449,7 +451,7 @@ function mergeBranchesRight(
 	//     </blockBlock>                                            ->  </blockBlock>
 	//
 	while ( startPosition.parent.isEmpty ) {
-		const parentToRemove = startPosition.parent as Element;
+		const parentToRemove = startPosition.parent as ModelElement;
 
 		startPosition = writer.createPositionBefore( parentToRemove );
 
@@ -484,7 +486,7 @@ function mergeBranchesRight(
 /**
  * There is no right merge operation so we need to simulate it.
  */
-function mergeRight( writer: Writer, position: Position ) {
+function mergeRight( writer: ModelWriter, position: ModelPosition ) {
 	const startElement: any = position.nodeBefore;
 	const endElement: any = position.nodeAfter;
 
@@ -502,7 +504,7 @@ function mergeRight( writer: Writer, position: Position ) {
  * Verifies if merging is needed and possible. It's not needed if both positions are in the same element
  * and it's not possible if some element is a limit or the range crosses a limit element.
  */
-function checkShouldMerge( schema: Schema, startPosition: Position, endPosition: Position ): boolean {
+function checkShouldMerge( schema: ModelSchema, startPosition: ModelPosition, endPosition: ModelPosition ): boolean {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
 
@@ -526,7 +528,7 @@ function checkShouldMerge( schema: Schema, startPosition: Position, endPosition:
 /**
  * Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
  */
-function getAncestorsJustBelowCommonAncestor( positionA: Position, positionB: Position ) {
+function getAncestorsJustBelowCommonAncestor( positionA: ModelPosition, positionB: ModelPosition ) {
 	const ancestorsA = positionA.getAncestors();
 	const ancestorsB = positionB.getAncestors();
 
@@ -539,7 +541,7 @@ function getAncestorsJustBelowCommonAncestor( positionA: Position, positionB: Po
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
 }
 
-function shouldAutoparagraph( schema: Schema, position: Position ) {
+function shouldAutoparagraph( schema: ModelSchema, position: ModelPosition ) {
 	const isTextAllowed = schema.checkChild( position, '$text' );
 	const isParagraphAllowed = schema.checkChild( position, 'paragraph' );
 
@@ -554,8 +556,8 @@ function shouldAutoparagraph( schema: Schema, position: Position ) {
  * we'll check <p>, <bQ>, <widget> and <caption>.
  * Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
  */
-function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: Schema ) {
-	const rangeToCheck = new Range( leftPos, rightPos );
+function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition, schema: ModelSchema ) {
+	const rangeToCheck = new ModelRange( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
 		if ( schema.isLimit( value.item ) ) {
@@ -567,9 +569,9 @@ function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: 
 }
 
 function insertParagraph(
-	writer: Writer,
-	position: Position,
-	selection: Selection | DocumentSelection,
+	writer: ModelWriter,
+	position: ModelPosition,
+	selection: ModelSelection | ModelDocumentSelection,
 	attributes = {}
 ) {
 	const paragraph = writer.createElement( 'paragraph' );
@@ -581,7 +583,7 @@ function insertParagraph(
 	collapseSelectionAt( writer, selection, writer.createPositionAt( paragraph, 0 ) );
 }
 
-function replaceEntireContentWithParagraph( writer: Writer, selection: Selection | DocumentSelection ) {
+function replaceEntireContentWithParagraph( writer: ModelWriter, selection: ModelSelection | ModelDocumentSelection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( writer.createRangeIn( limitElement ) );
@@ -594,7 +596,7 @@ function replaceEntireContentWithParagraph( writer: Writer, selection: Selection
  * * selection contains at least two elements,
  * * whether the paragraph is allowed in schema in the common ancestor.
  */
-function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: Selection | DocumentSelection ) {
+function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, selection: ModelSelection | ModelDocumentSelection ) {
 	const limitElement = schema.getLimitElement( selection );
 
 	if ( !selection.containsEntireContent( limitElement ) ) {
@@ -615,11 +617,11 @@ function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: 
  * uses a different method to set it.
  */
 function collapseSelectionAt(
-	writer: Writer,
-	selection: Selection | DocumentSelection,
-	positionOrRange: Position | Range
+	writer: ModelWriter,
+	selection: ModelSelection | ModelDocumentSelection,
+	positionOrRange: ModelPosition | ModelRange
 ) {
-	if ( selection instanceof DocumentSelection ) {
+	if ( selection instanceof ModelDocumentSelection ) {
 		writer.setSelection( positionOrRange );
 	} else {
 		selection.setTo( positionOrRange );

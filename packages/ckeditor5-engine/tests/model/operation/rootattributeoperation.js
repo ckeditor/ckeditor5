@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import DocumentFragment from '../../../src/model/documentfragment.js';
-import Element from '../../../src/model/element.js';
-import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation.js';
+import { Model } from '../../../src/model/model.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelElement } from '../../../src/model/element.js';
+import { RootAttributeOperation } from '../../../src/model/operation/rootattributeoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
@@ -195,8 +195,8 @@ describe( 'RootAttributeOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error when trying to change non-root element', () => {
-			const child = new Element( 'p' );
-			const parent = new Element( 'p' );
+			const child = new ModelElement( 'p' );
+			const parent = new ModelElement( 'p' );
 			parent._appendChild( child );
 
 			expectToThrowCKEditorError( () => {
@@ -215,7 +215,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should throw an error when trying to change document fragment', () => {
 			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
-					new DocumentFragment(),
+					new ModelDocumentFragment(),
 					'foo',
 					null,
 					'bar',

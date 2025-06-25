@@ -14,14 +14,14 @@ import {
 	type EditingKeystrokeCallback
 } from 'ckeditor5/src/core.js';
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Marker,
 	DowncastAddMarkerEvent,
 	ModelDeleteContentEvent,
 	ModelPostFixer,
-	Range,
-	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback,
+	ModelRange,
+	ModelSchemaAttributeCheckCallback,
+	ModelSchemaChildCheckCallback,
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
@@ -32,7 +32,7 @@ import type {
 	ClipboardPipeline
 } from 'ckeditor5/src/clipboard.js';
 
-import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand.js';
+import { RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand.js';
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
@@ -51,7 +51,7 @@ const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
  * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
  * * It also enables highlighting exception markers that are selected.
  */
-export default class RestrictedEditingModeEditing extends Plugin {
+export class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * Command names that are enabled outside the non-restricted regions.
 	 */
@@ -450,7 +450,7 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
  * - is on marker start - "delete" - to prevent removing content before marker
  * - is on marker end - "deleteForward" - to prevent removing content after marker
  */
-function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: DocumentSelection, markerRange: Range ) {
+function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: ModelDocumentSelection, markerRange: ModelRange ) {
 	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus! ) ) {
 		return true;
 	}
@@ -527,7 +527,7 @@ function disallowInputExecForWrongRange( editor: Editor ): GetCallback<InsertTex
 	};
 }
 
-function isRangeInsideSingleMarker( editor: Editor, range: Range ) {
+function isRangeInsideSingleMarker( editor: Editor, range: ModelRange ) {
 	const markerAtStart = getMarkerAtPosition( editor, range.start );
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 
@@ -576,7 +576,7 @@ function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 	};
 }
 
-function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): SchemaAttributeCheckCallback {
+function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): ModelSchemaAttributeCheckCallback {
 	return ( context, attributeName ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return allowedAttributes.includes( attributeName );
@@ -584,7 +584,7 @@ function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig
 	};
 }
 
-function allowTextOnlyInClipboardHolder(): SchemaChildCheckCallback {
+function allowTextOnlyInClipboardHolder(): ModelSchemaChildCheckCallback {
 	return ( context, childDefinition ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return childDefinition.name === '$text';

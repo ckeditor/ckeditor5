@@ -17,20 +17,21 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconTextAlternative } from 'ckeditor5/src/icons.js';
 
-import TextAlternativeFormView, {
+import {
+	TextAlternativeFormView,
 	type TextAlternativeFormViewCancelEvent,
 	type TextAlternativeFormViewSubmitEvent
 } from './ui/textalternativeformview.js';
 import { repositionContextualBalloon, getBalloonPositionData } from '../image/ui/utils.js';
-import type ImageTextAlternativeCommand from './imagetextalternativecommand.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageTextAlternativeCommand } from './imagetextalternativecommand.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The image text alternative UI plugin.
  *
  * The plugin uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  */
-export default class ImageTextAlternativeUI extends Plugin {
+export class ImageTextAlternativeUI extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */

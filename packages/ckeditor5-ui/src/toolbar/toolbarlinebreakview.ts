@@ -7,14 +7,14 @@
  * @module ui/toolbar/toolbarlinebreakview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The toolbar line break view class.
  */
-export default class ToolbarLineBreakView extends View {
+export class ToolbarLineBreakView extends View {
 	/**
 	 * @inheritDoc
 	 */

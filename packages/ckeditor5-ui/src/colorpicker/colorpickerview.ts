@@ -12,10 +12,10 @@ import { convertColor, convertToHex, registerCustomElement, type ColorPickerView
 import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
-import View from '../view.js';
-import type InputTextView from '../inputtext/inputtextview.js';
-import type ViewCollection from '../viewcollection.js';
-import LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import { View } from '../view.js';
+import { type InputTextView } from '../inputtext/inputtextview.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { LabeledFieldView } from '../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../labeledfield/utils.js';
 
 // Custom export due to https://github.com/ckeditor/ckeditor5/issues/15698.
@@ -33,7 +33,7 @@ const waitingTime = 150;
 /**
  * A class which represents a color picker with an input field for defining custom colors.
  */
-export default class ColorPickerView extends View {
+export class ColorPickerView extends View {
 	/**
 	 * Element with saturation and hue sliders.
 	 */
@@ -349,7 +349,7 @@ function convertColorToCommonHexFormat( inputColor: string ): string {
 }
 
 // View abstraction over pointer in color picker.
-class SliderView extends View {
+export class SliderView extends View {
 	/**
 	 * @param element HTML element of slider in color picker.
 	 */
@@ -389,7 +389,7 @@ class HashView extends View {
 // it will become a component in `ckeditor5-ui`.
 //
 // @private
-class ColorPickerInputRowView extends View {
+export class ColorPickerInputRowView extends View {
 	/**
 	 * A collection of row items (buttons, dropdowns, etc.).
 	 */
@@ -458,6 +458,7 @@ export type ColorPickerColorSelectedEvent = {
  * @param color Unsafe color string.
  * @returns Null if provided color is not hex value.
  * @export
+ * @internal
  */
 export function tryParseHexColor<S extends string>( color: S | null | undefined ): HexColor<S> | null {
 	if ( !color ) {

@@ -7,15 +7,35 @@
  * @module find-and-replace
  */
 
-export { default as FindAndReplace } from './findandreplace.js';
-export { default as FindAndReplaceEditing } from './findandreplaceediting.js';
-export { default as FindAndReplaceUI } from './findandreplaceui.js';
-export { default as FindAndReplaceUtils } from './findandreplaceutils.js';
-export { default as FindCommand } from './findcommand.js';
-export { default as FindNextCommand } from './findnextcommand.js';
-export { default as FindPreviousCommand } from './findpreviouscommand.js';
-export { default as ReplaceCommand } from './replacecommand.js';
-export { default as ReplaceAllCommand } from './replaceallcommand.js';
+export { FindAndReplace, type FindResultType } from './findandreplace.js';
+export { FindAndReplaceEditing } from './findandreplaceediting.js';
+export { FindAndReplaceUI, type FindResetedEvent } from './findandreplaceui.js';
+export { FindAndReplaceUtils } from './findandreplaceutils.js';
+export { FindCommand, type FindAttributes } from './findcommand.js';
+export { FindNextCommand } from './findnextcommand.js';
+export { FindPreviousCommand } from './findpreviouscommand.js';
+export { ReplaceCommand } from './replacecommand.js';
+export { ReplaceAllCommand } from './replaceallcommand.js';
+export { FindReplaceCommandBase } from './replacecommandbase.js';
 export type { FindAndReplaceConfig } from './findandreplaceconfig.js';
+
+export {
+	FindAndReplaceFormView,
+	type FindNextEvent,
+	type FindNextEventData,
+	type FindPreviousEvent,
+	type FindEventBaseData,
+	type ReplaceEvent,
+	type ReplaceEventData,
+	type ReplaceAllEvent
+} from './ui/findandreplaceformview.js';
+
+export {
+	FindAndReplaceState,
+	sortSearchResultsByMarkerPositions as _sortFindResultsByMarkerPositions,
+	type FindCallback,
+	type FindCallbackResultObject,
+	type FindCallbackResult
+} from './findandreplacestate.js';
 
 import './augmentation.js';

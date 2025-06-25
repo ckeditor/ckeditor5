@@ -2,6 +2,7 @@
 category: framework-deep-dive-conversion-helpers
 menu-title: Upcast helpers
 meta-title: Upcast helpers | CKEditor 5 Framework Documentation
+meta-description: Discover CKEditor 5 upcast helpers to simplify converting view elements into model elements during content loading and editing.
 order: 30
 since: 33.0.0
 modified_at: 2022-03-02

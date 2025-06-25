@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import priorities from '../src/priorities.js';
+import { priorities } from '../src/priorities.js';
 
 describe( 'get', () => {
 	it( 'should return correct value for string priority', () => {

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 import { modelList } from '../list/_utils/utils.js';
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'ListPropertiesEditing', () => {
 	let editor, model;
@@ -105,7 +105,7 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'post-fixer', () => {
 			it( 'should ensure that all item in a single list have the same `listStyle` attribute', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1. {style:circle}
 					* 2.
 					* 3. {style:square}
@@ -118,7 +118,7 @@ describe( 'ListPropertiesEditing', () => {
 					* 5. {style:disc}
 				` ) );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					* 1. {style:circle}
 					* 2.
 					* 3.
@@ -133,7 +133,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should ensure that all list item have the same `listStyle` after removing a block between them', () => {
-				setData( model,
+				_setModelData( model,
 					'<paragraph listItemId="01" listStyle="circle" listType="bulleted">1.</paragraph>' +
 					'<paragraph listItemId="02" listStyle="circle" listType="bulleted">2.</paragraph>' +
 					'<paragraph>Foo</paragraph>' +
@@ -145,7 +145,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.remove( model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listItemId="01" listStyle="circle" listType="bulleted">1.</paragraph>' +
 					'<paragraph listItemId="02" listStyle="circle" listType="bulleted">2.</paragraph>' +
 					'<paragraph listItemId="03" listStyle="circle" listType="bulleted">3.</paragraph>' +
@@ -154,7 +154,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should restore `listStyle` attribute after it\'s changed in one of the following items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {style:upper-roman}
 					# 2.
 					# 3.
@@ -164,7 +164,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listStyle', 'decimal', model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {style:upper-roman}
 					# 2.
 					# 3.
@@ -172,7 +172,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should change `listStyle` attribute for all the following items after the first one is changed', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {style:upper-roman}
 					# 2.
 					# 3.
@@ -182,7 +182,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listStyle', 'decimal', model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {style:decimal}
 					# 2.
 					# 3.
@@ -195,7 +195,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, default)', () => {
 					editor.setData( '<ul><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:default}
 					` ) );
 				} );
@@ -203,7 +203,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, default)', () => {
 					editor.setData( '<ol><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:default}
 					` ) );
 				} );
@@ -211,7 +211,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, listStyleType="circle")', () => {
 					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:circle}
 					` ) );
 				} );
@@ -219,7 +219,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, listStyleType="decimal")', () => {
 					editor.setData( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:decimal}
 					` ) );
 				} );
@@ -227,7 +227,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, type="square")', () => {
 					editor.setData( '<ul type="square"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:square}
 					` ) );
 				} );
@@ -235,7 +235,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, type="A")', () => {
 					editor.setData( '<ol type="A"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -243,7 +243,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, list-style-type="circle" type="square")', () => {
 					editor.setData( '<ul style="list-style-type:circle;" type="circle"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:circle}
 					` ) );
 				} );
@@ -251,7 +251,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, list-style-type="decimal" type="A")', () => {
 					editor.setData( '<ol type="A" style="list-style-type:decimal"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:decimal}
 					` ) );
 				} );
@@ -259,7 +259,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-latin -> lower-latin)', () => {
 					editor.setData( '<ol style="list-style-type:lower-latin;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:lower-latin}
 					` ) );
 				} );
@@ -267,7 +267,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-alpha -> lower-latin)', () => {
 					editor.setData( '<ol style="list-style-type:lower-alpha;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:lower-latin}
 					` ) );
 				} );
@@ -275,7 +275,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-latin -> upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -283,7 +283,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-alpha -> upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-alpha;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -291,42 +291,46 @@ describe( 'ListPropertiesEditing', () => {
 
 			describe( 'downcast', () => {
 				it( 'should downcast to `list-style-type` style (bulleted, default)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (bulleted, circle)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+						'<ul style="list-style-type:circle;"><li>Foo</li></ul>'
+					);
 				} );
 
 				it( 'should downcast to `list-style-type` style (numbered, default)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (numbered, decimal)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+						'<ol style="list-style-type:decimal;"><li>Foo</li></ol>'
+					);
 				} );
 			} );
 		} );
 
 		describe( 'indenting lists', () => {
 			it( 'should reset `listStyle` attribute after indenting a single item', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					* 2.
@@ -336,7 +340,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					* 2.
@@ -346,7 +350,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should reset `listStyle` attribute after indenting a few items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {style:decimal}
 					# [2.
 					# 3.]
@@ -354,7 +358,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {style:decimal}
 					  # [2. {style:default}
 					  # 3.]
@@ -362,7 +366,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listStyle` attribute after indenting a single item into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					  * 1b.
@@ -372,7 +376,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					  * 1b.
@@ -382,7 +386,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listStyle` attribute after indenting a few items into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					  * 1b.
@@ -393,7 +397,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					* 1. {style:circle}
 					  * 1a. {style:square}
 					  * 1b.
@@ -442,7 +446,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, default)', () => {
 					editor.setData( '<ul><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:default}
 					` ) );
 				} );
@@ -450,7 +454,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, default)', () => {
 					editor.setData( '<ol><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:default}
 					` ) );
 				} );
@@ -458,7 +462,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, listStyleType="circle")', () => {
 					editor.setData( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:circle}
 					` ) );
 				} );
@@ -466,7 +470,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, listStyleType="decimal")', () => {
 					editor.setData( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:decimal}
 					` ) );
 				} );
@@ -474,7 +478,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, type="square")', () => {
 					editor.setData( '<ul type="square"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:square}
 					` ) );
 				} );
@@ -482,7 +486,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, type="A")', () => {
 					editor.setData( '<ol type="A"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -490,7 +494,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (bulleted, list-style-type="circle" type="square")', () => {
 					editor.setData( '<ul style="list-style-type:circle;" type="circle"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						* Foo {id:a00} {style:circle}
 					` ) );
 				} );
@@ -498,7 +502,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property (numbered, list-style-type="decimal" type="A")', () => {
 					editor.setData( '<ol type="A" style="list-style-type:decimal"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:decimal}
 					` ) );
 				} );
@@ -506,7 +510,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-latin -> lower-latin)', () => {
 					editor.setData( '<ol style="list-style-type:lower-latin;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:lower-latin}
 					` ) );
 				} );
@@ -514,7 +518,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (lower-alpha -> lower-latin)', () => {
 					editor.setData( '<ol style="list-style-type:lower-alpha;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:lower-latin}
 					` ) );
 				} );
@@ -522,7 +526,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-latin -> upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-latin;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -530,7 +534,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast to `listStyle` property using CSS list style aliases (upper-alpha -> upper-latin)', () => {
 					editor.setData( '<ol style="list-style-type:upper-alpha;"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 						# Foo {id:a00} {style:upper-latin}
 					` ) );
 				} );
@@ -538,43 +542,43 @@ describe( 'ListPropertiesEditing', () => {
 
 			describe( 'downcast', () => {
 				it( 'should downcast to `type` attribute (bulleted, default)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (bulleted, circle)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, default)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal-leading-zero)', () => {
-					setData( model, modelList( `
+					_setModelData( model, modelList( `
 						# Foo {style:decimal-leading-zero}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 			} );
 		} );
@@ -612,7 +616,7 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'post-fixer', () => {
 			it( 'should ensure that all item in a single list have the same `listReversed` attribute', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:true}
 					# 2.
 					# 3. {reversed:false}
@@ -625,7 +629,7 @@ describe( 'ListPropertiesEditing', () => {
 					# 5. {reversed:true}
 				` ) );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:true}
 					# 2.
 					# 3.
@@ -640,7 +644,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should ensure that all list item have the same `listReversed` after removing a block between them', () => {
-				setData( model,
+				_setModelData( model,
 					'<paragraph listItemId="01" listReversed="true" listType="numbered">1.</paragraph>' +
 					'<paragraph listItemId="02" listReversed="true" listType="numbered">2.</paragraph>' +
 					'<paragraph>Foo</paragraph>' +
@@ -652,7 +656,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.remove( model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listItemId="01" listReversed="true" listType="numbered">1.</paragraph>' +
 					'<paragraph listItemId="02" listReversed="true" listType="numbered">2.</paragraph>' +
 					'<paragraph listItemId="03" listReversed="true" listType="numbered">3.</paragraph>' +
@@ -661,7 +665,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should restore `listReversed` attribute after it\'s changed in one of the following items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:true}
 					# 2.
 					# 3.
@@ -671,7 +675,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listReversed', false, model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:true}
 					# 2.
 					# 3.
@@ -679,7 +683,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should change `listReversed` attribute for all the following items after the first one is changed', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:false}
 					# 2.
 					# 3.
@@ -689,7 +693,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listReversed', true, model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:true}
 					# 2.
 					# 3.
@@ -699,7 +703,7 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'indenting lists', () => {
 			it( 'should reset `listReversed` attribute after indenting a single item', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:true}
 					  # 1a. {reversed:true}
 					# 2.
@@ -709,7 +713,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:true}
 					  # 1a. {reversed:true}
 					# 2.
@@ -719,7 +723,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should reset `listReversed` attribute after indenting a few items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:true}
 					# [2.
 					# 3.]
@@ -727,7 +731,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:true}
 					  # [2. {reversed:false}
 					  # 3.]
@@ -735,7 +739,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listReversed` attribute after indenting a single item into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:false}
 					  # 1a. {reversed:true}
 					  # 1b.
@@ -745,7 +749,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:false}
 					  # 1a. {reversed:true}
 					  # 1b.
@@ -755,7 +759,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listReversed` attribute after indenting a few items into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {reversed:false}
 					  # 1a. {reversed:true}
 					  # 1b.
@@ -766,7 +770,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {reversed:false}
 					  # 1a. {reversed:true}
 					  # 1b.
@@ -777,14 +781,14 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should not do anything with bulleted lists', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1.
 					* 2.[]
 				` ) );
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					* 1.
 					  * 2.[]
 				` ) );
@@ -873,7 +877,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast `start` attribute for customNumbered list', () => {
 					editor.setData( '<ol class="foo" start="7"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a00" listStart="7" listType="customNumbered">Foo</paragraph>'
 					);
 				} );
@@ -881,7 +885,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should upcast `start` attribute for standard numbered list', () => {
 					editor.setData( '<ol start="7"><li>Foo</li></ol>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a00" listStart="7" listType="numbered">Foo</paragraph>'
 					);
 				} );
@@ -889,7 +893,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should not upcast `start` attribute for customBulleted list', () => {
 					editor.setData( '<ul class="foo" start="7"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a00" listType="customBulleted">Foo</paragraph>'
 					);
 				} );
@@ -897,7 +901,7 @@ describe( 'ListPropertiesEditing', () => {
 				it( 'should not upcast `start` attribute for standard bulleted list', () => {
 					editor.setData( '<ul start="7"><li>Foo</li></ul>' );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Foo</paragraph>'
 					);
 				} );
@@ -906,7 +910,7 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'post-fixer', () => {
 			it( 'should ensure that all item in a single list have the same `listStart` attribute', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:2}
 					# 2.
 					# 3. {start:5}
@@ -919,7 +923,7 @@ describe( 'ListPropertiesEditing', () => {
 					# 5. {start:8}
 				` ) );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {start:2}
 					# 2.
 					# 3.
@@ -934,7 +938,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should ensure that all list item have the same `listStart` after removing a block between them', () => {
-				setData( model,
+				_setModelData( model,
 					'<paragraph listItemId="01" listStart="2" listType="numbered">1.</paragraph>' +
 					'<paragraph listItemId="02" listStart="2" listType="numbered">2.</paragraph>' +
 					'<paragraph>Foo</paragraph>' +
@@ -946,7 +950,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.remove( model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listItemId="01" listStart="2" listType="numbered">1.</paragraph>' +
 					'<paragraph listItemId="02" listStart="2" listType="numbered">2.</paragraph>' +
 					'<paragraph listItemId="03" listStart="2" listType="numbered">3.</paragraph>' +
@@ -955,7 +959,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should restore `listStart` attribute after it\'s changed in one of the following items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:2}
 					# 2.
 					# 3.
@@ -965,7 +969,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listStart', 5, model.document.getRoot().getChild( 2 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {start:2}
 					# 2.
 					# 3.
@@ -973,7 +977,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should change `listStart` attribute for all the following items after the first one is changed', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:2}
 					# 2.
 					# 3.
@@ -983,7 +987,7 @@ describe( 'ListPropertiesEditing', () => {
 					writer.setAttribute( 'listStart', 5, model.document.getRoot().getChild( 0 ) );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
 					# 1. {start:5}
 					# 2.
 					# 3.
@@ -993,7 +997,7 @@ describe( 'ListPropertiesEditing', () => {
 
 		describe( 'indenting lists', () => {
 			it( 'should reset `listStart` attribute after indenting a single item', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:5}
 					  # 1a. {start:3}
 					# 2.
@@ -1003,7 +1007,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {start:5}
 					  # 1a. {start:3}
 					# 2.
@@ -1013,7 +1017,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should reset `listStart` attribute after indenting a few items', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:2}
 					# [2.
 					# 3.]
@@ -1021,7 +1025,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {start:2}
 					  # [2. {start:1}
 					  # 3.]
@@ -1029,7 +1033,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listStart` attribute after indenting a single item into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:3}
 					  # 1a. {start:7}
 					  # 1b.
@@ -1039,7 +1043,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {start:3}
 					  # 1a. {start:7}
 					  # 1b.
@@ -1049,7 +1053,7 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should copy `listStart` attribute after indenting a few items into previously nested list', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					# 1. {start:42}
 					  # 1a. {start:2}
 					  # 1b.
@@ -1060,7 +1064,7 @@ describe( 'ListPropertiesEditing', () => {
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					# 1. {start:42}
 					  # 1a. {start:2}
 					  # 1b.
@@ -1071,14 +1075,14 @@ describe( 'ListPropertiesEditing', () => {
 			} );
 
 			it( 'should not do anything with bulleted lists', () => {
-				setData( model, modelList( `
+				_setModelData( model, modelList( `
 					* 1.
 					* 2.[]
 				` ) );
 
 				editor.execute( 'indentList' );
 
-				expect( getData( model ) ).to.equalMarkup( modelList( `
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( `
 					* 1.
 					  * 2.[]
 				` ) );

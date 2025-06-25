@@ -2,6 +2,7 @@
 category: features
 meta-title: Mermaid flowcharts and diagrams example | CKEditor 5 Documentation
 menu-title: Mermaid flowcharts and diagrams
+meta-description: Create diagrams and visualizations in CKEditor 5 using Mermaid. Learn how to enable, configure, and render flowcharts, graphs, and more.
 modified_at: 2023-06-14
 ---
 

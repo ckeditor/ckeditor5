@@ -3,6 +3,7 @@ category: crash-course
 order: 90
 menu-title: Plugin configuration
 meta-title: CKEditor 5 crash course - Plugin configuration | CKEditor 5 Documentation
+meta-description: Configure plugins in CKEditor 5 to customize their behavior and integrate flexible options into your editor setup.
 modified_at: 2025-03-14
 ---
 

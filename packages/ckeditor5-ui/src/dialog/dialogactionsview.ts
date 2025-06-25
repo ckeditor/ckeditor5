@@ -12,18 +12,18 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import type { default as Button, ButtonExecuteEvent } from '../button/button.js';
-import ButtonView from '../button/buttonview.js';
-import View from '../view.js';
-import ViewCollection from '../viewcollection.js';
-import FocusCycler, { type FocusableView } from '../focuscycler.js';
+import type { Button, ButtonExecuteEvent } from '../button/button.js';
+import { ButtonView } from '../button/buttonview.js';
+import { View } from '../view.js';
+import { ViewCollection } from '../viewcollection.js';
+import { FocusCycler, type FocusableView } from '../focuscycler.js';
 
 import '../../theme/components/dialog/dialogactions.css';
 
 /**
  * A dialog actions view class. It contains button views which are used to execute dialog actions.
  */
-export default class DialogActionsView extends View {
+export class DialogActionsView extends View {
 	/**
 	 * A collection of button views.
 	 */

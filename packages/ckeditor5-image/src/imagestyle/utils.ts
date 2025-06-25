@@ -37,6 +37,8 @@ import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDe
  * * **`'inline'`** is an inline image without any CSS class,
  * * **`'block'`** is a block image without any CSS class,
  * * **`'side'`** is a block image styled with the `image-style-side` CSS class.
+ *
+ * @internal
  */
 export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 	// This style represents an image placed in the line of text.
@@ -135,6 +137,8 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  * See {@link module:image/imageconfig~ImageStyleOptionDefinition#icon} to learn more.
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
+ *
+ * @internal
  */
 export const DEFAULT_ICONS: Record<string, string> = /* #__PURE__ */ ( () => ( {
 	full: IconObjectFullWidth,
@@ -156,6 +160,8 @@ export const DEFAULT_ICONS: Record<string, string> = /* #__PURE__ */ ( () => ( {
  * those that wraps the text around the image,
  * * **`'imageStyle:breakText'`**, which contains the `alignBlockLeft`, `alignCenter` and `alignBlockRight` options, that is,
  * those that breaks the text around the image.
+ *
+ * @internal
  */
 export const DEFAULT_DROPDOWN_DEFINITIONS: Array<ImageStyleDropdownDefinition> = [ {
 	name: 'imageStyle:wrapText',
@@ -361,12 +367,9 @@ function warnInvalidStyle( info: object ): void {
 	logWarning( 'image-style-configuration-definition-invalid', info );
 }
 
-export default {
+export const utils = {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
 	getDefaultDropdownDefinitions,
-	warnInvalidStyle,
-	DEFAULT_OPTIONS,
-	DEFAULT_ICONS,
-	DEFAULT_DROPDOWN_DEFINITIONS
+	warnInvalidStyle
 };

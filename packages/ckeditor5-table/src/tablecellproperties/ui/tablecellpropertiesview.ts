@@ -49,7 +49,7 @@ import {
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
-import type ColorInputView from '../../ui/colorinputview.js';
+import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -69,7 +69,7 @@ export interface TableCellPropertiesViewOptions {
  * The class representing a table cell properties form, allowing users to customize
  * certain style aspects of a table cell, for instance, border, padding, text alignment, etc..
  */
-export default class TableCellPropertiesView extends View {
+export class TableCellPropertiesView extends View {
 	/**
 	 * The value of the cell border style.
 	 *

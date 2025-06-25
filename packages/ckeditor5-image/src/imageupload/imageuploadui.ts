@@ -16,7 +16,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 import { createImageTypeRegExp } from './utils.js';
-import type ImageInsertUI from '../imageinsert/imageinsertui.js';
+import { type ImageInsertUI } from '../imageinsert/imageinsertui.js';
 
 /**
  * The image upload button plugin.
@@ -31,7 +31,7 @@ import type ImageInsertUI from '../imageinsert/imageinsertui.js';
  * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component, which are the default components
  * through which image upload is available.
  */
-export default class ImageUploadUI extends Plugin {
+export class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

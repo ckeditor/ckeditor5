@@ -11,7 +11,7 @@
  * The dropdown panel interface for focusable contents. It provides two methods for managing focus of the contents
  * of dropdown's panel.
  */
-export default interface DropdownPanelFocusable {
+export interface DropdownPanelFocusable {
 
 	/**
 	 * Focuses the view element or first item in view collection on opening dropdown's panel.

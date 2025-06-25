@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
-import CKBoxEditing from '../src/ckboxediting.js';
-import CKBoxCommand from '../src/ckboxcommand.js';
+import { CKBoxEditing } from '../src/ckboxediting.js';
+import { CKBoxCommand } from '../src/ckboxcommand.js';
 import { blurHashToDataUrl } from '../src/utils.js';
 
 describe( 'CKBoxCommand', () => {
@@ -58,7 +58,7 @@ describe( 'CKBoxCommand', () => {
 
 		model = editor.model;
 		command = editor.commands.get( 'ckbox' );
-		setModelData( model, '<paragraph>foo[]</paragraph>' );
+		_setModelData( model, '<paragraph>foo[]</paragraph>' );
 	} );
 
 	afterEach( async () => {
@@ -241,7 +241,7 @@ describe( 'CKBoxCommand', () => {
 				const model = editor.model;
 				const command = new CKBoxCommand( editor );
 
-				setModelData( model, '<paragraph>foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				command.execute();
 
@@ -584,7 +584,7 @@ describe( 'CKBoxCommand', () => {
 				model.document.on( 'change', spy );
 				onChoose( [] );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 
 				expect( spy.callCount ).to.equal( 0 );
 			} );
@@ -594,7 +594,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ assets.images[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'foo' +
 						'[<imageInline ' +
@@ -633,7 +633,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'foo' +
 						'[<imageInline ' +
@@ -673,11 +673,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should insert an image block', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				onChoose( [ assets.images[ 1 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="foo" ' +
 						'ckboxImageId="image-id2" ' +
@@ -713,11 +713,11 @@ describe( 'CKBoxCommand', () => {
 				const spy = sinon.spy( editor, 'execute' );
 				const placeholder = blurHashToDataUrl( assets.imagesWithBlurHash[ 0 ].data.metadata.blurHash );
 
-				setModelData( model, '<paragraph>[]</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph>' );
 
 				onChoose( [ assets.imagesWithBlurHash[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="" ' +
 						'ckboxImageId="image-id3" ' +
@@ -754,11 +754,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should replace the selected content after inserting an image', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( model, '<paragraph>[foo]</paragraph>' );
 
 				onChoose( [ assets.images[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'[<imageInline ' +
 							'alt="" ' +
@@ -795,7 +795,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ assets.links[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'foo' +
 						'[<$text ' +
@@ -814,11 +814,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should insert a link with selected content as a link name', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph>[foo]</paragraph>' );
+				_setModelData( model, '<paragraph>[foo]</paragraph>' );
 
 				onChoose( [ assets.links[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'[<$text ' +
 							'ckboxLinkId="link-id1" ' +
@@ -836,11 +836,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should use adjacent attributes for the inserted link', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 				onChoose( [ assets.links[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'<$text ' +
 							'bold="true">' +
@@ -863,11 +863,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should clear the adjacent "linkHref" attributes before inserting a link', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph><$text bold="true" linkHref="bar" ckboxLinkId="old-id">foo[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text bold="true" linkHref="bar" ckboxLinkId="old-id">foo[]</$text></paragraph>' );
 
 				onChoose( [ assets.links[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'<$text ' +
 							'bold="true" ' +
@@ -892,11 +892,11 @@ describe( 'CKBoxCommand', () => {
 			it( 'should clear the adjacent "linkHref" attributes before inserting an image', () => {
 				const spy = sinon.spy( editor, 'execute' );
 
-				setModelData( model, '<paragraph><$text bold="true" linkHref="bar" ckboxLinkId="old-id">foo[]</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text bold="true" linkHref="bar" ckboxLinkId="old-id">foo[]</$text></paragraph>' );
 
 				onChoose( [ assets.images[ 0 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'<$text ' +
 							'bold="true" ' +
@@ -940,7 +940,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ assets.links[ 0 ], assets.images[ 0 ], assets.links[ 1 ], assets.images[ 1 ] ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
 						'<$text ' +
@@ -988,7 +988,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ ...assets.links, ...assets.images ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
 						'<$text ' +
@@ -1032,12 +1032,12 @@ describe( 'CKBoxCommand', () => {
 			} );
 
 			it( 'should split heading and insert multiple links', () => {
-				setModelData( model, '<heading1>foo[]bar</heading1>' );
+				_setModelData( model, '<heading1>foo[]bar</heading1>' );
 				const spy = sinon.spy( editor, 'execute' );
 
 				onChoose( [ ...assets.links ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<heading1>foo</heading1>' +
 					'<paragraph>' +
 						'<$text ' +
@@ -1064,12 +1064,12 @@ describe( 'CKBoxCommand', () => {
 			} );
 
 			it( 'should insert multiple links before heading', () => {
-				setModelData( model, '<heading1>[]foobar</heading1>' );
+				_setModelData( model, '<heading1>[]foobar</heading1>' );
 				const spy = sinon.spy( editor, 'execute' );
 
 				onChoose( [ ...assets.links ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'<$text ' +
 							'ckboxLinkId="link-id1" ' +
@@ -1095,12 +1095,12 @@ describe( 'CKBoxCommand', () => {
 			} );
 
 			it( 'should insert multiple links after heading', () => {
-				setModelData( model, '<heading1>foobar[]</heading1>' );
+				_setModelData( model, '<heading1>foobar[]</heading1>' );
 				const spy = sinon.spy( editor, 'execute' );
 
 				onChoose( [ ...assets.links ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<heading1>foobar</heading1>' +
 					'<paragraph>' +
 						'<$text ' +
@@ -1132,7 +1132,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ ...assets.links, ...assets.images ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<paragraph>' +
 						'<$text ' +
@@ -1164,7 +1164,7 @@ describe( 'CKBoxCommand', () => {
 
 				onChoose( [ ...assets.links, ...assets.images ] );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>' +
 						'foo' +
 						'<imageInline ' +
@@ -1264,7 +1264,7 @@ describe( 'CKBoxCommand', () => {
 
 					onChoose( [ assets.links[ 1 ] ] );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'[<$text ' +
 								'ckboxLinkId="link-id2" ' +
@@ -1291,7 +1291,7 @@ describe( 'CKBoxCommand', () => {
 					// `file1` should have download parameter.
 					onChoose( [ assets.links[ 0 ] ] );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'[<$text ' +
 								'ckboxLinkId="link-id1" ' +
@@ -1305,7 +1305,7 @@ describe( 'CKBoxCommand', () => {
 					editor.setData( '' );
 					onChoose( [ assets.links[ 1 ] ] );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<paragraph>' +
 							'[<$text ' +
 								'ckboxLinkId="link-id2" ' +
@@ -1330,7 +1330,7 @@ describe( 'CKBoxCommand', () => {
 
 					onChoose( [ assets.images[ 0 ] ] );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'[<imageBlock ' +
 							'alt="" ' +
 							'ckboxImageId="image-id1" ' +

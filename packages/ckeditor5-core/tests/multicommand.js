@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MultiCommand from '../src/multicommand.js';
-import Command from '../src/command.js';
+import { MultiCommand } from '../src/multicommand.js';
+import { Command } from '../src/command.js';
 
-import ModelTestEditor from './_utils/modeltesteditor.js';
-import testUtils from './_utils/utils.js';
+import { ModelTestEditor } from './_utils/modeltesteditor.js';
+import { testUtils } from './_utils/utils.js';
 
 describe( 'MultiCommand', () => {
 	let editor, multiCommand;

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmojiToneView from '../../src/ui/emojitoneview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EmojiToneView } from '../../src/ui/emojitoneview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'EmojiToneView', () => {
 	let locale, emojiToneView, skinTones;

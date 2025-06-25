@@ -14,18 +14,18 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
-import View from '../view.js';
+import { View } from '../view.js';
 import { isObject } from 'es-toolkit/compat';
-import ListItemView from '../list/listitemview.js';
-import ListSeparatorView from '../list/listseparatorview.js';
-import type ViewCollection from '../viewcollection.js';
-import type ComponentFactory from '../componentfactory.js';
+import { ListItemView } from '../list/listitemview.js';
+import { ListSeparatorView } from '../list/listseparatorview.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { type ComponentFactory } from '../componentfactory.js';
 
-import MenuBarMenuView from './menubarmenuview.js';
-import MenuBarMenuListView from './menubarmenulistview.js';
-import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import MenuBarMenuListItemButtonView from './menubarmenulistitembuttonview.js';
-import MenuBarMenuListItemFileDialogButtonView from './menubarmenulistitemfiledialogbuttonview.js';
+import { MenuBarMenuView } from './menubarmenuview.js';
+import { MenuBarMenuListView } from './menubarmenulistview.js';
+import { MenuBarMenuListItemView } from './menubarmenulistitemview.js';
+import { MenuBarMenuListItemButtonView } from './menubarmenulistitembuttonview.js';
+import { MenuBarMenuListItemFileDialogButtonView } from './menubarmenulistitemfiledialogbuttonview.js';
 import {
 	MenuBarBehaviors,
 	processMenuBarConfig
@@ -39,7 +39,7 @@ import '../../theme/components/menubar/menubar.css';
  * The application menu bar component. It brings a set of top-level menus (and sub-menus) that can be used
  * to organize and access a large number of buttons.
  */
-export default class MenuBarView extends View implements FocusableView {
+export class MenuBarView extends View implements FocusableView {
 	/**
 	 * Collection of the child views inside the {@link #element}.
 	 */

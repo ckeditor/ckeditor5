@@ -7,25 +7,25 @@
  * @module engine/view/observer/tabobserver
  */
 
-import type View from '../view.js';
-import Observer from './observer.js';
-import BubblingEventInfo from './bubblingeventinfo.js';
-import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
+import { type EditingView } from '../view.js';
+import { Observer } from './observer.js';
+import { BubblingEventInfo } from './bubblingeventinfo.js';
+import type { ViewDocumentKeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.
+ * Tab observer introduces the {@link module:engine/view/document~ViewDocument#event:tab `Document#tab`} event.
  *
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
- * {@link module:engine/view/view~View}, this event is available by default.
+ * {@link module:engine/view/view~EditingView}, this event is available by default.
  */
-export default class TabObserver extends Observer {
+export class TabObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		const doc = this.document;
@@ -66,12 +66,12 @@ export default class TabObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
- * {@link module:engine/view/view~View}, this event is available by default.
+ * {@link module:engine/view/view~EditingView}, this event is available by default.
  *
- * @eventName module:engine/view/document~Document#tab
+ * @eventName module:engine/view/document~ViewDocument#tab
  * @param data
  */
 export type ViewDocumentTabEvent = BubblingEvent<{
 	name: 'tab';
-	args: [ data: KeyEventData ];
+	args: [ data: ViewDocumentKeyEventData ];
 }>;

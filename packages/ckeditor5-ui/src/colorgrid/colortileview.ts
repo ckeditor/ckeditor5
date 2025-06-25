@@ -9,12 +9,12 @@
 
 import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
 import { env, type Locale } from '@ckeditor/ckeditor5-utils';
-import ButtonView from '../button/buttonview.js';
+import { ButtonView } from '../button/buttonview.js';
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgridview~ColorGridView}.
  */
-export default class ColorTileView extends ButtonView {
+export class ColorTileView extends ButtonView {
 	/**
 	 * String representing a color shown as tile's background.
 	 */

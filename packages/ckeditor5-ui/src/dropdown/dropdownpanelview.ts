@@ -7,9 +7,9 @@
  * @module ui/dropdown/dropdownpanelview
  */
 
-import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
-import type DropdownPanelFocusable from './dropdownpanelfocusable.js';
+import { View } from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { type DropdownPanelFocusable } from './dropdownpanelfocusable.js';
 
 import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -18,7 +18,7 @@ import { logWarning, type Locale } from '@ckeditor/ckeditor5-utils';
  *
  * See {@link module:ui/dropdown/dropdownview~DropdownView} to learn about the common usage.
  */
-export default class DropdownPanelView extends View implements DropdownPanelFocusable {
+export class DropdownPanelView extends View implements DropdownPanelFocusable {
 	/**
 	 * Collection of the child views in this panel.
 	 *

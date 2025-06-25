@@ -33,7 +33,7 @@ import { AccessibilityHelp } from 'ckeditor5/src/ui.js';
  * This plugin set does not define any block-level containers (such as {@link module:paragraph/paragraph~Paragraph}).
  * If your editor is supposed to handle block content, make sure to include it.
  */
-export default class Essentials extends Plugin {
+export class Essentials extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

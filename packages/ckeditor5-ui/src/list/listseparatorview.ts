@@ -7,14 +7,14 @@
  * @module ui/list/listseparatorview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list separator view class.
  */
-export default class ListSeparatorView extends View {
+export class ListSeparatorView extends View {
 	/**
 	 * @inheritDoc
 	 */

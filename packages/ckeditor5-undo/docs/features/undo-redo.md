@@ -1,6 +1,7 @@
 ---
 category: features
 meta-title: Undo/Redo | CKEditor 5 Documentation
+meta-description: Use the Undo and Redo features in CKEditor 5 to revert or reapply changes, enhancing editing control and flexibility.
 modified_at: 2022-08-29
 ---
 

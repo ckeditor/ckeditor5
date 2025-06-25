@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import TablePropertyCommand from './tablepropertycommand.js';
+import { TablePropertyCommand } from './tablepropertycommand.js';
 
 /**
  * The table background color command.
@@ -24,7 +24,7 @@ import TablePropertyCommand from './tablepropertycommand.js';
  * } );
  * ```
  */
-export default class TableBackgroundColorCommand extends TablePropertyCommand {
+export class TableBackgroundColorCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableBackgroundColorCommand` instance.
 	 *

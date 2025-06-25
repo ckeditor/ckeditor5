@@ -8,8 +8,8 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Element, Batch } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../../tableutils.js';
+import type { ModelElement, Batch } from 'ckeditor5/src/engine.js';
+import { type TableUtils } from '../../tableutils.js';
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
 /**
@@ -17,7 +17,7 @@ import { getSelectionAffectedTable } from '../../utils/common.js';
  *
  * The command is a base command for other table cell property commands.
  */
-export default class TableCellPropertyCommand extends Command {
+export class TableCellPropertyCommand extends Command {
 	/**
 	 * The attribute that will be set by the command.
 	 */
@@ -119,7 +119,7 @@ export default class TableCellPropertyCommand extends Command {
 	/**
 	 * Returns the attribute value for a table cell.
 	 */
-	protected _getAttribute( tableCell: Element | undefined ): unknown {
+	protected _getAttribute( tableCell: ModelElement | undefined ): unknown {
 		if ( !tableCell ) {
 			return;
 		}
@@ -148,7 +148,7 @@ export default class TableCellPropertyCommand extends Command {
 	 * Returns a single value for all selected table cells. If the value is the same for all cells,
 	 * it will be returned (`undefined` otherwise).
 	 */
-	private _getSingleValue( tableCells: Array<Element> ) {
+	private _getSingleValue( tableCells: Array<ModelElement> ) {
 		const firstCellValue = this._getAttribute( tableCells[ 0 ] );
 
 		const everyCellHasAttribute = tableCells.every( tableCells => this._getAttribute( tableCells ) === firstCellValue );

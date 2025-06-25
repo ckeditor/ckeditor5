@@ -21,12 +21,12 @@ import type {
 } from '@ckeditor/ckeditor5-list';
 
 import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:list/list~List List} feature.
  */
-export default class ListElementSupport extends Plugin {
+export class ListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -85,7 +85,7 @@ export default class ListElementSupport extends Plugin {
 			setAttributeOnDowncast: setViewAttributes
 		} );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register', ( evt, definition ) => {
 			if ( !viewElements.includes( definition.view! ) ) {
 				return;
 			}

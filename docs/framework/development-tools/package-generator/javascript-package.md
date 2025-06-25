@@ -1,6 +1,7 @@
 ---
 menu-title: JavaScript package
 meta-title: Package generator JavaScript package content | CKEditor 5 Framework Documentation
+meta-description: Learn how to generate a standalone JavaScript package with the CKEditor 5 package generator, including setup and build configuration.
 category: package-generator
 order: 42
 modified_at: 2024-06-27
@@ -211,7 +212,7 @@ npm run translations:synchronize
 
 ### `translations:validate`
 
-Peforms only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
+Performs only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
 
 Examples:
 
@@ -232,7 +233,7 @@ This script creates npm and browser builds of your plugin.
 
 ## How to change ESLint configuration
 
-To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [ESLint documentation](https://eslint.org/docs/rules/).
+To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/eslint.config.js) file. It is also a good idea to check out the [ESLint documentation](https://eslint.org/docs/rules/).
 
 ### Why are the predefined ESLint rules recommended
 

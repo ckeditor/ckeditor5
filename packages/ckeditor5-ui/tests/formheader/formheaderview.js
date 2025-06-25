@@ -4,9 +4,9 @@
  */
 
 import { IconCheck } from '@ckeditor/ckeditor5-icons';
-import View from '../../src/view.js';
-import ViewCollection from '../../src/viewcollection.js';
-import FormHeaderView from '../../src/formheader/formheaderview.js';
+import { View } from '../../src/view.js';
+import { ViewCollection } from '../../src/viewcollection.js';
+import { FormHeaderView } from '../../src/formheader/formheaderview.js';
 import { IconView } from '../../src/index.js';
 
 describe( 'FormHeaderView', () => {

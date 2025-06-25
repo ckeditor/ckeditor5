@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import FindAndReplaceEditing from '../src/findandreplaceediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'FindNextCommand', () => {
 	let editor, model, command;
@@ -39,7 +39,7 @@ describe( 'FindNextCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be disabled in empty document', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -66,7 +66,7 @@ describe( 'FindNextCommand', () => {
 		} );
 
 		it( 'should be enabled in readonly mode editor', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			command._state.results.clear();
 			command._state.results.add( {} );
@@ -78,7 +78,7 @@ describe( 'FindNextCommand', () => {
 		} );
 
 		it( 'should be enabled after disabling readonly mode', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			command._state.results.clear();
 			command._state.results.add( {} );
@@ -103,7 +103,7 @@ describe( 'FindNextCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'moves forward from the first match', () => {
-			setData( model, '<paragraph>[]Foo bar baz. Bam bar bom. bar bar</paragraph>' );
+			_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bom. bar bar</paragraph>' );
 
 			editor.execute( 'find', 'bar' );
 
@@ -111,7 +111,7 @@ describe( 'FindNextCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
-			expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo bar baz. Bam ' +
 					'<highlightedResult:start></highlightedResult:start>' +
@@ -123,7 +123,7 @@ describe( 'FindNextCommand', () => {
 		} );
 
 		it( 'handles subsequent calls properly', () => {
-			setData( model, '<paragraph>Foo bar baz. Bam[] bar bom. bar bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar baz. Bam[] bar bom. bar bar</paragraph>' );
 
 			editor.execute( 'find', 'bar' );
 
@@ -132,7 +132,7 @@ describe( 'FindNextCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
-			expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+			expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo bar baz. Bam bar bom. ' +
 					'<highlightedResult:start></highlightedResult:start>' +
@@ -152,7 +152,7 @@ describe( 'FindNextCommand', () => {
 
 			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
-			expect( stringify( model.document.getRoot( 'second' ), null, markers ) ).to.equal(
+			expect( _stringifyModel( model.document.getRoot( 'second' ), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo ' +
 					'<highlightedResult:start></highlightedResult:start>' +
@@ -192,8 +192,8 @@ describe( 'FindNextCommand', () => {
 	async function initMultiRootEditor() {
 		const multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
 
-		setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
-		setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+		_setModelData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+		_setModelData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
 
 		return multiRootEditor;
 	}

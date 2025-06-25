@@ -7,9 +7,9 @@
  * @module utils/dom/position
  */
 
-import global from './global.js';
-import Rect, { type RectSource } from './rect.js';
-import getPositionedAncestor from './getpositionedancestor.js';
+import { global } from './global.js';
+import { Rect, type RectSource } from './rect.js';
+import { getPositionedAncestor } from './getpositionedancestor.js';
 import { isFunction } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_POSITION // const {
@@ -115,7 +115,7 @@ import { isFunction } from 'es-toolkit/compat';
  */
 export function getOptimalPosition( {
 	element, target, positions, limiter, fitInViewport, viewportOffsetConfig
-}: Options ): DomPoint | null {
+}: DomOptimalPositionOptions ): DomPoint | null {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -194,7 +194,7 @@ function getVisibleViewportIntersectionRect( source: RectSource, viewportRect: R
 /**
  * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
  */
-function getConstrainedViewportRect( viewportOffsetConfig: Options[ 'viewportOffsetConfig' ] ): Rect {
+function getConstrainedViewportRect( viewportOffsetConfig: DomOptimalPositionOptions[ 'viewportOffsetConfig' ] ): Rect {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
 	const viewportRect = new Rect( global.window );
@@ -437,7 +437,7 @@ class PositionObject implements DomPoint {
 /**
  * The `getOptimalPosition()` helper options.
  */
-export interface Options {
+export interface DomOptimalPositionOptions {
 
 	/**
 	 * Element that is to be positioned.
@@ -526,12 +526,12 @@ export type PositioningFunction = (
 	targetRect: Rect,
 	viewportRect: Rect,
 	limiterRect?: Rect
-) => PositioningFunctionResult | null;
+) => DomPositioningFunctionResult | null;
 
 /**
  * The result of {@link module:utils/dom/position~PositioningFunction}.
  */
-export interface PositioningFunctionResult {
+export interface DomPositioningFunctionResult {
 
 	/**
 	 * The `top` value of the element rect that would represent the position.

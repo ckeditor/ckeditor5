@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Typing from '../src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '../src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'Typing – Input integration', () => {
 	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
@@ -45,8 +45,8 @@ describe( 'Typing – Input integration', () => {
 	} );
 
 	function expectOutput( modelOutput, viewOutput ) {
-		expect( getModelData( model ) ).to.equal( modelOutput );
-		expect( getViewData( viewDocument ) ).to.equal( viewOutput );
+		expect( _getModelData( model ) ).to.equal( modelOutput );
+		expect( _getViewData( viewDocument ) ).to.equal( viewOutput );
 	}
 
 	function simulateTyping( text ) {
@@ -78,7 +78,7 @@ describe( 'Typing – Input integration', () => {
 
 	describe( 'InputCommand integration', () => {
 		it( 'resets the buffer on typing respecting typing.undoStep', () => {
-			setModelData( model, '<paragraph>0[]</paragraph>' );
+			_setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateTyping( '123456789' );
 
@@ -98,7 +98,7 @@ describe( 'Typing – Input integration', () => {
 		} );
 
 		it( 'resets the buffer on text insertion respecting typing.undoStep', () => {
-			setModelData( model, '<paragraph>0[]</paragraph>' );
+			_setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateBatches( [ '1234', '5', '678', '9' ] );
 
@@ -118,7 +118,7 @@ describe( 'Typing – Input integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes', () => {
-			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			setSelection( [ 0, 5 ], [ 0, 5 ] );
 			simulateTyping( '1' );
@@ -142,7 +142,7 @@ describe( 'Typing – Input integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes (with enter)', () => {
-			setModelData( model, '<paragraph>Foo[]Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]Bar</paragraph>' );
 
 			simulateTyping( '1' );
 			editor.execute( 'enter' );
@@ -178,7 +178,7 @@ describe( 'Typing – Input integration', () => {
 		} );
 
 		it( 'resets the buffer when attribute changes', () => {
-			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			simulateTyping( ' ' );
 

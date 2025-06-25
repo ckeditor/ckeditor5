@@ -10,7 +10,7 @@
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 import type { LanguageDirection } from 'ckeditor5/src/utils.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import TextPartLanguageCommand from './textpartlanguagecommand.js';
+import { TextPartLanguageCommand } from './textpartlanguagecommand.js';
 import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils.js';
 
 /**
@@ -18,7 +18,7 @@ import { stringifyLanguageAttribute, parseLanguageAttribute } from './utils.js';
  *
  * Introduces the `'textPartLanguage'` command and the `'language'` model element attribute.
  */
-export default class TextPartLanguageEditing extends Plugin {
+export class TextPartLanguageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

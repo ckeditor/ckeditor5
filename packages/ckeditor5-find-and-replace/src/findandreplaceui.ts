@@ -20,12 +20,12 @@ import {
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
-import FindAndReplaceFormView from './ui/findandreplaceformview.js';
-import type FindAndReplaceEditing from './findandreplaceediting.js';
-import type FindNextCommand from './findnextcommand.js';
-import type FindPreviousCommand from './findpreviouscommand.js';
-import type ReplaceCommand from './replacecommand.js';
-import type ReplaceAllCommand from './replaceallcommand.js';
+import { FindAndReplaceFormView } from './ui/findandreplaceformview.js';
+import { type FindAndReplaceEditing } from './findandreplaceediting.js';
+import { type FindNextCommand } from './findnextcommand.js';
+import { type FindPreviousCommand } from './findpreviouscommand.js';
+import { type ReplaceCommand } from './replacecommand.js';
+import { type ReplaceAllCommand } from './replaceallcommand.js';
 
 /**
  * The default find and replace UI.
@@ -33,7 +33,7 @@ import type ReplaceAllCommand from './replaceallcommand.js';
  * It registers the `'findAndReplace'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}.
  * that uses the {@link module:find-and-replace/findandreplace~FindAndReplace FindAndReplace} plugin API.
  */
-export default class FindAndReplaceUI extends Plugin {
+export class FindAndReplaceUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -356,7 +356,7 @@ export default class FindAndReplaceUI extends Plugin {
  *
  * @eventName ~FindAndReplaceUI#searchReseted
  */
-export type SearchResetedEvent = {
+export type FindResetedEvent = {
 	name: 'searchReseted';
 	args: [];
 };

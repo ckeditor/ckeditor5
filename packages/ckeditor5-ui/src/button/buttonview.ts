@@ -7,14 +7,14 @@
  * @module ui/button/buttonview
  */
 
-import View from '../view.js';
-import IconView from '../icon/iconview.js';
+import { View } from '../view.js';
+import { IconView } from '../icon/iconview.js';
 
 import type { TemplateDefinition } from '../template.js';
-import type ViewCollection from '../viewcollection.js';
-import type { default as Button, ButtonExecuteEvent } from './button.js';
-import type ButtonLabel from './buttonlabel.js';
-import ButtonLabelView from './buttonlabelview.js';
+import { type ViewCollection } from '../viewcollection.js';
+import type { Button, ButtonExecuteEvent } from './button.js';
+import { type ButtonLabel } from './buttonlabel.js';
+import { ButtonLabelView } from './buttonlabelview.js';
 
 import {
 	env,
@@ -45,7 +45,7 @@ import '../../theme/components/button/button.css';
  * document.body.append( view.element );
  * ```
  */
-export default class ButtonView extends View<HTMLButtonElement> implements Button {
+export class ButtonView extends View<HTMLButtonElement> implements Button {
 	/**
 	 * Collection of the child views inside of the button {@link #element}.
 	 */

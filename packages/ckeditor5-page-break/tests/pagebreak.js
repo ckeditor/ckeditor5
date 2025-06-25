@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 
-import PageBreak from '../src/pagebreak.js';
-import PageBreakEditing from '../src/pagebreakediting.js';
-import PageBreakUI from '../src/pagebreakui.js';
+import { PageBreak } from '../src/pagebreak.js';
+import { PageBreakEditing } from '../src/pagebreakediting.js';
+import { PageBreakUI } from '../src/pagebreakui.js';
 
 describe( 'PageBreak', () => {
 	it( 'should require PageBreakEditing, PageBreakUI and Widget', () => {
