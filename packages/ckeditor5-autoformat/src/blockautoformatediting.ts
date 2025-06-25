@@ -7,9 +7,12 @@ import type { Command, Editor } from 'ckeditor5/src/core.js';
 
 import {
 	ModelLiveRange,
+	ModelSchemaContext,
 	type ModelDocumentChangeEvent,
 	type ModelItem,
-	type ModelText
+	type ModelText,
+	type ModelWriter,
+	type ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
 
 import { first } from 'ckeditor5/src/utils.js';
@@ -149,6 +152,8 @@ export function blockAutoformatEditing(
 
 		// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
 		editor.model.enqueueChange( writer => {
+			const selection = editor.model.document.selection;
+
 			// Matched range.
 			const start = writer.createPositionAt( blockToFormat, 0 );
 			const end = writer.createPositionAt( blockToFormat, match[ 0 ].length );
@@ -158,9 +163,12 @@ export function blockAutoformatEditing(
 
 			// Remove matched text.
 			if ( wasChanged !== false ) {
+				// Store selection attributes to restore them after matched text removed.
+				const selectionAttributes = Array.from( selection.getAttributes() );
+
 				writer.remove( range );
 
-				const selectionRange = editor.model.document.selection.getFirstRange()!;
+				const selectionRange = selection.getFirstRange()!;
 				const blockRange = writer.createRangeIn( blockToFormat );
 
 				// If the block is empty and the document selection has been moved when
@@ -168,6 +176,9 @@ export function blockAutoformatEditing(
 				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
 					writer.remove( blockToFormat as ModelItem );
 				}
+
+				// Restore selection attributes.
+				restoreSelectionAttributes( writer, selection, selectionAttributes );
 			}
 			range.detach();
 
@@ -178,4 +189,27 @@ export function blockAutoformatEditing(
 			} );
 		} );
 	} );
+}
+
+/**
+ * Restore allowed selection attributes.
+ */
+function restoreSelectionAttributes(
+	writer: ModelWriter,
+	selection: ModelDocumentSelection,
+	selectionAttributes: Array<[ string, unknown ]>
+): void {
+	const schema = writer.model.schema;
+	const selectionPosition = selection.getFirstPosition()!;
+	let selectionSchemaContext = new ModelSchemaContext( selectionPosition );
+
+	if ( schema.checkChild( selectionSchemaContext, '$text' ) ) {
+		selectionSchemaContext = selectionSchemaContext.push( '$text' );
+	}
+
+	for ( const [ attributeName, attributeValue ] of selectionAttributes ) {
+		if ( schema.checkAttribute( selectionSchemaContext, attributeName ) ) {
+			writer.setSelectionAttribute( attributeName, attributeValue );
+		}
+	}
 }
