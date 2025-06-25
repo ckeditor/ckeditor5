@@ -12,9 +12,9 @@ export { FullscreenEditing } from './fullscreenediting.js';
 export { FullscreenUI } from './fullscreenui.js';
 export { FullscreenCommand } from './fullscreencommand.js';
 
-export { AbstractEditorHandler as FullscreenAbstractEditorHandler } from './handlers/abstracteditorhandler.js';
-export { ClassicEditorHandler as FullscreenClassicEditorHandler } from './handlers/classiceditorhandler.js';
-export { DecoupledEditorHandler as FullscreenDecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
+export { FullscreenAbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+export { FullscreenClassicEditorHandler } from './handlers/classiceditorhandler.js';
+export { FullscreenDecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
 
 export type { FullscreenConfig } from './fullscreenconfig.js';
 

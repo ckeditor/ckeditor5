@@ -12,9 +12,9 @@ import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver.js';
 import { ViewSelection } from '../selection.js';
 import { type EditingView } from '../view.js';
 import type {
-	ViewDocumentSelectionChangeEvent,
-	ViewDocumentSelectionChangeDoneEvent,
-	ViewDocumentSelectionEventData
+	ViewDocumentObserverSelectionChangeEvent,
+	ViewDocumentObserverSelectionChangeDoneEvent,
+	ViewDocumentObserverSelectionEventData
 } from './selectionobserver.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
@@ -30,7 +30,7 @@ export class FakeSelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentObserverSelectionEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.
@@ -39,7 +39,7 @@ export class FakeSelectionObserver extends Observer {
 		super( view );
 
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentObserverSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
 	}
 
@@ -110,7 +110,7 @@ export class FakeSelectionObserver extends Observer {
 		};
 
 		// Fire dummy selection change event.
-		this.document.fire<ViewDocumentSelectionChangeEvent>( 'selectionChange', data );
+		this.document.fire<ViewDocumentObserverSelectionChangeEvent>( 'selectionChange', data );
 
 		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 		// This function is debounced what means that `selectionChangeDone` event will be fired only when
