@@ -9,7 +9,7 @@
 	/* stylelint-disable-next-line declaration-property-value-disallowed-list */
 	--ck-content-font-color: #000;
 	--ck-content-line-height: 1.5;
-	--ck-content-word-break: break-word
+	--ck-content-word-break: break-word;
 }
 
 .ck-content {
