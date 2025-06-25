@@ -9,16 +9,16 @@
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 
-import ListItemBoldIntegration from './listformatting/listitemboldintegration.js';
-import ListItemItalicIntegration from './listformatting/listitemitalicintegration.js';
-import ListItemFontSizeIntegration from './listformatting/listitemfontsizeintegration.js';
-import ListItemFontColorIntegration from './listformatting/listitemfontcolorintegration.js';
-import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
+import { ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
+import { ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
+import { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
+import { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
+import { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 
 import type {
-	Element,
 	Model,
-	Writer
+	ModelElement,
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -42,7 +42,7 @@ import '../theme/listformatting.css';
  * * Bold.
  * * Italic.
  */
-export default class ListFormatting extends Plugin {
+export class ListFormatting extends Plugin {
 	/**
 	 * The list of loaded formatting.
 	 */
@@ -104,7 +104,7 @@ export default class ListFormatting extends Plugin {
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
-			const modifiedListItems = new Set<Element>();
+			const modifiedListItems = new Set<ModelElement>();
 			let returnValue = false;
 
 			for ( const entry of changes ) {
@@ -136,7 +136,7 @@ export default class ListFormatting extends Plugin {
 					}
 
 					if ( entry.type == 'insert' && entry.name != '$text' ) {
-						const range = writer.createRangeIn( entry.position.nodeAfter as Element );
+						const range = writer.createRangeIn( entry.position.nodeAfter as ModelElement );
 
 						for ( const item of range.getItems() ) {
 							if ( isListItemBlock( item ) ) {
@@ -190,7 +190,7 @@ export default class ListFormatting extends Plugin {
  * Returns the consistent format of the list item element.
  * If the list item contains multiple blocks, it checks only the first block.
  */
-function getListItemConsistentFormat( model: Model, listItem: Element, attributeKeys: Array<string> ) {
+function getListItemConsistentFormat( model: Model, listItem: ModelElement, attributeKeys: Array<string> ) {
 	if ( isFirstBlockOfListItem( listItem ) ) {
 		return getSingleListItemConsistentFormat( model, listItem, attributeKeys );
 	}
@@ -204,7 +204,7 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
 /**
  * Returns the consistent format of a single list item element.
  */
-function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKeys: Array<string> ) {
+function getSingleListItemConsistentFormat( model: Model, listItem: ModelElement, attributeKeys: Array<string> ) {
 	// Only bulleted and numbered lists can have formatting (to-do lists are not supported).
 	// Do not check internals of limit elements (for example, do not check table cells).
 	if ( !isNumberedOrBulletedList( listItem ) || model.schema.isLimit( listItem ) ) {
@@ -262,8 +262,8 @@ function getSingleListItemConsistentFormat( model: Model, listItem: Element, att
  * Adds the specified formatting attribute to the list item element.
  */
 function setFormattingToListItem(
-	writer: Writer,
-	listItem: Element,
+	writer: ModelWriter,
+	listItem: ModelElement,
 	attributeKey: string,
 	attributeValue: string
 ): boolean {
@@ -285,8 +285,8 @@ function setFormattingToListItem(
  * Removes the specified formatting attribute from the list item element.
  */
 function removeFormattingFromListItem(
-	writer: Writer,
-	listItem: Element,
+	writer: ModelWriter,
+	listItem: ModelElement,
 	attributeKey: string
 ): boolean {
 	// Multi-block items should have consistent formatting.
@@ -306,6 +306,6 @@ function removeFormattingFromListItem(
 /**
  * Checks if the given list type is a numbered or bulleted list.
  */
-function isNumberedOrBulletedList( listItem: Element ): boolean {
+function isNumberedOrBulletedList( listItem: ModelElement ): boolean {
 	return [ 'numbered', 'bulleted', 'customNumbered', 'customBulleted' ].includes( listItem.getAttribute( 'listType' ) as string );
 }

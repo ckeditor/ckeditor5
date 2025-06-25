@@ -11,13 +11,13 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
 
-import ListEditing from '../list/listediting.js';
-import type ListFormatting from '../listformatting.js';
+import { ListEditing } from '../list/listediting.js';
+import type { ListFormatting } from '../listformatting.js';
 
 /**
  * The list item font size integration plugin.
  */
-export default class ListItemFontSizeIntegration extends Plugin {
+export class ListItemFontSizeIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

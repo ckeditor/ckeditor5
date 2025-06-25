@@ -37,7 +37,7 @@ import { ListIndentCommand } from './listindentcommand.js';
 import { ListCommand } from './listcommand.js';
 import { ListMergeCommand } from './listmergecommand.js';
 import { ListSplitCommand } from './listsplitcommand.js';
-import ListFormatting from '../listformatting.js';
+import { ListFormatting } from '../listformatting.js';
 import { ListUtils } from './listutils.js';
 
 import {

@@ -9,13 +9,13 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import ListEditing from '../list/listediting.js';
-import type ListFormatting from '../listformatting.js';
+import { ListEditing } from '../list/listediting.js';
+import type { ListFormatting } from '../listformatting.js';
 
 /**
  * The list item italic integration plugin.
  */
-export default class ListItemItalicIntegration extends Plugin {
+export class ListItemItalicIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

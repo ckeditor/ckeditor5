@@ -10,13 +10,13 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { type ViewElement } from 'ckeditor5/src/engine.js';
 
-import ListEditing from '../list/listediting.js';
-import type ListFormatting from '../listformatting.js';
+import { ListEditing } from '../list/listediting.js';
+import type { ListFormatting } from '../listformatting.js';
 
 /**
  * The list item font family integration plugin.
  */
-export default class ListItemFontFamilyIntegration extends Plugin {
+export class ListItemFontFamilyIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -145,12 +145,12 @@ export {
 } from './listproperties/utils/style.js';
 
 // ListFormatting.
-export { default as ListFormatting } from './listformatting.js';
-export { default as ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
-export { default as ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
-export { default as ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
-export { default as ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
-export { default as ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
+export { ListFormatting } from './listformatting.js';
+export { ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
+export { ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
+export { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
+export { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
+export { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
 
 // TodoList/
 export { TodoList } from './todolist.js';
