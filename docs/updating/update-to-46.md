@@ -20,6 +20,35 @@ Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/cke
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
+### Introduction of the default content styles
+
+To improve the out-of-the-box experience and accessibility, we are introducing opinionated defaults for content styling. From this version, we ship a small defaults layer applied to `.ck-content`:
+
+```css
+
+:root {
+  --ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+  --ck-content-font-size: medium;
+  --ck-content-font-color: #000;
+  --ck-content-line-height: 1.5;
+  --ck-content-word-break: break-word;
+}
+
+.ck-content {
+  font-family: var(--ck-content-font-family);
+  font-size: var(--ck-content-font-size);
+  color: var(--ck-content-font-color);
+  line-height: var(--ck-content-line-height);
+  word-break: var(--ck-content-word-break);
+}
+```
+
+Those content styles are easily replaceable via CSS variable override. It is possible that you already style those things with more specific selectors but we recommend to use the variables from now on.
+You can read more about the reasons in our [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/18710).
+
+**Migration:**
+* If you notice that the new editor's content styling affected your content appearance, make sure to update your custom style sheet, and use the new variable names.
+
 ### Content area CSS variables renamed to `--ck-content-*` prefix
 
 To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
