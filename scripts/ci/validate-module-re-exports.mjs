@@ -39,8 +39,11 @@ async function main() {
 	const declarationsWithMissingExports = getDeclarationsWithMissingExports( library );
 	const dataToLogUnwrapped = [ ...declarationsWithMissingExports, ...exportsToFix ];
 
-	if ( dataToLogUnwrapped.length !== 0 ) {
-		logData( dataToLogUnwrapped, 'table' );
+	// Do not log exceptions that are expected as errors.
+	const data = removeExpectedExceptions( dataToLogUnwrapped );
+
+	if ( data.length !== 0 ) {
+		logData( data, 'table' );
 
 		throw new Error( INCORRECT_EXPORTS_MESSAGE + '\n' );
 	}
@@ -116,4 +119,12 @@ function getExports( { pkg, module } ) {
 
 function getDeclarations( { pkg, module } ) {
 	return module.declarations.map( declaration => ( { pkg, module, declaration } ) );
+}
+
+function removeExpectedExceptions( data ) {
+	return data
+		// TODO: Remove after WProofReader has been adjusted.
+		.filter( record => !( record.Package === '@ckeditor/ckeditor5-ui' && record[ 'Local name' ] === 'UIModel' ) )
+		// TODO: Remove after MathType has been adjusted.
+		.filter( record => !( record.Package === '@ckeditor/ckeditor5-engine' && record[ 'Local name' ] === 'ViewUpcastWriter' ) );
 }
