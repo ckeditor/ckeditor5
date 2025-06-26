@@ -508,6 +508,10 @@ class ContextFactory {
 					this._setRelation( opA, opB, 'insertBetween' );
 				} else if ( opA.targetPosition.isAfter( opB.sourcePosition ) ) {
 					this._setRelation( opA, opB, 'moveTargetAfter' );
+				} else if ( opA.howMany > 1 && opA.sourcePosition.isEqual( opB.deletionPosition ) ) {
+					this._setRelation( opA, opB, 'firstToMoveMerged' );
+				} else if ( opA.howMany > 1 && opA.sourcePosition.getShiftedBy( opA.howMany - 1 ).isEqual( opB.deletionPosition ) ) {
+					this._setRelation( opA, opB, 'lastToMoveMerged' );
 				}
 			} else if ( opB instanceof MoveOperation ) {
 				if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
@@ -1911,6 +1915,18 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 
 	// Case 1:
 	//
+	// Split operation brings back an element that wos earlier a part of the move operation (first element of the original move operation).
+	//
+	if ( a.sourcePosition.isEqual( b.insertionPosition ) && context.abRelation == 'firstToMoveMerged' ) {
+		a.howMany++;
+
+		a.targetPosition = newTargetPosition;
+
+		return [ a ];
+	}
+
+	// Case 2:
+	//
 	// Last element in the moved range got split.
 	//
 	// In this case the default range transformation will not work correctly as the element created by
@@ -1921,7 +1937,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	if ( moveRange.end.isEqual( b.insertionPosition ) ) {
 		// Do it only if this is a "natural" split, not a one that comes from undo.
 		// If this is undo split, only `targetPosition` needs to be changed (if the move is a remove).
-		if ( !b.graveyardPosition ) {
+		if ( !b.graveyardPosition || context.abRelation == 'lastToMoveMerged' ) {
 			a.howMany++;
 		}
 
@@ -1930,7 +1946,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 		return [ a ];
 	}
 
-	// Case 2:
+	// Case 3:
 	//
 	// Split happened between the moved nodes. In this case two ranges to move need to be generated.
 	//
@@ -1958,7 +1974,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 		return _makeMoveOperationsFromRanges( ranges, newTargetPosition );
 	}
 
-	// Case 3:
+	// Case 4:
 	//
 	// Move operation targets at the split position. We need to decide if the nodes should be inserted
 	// at the end of the split element or at the beginning of the new element.
@@ -1967,7 +1983,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 		newTargetPosition = b.moveTargetPosition;
 	}
 
-	// Case 4:
+	// Case 5:
 	//
 	// Move operation targets just after the split element. We need to decide if the nodes should be inserted
 	// between two parts of split element, or after the new element.
@@ -1997,7 +2013,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	const transformed = moveRange._getTransformedBySplitOperation( b );
 	const ranges = [ transformed ];
 
-	// Case 5:
+	// Case 6:
 	//
 	// Moved range contains graveyard element used by split operation. Add extra move operation to the result.
 	//
@@ -2341,6 +2357,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 
 		a.howMany += howMany;
 		a.splitPosition = a.splitPosition.getShiftedBy( offset );
+		// TODO: `insertionPosition` change missing?
 
 		return [ a ];
 	}

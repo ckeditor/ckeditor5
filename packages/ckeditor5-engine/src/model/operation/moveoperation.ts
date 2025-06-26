@@ -66,7 +66,9 @@ export class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	public get type(): 'move' | 'remove' | 'reinsert' {
-		if ( this.targetPosition.root.rootName == '$graveyard' ) {
+		if ( this.targetPosition.root.rootName == this.sourcePosition.root.rootName ) {
+			return 'move';
+		} else if ( this.targetPosition.root.rootName == '$graveyard' ) {
 			return 'remove';
 		} else if ( this.sourcePosition.root.rootName == '$graveyard' ) {
 			return 'reinsert';
