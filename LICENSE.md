@@ -30,7 +30,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
 * Regular Expression for URL validation - Copyright (c) 2010-2018 Diego Perini.
-* hast - Copyright (c) Titus Wormer
+* @types/hast - Copyright (c) Microsoft Corporation.
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>
 * hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>
 * hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>

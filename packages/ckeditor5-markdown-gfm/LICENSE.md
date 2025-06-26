@@ -18,7 +18,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
-* hast - Copyright (c) Titus Wormer
+* @types/hast - Copyright (c) Microsoft Corporation.
 * hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>
 * hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>
 * hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>
