@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import { ClassicEditorHandler } from '../../src/handlers/classiceditorhandler.js';
+import { FullscreenClassicEditorHandler } from '../../src/handlers/classiceditorhandler.js';
 import { FullscreenEditing } from '../../src/fullscreenediting.js';
 
 describe( 'ClassicEditorHandler', () => {
@@ -25,7 +25,7 @@ describe( 'ClassicEditorHandler', () => {
 			]
 		} );
 
-		classicEditorHandler = new ClassicEditorHandler( editor );
+		classicEditorHandler = new FullscreenClassicEditorHandler( editor );
 	} );
 
 	afterEach( () => {
@@ -82,7 +82,7 @@ describe( 'ClassicEditorHandler', () => {
 				}
 			} );
 
-			const tempClassicEditorHandler = new ClassicEditorHandler( tempEditor );
+			const tempClassicEditorHandler = new FullscreenClassicEditorHandler( tempEditor );
 
 			tempClassicEditorHandler.enable();
 
