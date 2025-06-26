@@ -843,6 +843,14 @@ export const defaultConfig = {
 				isFormatting: true
 			}
 		},
+		{
+			model: 'htmlButton',
+			view: 'button',
+			attributeProperties: {
+				copyOnEnter: true,
+				isFormatting: true
+			}
+		},
 
 		// Objects.
 		{
@@ -864,14 +872,6 @@ export const defaultConfig = {
 		{
 			model: 'htmlInput',
 			view: 'input',
-			isObject: true,
-			modelSchema: {
-				inheritAllFrom: '$inlineObject'
-			}
-		},
-		{
-			model: 'htmlButton',
-			view: 'button',
 			isObject: true,
 			modelSchema: {
 				inheritAllFrom: '$inlineObject'
