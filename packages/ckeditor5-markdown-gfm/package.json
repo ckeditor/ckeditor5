@@ -21,8 +21,8 @@
     "@ckeditor/ckeditor5-clipboard": "45.2.1",
     "@ckeditor/ckeditor5-core": "45.2.1",
     "@ckeditor/ckeditor5-engine": "45.2.1",
+    "@types/hast": "3.0.4",
     "ckeditor5": "45.2.1",
-    "hast": "1.0.0",
     "hast-util-from-dom": "5.0.1",
     "hast-util-to-html": "9.0.5",
     "hast-util-to-mdast": "10.1.2",
@@ -83,10 +83,7 @@
     "CHANGELOG.md"
   ],
   "depcheckIgnore": [
-    "collapse-whitespace",
-    "jsdom",
-    "void-elements",
-    "block-elements"
+    "hast"
   ],
   "scripts": {
     "dll:build": "webpack",
