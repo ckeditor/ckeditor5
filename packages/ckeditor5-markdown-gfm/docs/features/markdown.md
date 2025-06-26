@@ -93,6 +93,7 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHub issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
+* Code blocks inside To-do lists will not properly render. GitHub issue: [#18754](https://github.com/ckeditor/ckeditor5/issues/18754).
 
 ## Related features
 
