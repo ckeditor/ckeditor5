@@ -24,9 +24,9 @@ Below are the most important changes that require your attention when upgrading 
 
 CKEditor 5 v46.0.0 brings several major improvements and changes that enhance both the developer and end-user experience. This release includes significant API refinements, new features, and improvements to existing functionality.
 
-### Line Height (⭐)
+### Line height feature (⭐)
 
-The new line height<!-- link --> feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
+The new {@link features/line-height line height} feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
 
 ### Remove Format improvements
 
