@@ -874,12 +874,6 @@
 			"id": "support",
 			"navigationIncludeIndex": true,
 			"slug": "support"
-		},
-		{
-			"name": "Theme",
-			"id": "theme",
-			"sourceDir": "theme",
-			"slug": "theme"
 		}
 	]
 }
