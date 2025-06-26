@@ -4,9 +4,9 @@
  */
 
 :root {
-	--ck-content-list-marker-color: initial; /* TODO replace initial with var(--ck-content-font-color) */
-	--ck-content-list-marker-font-family: initial; /* TODO replace initial with var(--ck-content-font-family) */
-	--ck-content-list-marker-font-size: initial; /* TODO replace initial with var(--ck-content-font-size) */
+	--ck-content-list-marker-color: var(--ck-content-font-color);
+	--ck-content-list-marker-font-family: var(--ck-content-font-family);
+	--ck-content-list-marker-font-size: var(--ck-content-font-size);
 }
 
 .ck-content li {
