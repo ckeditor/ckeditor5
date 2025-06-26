@@ -9,10 +9,12 @@ import { _stringifyView, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-u
 
 import { MarkdownGfmDataProcessor } from '../../../src/gfmdataprocessor.js';
 
+const allowedTag = document.getElementById( 'allowed_tag_name' );
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );
 const dataProcessor = new MarkdownGfmDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
+document.getElementById( 'button_allow_tag' ).addEventListener( 'click', addAllowedTag );
 document.getElementById( 'button_to_view' ).addEventListener( 'click', convertToView );
 document.getElementById( 'button_to_md' ).addEventListener( 'click', convertToMarkdown );
 
@@ -29,4 +31,9 @@ function convertToMarkdown() {
 	const viewText = viewTextArea.value;
 
 	markdownTextArea.value = dataProcessor.toData( _parseView( viewText ) );
+}
+
+function addAllowedTag() {
+	dataProcessor.keepHtml( allowedTag.value );
+	allowedTag.value = '';
 }
