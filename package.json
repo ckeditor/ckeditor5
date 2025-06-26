@@ -219,6 +219,7 @@
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.mjs",
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
+    "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs"
   },
   "lint-staged": {
