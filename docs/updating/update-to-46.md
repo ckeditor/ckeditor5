@@ -80,19 +80,18 @@ If your build throws errors after the update, search and replace the old names w
 	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
 </info-box>
 
-Last but not least, this release put us on the clean and straight path towards the [deprecation of old installation methods](https://github.com/ckeditor/ckeditor5/issues/17779). Please let us know if you have any questions on GitHub or support channels.
-
-### Opinionated default content styles and CSS renames
+### Introduction of the default content styles
 
 To improve the out-of-the-box experience and accessibility, we are introducing opinionated defaults for content styling. From this version, we ship a small defaults layer applied to `.ck-content`:
 
 ```css
 
 :root {
---ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
---ck-content-font-size: medium;
---ck-content-font-color: #000;
---ck-content-line-height: 1.5;
+  --ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+  --ck-content-font-size: medium;
+  --ck-content-font-color: #000;
+  --ck-content-line-height: 1.5;
+  --ck-content-word-break: break-word;
 }
 
 .ck-content {
@@ -103,11 +102,13 @@ To improve the out-of-the-box experience and accessibility, we are introducing o
 }
 ```
 
-Those content styles are easily replaceable via CSS variable override. It is possible that you already style those things with more specific selectors. 
+Those content styles are easily replaceable via CSS variable override. It is possible that you already style those things with more specific selectors but we recommend to use the variables from now on.
+You can read more about the reasons in our [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/18710).
 
-While working on this initiative, we decided to standardize the CSS naming, too. All older variables that applied to the content styles now share the consistent `--ck-content-*` prefix.
+**Migration:**
+* If you notice that the new editor's content styling affected your content appearance, make sure to update your custom style sheet, and use the new variable names.
 
-#### Content area CSS variables renamed to `--ck-content-*` prefix
+### Content area CSS variables renamed to `--ck-content-*` prefix
 
 To improve consistency, all CSS variables that affect the styles of the editor content area ("content styles") have been renamed to use the `--ck-content-*` prefix. This change affects variables used for highlights, image captions, mentions, table captions, image style spacing, and to-do list checkmarks.
 
