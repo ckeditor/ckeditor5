@@ -269,6 +269,7 @@ export {
 	type MenuBarConfig,
 	type MenuBarConfigObject,
 	type NormalizedMenuBarConfigObject,
+	type MenuBarMenuEvent,
 	type MenuBarMenuGroupDefinition,
 	type MenuBarMenuDefinition,
 	type MenuBarConfigAddedPosition,

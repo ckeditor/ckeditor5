@@ -42,7 +42,7 @@ import type {
 	ViewDowncastWriter,
 	ModelElement,
 	ModelSchema,
-	SelectionChangeRangeEvent,
+	ModelSelectionChangeRangeEvent,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentCompositionStartEvent,
 	ViewDocumentKeyDownEvent,
@@ -321,7 +321,7 @@ export class WidgetTypeAround extends Plugin {
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
 		// (and the "fake horizontal caret" is visible) so whenever the range changes (e.g. selection moved somewhere else),
 		// let's get rid of the attribute so that the selection downcast dispatcher isn't even bothered.
-		this._listenToIfEnabled<SelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
+		this._listenToIfEnabled<ModelSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
 			// Do not reset the selection attribute when the change was indirect.
 			if ( !data.directChange ) {
 				return;

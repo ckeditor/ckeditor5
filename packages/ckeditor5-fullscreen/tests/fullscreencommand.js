@@ -14,9 +14,9 @@ import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 
 import { FullscreenCommand } from '../src/fullscreencommand.js';
-import { ClassicEditorHandler } from '../src/handlers/classiceditorhandler.js';
-import { DecoupledEditorHandler } from '../src/handlers/decouplededitorhandler.js';
-import { AbstractEditorHandler } from '../src/handlers/abstracteditorhandler.js';
+import { FullscreenClassicEditorHandler } from '../src/handlers/classiceditorhandler.js';
+import { FullscreenDecoupledEditorHandler } from '../src/handlers/decouplededitorhandler.js';
+import { FullscreenAbstractEditorHandler } from '../src/handlers/abstracteditorhandler.js';
 
 const basicConfig = {
 	plugins: [
@@ -68,23 +68,23 @@ describe( 'FullscreenCommand', () => {
 		} );
 
 		it( 'for Classic editor', async () => {
-			testEditorTypeHandler( tempElement, ClassicEditor, ClassicEditorHandler );
+			testEditorTypeHandler( tempElement, ClassicEditor, FullscreenClassicEditorHandler );
 		} );
 
 		it( 'for Decoupled editor', async () => {
-			testEditorTypeHandler( tempElement, DecoupledEditor, DecoupledEditorHandler );
+			testEditorTypeHandler( tempElement, DecoupledEditor, FullscreenDecoupledEditorHandler );
 		} );
 
 		it( 'for Inline editor', async () => {
-			testEditorTypeHandler( tempElement, InlineEditor, AbstractEditorHandler );
+			testEditorTypeHandler( tempElement, InlineEditor, FullscreenAbstractEditorHandler );
 		} );
 
 		it( 'for Balloon editor', async () => {
-			testEditorTypeHandler( tempElement, BalloonEditor, AbstractEditorHandler );
+			testEditorTypeHandler( tempElement, BalloonEditor, FullscreenAbstractEditorHandler );
 		} );
 
 		it( 'for Multiroot editor', async () => {
-			testEditorTypeHandler( tempElement, MultiRootEditor, AbstractEditorHandler );
+			testEditorTypeHandler( tempElement, MultiRootEditor, FullscreenAbstractEditorHandler );
 		} );
 
 		async function testEditorTypeHandler( element, editorConstructor, editorHandler ) {
