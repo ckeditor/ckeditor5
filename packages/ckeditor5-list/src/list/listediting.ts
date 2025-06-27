@@ -37,6 +37,7 @@ import { ListIndentCommand } from './listindentcommand.js';
 import { ListCommand } from './listcommand.js';
 import { ListMergeCommand } from './listmergecommand.js';
 import { ListSplitCommand } from './listsplitcommand.js';
+import { ListFormatting } from '../listformatting.js';
 import { ListUtils } from './listutils.js';
 
 import {
@@ -121,7 +122,7 @@ export class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, ListUtils, ClipboardPipeline ] as const;
+		return [ Enter, Delete, ListUtils, ClipboardPipeline, ListFormatting ] as const;
 	}
 
 	/**
