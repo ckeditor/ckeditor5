@@ -60,14 +60,36 @@ For example, the override below will tweak the border radius of several elements
 
 ## Customizing the look of the features
 
-Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://www.w3.org/TR/css-variables/).
+Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties).
 
-For example, if you want to change the color of the mentions' background and text, you can do the following override:
+### General content styling
+
+CKEditor&nbsp;5 provides CSS variables to standardize font and line height styling across the content. These variables control the default appearance of text the content. You can override them in the following way:
 
 ```css
 :root {
-	--ck-color-mention-background: black;
-	--ck-color-mention-text: white;
+	/* Override the default font family */
+	--ck-content-font-family: "Roboto";
+	
+	/* Override the default font size */
+	--ck-content-font-size: 16px;
+	
+	/* Override the default font color */
+	--ck-content-font-color: hsl(225, 5%, 45.00%);
+
+	/* Override the default line height */
+	--ck-content-line-height: 2;
+}
+```
+
+### Feature-specific styling
+
+Individual features also provide CSS variables for their specific styling needs. For example, if you want to change the color of the mentions' background and text, you can do the following override:
+
+```css
+:root {
+	--ck-content-color-mention-background: black;
+	--ck-content-color-mention-text: white;
 }
 ```
 

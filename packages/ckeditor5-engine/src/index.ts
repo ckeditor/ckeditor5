@@ -69,7 +69,8 @@ export {
 	type DowncastAddHighlightCallback,
 	type DowncastHighlightDescriptorCreatorFunction,
 	type DowncastRemoveHighlightCallback,
-	type DowncastMarkerDataCreatorFunction
+	type DowncastMarkerDataCreatorFunction,
+	type DowncastAttributeCreatorFunction
 } from './conversion/downcasthelpers.js';
 
 export type {
@@ -213,7 +214,6 @@ export type {
 	ModelModifySelectionEvent,
 	ModelCanEditAtEvent
 } from './model/model.js';
-export type { ModelSelectionChangeRangeEvent as SelectionChangeRangeEvent } from './model/selection.js';
 
 // View.
 export { ViewDataTransfer, type ViewDropEffect, type ViewEffectAllowed } from './view/datatransfer.js';
@@ -247,7 +247,7 @@ export { ViewRawElement } from './view/rawelement.js';
 export { ViewUIElement } from './view/uielement.js';
 export { ViewDocumentFragment } from './view/documentfragment.js';
 export type { ViewElementDefinition, ViewElementObjectDefinition } from './view/elementdefinition.js';
-export { ViewDocumentSelection } from './view/documentselection.js';
+export { ViewDocumentSelection, type ViewDocumentSelectionChangeEvent } from './view/documentselection.js';
 export type { ViewItem } from './view/item.js';
 export { ViewNode, type ViewNodeChangeEvent } from './view/node.js';
 export {
@@ -298,7 +298,7 @@ export {
 
 export {
 	SelectionObserver,
-	type ViewDocumentSelectionEventData
+	type ViewDocumentObserverSelectionEventData
 } from './view/observer/selectionobserver.js';
 
 export { CompositionObserver, type ViewDocumentCompositionEventData } from './view/observer/compositionobserver.js';
@@ -366,7 +366,10 @@ export type {
 } from './view/observer/touchobserver.js';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver.js';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver.js';
-export type { ViewDocumentSelectionChangeEvent, ViewDocumentSelectionChangeDoneEvent } from './view/observer/selectionobserver.js';
+export type {
+	ViewDocumentObserverSelectionChangeEvent,
+	ViewDocumentObserverSelectionChangeDoneEvent
+} from './view/observer/selectionobserver.js';
 
 // View / Styles.
 export {
