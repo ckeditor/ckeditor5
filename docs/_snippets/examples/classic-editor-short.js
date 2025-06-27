@@ -3,7 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
+import {
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor-short' ), {
@@ -16,6 +21,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		setViewportTopOffsetDynamically( editor );
 	} )
 	.catch( err => {
 		console.error( err );

@@ -1,17 +1,28 @@
 <style>
-	.word-count {
-		padding: 10px 20px;
-		margin-bottom: 15px;
-		background: var(--ck-color-toolbar-background);
-		border-left: 10px hsl(291, 64%, 42%) solid;
-		box-shadow: 2px 2px 2px hsla(0,0%,0%,0.1);
-	}
+	@layer snippets {
+		.word-count {
+			padding: var(--spacing-3) var(--spacing-5);
+			margin-bottom: var(--spacing-8);
+			background: var(--ck-color-toolbar-background);
+			border: 1px solid var(--color-gray-400);
+			border-radius: var(--radius-1);
+			border-left: 8px solid var(--color-primary);
 
-	.word-count::before {
-		content: "Text statistics";
-		display: block;
-		font-weight: bold;
-		font-size: 1.2em;
-		margin-bottom: .4em;
+			&::before {
+				content: "Text statistics";
+				display: block;
+				font-weight: bold;
+				font-size: 1.2em;
+				margin-bottom: .4em;
+			}
+
+			& .ck-word-count * {
+				display: inline-block;
+			}
+
+			& .ck-word-count .ck-word-count__words {
+				margin-right: 1em;
+			}
+		}
 	}
 </style>

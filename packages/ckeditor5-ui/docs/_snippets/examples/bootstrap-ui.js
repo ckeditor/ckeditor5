@@ -289,24 +289,21 @@ BootstrapEditor
 	.then( editor => {
 		window.editor = editor;
 		const readOnlyLock = Symbol( 'read-only-lock' );
-		const button = window.document.getElementById( 'toggle-readonly' );
 		let isReadOnly = false;
 
-		button.addEventListener( 'click', () => {
-			if ( isReadOnly ) {
-				editor.disableReadOnlyMode( readOnlyLock );
+		// Listen for messages from parent window
+		window.addEventListener( 'message', event => {
+			if ( event.data === 'toggle' ) {
+				if ( isReadOnly ) {
+					editor.disableReadOnlyMode( readOnlyLock );
+				}
+				else {
+					editor.enableReadOnlyMode( readOnlyLock );
+				}
+
+				isReadOnly = !isReadOnly;
+				editor.editing.view.focus();
 			}
-			else {
-				editor.enableReadOnlyMode( readOnlyLock );
-			}
-
-			isReadOnly = !isReadOnly;
-
-			button.textContent = isReadOnly ?
-				'Turn off read-only mode' :
-				'Turn on read-only mode';
-
-			editor.editing.view.focus();
 		} );
 	} )
 	.catch( err => {
