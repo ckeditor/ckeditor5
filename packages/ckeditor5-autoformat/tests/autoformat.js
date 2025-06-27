@@ -190,7 +190,8 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: ' ' } );
 
 				expect( _getModelData( model ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a00" listType="bulleted" selection:bold="true" selection:italic="true">' +
+					'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listItemItalic="true" listType="bulleted"' +
+						' selection:bold="true" selection:italic="true">' +
 						'<$text bold="true" italic="true">[]</$text>' +
 					'</paragraph>'
 				);
@@ -386,7 +387,8 @@ describe( 'Autoformat', () => {
 				editor.execute( 'insertText', { text: ' ' } );
 
 				expect( _getModelData( model ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a00" listType="numbered" selection:bold="true" selection:italic="true">' +
+					'<paragraph listIndent="0" listItemBold="true" listItemId="a00" listItemItalic="true" listType="numbered"' +
+						' selection:bold="true" selection:italic="true">' +
 					'<$text bold="true" italic="true">[]</$text>' +
 					'</paragraph>'
 				);
