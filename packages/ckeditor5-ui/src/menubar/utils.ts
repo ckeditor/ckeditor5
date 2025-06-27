@@ -688,6 +688,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'indent',
  * 				items: [
  * 					'menuBar:alignment',
+ * 					'menuBar:lineHeight',
  * 					'menuBar:indent',
  * 					'menuBar:outdent'
  * 				]
@@ -961,6 +962,7 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'indent',
 				items: [
 					'menuBar:alignment',
+					'menuBar:lineHeight',
 					'menuBar:indent',
 					'menuBar:outdent'
 				]
