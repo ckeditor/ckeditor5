@@ -340,7 +340,7 @@ This code is particularly useful when you need to clean up a document. You might
 
 ### Working with collaboration UI elements
 
-Every comment thread and suggestion is connected with an annotation that is used to display it in the editor. You can get the corresponding UI annotation for a model element, or get the model element for a given annotation using dedicated methods.
+Every comment thread and suggestion is connected with an annotation that is used to display it in the editor. You can get the corresponding UI annotation for a collaboration element, or get the collaboration element for a given annotation using dedicated methods.
 
 #### Comment annotations
 
