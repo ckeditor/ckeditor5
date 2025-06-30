@@ -268,8 +268,11 @@ function isListContinuation( currentItem: ListLikeElement ) {
 	const previousSibling = currentItem.element.previousSibling;
 
 	if ( !previousSibling ) {
+		const parent = currentItem.element.parent as ViewElement;
+
 		// If it's a li inside ul or ol like in here: https://github.com/ckeditor/ckeditor5/issues/15964.
-		return isList( currentItem.element.parent as ViewElement );
+		// If the parent has previous sibling, which is not a list, then it is not a continuation.
+		return isList( parent ) && ( !parent.previousSibling || isList( parent.previousSibling ) );
 	}
 
 	// Even with the same id the list does not have to be continuous (#43).
