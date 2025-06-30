@@ -397,7 +397,8 @@
 		"examples/framework/content-placeholder.html": "features/merge-fields.html",
 		"features/source-editing.html": "features/source-editing/source-editing.html",
 		"examples/framework/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
-		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html"
+		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
+		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
