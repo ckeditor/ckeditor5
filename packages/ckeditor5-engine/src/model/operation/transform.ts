@@ -1915,7 +1915,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 
 	// Case 1:
 	//
-	// Split operation brings back an element that wos earlier a part of the move operation (first element of the original move operation).
+	// Split operation brings back an element that was earlier a part of the move operation (first element of the original move operation).
 	//
 	if ( a.sourcePosition.isEqual( b.insertionPosition ) && context.abRelation == 'firstToMoveMerged' ) {
 		a.howMany++;
