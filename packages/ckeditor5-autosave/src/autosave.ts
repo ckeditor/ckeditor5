@@ -20,7 +20,7 @@ import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
 
 import type { ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
 
-import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
+import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
 
 /**
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
@@ -79,7 +79,7 @@ export class Autosave extends Plugin {
 	 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _debouncedSave: DebouncedFunction<( () => Promise<void> )>;
+	private _debouncedSave: DebouncedFunc<( () => Promise<void> )>;
 
 	/**
 	 * The last saved document version.

@@ -338,13 +338,13 @@ export class ViewDowncastWriter {
 	public createContainerElement(
 		name: string,
 		attributes?: ViewElementAttributes,
-		childrenOrOptions: ViewNode | Iterable<ViewNode> | { renderUnsafeAttributes?: Array<string> } = {},
+		childrenOrOptions: ContainerChildren | ContainerOption = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ViewContainerElement {
 		let children: ViewNode | Iterable<ViewNode> | undefined = undefined;
 
-		if ( isPlainObject( childrenOrOptions ) ) {
-			options = childrenOrOptions as { renderUnsafeAttributes?: Array<string> };
+		if ( isContainerOptions( childrenOrOptions ) ) {
+			options = childrenOrOptions;
 		} else {
 			children = childrenOrOptions;
 		}
@@ -2262,4 +2262,14 @@ function validateRangeContainer( range: ViewRange, errorContext: ViewDocument ) 
 		 */
 		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
+}
+
+type ContainerChildren = ViewNode | Iterable<ViewNode>;
+type ContainerOption = { renderUnsafeAttributes?: Array<string> };
+
+/**
+ * Checks if the provided argument is a plain object that can be used as options for container element.
+ */
+function isContainerOptions( childrenOrOptions: ContainerChildren | ContainerOption ): childrenOrOptions is ContainerOption {
+	return isPlainObject( childrenOrOptions );
 }

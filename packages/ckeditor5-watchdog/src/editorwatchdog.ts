@@ -7,7 +7,7 @@
  * @module watchdog/editorwatchdog
  */
 
-import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
+import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'es-toolkit/compat';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -39,7 +39,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 * Throttled save method. The `save()` method is called the specified `saveInterval` after `throttledSave()` is called,
 	 * unless a new action happens in the meantime.
 	 */
-	private _throttledSave: DebouncedFunction<() => void>;
+	private _throttledSave: DebouncedFunc<() => void>;
 
 	/**
 	 * The latest saved editor data represented as a root name -> root data object.

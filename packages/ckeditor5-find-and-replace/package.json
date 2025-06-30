@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-ui": "45.2.1",
     "@ckeditor/ckeditor5-utils": "45.2.1",
     "ckeditor5": "45.2.1",
-    "es-toolkit": "1.38.0"
+    "es-toolkit": "1.39.5"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
