@@ -35,7 +35,7 @@ While CKEditor&nbsp;5 provides a rich client-side editing experience, there are 
 
 ## API examples
 
-Below, you will find several examples of practical server-side API applications. There are far more possibilities available. 
+Below, you will find several examples of practical server-side API applications. There are far more possibilities available.
 
 <info-box info>
 	In the examples below we use the {@link module:core/editor/editor~Editor `editor`} variable in many places. While on the client (browser) environment it is not available by default, it is a globally available pointer to the editor's instance on the server. There is no need to set this up when using Cloud Services.
@@ -266,8 +266,8 @@ const items = Array.from( range.getItems() );
 // Process each item in the document.
 for ( const item of items ) {
 	editor.model.change( writer => {
-		// Use _recordAttributeChanges to ensure the change is properly recorded as a suggestion.
-		trackChangesEditing._recordAttributeChanges( () => {
+		// Use `recordAttributeChanges to ensure the change is properly recorded as a suggestion.
+		trackChangesEditing.recordAttributeChanges( () => {
 			let href = item.getAttribute( 'linkHref' );
 
 			// Only process text proxies (parts of text nodes) that have a `linkHref` attribute.
@@ -283,11 +283,46 @@ for ( const item of items ) {
 }
 ```
 
-### Resolving comments
+### Working with comments
 
 The {@link features/comments comments} feature allows your users to have discussions on certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
 
-For example, here's how to resolve all comment threads in a given document:
+#### Creating comments
+
+You can create new comments using the `addCommentThread` command. By default, this command would create a comment thread on the current selection and create a "draft" comment thread, which might not be what you want in a server-side context. However, you can customize it using two parameters: `ranges` to specify where to place the comment, and `comment` to set its initial content.
+
+Here's an example that shows how to automatically add comments to images that are missing the `alt` attribute:
+
+```js
+const model = editor.model;
+const range = model.createRangeIn( model.document.getRoot() );
+
+editor.model.change( () => {
+	for ( const item of range.getItems() ) {
+		const isImage = item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' );
+
+		if ( isImage && !item.getAttribute( 'alt' ) ) {
+			const commentRange = model.createRangeOn( item );
+			const firstCommentMessage = 'The alt attribute is missing.';
+
+			// Add a comment on image without ALT attribute.
+			editor.execute(
+				'addCommentThread',
+				{
+					ranges: [ commentRange ],
+					comment: firstCommentMessage
+				}
+			);
+		}
+	}
+} );
+```
+
+This example shows how to automatically review your content and add comments where needed. You could use similar code to build automated content review systems, accessibility checkers, or any other validation workflows.
+
+#### Resolving comments
+
+You can use the comments feature API to manage existing comments in your documents. For example, here's how to resolve all comment threads in a given document:
 
 ```js
 // Get all comment threads from the document.
@@ -302,6 +337,80 @@ for ( const thread of threads ) {
 ```
 
 This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
+
+### Working with collaboration UI elements
+
+Every comment thread and suggestion is connected with an annotation that is used to display it in the editor. You can get the corresponding UI annotation for a model element, or get the model element for a given annotation using dedicated methods.
+
+#### Comment annotations
+
+The `CommentsRepository` plugin provides methods to get the corresponding annotation for a comment thread or find a comment thread for a given annotation:
+
+```js
+const commentsRepository = editor.plugins.get( 'CommentsRepository' );
+
+// Get an annotation for a comment thread.
+const annotation = commentsRepository.getAnnotationForCommentThread( commentThread );
+
+// Get a comment thread for an annotation.
+const commentThread = commentsRepository.getCommentThreadForAnnotation( annotation );
+```
+
+#### Suggestion annotations
+
+Similarly, the `TrackChangesUI` plugin provides methods to work with suggestion annotations:
+
+```js
+const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
+
+// Get an annotation for a suggestion.
+const annotation = trackChangesUI.getAnnotationForSuggestion( suggestion );
+
+// Get a suggestion for an annotation.
+const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
+```
+
+#### Getting collaboration elements from annotations
+
+Sometimes you might only have access to a collection of annotations without their corresponding elements. Here's how to read the data in such case:
+
+```js
+const results = [];
+const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
+const commentsRepository = editor.plugins.get( 'CommentsRepository' );
+
+for ( const annotation of editor.plugins.get( 'Annotations' ).collection ) {
+    if ( annotation.type == 'comment' ) {
+        const comment = commentsRepository.getCommentThreadForAnnotation( annotation );
+        const ranges = Array.from( editor.model.markers.getMarkersGroup( 'comment:' + comment.id ) )
+            .map( marker => marker.getRange() );
+
+        results.push( {
+            type: 'comment',
+            id: comment.id,
+            context: ranges,
+            isResolved: comment.isResolved,
+            isUnlinked: !!comment.unlinkedAt
+        } );
+    } else if ( annotation.type.startsWith( 'suggestion' ) ) {
+        const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
+        const ranges = [];
+
+        for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
+            ranges.push( ...adjacentSuggestion.getRanges() );
+        }
+
+        results.push( {
+            type: 'suggestion',
+            id: suggestion.id,
+            label: annotation.innerView.description,
+            context: ranges
+        } );
+    }
+}
+
+return JSON.stringify( results );
+```
 
 ### Working with revision history
 
