@@ -2,16 +2,16 @@
 category: cloud-services
 order: 30
 meta-title: Cloud Services Server-side Editor API | CKEditor 5 Documentation
-meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor.
+meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor on the client.
 modified_at: 2025-06-05
 badges: [ premium ]
 ---
 
 # Server-side editor API
 
-Server-side Editor API enables deep and complex integration of your application with all document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history, and much more, directly from your server-side code.
+Server-side Editor API enables deep and complex integration of your application with all document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history, and much more, directly from your server-side code (without running editor instance on the client).
 
-The remote script REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server.
+The server-side editor REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server.
 
 ## Why use server-side editor API?
 
@@ -285,7 +285,7 @@ for ( const item of items ) {
 
 #### Working with annotations
 
-Each suggestion in the editor is always connected with an annotation. Sometimes, you may want to gather additional data for suggestions based on their annotations, such as the suggestion label or the content in the document on which the suggestion is made, which are not available in the database.
+Each suggestion in the editor is always connected with an annotation. Sometimes, you may want to gather additional data for suggestions based on their annotations, such as the suggestion label or the content in the document on which the suggestion is made, which are not available through REST API.
 
 The following example demonstrates retrieving suggestion data:
 
@@ -329,7 +329,7 @@ for ( const annotation of annotations ) {
 	}
 }
 
-return JSON.stringify( results );
+return results;
 ```
 
 ### Working with comments
