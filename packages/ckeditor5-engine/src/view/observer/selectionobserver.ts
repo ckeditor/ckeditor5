@@ -11,7 +11,7 @@ import { Observer } from './observer.js';
 import { MutationObserver } from './mutationobserver.js';
 import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
+import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
 
 import { type EditingView } from '../view.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
@@ -67,7 +67,7 @@ export class SelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentObserverSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentObserverSelectionEventData ) => void>;
 
 	/**
 	 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
@@ -81,7 +81,7 @@ export class SelectionObserver extends Observer {
 	 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
 	 * after a certain period of time (debounced, postponed by each selectionchange event).
 	 */
-	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunction<() => boolean>;
+	private readonly _documentIsSelectingInactivityTimeoutDebounced: DebouncedFunc<() => boolean>;
 
 	/**
 	 * Private property to check if the code does not enter infinite loop.
