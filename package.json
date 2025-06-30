@@ -101,6 +101,7 @@
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
     "@ckeditor/ckeditor5-document-outline": "45.2.1",
     "@ckeditor/ckeditor5-email": "45.2.1",
+    "@ckeditor/ckeditor5-line-height": "0.0.1",
     "@ckeditor/ckeditor5-export-inline-styles": "45.2.1",
     "@ckeditor/ckeditor5-export-pdf": "45.2.1",
     "@ckeditor/ckeditor5-export-word": "45.2.1",
@@ -219,6 +220,7 @@
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.mjs",
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
+    "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs"
   },
   "lint-staged": {
