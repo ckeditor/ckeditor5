@@ -285,13 +285,13 @@ for ( const item of items ) {
 
 ### Working with comments
 
-The {@link features/comments comments} feature allows your users to have discussions on certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
+The {@link features/comments comments} feature allows your users to have discussions attached to certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
 
 #### Creating comments
 
 You can create new comments using the `addCommentThread` command. By default, this command would create a comment thread on the current selection and create a "draft" comment thread, which might not be what you want in a server-side context. However, you can customize it using two parameters: `ranges` to specify where to place the comment, and `comment` to set its initial content.
 
-Here's an example that shows how to automatically add comments to images that are missing the `alt` attribute:
+Here is an example that shows how to automatically add comments to images that are missing the `alt` attribute:
 
 ```js
 const model = editor.model;
@@ -318,11 +318,11 @@ editor.model.change( () => {
 } );
 ```
 
-This example shows how to automatically review your content and add comments where needed. You could use similar code to build automated content review systems, accessibility checkers, or any other validation workflows.
+The above example shows how to automatically review your content and add comments where needed. You could use similar code to build automated content review systems, accessibility checkers, or any other validation workflows.
 
 #### Resolving comments
 
-You can use the comments feature API to manage existing comments in your documents. For example, here's how to resolve all comment threads in a given document:
+You can use the comments feature API to manage existing comments in your documents. For example, here is a way to resolve all comment threads in a given document:
 
 ```js
 // Get all comment threads from the document.
@@ -358,7 +358,7 @@ const commentThread = commentsRepository.getCommentThreadForAnnotation( annotati
 
 #### Suggestion annotations
 
-Similarly, the `TrackChangesUI` plugin provides methods to work with suggestion annotations:
+The `TrackChangesUI` plugin provides methods to work with suggestion annotations in a similar manner:
 
 ```js
 const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
@@ -372,7 +372,7 @@ const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
 
 #### Getting collaboration elements from annotations
 
-Sometimes you might only have access to a collection of annotations without their corresponding elements. Here's how to read the data in such case:
+Sometimes you might only have access to a collection of annotations without their corresponding elements. This is how you read the data in such case:
 
 ```js
 const results = [];
@@ -380,33 +380,33 @@ const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
 const commentsRepository = editor.plugins.get( 'CommentsRepository' );
 
 for ( const annotation of editor.plugins.get( 'Annotations' ).collection ) {
-    if ( annotation.type == 'comment' ) {
-        const comment = commentsRepository.getCommentThreadForAnnotation( annotation );
-        const ranges = Array.from( editor.model.markers.getMarkersGroup( 'comment:' + comment.id ) )
-            .map( marker => marker.getRange() );
+	if ( annotation.type == 'comment' ) {
+		const comment = commentsRepository.getCommentThreadForAnnotation( annotation );
+		const ranges = Array.from( editor.model.markers.getMarkersGroup( 'comment:' + comment.id ) )
+			.map( marker => marker.getRange() );
 
-        results.push( {
-            type: 'comment',
-            id: comment.id,
-            context: ranges,
-            isResolved: comment.isResolved,
-            isUnlinked: !!comment.unlinkedAt
-        } );
-    } else if ( annotation.type.startsWith( 'suggestion' ) ) {
-        const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
-        const ranges = [];
+		results.push( {
+			type: 'comment',
+			id: comment.id,
+			context: ranges,
+			isResolved: comment.isResolved,
+			isUnlinked: !!comment.unlinkedAt
+		} );
+	} else if ( annotation.type.startsWith( 'suggestion' ) ) {
+		const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
+		const ranges = [];
 
-        for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
-            ranges.push( ...adjacentSuggestion.getRanges() );
-        }
+		for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
+			ranges.push( ...adjacentSuggestion.getRanges() );
+		}
 
-        results.push( {
-            type: 'suggestion',
-            id: suggestion.id,
-            label: annotation.innerView.description,
-            context: ranges
-        } );
-    }
+		results.push( {
+			type: 'suggestion',
+			id: suggestion.id,
+			label: annotation.innerView.description,
+			context: ranges
+		} );
+	}
 }
 
 return JSON.stringify( results );
