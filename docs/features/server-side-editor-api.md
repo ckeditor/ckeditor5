@@ -283,6 +283,55 @@ for ( const item of items ) {
 }
 ```
 
+#### Working with annotations
+
+Each suggestion in the editor is always connected with an annotation. Sometimes, you may want to gather additional data for suggestions based on their annotations, such as the suggestion label or the content in the document on which the suggestion is made, which are not available in the database.
+
+The following example demonstrates retrieving suggestion data:
+
+```js
+const results = [];
+const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
+const annotations = editor.plugins.get( 'Annotations' ).collection;
+
+for ( const annotation of annotations ) {
+	// Check if this is a suggestion annotation.
+	if ( annotation.type.startsWith( 'suggestion' ) ) {
+		const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
+		const ranges = [];
+
+		// Gather all ranges for this suggestion (including adjacent ones).
+		for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
+			ranges.push( ...adjacentSuggestion.getRanges() );
+		}
+
+		let contextHtml = '';
+
+		if ( ranges.length ) {
+			const firstRange = ranges[ 0 ];
+			const lastRange = ranges[ ranges.length - 1 ];
+
+			// Find the common ancestor for the whole suggestion context.
+			const commonAncestor = firstRange.start.getCommonAncestor( lastRange.end );
+
+			if ( commonAncestor ) {
+				// Stringify the entire common ancestor element as HTML, highlighting suggestions.
+				contextHtml = editor.data.stringify( commonAncestor, { showSuggestionHighlights: true } );
+			}
+		}
+
+		results.push( {
+			type: 'suggestion',
+			id: suggestion.id,
+			label: annotation.innerView.description,
+			context: contextHtml
+		} );
+	}
+}
+
+return JSON.stringify( results );
+```
+
 ### Working with comments
 
 The {@link features/comments comments} feature allows your users to have discussions attached to certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
@@ -337,80 +386,6 @@ for ( const thread of threads ) {
 ```
 
 This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
-
-### Working with collaboration UI elements
-
-Every comment thread and suggestion is connected with an annotation that is used to display it in the editor. You can get the corresponding UI annotation for a collaboration element, or get the collaboration element for a given annotation using dedicated methods.
-
-#### Comment annotations
-
-The `CommentsRepository` plugin provides methods to get the corresponding annotation for a comment thread or find a comment thread for a given annotation:
-
-```js
-const commentsRepository = editor.plugins.get( 'CommentsRepository' );
-
-// Get an annotation for a comment thread.
-const annotation = commentsRepository.getAnnotationForCommentThread( commentThread );
-
-// Get a comment thread for an annotation.
-const commentThread = commentsRepository.getCommentThreadForAnnotation( annotation );
-```
-
-#### Suggestion annotations
-
-The `TrackChangesUI` plugin provides methods to work with suggestion annotations in a similar manner:
-
-```js
-const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
-
-// Get an annotation for a suggestion.
-const annotation = trackChangesUI.getAnnotationForSuggestion( suggestion );
-
-// Get a suggestion for an annotation.
-const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
-```
-
-#### Getting collaboration elements from annotations
-
-Sometimes you might only have access to a collection of annotations without their corresponding elements. This is how you read the data in such case:
-
-```js
-const results = [];
-const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
-const commentsRepository = editor.plugins.get( 'CommentsRepository' );
-
-for ( const annotation of editor.plugins.get( 'Annotations' ).collection ) {
-	if ( annotation.type == 'comment' ) {
-		const comment = commentsRepository.getCommentThreadForAnnotation( annotation );
-		const ranges = Array.from( editor.model.markers.getMarkersGroup( 'comment:' + comment.id ) )
-			.map( marker => marker.getRange() );
-
-		results.push( {
-			type: 'comment',
-			id: comment.id,
-			context: ranges,
-			isResolved: comment.isResolved,
-			isUnlinked: !!comment.unlinkedAt
-		} );
-	} else if ( annotation.type.startsWith( 'suggestion' ) ) {
-		const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
-		const ranges = [];
-
-		for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
-			ranges.push( ...adjacentSuggestion.getRanges() );
-		}
-
-		results.push( {
-			type: 'suggestion',
-			id: suggestion.id,
-			label: annotation.innerView.description,
-			context: ranges
-		} );
-	}
-}
-
-return JSON.stringify( results );
-```
 
 ### Working with revision history
 
