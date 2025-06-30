@@ -338,7 +338,7 @@ export class ViewDowncastWriter {
 	public createContainerElement(
 		name: string,
 		attributes?: ViewElementAttributes,
-		childrenOrOptions: ContainerChildren | ContainerOption = {},
+		childrenOrOptions: ViewNode | Iterable<ViewNode> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ViewContainerElement {
 		let children: ViewNode | Iterable<ViewNode> | undefined = undefined;
@@ -2264,12 +2264,11 @@ function validateRangeContainer( range: ViewRange, errorContext: ViewDocument ) 
 	}
 }
 
-type ContainerChildren = ViewNode | Iterable<ViewNode>;
-type ContainerOption = { renderUnsafeAttributes?: Array<string> };
-
 /**
  * Checks if the provided argument is a plain object that can be used as options for container element.
  */
-function isContainerOptions( childrenOrOptions: ContainerChildren | ContainerOption ): childrenOrOptions is ContainerOption {
+function isContainerOptions(
+	childrenOrOptions: ViewNode | Iterable<ViewNode> | { renderUnsafeAttributes?: Array<string> }
+): childrenOrOptions is { renderUnsafeAttributes?: Array<string> } {
 	return isPlainObject( childrenOrOptions );
 }
