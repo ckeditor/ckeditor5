@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Changelog entries | CKEditor 5 Framework Documentation
 meta-description: Learn how to write structured, user-facing changelog entries for CKEditor 5 using a Markdown-based system designed for clarity, versioning, and long-term maintainability.
 order: 60
-modified_at: 2025-06-17
+modified_at: 2025-07-01
 ---
 
 # Changelog entries
