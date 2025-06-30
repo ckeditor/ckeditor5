@@ -9,11 +9,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
@@ -28,7 +31,7 @@ describe( 'Input', () => {
 			document.body.appendChild( domElement );
 
 			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph, Bold, Widget ],
+				plugins: [ Input, Paragraph, Bold, Widget, CodeBlock, BlockQuote ],
 				initialData: '<p>foo</p>'
 			} );
 
@@ -145,16 +148,229 @@ describe( 'Input', () => {
 			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
 				setModelData( editor.model, '[<widget></widget>]' );
 
-				const spy = sinon.spy();
-
-				viewDocument.fire( 'insertText', {
-					preventDefault: spy,
+				const eventData = {
+					preventDefault: sinon.spy(),
 					selection: viewDocument.selection,
-					text: 'bar',
-					domEvent: {}
-				} );
+					text: 'bar'
+				};
 
-				sinon.assert.calledOnce( spy );
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.called( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+			} );
+
+			it( 'should preventDefault() the original beforeinput event if target ranges span across different blocks', () => {
+				setModelData( editor.model,
+					'<paragraph>[foo</paragraph>' +
+					'<paragraph>]bar</paragraph>'
+				);
+
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: viewDocument.selection,
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.calledOnce( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				expect( executeOptions.text ).to.equal( 'abc' );
+				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
+				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.selection.getFirstRange().start.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
+				) ).to.be.true;
+				expect( executeOptions.selection.getFirstRange().end.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 1 ), 0 )
+				) ).to.be.true;
+			} );
+
+			it( 'should preventDefault() the original event if target ranges span across different blocks (ends in code block)', () => {
+				setModelData( editor.model,
+					'<paragraph>[foo</paragraph>' +
+					'<codeBlock language="javascript">]bar</codeBlock>'
+				);
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>foo</p>' +
+					'<pre data-language="JavaScript" spellcheck="false">' +
+						'<code class="language-javascript">bar</code>' +
+					'</pre>'
+				);
+
+				// Emulate browser generated target range: <p>[foo</p><pre>]<code>bar</code></pre>
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 ),
+						view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 )
+					) ),
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.calledOnce( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				expect( executeOptions.text ).to.equal( 'abc' );
+				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
+				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.selection.getFirstRange().start.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
+				) ).to.be.true;
+				expect( executeOptions.selection.getFirstRange().end.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 )
+				) ).to.be.true;
+			} );
+
+			it( 'should preventDefault() the original event if target ranges span across different blocks (ends in block quote)', () => {
+				setModelData( editor.model,
+					'<paragraph>[foo</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>]bar</paragraph>' +
+					'</blockQuote>'
+				);
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p>foo</p>' +
+					'<blockquote>' +
+						'<p>bar</p>' +
+					'</blockquote>'
+				);
+
+				// Emulate browser generated target range: <p>[foo</p><blockquote><p>]bar</p></blockquote>
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: view.createSelection( view.createRange(
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 ),
+						view.createPositionAt( viewDocument.getRoot().getChild( 1 ).getChild( 0 ), 0 )
+					) ),
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.calledOnce( eventData.preventDefault );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				expect( executeOptions.text ).to.equal( 'abc' );
+				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
+				expect( executeOptions.selection.isCollapsed ).to.be.false;
+				expect( executeOptions.selection.getFirstRange().start.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
+				) ).to.be.true;
+				expect( executeOptions.selection.getFirstRange().end.isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 1 ).getChild( 0 ), 0 )
+				) ).to.be.true;
+			} );
+
+			it( 'should preventDefault() the original event if target ranges span empty paragraph and ends in code block', () => {
+				setModelData( editor.model,
+					'<paragraph>[</paragraph>' +
+					'<codeBlock language="javascript">]bar</codeBlock>'
+				);
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<p></p>' +
+					'<pre data-language="JavaScript" spellcheck="false">' +
+						'<code class="language-javascript">bar</code>' +
+					'</pre>'
+				);
+
+				// Emulate browser generated target range: <p>[</p><pre>]<code>bar</code></pre>
+				const preventDefaultSpy = sinon.spy();
+
+				const eventData = {
+					inputType: 'insertText',
+					targetRanges: [
+						view.createRange(
+							view.createPositionAt( viewDocument.getRoot().getChild( 0 ), 0 ),
+							view.createPositionAt( viewDocument.getRoot().getChild( 1 ), 0 )
+						)
+					],
+					data: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return preventDefaultSpy.called;
+					},
+					preventDefault: preventDefaultSpy
+				};
+
+				// Note this test is using beforeinput event as only on that event target ranges are fixed by EditingController.
+				viewDocument.fire( 'beforeinput', eventData );
+
+				sinon.assert.calledOnce( preventDefaultSpy );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+
+				const executeOptions = insertTextCommandSpy.firstCall.args[ 0 ];
+
+				expect( executeOptions.text ).to.equal( 'abc' );
+				expect( executeOptions.selection.rangeCount ).to.equal( 1 );
+				expect( executeOptions.selection.isCollapsed ).to.be.true;
+				expect( executeOptions.selection.getFirstPosition().isEqual(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 0 )
+				) ).to.be.true;
+			} );
+
+			it( 'should not preventDefault() the original beforeinput event if target range is collapsed', () => {
+				setModelData( editor.model, '<paragraph>fo[]o</paragraph>' );
+
+				const eventData = {
+					preventDefault: sinon.spy(),
+					selection: viewDocument.selection,
+					text: 'abc',
+					domEvent: {}
+				};
+
+				eventData.domEvent = {
+					get defaultPrevented() {
+						return eventData.preventDefault.called;
+					}
+				};
+
+				viewDocument.fire( 'insertText', eventData );
+
+				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( insertTextCommandSpy );
 			} );
 

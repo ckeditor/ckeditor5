@@ -1473,6 +1473,40 @@ describe( 'DomConverter', () => {
 			expect( domPosition.parent ).to.equal( domFoo );
 		} );
 
+		it( 'should convert the position in the text even if offset is after the text', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, domFoo );
+			const { view: viewP } = parse( '<container:p>f{}oo</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 40 ); // This offset is after the text.
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 3 );
+			expect( domPosition.parent ).to.equal( domFoo );
+		} );
+
+		it( 'should not crash for position in text on not yet updated DOM tree', () => {
+			// Note this is a case when renderer is verifying whether the selection is inside an inline filler,
+			// so the DOM tree is not yet updated.
+			const domFiller = document.createTextNode( INLINE_FILLER );
+			const domFoo = document.createTextNode( 'foo' );
+			const domSpan = createElement( document, 'span', null, domFoo );
+			const domStrong = createElement( document, 'strong', null, [ domFiller, domSpan ] );
+			const domP = createElement( document, 'p', null, domStrong );
+			const { view: viewP } = parse( '<container:p>{}foo</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = new ViewPosition( viewP.getChild( 0 ), 0 );
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition.offset ).to.equal( 0 );
+			expect( domPosition.parent ).to.equal( domStrong );
+			// This should be in a text node but since DOM is not yet updated, it is in the strong element.
+		} );
+
 		it( 'should move the position to the text node if the position is where inline filler is', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domP = createElement( document, 'p', null, domFiller );
