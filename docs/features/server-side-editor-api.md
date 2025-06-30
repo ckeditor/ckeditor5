@@ -55,7 +55,7 @@ For information about setting up and using the endpoint itself, see the [link Cl
 
 #### Getting editor data
 
-The most basic action you can perform is getting the editor's data.
+The most basic action you can perform is getting the editor data.
 ```js
 // Get the editor data.
 const data = editor.getData();
