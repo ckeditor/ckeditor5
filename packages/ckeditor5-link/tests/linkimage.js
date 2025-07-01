@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LinkImage from '../src/linkimage.js';
-import LinkImageEditing from '../src/linkimageediting.js';
-import LinkImageUI from '../src/linkimageui.js';
+import { LinkImage } from '../src/linkimage.js';
+import { LinkImageEditing } from '../src/linkimageediting.js';
+import { LinkImageUI } from '../src/linkimageui.js';
 
 describe( 'LinkImage', () => {
 	it( 'should require LinkImageEditing and LinkImageUI', () => {

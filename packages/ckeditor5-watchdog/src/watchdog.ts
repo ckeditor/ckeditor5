@@ -18,7 +18,7 @@ import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } f
  *
  * @internal
  */
-export default abstract class Watchdog {
+export abstract class Watchdog {
 	/**
 	 * An array of crashes saved as an object with the following properties:
 	 *

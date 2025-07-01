@@ -7,9 +7,9 @@
  * @module ui/formheader/formheaderview
  */
 
-import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
-import IconView from '../icon/iconview.js';
+import { View } from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { IconView } from '../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -27,7 +27,7 @@ import '../../theme/components/formheader/formheader.css';
  *
  * The latter is an example, where the component has been extended by {@link module:ui/dropdown/dropdownview~DropdownView} view.
  */
-export default class FormHeaderView extends View {
+export class FormHeaderView extends View {
 	/**
 	 * A collection of header items.
 	 */

@@ -14,7 +14,7 @@
  * @param func The function to wrap.
  * @param wait The timeout in ms.
  */
-export default function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
+export function delay<T extends ( ...args: Array<any> ) => any>( func: T, wait: number ): DelayedFunc<T> {
 	let timer: ReturnType<typeof setTimeout>;
 
 	function delayed( ...args: Parameters<T> ) {

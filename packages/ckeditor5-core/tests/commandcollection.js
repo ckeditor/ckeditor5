@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CommandCollection from '../src/commandcollection.js';
-import Command from '../src/command.js';
-import ModelTestEditor from './_utils/modeltesteditor.js';
+import { CommandCollection } from '../src/commandcollection.js';
+import { Command } from '../src/command.js';
+import { ModelTestEditor } from './_utils/modeltesteditor.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 class SomeCommand extends Command {

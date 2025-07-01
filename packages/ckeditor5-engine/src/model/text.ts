@@ -7,22 +7,23 @@
  * @module engine/model/text
  */
 
-import Node, { type NodeAttributes } from './node.js';
+import { ModelNode, type ModelNodeAttributes } from './node.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
- * Model text node. Type of {@link module:engine/model/node~Node node} that contains {@link module:engine/model/text~Text#data text data}.
+ * Model text node. Type of {@link module:engine/model/node~ModelNode node} that
+ * contains {@link module:engine/model/text~ModelText#data text data}.
  *
- * **Important:** see {@link module:engine/model/node~Node} to read about restrictions using `Text` and `Node` API.
+ * **Important:** see {@link module:engine/model/node~ModelNode} to read about restrictions using `Text` and `Node` API.
  *
  * **Note:** keep in mind that `Text` instances might indirectly got removed from model tree when model is changed.
- * This happens when {@link module:engine/model/writer~Writer model writer} is used to change model and the text node is merged with
+ * This happens when {@link module:engine/model/writer~ModelWriter model writer} is used to change model and the text node is merged with
  * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
- * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
+ * {@link module:engine/model/liveposition~ModelLivePosition live position} placed before the text node.
  */
-export default class Text extends Node {
+export class ModelText extends ModelNode {
 	/**
 	 * Text data contained in this text node.
 	 *
@@ -34,13 +35,13 @@ export default class Text extends Node {
 	 * Creates a text node.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~Writer#createText} method instead.
+	 * Use the {@link module:engine/model/writer~ModelWriter#createText} method instead.
 	 *
 	 * @internal
 	 * @param data Node's text.
 	 * @param attrs Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( data?: string, attrs?: NodeAttributes ) {
+	constructor( data?: string, attrs?: ModelNodeAttributes ) {
 		super( attrs );
 		this._data = data || '';
 	}
@@ -78,8 +79,8 @@ export default class Text extends Node {
 	 * @internal
 	 * @returns `Text` instance created using given plain object.
 	 */
-	public override _clone(): Text {
-		return new Text( this.data, this.getAttributes() );
+	public override _clone(): ModelText {
+		return new ModelText( this.data, this.getAttributes() );
 	}
 
 	/**
@@ -88,8 +89,8 @@ export default class Text extends Node {
 	 * @param json Plain object to be converted to `Text`.
 	 * @returns `Text` instance created using given plain object.
 	 */
-	public static fromJSON( json: any ): Text {
-		return new Text( json.data, json.attributes );
+	public static fromJSON( json: any ): ModelText {
+		return new ModelText( json.data, json.attributes );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -107,7 +108,7 @@ export default class Text extends Node {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Text.prototype.is = function( type: string ): boolean {
+ModelText.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'model:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'model:text' ||

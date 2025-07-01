@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 
-import ViewPosition from '../../../../src/view/position.js';
-import { setData } from '../../../../src/dev-utils/model.js';
+import { ViewPosition } from '../../../../src/view/position.js';
+import { _setModelData } from '../../../../src/dev-utils/model.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -54,7 +54,7 @@ ClassicEditor
 				view: ( item, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 			} );
 
-		setData( editor.model,
+		_setModelData( editor.model,
 			'<paragraph>foo[]</paragraph>' +
 			'<widget><nested>bar</nested></widget>' +
 			'<widget><nested>bom</nested></widget>'

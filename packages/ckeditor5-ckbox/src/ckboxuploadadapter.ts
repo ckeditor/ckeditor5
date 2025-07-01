@@ -18,12 +18,12 @@ import {
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
 import type { ImageUploadCompleteEvent, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
 
-import CKBoxEditing from './ckboxediting.js';
+import { CKBoxEditing } from './ckboxediting.js';
 import {
 	getImageUrls,
 	sendHttpRequest
 } from './utils.js';
-import CKBoxUtils from './ckboxutils.js';
+import { CKBoxUtils } from './ckboxutils.js';
 
 /**
  * A plugin that enables file uploads in CKEditor 5 using the CKBox server–side connector.
@@ -34,7 +34,7 @@ import CKBoxUtils from './ckboxutils.js';
  * Check out the {@glink features/images/image-upload/image-upload Image upload overview} guide to learn about
  * other ways to upload images into CKEditor 5.
  */
-export default class CKBoxUploadAdapter extends Plugin {
+export class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

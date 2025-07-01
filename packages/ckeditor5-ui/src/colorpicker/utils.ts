@@ -7,12 +7,8 @@
  * @module ui/colorpicker/utils
  */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
-// There are no available types for 'color-parse' module.
-// @ts-ignore
 import { default as parse } from 'color-parse';
-import * as convert from 'color-convert';
+import convert from 'color-convert';
 import type {
 	RGB, HSL, HSV, HWB, CMYK, XYZ, LAB, LCH, HEX, KEYWORD, ANSI16, ANSI256, HCG, APPLE, GRAY
 } from 'color-convert/conversions.js';
@@ -50,6 +46,7 @@ export type ColorPickerViewConfig = ColorPickerConfig & {
  *
  * @param color
  * @returns A color string.
+ * @internal
  */
 export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
 	if ( !color ) {
@@ -87,6 +84,7 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
  *
  * @param color
  * @returns A color string.
+ * @internal
  */
 export function convertToHex( color: string ): string {
 	if ( !color ) {
@@ -109,6 +107,7 @@ export function convertToHex( color: string ): string {
 /**
  * Registers the custom element in the
  * [CustomElementsRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry).
+ * @internal
  */
 export function registerCustomElement( elementName: string, constructor: CustomElementConstructor ): void {
 	if ( customElements.get( elementName ) === undefined ) {
@@ -165,7 +164,7 @@ function parseColorString( colorString: string ): ParsedColor<ParserColorSpaces>
 
 		return {
 			space: 'hex',
-			values: parsedHex.values,
+			values: parsedHex.values as [ number, number, number ],
 			hexValue: colorString,
 			alpha: parsedHex.alpha
 		};
@@ -177,7 +176,7 @@ function parseColorString( colorString: string ): ParsedColor<ParserColorSpaces>
 		return null;
 	}
 
-	return parsed;
+	return parsed as ParsedColor<Exclude<ParserColorSpaces, 'hex'>>;
 }
 
 function canConvertParsedColor( parsedColor: ParsedColor<ParserColorSpaces> ): parsedColor is ConvertableParsedColor {

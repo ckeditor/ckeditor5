@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Bookmark from '../src/bookmark.js';
-import BookmarkUI from '../src/bookmarkui.js';
-import BookmarkEditing from '../src/bookmarkediting.js';
+import { Bookmark } from '../src/bookmark.js';
+import { BookmarkUI } from '../src/bookmarkui.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
 
 import { Widget } from '@ckeditor/ckeditor5-widget';
 

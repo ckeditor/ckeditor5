@@ -8,12 +8,12 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type View from '../view.js';
+import { type View } from '../view.js';
 
-import ListItemView from '../list/listitemview.js';
-import ListView from '../list/listview.js';
-import ListItemButtonView from '../button/listitembuttonview.js';
-import ButtonView from '../button/buttonview.js';
+import { ListItemView } from '../list/listitemview.js';
+import { ListView } from '../list/listview.js';
+import { ListItemButtonView } from '../button/listitembuttonview.js';
+import { ButtonView } from '../button/buttonview.js';
 
 /**
  * A list of menu bar items, a child of {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#panelView}.
@@ -22,7 +22,7 @@ import ButtonView from '../button/buttonview.js';
  *
  * To populate this list, use {@link module:ui/menubar/menubarmenulistitemview~MenuBarMenuListItemView} instances.
  */
-export default class MenuBarMenuListView extends ListView {
+export class MenuBarMenuListView extends ListView {
 	/**
 	 * Creates an instance of the list view.
 	 *

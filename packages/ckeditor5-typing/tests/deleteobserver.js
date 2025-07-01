@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DeleteObserver from '../src/deleteobserver.js';
+import { DeleteObserver } from '../src/deleteobserver.js';
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';
-import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'Delete', () => {
@@ -28,7 +28,7 @@ describe( 'Delete', () => {
 
 			document.body.appendChild( domRoot );
 
-			view = new View();
+			view = new EditingView();
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
@@ -48,7 +48,7 @@ describe( 'Delete', () => {
 			expect( () => {
 				const newDomRoot = document.createElement( 'div' );
 
-				view = new View( new StylesProcessor() );
+				view = new EditingView( new StylesProcessor() );
 				viewDocument = view.document;
 
 				createViewRoot( viewDocument );
@@ -65,7 +65,7 @@ describe( 'Delete', () => {
 
 			// Simulate that the user keeps pressing the "Delete" key.
 			for ( let i = 0; i < 5; ++i ) {
-				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
 
@@ -85,7 +85,7 @@ describe( 'Delete', () => {
 		it( 'should reset the sequence on keyup event', () => {
 			// Simulate that the user keeps pressing the "Delete" key.
 			for ( let i = 0; i < 5; ++i ) {
-				viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 					keyCode: getCode( 'delete' )
 				} ) );
 
@@ -94,11 +94,11 @@ describe( 'Delete', () => {
 				} );
 			}
 
-			viewDocument.fire( 'keyup', new DomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'keyup', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
 
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+			viewDocument.fire( 'keydown', new ViewDocumentDomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'delete' )
 			} ) );
 
@@ -175,7 +175,7 @@ describe( 'Delete', () => {
 		describe( 'beforeinput event types handling', () => {
 			describe( 'backward delete event types', () => {
 				it( 'should handle the deleteContent event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -198,7 +198,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteContentBackward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -220,7 +220,7 @@ describe( 'Delete', () => {
 				it( 'should handle the deleteContentBackward event type and fire the delete event on Android', () => {
 					testUtils.sinon.stub( env, 'isAndroid' ).value( true );
 
-					viewSetData( view, '<p>f{o}o</p>' );
+					_setViewData( view, '<p>f{o}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -240,7 +240,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteWordBackward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -260,7 +260,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteHardLineBackward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -283,7 +283,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteSoftLineBackward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -308,7 +308,7 @@ describe( 'Delete', () => {
 
 			describe( 'forward delete event types', () => {
 				it( 'should handle the deleteContentForward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -328,7 +328,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteWordForward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -348,7 +348,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteHardLineForward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -371,7 +371,7 @@ describe( 'Delete', () => {
 				} );
 
 				it( 'should handle the deleteSoftLineForward event type and fire the delete event', () => {
-					viewSetData( view, '<p>fo{}o</p>' );
+					_setViewData( view, '<p>fo{}o</p>' );
 
 					const viewRange = view.document.selection.getFirstRange();
 					const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -397,7 +397,7 @@ describe( 'Delete', () => {
 
 		describe( 'using event target ranges (deleteContentBackward)', () => {
 			it( 'should not use target ranges if it should remove a single character', () => {
-				viewSetData( view, '<container:p>fo{o}</container:p>' );
+				_setViewData( view, '<container:p>fo{o}</container:p>' );
 
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
@@ -417,7 +417,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it should remove a single code point from a combined symbol', () => {
-				viewSetData( view, '<container:p>foo{a&#771;}</container:p>' );
+				_setViewData( view, '<container:p>foo{a&#771;}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -436,7 +436,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges include more than a single character', () => {
-				viewSetData( view, '<container:p>f{oo}</container:p>' );
+				_setViewData( view, '<container:p>f{oo}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -463,7 +463,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it should remove a single emoji sequence', () => {
-				viewSetData( view, '<container:p>foo{👨‍👩‍👧‍👧}</container:p>' );
+				_setViewData( view, '<container:p>foo{👨‍👩‍👧‍👧}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -482,7 +482,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should use target ranges if it should remove more than a emoji sequence', () => {
-				viewSetData( view, '<container:p>foo{👨‍👩‍👧‍👧👨‍👩‍👧‍👧}</container:p>' );
+				_setViewData( view, '<container:p>foo{👨‍👩‍👧‍👧👨‍👩‍👧‍👧}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -509,7 +509,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if it is collapsed', () => {
-				viewSetData( view, '<container:p>foo{}</container:p>' );
+				_setViewData( view, '<container:p>foo{}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -528,7 +528,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not use target ranges if there is more than one range', () => {
-				viewSetData( view, '<container:p>foo{}</container:p>' );
+				_setViewData( view, '<container:p>foo{}</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -547,7 +547,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges spans different parent nodes', () => {
-				viewSetData( view,
+				_setViewData( view,
 					'<container:p>fo{o</container:p>' +
 					'<container:p>]bar</container:p>'
 				);
@@ -576,7 +576,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should set selectionToRemove if target ranges spans a single character and an element', () => {
-				viewSetData( view, '<container:p>fo{o<empty:br/>]</container:p>' );
+				_setViewData( view, '<container:p>fo{o<empty:br/>]</container:p>' );
 				const viewRange = view.document.selection.getFirstRange();
 				const domRange = view.domConverter.viewRangeToDom( viewRange );
 
@@ -602,7 +602,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not set selectionToRemove if target ranges spans between <p> and <li>', () => {
-				viewSetData( view,
+				_setViewData( view,
 					'<container:p>[</container:p>' +
 					'<attribute:ul>' +
 						'<attribute:li>]</attribute:li>' +
@@ -626,7 +626,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not set selectionToRemove if target ranges spans between <p> and bogus paragraph in <li>', () => {
-				viewSetData( view,
+				_setViewData( view,
 					'<container:p>[</container:p>' +
 					'<attribute:ul>' +
 						'<attribute:li>' +
@@ -652,7 +652,7 @@ describe( 'Delete', () => {
 			} );
 
 			it( 'should not set selectionToRemove if target ranges spans between <p> and paragraph in <li>', () => {
-				viewSetData( view,
+				_setViewData( view,
 					'<container:p>[</container:p>' +
 					'<attribute:ul>' +
 						'<attribute:li>' +

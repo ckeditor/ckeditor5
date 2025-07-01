@@ -36,7 +36,7 @@ export interface PrioritiesType {
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
  */
-const priorities: PrioritiesType = {
+export const priorities: PrioritiesType = {
 	get( priority: PriorityString = 'normal' ): number {
 		if ( typeof priority != 'number' ) {
 			return this[ priority ] || this.normal;
@@ -51,5 +51,3 @@ const priorities: PrioritiesType = {
 	low: -1000,
 	lowest: -100000
 };
-
-export default priorities;

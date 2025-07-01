@@ -10,10 +10,10 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
 import { isObject, identity } from 'es-toolkit/compat';
-import ImageStyleEditing from './imagestyleediting.js';
-import utils from './utils.js';
+import { ImageStyleEditing } from './imagestyleediting.js';
+import { utils } from './utils.js';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
-import type ImageStyleCommand from './imagestylecommand.js';
+import { type ImageStyleCommand } from './imagestylecommand.js';
 
 import '../../theme/imagestyle.css';
 
@@ -24,7 +24,7 @@ import '../../theme/imagestyle.css';
  * It also registers the {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} and the
  * custom drop-downs defined by the developer in the {@link module:image/imageconfig~ImageConfig#toolbar} configuration.
  */
-export default class ImageStyleUI extends Plugin {
+export class ImageStyleUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

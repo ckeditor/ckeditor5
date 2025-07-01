@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
+import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
 
 import { getSelectionAffectedTable, isHeadingColumnCell } from '../../src/utils/common.js';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection.js';
+import { ModelSelection } from '@ckeditor/ckeditor5-engine/src/model/selection.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot, tableUtils;
@@ -35,7 +35,7 @@ describe( 'table utils', () => {
 	describe( 'common', () => {
 		describe( 'isHeadingColumnCell()', () => {
 			it( 'should return "true" for a heading column cell', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -45,7 +45,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "true" for a heading column cell with colspan', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { colspan: 2, contents: '00' }, '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -55,7 +55,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "false" for a regular column cell', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -65,7 +65,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "false" for a regular column cell with colspan', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { colspan: 2, contents: '01' }, '02', '03' ]
 				], { headingColumns: 1 } ) );
 
@@ -77,8 +77,8 @@ describe( 'table utils', () => {
 
 		describe( 'getSelectionAffectedTable', () => {
 			it( 'should return null if table is not present', () => {
-				setModelData( model, '<paragraph>Foo[]</paragraph>' );
-				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
+				_setModelData( model, '<paragraph>Foo[]</paragraph>' );
+				const selection = new ModelSelection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
 				const tableElement = getSelectionAffectedTable( selection );
 
@@ -86,24 +86,24 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return table if present higher in the model tree', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
+				const selection = new ModelSelection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
 			} );
 
 			it( 'should return table if selected', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
+				const selection = new ModelSelection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
@@ -114,12 +114,12 @@ describe( 'table utils', () => {
 					[ 'a', 'b' ],
 					[ 'c', 'd' ]
 				] );
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ innerTable, '01' ],
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
+				const selection = new ModelSelection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) );

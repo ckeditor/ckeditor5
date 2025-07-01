@@ -11,15 +11,15 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { IconMedia } from 'ckeditor5/src/icons.js';
 import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, Dialog } from 'ckeditor5/src/ui.js';
 
-import MediaFormView from './ui/mediaformview.js';
-import MediaEmbedEditing from './mediaembedediting.js';
+import { MediaFormView } from './ui/mediaformview.js';
+import { MediaEmbedEditing } from './mediaembedediting.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
-import type MediaRegistry from './mediaregistry.js';
+import { type MediaRegistry } from './mediaregistry.js';
 
 /**
  * The media embed UI plugin.
  */
-export default class MediaEmbedUI extends Plugin {
+export class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

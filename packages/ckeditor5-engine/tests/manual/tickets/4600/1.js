@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
-import ClickObserver from '../../../../src/view/observer/clickobserver.js';
-import CompositionObserver from '../../../../src/view/observer/compositionobserver.js';
-import FocusObserver from '../../../../src/view/observer/focusobserver.js';
-import InputObserver from '../../../../src/view/observer/inputobserver.js';
-import KeyObserver from '../../../../src/view/observer/keyobserver.js';
-import MouseObserver from '../../../../src/view/observer/mouseobserver.js';
-import MouseEventsObserver from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver.js';
-import DeleteObserver from '@ckeditor/ckeditor5-typing/src/deleteobserver.js';
-import ClipboardObserver from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver.js';
-import EnterObserver from '@ckeditor/ckeditor5-enter/src/enterobserver.js';
-import ImageLoadObserver from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
+import { ClickObserver } from '../../../../src/view/observer/clickobserver.js';
+import { CompositionObserver } from '../../../../src/view/observer/compositionobserver.js';
+import { FocusObserver } from '../../../../src/view/observer/focusobserver.js';
+import { InputObserver } from '../../../../src/view/observer/inputobserver.js';
+import { KeyObserver } from '../../../../src/view/observer/keyobserver.js';
+import { MouseObserver } from '../../../../src/view/observer/mouseobserver.js';
+import { MouseEventsObserver } from '@ckeditor/ckeditor5-table/src/tablemouse/mouseeventsobserver.js';
+import { DeleteObserver } from '@ckeditor/ckeditor5-typing/src/deleteobserver.js';
+import { ClipboardObserver } from '@ckeditor/ckeditor5-clipboard/src/clipboardobserver.js';
+import { EnterObserver } from '@ckeditor/ckeditor5-enter/src/enterobserver.js';
+import { ImageLoadObserver } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
 
 class SimpleWidgetEditing extends Plugin {
 	static get requires() {

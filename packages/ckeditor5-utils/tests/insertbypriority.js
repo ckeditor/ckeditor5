@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import insertToPriorityArray from '../src/inserttopriorityarray.js';
+import { insertToPriorityArray } from '../src/inserttopriorityarray.js';
 
 describe( 'insertToPriorityArray()', () => {
 	let objectsWithPriority;

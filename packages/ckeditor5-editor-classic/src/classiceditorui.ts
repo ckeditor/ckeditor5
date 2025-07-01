@@ -18,16 +18,16 @@ import {
 	type ContextualBalloonGetPositionOptionsEvent
 } from 'ckeditor5/src/ui.js';
 import {
-	enablePlaceholder,
+	enableViewPlaceholder,
 	type ViewScrollToTheSelectionEvent
 } from 'ckeditor5/src/engine.js';
 import { ElementReplacer, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
-import type ClassicEditorUIView from './classiceditoruiview.js';
+import { type ClassicEditorUIView } from './classiceditoruiview.js';
 
 /**
  * The classic editor UI class.
  */
-export default class ClassicEditorUI extends EditorUI {
+export class ClassicEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */
@@ -186,7 +186,7 @@ export default class ClassicEditorUI extends EditorUI {
 			editingRoot.placeholder = placeholderText;
 		}
 
-		enablePlaceholder( {
+		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
 			isDirectHost: false,

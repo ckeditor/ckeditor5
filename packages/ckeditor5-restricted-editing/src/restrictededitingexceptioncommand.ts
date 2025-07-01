@@ -8,12 +8,12 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
+import type { ModelTreeWalkerValue } from 'ckeditor5/src/engine.js';
 
 /**
  * The command that toggles exceptions from the restricted editing on text.
  */
-export default class RestrictedEditingExceptionCommand extends Command {
+export class RestrictedEditingExceptionCommand extends Command {
 	/**
 	 * A flag indicating whether the command is active
 	 *
@@ -49,7 +49,7 @@ export default class RestrictedEditingExceptionCommand extends Command {
 				if ( valueToSet ) {
 					writer.setSelectionAttribute( 'restrictedEditingException', valueToSet );
 				} else {
-					const isSameException = ( value: TreeWalkerValue ) => {
+					const isSameException = ( value: ModelTreeWalkerValue ) => {
 						return value.item.getAttribute( 'restrictedEditingException' ) === this.value;
 					};
 

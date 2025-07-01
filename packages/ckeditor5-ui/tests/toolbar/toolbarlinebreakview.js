@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview.js';
+import { ToolbarLineBreakView } from '../../src/toolbar/toolbarlinebreakview.js';
 
 describe( 'ToolbarLineBreakView', () => {
 	let view;

@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import HighlightEditing from './highlightediting.js';
-import HighlightUI from './highlightui.js';
+import { HighlightEditing } from './highlightediting.js';
+import { HighlightUI } from './highlightui.js';
 
 /**
  * The highlight plugin.
@@ -20,7 +20,7 @@ import HighlightUI from './highlightui.js';
  * This is a "glue" plugin which loads the {@link module:highlight/highlightediting~HighlightEditing} and
  * {@link module:highlight/highlightui~HighlightUI} plugins.
  */
-export default class Highlight extends Plugin {
+export class Highlight extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

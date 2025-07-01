@@ -26,6 +26,13 @@ import type {
 	TodoListUI,
 	CheckTodoListCommand,
 
+	ListFormatting,
+	ListItemBoldIntegration,
+	ListItemItalicIntegration,
+	ListItemFontSizeIntegration,
+	ListItemFontColorIntegration,
+	ListItemFontFamilyIntegration,
+
 	LegacyList,
 	LegacyListEditing,
 	LegacyListUtils,
@@ -42,11 +49,7 @@ import type {
 	LegacyTodoListEditing,
 	LegacyCheckTodoListCommand,
 
-	ListConfig,
-
-	DocumentList,
-	DocumentListProperties,
-	TodoDocumentList
+	ListConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -69,9 +72,15 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
 		[ ListPropertiesUtils.pluginName ]: ListPropertiesUtils;
 		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-		[ TodoList.pluginName ]: TodoDocumentList;
+		[ TodoList.pluginName ]: TodoList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
+		[ ListFormatting.pluginName ]: ListFormatting;
+		[ ListItemBoldIntegration.pluginName ]: ListItemBoldIntegration;
+		[ ListItemItalicIntegration.pluginName ]: ListItemItalicIntegration;
+		[ ListItemFontSizeIntegration.pluginName ]: ListItemFontSizeIntegration;
+		[ ListItemFontColorIntegration.pluginName ]: ListItemFontColorIntegration;
+		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
 
 		[ LegacyList.pluginName ]: LegacyList;
 		[ LegacyListEditing.pluginName ]: LegacyListEditing;
@@ -80,10 +89,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ LegacyListPropertiesEditing.pluginName ]: LegacyListPropertiesEditing;
 		[ LegacyTodoList.pluginName ]: LegacyTodoList;
 		[ LegacyTodoListEditing.pluginName ]: LegacyTodoListEditing;
-
-		[ DocumentList.pluginName ]: DocumentList;
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
-		[ TodoDocumentList.pluginName ]: TodoDocumentList;
 	}
 
 	interface CommandsMap {

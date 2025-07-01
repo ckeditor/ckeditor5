@@ -8,9 +8,9 @@
  */
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
-import ButtonView from '../../button/buttonview.js';
-import type DropdownButton from './dropdownbutton.js';
-import IconView from '../../icon/iconview.js';
+import { ButtonView } from '../../button/buttonview.js';
+import { type DropdownButton } from './dropdownbutton.js';
+import { IconView } from '../../icon/iconview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -33,7 +33,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  *
  * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  */
-export default class DropdownButtonView extends ButtonView implements DropdownButton {
+export class DropdownButtonView extends ButtonView implements DropdownButton {
 	/**
 	 * An icon that displays arrow to indicate a dropdown button.
 	 */

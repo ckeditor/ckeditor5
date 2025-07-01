@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocument from '../../../src/view/document.js';
-import ViewElement from '../../../src/view/element.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewElement } from '../../../src/view/element.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
 describe( 'DOMConverter raw content matcher', () => {
 	let converter, viewDocument;
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'domToView()', () => {

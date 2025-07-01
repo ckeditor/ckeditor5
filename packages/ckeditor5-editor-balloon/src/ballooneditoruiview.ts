@@ -14,7 +14,7 @@ import type { EditingView } from 'ckeditor5/src/engine.js';
 /**
  * Contextual editor UI view. Uses the {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}.
  */
-export default class BalloonEditorUIView extends EditorUIView {
+export class BalloonEditorUIView extends EditorUIView {
 	/**
 	 * Editable UI view.
 	 */

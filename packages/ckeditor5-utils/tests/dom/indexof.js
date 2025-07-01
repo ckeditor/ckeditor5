@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import indexOf from '../../src/dom/indexof.js';
+import { indexOf } from '../../src/dom/indexof.js';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {

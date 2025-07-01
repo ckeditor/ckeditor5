@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyTodoList from '../src/legacytodolist.js';
-import LegacyTodoListEditing from '../src/legacytodolist/legacytodolistediting.js';
-import TodoListUI from '../src/todolist/todolistui.js';
+import { LegacyTodoList } from '../src/legacytodolist.js';
+import { LegacyTodoListEditing } from '../src/legacytodolist/legacytodolistediting.js';
+import { TodoListUI } from '../src/todolist/todolistui.js';
 
 describe( 'LegacyTodoList', () => {
 	it( 'should be named', () => {

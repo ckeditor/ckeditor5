@@ -8,9 +8,9 @@
  */
 
 import type {
-	DocumentFragment,
-	DocumentSelection,
-	Element,
+	ModelDocumentFragment,
+	ModelDocumentSelection,
+	ModelElement,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -20,8 +20,9 @@ import { getSelectionAffectedTable } from '../utils/common.js';
  * Checks if the provided model element is a `table`.
  *
  * @param modelElement Element to check if it is a table.
+ * @internal
  */
-export function isTable( modelElement: Element | DocumentFragment | null ): boolean {
+export function isTable( modelElement: ModelElement | ModelDocumentFragment | null ): boolean {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }
 
@@ -29,8 +30,9 @@ export function isTable( modelElement: Element | DocumentFragment | null ): bool
  * Returns the caption model element from a given table element. Returns `null` if no caption is found.
  *
  * @param tableModelElement Table element in which we will try to find a caption element.
+ * @internal
  */
-export function getCaptionFromTableModelElement( tableModelElement: Element ): Element | null {
+export function getCaptionFromTableModelElement( tableModelElement: ModelElement ): ModelElement | null {
 	for ( const node of tableModelElement.getChildren() ) {
 		if ( node.is( 'element', 'caption' ) ) {
 			return node;
@@ -44,8 +46,9 @@ export function getCaptionFromTableModelElement( tableModelElement: Element ): E
  * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
  *
  * @param selection The selection checked for caption presence.
+ * @internal
  */
-export function getCaptionFromModelSelection( selection: DocumentSelection ): Element | null {
+export function getCaptionFromModelSelection( selection: ModelDocumentSelection ): ModelElement | null {
 	const tableElement = getSelectionAffectedTable( selection );
 
 	if ( !tableElement ) {
@@ -63,6 +66,7 @@ export function getCaptionFromModelSelection( selection: DocumentSelection ): El
  *  - A `<caption>` inside a <table>.
  *
  * @returns Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element cannot be matched.
+ * @internal
  */
 export function matchTableCaptionViewElement( element: ViewElement ): { name: true } | null {
 	const parent = element.parent;

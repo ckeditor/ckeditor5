@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import StandardEditingModeEditing from '../src/standardeditingmodeediting.js';
-import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand.js';
+import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js';
+import { RestrictedEditingExceptionCommand } from '../src/restrictededitingexceptioncommand.js';
 
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
@@ -68,7 +68,7 @@ describe( 'StandardEditingModeEditing', () => {
 			it( 'should convert <span class="restricted-editing-exception"> to the model attribute', () => {
 				editor.setData( '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>' );
 			} );
 		} );
@@ -77,12 +77,12 @@ describe( 'StandardEditingModeEditing', () => {
 			it( 'should convert the model attribute to a <span>', () => {
 				const expectedView = '<p>foo <span class="restricted-editing-exception">bar</span> baz</p>';
 
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>'
 				);
 
 				expect( editor.getData() ).to.equal( expectedView );
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
 
 			it( 'converted <span> should be outer most element', () => {
@@ -97,7 +97,7 @@ describe( 'StandardEditingModeEditing', () => {
 
 				const expectedView = '<p><span class="restricted-editing-exception"><b>foo</b> <i>bar</i> baz</span></p>';
 
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<paragraph>' +
 						'<$text restrictedEditingException="true" bold="true">foo</$text>' +
 						'<$text restrictedEditingException="true"> </$text>' +
@@ -107,7 +107,7 @@ describe( 'StandardEditingModeEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equalMarkup( expectedView );
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
 			} );
 		} );
 	} );

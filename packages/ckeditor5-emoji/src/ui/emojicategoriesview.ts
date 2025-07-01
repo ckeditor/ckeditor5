@@ -17,7 +17,7 @@ import '../../theme/emojicategories.css';
  * A class representing the navigation part of the emoji UI.
  * It is responsible allowing the user to select a particular emoji category.
  */
-export default class EmojiCategoriesView extends View {
+export class EmojiCategoriesView extends View {
 	/**
 	 * Currently selected emoji category name.
 	 */

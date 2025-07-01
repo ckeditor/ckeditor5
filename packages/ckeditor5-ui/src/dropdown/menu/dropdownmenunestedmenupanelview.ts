@@ -10,14 +10,14 @@
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../../focuscycler.js';
 
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenupanel.css';
 
 /**
  * Represents the view for the dropdown menu panel.
  */
-export default class DropdownMenuNestedMenuPanelView extends BalloonPanelView implements FocusableView {
+export class DropdownMenuNestedMenuPanelView extends BalloonPanelView implements FocusableView {
 	/**
 	 * Creates an instance of the menu panel view.
 	 *

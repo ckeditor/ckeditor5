@@ -7,7 +7,7 @@
  * @module utils/dom/getcommonancestor
  */
 
-import getAncestors from './getancestors.js';
+import { getAncestors } from './getancestors.js';
 
 /**
  * Searches and returns the lowest common ancestor of two given nodes.
@@ -16,7 +16,7 @@ import getAncestors from './getancestors.js';
  * @param nodeB Second node.
  * @returns Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
  */
-export default function getCommonAncestor( nodeA: Node, nodeB: Node ): Node | null {
+export function getCommonAncestor( nodeA: Node, nodeB: Node ): Node | null {
 	const ancestorsA = getAncestors( nodeA );
 	const ancestorsB = getAncestors( nodeB );
 

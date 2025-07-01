@@ -8,10 +8,10 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageResizeButtons from './imageresize/imageresizebuttons.js';
-import ImageResizeEditing from './imageresize/imageresizeediting.js';
-import ImageResizeHandles from './imageresize/imageresizehandles.js';
-import ImageCustomResizeUI from './imageresize/imagecustomresizeui.js';
+import { ImageResizeButtons } from './imageresize/imageresizebuttons.js';
+import { ImageResizeEditing } from './imageresize/imageresizeediting.js';
+import { ImageResizeHandles } from './imageresize/imageresizehandles.js';
+import { ImageCustomResizeUI } from './imageresize/imagecustomresizeui.js';
 
 import '../theme/imageresize.css';
 
@@ -20,7 +20,7 @@ import '../theme/imageresize.css';
  *
  * It adds a possibility to resize each image using handles.
  */
-export default class ImageResize extends Plugin {
+export class ImageResize extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

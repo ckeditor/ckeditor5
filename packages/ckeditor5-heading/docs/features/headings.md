@@ -1,6 +1,7 @@
 ---
 category: features
 meta-title: Headings | CKEditor 5 Documentation
+meta-description: Structure your content with customizable headings in CKEditor 5 to improve readability, organization, and accessibility.
 ---
 
 # Headings

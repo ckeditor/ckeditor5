@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import TableWalker from '../../src/tablewalker.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { TableWalker } from '../../src/tablewalker.js';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
 
@@ -72,7 +72,7 @@ export function modelTable( tableData, attributes = {} ) {
  * @param {String} cellContent
  */
 export function setTableCellWithObjectAttributes( model, attributes, cellContent ) {
-	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+	_setModelData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
 
 	const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -103,7 +103,7 @@ export function setTableCellWithObjectAttributes( model, attributes, cellContent
  * @param {String} cellContent
  */
 export function setTableWithObjectAttributes( model, attributes, cellContent ) {
-	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+	_setModelData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
 
 	const table = model.document.getRoot().getChild( 0 );
 
@@ -180,7 +180,7 @@ export function viewTable( tableData, attributes = {} ) {
 /**
  * An assertion helper for top-right-bottom-left attribute object.
  *
- * @param {module:engine/model/node~Node} element
+ * @param {module:engine/model/node~ModelNode} element
  * @param {String} key Attribute key
  * @param {String} top Top value. Pass `null` to omit the value in the attributes object.
  * @param {String} [right=top] Right value - defaults to top if not provided.
@@ -436,7 +436,7 @@ function getClassToSet( attributes ) {
  * Returns ascii-art visualization of the table.
  *
  * @param {module:engine/model/model~Model} model The editor model.
- * @param {module:engine/model/element~Element} table The table model element.
+ * @param {module:engine/model/element~ModelElement} table The table model element.
  * @returns {String}
  */
 export function createTableAsciiArt( model, table ) {
@@ -505,7 +505,7 @@ export function createTableAsciiArt( model, table ) {
  * Generates input data for `modelTable` helper method.
  *
  * @param {module:engine/model/model~Model} model The editor model.
- * @param {module:engine/model/element~Element} table The table model element.
+ * @param {module:engine/model/element~ModelElement} table The table model element.
  * @returns {Array.<Array.<String|Object>>}
  */
 export function prepareModelTableInput( model, table ) {

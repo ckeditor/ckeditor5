@@ -10,9 +10,9 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
 
-import ImageTextAlternative from './imagetextalternative.js';
-import ImageInlineEditing from './image/imageinlineediting.js';
-import ImageInsertUI from './imageinsert/imageinsertui.js';
+import { ImageTextAlternative } from './imagetextalternative.js';
+import { ImageInlineEditing } from './image/imageinlineediting.js';
+import { ImageInsertUI } from './imageinsert/imageinsertui.js';
 
 import '../theme/image.css';
 
@@ -27,7 +27,7 @@ import '../theme/image.css';
  * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
  * for more information.
  */
-export default class ImageInline extends Plugin {
+export class ImageInline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

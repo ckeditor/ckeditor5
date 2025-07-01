@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 
 import type { UpcastElementEvent, ViewElement } from 'ckeditor5/src/engine.js';
 
-export default class AdjacentListsSupport extends Plugin {
+export class AdjacentListsSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

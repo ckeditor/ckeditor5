@@ -30,7 +30,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
  */
-export default class InlineEditorUIView extends EditorUIView {
+export class InlineEditorUIView extends EditorUIView {
 	/**
 	 * A floating toolbar view instance.
 	 */
@@ -106,7 +106,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 *            [ Panel ]
 	 * ```
 	 *
-	 * See: {@link module:utils/dom/position~Options#positions}.
+	 * See: {@link module:utils/dom/position~DomOptimalPositionOptions#positions}.
 	 */
 	public readonly panelPositions: Array<PositioningFunction>;
 
@@ -239,7 +239,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	/**
 	 * Returns the positions for {@link #panelPositions}.
 	 *
-	 * See: {@link module:utils/dom/position~Options#positions}.
+	 * See: {@link module:utils/dom/position~DomOptimalPositionOptions#positions}.
 	 */
 	private _getPanelPositions(): Array<PositioningFunction> {
 		const positions: Array<PositioningFunction> = [

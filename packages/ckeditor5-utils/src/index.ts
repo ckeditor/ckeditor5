@@ -7,17 +7,36 @@
  * @module utils/index
  */
 
-export { default as env } from './env.js';
-export { default as diff, type DiffResult } from './diff.js';
-export { default as fastDiff } from './fastdiff.js';
-export { default as diffToChanges } from './difftochanges.js';
+export {
+	env,
+	getUserAgent as _getUserAgent,
+	isMac as _isMac,
+	isWindows as _isWindows,
+	isGecko as _isGecko,
+	isSafari as _isSafari,
+	isiOS as _isiOS,
+	isAndroid as _isAndroid,
+	isBlink as _isBlink,
+	isRegExpUnicodePropertySupported as _isRegExpUnicodePropertySupported,
+	isMediaForcedColors as _isMediaForcedColors,
+	isMotionReduced as _isMotionReduced,
+	type EnvType,
+	type EnvFeaturesType
+} from './env.js';
 
-export { default as mix } from './mix.js';
+export { diff, type DiffResult } from './diff.js';
+export { fastDiff } from './fastdiff.js';
+export { diffToChanges, type InsertChange, type DeleteChange, type Change } from './difftochanges.js';
+
+export { areConnectedThroughProperties } from './areconnectedthroughproperties.js';
 
 export type { Constructor, Mixed } from './mix.js';
 
 export {
-	default as EmitterMixin,
+	_getEmitterListenedTo,
+	_setEmitterId,
+	_getEmitterId,
+	EmitterMixin,
 	type Emitter,
 	type BaseEvent,
 	type CallbackOptions,
@@ -28,77 +47,126 @@ export {
 	type GetNameOrEventInfo
 } from './emittermixin.js';
 
-export { default as EventInfo } from './eventinfo.js';
+export { EventInfo } from './eventinfo.js';
 
 export {
-	default as ObservableMixin,
+	ObservableMixin,
 	type Observable,
 	type DecoratedMethodEvent,
 	type ObservableChangeEvent,
-	type ObservableSetEvent
+	type ObservableSetEvent,
+	type ObservableSingleBindChain,
+	type ObservableDualBindChain,
+	type ObservableMultiBindChain,
+	type ObservableWithProperty
 } from './observablemixin.js';
 
-export { default as CKEditorError, logError, logWarning } from './ckeditorerror.js';
+export { CKEditorError, logError, logWarning, DOCUMENTATION_URL } from './ckeditorerror.js';
 
-export { default as ElementReplacer } from './elementreplacer.js';
-export { default as abortableDebounce, type AbortableFunc } from './abortabledebounce.js';
-export { default as count } from './count.js';
-export { default as compareArrays } from './comparearrays.js';
-export { default as createElement } from './dom/createelement.js';
-export { default as Config, type GetSubConfig } from './config.js';
-export { default as isIterable } from './isiterable.js';
-export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
-export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
-export { default as global } from './dom/global.js';
-export { default as getAncestors } from './dom/getancestors.js';
-export { default as getDataFromElement } from './dom/getdatafromelement.js';
-export { default as getBorderWidths } from './dom/getborderwidths.js';
-export { default as getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
-export { default as isText } from './dom/istext.js';
-export { default as Rect, type RectSource } from './dom/rect.js';
-export { default as ResizeObserver } from './dom/resizeobserver.js';
-export { default as setDataInElement } from './dom/setdatainelement.js';
-export { default as toUnit } from './dom/tounit.js';
-export { default as indexOf } from './dom/indexof.js';
-export { default as insertAt } from './dom/insertat.js';
-export { default as isComment } from './dom/iscomment.js';
-export { default as isNode } from './dom/isnode.js';
-export { default as isRange } from './dom/isrange.js';
-export { default as isValidAttributeName } from './dom/isvalidattributename.js';
-export { default as isVisible } from './dom/isvisible.js';
-export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
-export { default as remove } from './dom/remove.js';
-export { default as getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
-export * from './dom/scroll.js';
-
-export * from './keyboard.js';
-export * from './language.js';
-export { default as Locale, type LocaleTranslate, type Translations } from './locale.js';
+export { ElementReplacer } from './elementreplacer.js';
+export { abortableDebounce, type AbortableFunc } from './abortabledebounce.js';
+export { count } from './count.js';
+export { compareArrays, type ArrayRelation } from './comparearrays.js';
+export { createElement, type HTMLElementAttributes, type SVGElementAttributes, type ChildrenElements } from './dom/createelement.js';
+export { Config, type GetSubConfig, type OnlyObject } from './config.js';
+export { isIterable } from './isiterable.js';
+export { DomEmitterMixin, type DomEmitter, type DomEventMap } from './dom/emittermixin.js';
+export { findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
+export { global, type GlobalType } from './dom/global.js';
+export { getAncestors } from './dom/getancestors.js';
+export { getDataFromElement } from './dom/getdatafromelement.js';
+export { getBorderWidths, type BorderWidths } from './dom/getborderwidths.js';
+export { getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
+export { getCommonAncestor } from './dom/getcommonancestor.js';
+export { getPositionedAncestor } from './dom/getpositionedancestor.js';
+export { isText } from './dom/istext.js';
+export { isWindow } from './dom/iswindow.js';
+export { Rect, type RectSource, type DomRectLike } from './dom/rect.js';
+export { ResizeObserver } from './dom/resizeobserver.js';
+export { setDataInElement } from './dom/setdatainelement.js';
+export { toUnit, type ToUnitHelper } from './dom/tounit.js';
+export { indexOf } from './dom/indexof.js';
+export { insertAt } from './dom/insertat.js';
+export { isComment } from './dom/iscomment.js';
+export { isNode } from './dom/isnode.js';
+export { isRange } from './dom/isrange.js';
+export { isValidAttributeName } from './dom/isvalidattributename.js';
+export { isVisible } from './dom/isvisible.js';
 export {
-	default as Collection,
+	getOptimalPosition,
+	type DomOptimalPositionOptions,
+	type PositioningFunction,
+	type DomPoint,
+	type DomPositioningFunctionResult
+} from './dom/position.js';
+export { remove } from './dom/remove.js';
+export { getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
+
+export {
+	scrollAncestorsToShowTarget,
+	scrollViewportToShowTarget,
+	type IfTrue
+} from './dom/scroll.js';
+
+export {
+	type ArrowKeyCodeDirection,
+	type KeystrokeInfo,
+	keyCodes,
+	getCode,
+	parseKeystroke,
+	getEnvKeystrokeText,
+	isArrowKeyCode,
+	getLocalizedArrowKeyCodeDirection,
+	isForwardArrowKeyCode
+} from './keyboard.js';
+
+export { type LanguageDirection, getLanguageDirection } from './language.js';
+export { Locale, type LocaleTranslate, type Translations } from './locale.js';
+export {
+	Collection,
 	type CollectionAddEvent,
 	type CollectionChangeEvent,
-	type CollectionRemoveEvent
+	type CollectionRemoveEvent,
+	type CollectionChangeEventData,
+	type CollectionBindToChain
 } from './collection.js';
-export { default as first } from './first.js';
-export { default as FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from './focustracker.js';
-export { default as KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
-export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
-export { default as toMap } from './tomap.js';
-export { add } from './translation-service.js';
-export { default as priorities, type PriorityString } from './priorities.js';
-export { default as retry, exponentialDelay } from './retry.js';
-export { default as insertToPriorityArray } from './inserttopriorityarray.js';
-export { default as spliceArray } from './splicearray.js';
+export { first } from './first.js';
+export { nth } from './nth.js';
+export { FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from './focustracker.js';
+export { KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
+export { toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
+export { toMap } from './tomap.js';
+export { mapsEqual } from './mapsequal.js';
+export { objectToMap } from './objecttomap.js';
+export {
+	add,
+	_translate,
+	_clear as _clearTranslations,
+	_unifyTranslations,
+	type Message
+} from './translation-service.js';
 
-export { default as uid } from './uid.js';
-export { default as delay, type DelayedFunc } from './delay.js';
-export { default as wait } from './wait.js';
-export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
-export { default as crc32, type CRCData } from './crc32.js';
-export { default as collectStylesheets } from './collectstylesheets.js';
-export { default as formatHtml } from './formathtml.js';
+export { priorities, type PriorityString, type PrioritiesType } from './priorities.js';
+export { retry, exponentialDelay } from './retry.js';
+export { insertToPriorityArray, type ObjectWithPriority } from './inserttopriorityarray.js';
+export { spliceArray } from './splicearray.js';
 
-export * from './unicode.js';
+export { uid } from './uid.js';
+export { delay, type DelayedFunc } from './delay.js';
+export { wait } from './wait.js';
+export { parseBase64EncodedObject } from './parsebase64encodedobject.js';
+export { crc32, type CRCData, type CRCValue } from './crc32.js';
+export { collectStylesheets } from './collectstylesheets.js';
+export { formatHtml } from './formathtml.js';
+export { spy } from './spy.js';
 
-export { default as version, releaseDate } from './version.js';
+export {
+	isCombiningMark,
+	isHighSurrogateHalf,
+	isLowSurrogateHalf,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol,
+	isInsideEmojiSequence
+} from './unicode.js';
+
+export { version, releaseDate } from './version.js';

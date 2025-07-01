@@ -7,7 +7,7 @@
  * @module ui/icon/iconview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import { CKEditorError, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
@@ -16,7 +16,7 @@ import '../../theme/components/icon/icon.css';
 /**
  * The icon view class.
  */
-export default class IconView extends View {
+export class IconView extends View {
 	/**
 	 * The SVG source of the icon.
 	 *

@@ -13,11 +13,11 @@ import {
 	FocusTracker,
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
-import View from '../../view.js';
-import ButtonView from '../../button/buttonview.js';
-import type ViewCollection from '../../viewcollection.js';
-import type Button from '../../button/button.js';
-import type DropdownButton from './dropdownbutton.js';
+import { View } from '../../view.js';
+import { ButtonView } from '../../button/buttonview.js';
+import { type ViewCollection } from '../../viewcollection.js';
+import { type Button } from '../../button/button.js';
+import { type DropdownButton } from './dropdownbutton.js';
 import type { FocusableView } from '../../focuscycler.js';
 
 import '../../../theme/components/dropdown/splitbutton.css';
@@ -41,7 +41,7 @@ import '../../../theme/components/dropdown/splitbutton.css';
  *
  * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  */
-export default class SplitButtonView extends View<HTMLDivElement> implements DropdownButton {
+export class SplitButtonView extends View<HTMLDivElement> implements DropdownButton {
 	/**
 	 * Collection of the child views inside of the split button {@link #element}.
 	 */

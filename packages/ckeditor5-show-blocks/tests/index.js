@@ -4,7 +4,7 @@
  */
 
 import { ShowBlocks as ShowBlocksDLL } from '../src/index.js';
-import ShowBlocks from '../src/showblocks.js';
+import { ShowBlocks } from '../src/showblocks.js';
 
 describe( 'ShowBlocks DLL', () => {
 	it( 'exports ShowBlocks', () => {

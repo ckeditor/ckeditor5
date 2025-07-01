@@ -1,6 +1,7 @@
 ---
 title: Watchdog
 meta-title: Watchdog | CKEditor 5 Documentation
+meta-description: Use the Watchdog feature in CKEditor 5 to automatically detect and recover from editor crashes, ensuring a stable editing experience.
 category: features
 ---
 

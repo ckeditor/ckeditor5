@@ -7,9 +7,9 @@
  * @module block-quote
  */
 
-export { default as BlockQuote } from './blockquote.js';
-export { default as BlockQuoteEditing } from './blockquoteediting.js';
-export { default as BlockQuoteUI } from './blockquoteui.js';
-export type { default as BlockQuoteCommand } from './blockquotecommand.js';
+export { BlockQuote } from './blockquote.js';
+export { BlockQuoteEditing } from './blockquoteediting.js';
+export { BlockQuoteUI } from './blockquoteui.js';
+export { BlockQuoteCommand } from './blockquotecommand.js';
 
 import './augmentation.js';

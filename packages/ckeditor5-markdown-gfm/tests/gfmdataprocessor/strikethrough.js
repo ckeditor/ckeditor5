@@ -5,13 +5,16 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'Strikethrough', () => {
 		it( 'should process strikethrough text', () => {
 			testDataProcessor(
 				'~deleted~',
 
-				'<p><del>deleted</del></p>'
+				'<p><del>deleted</del></p>',
+
+				// Single tildes work on github.com, but are technically prohibited by the GFM spec, so they are turned to double tildes.
+				'~~deleted~~'
 			);
 		} );
 
@@ -19,7 +22,10 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'This is ~deleted content~.',
 
-				'<p>This is <del>deleted content</del>.</p>'
+				'<p>This is <del>deleted content</del>.</p>',
+
+				// Single tildes work on github.com, but are technically prohibited by the GFM spec, so they are turned to double tildes.
+				'This is ~~deleted content~~.'
 			);
 		} );
 	} );

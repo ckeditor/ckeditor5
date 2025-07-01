@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ColorUI from './../../src/ui/colorui.js';
-import FontColorCommand from './../../src/fontcolor/fontcolorcommand.js';
+import { FontColorUIBase } from './../../src/ui/colorui.js';
+import { FontColorCommand } from './../../src/fontcolor/fontcolorcommand.js';
 
-export default class TestColorPlugin extends ColorUI {
+export class TestColorPlugin extends FontColorUIBase {
 	constructor( editor ) {
 		super( editor, {
 			commandName: 'testColorCommand',

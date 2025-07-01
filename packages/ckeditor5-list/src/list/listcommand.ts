@@ -7,7 +7,7 @@
  * @module list/list/listcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import {
 	splitListItemBefore,
@@ -28,7 +28,7 @@ import type { ListWalkerOptions } from './utils/listwalker.js';
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListCommand extends Command {
+export class ListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */
@@ -177,7 +177,7 @@ export default class ListCommand extends Command {
 	 *
 	 * @param changedBlocks The changed list elements.
 	 */
-	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+	private _fireAfterExecute( changedBlocks: Array<ModelElement> ) {
 		this.fire<ListCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
@@ -245,5 +245,5 @@ export default class ListCommand extends Command {
  */
 export type ListCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ changedBlocks: Array<Element> ];
+	args: [ changedBlocks: Array<ModelElement> ];
 };

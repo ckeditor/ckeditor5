@@ -13,7 +13,7 @@ import { IconUndo, IconRedo } from '@ckeditor/ckeditor5-icons';
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
  */
-export default class UndoUI extends Plugin {
+export class UndoUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

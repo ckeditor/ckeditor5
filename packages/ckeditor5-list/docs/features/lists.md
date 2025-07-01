@@ -1,6 +1,7 @@
 ---
 menu-title: Ordered and unordered lists
 meta-title: Lists | CKEditor 5 Documentation
+meta-description: Create and manage ordered and unordered lists in CKEditor 5 to organize content clearly and improve readability.
 category: features-lists
 order: 10
 ---
@@ -132,6 +133,34 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
+
+### Editor output configuration
+
+Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute `data-list-item-id`. The attribute is necessary to ensure that the lists feature work correctly with other editor features and mechanisms.
+
+```html
+<ul>
+	<li data-list-item-id="e72808ee4144975064acb5d66e5cfba13">Hello</li>
+	<li data-list-item-id="e5d719ab356409767e9d4358485476358">There!</li>
+</ul>
+```
+
+If data loaded in the editor does not contain the `data-list-item-id` attributes on list items, they will be automatically added when data is saved.
+
+If you wish to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method. **However, please note, that data without IDs should be used only for presentation purposes (e.g. displaying the document as HTML), and should not be used to initialize the editor.**
+
+```js
+editor.getData( { skipListItemIds: true } );
+```
+
+Such output will not contain `data-list-item-id` attribute:
+
+```html
+<ul>
+	<li>Hello</li>
+	<li>There!</li>
+</ul>
+```
 
 ## Related features
 

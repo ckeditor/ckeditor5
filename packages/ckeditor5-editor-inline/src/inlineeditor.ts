@@ -17,8 +17,8 @@ import {
 } from 'ckeditor5/src/core.js';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 
-import InlineEditorUI from './inlineeditorui.js';
-import InlineEditorUIView from './inlineeditoruiview.js';
+import { InlineEditorUI } from './inlineeditorui.js';
+import { InlineEditorUIView } from './inlineeditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -29,7 +29,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a inline editor instance, use the static
  * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  */
-export default class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import env from '../src/env.js';
+import { env } from '../src/env.js';
 import {
 	keyCodes,
 	getCode,

@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import StandardEditingModeEditing from './standardeditingmodeediting.js';
-import StandardEditingModeUI from './standardeditingmodeui.js';
+import { StandardEditingModeEditing } from './standardeditingmodeediting.js';
+import { StandardEditingModeUI } from './standardeditingmodeui.js';
 
 import '../theme/restrictedediting.css';
 
@@ -22,7 +22,7 @@ import '../theme/restrictedediting.css';
  * * The {@link module:restricted-editing/standardeditingmodeediting~StandardEditingModeEditing standard mode editing feature}.
  * * The {@link module:restricted-editing/standardeditingmodeui~StandardEditingModeUI standard mode UI feature}.
  */
-export default class StandardEditingMode extends Plugin {
+export class StandardEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

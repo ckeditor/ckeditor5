@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RawElement from '../../src/view/rawelement.js';
-import Element from '../../src/view/element.js';
-import Document from '../../src/view/document.js';
+import { ViewRawElement } from '../../src/view/rawelement.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -13,9 +13,9 @@ describe( 'RawElement', () => {
 	let rawElement, doc;
 
 	beforeEach( () => {
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 
-		rawElement = new RawElement( doc, 'span', {
+		rawElement = new ViewRawElement( doc, 'span', {
 			foo: 'bar',
 			style: 'margin-top: 2em;color: white;',
 			class: 'foo bar'
@@ -34,7 +34,7 @@ describe( 'RawElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
-				new RawElement( doc, 'img', null, [ new Element( doc, 'i' ) ] ); // eslint-disable-line no-new
+				new ViewRawElement( doc, 'img', null, [ new ViewElement( doc, 'i' ) ] ); // eslint-disable-line no-new
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );
@@ -43,7 +43,7 @@ describe( 'RawElement', () => {
 		let el;
 
 		before( () => {
-			el = new RawElement( doc, 'span' );
+			el = new ViewRawElement( doc, 'span' );
 		} );
 
 		it( 'should return true for rawElement/element, also with correct name and element name', () => {
@@ -84,7 +84,7 @@ describe( 'RawElement', () => {
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expectToThrowCKEditorError( () => {
-				rawElement._appendChild( new Element( doc, 'i' ) );
+				rawElement._appendChild( new ViewElement( doc, 'i' ) );
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );
@@ -92,7 +92,7 @@ describe( 'RawElement', () => {
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expectToThrowCKEditorError( () => {
-				rawElement._insertChild( 0, new Element( doc, 'i' ) );
+				rawElement._insertChild( 0, new ViewElement( doc, 'i' ) );
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );

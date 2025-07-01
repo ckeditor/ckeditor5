@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewRawElement from '../../../src/view/rawelement.js';
-import ViewContainer from '../../../src/view/containerelement.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocument from '../../../src/view/document.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DOMConverter RawElement integration', () => {
@@ -24,7 +24,7 @@ describe( 'DOMConverter RawElement integration', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {
@@ -80,7 +80,9 @@ describe( 'DOMConverter RawElement integration', () => {
 	describe( 'domPositionToView()', () => {
 		it( 'should convert a position inside a RawElement to a position before it', () => {
 			const rawElement = createRawElement( 'h1' );
-			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), rawElement ] );
+			const container = new ViewContainerElement(
+				viewDocument, 'div', null, [ new ViewContainerElement( viewDocument, 'div' ), rawElement ]
+			);
 			const domContainer = converter.viewToDom( container, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ], 0 );
@@ -91,7 +93,9 @@ describe( 'DOMConverter RawElement integration', () => {
 
 		it( 'should convert a position inside RawElement children to a position before it', () => {
 			const rawElement = createRawElement( 'h1' );
-			const container = new ViewContainer( viewDocument, 'div', null, [ new ViewContainer( viewDocument, 'div' ), rawElement ] );
+			const container = new ViewContainerElement(
+				viewDocument, 'div', null, [ new ViewContainerElement( viewDocument, 'div' ), rawElement ]
+			);
 			const domContainer = converter.viewToDom( container, { bind: true } );
 
 			const viewPosition = converter.domPositionToView( domContainer.childNodes[ 1 ].childNodes[ 0 ], 1 );

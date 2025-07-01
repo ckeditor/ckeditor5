@@ -8,9 +8,9 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
 import { getSingleValue } from '../../utils/table-properties.js';
 
 /**
@@ -27,7 +27,7 @@ import { getSingleValue } from '../../utils/table-properties.js';
  * } );
  * ```
  */
-export default class TableCellBorderStyleCommand extends TableCellPropertyCommand {
+export class TableCellBorderStyleCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellBorderStyleCommand` instance.
 	 *
@@ -41,7 +41,7 @@ export default class TableCellBorderStyleCommand extends TableCellPropertyComman
 	/**
 	 * @inheritDoc
 	 */
-	protected override _getAttribute( tableCell: Element ): unknown {
+	protected override _getAttribute( tableCell: ModelElement ): unknown {
 		if ( !tableCell ) {
 			return;
 		}

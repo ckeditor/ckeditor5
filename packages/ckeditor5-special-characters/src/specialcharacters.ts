@@ -12,16 +12,17 @@ import { Typing } from 'ckeditor5/src/typing.js';
 import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
-import CharacterGridView, {
-	type CharacterGridViewExecuteEvent,
-	type CharacterGridViewTileFocusEvent,
-	type CharacterGridViewTileHoverEvent
+import {
+	CharacterGridView,
+	type SpecialCharactersGridViewExecuteEvent,
+	type SpecialCharactersGridViewTileFocusEvent,
+	type SpecialCharactersGridViewTileHoverEvent
 } from './ui/charactergridview.js';
-import CharacterInfoView from './ui/characterinfoview.js';
-import SpecialCharactersView from './ui/specialcharactersview.js';
+import { CharacterInfoView } from './ui/characterinfoview.js';
+import { SpecialCharactersView } from './ui/specialcharactersview.js';
 
 import '../theme/specialcharacters.css';
-import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview.js';
+import { SpecialCharactersCategoriesView } from './ui/specialcharacterscategoriesview.js';
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
@@ -30,7 +31,7 @@ const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
  *
  * Introduces the `'specialCharacters'` dropdown.
  */
-export default class SpecialCharacters extends Plugin {
+export class SpecialCharacters extends Plugin {
 	/**
 	 * Registered characters. A pair of a character name and its symbol.
 	 */
@@ -233,11 +234,11 @@ export default class SpecialCharacters extends Plugin {
 		const gridView = new CharacterGridView( locale );
 		const infoView = new CharacterInfoView( locale );
 
-		gridView.on<CharacterGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewTileHoverEvent>( 'tileHover', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
-		gridView.on<CharacterGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewTileFocusEvent>( 'tileFocus', ( evt, data ) => {
 			infoView.set( data );
 		} );
 
@@ -299,7 +300,7 @@ export default class SpecialCharacters extends Plugin {
 			infoView
 		);
 
-		gridView.on<CharacterGridViewExecuteEvent>( 'execute', ( evt, data ) => {
+		gridView.on<SpecialCharactersGridViewExecuteEvent>( 'execute', ( evt, data ) => {
 			editor.execute( 'insertText', { text: data.character } );
 		} );
 

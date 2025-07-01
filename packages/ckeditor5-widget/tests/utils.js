@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position.js';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import { ViewPosition } from '@ckeditor/ckeditor5-engine/src/view/position.js';
+import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import {
 	toWidget,
 	isWidget,
@@ -22,13 +22,13 @@ import {
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text.js';
+import { ViewUIElement } from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Mapper } from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -37,7 +37,7 @@ describe( 'widget utils', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		writer = new DowncastWriter( viewDocument );
+		writer = new ViewDowncastWriter( viewDocument );
 
 		element = writer.createContainerElement( 'div' );
 		toWidget( element, writer );
@@ -133,7 +133,7 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).to.be.true;
 
 			const selectionHandle = element.getChild( 0 );
-			expect( selectionHandle ).to.be.instanceof( UIElement );
+			expect( selectionHandle ).to.be.instanceof( ViewUIElement );
 
 			const domSelectionHandle = selectionHandle.render( document );
 
@@ -147,7 +147,7 @@ describe( 'widget utils', () => {
 			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
 		} );
 
-		it( 'should throw when attempting to create a widget out of anything but ContainerElement', () => {
+		it( 'should throw when attempting to create a widget out of anything but ViewContainerElement', () => {
 			expect( () => {
 				toWidget( writer.createRawElement( 'div' ), writer );
 			}, 'raw element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
@@ -514,7 +514,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range after selected element', () => {
-			setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -529,7 +529,9 @@ describe( 'widget utils', () => {
 				isObject: true
 			} );
 
-			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
+			_setModelData(
+				model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>'
+			);
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -538,7 +540,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range inside empty block', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -547,7 +549,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range before block if at the beginning of that block', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -556,7 +558,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range before block if in the middle of that block (collapsed selection)', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -565,7 +567,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range before block if in the middle of that block (non-collapsed selection)', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -574,7 +576,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'returns a collapsed range after block if at the end of that block', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -584,7 +586,7 @@ describe( 'widget utils', () => {
 
 		// Checking if isTouching() was used.
 		it( 'returns a collapsed range after block if at the end of that block (deeply nested)', () => {
-			setData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
+			_setModelData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -594,7 +596,7 @@ describe( 'widget utils', () => {
 
 		it( 'returns selection focus if not in a block', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
-			setData( model, 'foo[]bar' );
+			_setModelData( model, 'foo[]bar' );
 
 			const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -605,7 +607,7 @@ describe( 'widget utils', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/7438
 		describe( 'integration with the WidgetTypeAround feature ("widget-type-around" model selection attribute)', () => {
 			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" before a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'before' );
@@ -618,7 +620,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should respect the attribute value when a widget (block and an object) is selected ("fake caret" after a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'after' );
@@ -631,7 +633,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should return a range on a selected widget (block and an object) ("fake caret" not displayed)', () => {
-				setData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<imageBlock></imageBlock>]<paragraph>y</paragraph>' );
 
 				const range = findOptimalInsertionRange( doc.selection, model );
 
@@ -640,7 +642,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" before a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'before' );
@@ -653,7 +655,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should respect the attribute value when a widget (an object) is selected ("fake caret" after a widget)', () => {
-				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'widget-type-around', 'after' );
@@ -666,7 +668,7 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should return a range on a selected widget (an object) ("fake caret" not displayed)', () => {
-				setData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
+				_setModelData( model, '<paragraph>x</paragraph>[<horizontalLine></horizontalLine>]<paragraph>y</paragraph>' );
 
 				const range = findOptimalInsertionRange( doc.selection, model );
 

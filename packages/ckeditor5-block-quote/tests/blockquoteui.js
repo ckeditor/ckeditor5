@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '../src/blockquoteediting.js';
-import BlockQuoteUI from '../src/blockquoteui.js';
+import { BlockQuoteEditing } from '../src/blockquoteediting.js';
+import { BlockQuoteUI } from '../src/blockquoteui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'BlockQuoteUI', () => {
 	let editor, command, element, button;

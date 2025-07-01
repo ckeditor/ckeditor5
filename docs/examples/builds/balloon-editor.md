@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Balloon editor example | CKEditor 5 Documentation
+meta-description: Explore the balloon editor implementation with a floating toolbar for seamless inline content editing.
 order: 30
 toc: false
 contributeUrl: false

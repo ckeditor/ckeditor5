@@ -7,12 +7,12 @@
  * @module ui/labeledfield/utils
  */
 
-import InputTextView from '../inputtext/inputtextview.js';
-import InputNumberView from '../inputnumber/inputnumberview.js';
-import TextareaView from '../textarea/textareaview.js';
+import { InputTextView } from '../inputtext/inputtextview.js';
+import { InputNumberView } from '../inputnumber/inputnumberview.js';
+import { TextareaView } from '../textarea/textareaview.js';
 import { createDropdown } from '../dropdown/utils.js';
 
-import type DropdownView from '../dropdown/dropdownview.js';
+import { type DropdownView } from '../dropdown/dropdownview.js';
 import type { InputViewInputEvent } from '../input/inputview.js';
 import type { LabeledFieldViewCreator } from './labeledfieldview.js';
 

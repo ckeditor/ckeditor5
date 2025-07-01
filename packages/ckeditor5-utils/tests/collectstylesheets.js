@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import collectStylesheets from '../src/collectstylesheets.js';
+import { collectStylesheets } from '../src/collectstylesheets.js';
 
 describe( 'collectStylesheets', () => {
 	let styleSheetsMock;

@@ -7,10 +7,11 @@
  * @module undo
  */
 
-export { default as Undo } from './undo.js';
-export { default as UndoEditing } from './undoediting.js';
-export { default as UndoUI } from './undoui.js';
-export type { default as UndoCommand } from './undocommand.js';
-export type { default as RedoCommand } from './redocommand.js';
+export { Undo } from './undo.js';
+export { UndoEditing } from './undoediting.js';
+export { UndoUI } from './undoui.js';
+export { UndoCommand, type UndoCommandRevertEvent } from './undocommand.js';
+export { RedoCommand } from './redocommand.js';
+export { UndoRedoBaseCommand } from './basecommand.js';
 
 import './augmentation.js';

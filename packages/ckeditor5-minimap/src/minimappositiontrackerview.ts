@@ -18,7 +18,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  *
  * @internal
  */
-export default class MinimapPositionTrackerView extends View {
+export class MinimapPositionTrackerView extends View {
 	/**
 	 * The CSS `height` of the tracker visualizing the subset of the content visible to the user.
 	 *

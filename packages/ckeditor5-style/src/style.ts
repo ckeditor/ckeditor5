@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import StyleUI from './styleui.js';
-import StyleEditing from './styleediting.js';
+import { StyleUI } from './styleui.js';
+import { StyleEditing } from './styleediting.js';
 
 /**
  * The style plugin.
@@ -18,7 +18,7 @@ import StyleEditing from './styleediting.js';
  * This is a "glue" plugin that loads the {@link module:style/styleediting~StyleEditing style editing feature}
  * and {@link module:style/styleui~StyleUI style UI feature}.
  */
-export default class Style extends Plugin {
+export class Style extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

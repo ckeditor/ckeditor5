@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import InputObserver from '../../../src/view/observer/inputobserver.js';
-import DataTransfer from '../../../src/view/datatransfer.js';
-import Range from '../../../src/view/range.js';
-import View from '../../../src/view/view.js';
+import { InputObserver } from '../../../src/view/observer/inputobserver.js';
+import { ViewDataTransfer } from '../../../src/view/datatransfer.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import createViewRoot from '../_utils/createroot.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { createViewRoot } from '../_utils/createroot.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'InputObserver', () => {
 	let domEditable, view, viewRoot, viewDocument, observer, evtData, beforeInputSpy;
@@ -21,7 +21,7 @@ describe( 'InputObserver', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		domEditable = global.document.createElement( 'div' );
 		viewRoot = createViewRoot( viewDocument );
@@ -80,7 +80,7 @@ describe( 'InputObserver', () => {
 					}
 				} );
 
-				expect( evtData.dataTransfer ).to.be.instanceOf( DataTransfer );
+				expect( evtData.dataTransfer ).to.be.instanceOf( ViewDataTransfer );
 				expect( evtData.dataTransfer.getData( 'foo/bar' ) ).to.equal( 'baz' );
 			} );
 
@@ -119,8 +119,8 @@ describe( 'InputObserver', () => {
 				const viewRange1 = evtData.targetRanges[ 0 ];
 				const viewRange2 = evtData.targetRanges[ 1 ];
 
-				expect( viewRange1 ).to.be.instanceOf( Range );
-				expect( viewRange2 ).to.be.instanceOf( Range );
+				expect( viewRange1 ).to.be.instanceOf( ViewRange );
+				expect( viewRange2 ).to.be.instanceOf( ViewRange );
 
 				expect( viewRange1.start.parent ).to.equal( viewRoot );
 				expect( viewRange1.start.offset ).to.equal( 0 );
@@ -168,7 +168,7 @@ describe( 'InputObserver', () => {
 
 				const viewRange = evtData.targetRanges[ 0 ];
 
-				expect( viewRange ).to.be.instanceOf( Range );
+				expect( viewRange ).to.be.instanceOf( ViewRange );
 
 				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
 				expect( viewRange.start.offset ).to.equal( 2 );
@@ -194,7 +194,7 @@ describe( 'InputObserver', () => {
 
 				const viewRange = evtData.targetRanges[ 0 ];
 
-				expect( viewRange ).to.be.instanceOf( Range );
+				expect( viewRange ).to.be.instanceOf( ViewRange );
 
 				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange.start.offset ).to.equal( 2 );
@@ -230,7 +230,7 @@ describe( 'InputObserver', () => {
 
 				const viewRange = evtData.targetRanges[ 0 ];
 
-				expect( viewRange ).to.be.instanceOf( Range );
+				expect( viewRange ).to.be.instanceOf( ViewRange );
 
 				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange.start.offset ).to.equal( 0 );
@@ -276,7 +276,7 @@ describe( 'InputObserver', () => {
 
 					const viewRange = evtData.targetRanges[ 0 ];
 
-					expect( viewRange ).to.be.instanceOf( Range );
+					expect( viewRange ).to.be.instanceOf( ViewRange );
 
 					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 					expect( viewRange.start.offset ).to.equal( 0 );
@@ -319,7 +319,7 @@ describe( 'InputObserver', () => {
 
 					const viewRange = evtData.targetRanges[ 0 ];
 
-					expect( viewRange ).to.be.instanceOf( Range );
+					expect( viewRange ).to.be.instanceOf( ViewRange );
 
 					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 					expect( viewRange.start.offset ).to.equal( 0 );
@@ -365,7 +365,7 @@ describe( 'InputObserver', () => {
 
 					const viewRange = evtData.targetRanges[ 0 ];
 
-					expect( viewRange ).to.be.instanceOf( Range );
+					expect( viewRange ).to.be.instanceOf( ViewRange );
 
 					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 					expect( viewRange.start.offset ).to.equal( 0 );
@@ -414,7 +414,7 @@ describe( 'InputObserver', () => {
 
 					const viewRange = evtData.targetRanges[ 0 ];
 
-					expect( viewRange ).to.be.instanceOf( Range );
+					expect( viewRange ).to.be.instanceOf( ViewRange );
 
 					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 					expect( viewRange.start.offset ).to.equal( 0 );

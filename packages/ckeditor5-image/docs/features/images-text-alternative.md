@@ -2,7 +2,7 @@
 category: features-images
 menu-title: Text alternative
 meta-title: Image text alternative | CKEditor 5 Documentation
-meta-description: Setting and managing the alt tag on images in CKEditor 5
+meta-description: Learn about setting and managing the alt tag on images in CKEditor 5.
 order: 20
 ---
 

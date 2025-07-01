@@ -17,7 +17,7 @@ const STRIKETHROUGH = 'strikethrough';
 /**
  * The strikethrough UI feature. It introduces the Strikethrough button.
  */
-export default class StrikethroughUI extends Plugin {
+export class StrikethroughUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

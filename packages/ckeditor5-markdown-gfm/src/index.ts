@@ -7,9 +7,10 @@
  * @module markdown-gfm
  */
 
-export { default as Markdown } from './markdown.js';
-export { default as PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental.js';
-export { default as GFMDataProcessor } from './gfmdataprocessor.js';
-export { MarkdownToHtml } from './markdown2html/markdown2html.js';
+export { Markdown } from './markdown.js';
+export { PasteFromMarkdownExperimental } from './pastefrommarkdownexperimental.js';
+export { MarkdownGfmDataProcessor } from './gfmdataprocessor.js';
+export { MarkdownGfmMdToHtml } from './markdown2html/markdown2html.js';
+export { MarkdownGfmHtmlToMd } from './html2markdown/html2markdown.js';
 
 import './augmentation.js';

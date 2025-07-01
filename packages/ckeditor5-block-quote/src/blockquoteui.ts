@@ -20,7 +20,7 @@ import '../theme/blockquote.css';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class BlockQuoteUI extends Plugin {
+export class BlockQuoteUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

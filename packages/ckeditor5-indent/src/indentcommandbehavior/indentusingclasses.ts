@@ -11,8 +11,10 @@ import type { IndentBehavior } from './indentbehavior.js';
 
 /**
  * The block indentation behavior that uses classes to set indentation.
+ *
+ * @internal
  */
-export default class IndentUsingClasses implements IndentBehavior {
+export class IndentUsingClasses implements IndentBehavior {
 	/**
 	 * The direction of indentation.
 	 */

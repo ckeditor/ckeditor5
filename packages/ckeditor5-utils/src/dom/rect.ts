@@ -7,21 +7,21 @@
  * @module utils/dom/rect
  */
 
-import isRange from './isrange.js';
-import isWindow from './iswindow.js';
-import getBorderWidths from './getborderwidths.js';
-import isText from './istext.js';
-import getPositionedAncestor from './getpositionedancestor.js';
-import global from './global.js';
+import { isRange } from './isrange.js';
+import { isWindow } from './iswindow.js';
+import { getBorderWidths } from './getborderwidths.js';
+import { isText } from './istext.js';
+import { getPositionedAncestor } from './getpositionedancestor.js';
+import { global } from './global.js';
 
-const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+const rectProperties: Array<keyof DomRectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
  * to manipulate the rect and compare it against other rect instances.
  */
-export default class Rect {
+export class Rect {
 	/**
 	 * The "top" value of the rect.
 	 *
@@ -510,12 +510,12 @@ export default class Rect {
 /**
  * A source of {@link module:utils/dom/rect~Rect}.
  */
-export type RectSource = HTMLElement | Range | Window | RectLike;
+export type RectSource = HTMLElement | Range | Window | DomRectLike;
 
 /**
  * An object that describes properties of `ClientRect` object.
  */
-export interface RectLike {
+export interface DomRectLike {
 	readonly top: number;
 	readonly right: number;
 	readonly bottom: number;
@@ -527,7 +527,7 @@ export interface RectLike {
 /**
  * Acquires all the rect properties from the passed source.
  */
-function copyRectProperties( rect: Rect, source: RectLike ): void {
+function copyRectProperties( rect: Rect, source: DomRectLike ): void {
 	for ( const p of rectProperties ) {
 		rect[ p ] = source[ p ];
 	}

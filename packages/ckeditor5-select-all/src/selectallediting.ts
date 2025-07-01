@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils';
-import SelectAllCommand from './selectallcommand.js';
+import { SelectAllCommand } from './selectallcommand.js';
 import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 
 const SELECT_ALL_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+A' );
@@ -20,7 +20,7 @@ const SELECT_ALL_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+A' );
  * It registers the `'selectAll'` {@link module:select-all/selectallcommand~SelectAllCommand command}
  * and the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke listener which executes it.
  */
-export default class SelectAllEditing extends Plugin {
+export class SelectAllEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

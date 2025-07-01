@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 
-import HorizontalLine from '../src/horizontalline.js';
-import HorizontalLineEditing from '../src/horizontallineediting.js';
-import HorizontalLineUI from '../src/horizontallineui.js';
+import { HorizontalLine } from '../src/horizontalline.js';
+import { HorizontalLineEditing } from '../src/horizontallineediting.js';
+import { HorizontalLineUI } from '../src/horizontallineui.js';
 
 describe( 'HorizontalLine', () => {
 	it( 'should require HorizontalLineEditing, HorizontalLineUI and Widget', () => {

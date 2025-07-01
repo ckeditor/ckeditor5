@@ -17,7 +17,7 @@ import { getListTypeFromListStyleType, getSelectedListItems } from '../legacylis
  * the command tries to convert selected items to a list of that type.
  * It is used by the {@link module:list/legacylistproperties~LegacyListProperties legacy list properties feature}.
  */
-export default class LegacyListStyleCommand extends Command {
+export class LegacyListStyleCommand extends Command {
 	declare public isStyleTypeSupported: undefined;
 
 	/**

@@ -9,15 +9,15 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKBoxImageEditEditing from './ckboximageedit/ckboximageeditediting.js';
-import CKBoxImageEditUI from './ckboximageedit/ckboximageeditui.js';
+import { CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
+import { CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
 
 import '../theme/ckboximageedit.css';
 
 /**
  * The CKBox image edit feature.
  */
-export default class CKBoxImageEdit extends Plugin {
+export class CKBoxImageEdit extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

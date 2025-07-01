@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmitterMixin from '../../src/emittermixin.js';
-import CKEditorError from '../../src/ckeditorerror.js';
-import areConnectedThroughProperties from '../../src/areconnectedthroughproperties.js';
+import { EmitterMixin } from '../../src/emittermixin.js';
+import { CKEditorError } from '../../src/ckeditorerror.js';
+import { areConnectedThroughProperties } from '../../src/areconnectedthroughproperties.js';
 
 /**
  * Creates an instance inheriting from {@link module:utils/emittermixin~Emitter} with one additional method `observe()`.

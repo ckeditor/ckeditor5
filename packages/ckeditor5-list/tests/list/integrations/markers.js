@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../../src/list/listediting.js';
+import { ListEditing } from '../../../src/list/listediting.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import stubUid from '../_utils/uid.js';
+import { stubUid } from '../_utils/uid.js';
 
 describe( 'ListEditing integrations: markers', () => {
 	let element, editor, model, root;
@@ -61,7 +61,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 	describe( 'list item with a single paragraph', () => {
 		beforeEach( () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>'
 			);
 		} );
@@ -78,7 +78,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
 					'</li>' +
 				'</ul>'
@@ -104,7 +104,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar"><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +
 				'</ul>'
@@ -125,7 +125,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-end-after="bar" data-foo-start-before="bar">A</p>' +
 					'</li>' +
 				'</ul>'
@@ -146,7 +146,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start>A<foo-end name="bar"></foo-end>' +
 					'</li>' +
 				'</ul>'
@@ -169,7 +169,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start><foo-end name="bar"></foo-end>&nbsp;' +
 					'</li>' +
 				'</ul>'
@@ -184,7 +184,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 	describe( 'list item with multiple paragraphs', () => {
 		beforeEach( () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">B</paragraph>'
 			);
@@ -202,7 +202,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
 						'<p>B</p>' +
 					'</li>' +
@@ -227,7 +227,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
 						'<p>B<foo-end name="bar"></foo-end></p>' +
 					'</li>' +
@@ -257,7 +257,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">&nbsp;</p>' +
 						'<p><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +
@@ -279,7 +279,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
 						'<p data-foo-end-after="bar">B</p>' +
 					'</li>' +
@@ -304,7 +304,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p>A<foo-start name="bar"></foo-start></p>' +
 						'<p><foo-end name="bar"></foo-end>B</p>' +
 					'</li>' +
@@ -334,7 +334,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p><foo-start name="bar"></foo-start>&nbsp;</p>' +
 						'<p><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +

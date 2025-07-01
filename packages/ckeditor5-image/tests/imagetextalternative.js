@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Image from '../src/image.js';
-import ImageTextAlternative from '../src/imagetextalternative.js';
-import ImageTextAlternativeEditing from '../src/imagetextalternative/imagetextalternativeediting.js';
-import ImageTextAlternativeUI from '../src/imagetextalternative/imagetextalternativeui.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '../src/image.js';
+import { ImageTextAlternative } from '../src/imagetextalternative.js';
+import { ImageTextAlternativeEditing } from '../src/imagetextalternative/imagetextalternativeediting.js';
+import { ImageTextAlternativeUI } from '../src/imagetextalternative/imagetextalternativeui.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageTextAlternative', () => {
 	let editor, plugin, editorElement;

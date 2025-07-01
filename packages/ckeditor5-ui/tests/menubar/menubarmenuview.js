@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	FocusTracker,
 	KeystrokeHandler,
@@ -14,8 +14,8 @@ import {
 	MenuBarMenuView,
 	MenuBarView
 } from '../../src/index.js';
-import MenuBarMenuButtonView from '../../src/menubar/menubarmenubuttonview.js';
-import MenuBarMenuPanelView from '../../src/menubar/menubarmenupanelview.js';
+import { MenuBarMenuButtonView } from '../../src/menubar/menubarmenubuttonview.js';
+import { MenuBarMenuPanelView } from '../../src/menubar/menubarmenupanelview.js';
 import {
 	MenuBarMenuBehaviors,
 	MenuBarMenuViewPanelPositioningFunctions

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import TableLayout from '../src/tablelayout.js';
-import PlainTableOutput from '../src/plaintableoutput.js';
-import TableColumnResize from '../src/tablecolumnresize.js';
-import TableLayoutEditing from '../src/tablelayout/tablelayoutediting.js';
-import TableLayoutUI from '../src/tablelayout/tablelayoutui.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { TableLayout } from '../src/tablelayout.js';
+import { PlainTableOutput } from '../src/plaintableoutput.js';
+import { TableColumnResize } from '../src/tablecolumnresize.js';
+import { TableLayoutEditing } from '../src/tablelayout/tablelayoutediting.js';
+import { TableLayoutUI } from '../src/tablelayout/tablelayoutui.js';
 
 describe( 'TableLayout', () => {
 	let editor, editorElement;

@@ -7,15 +7,15 @@
  * @module utils/emittermixin
  */
 
-import EventInfo from './eventinfo.js';
-import uid from './uid.js';
-import priorities, { type PriorityString } from './priorities.js';
-import insertToPriorityArray from './inserttopriorityarray.js';
+import { EventInfo } from './eventinfo.js';
+import { uid } from './uid.js';
+import { priorities, type PriorityString } from './priorities.js';
+import { insertToPriorityArray } from './inserttopriorityarray.js';
 import type { Constructor, Mixed } from './mix.js';
 
 // To check if component is loaded more than once.
 import './version.js';
-import CKEditorError from './ckeditorerror.js';
+import { CKEditorError } from './ckeditorerror.js';
 
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
@@ -43,7 +43,7 @@ const defaultEmitterClass = /* #__PURE__ */ EmitterMixin( Object );
  *
  * @label EXTENDS
  */
-export default function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base, Emitter>;
+export function EmitterMixin<Base extends Constructor>( base: Base ): Mixed<Base, Emitter>;
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
@@ -63,12 +63,12 @@ export default function EmitterMixin<Base extends Constructor>( base: Base ): Mi
  *
  * @label NO_ARGUMENTS
  */
-export default function EmitterMixin(): {
+export function EmitterMixin(): {
 	new (): Emitter;
 	prototype: Emitter;
 };
 
-export default function EmitterMixin( base?: Constructor ): unknown {
+export function EmitterMixin( base?: Constructor ): unknown {
 	if ( !base ) {
 		return defaultEmitterClass;
 	}
@@ -370,15 +370,6 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 
 	return Mixin;
 }
-
-// Backward compatibility with `mix`
-( [
-	'on', 'once', 'off', 'listenTo',
-	'stopListening', 'fire', 'delegate', 'stopDelegating',
-	'_addEventListener', '_removeEventListener'
-] ).forEach( key => {
-	( EmitterMixin as any )[ key ] = ( defaultEmitterClass.prototype as any )[ key ];
-} );
 
 /**
  * Emitter/listener interface.

@@ -279,6 +279,8 @@ export interface CKBoxUploadConfig {
  * Asset definition.
  *
  * The definition contains the unique `id`, asset `type` and an `attributes` definition.
+ *
+ * @internal
  */
 export type CKBoxAssetDefinition = CKBoxAssetImageDefinition | CKBoxAssetLinkDefinition;
 
@@ -286,6 +288,8 @@ export type CKBoxAssetDefinition = CKBoxAssetImageDefinition | CKBoxAssetLinkDef
  * Image asset definition.
  *
  * The definition contains the unique `id`, asset `type` and an `attributes` definition.
+ *
+ * @internal
  */
 export interface CKBoxAssetImageDefinition {
 
@@ -309,6 +313,8 @@ export interface CKBoxAssetImageDefinition {
  * Link asset definition.
  *
  * The definition contains the unique `id`, asset `type` and an `attributes` definition.
+ *
+ * @internal
  */
 export interface CKBoxAssetLinkDefinition {
 
@@ -357,6 +363,8 @@ export interface CKBoxAssetLinkDefinition {
  * 	imageTextAlternative: 'An alternative text for the image'
  * }
  * ```
+ *
+ * @internal
  */
 export interface CKBoxAssetImageAttributesDefinition {
 
@@ -406,6 +414,8 @@ export interface CKBoxAssetImageAttributesDefinition {
  * 	linkHref: 'https://example.com/assets/asset-id/file.pdf'
  * }
  * ```
+ *
+ * @internal
  */
 export interface CKBoxAssetLinkAttributesDefinition {
 

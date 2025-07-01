@@ -28,8 +28,8 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconImage } from 'ckeditor5/src/icons.js';
 
-import ImageInsertFormView from './ui/imageinsertformview.js';
-import ImageUtils from '../imageutils.js';
+import { ImageInsertFormView } from './ui/imageinsertformview.js';
+import { ImageUtils } from '../imageutils.js';
 
 /**
  * The image insert dropdown plugin.
@@ -43,7 +43,7 @@ import ImageUtils from '../imageutils.js';
  * Adds the `'menuBar:insertImage'` sub-menu to the {@link module:ui/componentfactory~ComponentFactory UI component factory}, which is
  * by default added to the `'Insert'` menu.
  */
-export default class ImageInsertUI extends Plugin {
+export class ImageInsertUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

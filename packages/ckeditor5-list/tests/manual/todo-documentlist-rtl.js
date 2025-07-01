@@ -19,8 +19,8 @@ import { Indent } from '@ckeditor/ckeditor5-indent';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 
-import List from '../../src/documentlist.js';
-import TodoList from '../../src/tododocumentlist.js';
+import { List } from '../../src/list.js';
+import { TodoList } from '../../src/todolist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

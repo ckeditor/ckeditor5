@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewElement from '../../../src/view/element.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewDocument from '../../../src/view/document.js';
-import ViewDocumentSelection from '../../../src/view/documentselection.js';
-import ViewSelection from '../../../src/view/selection.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocumentFragment from '../../../src/view/documentfragment.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
+import { ViewSelection } from '../../../src/view/selection.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { parse, stringify } from '../../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../../src/dev-utils/view.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
@@ -26,7 +26,7 @@ describe( 'DomConverter', () => {
 
 	before( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'domToView()', () => {
@@ -738,8 +738,8 @@ describe( 'DomConverter', () => {
 			const viewChildren = Array.from( converter.domChildrenToView( domP ) );
 
 			expect( viewChildren.length ).to.equal( 2 );
-			expect( stringify( viewChildren[ 0 ] ) ).to.equal( '<img></img>' );
-			expect( stringify( viewChildren[ 1 ] ) ).to.equal( 'foo' );
+			expect( _stringifyView( viewChildren[ 0 ] ) ).to.equal( '<img></img>' );
+			expect( _stringifyView( viewChildren[ 1 ] ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should skip filler', () => {
@@ -760,8 +760,8 @@ describe( 'DomConverter', () => {
 			const viewChildren = Array.from( converter.domChildrenToView( domP, { withChildren: false } ) );
 
 			expect( viewChildren.length ).to.equal( 2 );
-			expect( stringify( viewChildren[ 0 ] ) ).to.equal( '<b></b>' );
-			expect( stringify( viewChildren[ 1 ] ) ).to.equal( 'foo' );
+			expect( _stringifyView( viewChildren[ 0 ] ) ).to.equal( '<b></b>' );
+			expect( _stringifyView( viewChildren[ 1 ] ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -771,27 +771,27 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, 'bar' );
 			const domP = createElement( document, 'p', null, [ domText, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
 
 			const viewPosition = converter.domPositionToView( domText, 2 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>fo{}o<b>bar</b></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>fo{}o<b>bar</b></p>' );
 		} );
 
 		it( 'should support unicode', () => {
 			const domText = document.createTextNode( 'நிலைக்கு' );
 			const domP = createElement( document, 'p', null, [ domText ] );
 
-			const viewP = parse( '<p>நிலைக்கு</p>' );
+			const viewP = _parseView( '<p>நிலைக்கு</p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domText, 4 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>நிலை{}க்கு</p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>நிலை{}க்கு</p>' );
 		} );
 
 		it( 'should converter position in element', () => {
@@ -799,41 +799,41 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, 'bar' );
 			const domP = createElement( document, 'p', null, [ domText, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
 
 			const viewPosition = converter.domPositionToView( domP, 1 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo[]<b>bar</b></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>foo[]<b>bar</b></p>' );
 		} );
 
 		it( 'should converter position at the beginning', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = parse( '<p>foo</p>' );
+			const viewP = _parseView( '<p>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domP, 0 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]foo</p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>[]foo</p>' );
 		} );
 
 		it( 'should converter position inside block filler', () => {
-			const converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+			const converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 
-			const viewP = parse( '<p></p>' );
+			const viewP = _parseView( '<p></p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domFiller, 0 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]</p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>[]</p>' );
 		} );
 
 		it( 'should converter position inside inline filler', () => {
@@ -842,14 +842,14 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domFiller );
 			const domP = createElement( document, 'p', null, [ domText, domB ] );
 
-			const viewP = parse( '<p>foo<b></b></p>' );
+			const viewP = _parseView( '<p>foo<b></b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
 
 			const viewPosition = converter.domPositionToView( domFiller, INLINE_FILLER_LENGTH );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo<b>[]</b></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>foo<b>[]</b></p>' );
 		} );
 
 		it( 'should converter position inside inline filler with text', () => {
@@ -858,7 +858,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domFiller );
 			const domP = createElement( document, 'p', null, [ domText, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
@@ -866,7 +866,7 @@ describe( 'DomConverter', () => {
 			const viewPosition = converter.domPositionToView( domFiller, INLINE_FILLER_LENGTH + 2 );
 
 			expect( viewPosition.offset ).to.equal( 2 );
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo<b>ba{}r</b></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>foo<b>ba{}r</b></p>' );
 		} );
 
 		it( 'should converter position inside inline filler with text at the beginning', () => {
@@ -875,7 +875,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domFiller );
 			const domP = createElement( document, 'p', null, [ domText, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
@@ -883,20 +883,20 @@ describe( 'DomConverter', () => {
 			const viewPosition = converter.domPositionToView( domFiller, INLINE_FILLER_LENGTH - 1 );
 
 			expect( viewPosition.offset ).to.equal( 0 );
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo<b>{}bar</b></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>foo<b>{}bar</b></p>' );
 		} );
 
 		it( 'should converter position at the end', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = parse( '<p>foo</p>' );
+			const viewP = _parseView( '<p>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domP, 1 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>foo[]</p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>foo[]</p>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/12575.
@@ -905,14 +905,14 @@ describe( 'DomConverter', () => {
 			const domBr = createElement( document, 'br' );
 			const domP = createElement( document, 'p', null, [ domFiller, domBr ] );
 
-			const viewP = parse( '<p><br/></p>' );
+			const viewP = _parseView( '<p><br/></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domBr, viewP.getChild( 0 ) );
 
 			const viewPosition = converter.domPositionToView( domP, 1 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]<br></br></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>[]<br></br></p>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/12575.
@@ -922,7 +922,7 @@ describe( 'DomConverter', () => {
 			const domBr2 = createElement( document, 'br' );
 			const domP = createElement( document, 'p', null, [ domBr1, domFiller, domBr2 ] );
 
-			const viewP = parse( '<p><br/><br/></p>' );
+			const viewP = _parseView( '<p><br/><br/></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domBr1, viewP.getChild( 0 ) );
@@ -930,34 +930,34 @@ describe( 'DomConverter', () => {
 
 			const viewPosition = converter.domPositionToView( domP, 2 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br></p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p><br></br>[]<br></br></p>' );
 		} );
 
 		it( 'should convert position after a block filler', () => {
 			const domFiller = BR_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, [ domFiller ] );
 
-			const viewP = parse( '<p></p>' );
+			const viewP = _parseView( '<p></p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domP, 1 );
 
-			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>[]</p>' );
+			expect( _stringifyView( viewP, viewPosition ) ).to.equal( '<p>[]</p>' );
 		} );
 
 		it( 'should not crash if offset does not exist', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domP = createElement( document, 'p', null, [ domFiller ] );
 
-			const viewP = parse( '<p></p>' );
+			const viewP = _parseView( '<p></p>' );
 
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = converter.domPositionToView( domP, 100 );
 
 			expect( viewPosition ).to.be.null;
-			expect( stringify( viewP ) ).to.equal( '<p></p>' );
+			expect( _stringifyView( viewP ) ).to.equal( '<p></p>' );
 		} );
 
 		it( 'should return null if there is no corresponding parent node', () => {
@@ -995,7 +995,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domBar );
 			const domP = createElement( document, 'p', null, [ domFoo, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
@@ -1006,7 +1006,7 @@ describe( 'DomConverter', () => {
 
 			const viewRange = converter.domRangeToView( domRange );
 
-			expect( stringify( viewP, viewRange ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
+			expect( _stringifyView( viewP, viewRange ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
 		} );
 
 		it( 'should return null if start or end is null', () => {
@@ -1032,7 +1032,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domBar );
 			const domP = createElement( document, 'p', null, [ domFoo, domB ] );
 
-			const viewP = parse( '<p>foo<b>bar</b></p>' );
+			const viewP = _parseView( '<p>foo<b>bar</b></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
@@ -1050,7 +1050,7 @@ describe( 'DomConverter', () => {
 			const viewSelection = converter.domSelectionToView( domSelection );
 
 			expect( viewSelection.rangeCount ).to.equal( 1 );
-			expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
+			expect( _stringifyView( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
 
 			domP.remove();
 		} );
@@ -1068,7 +1068,7 @@ describe( 'DomConverter', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
 
-			const viewP = parse( '<p>foo</p>' );
+			const viewP = _parseView( '<p>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1100,7 +1100,7 @@ describe( 'DomConverter', () => {
 			const domI = createElement( document, 'i', null, [ domBar ] );
 			const domP = createElement( document, 'p', null, [ domB, domI ] );
 
-			const viewP = parse( '<p><b>foo</b><i>bar</i></p>' );
+			const viewP = _parseView( '<p><b>foo</b><i>bar</i></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
@@ -1133,7 +1133,7 @@ describe( 'DomConverter', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
 
-			const viewP = parse( '<p>foo</p>' );
+			const viewP = _parseView( '<p>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1165,7 +1165,7 @@ describe( 'DomConverter', () => {
 			const domI = createElement( document, 'i', null, [ domBar ] );
 			const domP = createElement( document, 'p', null, [ domB, domI ] );
 
-			const viewP = parse( '<p><b>foo</b><i>bar</i></p>' );
+			const viewP = _parseView( '<p><b>foo</b><i>bar</i></p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
@@ -1200,7 +1200,7 @@ describe( 'DomConverter', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, [ domFoo ] );
 
-			const viewP = parse( '<p>foo</p>' );
+			const viewP = _parseView( '<p>foo</p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1306,7 +1306,7 @@ describe( 'DomConverter', () => {
 				const domFoo = document.createTextNode( 'foo' );
 				const domP = createElement( document, 'p', null, [ domFoo ] );
 
-				const viewP = parse( '<p>foo</p>' );
+				const viewP = _parseView( '<p>foo</p>' );
 
 				converter.bindElements( domP, viewP );
 
@@ -1323,7 +1323,7 @@ describe( 'DomConverter', () => {
 				const viewSelection = converter.domSelectionToView( domSelection );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
-				expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
+				expect( _stringifyView( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
 
 				// Now we know that there should be a valid view range. So let's test if the DOM node throws an error.
 				sinon.stub( domFoo, Symbol.toStringTag ).get( () => {
@@ -1348,7 +1348,7 @@ describe( 'DomConverter', () => {
 				const domFoo = document.createTextNode( 'foo' );
 				const domP = createElement( document, 'p', null, [ domFoo ] );
 
-				const viewP = parse( '<p>foo</p>' );
+				const viewP = _parseView( '<p>foo</p>' );
 
 				converter.bindElements( domP, viewP );
 
@@ -1365,7 +1365,7 @@ describe( 'DomConverter', () => {
 				const viewSelection = converter.domSelectionToView( domSelection );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
-				expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
+				expect( _stringifyView( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{o}o</p>' );
 
 				domP.remove();
 			} );

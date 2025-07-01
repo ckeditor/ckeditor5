@@ -9,14 +9,14 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { IconAccessibility } from '@ckeditor/ckeditor5-icons';
-import ButtonView from '../../button/buttonview.js';
-import Dialog from '../../dialog/dialog.js';
-import MenuBarMenuListItemButtonView from '../../menubar/menubarmenulistitembuttonview.js';
-import AccessibilityHelpContentView from './accessibilityhelpcontentview.js';
+import { ButtonView } from '../../button/buttonview.js';
+import { Dialog } from '../../dialog/dialog.js';
+import { MenuBarMenuListItemButtonView } from '../../menubar/menubarmenulistitembuttonview.js';
+import { AccessibilityHelpContentView } from './accessibilityhelpcontentview.js';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
-import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
+import type { ViewDowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
 import '../../../theme/components/editorui/accessibilityhelp.css';
 
@@ -28,7 +28,7 @@ import '../../../theme/components/editorui/accessibilityhelp.css';
  * Keystroke information is loaded from {@link module:core/accessibility~Accessibility#keystrokeInfos}. New entries can be
  * added using the API provided by the {@link module:core/accessibility~Accessibility} class.
  */
-export default class AccessibilityHelp extends Plugin {
+export class AccessibilityHelp extends Plugin {
 	/**
 	 * The view that displays the dialog content (list of keystrokes).
 	 * Created when the dialog is opened for the first time.
@@ -135,7 +135,7 @@ export default class AccessibilityHelp extends Plugin {
 			}, { priority: 'low' } );
 		} );
 
-		function addAriaLabelTextToRoot( writer: DowncastWriter, viewRoot: ViewRootEditableElement ) {
+		function addAriaLabelTextToRoot( writer: ViewDowncastWriter, viewRoot: ViewRootEditableElement ) {
 			const currentAriaLabel = viewRoot.getAttribute( 'aria-label' );
 			const newAriaLabel = [ currentAriaLabel, t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) ]
 				.filter( segment => segment )

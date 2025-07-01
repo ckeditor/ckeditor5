@@ -7,7 +7,7 @@
  * @module code-block/codeblockcommand
  */
 
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -16,7 +16,7 @@ import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './
 /**
  * The code block command plugin.
  */
-export default class CodeBlockCommand extends Command {
+export class CodeBlockCommand extends Command {
 	/**
 	 * Contains the last used language.
 	 */
@@ -118,7 +118,7 @@ export default class CodeBlockCommand extends Command {
 		return canBeCodeBlock( schema, firstBlock );
 	}
 
-	private _applyCodeBlock( writer: Writer, blocks: Array<Element>, language: string ): void {
+	private _applyCodeBlock( writer: ModelWriter, blocks: Array<ModelElement>, language: string ): void {
 		this._lastLanguage = language;
 
 		const schema = this.editor.model.schema;
@@ -145,7 +145,7 @@ export default class CodeBlockCommand extends Command {
 		} );
 	}
 
-	private _removeCodeBlock( writer: Writer, blocks: Array<Element> ): void {
+	private _removeCodeBlock( writer: ModelWriter, blocks: Array<ModelElement> ): void {
 		const codeBlocks = blocks.filter( block => block.is( 'element', 'codeBlock' ) );
 
 		for ( const block of codeBlocks ) {
@@ -154,7 +154,7 @@ export default class CodeBlockCommand extends Command {
 			for ( const item of Array.from( range.getItems() ).reverse() ) {
 				if ( item.is( 'element', 'softBreak' ) && item.parent!.is( 'element', 'codeBlock' ) ) {
 					const { position } = writer.split( writer.createPositionBefore( item ) );
-					const elementAfter = position.nodeAfter as Element;
+					const elementAfter = position.nodeAfter as ModelElement;
 
 					writer.rename( elementAfter, 'paragraph' );
 					writer.removeAttribute( 'language', elementAfter );

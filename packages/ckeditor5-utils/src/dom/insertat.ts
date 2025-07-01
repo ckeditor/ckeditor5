@@ -14,7 +14,7 @@
  * @param index Insertions index.
  * @param nodeToInsert Node to insert.
  */
-export default function insertAt(
+export function insertAt(
 	parentElement: Element,
 	index: number,
 	nodeToInsert: Node

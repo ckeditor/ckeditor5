@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import Document from '../../src/view/document.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import createViewRoot from './_utils/createroot.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { createViewRoot } from './_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Document', () => {
@@ -22,7 +22,7 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new Document( new StylesProcessor() );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 	} );
 
 	afterEach( () => {

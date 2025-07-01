@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import abortableDebounce from '../src/abortabledebounce.js';
+import { abortableDebounce } from '../src/abortabledebounce.js';
 
 describe( 'abortableDebounce()', () => {
 	it( 'should forward arguments and return type', () => {

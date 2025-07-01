@@ -21,12 +21,22 @@
     "@ckeditor/ckeditor5-clipboard": "45.2.1",
     "@ckeditor/ckeditor5-core": "45.2.1",
     "@ckeditor/ckeditor5-engine": "45.2.1",
-    "@types/marked": "4.3.2",
-    "@types/turndown": "5.0.5",
+    "@types/hast": "3.0.4",
     "ckeditor5": "45.2.1",
-    "marked": "4.0.12",
-    "turndown": "7.2.0",
-    "turndown-plugin-gfm": "1.0.2"
+    "hast-util-from-dom": "5.0.1",
+    "hast-util-to-html": "9.0.5",
+    "hast-util-to-mdast": "10.1.2",
+    "hastscript": "9.0.1",
+    "rehype-dom-parse": "5.0.2",
+    "rehype-dom-stringify": "4.0.2",
+    "rehype-remark": "10.0.1",
+    "remark-breaks": "4.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "remark-stringify": "11.0.0",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "45.2.1",
@@ -51,7 +61,7 @@
     "@ckeditor/ckeditor5-utils": "45.2.1",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^6.0.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -73,10 +83,7 @@
     "CHANGELOG.md"
   ],
   "depcheckIgnore": [
-    "collapse-whitespace",
-    "jsdom",
-    "void-elements",
-    "block-elements"
+    "hast"
   ],
   "scripts": {
     "dll:build": "webpack",

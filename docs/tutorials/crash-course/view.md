@@ -3,6 +3,7 @@ category: crash-course
 order: 60
 menu-title: Editor UI
 meta-title: CKEditor 5 crash course - Editor UI | CKEditor 5 Documentation
+meta-description: Explore the view layer in CKEditor 5 to manage how content is presented and interacted with in the editor UI.
 modified_at: 2025-03-14
 ---
 

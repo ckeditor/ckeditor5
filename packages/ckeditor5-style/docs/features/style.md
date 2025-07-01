@@ -1,6 +1,7 @@
 ---
 menu-title: Styles
 meta-title: Styles | CKEditor 5 Documentation
+meta-description: Apply predefined styles to content in CKEditor 5 using the Style feature to ensure consistent formatting and visual design.
 category: features
 modified_at: 2022-07-22
 ---
@@ -329,7 +330,7 @@ You can execute the command using the {@link module:core/editor/editor~Editor#ex
 ```js
 // Applies the style to the selected content.
 // Executing the command again will remove the style from the selected content.
-editor.execute( 'style', 'Article category' );
+editor.execute( 'style', { styleName: 'Article category' } );
 ```
 
 <info-box>

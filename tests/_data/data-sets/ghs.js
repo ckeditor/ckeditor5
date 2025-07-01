@@ -78,6 +78,6 @@ const initialData =
 	<p>Text with <i class="inline-icon"></i> empty inline inside</p>
 	<p>Text with empty inline at the end <i class="inline-icon"></i></p>`;
 
-export default function makeData() {
+export function makeData() {
   return initialData.repeat( 250 );
 }

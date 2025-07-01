@@ -4,34 +4,35 @@
  */
 
 import {
-	getBoxSidesShorthandValue,
-	getBoxSidesValues,
-	getShorthandValues,
-	isColor,
-	isLength,
-	isLineStyle, isPercentage
+	getBoxSidesStyleShorthandValue,
+	getBoxSidesStyleValues,
+	getShorthandStylesValues,
+	isColorStyleValue,
+	isLengthStyleValue,
+	isLineStyleValue,
+	isPercentageStyleValue
 } from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
 	describe( 'isColor()', () => {
 		it( 'returns true for #RGB color', () => {
-			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColor );
+			testValues( [ '#f00', '#ba2', '#F00', '#BA2', '#AbC' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RRGGBB color', () => {
-			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColor );
+			testValues( [ '#ff0000', '#bbaa22', '#FF0000', '#BBAA22', '#AabBCC' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RGBA color', () => {
-			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColor );
+			testValues( [ '#f000', '#ba24', '#F000', '#BA24', '#aBcD' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for #RRGGBBAA color', () => {
-			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColor );
+			testValues( [ '#ff000000', '#bbaa2244', '#FF000000', '#BBAA2244', '#AabBCCdd' ], isColorStyleValue );
 		} );
 
 		it( 'returns false for invalid # color', () => {
-			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColor( value ) );
+			testValues( [ '#ttt', '#1', '#12', '#12345' ], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for rgb() color', () => {
@@ -44,7 +45,7 @@ describe( 'Styles utils', () => {
 				// 'rgb(11, 22, 33, 0.1)', // rgba() is equal to rgb()
 				// 'rgb(255, 0, 153.0)', // Floats are valid
 				// 'rgb(255 0 153)', // CSS Level 4 notation
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for invalid rgb() color', () => {
@@ -62,7 +63,7 @@ describe( 'Styles utils', () => {
 				'rgb(11, 22, 33, .153)'
 				// Unsupported:
 				// 'rgb(100%, 0, 60%)', // Mixed numbers and percentages - adds complexity.,
-			], value => !isColor( value ) );
+			], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for rgba() color', () => {
@@ -81,7 +82,7 @@ describe( 'Styles utils', () => {
 				'rgba(255, 0, 153, 1)',
 				'rgba(100%,0%,60%, 1)',
 				'rgba(100%, 0%, 60%, 1)'
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for wrong rgba() color', () => {
@@ -90,7 +91,7 @@ describe( 'Styles utils', () => {
 				'rgba((1,2,3,0.7',
 				'rgba(1,a,3,0.7)',
 				'rgba(1,2,3,*)'
-			], value => !isColor( value ) );
+			], value => !isColorStyleValue( value ) );
 		} );
 
 		it( 'returns true for hsl() color', () => {
@@ -107,15 +108,15 @@ describe( 'Styles utils', () => {
 				// 'hsl(270 60% 70%)', // CSS Level 4 notation
 				// 'hsl(270 60% 50% / .15)', // CSS Level 4 notation
 				// 'hsl(270 60% 50% / 15%)' // CSS Level 4 notation
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns true for hsla() color', () => {
-			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColor );
+			testValues( [ 'hsla(240, 100%, 50%, 1)', 'hsla(240, 100%, 50%, .05)' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for color keywords', () => {
-			testValues( [ 'currentColor', 'transparent' ], isColor );
+			testValues( [ 'currentColor', 'transparent' ], isColorStyleValue );
 		} );
 
 		it( 'returns true for color keyword', () => {
@@ -130,11 +131,11 @@ describe( 'Styles utils', () => {
 				'windowtext',
 				// CSS Level 4
 				'rebeccapurple'
-			], isColor );
+			], isColorStyleValue );
 		} );
 
 		it( 'returns false for unknown color keyword', () => {
-			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColor( value ) );
+			testValues( [ 'redx', 'greenx', 'bluex' ], value => !isColorStyleValue( value ) );
 		} );
 	} );
 
@@ -142,7 +143,7 @@ describe( 'Styles utils', () => {
 		it( 'returns true for line style', () => {
 			testValues(
 				[ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset' ],
-				isLineStyle
+				isLineStyleValue
 			);
 		} );
 	} );
@@ -166,7 +167,7 @@ describe( 'Styles utils', () => {
 					'1vmin',
 					'1vmax'
 				],
-				isLength
+				isLengthStyleValue
 			);
 		} );
 
@@ -180,54 +181,54 @@ describe( 'Styles utils', () => {
 					'345.457px',
 					'.457px'
 				],
-				isLength
+				isLengthStyleValue
 			);
 		} );
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isLength( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isLengthStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'isPercentage()', () => {
 		it( 'returns true valid values', () => {
-			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentage );
+			testValues( [ '1%', '100%', '1123.1312%', '0.9876%' ], isPercentageStyleValue );
 		} );
 
 		it( 'returns false for not a percentage values', () => {
-			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentage( value ) );
+			testValues( [ '0', '1px', '1000px', '1.1px', '345.457px', '.457px' ], value => !isPercentageStyleValue( value ) );
 		} );
 
 		// s/ckeditor5/3
 		it( 'should handle invalid values with repeated characters', () => {
-			expect( isPercentage( '9'.repeat( 1000000 ) ) ).to.be.false;
+			expect( isPercentageStyleValue( '9'.repeat( 1000000 ) ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'getBoxSidesShorthandValue()', () => {
+	describe( 'getBoxSidesStyleShorthandValue()', () => {
 		it( 'should output one value for same values', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'foo' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should output two value for top == bottom and right == left', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'bar', bottom: 'foo', left: 'bar' } ) ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should output three values if bottom is different then top', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } ) )
 				.to.equal( 'foo foo bar' );
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getBoxSidesShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
+			expect( getBoxSidesStyleShorthandValue( { top: 'foo', right: 'foo', bottom: 'foo', left: 'bar' } ) )
 				.to.equal( 'foo foo foo bar' );
 		} );
 	} );
 
-	describe( 'getBoxSidesValues()', () => {
+	describe( 'getBoxSidesStyleValues()', () => {
 		it( 'should parse empty string', () => {
-			expect( getBoxSidesValues( '' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '' ) ).to.deep.equal( {
 				top: undefined,
 				right: undefined,
 				bottom: undefined,
@@ -236,7 +237,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse one value', () => {
-			expect( getBoxSidesValues( 'foo' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -245,7 +246,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse two value', () => {
-			expect( getBoxSidesValues( 'foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'bar',
 				bottom: 'foo',
@@ -254,7 +255,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should parse three values', () => {
-			expect( getBoxSidesValues( 'foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'bar',
@@ -263,7 +264,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should output four values if left is different then right', () => {
-			expect( getBoxSidesValues( 'foo foo foo bar' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( 'foo foo foo bar' ) ).to.deep.equal( {
 				top: 'foo',
 				right: 'foo',
 				bottom: 'foo',
@@ -272,7 +273,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should work with values containing white spaces', () => {
-			expect( getBoxSidesValues(
+			expect( getBoxSidesStyleValues(
 				'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 				'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 			) )
@@ -285,7 +286,7 @@ describe( 'Styles utils', () => {
 		} );
 
 		it( 'should work with values containing nested declarations', () => {
-			expect( getBoxSidesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
+			expect( getBoxSidesStyleValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( {
 				top: 'calc( 10px  -  3px )',
 				right: 'calc(  var( --foo-var ) + 20px  )',
 				bottom: 'calc( 10px  -  3px )',
@@ -294,53 +295,55 @@ describe( 'Styles utils', () => {
 		} );
 	} );
 
-	describe( 'getShorthandValues()', () => {
+	describe( 'getShorthandStylesValues()', () => {
 		it( 'should split string to separate values', () => {
-			expect( getShorthandValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( getShorthandStylesValues( 'foo bar' ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should trim truncate analyzed content to 1500 characters', () => {
 			const attribute = 'abc(10, 1)'.repeat( 160 );
 
-			expect( getShorthandValues( '   ' + attribute ) ).to.be.deep.equal(
+			expect( getShorthandStylesValues( '   ' + attribute ) ).to.be.deep.equal(
 				[ ...Array( 150 ) ].fill( 'abc(10, 1)' )
 			);
 		} );
 
 		it( 'should split string to separate values when value contain grouping parens', () => {
-			expect( getShorthandValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
+			expect( getShorthandStylesValues( 'foo bar(1, 3, 5) url("example.com:foo/bar?q=b")' ) )
 				.to.deep.equal( [ 'foo', 'bar(1, 3, 5)', 'url("example.com:foo/bar?q=b")' ] );
 		} );
 
 		describe( 'for colors', () => {
 			it( 'should split color declarations: named colors', () => {
-				expect( getShorthandValues( 'red green black' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'red green black' ) ).to.deep.equal( [
 					'red', 'green', 'black'
 				] );
 			} );
 
 			it( 'should split color declarations: hex colors', () => {
-				expect( getShorthandValues( '#000 #000000EE' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '#000 #000000EE' ) ).to.deep.equal( [
 					'#000', '#000000EE'
 				] );
 			} );
 
 			it( 'should split color declarations: rgb colors', () => {
-				expect( getShorthandValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
+				expect( getShorthandStylesValues( 'rgb(10, 10, 10) rgba(100, 100, 100, .3) rgb(20% 20% 20%) rgba(255 255 255 / .5)' ) )
 					.to.deep.equal( [
 						'rgb(10, 10, 10)', 'rgba(100, 100, 100, .3)', 'rgb(20% 20% 20%)', 'rgba(255 255 255 / .5)'
 					] );
 			} );
 
 			it( 'should split color declarations: hsl colors', () => {
-				expect( getShorthandValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' ) )
+				expect(
+					getShorthandStylesValues( 'hsl(50 80% 40%) hsl(212.4, 89.3%, 89%) hsla(209, 90%, 72%,.3) hsla(0.3turn 60% 45% / .7)' )
+				)
 					.to.deep.equal( [
 						'hsl(50 80% 40%)', 'hsl(212.4, 89.3%, 89%)', 'hsla(209, 90%, 72%,.3)', 'hsla(0.3turn 60% 45% / .7)'
 					] );
 			} );
 
 			it( 'should split color declarations: other color formats', () => {
-				expect( getShorthandValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
+				expect( getShorthandStylesValues( 'hwb(50deg 30% 40%) cmyk(0 81% 81% 30%) color(xyz 22% 26% 53%) lab(30 59.4 -96)' ) )
 					.to.deep.equal( [
 						'hwb(50deg 30% 40%)', 'cmyk(0 81% 81% 30%)', 'color(xyz 22% 26% 53%)', 'lab(30 59.4 -96)'
 					] );
@@ -348,19 +351,19 @@ describe( 'Styles utils', () => {
 
 			describe( 'with additional white spaces in declarations', () => {
 				it( 'should split color declarations: named colors', () => {
-					expect( getShorthandValues( ' red   green  black ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' red   green  black ' ) ).to.deep.equal( [
 						'red', 'green', 'black'
 					] );
 				} );
 
 				it( 'should split color declarations: hex colors', () => {
-					expect( getShorthandValues( ' #000    #000000EE ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' #000    #000000EE ' ) ).to.deep.equal( [
 						'#000', '#000000EE'
 					] );
 				} );
 
 				it( 'should split color declarations: rgb colors', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						'   rgb(10 , 10,   10 )  rgba(100,    100,   100, .3   )' +
 						'   rgb(  20%   20%  20% )    rgba(  255   255  255   /  .5 ) '
 					) )
@@ -373,7 +376,7 @@ describe( 'Styles utils', () => {
 				} );
 
 				it( 'should split color declarations: hsl colors', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						' hsl( 50  80%  40%)   hsl(  212.4,   89.3%,   89% )' +
 						' hsla(  209,  90%,   72%, .3  ) hsla( 0.3turn  60%   45%  /  .7  )'
 					) )
@@ -386,7 +389,7 @@ describe( 'Styles utils', () => {
 				} );
 
 				it( 'should split color declarations: other color formats', () => {
-					expect( getShorthandValues(
+					expect( getShorthandStylesValues(
 						'  hwb(  50deg  30%   40%  )  cmyk( 0   81%  81%    30% )' +
 						'  color( xyz   22%  26%  53%)  lab(  30 59.4  -96 ) '
 					) )
@@ -402,26 +405,26 @@ describe( 'Styles utils', () => {
 
 		describe( 'for non-color declarations', () => {
 			it( 'should split size declarations: simple units', () => {
-				expect( getShorthandValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( '3px 2em 10vw 20%' ) ).to.deep.equal( [
 					'3px', '2em', '10vw', '20%'
 				] );
 			} );
 
 			it( 'should split size declarations: values with calc() expressions', () => {
-				expect( getShorthandValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
+				expect( getShorthandStylesValues( 'calc(10px - 3px) calc(var(--foo-var) + 20px)' ) ).to.deep.equal( [
 					'calc(10px - 3px)', 'calc(var(--foo-var) + 20px)'
 				] );
 			} );
 
 			describe( 'with additional white spaces', () => {
 				it( 'should split size declarations: simple units', () => {
-					expect( getShorthandValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( ' 3px   2em  10vw   20%  ' ) ).to.deep.equal( [
 						'3px', '2em', '10vw', '20%'
 					] );
 				} );
 
 				it( 'should split size declarations: values with calc() expressions', () => {
-					expect( getShorthandValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
+					expect( getShorthandStylesValues( '  calc( 10px  -  3px )  calc(  var( --foo-var ) + 20px  )' ) ).to.deep.equal( [
 						'calc( 10px  -  3px )', 'calc(  var( --foo-var ) + 20px  )'
 					] );
 				} );

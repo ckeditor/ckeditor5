@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import UnderlineEditing from './underline/underlineediting.js';
-import UnderlineUI from './underline/underlineui.js';
+import { UnderlineEditing } from './underline/underlineediting.js';
+import { UnderlineUI } from './underline/underlineui.js';
 
 /**
  * The underline feature.
@@ -20,7 +20,7 @@ import UnderlineUI from './underline/underlineui.js';
  * This is a "glue" plugin which loads the {@link module:basic-styles/underline/underlineediting~UnderlineEditing} and
  * {@link module:basic-styles/underline/underlineui~UnderlineUI} plugins.
  */
-export default class Underline extends Plugin {
+export class Underline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

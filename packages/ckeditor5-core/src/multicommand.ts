@@ -7,7 +7,7 @@
  * @module core/multicommand
  */
 
-import Command from './command.js';
+import { Command } from './command.js';
 
 import {
 	insertToPriorityArray,
@@ -39,7 +39,7 @@ import {
  * multiCommand.execute(); // Will execute commandBar.
  * ```
  */
-export default class MultiCommand extends Command {
+export class MultiCommand extends Command {
 	/**
 	 * Registered child commands definitions.
 	 */

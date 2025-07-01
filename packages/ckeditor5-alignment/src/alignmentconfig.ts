@@ -24,7 +24,7 @@
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  */
 export interface AlignmentConfig {
-	options?: Array<SupportedOption | AlignmentFormat>;
+	options?: Array<AlignmentSupportedOption | AlignmentFormat>;
 }
 
 /**
@@ -69,8 +69,8 @@ export interface AlignmentConfig {
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  */
 export type AlignmentFormat = {
-	name: SupportedOption;
+	name: AlignmentSupportedOption;
 	className?: string;
 };
 
-export type SupportedOption = 'left' | 'right' | 'center' | 'justify';
+export type AlignmentSupportedOption = 'left' | 'right' | 'center' | 'justify';
