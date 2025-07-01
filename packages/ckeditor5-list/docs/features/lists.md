@@ -156,8 +156,7 @@ ClassicEditor
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true,
-				formatting: true
+				reversed: true
 			}
 		}
 	} )
@@ -168,10 +167,6 @@ ClassicEditor
 
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
-</info-box>
-
-<info-box info>
-	The list item marker formatting feature requires the {@link features/font font feature} to be enabled in your editor configuration for the formatting options to be available.
 </info-box>
 
 ### Editor output configuration
