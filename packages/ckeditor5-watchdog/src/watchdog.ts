@@ -145,7 +145,7 @@ export abstract class Watchdog {
 	 * @param eventName The event name.
 	 * @param callback A callback which will be added to event listeners.
 	 */
-	public on<K extends keyof EventMap>( eventName: K, callback: EventCallback<K> ): void {
+	public on<K extends keyof WatchdogEventMap>( eventName: K, callback: WatchdogEventCallback<K> ): void {
 		if ( !this._listeners[ eventName ] ) {
 			this._listeners[ eventName ] = [];
 		}
@@ -161,7 +161,7 @@ export abstract class Watchdog {
 	 * @param eventName The event name.
 	 * @param callback A callback which will be removed from event listeners.
 	 */
-	public off( eventName: keyof EventMap, callback: unknown ): void {
+	public off( eventName: keyof WatchdogEventMap, callback: unknown ): void {
 		this._listeners[ eventName ] = this._listeners[ eventName ]
 			.filter( cb => cb !== callback );
 	}
@@ -171,7 +171,7 @@ export abstract class Watchdog {
 	 *
 	 * Note that this method differs from the CKEditor 5's default `EventEmitterMixin` implementation.
 	 */
-	protected _fire<K extends keyof EventMap>( eventName: K, ...args: EventArgs<K> ): void {
+	protected _fire<K extends keyof WatchdogEventMap>( eventName: K, ...args: WatchdogEventArgs<K> ): void {
 		const callbacks = this._listeners[ eventName ] || [];
 
 		for ( const callback of callbacks ) {
@@ -313,7 +313,7 @@ export type WatchdogStateChangeEvent = {
 /**
  * The map of watchdog events.
  */
-export interface EventMap {
+export interface WatchdogEventMap {
 	stateChange: WatchdogStateChangeEvent;
 	error: WatchdogErrorEvent;
 	restart: EditorWatchdogRestartEvent;
@@ -324,12 +324,12 @@ export interface EventMap {
 /**
  * Utility type that gets the arguments type for the given event.
  */
-export type EventArgs<K extends keyof EventMap> = EventMap[ K ][ 'args' ];
+export type WatchdogEventArgs<K extends keyof WatchdogEventMap> = WatchdogEventMap[ K ][ 'args' ];
 
 /**
  * Utility type that gets the callback type for the given event.
  */
-export type EventCallback<K extends keyof EventMap> = ( evt: null, ...args: EventArgs<K> ) => void;
+export type WatchdogEventCallback<K extends keyof WatchdogEventMap> = ( evt: null, ...args: WatchdogEventArgs<K> ) => void;
 
 /**
  * The watchdog plugin configuration.

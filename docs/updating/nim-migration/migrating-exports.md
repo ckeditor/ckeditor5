@@ -1122,11 +1122,11 @@ Listed below are exports introduced with NIM.
 
 ### @ckeditor/ckeditor5-engine
 
-| file | exported name |
-|------|----------------|
-| conversion/conversion.ts | ConversionType |
+| file | exported name              |
+|------|----------------------------|
+| conversion/conversion.ts | ConversionType             |
 | conversion/downcastdispatcher.ts | DowncastDispatcherEventMap |
-| view/domconverter.ts | BlockFillerMode |
+| view/domconverter.ts | ViewBlockFillerMode        |
 
 ### @ckeditor/ckeditor5-table
 

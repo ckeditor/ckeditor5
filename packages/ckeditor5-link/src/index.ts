@@ -54,7 +54,7 @@ export type {
 	NormalizedLinkDecoratorDefinition
 } from './utils.js';
 
-export { AutomaticDecorators } from './utils/automaticdecorators.js';
+export { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 export { LinkManualDecorator } from './utils/manualdecorator.js';
 
 export type {

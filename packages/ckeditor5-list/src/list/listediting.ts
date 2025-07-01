@@ -102,7 +102,7 @@ export class ListEditing extends Plugin {
 	/**
 	 * The list of registered downcast strategies.
 	 */
-	private readonly _downcastStrategies: Array<DowncastStrategy> = [];
+	private readonly _downcastStrategies: Array<ListDowncastStrategy> = [];
 
 	/**
 	 * @inheritDoc
@@ -231,7 +231,7 @@ export class ListEditing extends Plugin {
 	 *
 	 * @param strategy The downcast strategy to register.
 	 */
-	public registerDowncastStrategy( strategy: DowncastStrategy ): void {
+	public registerDowncastStrategy( strategy: ListDowncastStrategy ): void {
 		this._downcastStrategies.push( strategy );
 	}
 
@@ -667,7 +667,7 @@ export class ListEditing extends Plugin {
 /**
  * The attribute to attribute downcast strategy for UL, OL, LI elements.
  */
-export interface AttributeDowncastStrategy {
+export interface ListAttributeDowncastStrategy {
 
 	/**
 	 * The scope of the downcast (whether it applies to LI or OL/UL).
@@ -688,7 +688,7 @@ export interface AttributeDowncastStrategy {
 /**
  * The custom marker downcast strategy.
  */
-export interface ItemMarkerDowncastStrategy {
+export interface ListItemMarkerDowncastStrategy {
 
 	/**
 	 * The scope of the downcast.
@@ -734,7 +734,7 @@ export interface ItemMarkerDowncastStrategy {
 /**
  * The downcast strategy.
  */
-export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStrategy;
+export type ListDowncastStrategy = ListAttributeDowncastStrategy | ListItemMarkerDowncastStrategy;
 
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
