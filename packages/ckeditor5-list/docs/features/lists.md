@@ -71,6 +71,41 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-icons/
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box>
 
+### List item marker formatting
+
+The list item marker formatting feature automatically applies text formatting to list item markers when the entire content of the list item shares the same formatting. It integrates with the {@link features/font font feature} and {@link features/basic-styles basic styles feature}, supporting the following formatting options:
+
+* **Bold** and **italic** (from basic-styles),
+* **Font color**, **font size**, and **font family** (from font).
+
+When this feature is enabled, if the whole list item content is consistently styled using any of the supported formats, the bullet or number marker will reflect the same style automatically. For example, if a list item is entirely bold, its marker will appear bold as well.
+
+#### Demo
+
+Select the entire content of a list item and apply a format like bold, italic, or a font style. If the whole item is formatted, the list marker will automatically update to match.
+
+{@snippet features/lists-marker-formatting}
+
+This feature is enabled by default. To disable it, use the following configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, List } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ List, Bold, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', 'bold', /* ... */ ]
+		list: {
+			enableListItemMarkerFormatting: false
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
 ## Installation
 
 <info-box info>
@@ -121,7 +156,8 @@ ClassicEditor
 			properties: {
 				styles: true,
 				startIndex: true,
-				reversed: true
+				reversed: true,
+				formatting: true
 			}
 		}
 	} )
@@ -132,6 +168,10 @@ ClassicEditor
 
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
+</info-box>
+
+<info-box info>
+	The list item marker formatting feature requires the {@link features/font font feature} to be enabled in your editor configuration for the formatting options to be available.
 </info-box>
 
 ### Editor output configuration
