@@ -75,7 +75,7 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-icons/
 
 The list item marker formatting feature automatically applies text formatting to list item markers when the entire content of the list item shares the same formatting. It integrates with the {@link features/font font feature} and {@link features/basic-styles basic styles feature}, supporting the following formatting options:
 
-* **Bold** and **italic** (from basic-styles),
+* **Bold** and **italic** (from basic styles),
 * **Font color**, **font size**, and **font family** (from font).
 
 When this feature is enabled, if the whole list item content is consistently styled using any of the supported formats, the bullet or number marker will reflect the same style automatically. For example, if a list item is entirely bold, its marker will appear bold as well.
@@ -182,7 +182,7 @@ Starting with version 45.1.1, list items (`<li>` elements) in the editor data ou
 
 If data loaded in the editor does not contain the `data-list-item-id` attributes on list items, they will be automatically added when data is saved.
 
-If you wish to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method. **However, please note, that data without IDs should be used only for presentation purposes (e.g. displaying the document as HTML), and should not be used to initialize the editor.**
+If you wish to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method. **However, please note, that data without IDs should be used only for presentation purposes (such as displaying the document as HTML), and should not be used to initialize the editor.**
 
 ```js
 editor.getData( { skipListItemIds: true } );
