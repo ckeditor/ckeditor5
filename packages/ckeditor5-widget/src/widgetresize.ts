@@ -40,7 +40,7 @@ import {
 	type EventInfo
 } from '@ckeditor/ckeditor5-utils';
 
-import { throttle, type DebouncedFunction } from 'es-toolkit/compat';
+import { throttle, type DebouncedFunc } from 'es-toolkit/compat';
 
 import '../theme/widgetresize.css';
 
@@ -74,7 +74,7 @@ export class WidgetResize extends Plugin {
 
 	private _observer!: DomEmitter;
 
-	private _redrawSelectedResizerThrottled!: DebouncedFunction<() => void>;
+	private _redrawSelectedResizerThrottled!: DebouncedFunc<() => void>;
 
 	/**
 	 * @inheritDoc

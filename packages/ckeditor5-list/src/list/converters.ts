@@ -55,7 +55,7 @@ import type {
 	ListEditingCheckAttributesEvent,
 	ListEditingCheckElementEvent,
 	ListItemAttributesMap,
-	DowncastStrategy
+	ListDowncastStrategy
 } from './listediting.js';
 
 /**
@@ -329,7 +329,7 @@ export function reconvertItemsOnDataChange(
  */
 export function listItemDowncastConverter(
 	attributeNames: Array<string>,
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	model: Model,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
@@ -457,7 +457,7 @@ export function findMappedViewElement( element: ModelElement, mapper: Mapper, mo
  * @internal
  */
 export function createModelToViewPositionMapper(
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	view: EditingView
 ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
@@ -545,7 +545,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: ViewD
 function insertCustomMarkerElements(
 	listItem: ModelElement,
 	viewElement: ViewElement,
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	writer: ViewDowncastWriter,
 	{ dataPipeline }: { dataPipeline?: boolean }
 ): ViewRange {
@@ -628,7 +628,7 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncast
 function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	writer: ViewDowncastWriter,
 	options?: Record<string, unknown>
 ) {

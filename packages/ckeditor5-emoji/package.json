@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-utils": "45.2.1",
     "ckeditor5": "45.2.1",
     "fuzzysort": "3.1.0",
-    "es-toolkit": "1.38.0"
+    "es-toolkit": "1.39.5"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "45.2.1",

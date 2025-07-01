@@ -12,7 +12,7 @@ import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
 import { ModelLivePosition, type ModelRange, type ModelItem } from 'ckeditor5/src/engine.js';
 
-import { AutomaticDecorators } from './utils/automaticdecorators.js';
+import { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
 import { type LinkManualDecorator } from './utils/manualdecorator.js';
 
@@ -40,7 +40,7 @@ export class LinkCommand extends Command {
 	 * An instance of the helper that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition}
 	 * that are used by the {@glink features/link link} and the {@glink features/images/images-linking linking images} features.
 	 */
-	public readonly automaticDecorators = new AutomaticDecorators();
+	public readonly automaticDecorators = new AutomaticLinkDecorators();
 
 	/**
 	 * Synchronizes the state of {@link #manualDecorators} with the currently present elements in the model.
