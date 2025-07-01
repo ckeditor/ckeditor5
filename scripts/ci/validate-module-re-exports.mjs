@@ -54,7 +54,7 @@ async function main() {
 		throw new Error( INCORRECT_EXPORTS_MESSAGE );
 	}
 
-	console.log( chalk.green( '\n✅ ALl packages use correct export names in `index.ts` file.\n' ) );
+	console.log( chalk.green( '\n✅ ALl packages use correct export names in `index.ts` file.' ) );
 }
 
 function getExportsToFix( library ) {
