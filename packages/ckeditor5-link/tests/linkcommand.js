@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { LinkCommand } from '../src/linkcommand.js';
 import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { AutomaticDecorators } from '../src/utils/automaticdecorators.js';
+import { AutomaticLinkDecorators } from '../src/utils/automaticdecorators.js';
 import { LinkEditing } from '../src/linkediting.js';
 
 describe( 'LinkCommand', () => {
@@ -1263,7 +1263,7 @@ describe( 'LinkCommand', () => {
 
 	describe( '#automaticDecorators', () => {
 		it( 'is defined', () => {
-			expect( command.automaticDecorators ).to.be.an.instanceOf( AutomaticDecorators );
+			expect( command.automaticDecorators ).to.be.an.instanceOf( AutomaticLinkDecorators );
 		} );
 	} );
 } );

@@ -105,6 +105,7 @@ function isSafeUrl( url: string, customRegexp: RegExp ): boolean {
  *
  * @param t Shorthand for {@link module:utils/locale~Locale#t Locale#t}.
  * @param decorators The decorator reference where the label values should be localized.
+ * @internal
  */
 export function getLocalizedDecorators(
 	t: LocaleTranslate,
@@ -129,6 +130,8 @@ export function getLocalizedDecorators(
 /**
  * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each decorator and
  * is used as the attribute's name in the model.
+ *
+ * @internal
  */
 export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDefinition> ): Array<NormalizedLinkDecoratorDefinition> {
 	const retArray: Array<NormalizedLinkDecoratorDefinition> = [];
@@ -161,6 +164,8 @@ export function isLinkableElement( element: ModelElement | null, schema: ModelSc
 
 /**
  * Returns `true` if the specified `value` is an email.
+ *
+ * @internal
  */
 export function isEmail( value: string ): boolean {
 	return EMAIL_REG_EXP.test( value );
@@ -182,6 +187,8 @@ export function addLinkProtocolIfApplicable( link: string, defaultProtocol?: str
 
 /**
  * Checks if protocol is already included in the link.
+ *
+ * @internal
  */
 export function linkHasProtocol( link: string ): boolean {
 	return PROTOCOL_REG_EXP.test( link );

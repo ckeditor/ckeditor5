@@ -82,7 +82,7 @@ export class ViewDomConverter {
 	/**
 	 * The mode of a block filler used by the DOM converter.
 	 */
-	public blockFillerMode: BlockFillerMode;
+	public blockFillerMode: ViewBlockFillerMode;
 
 	/**
 	 * Elements which are considered pre-formatted elements.
@@ -168,7 +168,7 @@ export class ViewDomConverter {
 	constructor(
 		document: ViewDocument,
 		{ blockFillerMode, renderingMode = 'editing' }: {
-			blockFillerMode?: BlockFillerMode;
+			blockFillerMode?: ViewBlockFillerMode;
 			renderingMode?: 'data' | 'editing';
 		} = {}
 	) {
@@ -2043,7 +2043,7 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
  * * `markedNbsp` &ndash; For the `&nbsp;` block fillers wrapped in `<span>` elements: `<span data-cke-filler="true">&nbsp;</span>`
  * used in the data.
  */
-export type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
+export type ViewBlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
 
 /**
  * While rendering the editor content, the {@link module:engine/view/domconverter~ViewDomConverter} detected a `<script>` element that may

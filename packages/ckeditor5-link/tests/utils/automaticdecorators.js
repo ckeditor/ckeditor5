@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { AutomaticDecorators } from '../../src/utils/automaticdecorators.js';
+import { AutomaticLinkDecorators } from '../../src/utils/automaticdecorators.js';
 
 describe( 'Automatic Decorators', () => {
 	let automaticDecorators;
 	beforeEach( () => {
-		automaticDecorators = new AutomaticDecorators();
+		automaticDecorators = new AutomaticLinkDecorators();
 	} );
 
 	describe( 'constructor()', () => {
