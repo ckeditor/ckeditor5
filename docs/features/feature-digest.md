@@ -378,6 +378,17 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				the image load much faster and saves bandwidth.
 			</td>
 		</tr>
+		<tr id="line-height" class="feature">
+			<td>
+				{@link features/line-height Links<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
+				}
+			</td>
+			<td>
+				The line height feature lets you adjust the vertical spacing between lines of text,
+				controlling how tightly or loosely text is packed within paragraphs.
+			</td>
+		</tr>
 		<tr id="links" class="feature">
 			<td>
 				{@link features/link Links}
