@@ -1,5 +1,6 @@
 # All "dot directories".
 .*/**
+!.changelog/**
 !.github/**
 !.husky/**
 !.circleci/**
