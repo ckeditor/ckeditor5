@@ -2,7 +2,7 @@
 category: cloud-services
 order: 30
 meta-title: Cloud Services Server-side Editor API | CKEditor 5 Documentation
-meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor on the client.
+meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor on the client side.
 modified_at: 2025-06-05
 badges: [ premium ]
 ---
