@@ -11,6 +11,10 @@ toc-limit: 1
 
 As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
 
+<info-box info>
+	Please note that while New Installation Methods were introduced since CKEditor&nbsp;5 42.0.0, these changes to exports name came with version 46.0.0.
+</info-box>
+
 ## Internal exports
 
 All internal exports are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix. This means you no longer need to specify the file path within a package to access these exports.
