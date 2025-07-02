@@ -331,7 +331,7 @@ Once you have the converters, you can try to see the simple box in action. You h
 			</section>
 		</div>
 
-		<script src="dist/bundle.js"></script>
+		<script type="module" src="./main.js"></script>
 	</body>
 </html>
 ```
