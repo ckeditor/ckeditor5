@@ -99,6 +99,7 @@ To improve the out-of-the-box experience and accessibility, we are introducing o
   font-size: var(--ck-content-font-size);
   color: var(--ck-content-font-color);
   line-height: var(--ck-content-line-height);
+  word-break: var(--ck-content-word-break);
 }
 ```
 
