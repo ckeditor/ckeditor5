@@ -15,6 +15,7 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -368,6 +369,35 @@ describe( 'ListItemFontSizeIntegration', () => {
 					'<ul>' +
 						'<li>' +
 							'foo' +
+						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			// See: https://github.com/ckeditor/ckeditor5/issues/18790.
+			it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
+				sinon.stub( env, 'isSafari' ).value( true );
+
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a" listItemFontSize="tiny" listType="bulleted">' +
+						'<$text fontSize="tiny">foo</$text>' +
+					'</paragraph>'
+				);
+
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<ul>' +
+						'<li class="ck-list-marker-font-size-tiny" style="--ck-content-list-marker-dummy-font-size:0">' +
+							'<span class="ck-list-bogus-paragraph">' +
+								'<span class="text-tiny">foo</span>' +
+							'</span>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+					'<ul>' +
+						'<li class="ck-list-marker-font-size-tiny">' +
+							'<span class="text-tiny">foo</span>' +
 						'</li>' +
 					'</ul>'
 				);

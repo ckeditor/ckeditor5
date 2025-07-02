@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 import { ListEditing } from '../list/listediting.js';
 import type { ListFormatting } from '../listformatting.js';
@@ -58,9 +59,14 @@ export class ListItemBoldIntegration extends Plugin {
 			scope: 'item',
 			attributeName: 'listItemBold',
 
-			setAttributeOnDowncast( writer, value, viewElement ) {
+			setAttributeOnDowncast( writer, value, viewElement, options ) {
 				if ( value ) {
 					writer.addClass( 'ck-list-marker-bold', viewElement );
+
+					// See: https://github.com/ckeditor/ckeditor5/issues/18790.
+					if ( env.isSafari && !( options && options.dataPipeline ) ) {
+						writer.setStyle( '--ck-content-list-marker-dummy-bold', '0', viewElement );
+					}
 				}
 			}
 		} );

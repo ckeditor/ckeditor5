@@ -15,6 +15,7 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpi
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -332,6 +333,35 @@ describe( 'ListItemBoldIntegration', () => {
 								'</tbody>' +
 							'</table>' +
 						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/18790.
+		it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
+			sinon.stub( env, 'isSafari' ).value( true );
+
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemBold="true" listType="bulleted">' +
+					'<$text bold="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li class="ck-list-marker-bold" style="--ck-content-list-marker-dummy-bold:0">' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'<strong>foo</strong>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li class="ck-list-marker-bold">' +
+						'<strong>foo</strong>' +
 					'</li>' +
 				'</ul>'
 			);

@@ -349,6 +349,11 @@ export function listItemDowncastConverter(
 			return;
 		}
 
+		const options = {
+			...conversionApi.options,
+			dataPipeline
+		};
+
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
@@ -360,10 +365,10 @@ export function listItemDowncastConverter(
 		unwrapListItemBlock( viewElement, writer );
 
 		// Insert custom item marker.
-		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
+		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, options );
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
-		wrapListItemBlock( listItem, viewRange, strategies, writer, conversionApi.options );
+		wrapListItemBlock( listItem, viewRange, strategies, writer, options );
 	};
 }
 

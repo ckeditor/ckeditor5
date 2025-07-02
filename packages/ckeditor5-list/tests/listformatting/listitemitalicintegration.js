@@ -15,6 +15,7 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 import { stubUid } from '../list/_utils/uid.js';
 import { ListEditing } from '../../src/list/listediting.js';
@@ -332,6 +333,35 @@ describe( 'ListItemItalicIntegration', () => {
 								'</tbody>' +
 							'</table>' +
 						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/18790.
+		it( 'should add dummy style for a Safari glitch (in editing pipeline only)', () => {
+			sinon.stub( env, 'isSafari' ).value( true );
+
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemItalic="true" listType="bulleted">' +
+					'<$text italic="true">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li class="ck-list-marker-italic" style="--ck-content-list-marker-dummy-italic:0">' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'<i>foo</i>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li class="ck-list-marker-italic">' +
+						'<i>foo</i>' +
 					'</li>' +
 				'</ul>'
 			);
