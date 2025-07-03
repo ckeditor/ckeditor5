@@ -54,13 +54,35 @@
 
 				& > td,
 				& > th {
-					& > p:only-child {
+					/* Our opiniotanted styling in the tables, it prevents
+					 * the shift of content when the enter is pressed at the top.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:first-of-type {
+						margin-block-start: 0;
+					}
+
+					/* Symmetrical to the above rule which styles the last paragraph
+					 * to provide more consistent experience with the first one.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:last-of-type {
+						margin-block-end: 0;
+					}
+
+					/* Rule which prevents the margins to appear when a
+					 * bogus paragraph gets a line height or text alingment.
+					 * We use only-of-type as the cell may have a div with column resize.
+					 * to provide more consistent experience with the first one.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:only-of-type {
 						margin-block-start: 0;
 						margin-block-end: 0;
 					}
 
 					min-width: 2em;
-					padding: .4em;
+					padding: 0.4em;
 
 					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
 					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
