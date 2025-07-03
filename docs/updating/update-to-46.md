@@ -42,7 +42,7 @@ Working with {@link features/lists#list-styles styled lists} becomes more intuit
 
 This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports {@link features/multi-level-lists multi-level lists}.
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, you can opt out<!-- link -->.
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists#disabling-marker-formatting you can opt out}.
 
 ### Markdown processor dependency refresh
 
