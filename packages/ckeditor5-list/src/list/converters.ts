@@ -198,7 +198,10 @@ export function reconvertItemsOnDataChange(
 	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<ModelNode> ) {
 		const itemsToRefresh = [];
 		const visited = new Set();
-		const stack: Array<ListItemAttributesMap> = [];
+		const stack: Array<{
+			modelAttributes: ListItemAttributesMap;
+			modelElement: ListElement;
+		}> = [];
 
 		for ( const { node, previous } of new SiblingListBlocksIterator( listHead ) ) {
 			if ( visited.has( node ) ) {
@@ -213,10 +216,13 @@ export function reconvertItemsOnDataChange(
 			}
 
 			// Update the stack for the current indent level.
-			stack[ itemIndent ] = Object.fromEntries(
-				Array.from( node.getAttributes() )
-					.filter( ( [ key ] ) => attributeNames.includes( key ) )
-			);
+			stack[ itemIndent ] = {
+				modelAttributes: Object.fromEntries(
+					Array.from( node.getAttributes() )
+						.filter( ( [ key ] ) => attributeNames.includes( key ) )
+				),
+				modelElement: node
+			};
 
 			// Find all blocks of the current node.
 			const blocks = getListItemBlocks( node, { direction: 'forward' } );
@@ -271,7 +277,10 @@ export function reconvertItemsOnDataChange(
 
 	function doesItemWrappingRequiresRefresh(
 		item: ModelElement,
-		stack: Array<ListItemAttributesMap>,
+		stack: Array<{
+			modelAttributes: ListItemAttributesMap;
+			modelElement: ListElement;
+		}>,
 		changedItems: Set<ModelNode>
 	) {
 		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
@@ -298,7 +307,8 @@ export function reconvertItemsOnDataChange(
 			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
 			const needsRefresh = listEditing.fire<ListEditingCheckAttributesEvent>( eventName, {
 				viewElement: element as ViewElement,
-				modelAttributes: stack[ indent ]
+				modelAttributes: stack[ indent ].modelAttributes,
+				modelReferenceElement: stack[ indent ].modelElement
 			} );
 
 			if ( needsRefresh ) {
