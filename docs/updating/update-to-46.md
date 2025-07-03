@@ -50,7 +50,7 @@ The {@loink features/markdown Markdown} feature dependencies have been modernize
 
 ### Manual token refreshing
 
-We have added a configuration property: `config.cloudServices.autoRefresh` to disable the automatic token refresh mechanism. When it is set to `false`, the token must be refreshed manually.
+We have added the `config.cloudServices.autoRefresh` configuration property to disable the automatic token refresh mechanism. When it is set to `false`, the token must be refreshed manually.
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
@@ -103,7 +103,8 @@ To improve the out-of-the-box experience and accessibility, we are introducing o
 }
 ```
 
-Those content styles are easily replaceable via CSS variable override. It is possible that you already style those things with more specific selectors but we recommend to use the variables from now on.
+These content styles are easily replaceable via CSS variable override. You may have already styled those things with more specific selectors.
+
 You can read more about the reasons in our [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/18710).
 
 **Migration:**
@@ -173,13 +174,15 @@ Example:
 
 ### Comment threads improvements
 
+#### New thread command changes
+
 We have introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
 
-#### Minor breaking change
+##### Minor breaking change
 
 The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
 
-### Comments and suggestions annotations
+#### Comments and suggestions annotations
 
 We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
 
