@@ -69,7 +69,7 @@ commands:
             ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: Checkout code (single branch)
-          command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+          command: git clone --single-branch --depth 1 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
 
   # In the PRs that come from forked repositories, we do not share secret variables.
   # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
