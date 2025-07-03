@@ -536,10 +536,6 @@ export default class SimpleBoxEditing extends Plugin {
 }
 ```
 
-<info-box>
-	As you can see, the code became much more verbose and far longer. This is because you used lower-level converters. We plan to provide more handy widget conversion utilities in the future. Read more (and 👍) in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1228).
-</info-box>
-
 ### Behavior after turning simple box into a widget
 
 Now, you should see how your simple box plugin has changed.
