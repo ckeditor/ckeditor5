@@ -10,6 +10,11 @@
 }
 
 .ck-content li {
+	& > p {
+		margin-block-start: 0;
+		margin-block-end: 0;
+	}
+
 	&.ck-list-marker-bold::marker {
 		font-weight: bold;
 	}
