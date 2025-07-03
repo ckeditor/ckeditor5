@@ -42,7 +42,7 @@ Working with {@link features/lists#list-styles styled lists} becomes more intuit
 
 This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports {@link features/multi-level-lists multi-level lists}.
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, you can opt out<!-- link -->.
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists#disabling-marker-formatting you can opt out}.
 
 ### Markdown processor dependency refresh
 
@@ -50,7 +50,7 @@ The {@loink features/markdown Markdown} feature dependencies have been modernize
 
 ### Manual token refreshing
 
-We have added a configuration property: `config.cloudServices.autoRefresh` to disable the automatic token refresh mechanism. When it is set to `false`, the token must be refreshed manually.
+We have added the `config.cloudServices.autoRefresh` configuration property to disable the automatic token refresh mechanism. When it is set to `false`, the token must be refreshed manually.
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
@@ -173,13 +173,15 @@ Example:
 
 ### Comment threads improvements
 
+#### New thread command changes
+
 We have introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
 
-#### Minor breaking change
+##### Minor breaking change
 
 The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
 
-### Comments and suggestions annotations
+#### Comments and suggestions annotations
 
 We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
 
