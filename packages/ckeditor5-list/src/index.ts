@@ -144,6 +144,14 @@ export {
 	normalizeListStyle as _normalizeListStyle
 } from './listproperties/utils/style.js';
 
+// ListFormatting.
+export { ListFormatting } from './listformatting.js';
+export { ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
+export { ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
+export { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
+export { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
+export { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
+
 // TodoList/
 export { TodoList } from './todolist.js';
 export { TodoListUI } from './todolist/todolistui.js';

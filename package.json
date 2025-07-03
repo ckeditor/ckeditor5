@@ -90,6 +90,7 @@
     "@ckeditor/ckeditor5-comments": "45.2.1",
     "@ckeditor/ckeditor5-dev-build-tools": "^50.0.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^50.0.0",
+    "@ckeditor/ckeditor5-dev-changelog": "^50.0.0",
     "@ckeditor/ckeditor5-dev-ci": "^50.0.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^50.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^50.0.0",
@@ -101,6 +102,7 @@
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
     "@ckeditor/ckeditor5-document-outline": "45.2.1",
     "@ckeditor/ckeditor5-email": "45.2.1",
+    "@ckeditor/ckeditor5-line-height": "0.0.1",
     "@ckeditor/ckeditor5-export-inline-styles": "45.2.1",
     "@ckeditor/ckeditor5-export-pdf": "45.2.1",
     "@ckeditor/ckeditor5-export-word": "45.2.1",
@@ -135,8 +137,8 @@
     "eslint": "^9.26.0",
     "eslint-config-ckeditor5": "^11.0.0",
     "eslint-formatter-stylish": "^8.40.0",
-    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-ckeditor5-rules": "^11.0.0",
+    "eslint-plugin-import": "^2.31.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.0.0",
     "glob": "^11.0.2",
@@ -181,6 +183,7 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
+    "nice": "ckeditor5-dev-changelog-create-entry",
     "postinstall": "node ./scripts/postinstall.mjs",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
@@ -206,7 +209,7 @@
     "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "predll:build": "npm run build",
     "dll:build": "node scripts/dll/build-dlls.mjs --base-dll-config ./scripts/dll/webpack.config.dll.mjs",
-    "changelog": "node ./scripts/release/changelog.mjs",
+    "release:prepare-changelog": "node ./scripts/release/preparechangelog.mjs",
     "release:prepare-packages": "node ./scripts/release/preparepackages.mjs",
     "release:publish-packages": "node ./scripts/release/publishpackages.mjs",
     "release:deploy-cdn": "node ./scripts/release/deploycdn.mjs",
@@ -219,6 +222,7 @@
     "check-dependencies:versions-match": "node ./scripts/ci/check-dependencies-versions-match.mjs",
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
+    "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs"
   },
   "lint-staged": {
