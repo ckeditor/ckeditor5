@@ -112,7 +112,8 @@ export class ListFormatting extends Plugin {
 					if (
 						entry.attributeKey == 'listItemId' ||
 						entry.attributeKey == 'listType' ||
-						this._isInlineOrSelectionFormatting( entry.attributeKey )
+						this._isInlineOrSelectionFormatting( entry.attributeKey ) ||
+						Object.values( this._loadedFormatting ).includes( entry.attributeKey )
 					) {
 						if ( isListItemBlock( entry.range.start.nodeAfter ) ) {
 							modifiedListItems.add( entry.range.start.nodeAfter );
