@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 highlight feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-highlight.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight)
-
 This package implements the highlight feature for CKEditor&nbsp;5.
 
 ## Demo

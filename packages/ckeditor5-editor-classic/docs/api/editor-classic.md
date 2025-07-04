@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 classic editor implementation
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-classic.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic)
-
 The classic editor implementation for CKEditor&nbsp;5. See the {@link examples/builds/classic-editor demo}.
 
 ## Documentation

@@ -8,13 +8,13 @@ meta-description: Explore CKEditor 5's rich text editing features, including me
 
 # CKEditor&nbsp;5 features overview
 
-CKEditor&nbsp;5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon. Premium features, which require an additional license to work, have a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
+CKEditor&nbsp;5 has many features, and the number is constantly growing. You can find the most recent list of features on the left. In addition to working on new features, we also expand and improve the existing ones. Newly added or meaningfully updated feature guides are marked with a <ck:badge variant='status' /> icon. Premium features, which require an additional license to work, have a <ck:badge variant='premium' /> icon.
 
-<span class="navigation-hint_mobile">
-<info-box>
-	Use the **main menu button in the upper-left corner** to navigate through the documentation.
-</info-box>
-</span>
+<div class="l-hide-desktop">
+	<info-box>
+		Use the **main menu button in the upper-left corner** to navigate through the documentation.
+	</info-box>
+</div>
 
 ## Using CKEditor&nbsp;5 features
 

@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 undo feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-undo.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)
-
 This package implements undo support for CKEditor&nbsp;5.
 
 ## Documentation

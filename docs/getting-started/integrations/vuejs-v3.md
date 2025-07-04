@@ -8,12 +8,6 @@ order: 70
 
 # Integrating CKEditor&nbsp;5 with Vue.js 3+ from npm
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 CKEditor&nbsp;5 has an official Vue integration that you can use to add a rich text editor to your application. This guide will help you install it and configure to use the npm distribution of the CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
@@ -53,7 +47,7 @@ With these packages installed, create a new Vue component called `Editor.vue`. I
 	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
-```html
+```vue
 <template>
 	<ckeditor
 		v-model="data"
@@ -85,7 +79,7 @@ const config = computed( () => {
 
 Now, you can import and use the `Editor.vue` component anywhere in your application.
 
-```html
+```vue
 <template>
 	<Editor />
 </template>
@@ -93,7 +87,7 @@ Now, you can import and use the `Editor.vue` component anywhere in your applicat
 
 If you use Nuxt.js with server-side rendering enabled, remember to wrap the `<Editor>` component in the `<ClientOnly>` component to avoid issues with the editor calling browser-specific APIs on the server.
 
-```html
+```vue
 <template>
 	<ClientOnly>
 		<Editor />
@@ -107,7 +101,7 @@ If you use Nuxt.js with server-side rendering enabled, remember to wrap the `<Ed
 
 This directive specifies the editor to be used by the component. It must directly reference the editor constructor to be used in the template.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="ClassicEditor" />
 </template>
@@ -122,7 +116,7 @@ import { Ckeditor } from '@ckeditor/ckeditor5-vue';
 
 By default, the editor component creates a `<div>` container which is used as an element passed to the editor (for example, {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
 
-```html
+```vue
 <ckeditor :editor="editor" tag-name="textarea" />
 ```
 
@@ -134,7 +128,7 @@ A [standard directive](https://v3.vuejs.org/guide/component-basics.html#using-v-
 * Automatically updates the state of the application as the editor content changes (for example, as the user types).
 * Can be used to set the editor content when necessary.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="ClassicEditor" v-model="data" />
 	<button @click="emptyEditor">Empty the editor</button>
@@ -164,7 +158,7 @@ If you only want to execute an action when the editor data changes, use the [`in
 
 Allows a one–way data binding that sets the content of the editor. Unlike [`v-model`](#v-model), the value will not be updated when the content of the editor changes.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="ClassicEditor" :model-value="data" />
 </template>
@@ -184,7 +178,7 @@ To execute an action when the editor data changes, use the [`input`](#input) eve
 
 Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
 
-```html
+```vue
 <template>
     <ckeditor :editor="ClassicEditor" :config="config" />
 </template>
@@ -210,7 +204,7 @@ This directive controls the {@link module:core/editor/editor~Editor#isReadOnly `
 
 It sets the initial read–only state of the editor and changes it during its lifecycle.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="ClassicEditor" :disabled="disabled" />
 </template>
@@ -232,7 +226,7 @@ The reason for introducing this option is performance issues in large documents.
 
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-vue/issues/246).
 
-```html
+```vue
 <ckeditor :editor="editor" :disableTwoWayDataBinding="true" />
 ```
 
@@ -242,7 +236,7 @@ This option allows the integrator to disable the default behavior and only call 
 
 Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
 
@@ -250,7 +244,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @focus="onEditorFocus" />
 ```
 
@@ -258,7 +252,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @blur="onEditorBlur" />
 ```
 
@@ -266,7 +260,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `b
 
 Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @input="onEditorInput" />
 ```
 
@@ -276,7 +270,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 **Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
 
-```html
+```vue
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
 
@@ -288,7 +282,7 @@ If you use the {@link framework/document-editor Document (decoupled) editor} in 
 
 Since accessing the editor toolbar is not possible until after the editor instance is {@link module:core/editor/editor~Editor#event:ready ready}, put your toolbar insertion code in a method executed upon the [`ready`](#ready) event of the component, like in the following example:
 
-```html
+```vue
 <template>
 	<ckeditor :editor="DecoupledEditor" @ready="onReady" />
 </template>
@@ -324,7 +318,7 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 Similarly to CSS style sheets, both packages have separate translations. Import them as shown in the example below. Then, pass them to the `translations` array inside the `config` prop in the component:
 
-```html
+```vue
 
 <script setup>
 import { computed } from 'vue';

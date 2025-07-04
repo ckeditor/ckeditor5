@@ -9,7 +9,7 @@ modified_at: 2023-02-22
 
 # Tables in CKEditor&nbsp;5 (overview)
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors. There are two basic types of tables available: content table, described in this feature guide, and the {@link features/layout-tables layout tables} used to organize the content rather, than present tabular data. You can easily {@link features/layout-tables#table-toggling switch between these two types}.
 
@@ -179,8 +179,8 @@ The above model structure will be rendered to the data and to the editing view a
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
