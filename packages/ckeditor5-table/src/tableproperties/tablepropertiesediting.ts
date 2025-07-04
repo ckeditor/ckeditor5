@@ -365,9 +365,10 @@ function enableTableToFigureProperty(
 
 	upcastStyleToAttribute( conversion, {
 		viewElement: /^(table|figure)$/,
-		shouldUpcast: ( viewElement: ViewElement ) =>
+		shouldUpcast: ( viewElement: ViewElement ) => !(
 			viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
-			viewElement.name == 'figure' && !viewElement.hasClass( 'table' ),
+			viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
+		),
 		...options
 	} );
 
