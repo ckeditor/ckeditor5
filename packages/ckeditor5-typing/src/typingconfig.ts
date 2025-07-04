@@ -123,7 +123,7 @@ export interface TextTransformationConfig {
 	 * ({@link module:typing/typingconfig~TextTransformationConfig#extra `transformations.extra`},
 	 * {@link module:typing/typingconfig~TextTransformationConfig#remove `transformations.remove`}) to fine-tune the default list.
 	 */
-	include: Array<TextTransformationDescription | string>;
+	include: Array<TextTypingTransformationDescription | string>;
 
 	/**
 	 * Additional text transformations that are added to the transformations defined in
@@ -137,7 +137,7 @@ export interface TextTransformationConfig {
 	 * };
 	 * ```
 	 */
-	extra?: Array<TextTransformationDescription | string>;
+	extra?: Array<TextTypingTransformationDescription | string>;
 
 	/**
 	 * The text transformation names that are removed from transformations defined in
@@ -153,7 +153,7 @@ export interface TextTransformationConfig {
 	 * }
 	 * ```
 	 */
-	remove?: Array<TextTransformationDescription | string>;
+	remove?: Array<TextTypingTransformationDescription | string>;
 }
 
 /**
@@ -201,7 +201,7 @@ export interface TextTransformationConfig {
  * }
  * ```
  */
-export interface TextTransformationDescription {
+export interface TextTypingTransformationDescription {
 
 	/**
 	 * The string or regular expression to transform.

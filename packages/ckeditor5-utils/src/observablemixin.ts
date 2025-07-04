@@ -903,7 +903,7 @@ export interface Observable extends Emitter {
 	 */
 	bind<K extends keyof this & string>(
 		bindProperty: K
-	): SingleBindChain<K, this[ K ]>;
+	): ObservableSingleBindChain<K, this[ K ]>;
 
 	/**
 	 * Binds {@link #set observable properties} to other objects implementing the
@@ -982,7 +982,7 @@ export interface Observable extends Emitter {
 	bind<K1 extends keyof this & string, K2 extends keyof this & string>(
 		bindProperty1: K1,
 		bindProperty2: K2
-	): DualBindChain<K1, this[ K1 ], K2, this[ K2 ]>;
+	): ObservableDualBindChain<K1, this[ K1 ], K2, this[ K2 ]>;
 
 	/**
 	 * Binds {@link #set observable properties} to other objects implementing the
@@ -1057,7 +1057,7 @@ export interface Observable extends Emitter {
 	 * @param bindProperties Observable properties that will be bound to other observable(s).
 	 * @returns The bind chain with the `to()` and `toMany()` methods.
 	 */
-	bind( ...bindProperties: Array<keyof this & string> ): MultiBindChain;
+	bind( ...bindProperties: Array<keyof this & string> ): ObservableMultiBindChain;
 
 	/**
 	 * Removes the binding created with {@link #bind}.
@@ -1250,7 +1250,7 @@ export type DecoratedMethodEvent<
 	return: ReturnType<TObservable[ TName ]>;
 };
 
-interface SingleBindChain<TKey extends string, TVal> {
+export interface ObservableSingleBindChain<TKey extends string, TVal> {
 	toMany<O extends Observable, K extends keyof O>(
 		observables: ReadonlyArray<O>,
 		key: K,
@@ -1406,7 +1406,7 @@ export type ObservableWithProperty<TKey extends PropertyKey, TVal = any> = undef
 	Observable & { [ P in TKey ]?: TVal } :
 	Observable & { [ P in TKey ]: TVal };
 
-interface DualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2> {
+export interface ObservableDualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2> {
 	to<
 		O extends ObservableWithProperty<K1, TVal1> & ObservableWithProperty<K2, TVal2>,
 		K1 extends keyof O,
@@ -1424,6 +1424,6 @@ interface DualBindChain<TKey1 extends string, TVal1, TKey2 extends string, TVal2
 	): void;
 }
 
-interface MultiBindChain {
+export interface ObservableMultiBindChain {
 	to<O extends Observable>( observable: O, ...properties: Array<keyof O> ): void;
 }

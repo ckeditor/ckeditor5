@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
@@ -35,7 +35,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
 	}
 
 	it( 'should convert table figure', () => {

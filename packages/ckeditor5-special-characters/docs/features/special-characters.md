@@ -2,6 +2,7 @@
 category: features
 menu-title: Special characters
 meta-title: Special characters | CKEditor 5 Documentation
+meta-description: Easily insert special characters in CKEditor 5 to add symbols, accented letters, and other non-standard characters to your content.
 ---
 
 # Special characters

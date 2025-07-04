@@ -7,40 +7,41 @@
  * @module engine/view/textproxy
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ViewTypeCheckable } from './typecheckable.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
-import { type Node } from './node.js';
-import { type Text } from './text.js';
+import { type ViewDocument } from './document.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
+import { type ViewElement } from './element.js';
+import { type ViewNode } from './node.js';
+import { type ViewText } from './text.js';
 
 /**
- * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by
- * {@link module:engine/view/treewalker~TreeWalker} when only a part of {@link module:engine/view/text~Text} needs to be returned.
+ * ViewTextProxy is a wrapper for substring of {@link module:engine/view/text~ViewText}. Instance of this class is created by
+ * {@link module:engine/view/treewalker~ViewTreeWalker} when only a part of {@link module:engine/view/text~ViewText} needs to be returned.
  *
- * `TextProxy` has an API similar to {@link module:engine/view/text~Text Text} and allows to do most of the common tasks performed
+ * `ViewTextProxy` has an API similar to {@link module:engine/view/text~ViewText Text} and allows to do most of the common tasks performed
  * on view nodes.
  *
- * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
- * See {@link module:engine/view/textproxy~TextProxy#isPartial}.
+ * **Note:** Some `ViewTextProxy` instances may represent whole text node, not just a part of it.
+ * See {@link module:engine/view/textproxy~ViewTextProxy#isPartial}.
  *
- * **Note:** `TextProxy` is a readonly interface.
+ * **Note:** `ViewTextProxy` is a readonly interface.
  *
- * **Note:** `TextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
+ * **Note:** `ViewTextProxy` instances are created on the fly basing
+ * on the current state of parent {@link module:engine/view/text~ViewText}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
- * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it cannot be
- * inserted as a child of {@link module:engine/view/element~Element}.
+ * invalidated due to operations on Document. Also ViewTextProxy is not a {@link module:engine/view/node~ViewNode} so it cannot be
+ * inserted as a child of {@link module:engine/view/element~ViewElement}.
  *
- * `TextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}. You should not need to create
- * an instance of this class by your own.
+ * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~ViewTreeWalker view tree walker}.
+ * You should not need to create an instance of this class by your own.
  */
-export class TextProxy extends TypeCheckable {
+export class ViewTextProxy extends ViewTypeCheckable {
 	/**
-	 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
+	 * Reference to the {@link module:engine/view/text~ViewText} element which ViewTextProxy is a substring.
 	 */
-	public readonly textNode: Text;
+	public readonly textNode: ViewText;
 
 	/**
 	 * Text data represented by this text proxy.
@@ -48,7 +49,7 @@ export class TextProxy extends TypeCheckable {
 	public readonly data: string;
 
 	/**
-	 * Offset in the `textNode` where this `TextProxy` instance starts.
+	 * Offset in the `textNode` where this `ViewTextProxy` instance starts.
 	 */
 	public readonly offsetInText: number;
 
@@ -57,11 +58,11 @@ export class TextProxy extends TypeCheckable {
 	 *
 	 * @internal
 	 * @param textNode Text node which part is represented by this text proxy.
-	 * @param offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
+	 * @param offsetInText Offset in {@link module:engine/view/textproxy~ViewTextProxy#textNode text node}
 	 * from which the text proxy starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 */
-	constructor( textNode: Text, offsetInText: number, length: number ) {
+	constructor( textNode: ViewText, offsetInText: number, length: number ) {
 		super();
 
 		this.textNode = textNode;
@@ -96,11 +97,11 @@ export class TextProxy extends TypeCheckable {
 	}
 
 	/**
-	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/view/text~Text text node}
+	 * Flag indicating whether `ViewTextProxy` instance covers only part of the original {@link module:engine/view/text~ViewText text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
-	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/view/textproxy~TextProxy#textNode textNode}
-	 * ({@link module:engine/view/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/view/textproxy~ViewTextProxy#textNode textNode}
+	 * ({@link module:engine/view/textproxy~ViewTextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
 	 */
 	public get isPartial(): boolean {
@@ -110,22 +111,22 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 */
-	public get parent(): Element | DocumentFragment | null {
+	public get parent(): ViewElement | ViewDocumentFragment | null {
 		return this.textNode.parent;
 	}
 
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): ViewNode | ViewDocumentFragment {
 		return this.textNode.root;
 	}
 
 	/**
-	 * {@link module:engine/view/document~Document View document} that owns this text proxy, or `null` if the text proxy is inside
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * {@link module:engine/view/document~ViewDocument View document} that owns this text proxy, or `null` if the text proxy is inside
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 */
-	public get document(): Document | null {
+	public get document(): ViewDocument | null {
 		return this.textNode.document;
 	}
 
@@ -141,9 +142,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<Text | Element | DocumentFragment> {
-		const ancestors: Array<Text | Element | DocumentFragment> = [];
-		let parent: Text | Element | DocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
+	} = {} ): Array<ViewText | ViewElement | ViewDocumentFragment> {
+		const ancestors: Array<ViewText | ViewElement | ViewDocumentFragment> = [];
+		let parent: ViewText | ViewElement | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
 
 		while ( parent !== null ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
@@ -168,10 +169,8 @@ export class TextProxy extends TypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-TextProxy.prototype.is = function( type: string ): boolean {
+ViewTextProxy.prototype.is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'view:$textProxy' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'view:textProxy';
 };
-
-export { TextProxy as ViewTextProxy };

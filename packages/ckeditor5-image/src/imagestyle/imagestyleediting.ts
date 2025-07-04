@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { ImageStyleCommand } from './imagestylecommand.js';
 import { ImageUtils } from '../imageutils.js';
@@ -134,7 +134,7 @@ export class ImageStyleEditing extends Plugin {
 						element = element.getChild( 0 )!;
 					}
 
-					if ( !imageUtils.isImage( element as Element ) ) {
+					if ( !imageUtils.isImage( element as ModelElement ) ) {
 						continue;
 					}
 
@@ -146,7 +146,7 @@ export class ImageStyleEditing extends Plugin {
 
 					const imageStyleDefinition = stylesMap.get( imageStyle );
 
-					if ( !imageStyleDefinition || !imageStyleDefinition.modelElements.includes( ( element as Element ).name ) ) {
+					if ( !imageStyleDefinition || !imageStyleDefinition.modelElements.includes( ( element as ModelElement ).name ) ) {
 						writer.removeAttribute( 'imageStyle', element );
 						changed = true;
 					}

@@ -7,7 +7,7 @@
  * @module list/list/listutils
  */
 
-import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -44,7 +44,7 @@ export class ListUtils extends Plugin {
 	 *
 	 * @param blocks The list of selected blocks.
 	 */
-	public expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): Array<Element> {
+	public expandListBlocksToCompleteList( blocks: ArrayOrItem<ModelElement> ): Array<ModelElement> {
 		return expandListBlocksToCompleteList( blocks );
 	}
 
@@ -53,7 +53,7 @@ export class ListUtils extends Plugin {
 	 *
 	 * @param listBlock The list block element.
 	 */
-	public isFirstBlockOfListItem( listBlock: Element ): boolean {
+	public isFirstBlockOfListItem( listBlock: ModelElement ): boolean {
 		return isFirstBlockOfListItem( listBlock );
 	}
 
@@ -62,7 +62,7 @@ export class ListUtils extends Plugin {
 	 *
 	 * @param node A model node.
 	 */
-	public isListItemBlock( node: Node | null ): node is ListElement {
+	public isListItemBlock( node: ModelNode | null ): node is ListElement {
 		return isListItemBlock( node );
 	}
 
@@ -72,7 +72,10 @@ export class ListUtils extends Plugin {
 	 * @param blocks The list of selected blocks.
 	 * @param options.withNested Whether should include nested list items.
 	 */
-	public expandListBlocksToCompleteItems( blocks: ArrayOrItem<Element>, options: { withNested?: boolean } = {} ): Array<Element> {
+	public expandListBlocksToCompleteItems(
+		blocks: ArrayOrItem<ModelElement>,
+		options: { withNested?: boolean } = {}
+	): Array<ModelElement> {
 		return expandListBlocksToCompleteItems( blocks, options );
 	}
 

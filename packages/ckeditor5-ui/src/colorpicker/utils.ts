@@ -46,6 +46,7 @@ export type ColorPickerViewConfig = ColorPickerConfig & {
  *
  * @param color
  * @returns A color string.
+ * @internal
  */
 export function convertColor( color: string, outputFormat: ColorPickerOutputFormat ): string {
 	if ( !color ) {
@@ -83,6 +84,7 @@ export function convertColor( color: string, outputFormat: ColorPickerOutputForm
  *
  * @param color
  * @returns A color string.
+ * @internal
  */
 export function convertToHex( color: string ): string {
 	if ( !color ) {
@@ -105,6 +107,7 @@ export function convertToHex( color: string ): string {
 /**
  * Registers the custom element in the
  * [CustomElementsRegistry](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry).
+ * @internal
  */
 export function registerCustomElement( elementName: string, constructor: CustomElementConstructor ): void {
 	if ( customElements.get( elementName ) === undefined ) {

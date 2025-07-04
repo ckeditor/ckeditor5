@@ -12,7 +12,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import {
 	Rect,
 	DomEmitterMixin,
-	type PositionOptions
+	type DomOptimalPositionOptions
 } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from '../view.js';
@@ -198,7 +198,7 @@ export abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * Returns the options for attaching the balloon to the focused editable element.
 	 */
-	private _getBalloonAttachOptions(): Partial<PositionOptions> | null {
+	private _getBalloonAttachOptions(): Partial<DomOptimalPositionOptions> | null {
 		if ( !this._lastFocusedEditableElement ) {
 			return null;
 		}

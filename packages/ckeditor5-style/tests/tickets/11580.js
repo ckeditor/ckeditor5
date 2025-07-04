@@ -10,7 +10,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { Style } from '../../src/style.js';
 
@@ -81,7 +81,7 @@ describe( 'Integration with RemoveFormat', () => {
 	} );
 
 	it( 'can remove inline styles', () => {
-		setData(
+		_setModelData(
 			model,
 			'<paragraph>[' +
 				'<$text htmlSpan=\'{"classes":["marker"]}\'>aaa</$text>' +
@@ -92,7 +92,7 @@ describe( 'Integration with RemoveFormat', () => {
 
 		editor.execute( 'removeFormat' );
 
-		expect( getData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<paragraph>aaabbbccc</paragraph>'
 		);
 	} );

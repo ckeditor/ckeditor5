@@ -13,7 +13,7 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { RevisionHistoryMock } from '../_utils/revisionhistorymock.js';
-import { AbstractEditorHandler } from '../../src/handlers/abstracteditorhandler.js';
+import { FullscreenAbstractEditorHandler } from '../../src/handlers/abstracteditorhandler.js';
 import { Fullscreen } from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {
@@ -31,7 +31,7 @@ describe( 'AbstractHandler', () => {
 			]
 		} );
 
-		abstractHandler = new AbstractEditorHandler( editor );
+		abstractHandler = new FullscreenAbstractEditorHandler( editor );
 	} );
 
 	afterEach( () => {
@@ -272,7 +272,7 @@ describe( 'AbstractHandler', () => {
 				}
 			} );
 
-			const tempAbstractHandlerDynamicToolbar = new AbstractEditorHandler( tempEditorDynamicToolbar );
+			const tempAbstractHandlerDynamicToolbar = new FullscreenAbstractEditorHandler( tempEditorDynamicToolbar );
 
 			tempAbstractHandlerDynamicToolbar.enable();
 			tempAbstractHandlerDynamicToolbar.disable();
@@ -300,7 +300,7 @@ describe( 'AbstractHandler', () => {
 				}
 			} );
 
-			const tempAbstractHandlerStaticToolbar = new AbstractEditorHandler( tempEditorStaticToolbar );
+			const tempAbstractHandlerStaticToolbar = new FullscreenAbstractEditorHandler( tempEditorStaticToolbar );
 
 			tempAbstractHandlerStaticToolbar.enable();
 			tempAbstractHandlerStaticToolbar.disable();
@@ -381,7 +381,7 @@ describe( 'AbstractHandler', () => {
 				]
 			} );
 
-			abstractEditorHandler = new AbstractEditorHandler( editorWithRevisionHistory );
+			abstractEditorHandler = new FullscreenAbstractEditorHandler( editorWithRevisionHistory );
 		} );
 
 		afterEach( async () => {
@@ -447,7 +447,7 @@ describe( 'AbstractHandler', () => {
 				]
 			} );
 
-			abstractEditorHandler = new AbstractEditorHandler( editorWithSourceEditing );
+			abstractEditorHandler = new FullscreenAbstractEditorHandler( editorWithSourceEditing );
 			sinon.stub( abstractEditorHandler, '_generateDocumentOutlineContainer' );
 		} );
 

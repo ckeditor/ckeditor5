@@ -84,7 +84,7 @@ export class KeystrokeHandler {
 	 * @param keystroke Keystroke defined in a format accepted by
 	 * the {@link module:utils/keyboard~parseKeystroke} function.
 	 * @param callback A function called with the
-	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
+	 * {@link module:engine/view/observer/keyobserver~ViewDocumentKeyEventData key event data} object and
 	 * a helper function to call both `preventDefault()` and `stopPropagation()` on the underlying event.
 	 * @param options Additional options.
 	 */

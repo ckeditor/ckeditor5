@@ -7,14 +7,15 @@
  * @module paste-from-office/filters/removeboldwrapper
  */
 
-import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js';
+import type { ViewUpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js';
 
 /**
  * Removes the `<b>` tag wrapper added by Google Docs to a copied content.
  *
  * @param documentFragment element `data.content` obtained from clipboard
+ * @internal
  */
-export function removeBoldWrapper( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export function removeBoldWrapper( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {
 		if ( child.is( 'element', 'b' ) && child.getStyle( 'font-weight' ) === 'normal' ) {
 			const childIndex = documentFragment.getChildIndex( child );

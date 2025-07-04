@@ -25,6 +25,7 @@ import type { ListPropertiesConfig, ListPropertiesStyleListType } from '../../li
  * }
  * ```
  *
+ * @internal
  * @param config The list properties {@link module:list/listconfig~ListPropertiesConfig config}.
  * @returns An object with normalized list properties options.
  */
@@ -85,6 +86,8 @@ function getNormalizedStylesConfig( styles: ListPropertiesConfig[ 'styles' ] ): 
 
 /**
 * Normalized list properties config.
+*
+* @internal
 */
 export type NormalizedListPropertiesConfig = {
 	styles: {

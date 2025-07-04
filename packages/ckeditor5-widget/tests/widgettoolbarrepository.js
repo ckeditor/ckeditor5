@@ -17,7 +17,7 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -267,7 +267,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
@@ -280,7 +280,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			widgetToolbarRepository.isEnabled = false;
 
@@ -295,7 +295,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			widgetToolbarRepository.isEnabled = false;
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			expect( balloon.visibleView ).to.be.null;
 		} );
@@ -306,7 +306,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
+			_setModelData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
 
 			expect( balloon.visibleView ).to.equal( null );
 		} );
@@ -317,7 +317,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			model.change( writer => {
 				// Select the <paragraph>foo</paragraph>.
@@ -341,7 +341,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
@@ -362,7 +362,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			editor.ui.focusTracker.isFocused = false;
 
@@ -383,7 +383,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
@@ -398,7 +398,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
+			_setModelData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
 
 			model.change( writer => {
 				// Select the second widget.
@@ -416,7 +416,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidgetContent
 			} );
 
-			setData( model, '<fake-widget>[foo]</fake-widget>' );
+			_setModelData( model, '<fake-widget>[foo]</fake-widget>' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
@@ -431,7 +431,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
-			setData( model, '[<fake-widget></fake-widget>]' );
+			_setModelData( model, '[<fake-widget></fake-widget>]' );
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 
@@ -471,7 +471,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeChildWidget
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<fake-widget>' +
 					'<paragraph>foo</paragraph>' +
@@ -497,7 +497,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeChildWidget
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'[<fake-widget>' +
 					'<paragraph>foo</paragraph>' +
@@ -533,7 +533,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'[<fake-widget></fake-widget>]'
 			);
@@ -569,7 +569,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'[<fake-widget></fake-widget>]'
 			);
@@ -614,7 +614,7 @@ describe( 'WidgetToolbarRepository', () => {
 				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
@@ -653,7 +653,7 @@ describe( 'WidgetToolbarRepository', () => {
 				]
 			} );
 
-			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
@@ -702,7 +702,7 @@ describe( 'WidgetToolbarRepository', () => {
 				]
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'[<fake-widget></fake-widget>]'
 			);
@@ -790,7 +790,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 		editor.editing.view.document.isFocused = true;
-		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
+		_setModelData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 
 		clock.tick( 200 );
 
@@ -804,7 +804,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		} );
 
 		editor.editing.view.document.isFocused = true;
-		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
+		_setModelData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 
 		clock.tick( 200 );
 

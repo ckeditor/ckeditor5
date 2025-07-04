@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import { IconFontFamily } from 'ckeditor5/src/icons.js';
 import {
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	MenuBarMenuView,
@@ -167,7 +167,7 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new ViewModel( {
+			model: new UIModel( {
 				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,

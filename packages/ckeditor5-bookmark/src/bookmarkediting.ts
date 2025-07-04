@@ -15,10 +15,10 @@ import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import type {
 	ViewUIElement,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewElement,
-	Element,
-	DocumentChangeEvent,
+	ModelElement,
+	ModelDocumentChangeEvent,
 	UpcastElementEvent,
 	UpcastConversionData,
 	UpcastConversionApi
@@ -36,7 +36,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * A collection of bookmarks elements in the document.
 	 */
-	private _bookmarkElements = new Map<Element, string>();
+	private _bookmarkElements = new Map<ModelElement, string>();
 
 	/**
 	 * @inheritDoc
@@ -75,7 +75,7 @@ export class BookmarkEditing extends Plugin {
 		editor.commands.add( 'insertBookmark', new InsertBookmarkCommand( editor ) );
 		editor.commands.add( 'updateBookmark', new UpdateBookmarkCommand( editor ) );
 
-		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
+		this.listenTo<ModelDocumentChangeEvent>( editor.model.document, 'change:data', () => {
 			this._trackBookmarkElements();
 		} );
 	}
@@ -83,7 +83,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * Returns the model element for the given bookmark ID if it exists.
 	 */
-	public getElementForBookmarkId( bookmarkId: string ): Element | null {
+	public getElementForBookmarkId( bookmarkId: string ): ModelElement | null {
 		for ( const [ element, id ] of this._bookmarkElements ) {
 			if ( id == bookmarkId ) {
 				return element;
@@ -173,7 +173,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * Creates a UI element for the `bookmark` representation in editing view.
 	 */
-	private _createBookmarkUIElement( writer: DowncastWriter ): ViewUIElement {
+	private _createBookmarkUIElement( writer: ViewDowncastWriter ): ViewUIElement {
 		return writer.createUIElement( 'span', { class: 'ck-bookmark__icon' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 

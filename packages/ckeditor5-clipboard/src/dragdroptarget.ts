@@ -13,13 +13,13 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import {
-	type Node,
-	type Element,
-	type Range,
-	type LiveRange,
+	type ModelNode,
+	type ModelElement,
+	type ModelRange,
+	type ModelLiveRange,
 	type ViewElement,
 	type ViewRange,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type ViewRootEditableElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -132,7 +132,7 @@ export class DragDropTarget extends Plugin {
 		clientX: number,
 		clientY: number,
 		blockMode: boolean,
-		draggedRange: LiveRange | null
+		draggedRange: ModelLiveRange | null
 	): void {
 		this.removeDropMarkerDelayed.cancel();
 
@@ -170,8 +170,8 @@ export class DragDropTarget extends Plugin {
 		clientX: number,
 		clientY: number,
 		blockMode: boolean,
-		draggedRange: LiveRange | null
-	): Range | null {
+		draggedRange: ModelLiveRange | null
+	): ModelRange | null {
 		const targetRange = findDropTargetRange(
 			this.editor,
 			targetViewElement,
@@ -250,7 +250,7 @@ export class DragDropTarget extends Plugin {
 	 *
 	 * @param targetRange The range to set the marker to.
 	 */
-	private _updateDropMarker( targetRange: Range ): void {
+	private _updateDropMarker( targetRange: ModelRange ): void {
 		const editor = this.editor;
 		const markers = editor.model.markers;
 
@@ -272,7 +272,7 @@ export class DragDropTarget extends Plugin {
 	/**
 	 * Creates the UI element for vertical (in-line) drop target.
 	 */
-	private _createDropTargetPosition( writer: DowncastWriter ): ViewElement {
+	private _createDropTargetPosition( writer: ViewDowncastWriter ): ViewElement {
 		return writer.createUIElement( 'span', { class: 'ck ck-clipboard-drop-target-position' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
@@ -286,12 +286,12 @@ export class DragDropTarget extends Plugin {
 	/**
 	 * Updates the horizontal drop target line.
 	 */
-	private _updateDropTargetLine( range: Range ): void {
+	private _updateDropTargetLine( range: ModelRange ): void {
 		const editing = this.editor.editing;
 
-		const nodeBefore = range.start.nodeBefore as Element | null;
-		const nodeAfter = range.start.nodeAfter as Element | null;
-		const nodeParent = range.start.parent as Element;
+		const nodeBefore = range.start.nodeBefore as ModelElement | null;
+		const nodeAfter = range.start.nodeAfter as ModelElement | null;
+		const nodeParent = range.start.parent as ModelElement;
 
 		const viewElementBefore = nodeBefore ? editing.mapper.toViewElement( nodeBefore ) : null;
 		const domElementBefore = viewElementBefore ? editing.view.domConverter.mapViewToDom( viewElementBefore ) : null;
@@ -376,8 +376,8 @@ function findDropTargetRange(
 	clientX: number,
 	clientY: number,
 	blockMode: boolean,
-	draggedRange: LiveRange | null
-): Range | null {
+	draggedRange: ModelLiveRange | null
+): ModelRange | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
@@ -392,7 +392,7 @@ function findDropTargetRange(
 					const targetModelPosition = mapper.toModelPosition( targetViewPosition );
 					const canDropOnPosition = !draggedRange || Array
 						.from( draggedRange.getItems( { shallow: true } ) )
-						.every( item => model.schema.checkChild( targetModelPosition, item as Node ) );
+						.every( item => model.schema.checkChild( targetModelPosition, item as ModelNode ) );
 
 					if ( canDropOnPosition ) {
 						if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
@@ -420,13 +420,13 @@ function findDropTargetRange(
 		}
 		else if ( model.schema.checkChild( modelElement, '$block' ) ) {
 			const childNodes = Array.from( modelElement.getChildren() )
-				.filter( ( node ): node is Element => node.is( 'element' ) && !shouldIgnoreElement( editor, node ) );
+				.filter( ( node ): node is ModelElement => node.is( 'element' ) && !shouldIgnoreElement( editor, node ) );
 
 			let startIndex = 0;
 			let endIndex = childNodes.length;
 
 			if ( endIndex == 0 ) {
-				return model.createRange( model.createPositionAt( modelElement as Element, 'end' ) );
+				return model.createRange( model.createPositionAt( modelElement as ModelElement, 'end' ) );
 			}
 
 			while ( startIndex < endIndex - 1 ) {
@@ -443,7 +443,7 @@ function findDropTargetRange(
 			return findDropTargetRangeForElement( editor, childNodes[ startIndex ], clientX, clientY );
 		}
 
-		modelElement = modelElement.parent as Element;
+		modelElement = modelElement.parent as ModelElement;
 	}
 
 	return null;
@@ -452,7 +452,7 @@ function findDropTargetRange(
 /**
  * Returns true for elements which should be ignored.
  */
-function shouldIgnoreElement( editor: Editor, modelElement: Element ): boolean {
+function shouldIgnoreElement( editor: Editor, modelElement: ModelElement ): boolean {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 
@@ -470,12 +470,12 @@ function shouldIgnoreElement( editor: Editor, modelElement: Element ): boolean {
 /**
  * Returns target range relative to the given element.
  */
-function findDropTargetRangeForElement( editor: Editor, modelElement: Element, clientX: number, clientY: number ): Range {
+function findDropTargetRangeForElement( editor: Editor, modelElement: ModelElement, clientX: number, clientY: number ): ModelRange {
 	const model = editor.model;
 
 	return model.createRange(
 		model.createPositionAt(
-			modelElement as Element,
+			modelElement as ModelElement,
 			findElementSide( editor, modelElement, clientX, clientY )
 		)
 	);
@@ -484,7 +484,7 @@ function findDropTargetRangeForElement( editor: Editor, modelElement: Element, c
 /**
  * Resolves whether drop marker should be before or after the given element.
  */
-function findElementSide( editor: Editor, modelElement: Element, clientX: number, clientY: number ): 'before' | 'after' {
+function findElementSide( editor: Editor, modelElement: ModelElement, clientX: number, clientY: number ): 'before' | 'after' {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 
@@ -502,7 +502,7 @@ function findElementSide( editor: Editor, modelElement: Element, clientX: number
 /**
  * Returns the closest model element for the specified view element.
  */
-function getClosestMappedModelElement( editor: Editor, element: ViewElement ): Element {
+function getClosestMappedModelElement( editor: Editor, element: ViewElement ): ModelElement {
 	const mapper = editor.editing.mapper;
 	const view = editor.editing.view;
 

@@ -6,8 +6,8 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import { getData as getModelData } from '../../src/dev-utils/model.js';
-import { getData as getViewData } from '../../src/dev-utils/view.js';
+import { _getModelData } from '../../src/dev-utils/model.js';
+import { _getViewData } from '../../src/dev-utils/view.js';
 
 describe( 'Bug ckeditor5-engine#699', () => {
 	let element;
@@ -28,8 +28,8 @@ describe( 'Bug ckeditor5-engine#699', () => {
 			.then( editor => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
-				expect( getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				expect( getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
+				expect( _getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( _getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
 			} );

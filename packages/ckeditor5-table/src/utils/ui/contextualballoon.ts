@@ -7,10 +7,10 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Rect, type DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { Element, Position, Range } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition, ModelRange } from 'ckeditor5/src/engine.js';
 
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
 import { getSelectionAffectedTable } from '../common.js';
@@ -30,6 +30,7 @@ const BALLOON_POSITIONS = /* #__PURE__ */ ( () => [
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} instance
  * with respect to the table in the editor content, if one is selected.
  *
+ * @internal
  * @param editor The editor instance.
  * @param target Either "cell" or "table". Determines the target the balloon will be attached to.
  */
@@ -59,7 +60,7 @@ export function repositionContextualBalloon( editor: Editor, target: string ): v
  *
  * @param editor The editor instance.
  */
-export function getBalloonTablePositionData( editor: Editor ): Partial<PositionOptions> {
+export function getBalloonTablePositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const selection = editor.model.document.selection;
 	const modelTable = getSelectionAffectedTable( selection );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable )!;
@@ -77,7 +78,7 @@ export function getBalloonTablePositionData( editor: Editor ): Partial<PositionO
  *
  * @param editor The editor instance.
  */
-export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOptions> {
+export function getBalloonCellPositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const selection = editor.model.document.selection;
@@ -103,7 +104,7 @@ export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOp
  *
  * @param position Document position.
  */
-function getTableCellAtPosition( position: Position ): Element {
+function getTableCellAtPosition( position: ModelPosition ): ModelElement {
 	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'element', 'tableCell' );
 
 	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' )!;
@@ -115,7 +116,7 @@ function getTableCellAtPosition( position: Position ): Element {
  * @param ranges Model ranges that the bounding rect should be returned for.
  * @param editor The editor instance.
  */
-function createBoundingRect( ranges: Iterable<Range>, editor: Editor ): Rect {
+function createBoundingRect( ranges: Iterable<ModelRange>, editor: Editor ): Rect {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const rects = Array.from( ranges ).map( range => {

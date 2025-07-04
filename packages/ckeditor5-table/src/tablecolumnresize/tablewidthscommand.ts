@@ -7,7 +7,7 @@
  * @module table/tablecolumnresize/tablewidthscommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { normalizeColumnWidths } from './utils.js';
 
@@ -94,5 +94,5 @@ export interface TableWidthsCommandOptions {
 	/**
 	 * The table that is having the columns resized.
 	 */
-	table?: Element;
+	table?: ModelElement;
 }

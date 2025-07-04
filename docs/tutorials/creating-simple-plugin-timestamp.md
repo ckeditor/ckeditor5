@@ -2,6 +2,7 @@
 category: tutorials
 order: 10
 meta-title: Creating a basic plugin tutorial | CKEditor 5 Documentation
+meta-description: Learn how to create a simple timestamp plugin in CKEditor 5 to insert the current date and time into your content with a custom toolbar button.
 modified_at: 2022-07-15
 ---
 

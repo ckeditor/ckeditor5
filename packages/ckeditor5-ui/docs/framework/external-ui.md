@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive-ui
 meta-title: Third party UI | CKEditor 5 Framework Documentation
+meta-description: Discover how to create and integrate external UI components with CKEditor 5 for seamless editor extension and customization.
 order: 20
 ---
 

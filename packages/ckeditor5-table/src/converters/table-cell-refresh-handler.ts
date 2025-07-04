@@ -9,7 +9,7 @@
 
 import type {
 	EditingController,
-	Element,
+	ModelElement,
 	Mapper,
 	Model
 } from 'ckeditor5/src/engine.js';
@@ -24,6 +24,8 @@ import { isSingleParagraphWithoutAttributes } from './downcast.js';
  *
  * When table cell content changes, for example a second `paragraph` element is added, we need to ensure that the first `paragraph` is
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
+ *
+ * @internal
  */
 export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
@@ -39,9 +41,9 @@ export function tableCellRefreshHandler( model: Model, editing: EditingControlle
 		}
 	}
 
-	for ( const tableCell of cellsToCheck.values() as Iterable<Element> ) {
+	for ( const tableCell of cellsToCheck.values() as Iterable<ModelElement> ) {
 		const paragraphsToRefresh = Array.from( tableCell.getChildren() )
-			.filter( child => shouldRefresh( child as Element, editing.mapper ) );
+			.filter( child => shouldRefresh( child as ModelElement, editing.mapper ) );
 
 		for ( const paragraph of paragraphsToRefresh ) {
 			editing.reconvertItem( paragraph );
@@ -52,7 +54,7 @@ export function tableCellRefreshHandler( model: Model, editing: EditingControlle
 /**
  * Check if given model element needs refreshing.
  */
-function shouldRefresh( child: Element, mapper: Mapper ) {
+function shouldRefresh( child: ModelElement, mapper: Mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
 		return false;
 	}

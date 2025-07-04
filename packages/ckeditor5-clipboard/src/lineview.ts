@@ -16,6 +16,8 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * The horizontal drop target line view.
+ *
+ * @internal
  */
 export class LineView extends View {
 	/**

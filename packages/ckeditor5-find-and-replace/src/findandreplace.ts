@@ -8,12 +8,12 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { FindAndReplaceUI, type SearchResetedEvent } from './findandreplaceui.js';
+import { FindAndReplaceUI, type FindResetedEvent } from './findandreplaceui.js';
 import { FindAndReplaceEditing } from './findandreplaceediting.js';
 import type { Marker } from 'ckeditor5/src/engine.js';
 import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview.js';
 
-export type ResultType = {
+export type FindResultType = {
 	id?: string;
 	label?: string;
 	start?: number;
@@ -104,7 +104,7 @@ export class FindAndReplace extends Plugin {
 
 		// Reset the state when the user invalidated last search results, for instance,
 		// by starting typing another search query or changing options.
-		ui.on<SearchResetedEvent>( 'searchReseted', () => {
+		ui.on<FindResetedEvent>( 'searchReseted', () => {
 			state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );

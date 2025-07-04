@@ -2,6 +2,7 @@
 category: features-image-upload
 menu-title: Overview
 meta-title: Image upload overview | CKEditor 5 Documentation
+meta-description: Easily upload and manage images in CKEditor 5. Learn about available solutions, configuration options, and customizing image upload.
 order: 10
 ---
 

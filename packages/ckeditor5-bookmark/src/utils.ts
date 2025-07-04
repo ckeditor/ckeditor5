@@ -9,6 +9,8 @@
 
 /**
  * Returns `true` if the bookmark id is valid; otherwise, returns `false`.
+ *
+ * @internal
  */
 export function isBookmarkIdValid( id: string ): boolean {
 	if ( !id || typeof id !== 'string' ) {

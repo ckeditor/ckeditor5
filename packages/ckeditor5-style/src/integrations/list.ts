@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
@@ -101,7 +101,7 @@ export class ListStyleSupport extends Plugin {
 	/**
 	 * Verifies if the given style is applicable to the provided block element.
 	 */
-	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const model = this.editor.model;
 
 		if ( ![ 'ol', 'ul', 'li' ].includes( definition.element ) ) {
@@ -131,7 +131,7 @@ export class ListStyleSupport extends Plugin {
 	/**
 	 * Returns true if the given style is applied to the specified block element.
 	 */
-	private _isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isStyleActiveForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
@@ -141,7 +141,7 @@ export class ListStyleSupport extends Plugin {
 	/**
 	 * Returns an array of block elements that style should be applied to.
 	 */
-	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
+	private _getAffectedBlocks( definition: BlockStyleDefinition, block: ModelElement ): Array<ModelElement> | null {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
 			return null;
 		}

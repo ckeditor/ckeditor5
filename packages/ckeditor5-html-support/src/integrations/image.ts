@@ -11,13 +11,13 @@ import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
-	Node,
+	ModelElement,
+	ModelNode,
 	UpcastDispatcher
 } from 'ckeditor5/src/engine.js';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
-import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils.js';
 import { getDescendantElement } from './integrationutils.js';
 
@@ -61,11 +61,11 @@ export class ImageElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = editor.plugins.get( DataFilter );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', () => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:figure', () => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributeConverter( dataFilter ) );
 		} );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:img', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:img', ( evt, definition ) => {
 			if ( definition.model !== 'imageBlock' && definition.model !== 'imageInline' ) {
 				return;
 			}
@@ -146,7 +146,7 @@ function viewToModelLinkImageAttributeConverter( dataFilter: DataFilter, editor:
 				return;
 			}
 
-			const modelImage: Node | null = data.modelCursor.parent as Node;
+			const modelImage: ModelNode | null = data.modelCursor.parent as ModelNode;
 
 			if ( !modelImage.is( 'element', 'imageBlock' ) ) {
 				return;
@@ -205,7 +205,7 @@ function modelToViewImageAttributeConverter() {
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 
 				updateViewAttributes(
 					conversionApi.writer,
@@ -222,7 +222,7 @@ function modelToViewImageAttributeConverter() {
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const containerElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
 				if ( viewElement ) {
@@ -242,7 +242,7 @@ function modelToViewImageAttributeConverter() {
 						return;
 					}
 
-					const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+					const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 					const viewElement = getDescendantElement( conversionApi.writer, containerElement!, 'a' )!;
 
 					setViewAttributes(

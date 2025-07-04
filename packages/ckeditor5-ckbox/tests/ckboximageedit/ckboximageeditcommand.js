@@ -17,8 +17,8 @@ import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
 import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
 import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import * as _ from 'es-toolkit/compat';
@@ -142,7 +142,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 	describe( 'execute', () => {
 		it( 'should open CKBox image editor', async () => {
-			setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 			command.execute();
 
 			await new Promise( resolve => setTimeout( resolve, 0 ) );
@@ -165,7 +165,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper = command._wrapper;
@@ -175,7 +175,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should create and mount a wrapper only once', () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 				command.execute();
 
 				const wrapper1 = command._wrapper;
@@ -209,7 +209,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
-				setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 
 				command.execute();
 				command.execute();
@@ -223,7 +223,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should prepare options for the CKBox Image Editing dialog instance (ckbox image)', async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -248,7 +248,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
 				);
 
@@ -275,7 +275,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).resolves( categoryId );
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" src="${ imageUrl }"></imageBlock>]`
 				);
 
@@ -303,7 +303,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				sinon.stub( editor.plugins.get( 'CKBoxUtils' ), 'getCategoryIdForFile' ).returns( Promise.reject( reason ) );
 
-				setModelData( model,
+				_setModelData( model,
 					'[<imageBlock alt="alt text" src="https://example.com/assets/sample.png"></imageBlock>]'
 				);
 
@@ -321,7 +321,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should remove the wrapper after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -347,7 +347,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should focus view after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -371,7 +371,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should refresh the command after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -399,7 +399,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				const ckboxImageId = 'example-id';
 				const clock = sinon.useFakeTimers();
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -430,7 +430,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should clear timer on editor destroy', async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" ckboxImageId="${ ckboxImageId }" src="/assets/sample.png"></imageBlock>]`
 				);
 
@@ -465,7 +465,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			beforeEach( async () => {
 				const ckboxImageId = 'example-id';
 
-				setModelData( model,
+				_setModelData( model,
 					`[<imageBlock alt="alt text" height="50" ckboxImageId="${ ckboxImageId }"\
 					src="/assets/sample.png" width="50"></imageBlock>]`
 				);
@@ -498,7 +498,7 @@ describe( 'CKBoxImageEditCommand', () => {
 				} );
 
 				command.on( 'ckboxImageEditor:processed', () => {
-					expect( getModelData( model ) ).to.equal(
+					expect( _getModelData( model ) ).to.equal(
 						'[<imageBlock alt="" ckboxImageId="image-id1" height="100" sources="[object Object]"' +
 							' src="https://example.com/workspace1/assets/image-id1/images/100.png" width="100">' +
 						'</imageBlock>]'
@@ -543,7 +543,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				await clock.tickAsync( 1000 );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			} );
 
 			it( 'should display notification in case fail', async () => {
@@ -822,7 +822,7 @@ describe( 'CKBoxImageEditCommand', () => {
 					model: 'caption'
 				} );
 
-				setModelData( model, '[<imageBlock ' +
+				_setModelData( model, '[<imageBlock ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 							'<caption>' +
 								'caption' +
@@ -833,7 +833,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -855,15 +855,15 @@ describe( 'CKBoxImageEditCommand', () => {
 						'tempServerAssetId="image-id1" width="50">' +
 					'</imageBlock>]';
 
-				setModelData( model, modelData );
+				_setModelData( model, modelData );
 
 				command.execute();
 
-				expect( getModelData( model ) ).to.equal( modelData );
+				expect( _getModelData( model ) ).to.equal( modelData );
 			} );
 
 			it( 'should replace inline image with saved one after it is processed', () => {
-				setModelData( model, '<paragraph>[<imageInline ' +
+				_setModelData( model, '<paragraph>[<imageInline ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageInline>]</paragraph>' );
 
@@ -871,7 +871,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'<paragraph>[<imageInline ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -884,7 +884,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should replace image with saved one after it is processed', () => {
-				setModelData( model, '[<imageBlock ' +
+				_setModelData( model, '[<imageBlock ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
 
@@ -892,7 +892,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -905,7 +905,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should not be alt attribute if there is no one in the original image', () => {
-				setModelData( model, '[<imageBlock ' +
+				_setModelData( model, '[<imageBlock ' +
 						'ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
 
@@ -913,7 +913,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataMock );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'ckboxImageId="image-id1" ' +
 						'height="100" ' +
@@ -927,7 +927,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			it( 'should replace image with saved one (with blurHash placeholder) after it is processed', () => {
 				const placeholder = blurHashToDataUrl( dataWithBlurHashMock.data.metadata.blurHash );
 
-				setModelData( model, '[<imageBlock ' +
+				_setModelData( model, '[<imageBlock ' +
 						'alt="alt text" ckboxImageId="example-id" height="50" src="/assets/sample.png" width="50">' +
 					'</imageBlock>]' );
 
@@ -935,7 +935,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command._replaceImage( imageElement, dataWithBlurHashMock );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<imageBlock ' +
 						'alt="alt text" ' +
 						'ckboxImageId="image-id1" ' +
@@ -950,7 +950,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 			it( 'should change <img> size attributes and add `image-processing` CSS class ' +
 				'while waiting for the processed image', async () => {
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-ckbox-resource-id="example-id">' +
 						'<img alt="alt text" height="50" loading="lazy" src="/assets/sample.png" style="aspect-ratio:50/50" width="50">' +
 						'</img>' +
@@ -960,7 +960,7 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				options.onSave( dataMock );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_selected image image-processing" ' +
 						'contenteditable="false" data-ckbox-resource-id="example-id">' +
 						'<img alt="alt text" height="100" loading="lazy" src="/assets/sample.png" ' +

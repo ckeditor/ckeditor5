@@ -7,8 +7,8 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -130,7 +130,7 @@ describe( 'CustomElementSupport', () => {
 			'<custom-foo-element>bar</custom-foo-element>' +
 			'<custom-foo-element>baz</custom-foo-element>'
 		);
-		expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 			'<custom-foo-element></custom-foo-element>' +
 			'<custom-foo-element></custom-foo-element>'
 		);
@@ -237,7 +237,7 @@ describe( 'CustomElementSupport', () => {
 
 				editor.setData( data );
 
-				expect( getModelData( model, { withoutSelection: true, excludeAttributes } ) ).to.equal( modelData );
+				expect( _getModelData( model, { withoutSelection: true, excludeAttributes } ) ).to.equal( modelData );
 
 				expect( editor.getData() ).to.equal( data );
 			} );
@@ -510,7 +510,7 @@ describe( 'CustomElementSupport', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ text }</paragraph>` );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ text }</paragraph>` );
 
 			expect( editor.getData() ).to.equal( text == '' ? '' : `<p>${ text }</p>` );
 		} );
@@ -553,7 +553,7 @@ describe( 'CustomElementSupport', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( modelData );
 
 			expect( editor.getData() ).to.equal( data );
 		} );

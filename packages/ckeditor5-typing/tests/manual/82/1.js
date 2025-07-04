@@ -7,10 +7,10 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 window.setInterval( function() {
-	console.log( getData( window.editor.model ) );
+	console.log( _getModelData( window.editor.model ) );
 }, 3000 );
 
 ClassicEditor

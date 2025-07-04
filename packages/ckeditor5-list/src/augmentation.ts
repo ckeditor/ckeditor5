@@ -26,6 +26,13 @@ import type {
 	TodoListUI,
 	CheckTodoListCommand,
 
+	ListFormatting,
+	ListItemBoldIntegration,
+	ListItemItalicIntegration,
+	ListItemFontSizeIntegration,
+	ListItemFontColorIntegration,
+	ListItemFontFamilyIntegration,
+
 	LegacyList,
 	LegacyListEditing,
 	LegacyListUtils,
@@ -68,6 +75,12 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TodoList.pluginName ]: TodoList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
+		[ ListFormatting.pluginName ]: ListFormatting;
+		[ ListItemBoldIntegration.pluginName ]: ListItemBoldIntegration;
+		[ ListItemItalicIntegration.pluginName ]: ListItemItalicIntegration;
+		[ ListItemFontSizeIntegration.pluginName ]: ListItemFontSizeIntegration;
+		[ ListItemFontColorIntegration.pluginName ]: ListItemFontColorIntegration;
+		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
 
 		[ LegacyList.pluginName ]: LegacyList;
 		[ LegacyListEditing.pluginName ]: LegacyListEditing;

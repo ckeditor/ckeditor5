@@ -335,7 +335,7 @@ Note that this method might be called multiple times. Apart from initialization,
 
 ### `change`
 
-Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
+Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `change:data` event object.
 
 ```html
@@ -363,12 +363,12 @@ export class MyComponent {
 
 ### `blur`
 
-Fired when the editing view of the editor is blurred. It corresponds with the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
+Fired when the editing view of the editor is blurred. It corresponds with the {@link module:engine/view/document~ViewDocument#event:blur `editor.editing.view.document#blur`} event.
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `blur` event data.
 
 ### `focus`
 
-Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
+Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~ViewDocument#event:focus `editor.editing.view.document#focus`} event.
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus` event data.
 
 ### `error`

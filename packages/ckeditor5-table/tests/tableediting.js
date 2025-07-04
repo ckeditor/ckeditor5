@@ -5,7 +5,7 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
 import { TableEditing } from '../src/tableediting.js';
@@ -171,7 +171,7 @@ describe( 'TableEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
-				setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
@@ -185,7 +185,7 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should create thead section', () => {
-				setModelData(
+				_setModelData(
 					model,
 					'<table headingRows="1"><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>'
 				);
@@ -206,14 +206,14 @@ describe( 'TableEditing', () => {
 			it( 'should convert table', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with image', () => {
 				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><imageBlock src="sample.png"></imageBlock></tableCell></tableRow></table>' );
 			} );
 
@@ -222,7 +222,7 @@ describe( 'TableEditing', () => {
 					'<table><tbody><tr><td><foo></foo></td></tr></tbody></table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 			} );
 
@@ -231,7 +231,7 @@ describe( 'TableEditing', () => {
 					'<table><tbody><tr><td><oembed url="https://www.youtube.com/watch?v=H08tGjXNHO4"></oembed></td></tr></tbody></table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell>' +
 						'<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' +
 					'</tableCell></tableRow></table>' );
@@ -240,21 +240,21 @@ describe( 'TableEditing', () => {
 			it( 'should convert table when colspan is string', () => {
 				editor.setData( '<table><tbody><tr><td colspan="abc">foo</td></tr></tbody></table>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with colspan 0', () => {
 				editor.setData( '<table><tbody><tr><td colspan="0">foo</td></tr></tbody></table>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with negative rowspan and colspan', () => {
 				editor.setData( '<table><tbody><tr><td colspan="-1" rowspan="-1">foo</td></tr></tbody></table>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
@@ -285,42 +285,42 @@ describe( 'TableEditing', () => {
 		} );
 
 		it( 'should do nothing if not in table cell', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
+			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
 
 		it( 'should do nothing if table cell with a block content is selected as a whole', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
 			] ) );
 
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
 			] ) );
 		} );
 
 		it( 'should allow default behavior of Shift+Enter pressed', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]11' ]
 			] ) );
 
@@ -328,7 +328,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );

@@ -126,6 +126,22 @@ const { ClassicEditor } = await loadCKEditorCloud( {
 } );
 ```
 
+## Migrating custom plugins
+
+If you are using custom plugins, you need to first {@link tutorials/creating-simple-plugin-timestamp#adapt-this-tutorial-to-cdn adapt these to work with the CDN approach}. It will change the way imports and CSS files are handled.
+
+Next, refer to the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide to learn about using the {@link getting-started/setup/loading-cdn-resources#using-the-useckeditorcloud-function#using-the-loadckeditorcloud-function `loadCKEditorCloud`} function. This will be needed to include the custom plugin in the CDN configuration of CKEditor&nbsp;5. By employing these, you can dynamically import the plugin in a way similar to this one:
+
+```js
+plugins: {
+  CustomPlugin: () => import('./path/to/plugin.umd.js')
+}
+```
+
+If your plugin depends on core plugins already loaded via CDN, you can access them through the `window.CKEDITOR` and `window.CKEDITOR_PREMIUM_FEATURES` global variables.
+
+Also, `loadCKEditorCloud` uses caching, so you can call it to dynamically load dependencies. Find more details in the options section of the {@link getting-started/setup/loading-cdn-resources#the-loadckeditorcloud-function-options Loading CDN resources} guide.
+
 ## Conclusion
 
 Following these steps, you successfully migrated CKEditor&nbsp;5 from an NPM-based installation to a CDN-based installation using Vanilla JS. This approach simplifies the setup process and can help improve the performance of your application by reducing the bundle size.

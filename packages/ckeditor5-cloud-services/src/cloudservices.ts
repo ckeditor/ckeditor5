@@ -50,6 +50,11 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 	public readonly bundleVersion?: string;
 
 	/**
+	 * Specifies whether the token should be automatically refreshed when it expires.
+	 */
+	public readonly autoRefresh: boolean = true;
+
+	/**
 	 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
 	 * Its value is `null` when {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} is not provided.
 	 *
@@ -107,7 +112,7 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 		// behavior we need to catch the exception and destroy the uninitialized token instance.
 		// See: https://github.com/ckeditor/ckeditor5/issues/17531
 		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
-		const uninitializedToken = cloudServicesCore.createToken( this.tokenUrl );
+		const uninitializedToken = cloudServicesCore.createToken( this.tokenUrl, { autoRefresh: this.autoRefresh } );
 
 		try {
 			this.token = await uninitializedToken.init();
@@ -131,7 +136,7 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 		}
 
 		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
-		const token = await cloudServicesCore.createToken( tokenUrl ).init();
+		const token = await cloudServicesCore.createToken( tokenUrl, { autoRefresh: this.autoRefresh } ).init();
 
 		this._tokens.set( tokenUrl, token );
 

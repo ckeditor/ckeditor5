@@ -15,7 +15,7 @@ import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdo
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -59,7 +59,7 @@ describe( 'DecoupledEditor', () => {
 		} );
 
 		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
 		} );
 
 		describe( 'ui', () => {

@@ -10,13 +10,13 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type {
-	DocumentSelection,
-	Element,
+	ModelDocumentSelection,
+	ModelElement,
 	Model,
-	Position,
-	Schema,
-	Text,
-	UpcastWriter,
+	ModelPosition,
+	ModelSchema,
+	ModelText,
+	ViewUpcastWriter,
 	ViewDocumentFragment,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -31,6 +31,8 @@ import { first, type LocaleTranslate } from 'ckeditor5/src/utils.js';
  * configuration is defined because the editor does not exist yet.
  * * To make sure each definition has a CSS class associated with it even if not specified
  * in the original configuration.
+ *
+ * @internal
  */
 export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): Array<CodeBlockLanguageDefinition> {
 	const t = editor.t;
@@ -86,6 +88,8 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): 
  * 	'javascript': 'JavaScript'
  * }
  * ```
+ *
+ * @internal
  */
 export function getPropertyAssociation(
 	languageDefs: Array<CodeBlockLanguageDefinition>,
@@ -111,8 +115,10 @@ export function getPropertyAssociation(
 /**
  * For a given model text node, it returns white spaces that precede other characters in that node.
  * This corresponds to the indentation part of the code block line.
+ *
+ * @internal
  */
-export function getLeadingWhiteSpaces( textNode: Text ): string {
+export function getLeadingWhiteSpaces( textNode: ModelText ): string {
 	return textNode.data.match( /^(\s*)/ )![ 0 ];
 }
 
@@ -138,8 +144,9 @@ export function getLeadingWhiteSpaces( textNode: Text ): string {
  * ```
  *
  * @param text The raw code text to be converted.
+ * @internal
  */
-export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text: string ): ViewDocumentFragment {
+export function rawSnippetTextToViewDocumentFragment( writer: ViewUpcastWriter, text: string ): ViewDocumentFragment {
 	const fragment = writer.createDocumentFragment();
 	const textLines = text.split( '\n' );
 
@@ -194,10 +201,12 @@ export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text
  * the writer inserts or removes elements at the same time.
  *
  * **Note:** The position is located after the leading white spaces in the text node.
+ *
+ * @internal
  */
-export function getIndentOutdentPositions( model: Model ): Array<Position> {
+export function getIndentOutdentPositions( model: Model ): Array<ModelPosition> {
 	const selection = model.document.selection;
-	const positions: Array<Position> = [];
+	const positions: Array<ModelPosition> = [];
 
 	// When the selection is collapsed, there's only one position we can indent or outdent.
 	if ( selection.isCollapsed ) {
@@ -244,35 +253,40 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
 
 /**
  * Checks if any of the blocks within the model selection is a code block.
+ *
+ * @internal
  */
-export function isModelSelectionInCodeBlock( selection: DocumentSelection ): boolean {
+export function isModelSelectionInCodeBlock( selection: ModelDocumentSelection ): boolean {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return !!firstBlock && firstBlock.is( 'element', 'codeBlock' );
 }
 
 /**
- * Checks if an {@link module:engine/model/element~Element Element} can become a code block.
+ * Checks if an {@link module:engine/model/element~ModelElement Element} can become a code block.
  *
  * @param schema Model's schema.
  * @param element The element to be checked.
  * @returns Check result.
+ * @internal
  */
-export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
+export function canBeCodeBlock( schema: ModelSchema, element: ModelElement ): boolean {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
 		return false;
 	}
 
-	return schema.checkChild( element.parent as Element, 'codeBlock' );
+	return schema.checkChild( element.parent as ModelElement, 'codeBlock' );
 }
 
 /**
  * Get the translated message read by the screen reader when you enter or exit an element with your cursor.
+ *
+ * @internal
  */
 export function getCodeBlockAriaAnnouncement(
 	t: LocaleTranslate,
 	languageDefs: Array<CodeBlockLanguageDefinition>,
-	element: Element,
+	element: ModelElement,
 	direction: 'enter' | 'leave'
 ): string {
 	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );
@@ -327,8 +341,10 @@ export function getCodeBlockAriaAnnouncement(
  * <codeBlock>foo<softBreak />bar<element />^</codeBlock>  ->   <codeBlock>foo<softBreak />[bar]<element /></codeBlock>
  * <codeBlock>foo<softBreak /><element />ba^r</codeBlock>  ->   null
  * ```
+ *
+ * @internal
  */
-export function getTextNodeAtLineStart( position: Position, model: Model ): Text | null {
+export function getTextNodeAtLineStart( position: ModelPosition, model: Model ): ModelText | null {
 	// First, move position before a text node, if it is inside a text node.
 	if ( position.textNode ) {
 		position = model.createPositionBefore( position.textNode );

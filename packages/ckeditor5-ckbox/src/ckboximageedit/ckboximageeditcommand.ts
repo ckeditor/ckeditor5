@@ -16,7 +16,7 @@ import {
 	delay,
 	type AbortableFunc
 } from 'ckeditor5/src/utils.js';
-import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import { isEqual } from 'es-toolkit/compat';
 

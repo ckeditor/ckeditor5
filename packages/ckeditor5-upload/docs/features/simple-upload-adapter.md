@@ -2,6 +2,7 @@
 category: features-image-upload
 menu-title: Simple upload adapter
 meta-title: Simple upload adapter | CKEditor 5 Documentation
+meta-description: Upload images to your server in CKEditor 5 using the Simple Upload Adapter for easy, direct image handling with minimal configuration.
 order: 60
 ---
 

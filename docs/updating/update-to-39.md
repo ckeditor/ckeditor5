@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 39.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 39.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v39.x
 order: 85
 ---
@@ -86,12 +87,12 @@ ClassicEditor
 
 ### View element placeholder
 
-The {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} function no longer gets placeholder content as a `text` property of the `options` argument. To define a value of the placeholder, you need to specify it as a {@link module:engine/view/placeholder~PlaceholderableElement#placeholder `placeholder` property} of the `element` which is passed into the `options` object.
+The {@link module:engine/view/placeholder~enableViewPlaceholder `enableViewPlaceholder()`} function no longer gets placeholder content as a `text` property of the `options` argument. To define a value of the placeholder, you need to specify it as a {@link module:engine/view/placeholder~PlaceholderableViewElement#placeholder `placeholder` property} of the `element` which is passed into the `options` object.
 
 ```js
 element.placeholder = 'Type something…';
 
-enablePlaceholder( {
+enableViewPlaceholder( {
     view: editingView,
     element: element,
     isDirectHost: false,

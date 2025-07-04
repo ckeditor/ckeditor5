@@ -4,7 +4,7 @@
  */
 
 import { KeyObserver } from '../../../src/view/observer/keyobserver.js';
-import { View } from '../../../src/view/view.js';
+import { EditingView } from '../../../src/view/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -12,7 +12,7 @@ describe( 'KeyObserver', () => {
 	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		observer = view.getObserver( KeyObserver );
 	} );

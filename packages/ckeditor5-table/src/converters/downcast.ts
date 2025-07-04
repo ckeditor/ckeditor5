@@ -8,16 +8,18 @@
  */
 
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
-import type { AdditionalSlot } from '../tableediting.js';
+import type { TableConversionAdditionalSlot } from '../tableediting.js';
 
 /**
  * Model table element to view table element conversion helper.
+ *
+ * @internal
  */
-export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
+export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): DowncastElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
@@ -74,9 +76,10 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 /**
  * Model table row element to view `<tr>` element conversion helper.
  *
+ * @internal
  * @returns Element creator.
  */
-export function downcastRow(): ElementCreatorFunction {
+export function downcastRow(): DowncastElementCreatorFunction {
 	return ( tableRow, { writer } ) => {
 		return tableRow.isEmpty ?
 			writer.createEmptyElement( 'tr' ) :
@@ -90,13 +93,14 @@ export function downcastRow(): ElementCreatorFunction {
  * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
  * and `<td>` otherwise.
  *
+ * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
-		const tableRow = tableCell.parent as Element;
-		const table = tableRow.parent as Element;
+		const tableRow = tableCell.parent as ModelElement;
+		const table = tableRow.parent as ModelElement;
 		const rowIndex = table.getChildIndex( tableRow )!;
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
@@ -131,10 +135,11 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
  * * For a single paragraph without attributes it returns `<span>` to simulate data table.
  * * For all other cases it returns `<p>` element.
  *
+ * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		if ( !modelElement.parent!.is( 'element', 'tableCell' ) ) {
 			return null;
@@ -164,8 +169,10 @@ export function convertParagraphInTableCell( options: { asWidget?: boolean } = {
  *
  * * If returned `true` - to a `<span class="ck-table-bogus-paragraph">`
  * * If returned `false` - to a `<p>`
+ *
+ * @internal
  */
-export function isSingleParagraphWithoutAttributes( modelElement: Element ): boolean {
+export function isSingleParagraphWithoutAttributes( modelElement: ModelElement ): boolean {
 	const tableCell = modelElement.parent!;
 
 	const isSingleParagraph = tableCell.childCount == 1;
@@ -174,14 +181,15 @@ export function isSingleParagraphWithoutAttributes( modelElement: Element ): boo
 }
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a table widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
+ * Converts a given {@link module:engine/view/element~ViewElement} to a table widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property}
+ * allowing to recognize the table widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param writer An instance of the view writer.
  * @param label The element's label. It will be concatenated with the table `alt` attribute if one is present.
  */
-function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): ViewElement {
+function toTableWidget( viewElement: ViewElement, writer: ViewDowncastWriter ): ViewElement {
 	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
@@ -190,7 +198,7 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): View
 /**
  * Checks if an element has any attributes set.
  */
-function hasAnyAttribute( element: Node ): boolean {
+function hasAnyAttribute( element: ModelNode ): boolean {
 	for ( const attributeKey of element.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
 		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
@@ -203,6 +211,11 @@ function hasAnyAttribute( element: Node ): boolean {
 	return false;
 }
 
+/**
+ * Options for the downcast table conversion.
+ *
+ * @internal
+ */
 export interface DowncastTableOptions {
 
 	/**
@@ -213,5 +226,5 @@ export interface DowncastTableOptions {
 	/**
 	 * Array of additional slot handlers.
 	 */
-	additionalSlots: Array<AdditionalSlot>;
+	additionalSlots: Array<TableConversionAdditionalSlot>;
 }

@@ -6,7 +6,7 @@
 import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'LegacyIndentCommand', () => {
 	let editor, model, doc, root;
@@ -25,7 +25,7 @@ describe( 'LegacyIndentCommand', () => {
 		} );
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-		setData(
+		_setModelData(
 			model,
 			'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 			'<listItem listIndent="0" listType="bulleted">b</listItem>' +
@@ -67,7 +67,7 @@ describe( 'LegacyIndentCommand', () => {
 
 			// Reported in PR #53.
 			it( 'should be false if selection starts in first list item #2', () => {
-				setData(
+				_setModelData(
 					model,
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
@@ -81,7 +81,7 @@ describe( 'LegacyIndentCommand', () => {
 
 			// Reported in PR #53.
 			it( 'should be false if selection starts in first list item #3', () => {
-				setData(
+				_setModelData(
 					model,
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
@@ -94,7 +94,7 @@ describe( 'LegacyIndentCommand', () => {
 			} );
 
 			it( 'should be false if selection starts in first list item of top level list with different type than previous list', () => {
-				setData(
+				_setModelData(
 					model,
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="0" listType="numbered">[]b</listItem>'
@@ -116,7 +116,7 @@ describe( 'LegacyIndentCommand', () => {
 			it( 'should be false if selection starts in a paragraph with indent attribute', () => {
 				model.schema.extend( 'paragraph', { allowAttributes: 'listIndent' } );
 
-				setData( model, '<listItem listIndent="0">a</listItem><paragraph listIndent="0">b[]</paragraph>' );
+				_setModelData( model, '<listItem listIndent="0">a</listItem><paragraph listIndent="0">b[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -144,7 +144,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -162,7 +162,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -183,7 +183,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
@@ -263,7 +263,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -281,7 +281,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph listIndent="0" listType="bulleted">a</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
@@ -299,7 +299,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<paragraph listIndent="0" listType="bulleted">b</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
@@ -320,7 +320,7 @@ describe( 'LegacyIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<paragraph listIndent="0" listType="bulleted">b</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
