@@ -54,31 +54,25 @@
 
 				& > td,
 				& > th {
-					/* Our opiniotanted styling in the tables, it prevents
-					 * the shift of content when the enter is pressed at the top.
+					/* Opinionated table content styling: prevents content from shifting
+					 * when Enter is pressed in the first cell.
 					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
 					 */
 					& > p:first-of-type {
-						margin-block-start: 0;
+						margin-top: 0;
 					}
 
-					/* Symmetrical to the above rule which styles the last paragraph
-					 * to provide more consistent experience with the first one.
+					/* Mirrors the rule above for the last paragraph to keep the
+					 * experience consistent with the first paragraph.
+					 *
+					 * Together, these rules prevent margins from appearing when a
+					 * bogus paragraph becomes a real paragraph after it receives line
+					 * height, text alignment, or other block style.
+					 *
 					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
 					 */
 					& > p:last-of-type {
-						margin-block-end: 0;
-					}
-
-					/* Rule which prevents the margins to appear when a
-					 * bogus paragraph gets a line height or text alingment.
-					 * We use only-of-type as the cell may have a div with column resize.
-					 * to provide more consistent experience with the first one.
-					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
-					 */
-					& > p:only-of-type {
-						margin-block-start: 0;
-						margin-block-end: 0;
+						margin-bottom: 0;
 					}
 
 					min-width: 2em;

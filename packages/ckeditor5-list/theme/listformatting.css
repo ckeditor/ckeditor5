@@ -10,24 +10,22 @@
 }
 
 .ck-content li {
-	/* Our opiniotanted styling in the lists, it prevents
-	 * the shift of content when a list is turned into a multi-block one
-	 * (enter + backspace scenario).
+	/* Opinionated list content styling: prevents content shift
+	 * when a list becomes multi-block (Enter + Backspace scenario).
 	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
 	 */
 	& > p:first-of-type {
-		margin-block-start: 0;
+		margin-top: 0;
 	}
 
-	/* Rule which prevents the margins to appear when a
-	 * bogus paragraph gets a line height or text alignment.
-	 * We use only-of-type as the cell may have a div with column resize.
-	 * to provide more consistent experience with the first one.
+	/* Prevents margins from appearing when a bogus paragraph
+	 * receives line height or text alignment.
+	 * Ensures a consistent experience with the first paragraph.
 	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
 	 */
 	& > p:only-child {
-		margin-block-start: 0;
-		margin-block-end: 0;
+		margin-top: 0;
+		margin-bottom: 0;
 	}
 
 	&.ck-list-marker-bold::marker {
