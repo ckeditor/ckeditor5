@@ -10,12 +10,18 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { TableCellPropertiesEditing } from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting.js';
+import { FontColorEditing } from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'RemoveFormatCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor.create( {
+			plugins: [ TableEditing, TableCellPropertiesEditing, FontColorEditing, Paragraph ]
+		} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -191,6 +197,82 @@ describe( 'RemoveFormatCommand', () => {
 			'state with custom block formatting': {
 				input: '<p fooA="bar">f[oo</p><p fooB="baz">b]ar</p>',
 				assert: () => expectModelToBeEqual( '<p fooA="BAR">f[oo</p><p fooB="BAZ">b]ar</p>' )
+			},
+
+			'removes formatting from a nested table (selection within paragraph in cell)': {
+				input:
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellBackgroundColor="blue">' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell tableCellBackgroundColor="yellow">' +
+											'<paragraph>B[a<$text fontColor="red">r</$text> B]az</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
+				assert: () => expectModelToBeEqual(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellBackgroundColor="blue">' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell tableCellBackgroundColor="yellow">' +
+											'<paragraph>B[ar B]az</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				)
+			},
+
+			'removes formatting from a nested table (whole nested cell selected)': {
+				input:
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellBackgroundColor="blue">' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'[<tableCell tableCellBackgroundColor="yellow">' +
+											'<paragraph><$text fontColor="red">Bar</$text> Baz</paragraph>' +
+										'</tableCell>]' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>',
+				assert: () => expectModelToBeEqual(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellBackgroundColor="blue">' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'[<tableCell>' +
+											'<paragraph>Bar Baz</paragraph>' +
+										'</tableCell>]' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				)
 			}
 		};
 
