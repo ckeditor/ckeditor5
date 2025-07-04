@@ -1002,6 +1002,7 @@ export type ListEditingCheckAttributesEvent = {
 	args: [ {
 		viewElement: ViewElement & { id?: string };
 		modelAttributes: ListItemAttributesMap;
+		modelReferenceElement: ListElement;
 	} ];
 	return: boolean;
 };
