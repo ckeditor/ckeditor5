@@ -8,7 +8,7 @@
  */
 
 import { Watchdog, type WatchdogConfig, type WatchdogState } from './watchdog.js';
-import { EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
+import { EditorWatchdog, type EditorWatchdogCreatorFunction } from './editorwatchdog.js';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { getSubNodes } from './utils/getsubnodes.js';
 import type { ArrayOrItem, CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -246,7 +246,7 @@ export class ContextWatchdog<TContext extends Context = Context> extends Watchdo
 	 *
 	 * @param itemConfigurationOrItemConfigurations An item configuration object or an array of item configurations.
 	 */
-	public add( itemConfigurationOrItemConfigurations: ArrayOrItem<WatchdogItemConfiguration> ): Promise<unknown> {
+	public add( itemConfigurationOrItemConfigurations: ArrayOrItem<ContextWatchdogItemConfiguration> ): Promise<unknown> {
 		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
 		return Promise.all( itemConfigurations.map( item => {
@@ -585,7 +585,7 @@ function toArray<T>( elementOrArray: ArrayOrItem<T> ): Array<T> {
 /**
  * The watchdog item configuration interface.
  */
-export interface WatchdogItemConfiguration {
+export interface ContextWatchdogItemConfiguration {
 
 	/**
 	 * id A unique item identificator.
@@ -601,7 +601,7 @@ export interface WatchdogItemConfiguration {
 	 * A function that initializes the item (the editor). The function takes editor initialization arguments
 	 * and should return a promise. For example: `( el, config ) => ClassicEditor.create( el, config )`.
 	 */
-	creator: EditorCreatorFunction;
+	creator: EditorWatchdogCreatorFunction;
 
 	/**
 	 * A function that destroys the item instance (the editor). The function

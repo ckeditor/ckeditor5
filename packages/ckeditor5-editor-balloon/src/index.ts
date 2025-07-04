@@ -8,3 +8,5 @@
  */
 
 export { BalloonEditor } from './ballooneditor.js';
+export { BalloonEditorUI } from './ballooneditorui.js';
+export { BalloonEditorUIView } from './ballooneditoruiview.js';

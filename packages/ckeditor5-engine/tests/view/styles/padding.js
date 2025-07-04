@@ -4,14 +4,14 @@
  */
 
 import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
-import { addPaddingRules } from '../../../src/view/styles/padding.js';
+import { addPaddingStylesRules } from '../../../src/view/styles/padding.js';
 
 describe( 'Padding styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
-		addPaddingRules( stylesProcessor );
+		addPaddingStylesRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );
 

@@ -2,6 +2,7 @@
 category: features
 menu-title: Horizontal line
 meta-title: Horizontal line | CKEditor 5 Documentation
+meta-description: Insert horizontal lines in CKEditor 5 to visually separate content, improve document structure, and enhance readability.
 ---
 
 # Horizontal line

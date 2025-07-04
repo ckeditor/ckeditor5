@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewModel } from '../../../src/model.js';
+import { UIModel } from '../../../src/model.js';
 import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 import { testUtils } from '../../_utils/utils.js';
 import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
@@ -25,7 +25,7 @@ function createPositionedDropdown( position ) {
 	].forEach( label => {
 		collection.add( {
 			type: 'button',
-			model: new ViewModel( { label, withText: true } )
+			model: new UIModel( { label, withText: true } )
 		} );
 	} );
 

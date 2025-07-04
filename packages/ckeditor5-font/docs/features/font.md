@@ -1,6 +1,7 @@
 ---
 title: Font family, size, and color
 meta-title: Font family, size, and color | CKEditor 5 Documentation
+meta-description: Customize text appearance in CKEditor 5 with font family, size, and color options to enhance content style and readability.
 category: features
 ---
 

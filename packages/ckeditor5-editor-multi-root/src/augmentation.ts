@@ -62,7 +62,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * ```
 		 *
 		 * You can react to root attributes changes by listening to
-		 * {@link module:engine/model/document~Document#event:change:data document `change:data` event}:
+		 * {@link module:engine/model/document~ModelDocument#event:change:data document `change:data` event}:
 		 *
 		 * ```ts
 		 * editor.model.document.on( 'change:data', () => {

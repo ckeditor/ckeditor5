@@ -7,7 +7,7 @@
  * @module table/tableproperties/commands/tableborderwidthcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 import { TablePropertyCommand } from './tablepropertycommand.js';
@@ -51,7 +51,7 @@ export class TableBorderWidthCommand extends TablePropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	protected override _getValue( table: Element ): string | undefined {
+	protected override _getValue( table: ModelElement ): string | undefined {
 		if ( !table ) {
 			return;
 		}

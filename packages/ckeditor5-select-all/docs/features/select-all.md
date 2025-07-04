@@ -1,6 +1,7 @@
 ---
 title: Select all
 meta-title: Select all | CKEditor 5 Documentation
+meta-description: Use the Select All feature in CKEditor 5 to quickly manage the entire content of your document with a single action.
 category: features
 ---
 

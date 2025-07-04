@@ -21,7 +21,8 @@ export default function parseArguments( cliArguments ) {
 			'verbose',
 			'compile-only',
 			'ci',
-			'external'
+			'external',
+			'dry-run'
 		],
 
 		number: [
@@ -30,7 +31,7 @@ export default function parseArguments( cliArguments ) {
 
 		string: [
 			'branch',
-			'from',
+			'date',
 			'npm-tag',
 			'packages'
 		],
@@ -47,7 +48,8 @@ export default function parseArguments( cliArguments ) {
 			'npm-tag': 'staging',
 			verbose: false,
 			ci: false,
-			external: true
+			external: true,
+			'dry-run': false
 		}
 	};
 
@@ -61,7 +63,8 @@ export default function parseArguments( cliArguments ) {
 		'npm-tag',
 		'compile-only',
 		'nightly-alpha',
-		'nightly-next'
+		'nightly-next',
+		'dry-run'
 	] );
 
 	if ( options.nightly ) {
@@ -97,19 +100,21 @@ export default function parseArguments( cliArguments ) {
  *
  * @property {Boolean} external
  *
- * @property {Boolean} [compileOnly=false]
+ * @property {Boolean} dryRun=false
+ *
+ * @property {Boolean} compileOnly=false
  *
  * @property {Number} concurrency
  *
- * @property {String} [from]
+ * @property {String} branch='release'
  *
- * @property {String} [branch='release']
+ * @property {String} npmTag='staging'|'nightly'|'alpha'|'internal'
  *
- * @property {String} [npmTag='staging'|'nightly']
+ * @property {Array.<String>|null} packages=null
  *
- * @property {Array.<String>|null} packages
+ * @property {Boolean} verbose=false
  *
- * @property {Boolean} [verbose=false]
+ * @property {Boolean} ci=false
  *
- * @property {Boolean} [ci=false]
+ * @property {String} [date]
  */

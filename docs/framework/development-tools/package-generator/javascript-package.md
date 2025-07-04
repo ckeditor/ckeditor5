@@ -1,6 +1,7 @@
 ---
 menu-title: JavaScript package
 meta-title: Package generator JavaScript package content | CKEditor 5 Framework Documentation
+meta-description: Learn how to generate a standalone JavaScript package with the CKEditor 5 package generator, including setup and build configuration.
 category: package-generator
 order: 42
 modified_at: 2024-06-27

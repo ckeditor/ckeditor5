@@ -13,17 +13,17 @@ import { isString } from 'es-toolkit/compat';
 /**
  * Attributes to be applied to the HTML element.
  */
-type HTMLElementAttributes = { readonly [ key: string ]: string };
+export type HTMLElementAttributes = { readonly [ key: string ]: string };
 
 /**
  * Attributes to be applied to the SVG element.
  */
-type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
+export type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
 
 /**
  * Element or elements that will be added to the created element as children. Strings will be automatically turned into Text nodes.
  */
-type ChildrenElements = Node | string | Iterable<Node | string>;
+export type ChildrenElements = Node | string | Iterable<Node | string>;
 
 /**
  * Creates an SVG element with attributes and children elements.

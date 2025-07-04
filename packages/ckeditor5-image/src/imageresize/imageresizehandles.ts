@@ -7,7 +7,7 @@
  * @module image/imageresize/imageresizehandles
  */
 
-import type { Element, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { WidgetResize } from 'ckeditor5/src/widget.js';
 import { ImageUtils } from '../imageutils.js';
@@ -108,7 +108,7 @@ export class ImageResizeHandles extends Plugin {
 						return domWidgetElement.querySelector( 'img' )!;
 					},
 					getResizeHost() {
-						return domConverter.mapViewToDom( mapper.toViewElement( imageModel as Element )! ) as HTMLElement;
+						return domConverter.mapViewToDom( mapper.toViewElement( imageModel as ModelElement )! ) as HTMLElement;
 					},
 
 					isCentered() {

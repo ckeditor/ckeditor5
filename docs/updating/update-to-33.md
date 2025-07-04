@@ -1,6 +1,7 @@
 ---
 category: update-guides
 meta-title: Update to version 33.x | CKEditor 5 Documentation
+meta-description: Follow the guide to update CKEditor 5 to version 33.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v33.x
 order: 91
 modified_at: 2022-02-01
@@ -140,7 +141,7 @@ From now on, extra plugins will be required when you add the following CKEditor&
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting with v33.0.0, all {@link module:engine/model/item~Item items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link module:engine/model/item~ModelItem items} in the {@link framework/architecture/editing-engine#model model} must be consumed in the {@link framework/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, refer to the {@link support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
 
 ### The `triggerBy` option in the downcast pipeline is now obsolete
 
@@ -298,9 +299,9 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 
 The new syntax of the `model` property is available in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers. Refer to the respective API documentation for more details.
 
-### Improved API of `DowncastWriter#createContainerElement()`
+### Improved API of `ViewDowncastWriter#createContainerElement()`
 
-Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} method:
+Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement} method:
 
 ```js
 // ❌ Old API:

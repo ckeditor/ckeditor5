@@ -3,6 +3,7 @@ category: features
 order: -999
 feedback-widget: false
 meta-title: CKEditor 5 features overview | CKEditor 5 Documentation
+meta-description: Explore CKEditor 5's rich text editing features, including media management, collaboration tools, and more — all fully customizable and extensible.
 ---
 
 # CKEditor&nbsp;5 features overview

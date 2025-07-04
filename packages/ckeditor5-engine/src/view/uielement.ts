@@ -7,16 +7,16 @@
  * @module engine/view/uielement
  */
 
-import { Element, type ElementAttributes } from './element.js';
-import { Node } from './node.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
+import { ViewNode } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import { type View } from './view.js';
-import { type Document } from './document.js';
-import { type DomConverter } from './domconverter.js';
-import { type Item } from './item.js';
+import { type EditingView } from './view.js';
+import { type ViewDocument } from './document.js';
+import { type ViewDomConverter } from './domconverter.js';
+import { type ViewItem } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
-import type { KeyEventData } from './observer/keyobserver.js';
+import type { ViewDocumentKeyEventData } from './observer/keyobserver.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -27,26 +27,26 @@ type DomElement = globalThis.HTMLElement;
  * UI elements can be used.
  *
  * How a UI element is rendered is in your control (you pass a callback to
- * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}).
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}).
  * The editor will ignore your UI element – the selection cannot be placed in it, it is skipped (invisible) when
  * the user modifies the selection by using arrow keys and the editor does not listen to any mutations which
  * happen inside your UI elements.
  *
  * The limitation is that you cannot convert a model element to a UI element. UI elements need to be
  * created for {@link module:engine/model/markercollection~Marker markers} or as additinal elements
- * inside normal {@link module:engine/view/containerelement~ContainerElement container elements}.
+ * inside normal {@link module:engine/view/containerelement~ViewContainerElement container elements}.
  *
  * To create a new UI element use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
-export class UIElement extends Element {
+export class ViewUIElement extends ViewElement {
 	/**
 	 * Creates new instance of UIElement.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` when third parameter is passed,
 	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createUIElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
@@ -54,10 +54,10 @@ export class UIElement extends Element {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
-		children?: Node | Iterable<Node>
+		attrs?: ViewElementAttributes,
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attrs, children );
 
@@ -65,16 +65,16 @@ export class UIElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#_insertChild} method.
+	 * Overrides {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.
 	 *
 	 * @internal
 	 */
-	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
-		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
+		if ( items && ( items instanceof ViewNode || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
-			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
+			 * Cannot add children to {@link module:engine/view/uielement~ViewUIElement}.
 			 *
 			 * @error view-uielement-cannot-add
 			 */
@@ -85,8 +85,8 @@ export class UIElement extends Element {
 	}
 
 	/**
-	 * Renders this {@link module:engine/view/uielement~UIElement} to DOM. This method is called by
-	 * {@link module:engine/view/domconverter~DomConverter}.
+	 * Renders this {@link module:engine/view/uielement~ViewUIElement} to DOM. This method is called by
+	 * {@link module:engine/view/domconverter~ViewDomConverter}.
 	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
 	 *
 	 * ```ts
@@ -104,11 +104,11 @@ export class UIElement extends Element {
 	 * the {@link module:ui/editorui/editorui~EditorUI#update `editor.ui.update()`} method
 	 * after rendering your UI element.
 	 *
-	 * @param domConverter Instance of the DomConverter used to optimize the output.
+	 * @param domConverter Instance of the ViewDomConverter used to optimize the output.
 	 */
 	public render(
 		domDocument: DomDocument,
-		domConverter: DomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
+		domConverter: ViewDomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
 	): DomElement {
 		// Provide basic, default output.
 		return this.toDomElement( domDocument );
@@ -131,7 +131,7 @@ export class UIElement extends Element {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-UIElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewUIElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'uiElement' || type === 'view:uiElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -145,18 +145,17 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
-export { UIElement as ViewUIElement };
-
 /**
- * This function injects UI element handling to the given {@link module:engine/view/document~Document document}.
+ * This function injects UI element handling to the given {@link module:engine/view/document~ViewDocument document}.
  *
- * A callback is added to {@link module:engine/view/document~Document#event:keydown document keydown event}.
+ * A callback is added to {@link module:engine/view/document~ViewDocument#event:keydown document keydown event}.
  * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
  * @param view View controller to which the quirks handling will be injected.
+ * @internal
  */
-export function injectUiElementHandling( view: View ): void {
+export function injectUiElementHandling( view: EditingView ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( evt, data ) =>
 		jumpOverUiElement( evt, data, view.domConverter ), { priority: 'low' } );
 }
@@ -173,7 +172,7 @@ function getFillerOffset() {
  * causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
  * ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
  */
-function jumpOverUiElement( evt: unknown, data: KeyEventData, domConverter: DomConverter ) {
+function jumpOverUiElement( evt: unknown, data: ViewDocumentKeyEventData, domConverter: ViewDomConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;

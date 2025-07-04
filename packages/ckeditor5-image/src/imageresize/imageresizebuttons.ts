@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownItemDefinition
@@ -300,7 +300,7 @@ export class ImageResizeButtons extends Plugin {
 
 				definition = {
 					type: 'button',
-					model: new ViewModel( {
+					model: new UIModel( {
 						label: this._getOptionLabelValue( option ),
 						role: 'menuitemradio',
 						withText: true,
@@ -321,7 +321,7 @@ export class ImageResizeButtons extends Plugin {
 			} else {
 				definition = {
 					type: 'button',
-					model: new ViewModel( {
+					model: new UIModel( {
 						commandName: 'resizeImage',
 						commandValue: option.valueWithUnits,
 						label: this._getOptionLabelValue( option ),

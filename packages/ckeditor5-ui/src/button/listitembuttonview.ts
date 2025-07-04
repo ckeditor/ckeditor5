@@ -109,6 +109,9 @@ export class ListItemButtonView extends ButtonView {
 	}
 }
 
+/**
+ * @internal
+ */
 export class CheckIconHolderView extends View {
 	/**
 	 * Collection of child views.

@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine.js';
+import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
@@ -42,7 +42,7 @@ export class TableEditing extends Plugin {
 	/**
 	 * Handlers for creating additional slots in the table.
 	 */
-	private _additionalSlots: Array<AdditionalSlot>;
+	private _additionalSlots: Array<TableConversionAdditionalSlot>;
 
 	/**
 	 * @inheritDoc
@@ -219,7 +219,7 @@ export class TableEditing extends Plugin {
 	/**
 	 * Registers downcast handler for the additional table slot.
 	 */
-	public registerAdditionalSlot( slotHandler: AdditionalSlot ): void {
+	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
 	}
 }
@@ -290,15 +290,15 @@ function upcastCellSpan( type: string ) {
  * </table>
  * ```
  */
-export interface AdditionalSlot {
+export interface TableConversionAdditionalSlot {
 
 	/**
 	 * Filter for elements that should be placed inside given slot.
 	 */
-	filter: SlotFilter;
+	filter: DowncastSlotFilter;
 
 	/**
 	 * Position of the slot within the table.
 	 */
-	positionOffset: PositionOffset;
+	positionOffset: ModelPositionOffset;
 }

@@ -5,9 +5,9 @@
 
 import { StylesMap, StylesProcessor } from '../../src/view/stylesmap.js';
 import encodedImage from './_utils/encodedimage.txt';
-import { addMarginRules } from '../../src/view/styles/margin.js';
-import { addBorderRules } from '../../src/view/styles/border.js';
-import { getBoxSidesValueReducer } from '../../src/view/styles/utils.js';
+import { addMarginStylesRules } from '../../src/view/styles/margin.js';
+import { addBorderStylesRules } from '../../src/view/styles/border.js';
+import { getBoxSidesStyleValueReducer } from '../../src/view/styles/utils.js';
 
 describe( 'StylesMap', () => {
 	let stylesMap, stylesProcessor;
@@ -24,9 +24,9 @@ describe( 'StylesMap', () => {
 			path: 'foo.top',
 			value
 		} ) );
-		stylesProcessor.setReducer( 'foo', getBoxSidesValueReducer( 'foo' ) );
+		stylesProcessor.setReducer( 'foo', getBoxSidesStyleValueReducer( 'foo' ) );
 
-		addMarginRules( stylesProcessor );
+		addMarginStylesRules( stylesProcessor );
 		stylesMap = new StylesMap( stylesProcessor );
 	} );
 
@@ -213,7 +213,7 @@ describe( 'StylesMap', () => {
 
 	describe( 'remove()', () => {
 		beforeEach( () => {
-			addBorderRules( stylesProcessor );
+			addBorderStylesRules( stylesProcessor );
 		} );
 
 		it( 'should do nothing if property is not set', () => {
@@ -430,7 +430,7 @@ describe( 'StylesMap', () => {
 
 		it( 'should output full names for known style names - expand = true - other extractors must not affect the output', () => {
 			// Let's add this line to ensure that only matching extractors are used to expand style names.
-			addBorderRules( stylesProcessor );
+			addBorderStylesRules( stylesProcessor );
 
 			stylesMap.setTo( 'margin: 1px' );
 

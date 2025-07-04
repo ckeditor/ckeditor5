@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Testing environment | CKEditor 5 Framework Documentation
+meta-description: Test CKEditor 5 using the official testing environment. Run unit and manual tests effectively.
 order: 30
 modified_at: 2022-09-07
 ---
@@ -80,13 +81,13 @@ expect(
 
 #### `attribute`
 
-Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~DocumentSelection#hasAttribute hasAttribute}.
+Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~ModelDocumentSelection#hasAttribute hasAttribute}.
 
 ```js
 expect( selection ).to.have.attribute( 'linkHref' );
 ```
 
-When an optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
+When an optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~ModelDocumentSelection#getAttribute getAttribute}.
 
 ```js
 expect( selection ).to.have.attribute( 'linkHref', 'example.com' );

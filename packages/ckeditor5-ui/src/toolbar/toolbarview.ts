@@ -51,6 +51,9 @@ import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
+/**
+ * @internal
+ */
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
 	alignLeft: IconAlignLeft,
 	bold: IconBold,
@@ -626,7 +629,7 @@ export type ToolbarViewGroupedItemsUpdateEvent = {
  * An inner block of the {@link module:ui/toolbar/toolbarview~ToolbarView} hosting its
  * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
  */
-class ItemsView extends View {
+export class ItemsView extends View {
 	/**
 	 * A collection of items (buttons, dropdowns, etc.).
 	 */
@@ -1171,6 +1174,7 @@ export interface ToolbarOptions {
  * {@link module:ui/toolbar/toolbarview~ToolbarView#element} template or
  * {@link module:ui/toolbar/toolbarview~ToolbarView#render rendering}. They can be enabled
  * conditionally, e.g. depending on the configuration of the toolbar.
+ * @internal
  */
 export interface ToolbarBehavior {
 

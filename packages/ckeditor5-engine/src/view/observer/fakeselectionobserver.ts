@@ -10,36 +10,36 @@
 import { Observer } from './observer.js';
 import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver.js';
 import { ViewSelection } from '../selection.js';
-import { type View } from '../view.js';
+import { type EditingView } from '../view.js';
 import type {
-	ViewDocumentSelectionChangeEvent,
-	ViewDocumentSelectionChangeDoneEvent,
-	ViewDocumentSelectionEventData
+	ViewDocumentObserverSelectionChangeEvent,
+	ViewDocumentObserverSelectionChangeDoneEvent,
+	ViewDocumentObserverSelectionEventData
 } from './selectionobserver.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
+import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
- * on {@link module:engine/view/document~Document#event:keydown keydown} events and handles moving fake view selection to the correct place
- * if arrow keys are pressed.
- * Fires {@link module:engine/view/document~Document#event:selectionChange selectionChange event} simulating natural behaviour of
+ * on {@link module:engine/view/document~ViewDocument#event:keydown keydown} events and handles moving
+ * fake view selection to the correct place if arrow keys are pressed.
+ * Fires {@link module:engine/view/document~ViewDocument#event:selectionChange selectionChange event} simulating natural behaviour of
  * {@link module:engine/view/observer/selectionobserver~SelectionObserver SelectionObserver}.
  */
 export class FakeSelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentObserverSelectionEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.
 	 */
-	constructor( view: View ) {
+	constructor( view: EditingView ) {
 		super( view );
 
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
-			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
+			this.document.fire<ViewDocumentObserverSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
 	}
 
@@ -85,8 +85,8 @@ export class FakeSelectionObserver extends Observer {
 	 * Handles collapsing view selection according to given key code. If left or up key is provided - new selection will be
 	 * collapsed to left. If right or down key is pressed - new selection will be collapsed to right.
 	 *
-	 * This method fires {@link module:engine/view/document~Document#event:selectionChange} and
-	 * {@link module:engine/view/document~Document#event:selectionChangeDone} events imitating behaviour of
+	 * This method fires {@link module:engine/view/document~ViewDocument#event:selectionChange} and
+	 * {@link module:engine/view/document~ViewDocument#event:selectionChangeDone} events imitating behaviour of
 	 * {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
 	 */
 	private _handleSelectionMove( keyCode: number ): void {
@@ -110,7 +110,7 @@ export class FakeSelectionObserver extends Observer {
 		};
 
 		// Fire dummy selection change event.
-		this.document.fire<ViewDocumentSelectionChangeEvent>( 'selectionChange', data );
+		this.document.fire<ViewDocumentObserverSelectionChangeEvent>( 'selectionChange', data );
 
 		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 		// This function is debounced what means that `selectionChangeDone` event will be fired only when

@@ -13,6 +13,8 @@ import { MenuBarMenuListItemButtonView, type ButtonView } from 'ckeditor5/src/ui
 
 /**
  * Returns a function that creates a (toolbar or menu bar) button for a basic style feature.
+ *
+ * @internal
  */
 export function getButtonCreator( {
 	editor, commandName, plugin, icon, label, keystroke

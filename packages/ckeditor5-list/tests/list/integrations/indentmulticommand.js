@@ -15,8 +15,8 @@ import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblocked
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Indent MultiCommand integrations', () => {
@@ -1384,7 +1384,7 @@ describe( 'Indent MultiCommand integrations', () => {
 		describe( 'outdent command', () => {
 			it( 'should outdent the code block', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* <codeBlock language="language-plaintext">[]foo</codeBlock>'
@@ -1433,7 +1433,7 @@ describe( 'Indent MultiCommand integrations', () => {
 
 			it( 'should outdent list items if a selection starts before a code block and ends at a code block', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* foo',
@@ -1466,7 +1466,7 @@ describe( 'Indent MultiCommand integrations', () => {
 
 			it( 'should outdent the code block if a selection starts at a code block and ends after it', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* foo',
@@ -1509,12 +1509,12 @@ describe( 'Indent MultiCommand integrations', () => {
 		if ( customSetModelData ) {
 			customSetModelData();
 		} else {
-			setModelData( model, modelList( input ) );
+			_setModelData( model, modelList( input ) );
 		}
 
 		editor.commands.get( commandName ).execute();
 
-		expect( getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		for ( const name in executedCommands ) {
 			expect( commandSpies[ name ].callCount ).to.equal( executedCommands[ name ], `${ name } command call count` );

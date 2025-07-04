@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { InsertImageCommand } from '../../src/image/insertimagecommand.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
@@ -38,7 +38,7 @@ describe( 'InsertImageCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
 			model.enqueueChange( { isUndoable: false }, () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				command.refresh();
 				expect( command.isEnabled ).to.be.true;
@@ -46,13 +46,13 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection directly in a paragraph', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -60,12 +60,12 @@ describe( 'InsertImageCommand', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block>foo[]</block>' );
+			_setModelData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is on another image', () => {
-			setModelData( model, '[<imageBlock></imageBlock>]' );
+			_setModelData( model, '[<imageBlock></imageBlock>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -78,7 +78,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 
-			setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock><caption>[]</caption></imageBlock>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -87,7 +87,7 @@ describe( 'InsertImageCommand', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 
-			setModelData( model, '[<object></object>]' );
+			_setModelData( model, '[<object></object>]' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -101,7 +101,7 @@ describe( 'InsertImageCommand', () => {
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
-			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -117,7 +117,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -127,38 +127,38 @@ describe( 'InsertImageCommand', () => {
 		it( 'should insert image at selection position as other widgets', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { source: imgSrc } );
 
-			expect( getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
+			expect( _getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
 		} );
 
 		it( 'should be possible to specify image type as image (imageBlock)', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( {
 				imageType: 'imageBlock',
 				source: imgSrc
 			} );
 
-			expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
+			expect( _getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should be possible to specify image type as image (imageInline)', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
 
-			setModelData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			command.execute( {
 				imageType: 'imageInline',
 				source: [ imgSrc1, imgSrc2 ]
 			} );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal(
 					`<paragraph><imageInline src="${ imgSrc1 }"></imageInline>` +
 					`[<imageInline src="${ imgSrc2 }"></imageInline>]</paragraph>`
@@ -168,7 +168,7 @@ describe( 'InsertImageCommand', () => {
 		it( 'should be possible to break the block with an inserted image', () => {
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
 			command.execute( {
 				imageType: 'imageBlock',
@@ -176,7 +176,7 @@ describe( 'InsertImageCommand', () => {
 				breakBlock: true
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`<paragraph>f</paragraph>[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>oo</paragraph>`
 			);
 		} );
@@ -185,11 +185,11 @@ describe( 'InsertImageCommand', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
 
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal(
 					'<paragraph>' +
 						`f<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]o` +
@@ -201,11 +201,11 @@ describe( 'InsertImageCommand', () => {
 			const imgSrc1 = 'foo/bar.jpg';
 			const imgSrc2 = 'foo/baz.jpg';
 
-			setModelData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( `<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]` );
 		} );
 
@@ -220,22 +220,22 @@ describe( 'InsertImageCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
-			setModelData( model, '<other>[]</other>' );
+			_setModelData( model, '<other>[]</other>' );
 
 			command.execute( { source: imgSrc } );
 
-			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		it( 'should replace an existing selected object with an image', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 
-			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
 
 			command.execute( { source: 'foo/bar.jpg' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
@@ -247,11 +247,11 @@ describe( 'InsertImageCommand', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 
-			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				`<imageBlock src="${ imgSrc1 }"></imageBlock>[<imageBlock src="${ imgSrc2 }"></imageBlock>]<paragraph>bar</paragraph>`
 			);
@@ -268,11 +268,11 @@ describe( 'InsertImageCommand', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'placeholder', view: 'placeholder' } );
 
-			setModelData( model, '<paragraph>foo[<placeholder></placeholder>]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[<placeholder></placeholder>]bar</paragraph>' );
 
 			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo' +
 					`<imageInline src="${ imgSrc1 }"></imageInline>[<imageInline src="${ imgSrc2 }"></imageInline>]` +
 				'bar</paragraph>'
@@ -280,21 +280,21 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should replace a selected block image with another block image', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>' );
 
 			command.execute( { source: 'new/image.jpg' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>[<imageBlock src="new/image.jpg"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
 
 		it( 'should replace a selected inline image with another inline image', () => {
-			setModelData( model, '<paragraph>foo[<imageInline src="foo/bar.jpg"></imageInline>]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[<imageInline src="foo/bar.jpg"></imageInline>]bar</paragraph>' );
 
 			command.execute( { source: 'new/image.jpg' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo[<imageInline src="new/image.jpg"></imageInline>]bar</paragraph>'
 			);
 		} );
@@ -304,11 +304,11 @@ describe( 'InsertImageCommand', () => {
 
 			const imgSrc = 'foo/bar.jpg';
 
-			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
 
 			command.execute( { source: imgSrc } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
 					'[<imageInline bar="b" baz="c" foo="a" src="foo/bar.jpg"></imageInline>]' +
@@ -324,7 +324,7 @@ describe( 'InsertImageCommand', () => {
 				allowAttributes: [ 'foo', 'bar' ]
 			} );
 
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( {
 				source: {
@@ -333,7 +333,7 @@ describe( 'InsertImageCommand', () => {
 				}
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f' +
 					`[<imageInline foo="foo-value" src="${ imgSrc }"></imageInline>]` +
 				'o</paragraph>'
@@ -348,7 +348,7 @@ describe( 'InsertImageCommand', () => {
 				allowAttributes: [ 'foo', 'bar' ]
 			} );
 
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute( {
 				source: [
@@ -363,7 +363,7 @@ describe( 'InsertImageCommand', () => {
 				]
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f' +
 					`<imageInline foo="foo-value" src="${ imgSrc1 }"></imageInline>` +
 					`[<imageInline bar="bar-value" src="${ imgSrc2 }"></imageInline>]` +
@@ -393,7 +393,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 
 			it( 'should copy $block attributes on a block image element when inserting it in $block', () => {
-				setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
+				_setModelData( model, '<paragraph pretty="true" smart="true">[]</paragraph>' );
 
 				command.execute( {
 					source: {
@@ -401,13 +401,13 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
 				);
 			} );
 
 			it( 'should not copy $block attributes on an inline image element when inserting it in $block', () => {
-				setModelData( model, '<paragraph pretty="true" smart="true">Foo []</paragraph>' );
+				_setModelData( model, '<paragraph pretty="true" smart="true">Foo []</paragraph>' );
 
 				command.execute( {
 					source: {
@@ -415,7 +415,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph pretty="true" smart="true">' +
 						'Foo [<imageInline src="/foo.jpg"></imageInline>]' +
 					'</paragraph>'
@@ -423,7 +423,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 
 			it( 'should not copy attributes when inserting inline image (non-collapsed selection)', () => {
-				setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
+				_setModelData( model, '<paragraph pretty="true">[foo</paragraph><paragraph smart="true">bar]</paragraph>' );
 
 				command.execute( {
 					source: {
@@ -431,7 +431,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>' +
 						'[<imageInline src="/foo.jpg"></imageInline>]' +
 					'</paragraph>'
@@ -439,7 +439,7 @@ describe( 'InsertImageCommand', () => {
 			} );
 
 			it( 'should only copy $block attributes marked with copyOnReplace', () => {
-				setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
+				_setModelData( model, '<paragraph pretty="true" smart="true" nice="true">[]</paragraph>' );
 
 				command.execute( {
 					source: {
@@ -447,7 +447,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
 				);
 			} );
@@ -456,7 +456,7 @@ describe( 'InsertImageCommand', () => {
 				model.schema.register( 'object', { isObject: true, inheritAllFrom: '$blockObject' } );
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 
-				setModelData( model, '[<object pretty="true" smart="true"></object>]' );
+				_setModelData( model, '[<object pretty="true" smart="true"></object>]' );
 
 				command.execute( {
 					source: {
@@ -464,7 +464,7 @@ describe( 'InsertImageCommand', () => {
 					}
 				} );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
 				);
 			} );

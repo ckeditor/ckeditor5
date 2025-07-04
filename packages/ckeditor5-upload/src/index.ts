@@ -16,5 +16,6 @@ export {
 export { Base64UploadAdapter } from './adapters/base64uploadadapter.js';
 export { SimpleUploadAdapter } from './adapters/simpleuploadadapter.js';
 export type { SimpleUploadConfig } from './uploadconfig.js';
+export { FileReader } from './filereader.js';
 
 import './augmentation.js';

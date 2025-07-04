@@ -9,10 +9,10 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	addBorderRules,
-	addPaddingRules,
-	addBackgroundRules,
-	type Schema,
+	addBorderStylesRules,
+	addPaddingStylesRules,
+	addBackgroundStylesRules,
+	type ModelSchema,
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
@@ -97,7 +97,7 @@ export class TableCellPropertiesEditing extends Plugin {
 			}
 		);
 
-		editor.data.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderStylesRules );
 		enableBorderProperties( schema, conversion, {
 			color: defaultTableCellProperties.borderColor,
 			style: defaultTableCellProperties.borderStyle,
@@ -116,7 +116,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
 
-		editor.data.addStyleProcessorRules( addPaddingRules );
+		editor.data.addStyleProcessorRules( addPaddingStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellPadding',
 			styleName: 'padding',
@@ -125,7 +125,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding! ) );
 
-		editor.data.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellBackgroundColor',
 			styleName: 'background-color',
@@ -160,7 +160,11 @@ export class TableCellPropertiesEditing extends Plugin {
  * @param defaultBorder.style The default `tableCellBorderStyle` value.
  * @param defaultBorder.width The default `tableCellBorderWidth` value.
  */
-function enableBorderProperties( schema: Schema, conversion: Conversion, defaultBorder: { color: string; style: string; width: string } ) {
+function enableBorderProperties(
+	schema: ModelSchema,
+	conversion: Conversion,
+	defaultBorder: { color: string; style: string; width: string }
+) {
 	const modelAttributes = {
 		width: 'tableCellBorderWidth',
 		color: 'tableCellBorderColor',
@@ -187,7 +191,7 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
  *
  * @param defaultValue The default horizontal alignment value.
  */
-function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
+function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellHorizontalAlignment' ]
 	} );
@@ -262,7 +266,7 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
  *
  * @param defaultValue The default vertical alignment value.
  */
-function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
+function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellVerticalAlignment' ]
 	} );

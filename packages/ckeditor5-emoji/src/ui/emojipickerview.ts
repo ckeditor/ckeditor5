@@ -25,8 +25,8 @@ import { EmojiGridView, type EmojiSearchQueryCallback } from './emojigridview.js
 import { EmojiCategoriesView } from './emojicategoriesview.js';
 import { EmojiSearchView } from './emojisearchview.js';
 import { EmojiToneView } from './emojitoneview.js';
-import type { SkinToneId } from '../emojiconfig.js';
-import type { EmojiCategory, SkinTone } from '../emojirepository.js';
+import type { EmojiSkinToneId } from '../emojiconfig.js';
+import type { EmojiCategory, EmojiSkinTone } from '../emojirepository.js';
 
 /**
  * A view that glues pieces of the emoji panel together.
@@ -85,8 +85,8 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 		{ emojiCategories, getEmojiByQuery, skinTone, skinTones }: {
 			emojiCategories: Array<EmojiCategory>;
 			getEmojiByQuery: EmojiSearchQueryCallback;
-			skinTone: SkinToneId;
-			skinTones: Array<SkinTone>;
+			skinTone: EmojiSkinToneId;
+			skinTones: Array<EmojiSkinTone>;
 		}
 	) {
 		super( locale );
@@ -250,7 +250,7 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 
 		// Update the grid of emojis when the selected skin tone is changed.
 		// In such a case, the displayed emoji should use an updated skin tone value.
-		this.toneView.on<ObservableChangeEvent<SkinToneId>>( 'change:skinTone', ( evt, propertyName, newValue ) => {
+		this.toneView.on<ObservableChangeEvent<EmojiSkinToneId>>( 'change:skinTone', ( evt, propertyName, newValue ) => {
 			this.gridView.skinTone = newValue;
 			this.searchView.search( this.searchView.getInputValue() );
 		} );

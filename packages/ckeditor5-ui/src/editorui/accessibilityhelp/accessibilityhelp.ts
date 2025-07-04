@@ -16,7 +16,7 @@ import { AccessibilityHelpContentView } from './accessibilityhelpcontentview.js'
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils';
 import type { EditorUIReadyEvent } from '../../editorui/editorui.js';
 import type { AddRootEvent } from '@ckeditor/ckeditor5-editor-multi-root';
-import type { DowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
+import type { ViewDowncastWriter, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
 import '../../../theme/components/editorui/accessibilityhelp.css';
 
@@ -135,7 +135,7 @@ export class AccessibilityHelp extends Plugin {
 			}, { priority: 'low' } );
 		} );
 
-		function addAriaLabelTextToRoot( writer: DowncastWriter, viewRoot: ViewRootEditableElement ) {
+		function addAriaLabelTextToRoot( writer: ViewDowncastWriter, viewRoot: ViewRootEditableElement ) {
 			const currentAriaLabel = viewRoot.getAttribute( 'aria-label' );
 			const newAriaLabel = [ currentAriaLabel, t( 'Press %0 for help.', [ getEnvKeystrokeText( 'Alt+0' ) ] ) ]
 				.filter( segment => segment )

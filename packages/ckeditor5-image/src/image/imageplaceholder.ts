@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	DowncastAttributeEvent,
-	Element,
+	ModelElement,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -83,7 +83,7 @@ export class ImagePlaceholder extends Plugin {
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:placeholder', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:placeholder', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 					return;
 				}

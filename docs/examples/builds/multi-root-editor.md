@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Multi-root editor example | CKEditor 5 Documentation
+meta-description: Explore the multi-root editor implementation with multiple editable areas sharing a single editor instance and toolbar.
 order: 60
 toc: false
 contributeUrl: false
@@ -17,7 +18,7 @@ The main difference between using a multi-root editor and using multiple separat
 
 ## Editor example configuration
 
-Check out the {@link getting-started/integrations-cdn/quick-start Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor’s code below.
+Check out the {@link getting-started/integrations-cdn/quick-start Quick start} guide to learn more about implementing this kind of editor. You will find implementation steps there. You can see this example editor's code below.
 
 <details>
 <summary>View editor configuration script</summary>

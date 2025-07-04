@@ -16,7 +16,7 @@ import { EditingKeystrokeHandler } from '../../src/editingkeystrokehandler.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import { testUtils } from '../../tests/_utils/utils.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Accessibility } from '../../src/accessibility.js';
 import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
 import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
@@ -1428,7 +1428,7 @@ describe( 'Editor', () => {
 			it( 'should set data of the first root', () => {
 				editor.setData( 'foo' );
 
-				expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+				expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 			} );
 		} );
 
@@ -1440,13 +1440,13 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should get data of the first root', () => {
-				setData( editor.model, 'foo' );
+				_setModelData( editor.model, 'foo' );
 
 				expect( editor.getData() ).to.equal( 'foo' );
 			} );
 
 			it( 'should get data of the second root', () => {
-				setData( editor.model, 'bar', { rootName: 'secondRoot' } );
+				_setModelData( editor.model, 'bar', { rootName: 'secondRoot' } );
 
 				expect( editor.getData( { rootName: 'secondRoot' } ) ).to.equal( 'bar' );
 			} );
@@ -1455,7 +1455,7 @@ describe( 'Editor', () => {
 				const spy = testUtils.sinon.spy( editor.data, 'get' );
 				const options = { rootName: 'main', trim: 'none' };
 
-				setData( editor.model, 'foo' );
+				_setModelData( editor.model, 'foo' );
 
 				expect( editor.getData( options ) ).to.equal( 'foo' );
 

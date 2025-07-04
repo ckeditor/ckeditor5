@@ -7,7 +7,7 @@
  * @module ui/arialiveannouncer
  */
 
-import type { DomConverter } from '@ckeditor/ckeditor5-engine';
+import type { ViewDomConverter } from '@ckeditor/ckeditor5-engine';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 import { type ViewCollection } from './viewcollection.js';
@@ -156,7 +156,7 @@ export class AriaLiveAnnouncerRegionView extends View {
 	/**
 	 * DOM converter used to sanitize unsafe HTML passed to {@link #announce} method.
 	 */
-	private _domConverter: DomConverter;
+	private _domConverter: ViewDomConverter;
 
 	/**
 	 * Interval used to remove additions. It prevents accumulation of added nodes in region.
@@ -228,14 +228,14 @@ export class AriaLiveAnnouncerRegionView extends View {
 	}
 }
 
-type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
+export type AriaLiveAnnouncerPolitenessValue = typeof AriaLiveAnnouncerPoliteness[ keyof typeof AriaLiveAnnouncerPoliteness ];
 
-type AriaLiveAppendContentAttributes = {
+export type AriaLiveAppendContentAttributes = {
 	announcement: string;
 	isUnsafeHTML?: boolean;
 };
 
-type AriaLiveAnnounceConfig = {
+export type AriaLiveAnnounceConfig = {
 	politeness: AriaLiveAnnouncerPolitenessValue;
 	isUnsafeHTML?: boolean;
 };

@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Classic editor example | CKEditor 5 Documentation
+meta-description: Explore the classic editor setup, featuring a fixed toolbar and a boxed editing area, ideal for traditional content creation.
 order: 10
 toc: false
 contributeUrl: false

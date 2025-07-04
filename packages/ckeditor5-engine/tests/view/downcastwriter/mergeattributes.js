@@ -3,32 +3,32 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { Text } from '../../../src/view/text.js';
-import { Position } from '../../../src/view/position.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewText } from '../../../src/view/text.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
 	describe( 'mergeAttributes', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test merge position.
 		//
 		// @param {String} input
 		// @param {String} expected
 		function testMerge( input, expected ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 			const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
-			expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
 		before( () => {
-			document = new Document( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			document = new ViewDocument( new StylesProcessor() );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should not merge if inside text node', () => {
@@ -65,13 +65,13 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should merge when placed between two text nodes', () => {
 			// <p>foobar</p> -> <p>foo|bar</p>
-			const t1 = new Text( document, 'foo' );
-			const t2 = new Text( document, 'bar' );
-			const p = new ContainerElement( document, 'p', null, [ t1, t2 ] );
-			const position = new Position( p, 1 );
+			const t1 = new ViewText( document, 'foo' );
+			const t2 = new ViewText( document, 'bar' );
+			const p = new ViewContainerElement( document, 'p', null, [ t1, t2 ] );
+			const position = new ViewPosition( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );
-			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
+			expect( _stringifyView( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 
 		it( 'should merge when placed between similar attribute nodes', () => {
@@ -137,7 +137,7 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should not merge when placed between EmptyElements', () => {
+		it( 'should not merge when placed between ViewEmptyElements', () => {
 			testMerge(
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>',
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>'

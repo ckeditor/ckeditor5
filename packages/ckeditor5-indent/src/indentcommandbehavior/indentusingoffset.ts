@@ -11,6 +11,8 @@ import type { IndentBehavior } from './indentbehavior.js';
 
 /**
  * The block indentation behavior that uses offsets to set indentation.
+ *
+ * @internal
  */
 export class IndentUsingOffset implements IndentBehavior {
 	/**

@@ -7,36 +7,36 @@
  * @module engine/view/document
  */
 
-import { DocumentSelection } from './documentselection.js';
+import { ViewDocumentSelection } from './documentselection.js';
 import { BubblingEmitterMixin } from './observer/bubblingemittermixin.js';
 
 import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap.js';
-import { type RootEditableElement } from './rooteditableelement.js';
-import { type DowncastWriter } from './downcastwriter.js';
+import { type ViewRootEditableElement } from './rooteditableelement.js';
+import { type ViewDowncastWriter } from './downcastwriter.js';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
- * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
+ * {@link module:engine/view/documentselection~ViewDocumentSelection view selection} associated with this document.
  */
-export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
 	 * Selection done on this document.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
-	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
+	 * Roots of the view tree. Collection of the {@link module:engine/view/element~ViewElement view elements}.
 	 *
-	 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
-	 * {@link module:engine/model/document~Document#roots} and this is handled by
+	 * View roots are created as a result of binding between {@link module:engine/view/document~ViewDocument#roots} and
+	 * {@link module:engine/model/document~ModelDocument#roots} and this is handled by
 	 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
-	 * model root using {@link module:engine/model/document~Document#createRoot}.
+	 * model root using {@link module:engine/model/document~ModelDocument#createRoot}.
 	 */
-	public readonly roots: Collection<RootEditableElement>;
+	public readonly roots: Collection<ViewRootEditableElement>;
 
 	/**
 	 * The styles processor instance used by this document when normalizing styles.
@@ -98,7 +98,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	constructor( stylesProcessor: StylesProcessor ) {
 		super();
 
-		this.selection = new DocumentSelection();
+		this.selection = new ViewDocumentSelection();
 		this.roots = new Collection( { idProperty: 'rootName' } );
 		this.stylesProcessor = stylesProcessor;
 
@@ -109,13 +109,13 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	}
 
 	/**
-	 * Gets a {@link module:engine/view/document~Document#roots view root element} with the specified name. If the name is not
+	 * Gets a {@link module:engine/view/document~ViewDocument#roots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
 	 * @param name Name of the root.
 	 * @returns The view root element with the specified name or null when there is no root of given name.
 	 */
-	public getRoot( name: string = 'main' ): RootEditableElement | null {
+	public getRoot( name: string = 'main' ): ViewRootEditableElement | null {
 		return this.roots.get( name );
 	}
 
@@ -124,7 +124,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 * to the DOM.
 	 *
 	 * Post-fixers are executed right after all changes from the outermost change block were applied but
-	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
+	 * before the {@link module:engine/view/view~EditingView#event:render render event} is fired. If a post-fixer callback made
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
@@ -134,7 +134,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 * The types of changes which should be safe:
 	 *
 	 * * adding or removing attribute from elements,
-	 * * changes inside of {@link module:engine/view/uielement~UIElement UI elements},
+	 * * changes inside of {@link module:engine/view/uielement~ViewUIElement UI elements},
 	 * * {@link module:engine/controller/editingcontroller~EditingController#reconvertItem marking some of the model elements to be
 	 * re-converted}.
 	 *
@@ -143,7 +143,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 * * you should not add or remove nor wrap or unwrap any view elements,
 	 * * you should not change the editor data model in a view post-fixer.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~ViewDowncastWriter downcast writer}.
 	 *
 	 * Typically, a post-fixer will look like this:
 	 *
@@ -164,10 +164,10 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 * That is because adding a post-fixer does not execute it.
 	 * The post-fixer will be executed as soon as any change in the document needs to cause its rendering.
 	 * If you want to re-render the editor's view after registering the post-fixer then you should do it manually by calling
-	 * {@link module:engine/view/view~View#forceRender `view.forceRender()`}.
+	 * {@link module:engine/view/view~EditingView#forceRender `view.forceRender()`}.
 	 *
 	 * If you need to register a callback which is executed when DOM elements are already updated,
-	 * use {@link module:engine/view/view~View#event:render render event}.
+	 * use {@link module:engine/view/view~EditingView#event:render render event}.
 	 */
 	public registerPostFixer( postFixer: ViewDocumentPostFixer ): void {
 		this._postFixers.add( postFixer );
@@ -186,7 +186,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 *
 	 * @internal
 	 */
-	public _callPostFixers( writer: DowncastWriter ): void {
+	public _callPostFixers( writer: ViewDowncastWriter ): void {
 		let wasFixed = false;
 
 		do {
@@ -205,16 +205,12 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	// @if CK_DEBUG_ENGINE // }
 }
 
-export {
-	Document as ViewDocument
-};
-
 /**
  * Document PostFixer.
  *
- * @see module:engine/view/document~Document#registerPostFixer
+ * @see module:engine/view/document~ViewDocument#registerPostFixer
  */
-export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
+export type ViewDocumentPostFixer = ( writer: ViewDowncastWriter ) => boolean;
 
 /**
  * Enum representing type of the change.
@@ -225,14 +221,14 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  * * `attributes` - for element attributes changes,
  * * `text` - for text nodes changes.
  */
-export type ChangeType = 'children' | 'attributes' | 'text';
+export type ViewDocumentChangeType = 'children' | 'attributes' | 'text';
 
 /**
  * Event fired whenever document content layout changes. It is fired whenever content is
- * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
+ * {@link module:engine/view/view~EditingView#event:render rendered}, but should be also fired by observers in case of
  * other actions which may change layout, for instance when image loads.
  *
- * @eventName ~Document#layoutChanged
+ * @eventName ~ViewDocument#layoutChanged
  */
 export type ViewDocumentLayoutChangedEvent = {
 	name: 'layoutChanged';

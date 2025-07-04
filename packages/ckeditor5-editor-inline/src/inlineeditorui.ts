@@ -18,7 +18,7 @@ import {
 	type EditorUIUpdateEvent
 } from 'ckeditor5/src/ui.js';
 
-import { enablePlaceholder } from 'ckeditor5/src/engine.js';
+import { enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 
 import { type InlineEditorUIView } from './inlineeditoruiview.js';
 
@@ -170,7 +170,7 @@ export class InlineEditorUI extends EditorUI {
 			}
 		}
 
-		enablePlaceholder( {
+		enableViewPlaceholder( {
 			view: editingView,
 			element: editingRoot,
 			isDirectHost: false,

@@ -7,7 +7,7 @@
  * @module image/imagestyle/imagestylecommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 import { type ImageUtils } from '../imageutils.js';
@@ -132,7 +132,7 @@ export class ImageStyleCommand extends Command {
 	 * @param requestedStyle The name of the style (as configured in {@link module:image/imageconfig~ImageStyleConfig#options}).
 	 * @param imageElement The image model element.
 	 */
-	public shouldConvertImageType( requestedStyle: string, imageElement: Element ): boolean {
+	public shouldConvertImageType( requestedStyle: string, imageElement: ModelElement ): boolean {
 		const supportedTypes = this._styles.get( requestedStyle )!.modelElements;
 
 		return !supportedTypes.includes( imageElement.name );

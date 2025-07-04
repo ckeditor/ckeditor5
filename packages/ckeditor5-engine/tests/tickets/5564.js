@@ -7,7 +7,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 
-import { getData as getModelData, setData as setModelData } from '../../src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5#5564', () => {
 	let editor;
@@ -27,13 +27,13 @@ describe( 'Bug ckeditor5#5564', () => {
 	it( 'does not create an excessive new line when loading <p>x</p><p><br></p><p>x</p>', () => {
 		editor.setData( '<p>x</p><p><br></p><p>x</p>' );
 
-		expect( getModelData( editor.model ) ).to.equal(
+		expect( _getModelData( editor.model ) ).to.equal(
 			'<paragraph>[]x</paragraph><paragraph></paragraph><paragraph>x</paragraph>'
 		);
 	} );
 
 	it( 'preserves a soft break in an empty paragraph', () => {
-		setModelData( editor.model, '<paragraph>x</paragraph><paragraph><softBreak /></paragraph><paragraph>x</paragraph>' );
+		_setModelData( editor.model, '<paragraph>x</paragraph><paragraph><softBreak /></paragraph><paragraph>x</paragraph>' );
 
 		const expectedData = '<p>x</p><p><br>&nbsp;</p><p>x</p>';
 		const actualData = editor.getData();

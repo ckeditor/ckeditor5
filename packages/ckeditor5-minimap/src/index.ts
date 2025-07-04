@@ -11,4 +11,21 @@ export { Minimap } from './minimap.js';
 
 export type { MinimapConfig } from './minimapconfig.js';
 
+export { MinimapIframeView as _MinimapIframeView } from './minimapiframeview.js';
+export { MinimapPositionTrackerView as _MinimapPositionTrackerView } from './minimappositiontrackerview.js';
+export {
+	type MinimapClickEvent,
+	type MinimapDragEvent,
+	type MinimapViewOptions as _MinimapViewOptions,
+	MinimapView as _MinimapView
+} from './minimapview.js';
+
+export {
+	cloneEditingViewDomRoot as _cloneMinimapEditingViewDomRoot,
+	getPageStyles as _getMinimapPageStyles,
+	getDomElementRect as _getMinimapDomElementRect,
+	getClientHeight as _getMinimapClientHeight,
+	getScrollable as _getMinimapScrollable
+} from './utils.js';
+
 import './augmentation.js';

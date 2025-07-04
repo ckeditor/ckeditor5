@@ -2,6 +2,7 @@
 category: features-image-upload
 menu-title: Using file managers
 meta-title: Using file managers | CKEditor 5 Documentation
+meta-descriptiopn: Integrate file managers with CKEditor 5 for advanced image uploads. Learn how to connect, configure, and use file management tools.
 order: 20
 badges: [ premium ]
 ---

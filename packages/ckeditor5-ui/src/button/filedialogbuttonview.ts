@@ -76,7 +76,7 @@ export class FileDialogListItemButtonView extends /* #__PURE__ */ FileDialogView
  * @param view The base class to be enhanced with file dialog functionality.
  * @returns A new class that extends the base class and includes the file dialog functionality.
  */
-function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): Mixed<Base, FileDialogButtonViewBase> {
+export function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): Mixed<Base, FileDialogButtonViewBase> {
 	abstract class FileDialogView extends view implements FileDialogButtonViewBase {
 		/**
 		 * A hidden `<input>` view used to execute file dialog.
@@ -139,7 +139,7 @@ function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base )
 /**
  * Represents the base view for a file dialog button component.
  */
-type FileDialogButtonViewBase = View & {
+export type FileDialogButtonViewBase = View & {
 
 	/**
 	 * Accepted file types. Can be provided in form of file extensions, media type or one of:

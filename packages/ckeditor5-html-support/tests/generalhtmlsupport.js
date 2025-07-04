@@ -15,8 +15,8 @@ import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'GeneralHtmlSupport', () => {
@@ -145,7 +145,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<p id="test" data-foo="bar">Test</p>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<p data-foo="bar" id="test">Test</p>'
 		);
 	} );
@@ -165,7 +165,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<p>Test</p>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<p>Test</p>'
 		);
 	} );
@@ -185,7 +185,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<div id="test" data-foo="bar">Test</div>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<div data-foo="bar" id="test">Test</div>'
 		);
 	} );
@@ -205,7 +205,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<h2 id="test" data-foo="bar">Test</h2>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<h2 data-foo="bar" id="test">Test</h2>'
 		);
 	} );
@@ -215,7 +215,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 			'<h1 id="test" data-foo="bar" class="test-class" style="color: red;">Test</h1>'
 		);
 
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 			'<htmlH1 htmlH1Attributes="{"attributes":{"id":"test","data-foo":"bar"},"styles":{"color":"red"},"classes":["test-class"]}">' +
 				'Test' +
 			'</htmlH1>'
@@ -230,7 +230,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<h1 id="test" data-foo="bar">Test</h1>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<h1 data-foo="bar" id="test">Test</h1>'
 		);
 	} );
@@ -259,7 +259,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 				'<figcaption>abc</figcaption>' +
 			'</figure>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-foo="bar" id="test">' +
 				'<img alt="122" src="/sample.jpg"></img>' +
 				'<figcaption aria-label="Caption for image: 122" class="ck-editor__editable ck-editor__nested-editable" ' +
@@ -345,7 +345,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<div class="page-break" style="page-break-after:always;" data-foo="bar"><span style="display:none;">&nbsp;</span></div>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<div class="ck-widget ck-widget_selected page-break" contenteditable="false" data-foo="bar">' +
 				'<span class="page-break__label"></span>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -368,7 +368,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<pre data-foo="bar"><code class="language-javascript" data-bar="foo">foo</code></pre>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<pre data-foo="bar" data-language="JavaScript" spellcheck="false">' +
 				'<code class="language-javascript" data-bar="foo">foo</code>' +
 			'</pre>'
@@ -396,7 +396,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 			'<blockquote data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
 			'<p>b</p>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<p>a</p>' +
 			'<blockquote data-foo="bar"><p>foo</p><p>bar</p></blockquote>' +
 			'<p>b</p>'
@@ -426,7 +426,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 				'<li id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
 			'</ol>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<ol data-foo="bar" id="test">' +
 				'<li data-bar="foo" id="test1"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 			'</ol>'
@@ -460,7 +460,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 			'</div>' +
 			'<p>b</p>'
 		);
-		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
+		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<p>a</p>' +
 			'<div data-foo="bar" id="test">' +
 				'<p data-bar="foo" id="test1">foo</p>' +

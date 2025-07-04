@@ -2,6 +2,7 @@
 category: crash-course
 order: 70
 meta-title: CKEditor 5 crash course - Events and observables | CKEditor 5 Documentation
+meta-description: Learn to use events and observables in CKEditor 5 to handle user interactions and build responsive, interactive editor features.
 modified_at: 2023-08-16
 ---
 

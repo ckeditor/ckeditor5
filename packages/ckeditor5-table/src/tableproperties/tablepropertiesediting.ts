@@ -9,11 +9,11 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	addBackgroundRules,
-	addBorderRules,
+	addBackgroundStylesRules,
+	addBorderStylesRules,
 	type ViewElement,
 	type Conversion,
-	type Schema,
+	type ModelSchema,
 	type UpcastConversionApi,
 	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
@@ -94,7 +94,7 @@ export class TablePropertiesEditing extends Plugin {
 			}
 		);
 
-		editor.data.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderStylesRules );
 		enableBorderProperties( schema, conversion, {
 			color: defaultTableProperties.borderColor,
 			style: defaultTableProperties.borderStyle,
@@ -126,7 +126,7 @@ export class TablePropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
 
-		editor.data.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableBackgroundColor',
 			styleName: 'background-color',
@@ -149,7 +149,11 @@ export class TablePropertiesEditing extends Plugin {
  * @param defaultBorder.style The default `tableBorderStyle` value.
  * @param defaultBorder.width The default `tableBorderWidth` value.
  */
-function enableBorderProperties( schema: Schema, conversion: Conversion, defaultBorder: { color: string; style: string; width: string } ) {
+function enableBorderProperties(
+	schema: ModelSchema,
+	conversion: Conversion,
+	defaultBorder: { color: string; style: string; width: string }
+) {
 	const modelAttributes = {
 		width: 'tableBorderWidth',
 		color: 'tableBorderColor',
@@ -176,7 +180,7 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
  *
  * @param defaultValue The default alignment value.
  */
-function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
+function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'tableAlignment' ]
 	} );
@@ -315,7 +319,7 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
  * @param options.defaultValue The default value for the specified `modelAttribute`.
  */
 function enableProperty(
-	schema: Schema,
+	schema: ModelSchema,
 	conversion: Conversion,
 	options: {
 		modelAttribute: string;
@@ -341,7 +345,7 @@ function enableProperty(
  * Enables conversion for an attribute for simple view (figure) to model (table) mappings.
  */
 function enableTableToFigureProperty(
-	schema: Schema,
+	schema: ModelSchema,
 	conversion: Conversion,
 	options: {
 		modelAttribute: string;

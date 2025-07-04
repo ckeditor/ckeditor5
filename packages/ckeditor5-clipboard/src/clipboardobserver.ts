@@ -10,9 +10,9 @@
 import { EventInfo, getRangeFromMouseEvent } from '@ckeditor/ckeditor5-utils';
 
 import {
-	DataTransfer,
+	ViewDataTransfer,
 	DomEventObserver,
-	type DomEventData,
+	type ViewDocumentDomEventData,
 	type EditingView,
 	type ViewDocumentFragment,
 	type ViewElement,
@@ -24,21 +24,21 @@ import {
  *
  * Fires the following events:
  *
- * * {@link module:engine/view/document~Document#event:clipboardInput},
- * * {@link module:engine/view/document~Document#event:paste},
- * * {@link module:engine/view/document~Document#event:copy},
- * * {@link module:engine/view/document~Document#event:cut},
- * * {@link module:engine/view/document~Document#event:drop},
- * * {@link module:engine/view/document~Document#event:dragover},
- * * {@link module:engine/view/document~Document#event:dragging},
- * * {@link module:engine/view/document~Document#event:dragstart},
- * * {@link module:engine/view/document~Document#event:dragend},
- * * {@link module:engine/view/document~Document#event:dragenter},
- * * {@link module:engine/view/document~Document#event:dragleave}.
+ * * {@link module:engine/view/document~ViewDocument#event:clipboardInput},
+ * * {@link module:engine/view/document~ViewDocument#event:paste},
+ * * {@link module:engine/view/document~ViewDocument#event:copy},
+ * * {@link module:engine/view/document~ViewDocument#event:cut},
+ * * {@link module:engine/view/document~ViewDocument#event:drop},
+ * * {@link module:engine/view/document~ViewDocument#event:dragover},
+ * * {@link module:engine/view/document~ViewDocument#event:dragging},
+ * * {@link module:engine/view/document~ViewDocument#event:dragstart},
+ * * {@link module:engine/view/document~ViewDocument#event:dragend},
+ * * {@link module:engine/view/document~ViewDocument#event:dragenter},
+ * * {@link module:engine/view/document~ViewDocument#event:dragleave}.
  *
  * **Note**: This observer is not available by default (ckeditor5-engine does not add it on its own).
- * To make it available, it needs to be added to {@link module:engine/view/document~Document} by using
- * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. Alternatively, you can load the
+ * To make it available, it needs to be added to {@link module:engine/view/document~ViewDocument} by using
+ * the {@link module:engine/view/view~EditingView#addObserver `View#addObserver()`} method. Alternatively, you can load the
  * {@link module:clipboard/clipboard~Clipboard} plugin which adds this observer automatically (because it uses it).
  */
 export class ClipboardObserver extends DomEventObserver<
@@ -59,7 +59,7 @@ export class ClipboardObserver extends DomEventObserver<
 		this.listenTo<ViewDocumentDragOverEvent>( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
 
 		function handleInput( type: 'clipboardInput' | 'dragging' ) {
-			return ( evt: EventInfo, data: DomEventData & ClipboardEventData ) => {
+			return ( evt: EventInfo, data: ViewDocumentDomEventData & ClipboardEventData ) => {
 				data.preventDefault();
 
 				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
@@ -88,7 +88,7 @@ export class ClipboardObserver extends DomEventObserver<
 		const cacheFiles = domEvent.type == 'drop' || domEvent.type == 'paste';
 
 		const evtData: ClipboardEventData = {
-			dataTransfer: new DataTransfer( nativeDataTransfer, { cacheFiles } )
+			dataTransfer: new ViewDataTransfer( nativeDataTransfer, { cacheFiles } )
 		};
 
 		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {
@@ -109,7 +109,7 @@ export interface ClipboardEventData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The position into which the content is dropped.
@@ -118,8 +118,8 @@ export interface ClipboardEventData {
 }
 
 /**
- * Fired as a continuation of the {@link module:engine/view/document~Document#event:paste} and
- * {@link module:engine/view/document~Document#event:drop} events.
+ * Fired as a continuation of the {@link module:engine/view/document~ViewDocument#event:paste} and
+ * {@link module:engine/view/document~ViewDocument#event:drop} events.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -127,24 +127,24 @@ export interface ClipboardEventData {
  * and inserted into the editor.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  *
- * @eventName module:engine/view/document~Document#clipboardInput
+ * @eventName module:engine/view/document~ViewDocument#clipboardInput
  * @param data The event data.
  */
 export type ViewDocumentClipboardInputEvent = {
 	name: 'clipboardInput';
-	args: [ data: DomEventData<ClipboardEvent | DragEvent> & ClipboardInputEventData ];
+	args: [ data: ViewDocumentDomEventData<ClipboardEvent | DragEvent> & ClipboardInputEventData ];
 };
 
 /**
- * The value of the {@link module:engine/view/document~Document#event:paste},
- * {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut} events.
+ * The value of the {@link module:engine/view/document~ViewDocument#event:paste},
+ * {@link module:engine/view/document~ViewDocument#event:copy} and {@link module:engine/view/document~ViewDocument#event:cut} events.
  *
  * In order to access the clipboard data, use the `dataTransfer` property.
  */
@@ -153,7 +153,7 @@ export interface ClipboardInputEventData {
 	/**
 	 * Data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
@@ -184,18 +184,18 @@ export interface ClipboardInputEventData {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#dragover
+ * @eventName module:engine/view/document~ViewDocument#dragover
  * @param data The event data.
  */
 export type ViewDocumentDragOverEvent = {
 	name: 'dragover';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -204,18 +204,18 @@ export type ViewDocumentDragOverEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#drop
+ * @eventName module:engine/view/document~ViewDocument#drop
  * @param data The event data.
  */
 export type ViewDocumentDropEvent = {
 	name: 'drop';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -224,18 +224,18 @@ export type ViewDocumentDropEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#paste
+ * @eventName module:engine/view/document~ViewDocument#paste
  * @param {module:clipboard/clipboardobserver~ClipboardEventData} data The event data.
  */
 export type ViewDocumentPasteEvent = {
 	name: 'paste';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -244,18 +244,18 @@ export type ViewDocumentPasteEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  *
- * @eventName module:engine/view/document~Document#copy
+ * @eventName module:engine/view/document~ViewDocument#copy
  * @param data The event data.
  */
 export type ViewDocumentCopyEvent = {
 	name: 'copy';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -264,22 +264,22 @@ export type ViewDocumentCopyEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  *
- * @eventName module:engine/view/document~Document#cut
+ * @eventName module:engine/view/document~ViewDocument#cut
  * @param data The event data.
  */
 export type ViewDocumentCutEvent = {
 	name: 'cut';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
- * Fired as a continuation of the {@link module:engine/view/document~Document#event:dragover} event.
+ * Fired as a continuation of the {@link module:engine/view/document~ViewDocument#event:dragover} event.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#input-pipeline clipboard input pipeline}.
  *
@@ -287,19 +287,20 @@ export type ViewDocumentCutEvent = {
  * and inserted into the editor.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver}  method. This is usually done by the
+ * {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
  * the observer must be added manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
  *
- * @eventName module:engine/view/document~Document#dragging
+ * @eventName module:engine/view/document~ViewDocument#dragging
  * @param data The event data.
  */
 export type ViewDocumentDraggingEvent = {
 	name: 'dragging';
-	args: [ data: DomEventData<DragEvent> & DraggingEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & DraggingEventData ];
 };
 
 export interface DraggingEventData {
@@ -307,7 +308,7 @@ export interface DraggingEventData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
@@ -332,18 +333,18 @@ export interface DraggingEventData {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#dragstart
+ * @eventName module:engine/view/document~ViewDocument#dragstart
  * @param data The event data.
  */
 export type ViewDocumentDragStartEvent = {
 	name: 'dragstart';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -352,18 +353,18 @@ export type ViewDocumentDragStartEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#dragend
+ * @eventName module:engine/view/document~ViewDocument#dragend
  * @param data The event data.
  */
 export type ViewDocumentDragEndEvent = {
 	name: 'dragend';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -372,18 +373,18 @@ export type ViewDocumentDragEndEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#dragenter
+ * @eventName module:engine/view/document~ViewDocument#dragenter
  * @param data The event data.
  */
 export type ViewDocumentDragEnterEvent = {
 	name: 'dragenter';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -392,16 +393,16 @@ export type ViewDocumentDragEnterEvent = {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * **Note**: This event is not available by default. To make it available, {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to the {@link module:engine/view/document~Document} by using the {@link module:engine/view/view~View#addObserver}
- * method. This is usually done by the {@link module:clipboard/clipboard~Clipboard} plugin, but if for some reason it is not loaded,
- * the observer must be added manually.
+ * needs to be added to the {@link module:engine/view/document~ViewDocument} by using the
+ * {@link module:engine/view/view~EditingView#addObserver} method. This is usually done by the {@link module:clipboard/clipboard~Clipboard}
+ * plugin, but if for some reason it is not loaded, the observer must be added manually.
  *
- * @see module:engine/view/document~Document#event:clipboardInput
+ * @see module:engine/view/document~ViewDocument#event:clipboardInput
  *
- * @eventName module:engine/view/document~Document#dragleave
+ * @eventName module:engine/view/document~ViewDocument#dragleave
  * @param data The event data.
  */
 export type ViewDocumentDragLeaveEvent = {
 	name: 'dragleave';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ViewDocumentDomEventData<DragEvent> & ClipboardEventData ];
 };

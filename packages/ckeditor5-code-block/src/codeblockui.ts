@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
 import {
-	ViewModel,
+	UIModel,
 	SplitButtonView,
 	createDropdown,
 	addListToDropdown,
@@ -164,7 +164,7 @@ export class CodeBlockUI extends Plugin {
 		for ( const languageDef of normalizedLanguageDefs ) {
 			const definition: ListDropdownButtonDefinition = {
 				type: 'button',
-				model: new ViewModel( {
+				model: new UIModel( {
 					_codeBlockLanguage: languageDef.language,
 					label: languageDef.label,
 					role: 'menuitemradio',

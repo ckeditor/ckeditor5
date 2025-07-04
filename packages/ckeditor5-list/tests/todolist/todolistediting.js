@@ -13,8 +13,8 @@ import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentedi
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -257,7 +257,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'should convert li with a checkbox and two paragraphs', () => {
@@ -372,7 +372,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -386,7 +386,7 @@ describe( 'TodoListEditing', () => {
 				'</ol>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a01" listType="todo">Bar</paragraph>'
 			);
@@ -435,7 +435,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph' +
 						' htmlLiAttributes="{}" htmlUlAttributes="{}"' +
 						' listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">' +
@@ -456,7 +456,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<htmlH2 htmlLiAttributes="{}" htmlUlAttributes="{}" listIndent="0" listItemId="a00" listType="todo">foo</htmlH2>'
 			);
 		} );
@@ -464,7 +464,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should not consume other label elements', () => {
 			editor.setData( '<p><label>foo</label></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph><$text htmlLabel="{}">foo</$text></paragraph>'
 			);
 		} );
@@ -663,11 +663,11 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should not use description span if there is an alignment set on the paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -682,7 +682,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'alignment', { value: 'right' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label todo-list__label_without-description">' +
@@ -699,7 +699,7 @@ describe( 'TodoListEditing', () => {
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -714,17 +714,17 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should use description span even if there is an selection attribute on block', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">[]</paragraph>'
 			);
 
 			model.change( writer => writer.setSelectionAttribute( 'bold', true ) );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" selection:bold="true"></paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul class="todo-list">' +
 					'<li>' +
 						'<span class="todo-list__label">' +
@@ -986,13 +986,13 @@ describe( 'TodoListEditing', () => {
 			} );
 
 			it( 'should remove `todoListChecked` attribute from list items that are converted from todo to bulleted type', () => {
-				setModelData( model,
+				_setModelData( model,
 					'[<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
 					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>]'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo" todoListChecked="true">foo</paragraph>' +
 					'<heading1 listIndent="0" listItemId="a02" listType="todo" todoListChecked="true">baz</heading1>'
@@ -1000,7 +1000,7 @@ describe( 'TodoListEditing', () => {
 
 				editor.execute( 'bulletedList' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">foo</paragraph>' +
 					'<heading1 listIndent="0" listItemId="a02" listType="bulleted">baz</heading1>'
@@ -1029,7 +1029,7 @@ describe( 'TodoListEditing', () => {
 			modelRoot = model.document.getRoot();
 			announcerSpy = sinon.spy( editor.ui.ariaLiveAnnouncer, 'announce' );
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
 				'<listItem listType="todo" listIndent="0">1</listItem>' +
 				'<listItem listType="todo" listIndent="0" todoListChecked="true">2</listItem>' +
@@ -1044,7 +1044,7 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should announce entering and leaving list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
 				'<paragraph listType="todo" listIndent="0">1</paragraph>' +
 				'<paragraph listType="todo" listIndent="0" todoListChecked="true">2</paragraph>' +
@@ -1059,7 +1059,7 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should announce entering and leaving list once, even if there is nested list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[Foo]</paragraph>' +
 				'<paragraph listType="todo" listIndent="0">1</paragraph>' +
 				'<paragraph listType="todo" listIndent="1">1</paragraph>' +
@@ -1127,7 +1127,7 @@ describe( 'TodoListEditing', () => {
 		} );
 
 		it( 'should toggle check state of a to-do list item on clicking the checkbox', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
@@ -1139,13 +1139,13 @@ describe( 'TodoListEditing', () => {
 
 			sinon.assert.calledOnce( command.execute );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
 			);
 		} );
 
 		it( 'should toggle check state of a to-do list item on todoCheckboxChange event with input target element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
@@ -1159,13 +1159,13 @@ describe( 'TodoListEditing', () => {
 
 			sinon.assert.calledOnce( command.execute );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
 			);
 		} );
 
 		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event without target element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
@@ -1177,13 +1177,13 @@ describe( 'TodoListEditing', () => {
 
 			sinon.assert.notCalled( command.execute );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 		} );
 
 		it( 'should not toggle check state of a to-do list item on todoCheckboxChange event with target element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 
@@ -1197,14 +1197,14 @@ describe( 'TodoListEditing', () => {
 
 			sinon.assert.notCalled( command.execute );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
 		} );
 
 		describe( 'arrow keys', () => {
 			it( 'should move collapsed selection at start of following todo list item on right arrow in todo list item', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
@@ -1217,14 +1217,14 @@ describe( 'TodoListEditing', () => {
 
 				view.document.fire( 'keydown', eventData );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
 				);
 			} );
 
 			it( 'should move collapsed selection at start of following todo list item on right arrow in paragraph', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>foo[]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
@@ -1237,14 +1237,14 @@ describe( 'TodoListEditing', () => {
 
 				view.document.fire( 'keydown', eventData );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
 				);
 			} );
 
 			it( 'should do nothing if selection is at end of the last todo list item and right arrow is pressed', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
 				);
 
@@ -1260,13 +1260,13 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( eventData.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>'
 				);
 			} );
 
 			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in todo list item', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
@@ -1283,14 +1283,14 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( eventData.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">fo[o]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
 			} );
 
 			it( 'should not move non-collapsed selection at start of following todo list item on right arrow key in paragraph', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>fo[o]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
@@ -1307,14 +1307,14 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( eventData.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>fo[o]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
 			} );
 
 			it( 'should move a collapsed selection to the end of the preceding todo list item on left arrow', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">[]bar</paragraph>'
 				);
@@ -1328,14 +1328,14 @@ describe( 'TodoListEditing', () => {
 
 				view.document.fire( 'keydown', eventData );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">foo[]</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a01" listType="todo">bar</paragraph>'
 				);
 			} );
 
 			it( 'should do nothing if selection is at start of first element which is a todo list item and left arrow is pressed', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
 				);
 
@@ -1351,7 +1351,7 @@ describe( 'TodoListEditing', () => {
 				sinon.assert.notCalled( eventData.preventDefault );
 				sinon.assert.notCalled( eventData.stopPropagation );
 
-				expect( getModelData( model ) ).to.equalMarkup(
+				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a00" listType="todo">[]foo</paragraph>'
 				);
 			} );
@@ -1367,21 +1367,21 @@ describe( 'TodoListEditing', () => {
 
 	function testUpcast( input, output ) {
 		editor.setData( input );
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 
 	function testEditing( input, output ) {
-		setModelData( model, input );
-		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+		_setModelData( model, input );
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 
 	function testData( input, output ) {
-		setModelData( model, input );
+		_setModelData( model, input );
 		expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( output );
 	}
 
 	function testPostfixer( input, output ) {
-		setModelData( model, input );
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
+		_setModelData( model, input );
+		expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 	}
 } );

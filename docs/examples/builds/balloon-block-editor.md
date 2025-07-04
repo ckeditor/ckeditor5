@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Balloon block editor example | CKEditor 5 Documentation
+meta-description: Learn how to implement a balloon block editor with inline and block toolbars for enhanced content editing.
 order: 40
 toc: false
 contributeUrl: false

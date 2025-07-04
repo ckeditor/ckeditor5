@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { getData } from '../../src/dev-utils/model.js';
+import { _getModelData } from '../../src/dev-utils/model.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
@@ -79,7 +79,7 @@ ClassicEditor
 const modelDiv = global.document.querySelector( '#model' );
 
 function printModelContents( editor ) {
-	modelDiv.innerText = formatTable( getData( editor.model ) );
+	modelDiv.innerText = formatTable( _getModelData( editor.model ) );
 }
 
 function formatTable( tableString ) {

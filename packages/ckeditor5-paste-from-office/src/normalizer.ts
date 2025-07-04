@@ -8,7 +8,7 @@
  */
 
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { ParseHtmlResult } from './filters/parse.js';
+import type { PasteOfficeHtmlParseResult } from './filters/parse.js';
 
 /**
  * Interface defining a content transformation pasted from an external editor.
@@ -17,7 +17,7 @@ import type { ParseHtmlResult } from './filters/parse.js';
  * {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation inputTransformation event}.
  * They detect environment-specific quirks and transform it into a form compatible with other CKEditor features.
  */
-export interface Normalizer {
+export interface PasteFromOfficeNormalizer {
 
 	/**
 	 * Must return `true` if the `htmlString` contains content which this normalizer can transform.
@@ -27,10 +27,10 @@ export interface Normalizer {
 	/**
 	 * Executes the normalization of a given data.
 	 */
-	execute( data: NormalizerData ): void;
+	execute( data: PasteFromOfficeNormalizerData ): void;
 }
 
-export interface NormalizerData extends ClipboardInputTransformationData {
+export interface PasteFromOfficeNormalizerData extends ClipboardInputTransformationData {
 	_isTransformedWithPasteFromOffice?: boolean;
-	_parsedData: ParseHtmlResult;
+	_parsedData: PasteOfficeHtmlParseResult;
 }

@@ -7,7 +7,7 @@
  * @module table/converters/table-cell-paragraph-post-fixer
  */
 
-import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, DifferItemInsert, DifferItemRemove } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.
@@ -31,6 +31,8 @@ import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'cke
  *   </tableRow>
  * </table>
  * ```
+ *
+ * @internal
  */
 export function injectTableCellParagraphPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCellContentsPostFixer( writer, model ) );
@@ -39,26 +41,26 @@ export function injectTableCellParagraphPostFixer( model: Model ): void {
 /**
  * The table cell contents post-fixer.
  */
-function tableCellContentsPostFixer( writer: Writer, model: Model ) {
+function tableCellContentsPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
 
 	for ( const entry of changes ) {
 		if ( entry.type == 'insert' && entry.name == 'table' ) {
-			wasFixed = fixTable( entry.position.nodeAfter as Element, writer ) || wasFixed;
+			wasFixed = fixTable( entry.position.nodeAfter as ModelElement, writer ) || wasFixed;
 		}
 
 		if ( entry.type == 'insert' && entry.name == 'tableRow' ) {
-			wasFixed = fixTableRow( entry.position.nodeAfter as Element, writer ) || wasFixed;
+			wasFixed = fixTableRow( entry.position.nodeAfter as ModelElement, writer ) || wasFixed;
 		}
 
 		if ( entry.type == 'insert' && entry.name == 'tableCell' ) {
-			wasFixed = fixTableCellContent( entry.position.nodeAfter as Element, writer ) || wasFixed;
+			wasFixed = fixTableCellContent( entry.position.nodeAfter as ModelElement, writer ) || wasFixed;
 		}
 
 		if ( ( entry.type == 'remove' || entry.type == 'insert' ) && checkTableCellChange( entry ) ) {
-			wasFixed = fixTableCellContent( entry.position.parent as Element, writer ) || wasFixed;
+			wasFixed = fixTableCellContent( entry.position.parent as ModelElement, writer ) || wasFixed;
 		}
 	}
 
@@ -68,7 +70,7 @@ function tableCellContentsPostFixer( writer: Writer, model: Model ) {
 /**
  * Fixes all table cells in a table.
  */
-function fixTable( table: Element, writer: Writer ) {
+function fixTable( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	for ( const row of table.getChildren() ) {
@@ -83,10 +85,10 @@ function fixTable( table: Element, writer: Writer ) {
 /**
  * Fixes all table cells in a table row.
  */
-function fixTableRow( tableRow: Element, writer: Writer ) {
+function fixTableRow( tableRow: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
-	for ( const tableCell of tableRow.getChildren() as IterableIterator<Element> ) {
+	for ( const tableCell of tableRow.getChildren() as IterableIterator<ModelElement> ) {
 		wasFixed = fixTableCellContent( tableCell, writer ) || wasFixed;
 	}
 
@@ -98,7 +100,7 @@ function fixTableRow( tableRow: Element, writer: Writer ) {
  * - Adding a paragraph to a table cell without any child.
  * - Wrapping direct $text in a `<paragraph>`.
  */
-function fixTableCellContent( tableCell: Element, writer: Writer ) {
+function fixTableCellContent( tableCell: ModelElement, writer: ModelWriter ) {
 	// Insert paragraph to an empty table cell.
 	if ( tableCell.childCount == 0 ) {
 		// @if CK_DEBUG_TABLE // console.log( 'Post-fixing table: insert paragraph in empty cell.' );
@@ -127,7 +129,7 @@ function fixTableCellContent( tableCell: Element, writer: Writer ) {
  * - Removing content from the table cell (i.e. `tableCell` can be left empty).
  * - Adding a text node directly into a table cell.
  */
-function checkTableCellChange( entry: DiffItemInsert | DiffItemRemove ) {
+function checkTableCellChange( entry: DifferItemInsert | DifferItemRemove ) {
 	if ( !entry.position.parent.is( 'element', 'tableCell' ) ) {
 		return false;
 	}

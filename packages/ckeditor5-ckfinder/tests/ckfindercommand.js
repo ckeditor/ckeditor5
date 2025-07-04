@@ -4,7 +4,7 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
@@ -32,7 +32,7 @@ describe( 'CKFinderCommand', () => {
 
 				command = new CKFinderCommand( editor );
 
-				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			} );
 	} );
 
@@ -43,7 +43,7 @@ describe( 'CKFinderCommand', () => {
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
 			model.enqueueChange( { isUndoable: false }, () => {
-				setModelData( model, '[]' );
+				_setModelData( model, '[]' );
 
 				command.refresh();
 				expect( command.isEnabled ).to.be.true;
@@ -51,7 +51,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should be true when the selection is in empty block', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -67,7 +67,7 @@ describe( 'CKFinderCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -87,7 +87,7 @@ describe( 'CKFinderCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -103,13 +103,13 @@ describe( 'CKFinderCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'should be true when insertImage or link command is enabled', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 			const insertImage = editor.commands.get( 'insertImage' );
 			const linkCommand = editor.commands.get( 'link' );
 
@@ -191,7 +191,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url ) ] );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
@@ -202,7 +202,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url, false ) ] );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( `<paragraph>f[<$text linkHref="${ url }">o</$text>]o</paragraph>` );
 		} );
 
@@ -273,7 +273,7 @@ describe( 'CKFinderCommand', () => {
 
 					command = new CKFinderCommand( editor );
 
-					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 					const spy = sinon.spy( window.CKFinder, 'modal' );
 
 					command.execute();
@@ -305,7 +305,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2 ), mockFinderFile( url3 ) ] );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`<imageBlock src="${ url1 }"></imageBlock>` +
 				`<imageBlock src="${ url2 }"></imageBlock>[<imageBlock src="${ url3 }"></imageBlock>]<paragraph>foo</paragraph>`
 			);
@@ -320,7 +320,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`<imageBlock src="${ url1 }"></imageBlock>` +
 				`[<imageBlock src="${ url3 }"></imageBlock>]` +
 				`<paragraph>f<$text linkHref="${ url2 }">o</$text>o</paragraph>`
@@ -336,7 +336,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFilesChooseEvent( [ mockFinderFile( false ) ] );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				`[<imageBlock src="${ proxyUrl }"></imageBlock>]<paragraph>foo</paragraph>`
 			);
 		} );
@@ -348,7 +348,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: url } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( `[<imageBlock src="${ url }"></imageBlock>]<paragraph>foo</paragraph>` );
 		} );
 
@@ -367,7 +367,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( '<paragraph>f[o]o</paragraph>' );
 		} );
 
@@ -386,7 +386,7 @@ describe( 'CKFinderCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
-			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+			_setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
 			const notification = editor.plugins.get( Notification );
 
@@ -402,7 +402,7 @@ describe( 'CKFinderCommand', () => {
 
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'foo/bar.jpg' } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( '<paragraph>f[o]o</paragraph>' );
 		} );
 
@@ -415,13 +415,13 @@ describe( 'CKFinderCommand', () => {
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
-			setModelData( model, '<other>[]</other>' );
+			_setModelData( model, '<other>[]</other>' );
 
 			command.execute();
 
 			mockFilesChooseEvent( [ mockFinderFile( 'foo/bar.jpg' ) ] );
 
-			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		it( 'does not alter the original config', () => {

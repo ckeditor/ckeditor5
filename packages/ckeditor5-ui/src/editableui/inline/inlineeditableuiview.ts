@@ -93,6 +93,6 @@ export class InlineEditableUIView extends EditableUIView {
 	}
 }
 
-type InlineEditableUIViewOptions = {
+export type InlineEditableUIViewOptions = {
 	label?: ( ( view: InlineEditableUIView ) => string ) | string | Record<string, string>;
 };

@@ -9,9 +9,9 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -51,16 +51,16 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'returns the number of words right away', () => {
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				expect( wordCountPlugin.words ).to.equal( 2 );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
 				expect( wordCountPlugin.words ).to.equal( 2 );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 				expect( wordCountPlugin.words ).to.equal( 1 );
 
-				setModelData( model, '' );
+				_setModelData( model, '' );
 				expect( wordCountPlugin.words ).to.equal( 0 );
 			} );
 
@@ -69,8 +69,8 @@ describe( 'WordCount', () => {
 
 				wordCountPlugin.on( 'change:words', spy );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 
 				setTimeout( () => {
 					// The #update event fired once because it is throttled.
@@ -88,16 +88,16 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'returns the number of characters right away', () => {
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				expect( wordCountPlugin.characters ).to.equal( 12 );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world</paragraph>' );
 				expect( wordCountPlugin.characters ).to.equal( 11 );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 				expect( wordCountPlugin.characters ).to.equal( 5 );
 
-				setModelData( model, '' );
+				_setModelData( model, '' );
 				expect( wordCountPlugin.characters ).to.equal( 0 );
 			} );
 
@@ -106,8 +106,8 @@ describe( 'WordCount', () => {
 
 				wordCountPlugin.on( 'change:characters', spy );
 
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text></paragraph>' );
 
 				setTimeout( () => {
 					// The #update event fired once because it is throttled.
@@ -139,49 +139,49 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should count a number as a word', () => {
-				setModelData( model, '<paragraph>1 12 3,5 3/4 1.2 0</paragraph>' );
+				_setModelData( model, '<paragraph>1 12 3,5 3/4 1.2 0</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 6 );
 			} );
 
 			it( 'should count a single letter as a word', () => {
-				setModelData( model, '<paragraph>a</paragraph>' );
+				_setModelData( model, '<paragraph>a</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 1 );
 			} );
 
 			it( 'should count an e-mail as a single word', () => {
-				setModelData( model, '<paragraph>j.doe@cksource.com</paragraph>' );
+				_setModelData( model, '<paragraph>j.doe@cksource.com</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 1 );
 			} );
 
 			it( 'should ignore apostrophes in words', () => {
-				setModelData( model, '<paragraph>Foo\'bar</paragraph>' );
+				_setModelData( model, '<paragraph>Foo\'bar</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 1 );
 			} );
 
 			it( 'should ignore dots in words', () => {
-				setModelData( model, '<paragraph>Foo.bar</paragraph>' );
+				_setModelData( model, '<paragraph>Foo.bar</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 1 );
 			} );
 
 			it( 'should count words in links', () => {
-				setModelData( model, '<paragraph><$text linkHref="http://www.cksource.com">CK Source</$text></paragraph>' );
+				_setModelData( model, '<paragraph><$text linkHref="http://www.cksource.com">CK Source</$text></paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 2 );
 			} );
 
 			it( 'should not count the string with no letters or numbers as a word', () => {
-				setModelData( model, '<paragraph>(@#$%^*()) . ??? @ --- ...</paragraph>' );
+				_setModelData( model, '<paragraph>(@#$%^*()) . ??? @ --- ...</paragraph>' );
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 0 );
 			} );
 
 			it( 'should not count the list item number/bullet as a word', () => {
-				setModelData( model, '<listItem listType="numbered" listIndent="0">Foo</listItem>' +
+				_setModelData( model, '<listItem listType="numbered" listIndent="0">Foo</listItem>' +
 				'<listItem listType="bulleted" listIndent="0">bar</listItem>' );
 
 				wordCountPlugin._refreshStats();
@@ -189,7 +189,7 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should count words in the image caption', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<imageBlock>' +
 						'<caption>Foo Bar</caption>' +
 					'</imageBlock>'
@@ -200,7 +200,7 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should count words in the table', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>Foo</paragraph></tableCell>' +
@@ -220,7 +220,7 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should separate words with the end of the paragraph', () => {
-				setModelData( model, '<paragraph>Foo</paragraph>' +
+				_setModelData( model, '<paragraph>Foo</paragraph>' +
 				'<paragraph>Bar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
@@ -228,21 +228,21 @@ describe( 'WordCount', () => {
 			} );
 
 			it( 'should separate words with the new line character', () => {
-				setModelData( model, '<paragraph>Foo\nBar</paragraph>' );
+				_setModelData( model, '<paragraph>Foo\nBar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 2 );
 			} );
 
 			it( 'should separate words with the soft break', () => {
-				setModelData( model, '<paragraph>Foo<softBreak></softBreak>Bar</paragraph>' );
+				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>Bar</paragraph>' );
 
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 2 );
 			} );
 
 			it( 'should not separate words with the special characters', () => {
-				setModelData( model, '<paragraph>F!o@o-B#a$r%F^o*B(a)r_F-o+o=B£a§r`F~o,B,a.F/o?o;B:a\'r"F\\o|oB{ar}</paragraph>' );
+				_setModelData( model, '<paragraph>F!o@o-B#a$r%F^o*B(a)r_F-o+o=B£a§r`F~o,B,a.F/o?o;B:a\'r"F\\o|oB{ar}</paragraph>' );
 
 				wordCountPlugin._refreshStats();
 				expect( wordCountPlugin.words ).to.equal( 1 );
@@ -253,7 +253,7 @@ describe( 'WordCount', () => {
 					this.skip();
 				}
 
-				setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
+				_setModelData( model, '<paragraph>שמש 太陽 ดวงอาทิตย์ شمس ਸੂਰਜ słońce</paragraph>' );
 				wordCountPlugin._refreshStats();
 
 				expect( wordCountPlugin.words ).to.equal( 6 );
@@ -273,7 +273,7 @@ describe( 'WordCount', () => {
 				it( 'should use different regexp when unicode properties are not supported', () => {
 					expect( wordCountPlugin.words ).to.equal( 0 );
 
-					setModelData( model, '<paragraph>hello world.</paragraph>' );
+					_setModelData( model, '<paragraph>hello world.</paragraph>' );
 					wordCountPlugin._refreshStats();
 
 					expect( wordCountPlugin.words ).to.equal( 2 );
@@ -282,7 +282,7 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'counts characters', () => {
-			setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+			_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
 			wordCountPlugin._refreshStats();
 
@@ -292,7 +292,7 @@ describe( 'WordCount', () => {
 		it( 'should not count enter as a character', () => {
 			expect( wordCountPlugin.characters ).to.equal( 0 );
 
-			setModelData( model, '<paragraph>Fo<softBreak></softBreak>o</paragraph>' +
+			_setModelData( model, '<paragraph>Fo<softBreak></softBreak>o</paragraph>' +
 				'<paragraph>Foo</paragraph>' +
 				'<table>' +
 				'<tableRow>' +
@@ -322,7 +322,7 @@ describe( 'WordCount', () => {
 				sinon.assert.calledWithExactly( fake, sinon.match.any, { words: 0, characters: 0 } );
 
 				// _refreshStats is throttled, so for this test case is run manually
-				setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
+				_setModelData( model, '<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 				wordCountPlugin._refreshStats();
 
 				sinon.assert.calledTwice( fake );
@@ -371,7 +371,7 @@ describe( 'WordCount', () => {
 		it( 'updates container content', () => {
 			expect( container.innerText ).to.equal( 'Words: 0Characters: 0' );
 
-			setModelData( model, '<paragraph>Foo bar</paragraph>' +
+			_setModelData( model, '<paragraph>Foo bar</paragraph>' +
 				'<paragraph><$text foo="true">Hello</$text> world.</paragraph>' );
 
 			wordCountPlugin._refreshStats();
@@ -435,7 +435,7 @@ describe( 'WordCount', () => {
 			wordCountPlugin.on( 'update', fake );
 
 			// Initial change in model should be immediately reflected in word-count
-			setModelData( model, '<paragraph>Hello world.</paragraph>' );
+			_setModelData( model, '<paragraph>Hello world.</paragraph>' );
 
 			sinon.assert.calledOnce( fake );
 			sinon.assert.calledWith( fake, sinon.match.any, { words: 2, characters: 12 } );
@@ -448,13 +448,13 @@ describe( 'WordCount', () => {
 				done();
 			}, DELAY );
 
-			setModelData( model, '<paragraph>Hello world</paragraph>' );
-			setModelData( model, '<paragraph>Hello worl</paragraph>' );
-			setModelData( model, '<paragraph>Hello wor</paragraph>' );
+			_setModelData( model, '<paragraph>Hello world</paragraph>' );
+			_setModelData( model, '<paragraph>Hello worl</paragraph>' );
+			_setModelData( model, '<paragraph>Hello wor</paragraph>' );
 		} );
 
 		it( 'is not update after selection change', done => {
-			setModelData( model, '<paragraph>Hello[] world.</paragraph>' );
+			_setModelData( model, '<paragraph>Hello[] world.</paragraph>' );
 
 			const fake = sinon.fake();
 			const fakeSelectionChange = sinon.fake();
@@ -463,13 +463,13 @@ describe( 'WordCount', () => {
 			model.document.on( 'change', fakeSelectionChange );
 
 			model.change( writer => {
-				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 1 ] ) );
+				const range = writer.createRange( new ModelPosition( model.document.getRoot(), [ 0, 1 ] ) );
 
 				writer.setSelection( range );
 			} );
 
 			model.change( writer => {
-				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 10 ] ) );
+				const range = writer.createRange( new ModelPosition( model.document.getRoot(), [ 0, 10 ] ) );
 
 				writer.setSelection( range );
 			} );
@@ -525,7 +525,7 @@ describe( 'WordCount', () => {
 				.then( editor => {
 					sinon.assert.calledWithExactly( fake, { words: 0, characters: 0 } );
 
-					setModelData( editor.model, '<paragraph>Foo Bar</paragraph>' );
+					_setModelData( editor.model, '<paragraph>Foo Bar</paragraph>' );
 				} )
 				.then( () => new Promise( resolve => {
 					setTimeout( resolve, DELAY );
@@ -609,15 +609,15 @@ describe( 'WordCount', () => {
 		} );
 
 		it( 'should sum characters of each root', () => {
-			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
-			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+			_setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			_setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
 
 			expect( wordCountPlugin.characters ).to.be.equal( 18 );
 		} );
 
 		it( 'should sum words of each root', () => {
-			setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
-			setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
+			_setModelData( model, '<paragraph>foo bar</paragraph>', { rootName: 'foo' } );
+			_setModelData( model, '<paragraph>lorem ipsum</paragraph>', { rootName: 'bar' } );
 
 			expect( wordCountPlugin.words ).to.be.equal( 4 );
 		} );

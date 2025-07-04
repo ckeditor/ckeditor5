@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 
 import { MentionEditing, _toMentionAttribute } from './mentionediting.js';
 import { MentionUI } from './mentionui.js';
@@ -35,7 +35,7 @@ export class Mention extends Plugin {
 	 * @param data Additional data to be stored in the mention attribute.
 	 */
 	public toMentionAttribute<MentionData extends Record<string, unknown>>(
-		viewElement: Element,
+		viewElement: ModelElement,
 		data: MentionData
 	): ( MentionAttribute & MentionData ) | undefined;
 
@@ -50,9 +50,9 @@ export class Mention extends Plugin {
 	 * // { id: '@joe', uid: '7a7bc7...', _text: '@John Doe' }
 	 * ```
 	 */
-	public toMentionAttribute( viewElement: Element ): MentionAttribute | undefined;
+	public toMentionAttribute( viewElement: ModelElement ): MentionAttribute | undefined;
 
-	public toMentionAttribute( viewElement: Element, data?: Record<string, unknown> ): MentionAttribute | undefined {
+	public toMentionAttribute( viewElement: ModelElement, data?: Record<string, unknown> ): MentionAttribute | undefined {
 		return _toMentionAttribute( viewElement, data );
 	}
 
@@ -93,7 +93,7 @@ export type MentionAttribute = {
 
 	/**
 	 * A unique ID of this mention instance. Should be passed as an `option.id` when using
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement writer.createAttributeElement()}.
 	 */
 	uid: string;
 

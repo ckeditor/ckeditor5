@@ -7,8 +7,8 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
 import { Table } from '../../src/table.js';
@@ -61,7 +61,7 @@ describe( 'TableLayoutEditing', () => {
 	} );
 
 	it( 'should set proper schema rule to not allow <caption> for layout tables', () => {
-		setModelData(
+		_setModelData(
 			model,
 			'<table tableType="layout">' +
 				'<tableRow>' +
@@ -79,7 +79,7 @@ describe( 'TableLayoutEditing', () => {
 
 	describe( 'dataDowncast', () => {
 		it( 'should add `layout-table` class and `role="presentation"` attribute', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<table tableType="layout">' +
 					'<tableRow>' +
@@ -100,7 +100,7 @@ describe( 'TableLayoutEditing', () => {
 		} );
 
 		it( 'should add `content-table` class and not add the `role="presentation"` attribute', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<table tableType="content">' +
 					'<tableRow>' +
@@ -127,7 +127,7 @@ describe( 'TableLayoutEditing', () => {
 				}, { priority: 'highest' } );
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				'<table tableType="layout">' +
 					'<tableRow>' +
@@ -150,7 +150,7 @@ describe( 'TableLayoutEditing', () => {
 
 	describe( 'editingDowncast', () => {
 		it( 'should properly downcast layout table', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<table tableType="layout">' +
 					'<tableRow>' +
@@ -161,7 +161,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget ck-widget_with-selection-handle layout-table table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table>' +
@@ -181,7 +181,7 @@ describe( 'TableLayoutEditing', () => {
 		} );
 
 		it( 'should properly downcast content table', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<table tableType="content">' +
 					'<tableRow>' +
@@ -192,7 +192,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget ck-widget_with-selection-handle content-table table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table>' +
@@ -220,7 +220,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -234,7 +234,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -248,7 +248,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -264,7 +264,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<caption>foo</caption>' +
@@ -280,7 +280,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -294,7 +294,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -308,7 +308,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -328,7 +328,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -349,7 +349,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -370,7 +370,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table headingRows="1" tableType="content">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -389,7 +389,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table headingColumns="1" tableType="content">' +
 					'<tableRow>' +
 						'<tableCell><paragraph>a</paragraph></tableCell>' +
@@ -408,7 +408,7 @@ describe( 'TableLayoutEditing', () => {
 				'<table class="table layout-table"></table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -420,7 +420,7 @@ describe( 'TableLayoutEditing', () => {
 				'<table></table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -432,7 +432,7 @@ describe( 'TableLayoutEditing', () => {
 				'<table class="table content-table"></table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -457,7 +457,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell>' +
 						'<table tableType="layout">' +
@@ -492,7 +492,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout" tableWidth="30%">' +
 					'<tableRow>' +
 						'<tableCell><paragraph>a</paragraph></tableCell>' +
@@ -535,7 +535,7 @@ describe( 'TableLayoutEditing', () => {
 				'</table>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -559,7 +559,7 @@ describe( 'TableLayoutEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -575,7 +575,7 @@ describe( 'TableLayoutEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -591,7 +591,7 @@ describe( 'TableLayoutEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -613,7 +613,7 @@ describe( 'TableLayoutEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table headingRows="1" tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -636,7 +636,7 @@ describe( 'TableLayoutEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table headingRows="1" tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
@@ -680,7 +680,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="layout">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -694,7 +694,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="content">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -708,7 +708,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="content">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -725,7 +725,7 @@ describe( 'TableLayoutEditing', () => {
 						'</figure>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="content">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -741,7 +741,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="content">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 							'<caption>foo</caption>' +
@@ -784,7 +784,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="layout">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -798,7 +798,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="content">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -812,7 +812,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="layout">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -829,7 +829,7 @@ describe( 'TableLayoutEditing', () => {
 						'</figure>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="layout">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -845,7 +845,7 @@ describe( 'TableLayoutEditing', () => {
 						'</table>'
 					);
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<table tableType="layout">' +
 							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'</table>'
@@ -895,7 +895,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -909,7 +909,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -923,7 +923,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table htmlTableAttributes="{"classes":["foobar"]}" tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -937,7 +937,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table htmlTableAttributes="{"classes":["foobar"]}" tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -952,7 +952,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -982,7 +982,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout" tableWidth="30%">' +
 						'<tableRow>' +
 							'<tableCell><paragraph>a</paragraph></tableCell>' +
@@ -1028,7 +1028,7 @@ describe( 'TableLayoutEditing', () => {
 					method: 'paste'
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<table tableType="layout">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1060,7 +1060,7 @@ describe( 'TableLayoutEditing', () => {
 					method: 'paste'
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<table tableType="layout">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1091,7 +1091,7 @@ describe( 'TableLayoutEditing', () => {
 					method: 'paste'
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<table tableType="content">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1122,7 +1122,7 @@ describe( 'TableLayoutEditing', () => {
 					method: 'paste'
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<table tableType="content">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1154,7 +1154,7 @@ describe( 'TableLayoutEditing', () => {
 					method: 'paste'
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( _getModelData( model ) ).to.equal(
 					'[<table tableType="layout">' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -1177,7 +1177,7 @@ describe( 'TableLayoutEditing', () => {
 		describe( 'copying tables', () => {
 			describe( 'slice', () => {
 				it( 'should preserve table type when copying', () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table tableType="layout">' +
 							'<tableRow>' +
@@ -1206,7 +1206,7 @@ describe( 'TableLayoutEditing', () => {
 				} );
 
 				it( 'should preserve content table type when copying', () => {
-					setModelData(
+					_setModelData(
 						model,
 						'<table tableType="content">' +
 							'<tableRow>' +
@@ -1237,7 +1237,7 @@ describe( 'TableLayoutEditing', () => {
 
 			describe( 'whole table', () => {
 				it( 'should preserve table type when copying entire layout table', () => {
-					setModelData(
+					_setModelData(
 						model,
 						'[<table tableType="layout">' +
 							'<tableRow>' +
@@ -1266,7 +1266,7 @@ describe( 'TableLayoutEditing', () => {
 				} );
 
 				it( 'should preserve table type when copying entire content table', () => {
-					setModelData(
+					_setModelData(
 						model,
 						'[<table tableType="content">' +
 							'<tableRow>' +
@@ -1301,7 +1301,7 @@ describe( 'TableLayoutEditing', () => {
 		it( 'should add `tableType` attribute to the table', () => {
 			insertTableCommand.execute( { rows: 1, columns: 2 } );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow>' +
 						'<tableCell><paragraph></paragraph></tableCell>' +
@@ -1324,7 +1324,7 @@ describe( 'TableLayoutEditing', () => {
 				writer.setSelection( writer.createPositionAt( table2.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
 				'</table>' +
@@ -1349,7 +1349,7 @@ describe( 'TableLayoutEditing', () => {
 				editor.model.insertContent( docFrag );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<blockQuote>' +
 					'<table tableType="content">' +
 						'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
@@ -1359,7 +1359,7 @@ describe( 'TableLayoutEditing', () => {
 		} );
 
 		it( 'should change `tableType` attribute on existing table and remove disallowed children', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'[<table tableType="content">' +
 					'<tableRow>' +
@@ -1377,7 +1377,7 @@ describe( 'TableLayoutEditing', () => {
 				writer.setAttribute( 'tableType', 'layout', table );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'
@@ -1385,7 +1385,7 @@ describe( 'TableLayoutEditing', () => {
 		} );
 
 		it( 'should change `tableType` attribute on existing table and remove disallowed table attributes', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'[<table headingRows="1" headingColumns="1" tableType="content" >' +
 					'<tableRow>' +
@@ -1402,7 +1402,7 @@ describe( 'TableLayoutEditing', () => {
 				writer.setAttribute( 'tableType', 'layout', table );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 				'</table>'

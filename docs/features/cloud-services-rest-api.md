@@ -16,8 +16,8 @@ CKEditor Cloud Services offer several REST APIs that can be used for server inte
 
 The APIs currently include:
 
-* **CKEditor Cloud Services Restful APIs** &ndash; Provides a full-featured RESTful API that you can use to create a server-to-server integration. The API documentation is available at [https://help.cke-cs.com/api/docs/](https://help.cke-cs.com/api/docs/). It is an aggregator of all Restful APIs currently available.
-* **CKBox Restful API** &ndash; Provides an API for managing data stored in the CKBox. The API documentation is available at [https://api.ckbox.io/api/docs](https://api.ckbox.io/api/docs).
+* **CKEditor Cloud Services RESTful APIs** &ndash; Provides a full-featured RESTful API that you can use to create a server-to-server integration. The API documentation is available at [https://help.cke-cs.com/api/docs/](https://help.cke-cs.com/api/docs/). It is an aggregator of all RESTful APIs currently available.
+* **CKBox RESTful API** &ndash; Provides an API for managing data stored in the CKBox. The API documentation is available at [https://api.ckbox.io/api/docs](https://api.ckbox.io/api/docs).
 * **HTML to PDF Converter API** &ndash; Provides an API for converting HTML/CSS documents to PDF format. The API documentation is available at [https://pdf-converter.cke-cs.com/docs](https://pdf-converter.cke-cs.com/docs).
 * **HTML to DOCX Converter API** &ndash; Provides an API for converting HTML documents to Microsoft Word `.docx` files. The API documentation is available at [https://docx-converter.cke-cs.com/docs#section/Export-to-Word](https://docx-converter.cke-cs.com/docs#section/Export-to-Word)
 * **DOCX to HTML Converter API** &ndash; Provides an API for converting Microsoft Word `.docx`/`.dotx` files to HTML documents. The API documentation is available at [https://docx-converter.cke-cs.com/docs#section/Import-from-Word](https://docx-converter.cke-cs.com/docs#section/Import-from-Word).

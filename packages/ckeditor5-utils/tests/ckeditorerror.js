@@ -140,6 +140,22 @@ describe( 'CKEditorError', () => {
 				CKEditorError.rethrowUnexpectedError( error, context );
 			}, /foo/, context );
 		} );
+
+		it( 'should rethrow an unexpected error wrapped in CKEditorError with original error details', () => {
+			const error = new TypeError( 'Some unexpected error' );
+			error.stack = 'bar';
+			const context = {};
+
+			const expectedMessage = [
+				'unexpected-error',
+				`Read more: ${ DOCUMENTATION_URL }#error-unexpected-error`,
+				'Original error: TypeError: Some unexpected error'
+			].join( '\n' );
+
+			expectToThrowCKEditorError( () => {
+				CKEditorError.rethrowUnexpectedError( error, context );
+			}, expectedMessage, context );
+		} );
 	} );
 
 	describe( 'logWarning()', () => {

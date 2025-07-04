@@ -10,7 +10,7 @@ import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
 
@@ -53,7 +53,7 @@ describe( 'Title integration with feature', () => {
 				'<p><strong>Foo</strong></p>'
 			);
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<title><title-content>Title</title-content></title><paragraph>[<$text bold="true">Foo</$text>]</paragraph>'
 			);
 		} );

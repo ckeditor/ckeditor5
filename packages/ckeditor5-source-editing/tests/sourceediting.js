@@ -22,7 +22,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 import { _getEmitterListenedTo, _getEmitterId } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { Dialog } from '@ckeditor/ckeditor5-ui';
 
@@ -528,11 +528,11 @@ describe( 'SourceEditing', () => {
 		} );
 
 		it( 'should collapse selection and remove selection attributes after switching to the source editing mode', () => {
-			setData( editor.model, '<paragraph><$text bold="true">[foobar]</$text></paragraph>' );
+			_setModelData( editor.model, '<paragraph><$text bold="true">[foobar]</$text></paragraph>' );
 
 			button.fire( 'execute' );
 
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[]<$text bold="true">foobar</$text></paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]<$text bold="true">foobar</$text></paragraph>' );
 		} );
 
 		it( 'should focus the textarea after switching to the source editing mode', () => {
@@ -727,9 +727,9 @@ describe( 'SourceEditing', () => {
 			textarea.value = 'bar';
 			textarea.dispatchEvent( new Event( 'input' ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
 			plugin.updateEditorData();
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>bar</paragraph>' );
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>bar</paragraph>' );
 		} );
 	} );
 

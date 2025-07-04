@@ -12,7 +12,7 @@ type DomDataTransfer = globalThis.DataTransfer;
 /**
  * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
-export class DataTransfer {
+export class ViewDataTransfer {
 	/**
 	 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
 	 */
@@ -80,22 +80,22 @@ export class DataTransfer {
 	/**
 	 * The effect that is allowed for a drag operation.
 	 */
-	public set effectAllowed( value: EffectAllowed ) {
+	public set effectAllowed( value: ViewEffectAllowed ) {
 		this._native.effectAllowed = value;
 	}
 
-	public get effectAllowed(): EffectAllowed {
+	public get effectAllowed(): ViewEffectAllowed {
 		return this._native.effectAllowed;
 	}
 
 	/**
 	 * The actual drop effect.
 	 */
-	public set dropEffect( value: DropEffect ) {
+	public set dropEffect( value: ViewDropEffect ) {
 		this._native.dropEffect = value;
 	}
 
-	public get dropEffect(): DropEffect {
+	public get dropEffect(): ViewDropEffect {
 		return this._native.dropEffect;
 	}
 
@@ -117,12 +117,12 @@ export class DataTransfer {
 /**
  * The effect that is allowed for a drag operation.
  */
-export type EffectAllowed = DomDataTransfer[ 'effectAllowed' ];
+export type ViewEffectAllowed = DomDataTransfer[ 'effectAllowed' ];
 
 /**
  * The actual drop effect.
  */
-export type DropEffect = DomDataTransfer[ 'dropEffect' ];
+export type ViewDropEffect = DomDataTransfer[ 'dropEffect' ];
 
 function getFiles( nativeDataTransfer: DomDataTransfer ): Array<File> {
 	// DataTransfer.files and items are array-like and might not have an iterable interface.

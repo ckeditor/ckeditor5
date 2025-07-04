@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { TableSelection } from './tableselection.js';
 import { MouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
 import { TableUtils } from './tableutils.js';
-import type { DomEventData, Element } from 'ckeditor5/src/engine.js';
+import type { ViewDocumentDomEventData, ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * This plugin enables a table cells' selection with the mouse.
@@ -131,7 +131,7 @@ export class TableMouse extends Plugin {
 	 */
 	private _enableMouseDragSelection() {
 		const editor = this.editor;
-		let anchorCell: Element | null, targetCell: Element | null;
+		let anchorCell: ModelElement | null, targetCell: ModelElement | null;
 		let beganCellSelection = false;
 		let blockSelectionChange = false;
 
@@ -204,17 +204,17 @@ export class TableMouse extends Plugin {
 	 *
 	 * @returns Returns the table cell or `undefined`.
 	 */
-	private _getModelTableCellFromDomEvent( domEventData: DomEventData ) {
+	private _getModelTableCellFromDomEvent( domEventData: ViewDocumentDomEventData ) {
 		// Note: Work with positions (not element mapping) because the target element can be an attribute or other non-mapped element.
 		const viewTargetElement = domEventData.target;
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );
 		const modelPosition = this.editor.editing.mapper.toModelPosition( viewPosition );
-		const modelElement = modelPosition.parent as Element;
+		const modelElement = modelPosition.parent as ModelElement;
 
 		return modelElement.findAncestor( 'tableCell', { includeSelf: true } );
 	}
 }
 
-function haveSameTableParent( cellA: Element, cellB: Element ) {
+function haveSameTableParent( cellA: ModelElement, cellB: ModelElement ) {
 	return cellA.parent!.parent == cellB.parent!.parent;
 }

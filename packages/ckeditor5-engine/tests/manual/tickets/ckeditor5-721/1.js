@@ -11,7 +11,7 @@ import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 
 import { ViewPosition } from '../../../../src/view/position.js';
-import { setData } from '../../../../src/dev-utils/model.js';
+import { _setModelData } from '../../../../src/dev-utils/model.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -54,7 +54,7 @@ ClassicEditor
 				view: ( item, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 			} );
 
-		setData( editor.model,
+		_setModelData( editor.model,
 			'<paragraph>foo[]</paragraph>' +
 			'<widget><nested>bar</nested></widget>' +
 			'<widget><nested>bom</nested></widget>'
