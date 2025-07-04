@@ -273,6 +273,16 @@ describe( 'RemoveFormatCommand', () => {
 						'</tableRow>' +
 					'</table>'
 				)
+			},
+
+			'does not remove formatting from block when selection ends exactly at its beginning': {
+				input: '<p>te[xt</p><p someBlockFormatting="bar">]content</p>',
+				assert: () => expectModelToBeEqual( '<p>te[xt</p><p someBlockFormatting="bar">]content</p>' )
+			},
+
+			'does remove formatting from block when selection ends exactly at its ending': {
+				input: '<p>te[xt</p><p someBlockFormatting="bar">content]</p>',
+				assert: () => expectModelToBeEqual( '<p>te[xt</p><p>content]</p>' )
 			}
 		};
 
