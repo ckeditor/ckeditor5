@@ -10,18 +10,12 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { TableCellPropertiesEditing } from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting.js';
-import { FontColorEditing } from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'RemoveFormatCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-			plugins: [ TableEditing, TableCellPropertiesEditing, FontColorEditing, Paragraph ]
-		} )
+		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -72,6 +66,18 @@ describe( 'RemoveFormatCommand', () => {
 						}
 					}
 				);
+
+				model.schema.register( 'mockTable', {
+					inheritAllFrom: '$blockObject'
+				} );
+
+				model.schema.register( 'mockCell', {
+					allowContentOf: '$container',
+					allowIn: 'mockTable',
+					allowAttributes: 'someBlockFormatting',
+					isLimit: true,
+					isSelectable: true
+				} );
 			} );
 	} );
 
@@ -201,88 +207,92 @@ describe( 'RemoveFormatCommand', () => {
 
 			'removes formatting from a nested table (selection within paragraph in cell)': {
 				input:
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell tableCellBackgroundColor="blue">' +
-								'<paragraph>Foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<table>' +
-									'<tableRow>' +
-										'<tableCell tableCellBackgroundColor="yellow">' +
-											'<paragraph>B[a<$text fontColor="red">r</$text> B]az</paragraph>' +
-										'</tableCell>' +
-									'</tableRow>' +
-								'</table>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange">B[a<$text bold="true">r</$text> B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
 				assert: () => expectModelToBeEqual(
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell tableCellBackgroundColor="blue">' +
-								'<paragraph>Foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<table>' +
-									'<tableRow>' +
-										'<tableCell tableCellBackgroundColor="yellow">' +
-											'<paragraph>B[ar B]az</paragraph>' +
-										'</tableCell>' +
-									'</tableRow>' +
-								'</table>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p>B[ar B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
 				)
 			},
 
 			'removes formatting from a nested table (whole nested cell selected)': {
 				input:
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell tableCellBackgroundColor="blue">' +
-								'<paragraph>Foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<table>' +
-									'<tableRow>' +
-										'[<tableCell tableCellBackgroundColor="yellow">' +
-											'<paragraph><$text fontColor="red">Bar</$text> Baz</paragraph>' +
-										'</tableCell>]' +
-									'</tableRow>' +
-								'</table>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>',
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange"><$text bold="true">Bar</$text> Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
 				assert: () => expectModelToBeEqual(
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell tableCellBackgroundColor="blue">' +
-								'<paragraph>Foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<table>' +
-									'<tableRow>' +
-										'[<tableCell>' +
-											'<paragraph>Bar Baz</paragraph>' +
-										'</tableCell>]' +
-									'</tableRow>' +
-								'</table>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell>' +
+									'<p>Bar Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
 				)
 			},
 
-			'does not remove formatting from block when selection ends exactly at its beginning': {
-				input: '<p>te[xt</p><p someBlockFormatting="bar">]content</p>',
-				assert: () => expectModelToBeEqual( '<p>te[xt</p><p someBlockFormatting="bar">]content</p>' )
-			},
-
-			'does remove formatting from block when selection ends exactly at its ending': {
-				input: '<p>te[xt</p><p someBlockFormatting="bar">content]</p>',
-				assert: () => expectModelToBeEqual( '<p>te[xt</p><p>content]</p>' )
+			'removes formatting from a table content (whole content selected)': {
+				input:
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p someBlockFormatting="bar">abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="abc">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p someBlockFormatting="123"><$text bold="red">Bar</$text> Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p someBlockFormatting="foo">abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>',
+				assert: () => expectModelToBeEqual(
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p>abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell>' +
+							'<p>Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p>Bar Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p>abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>'
+				)
 			}
 		};
 
