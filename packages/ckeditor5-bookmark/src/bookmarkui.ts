@@ -21,12 +21,12 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconBookmark, IconRemove, IconBookmarkMedium, IconBookmarkSmall, IconPencil } from 'ckeditor5/src/icons.js';
 import {
-	type Element,
+	type ModelElement,
 	type ViewDocumentSelection,
 	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import type { DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import type { DeleteCommand } from 'ckeditor5/src/typing.js';
 import { isWidget, WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
@@ -618,10 +618,10 @@ export class BookmarkUI extends Plugin {
 	 * Returns positioning options for the {@link #_balloon}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
-	private _getBalloonPositionData(): Partial<PositionOptions> | undefined {
+	private _getBalloonPositionData(): Partial<DomOptimalPositionOptions> | undefined {
 		const view = this.editor.editing.view;
 		const model = this.editor.model;
-		let target: PositionOptions[ 'target' ] | undefined;
+		let target: DomOptimalPositionOptions[ 'target' ] | undefined;
 
 		const bookmarkElement = this._getSelectedBookmarkElement();
 
@@ -655,11 +655,11 @@ export class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns the bookmark {@link module:engine/view/attributeelement~AttributeElement} under
-	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
+	 * Returns the bookmark {@link module:engine/view/attributeelement~ViewAttributeElement} under
+	 * the {@link module:engine/view/document~ViewDocument editing view's} selection or `null`
 	 * if there is none.
 	 */
-	private _getSelectedBookmarkElement(): Element | null {
+	private _getSelectedBookmarkElement(): ModelElement | null {
 		const selection = this.editor.model.document.selection;
 		const element = selection.getSelectedElement();
 

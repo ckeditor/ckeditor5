@@ -5,7 +5,7 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'images', () => {
 		it( 'should process images', () => {
 			testDataProcessor(

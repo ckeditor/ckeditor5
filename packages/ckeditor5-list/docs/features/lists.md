@@ -1,6 +1,7 @@
 ---
 menu-title: Ordered and unordered lists
 meta-title: Lists | CKEditor 5 Documentation
+meta-description: Create and manage ordered and unordered lists in CKEditor 5 to organize content clearly and improve readability.
 category: features-lists
 order: 10
 ---

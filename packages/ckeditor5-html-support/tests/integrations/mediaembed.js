@@ -917,7 +917,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 	// 	'<figure class="ck-widget ck-widget_selected media foobar" contenteditable="false"' +
 		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -968,7 +968,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 		attributes: {}
 		// 	} );
 
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure class="ck-widget ck-widget_selected media" contenteditable="false">' +
 		// 			'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk">' +
 		// 			'</div>' +
@@ -1443,7 +1443,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		// 	// TODO: this should pass, but oembed attributes are not applied in the editing view.
 		// 	// Should be fixed by https://github.com/ckeditor/ckeditor5/issues/11532
-		// 	// expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	// expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 	// 	'<figure class="ck-widget ck-widget_selected foobar" contenteditable="false"' +
 		// 	// 			' style="font-size:12px;text-align:center;" data-figure="bar">' +
 		// 	// 		'<div class="ck-media__wrapper" data-oembed-url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"' +
@@ -1502,7 +1502,7 @@ describe( 'MediaEmbedElementSupport', () => {
 		// 	} );
 
 		// 	// TODO: This test passes, but I think it's wrong.
-		// 	expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+		// 	expect(_getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 		// 		'<figure>' +
 		// 			'<p>' +
 		// 				'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +

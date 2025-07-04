@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
@@ -90,7 +90,7 @@ describe( 'table properties', () => {
 		} );
 
 		function createEmptyTable() {
-			setModelData(
+			_setModelData(
 				model,
 				'<table headingRows="0" headingColumns="0">' +
 					'<tableRow>' +

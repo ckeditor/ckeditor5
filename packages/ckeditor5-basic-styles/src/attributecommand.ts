@@ -13,7 +13,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
  * An extension of the base {@link module:core/command~Command} class, which provides utilities for a command
  * that toggles a single attribute on a text or an element.
  *
- * `AttributeCommand` uses {@link module:engine/model/document~Document#selection}
+ * `AttributeCommand` uses {@link module:engine/model/document~ModelDocument#selection}
  * to decide which nodes (if any) should be changed, and applies or removes the attribute from them.
  *
  * The command checks the {@link module:engine/model/model~Model#schema} to decide if it can be enabled
@@ -22,7 +22,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 export class AttributeCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
-	 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
+	 * {@link module:engine/model/selection~ModelSelection#hasAttribute selection has the attribute} which means that:
 	 *
 	 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
 	 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed
@@ -63,12 +63,12 @@ export class AttributeCommand extends Command {
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *
-	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection}:
+	 * The execution result differs, depending on the {@link module:engine/model/document~ModelDocument#selection}:
 	 *
 	 * * If the selection is on a range, the command applies the attribute to all nodes in that range
-	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~Schema schema}).
+	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~ModelSchema schema}).
 	 * * If the selection is collapsed in a non-empty node, the command applies the attribute to the
-	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy attributes from the selection).
+	 * {@link module:engine/model/document~ModelDocument#selection} itself (note that typed characters copy attributes from the selection).
 	 * * If the selection is collapsed in an empty node, the command applies the attribute to the parent node of the selection (note
 	 * that the selection inherits all attributes from a node if it is in an empty node).
 	 *

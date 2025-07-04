@@ -6,13 +6,13 @@
 import { Image } from '../../src/image.js';
 import { ImageCaption } from '../../src/imagecaption.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageCaption integration', () => {
@@ -48,14 +48,14 @@ describe( 'ImageCaption integration', () => {
 		} );
 
 		it( 'does nothing if soft enter was pressed', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
 				'<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
 			const preventDefaultOriginal = domEvent.preventDefault;
 			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
 
@@ -94,14 +94,14 @@ describe( 'ImageCaption integration', () => {
 		} );
 
 		it( 'inserts a soft break when soft enter was pressed', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>Foo.</paragraph>' +
 				'<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' +
 				'<paragraph>Bar.</paragraph>'
 			);
 
-			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const domEvent = new ViewDocumentDomEventData( viewDocument, getDomEvent(), { isSoft: true } );
 			const preventDefaultOriginal = domEvent.preventDefault;
 			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
 
@@ -127,6 +127,6 @@ describe( 'ImageCaption integration', () => {
 	}
 
 	function assertModelData( output ) {
-		expect( getModelData( model ) ).to.equal( output );
+		expect( _getModelData( model ) ).to.equal( output );
 	}
 } );

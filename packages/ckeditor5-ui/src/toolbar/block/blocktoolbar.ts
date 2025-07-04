@@ -22,7 +22,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import { BlockButtonView } from './blockbuttonview.js';
 import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
@@ -43,11 +43,11 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * Upon clicking the button, a dropdown providing access to editor features shows up, as configured in
  * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar}.
  *
- * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~Schema}
+ * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~ModelSchema}
  * as `$block` for which the toolbar provides at least one option.
  *
  * By default, the button is attached so its right boundary is touching the
- * {@link module:engine/view/editableelement~EditableElement}:
+ * {@link module:engine/view/editableelement~ViewEditableElement}:
  *
  * ```
  *  __ |
@@ -168,7 +168,7 @@ export class BlockToolbar extends Plugin {
 		}
 
 		// Hides panel on a direct selection change.
-		this.listenTo<DocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
+		this.listenTo<ModelDocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
 				this._hidePanel();
 			}

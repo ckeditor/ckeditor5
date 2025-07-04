@@ -14,8 +14,8 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters.js';
-import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
-import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
+import type { HtmlSupportDataSchemaBlockElementDefinition } from '../dataschema.js';
 
 /**
  * Provides the General HTML Support for `script` elements.
@@ -48,7 +48,7 @@ export class ScriptElementSupport extends Plugin {
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:script', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:script', ( evt, definition ) => {
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
@@ -70,7 +70,7 @@ export class ScriptElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter(
-				definition as DataSchemaBlockElementDefinition,
+				definition as HtmlSupportDataSchemaBlockElementDefinition,
 				dataFilter
 			) );
 
@@ -81,7 +81,8 @@ export class ScriptElementSupport extends Plugin {
 				}
 			} );
 
-			conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition as DataSchemaBlockElementDefinition ) );
+			conversion.for( 'downcast' )
+				.add( modelToViewBlockAttributeConverter( definition as HtmlSupportDataSchemaBlockElementDefinition ) );
 
 			evt.stop();
 		} );

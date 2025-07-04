@@ -7,6 +7,9 @@
  * @module watchdog/utils/getsubnodes
  */
 
+/**
+ * @internal
+ */
 export function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
 	const nodes = [ head ];
 

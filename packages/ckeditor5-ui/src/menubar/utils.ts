@@ -40,6 +40,7 @@ const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarview~MenuBarView} component.
+ * @internal
  */
 export const MenuBarBehaviors = {
 	/**
@@ -202,6 +203,7 @@ export const MenuBarBehaviors = {
 
 /**
  * Behaviors of the {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} component.
+ * @internal
  */
 export const MenuBarMenuBehaviors = {
 	/**
@@ -396,6 +398,9 @@ export const MenuBarMenuBehaviors = {
  *	│               ├──────┐
  *	│               │      │
  *	└───────────────┴──────┘
+ */
+/**
+ * @internal
  */
 export const MenuBarMenuViewPanelPositioningFunctions: Record<string, PositioningFunction> = {
 	southEast: buttonRect => {
@@ -683,6 +688,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'indent',
  * 				items: [
  * 					'menuBar:alignment',
+ * 					'menuBar:lineHeight',
  * 					'menuBar:indent',
  * 					'menuBar:outdent'
  * 				]
@@ -956,6 +962,7 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'indent',
 				items: [
 					'menuBar:alignment',
+					'menuBar:lineHeight',
 					'menuBar:indent',
 					'menuBar:outdent'
 				]
@@ -1048,6 +1055,7 @@ export function normalizeMenuBarConfig( config: Readonly<MenuBarConfig> ): Norma
  * * Removed obsolete separators,
  * * Purged empty menus,
  * * Localized top-level menu labels.
+ * @internal
  */
 export function processMenuBarConfig( {
 	normalizedConfig,

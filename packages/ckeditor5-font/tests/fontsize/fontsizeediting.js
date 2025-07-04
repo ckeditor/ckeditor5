@@ -8,7 +8,7 @@ import { FontSizeEditing } from './../../src/fontsize/fontsizeediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'FontSizeEditing', () => {
@@ -103,25 +103,25 @@ describe( 'FontSizeEditing', () => {
 
 			describe( 'editing pipeline conversion', () => {
 				it( 'should pass pixel fontSize to data', () => {
-					setModelData( doc, '<paragraph>f<$text fontSize="10px">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontSize="10px">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:10px;">o</span>o</p>' );
 				} );
 
 				it( 'should pass number fontSize to data', () => {
-					setModelData( doc, '<paragraph>f<$text fontSize="12">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontSize="12">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:12;">o</span>o</p>' );
 				} );
 
 				it( 'should pass percentage fontSize to data', () => {
-					setModelData( doc, '<paragraph>f<$text fontSize="6.25%">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontSize="6.25%">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:6.25%;">o</span>o</p>' );
 				} );
 
 				it( 'should pass em fontSize to data', () => {
-					setModelData( doc, '<paragraph>f<$text fontSize="8em">o</$text>o</paragraph>' );
+					_setModelData( doc, '<paragraph>f<$text fontSize="8em">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:8em;">o</span>o</p>' );
 				} );
@@ -133,7 +133,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 				} );
@@ -143,7 +143,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+					expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 				} );
@@ -153,7 +153,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="x-large">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -167,7 +167,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="x-small">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -181,7 +181,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="xxx-large">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -195,7 +195,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="xx-large">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -209,7 +209,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="xxx-large">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -223,7 +223,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="small">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -237,7 +237,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph><$text fontSize="x-small">[]foo</$text><$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -251,7 +251,7 @@ describe( 'FontSizeEditing', () => {
 
 					editor.setData( data );
 
-					expect( getModelData( doc ) ).to.equal(
+					expect( _getModelData( doc ) ).to.equal(
 						'<paragraph>[]foo<$text fontSize="18px">bar</$text></paragraph>'
 					);
 
@@ -313,25 +313,25 @@ describe( 'FontSizeEditing', () => {
 		} );
 
 		it( 'should discard unknown fontSize attribute values', () => {
-			setModelData( doc, '<paragraph>f<$text fontSize="foo-bar">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontSize="foo-bar">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should convert fontSize attribute to predefined named preset', () => {
-			setModelData( doc, '<paragraph>f<$text fontSize="tiny">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontSize="tiny">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span class="text-tiny">o</span>o</p>' );
 		} );
 
 		it( 'should convert fontSize attribute to predefined pixel size preset', () => {
-			setModelData( doc, '<paragraph>f<$text fontSize="18px">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 		} );
 
 		it( 'should convert fontSize attribute from user defined settings', () => {
-			setModelData( doc, '<paragraph>f<$text fontSize="my">o</$text>o</paragraph>' );
+			_setModelData( doc, '<paragraph>f<$text fontSize="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<mark class="my-style" style="font-size:30px;">o</mark>o</p>' );
 		} );
@@ -391,7 +391,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="tiny">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="tiny">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span class="text-tiny">o</span>o</p>' );
 		} );
@@ -401,7 +401,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="big-multiple">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="big-multiple">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span class="foo foo-big">o</span>o</p>' );
 		} );
@@ -411,7 +411,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( data );
 		} );
@@ -421,7 +421,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 		} );
@@ -431,7 +431,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="my">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontSize="my">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( data );
 		} );
@@ -443,7 +443,7 @@ describe( 'FontSizeEditing', () => {
 				'<p>b<span class="text-complex">a</span>z</p>'
 			);
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]f<$text fontSize="complex">o</$text>o</paragraph>' +
 				'<paragraph>b<$text fontSize="complex">a</$text>r</paragraph>' +
 				'<paragraph>b<$text fontSize="complex">a</$text>z</paragraph>'
@@ -461,7 +461,7 @@ describe( 'FontSizeEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]foo<$text fontSize="18px">bar</$text></paragraph>'
 			);
 

@@ -7,16 +7,16 @@
  * @module engine/model/utils/modifyselection
  */
 
-import { DocumentSelection } from '../documentselection.js';
-import { Position } from '../position.js';
-import { Range } from '../range.js';
-import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
+import { ModelDocumentSelection } from '../documentselection.js';
+import { ModelPosition } from '../position.js';
+import { ModelRange } from '../range.js';
+import { ModelTreeWalker, type ModelTreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
-import { type Schema } from '../schema.js';
-import { type Selection } from '../selection.js';
-import { type Text } from '../text.js';
-import { type Node } from '../node.js';
+import { type ModelSchema } from '../schema.js';
+import { type ModelSelection } from '../selection.js';
+import { type ModelText } from '../text.js';
+import { type ModelNode } from '../node.js';
 
 import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
@@ -54,10 +54,11 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param options.direction The direction in which the selection should be modified. Default 'forward'.
  * @param options.unit The unit by which selection should be modified. Default 'character'.
  * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
+ * @internal
  */
 export function modifySelection(
 	model: Model,
-	selection: Selection | DocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	options: {
 		direction?: 'forward' | 'backward';
 		unit?: 'character' | 'codePoint' | 'word';
@@ -71,7 +72,7 @@ export function modifySelection(
 
 	const focus = selection.focus!;
 
-	const walker = new TreeWalker( {
+	const walker = new ModelTreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
 		singleCharacters: true,
 		direction: isForward ? 'forward' : 'backward'
@@ -89,7 +90,7 @@ export function modifySelection(
 		const position = tryExtendingTo( data, next.value );
 
 		if ( position ) {
-			if ( selection instanceof DocumentSelection ) {
+			if ( selection instanceof ModelDocumentSelection ) {
 				model.change( writer => {
 					writer.setSelectionFocus( position );
 				} );
@@ -107,14 +108,14 @@ export function modifySelection(
  */
 function tryExtendingTo(
 	data: {
-		walker: TreeWalker;
-		schema: Schema;
+		walker: ModelTreeWalker;
+		schema: ModelSchema;
 		isForward: boolean;
 		unit: 'character' | 'codePoint' | 'word';
 		treatEmojiAsSingleUnit: boolean;
 	},
-	value: TreeWalkerValue
-): Position | undefined {
+	value: ModelTreeWalkerValue
+): ModelPosition | undefined {
 	const { isForward, walker, unit, schema, treatEmojiAsSingleUnit } = data;
 	const { type, item, nextPosition } = value;
 
@@ -132,7 +133,7 @@ function tryExtendingTo(
 	if ( type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
 		// If it's a selectable, we can select it now.
 		if ( schema.isSelectable( item ) ) {
-			return Position._createAt( item, isForward ? 'after' : 'before' );
+			return ModelPosition._createAt( item, isForward ? 'after' : 'before' );
 		}
 
 		// If text allowed on this position, extend to this place.
@@ -162,10 +163,10 @@ function tryExtendingTo(
  * or should be extended further.
  */
 function getCorrectPosition(
-	walker: TreeWalker,
+	walker: ModelTreeWalker,
 	unit: 'character' | 'codePoint' | 'word',
 	treatEmojiAsSingleUnit: boolean
-): Position {
+): ModelPosition {
 	const textNode = walker.position.textNode;
 
 	if ( textNode ) {
@@ -190,8 +191,8 @@ function getCorrectPosition(
  * Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
  * or should be extended further.
  */
-function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): Position {
-	let textNode: Node | null = walker.position.textNode;
+function getCorrectWordBreakPosition( walker: ModelTreeWalker, isForward: boolean ): ModelPosition {
+	let textNode: ModelNode | null = walker.position.textNode;
 
 	if ( !textNode ) {
 		textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
@@ -219,14 +220,14 @@ function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): 
 	return walker.position;
 }
 
-function getSearchRange( start: Position, isForward: boolean ) {
+function getSearchRange( start: ModelPosition, isForward: boolean ) {
 	const root = start.root;
-	const searchEnd = Position._createAt( root, isForward ? 'end' : 0 );
+	const searchEnd = ModelPosition._createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
-		return new Range( start, searchEnd );
+		return new ModelRange( start, searchEnd );
 	} else {
-		return new Range( searchEnd, start );
+		return new ModelRange( searchEnd, start );
 	}
 }
 
@@ -243,6 +244,6 @@ function isAtWordBoundary( data: string, offset: number, isForward: boolean ) {
 /**
  * Checks if selection is on node boundary.
  */
-function isAtNodeBoundary( textNode: Text, offset: number, isForward: boolean ) {
+function isAtNodeBoundary( textNode: ModelText, offset: number, isForward: boolean ) {
 	return offset === ( isForward ? textNode.offsetSize : 0 );
 }

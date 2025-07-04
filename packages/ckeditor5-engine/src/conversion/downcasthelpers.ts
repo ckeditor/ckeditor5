@@ -20,7 +20,6 @@ import { ConversionHelpers } from './conversionhelpers.js';
 
 import type {
 	DowncastDispatcher,
-	DiffItemReinsert,
 	DowncastConversionApi,
 	DowncastInsertEvent,
 	DowncastAddMarkerEvent,
@@ -29,16 +28,16 @@ import type {
 	DowncastRemoveMarkerEvent
 } from './downcastdispatcher.js';
 import { type ModelConsumable } from './modelconsumable.js';
-import type { DiffItem } from '../model/differ.js';
+import type { DifferItem, DifferItemReinsert } from '../model/differ.js';
 import { type ModelNode } from '../model/node.js';
 import { type ModelItem } from '../model/item.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
 import { type ModelText } from '../model/text.js';
 
-import { type DowncastWriter } from '../view/downcastwriter.js';
-import { type ElementDefinition } from '../view/elementdefinition.js';
+import { type ViewDowncastWriter } from '../view/downcastwriter.js';
+import { type ViewElementDefinition } from '../view/elementdefinition.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
-import { type UIElement } from '../view/uielement.js';
+import { type ViewUIElement } from '../view/uielement.js';
 import { type ViewElement } from '../view/element.js';
 import { type ViewNode } from '../view/node.js';
 import { type ViewPosition } from '../view/position.js';
@@ -214,7 +213,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 			attributes?: string | Array<string>;
 			children?: boolean;
 		};
-		view: ElementDefinition | ElementCreatorFunction;
+		view: ViewElementDefinition | DowncastElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToElement( config ) );
@@ -334,7 +333,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 			name: string;
 			attributes?: string | Array<string>;
 		};
-		view: StructureCreatorFunction;
+		view: DowncastStructureCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToStructure( config ) );
@@ -432,7 +431,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: ElementDefinition | AttributeElementCreatorFunction;
+			view: ViewElementDefinition | DowncastAttributeElementCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -440,7 +439,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ElementDefinition | AttributeElementCreatorFunction>;
+			view: Record<TValues, ViewElementDefinition | DowncastAttributeElementCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -534,7 +533,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: string | AttributeDescriptor | AttributeCreatorFunction;
+			view: string | DowncastAttributeDescriptor | DowncastAttributeCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -542,7 +541,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values?: Array<TValues>;
 			};
-			view: Record<TValues, AttributeDescriptor | AttributeCreatorFunction>;
+			view: Record<TValues, DowncastAttributeDescriptor | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -600,7 +599,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as a parameters and should return an instance of the
-	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
+	 * {@link module:engine/view/uielement~ViewUIElement view UI element}. The `data` object and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
 	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` for
@@ -618,7 +617,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToElement( config: {
 		model: string;
-		view: ElementDefinition | MarkerElementCreatorFunction;
+		view: ViewElementDefinition | DowncastMarkerElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToElement( config ) );
@@ -628,13 +627,13 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * Model marker to highlight conversion helper.
 	 *
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
-	 * the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
+	 * the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor} should be provided.
 	 *
-	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
+	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~ViewAttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
 	 * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
 	 *
-	 * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
+	 * {@link module:engine/view/containerelement~ViewContainerElement} may provide a custom way of handling highlight. Most often,
 	 * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
 	 * For example, a model marker set like this:
 	 * `[<imageInline src="foo.jpg"></imageInline>]` becomes `<img src="foo.jpg" class="comment"></img>` in the view.
@@ -669,7 +668,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as the parameters and should return a
-	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -684,7 +683,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToHighlight( config: {
 		model: string;
-		view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
+		view: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToHighlight( config ) );
@@ -812,7 +811,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToData( config: {
 		model: string;
-		view?: MarkerDataCreatorFunction;
+		view?: DowncastMarkerDataCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToData( config ) );
@@ -830,6 +829,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
  * ```
  *
  * @returns Insert text event converter.
+ * @internal
  */
 export function insertText() {
 	return (
@@ -853,6 +853,7 @@ export function insertText() {
  * Function factory that creates a default downcast converter for triggering attributes and children conversion.
  *
  * @returns The converter.
+ * @internal
  */
 export function insertAttributesAndChildren() {
 	return (
@@ -878,6 +879,7 @@ export function insertAttributesAndChildren() {
  * ```
  *
  * @returns Remove event converter.
+ * @internal
  */
 export function remove() {
 	return (
@@ -905,11 +907,16 @@ export function remove() {
 }
 
 /**
- * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
+ * Creates a `<span>` {@link module:engine/view/attributeelement~ViewAttributeElement view attribute element} from the information
+ * provided by the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
+ *
+ * @internal
  */
-export function createViewElementFromHighlightDescriptor( writer: DowncastWriter, descriptor: HighlightDescriptor ): ViewAttributeElement {
+export function createViewElementFromDowncastHighlightDescriptor(
+	writer: ViewDowncastWriter,
+	descriptor: DowncastHighlightDescriptor
+): ViewAttributeElement {
 	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.classes ) {
@@ -926,8 +933,9 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
 }
 
 /**
- * Function factory that creates a converter which converts a non-collapsed {@link module:engine/model/selection~Selection model selection}
- * to a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * Function factory that creates a converter which converts a non-collapsed
+ * {@link module:engine/model/selection~ModelSelection model selection}
+ * to a {@link module:engine/view/documentselection~ViewDocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object and maps model positions from the selection to view positions.
  *
  * ```ts
@@ -935,6 +943,7 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
  * ```
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertRangeSelection() {
 	return (
@@ -963,10 +972,11 @@ export function convertRangeSelection() {
 }
 
 /**
- * Function factory that creates a converter which converts a collapsed {@link module:engine/model/selection~Selection model selection} to
- * a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * Function factory that creates a converter which converts a collapsed
+ * {@link module:engine/model/selection~ModelSelection model selection} to
+ * a {@link module:engine/view/documentselection~ViewDocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object, maps the model selection position to the view position and breaks
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} at the selection position.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} at the selection position.
  *
  * ```ts
  * modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -987,6 +997,7 @@ export function convertRangeSelection() {
  * by merging attributes.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertCollapsedSelection() {
 	return (
@@ -1015,9 +1026,9 @@ export function convertCollapsedSelection() {
 
 /**
  * Function factory that creates a converter which cleans artifacts after the previous
- * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
- * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
- * positions of all ranges.
+ * {@link module:engine/model/selection~ModelSelection model selection} conversion. It removes all empty
+ * {@link module:engine/view/attributeelement~ViewAttributeElement view attribute elements} and merges
+ * sibling attributes at all start and end positions of all ranges.
  *
  * ```
  *    <p><strong>^</strong></p>
@@ -1040,6 +1051,7 @@ export function convertCollapsedSelection() {
  * which does the opposite by breaking attributes in the selection position.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function cleanSelection() {
 	return (
@@ -1082,7 +1094,7 @@ export function cleanSelection() {
  *
  * Passed `Function` will be provided with the attribute value and then all the parameters of the
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * It is expected that the function returns an {@link module:engine/view/element~ViewElement}.
  * The result of the function will be the wrapping element.
  * When the provided `Function` does not return any element, no conversion will take place.
  *
@@ -1099,7 +1111,7 @@ export function cleanSelection() {
  * @param elementCreator Function returning a view element that will be used for wrapping.
  * @returns Set/change attribute converter.
  */
-export function wrap( elementCreator: AttributeElementCreatorFunction ) {
+export function wrap( elementCreator: DowncastAttributeElementCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1154,7 +1166,7 @@ export function wrap( elementCreator: AttributeElementCreatorFunction ) {
  * Function factory that creates a converter which converts node insertion changes from the model to the view.
  * The function passed will be provided with all the parameters of the dispatcher's
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * It is expected that the function returns an {@link module:engine/view/element~ViewElement}.
  * The result of the function will be inserted into the view.
  *
  * The converter automatically consumes the corresponding value from the consumables list and binds the model and view elements.
@@ -1179,7 +1191,7 @@ export function wrap( elementCreator: AttributeElementCreatorFunction ) {
  * By default this function just consume passed item insertion.
  * @returns Insert element event converter.
  */
-export function insertElement( elementCreator: ElementCreatorFunction, consumer: ConsumerFunction = defaultConsumer ) {
+export function insertElement( elementCreator: DowncastElementCreatorFunction, consumer: ConsumerFunction = defaultConsumer ) {
 	return (
 		evt: unknown,
 		data: { item: ModelElement; range: ModelRange; reconversion?: boolean },
@@ -1214,7 +1226,7 @@ export function insertElement( elementCreator: ElementCreatorFunction, consumer:
 /**
  * Function factory that creates a converter which converts a single model node insertion to a view structure.
  *
- * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
+ * It is expected that the passed element creator function returns an {@link module:engine/view/element~ViewElement} with attached slots
  * created with `writer.createSlot()` to indicate where child nodes should be converted.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
@@ -1225,7 +1237,7 @@ export function insertElement( elementCreator: ElementCreatorFunction, consumer:
  * that were used by the element creator.
  * @returns Insert element event converter.
 */
-export function insertStructure( elementCreator: StructureCreatorFunction, consumer: ConsumerFunction ) {
+export function insertStructure( elementCreator: DowncastStructureCreatorFunction, consumer: ConsumerFunction ) {
 	return (
 		evt: unknown,
 		data: { item: ModelElement; range: ModelRange; reconversion?: boolean },
@@ -1269,7 +1281,7 @@ export function insertStructure( elementCreator: StructureCreatorFunction, consu
 
 /**
  * Function factory that creates a converter which converts marker adding change to the
- * {@link module:engine/view/uielement~UIElement view UI element}.
+ * {@link module:engine/view/uielement~ViewUIElement view UI element}.
  *
  * The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
  * In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
@@ -1281,7 +1293,7 @@ export function insertStructure( elementCreator: StructureCreatorFunction, consu
  * @param elementCreator A view UI element or a function returning the view element that will be inserted.
  * @returns Insert element event converter.
  */
-export function insertUIElement( elementCreator: MarkerElementCreatorFunction ) {
+export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1337,7 +1349,7 @@ export function insertUIElement( elementCreator: MarkerElementCreatorFunction ) 
 }
 
 /**
- * Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~UIElement UI element}
+ * Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~ViewUIElement UI element}
  * based on marker remove change.
  *
  * This converter unbinds elements from the marker name.
@@ -1377,7 +1389,7 @@ function removeUIElement() {
  *
  * @returns Add marker converter.
  */
-function insertMarkerData( viewCreator: MarkerDataCreatorFunction ) {
+function insertMarkerData( viewCreator: DowncastMarkerDataCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1499,7 +1511,7 @@ function insertMarkerAsElement(
  *
  * @returns Remove marker converter.
  */
-function removeMarkerData( viewCreator: MarkerDataCreatorFunction ) {
+function removeMarkerData( viewCreator: DowncastMarkerDataCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: { markerName: string },
@@ -1579,11 +1591,11 @@ function removeMarkerData( viewCreator: MarkerDataCreatorFunction ) {
  * ```
  *
  * @param attributeCreator Function returning an object with two properties: `key` and `value`, which
- * represent the attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
+ * represent the attribute key and attribute value to be set on a {@link module:engine/view/element~ViewElement view element}.
  * The function is passed the model attribute value as the first parameter and additional data about the change as the second parameter.
  * @returns Set/change attribute converter.
  */
-function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
+function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1611,11 +1623,11 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
-		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `TextProxy` node.
+		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `ModelTextProxy` node.
 		// Only elements can have attributes in a view so do not proceed for anything else (#1587).
 		if ( !viewElement ) {
 			/**
-			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node's} attribute is to be downcasted
+			 * This error occurs when a {@link module:engine/model/textproxy~ModelTextProxy text node's} attribute is to be downcasted
 			 * by an {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
@@ -1634,8 +1646,8 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 			 * } );
 			 * ```
 			 *
-			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~Element}
-			 * and {@link module:engine/model/textproxy~TextProxy `Text`} nodes, text specific
+			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~ModelElement}
+			 * and {@link module:engine/model/textproxy~ModelTextProxy `Text`} nodes, text specific
 			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
 			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
 			 *
@@ -1695,8 +1707,8 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 
 /**
  * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
- * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
- * See {link module:engine/conversion/downcasthelpers~createViewElementFromHighlightDescriptor}.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement} created from the provided descriptor.
+ * See {link module:engine/conversion/downcasthelpers~createViewElementFromDowncastHighlightDescriptor}.
  *
  * It can also be used to convert the selection that is inside a marker. In that case, an empty attribute element will be
  * created and the selection will be put inside it.
@@ -1705,10 +1717,10 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
  *
  * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds the created {@link module:engine/view/attributeelement~AttributeElement attribute elemens} with the marker name
+ * This converter binds the created {@link module:engine/view/attributeelement~ViewAttributeElement attribute elemens} with the marker name
  * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
-function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function highlightText( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1738,7 +1750,7 @@ function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDesc
 		}
 
 		const viewWriter = conversionApi.writer;
-		const viewElement = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+		const viewElement = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof ModelDocumentSelection ) {
@@ -1764,7 +1776,7 @@ function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDesc
  * Converter function factory. It creates a function which applies the marker's highlight to an element inside the marker's range.
  *
  * The converter checks if an element has the `addHighlight` function stored as a
- * {@link module:engine/view/element~Element#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
+ * {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
  * In such case the converter will consume all element's children, assuming that they were handled by the element itself.
  *
  * When the `addHighlight` custom property is not present, the element is not converted in any special way.
@@ -1774,10 +1786,10 @@ function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDesc
  *
  * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds altered {@link module:engine/view/containerelement~ContainerElement container elements} with the marker name using
- * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
+ * This converter binds altered {@link module:engine/view/containerelement~ViewContainerElement container elements}
+ * with the marker name using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
-function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1816,7 +1828,7 @@ function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightD
 				conversionApi.consumable.consume( value.item, evt.name );
 			}
 
-			const addHighlightCallback = viewElement.getCustomProperty( 'addHighlight' ) as AddHighlightCallback;
+			const addHighlightCallback = viewElement.getCustomProperty( 'addHighlight' ) as DowncastAddHighlightCallback;
 
 			addHighlightCallback( viewElement, descriptor, conversionApi.writer );
 
@@ -1830,11 +1842,11 @@ function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightD
  *
  * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
- * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~AttributeElement attribute element} created from the
- * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~HighlightDescriptor}.
+ * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} created from the
+ * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor}.
  *
  * For elements, the converter checks if an element has the `removeHighlight` function stored as a
- * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
+ * {@link module:engine/view/element~ViewElement#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
  * In such case, the children of that element will not be converted.
  *
  * When `removeHighlight` is not present, the element is not converted in any special way.
@@ -1846,7 +1858,7 @@ function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightD
  *
  * This converter unbinds elements from the marker name.
  */
-function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function removeHighlight( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1867,7 +1879,7 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 		}
 
 		// View element that will be used to unwrap `AttributeElement`s.
-		const viewHighlightElement = createViewElementFromHighlightDescriptor( conversionApi.writer, descriptor );
+		const viewHighlightElement = createViewElementFromDowncastHighlightDescriptor( conversionApi.writer, descriptor );
 
 		// Get all elements bound with given marker name.
 		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
@@ -1883,7 +1895,7 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 				conversionApi.writer.unwrap( conversionApi.writer.createRangeOn( element ), viewHighlightElement );
 			} else {
 				// if element.is( 'containerElement' ).
-				const removeHighlightCallback = element.getCustomProperty( 'removeHighlight' ) as RemoveHighlightCallback;
+				const removeHighlightCallback = element.getCustomProperty( 'removeHighlight' ) as DowncastRemoveHighlightCallback;
 
 				removeHighlightCallback( element, descriptor.id!, conversionApi.writer );
 			}
@@ -1912,7 +1924,7 @@ function downcastElementToElement( config: {
 		attributes?: string | Array<string>;
 		children?: boolean;
 	};
-	view: ElementDefinition | ElementCreatorFunction;
+	view: ViewElementDefinition | DowncastElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeModelElementConfig( config.model );
@@ -1951,7 +1963,7 @@ function downcastElementToStructure(
 			name: string;
 			attributes?: string | Array<string>;
 		};
-		view: StructureCreatorFunction;
+		view: DowncastStructureCreatorFunction;
 		converterPriority?: PriorityString;
 	}
 ) {
@@ -1965,9 +1977,9 @@ function downcastElementToStructure(
 	return ( dispatcher: DowncastDispatcher ) => {
 		if ( dispatcher._conversionApi.schema.checkChild( model.name, '$text' ) ) {
 			/**
-			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * This error occurs when a {@link module:engine/model/element~ModelElement model element} is downcasted
 			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
-			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 * allowed to host `$text` by the {@link module:engine/model/schema~ModelSchema model schema}.
 			 *
 			 * For instance, this may be the result of `myElement` allowing the content of
 			 * {@glink framework/deep-dive/schema#generic-items `$block`} in its schema definition:
@@ -2028,7 +2040,7 @@ function downcastElementToStructure(
  * @param config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
  * of `String`s with possible values if the model attribute is an enumerable.
  * @param config.view A view element definition or a function that takes the model attribute value and
- * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} as parameters and returns a view attribute element.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer} as parameters and returns a view attribute element.
  * If `config.model.values` is given, `config.view` should be an object assigning values from `config.model.values` to view element
  * definitions or functions.
  * @param config.converterPriority Converter priority.
@@ -2040,7 +2052,10 @@ function downcastAttributeToElement( config: {
 		name?: string;
 		values?: Array<string>;
 	};
-	view: ElementDefinition | AttributeElementCreatorFunction | Record<string, ElementDefinition | AttributeElementCreatorFunction>;
+	view:
+		| ViewElementDefinition
+		| DowncastAttributeElementCreatorFunction
+		| Record<string, ViewElementDefinition | DowncastAttributeElementCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2065,7 +2080,7 @@ function downcastAttributeToElement( config: {
 		config.view = normalizeToElementConfig( config.view as any, 'attribute' );
 	}
 
-	const elementCreator = getFromAttributeCreator<AttributeElementCreatorFunction>( config );
+	const elementCreator = getFromAttributeCreator<DowncastAttributeElementCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent>(
@@ -2099,7 +2114,11 @@ function downcastAttributeToAttribute( config: {
 		name?: string;
 		values?: Array<string>;
 	};
-	view: string | AttributeDescriptor | AttributeCreatorFunction | Record<string, AttributeDescriptor | AttributeCreatorFunction>;
+	view:
+		| string
+		| DowncastAttributeDescriptor
+		| DowncastAttributeCreatorFunction
+		| Record<string, DowncastAttributeDescriptor | DowncastAttributeCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2124,7 +2143,7 @@ function downcastAttributeToAttribute( config: {
 		config.view = normalizeToAttributeConfig( config.view );
 	}
 
-	const elementCreator = getFromAttributeCreator<AttributeCreatorFunction>( config );
+	const elementCreator = getFromAttributeCreator<DowncastAttributeCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent<ModelElement>>(
@@ -2148,7 +2167,7 @@ function downcastAttributeToAttribute( config: {
  */
 function downcastMarkerToElement( config: {
 	model: string;
-	view: ElementDefinition | MarkerElementCreatorFunction;
+	view: ViewElementDefinition | DowncastMarkerElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const view = normalizeToElementConfig( config.view, 'ui' );
@@ -2176,7 +2195,7 @@ function downcastMarkerToElement( config: {
  */
 function downcastMarkerToData( config: {
 	model: string;
-	view?: MarkerDataCreatorFunction;
+	view?: DowncastMarkerDataCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2220,7 +2239,7 @@ function downcastMarkerToData( config: {
  */
 function downcastMarkerToHighlight( config: {
 	model: string;
-	view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
+	view: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	return ( dispatcher: DowncastDispatcher ) => {
@@ -2278,7 +2297,7 @@ interface NormalizedModelElementConfig {
 }
 
 /**
- * Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
+ * Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ViewElementDefinition}, converts it
  * to a function (because lower level converters accept only element creator functions).
  *
  * @param view View configuration.
@@ -2286,7 +2305,7 @@ interface NormalizedModelElementConfig {
  * @returns Element creator function to use in lower level converters.
  */
 function normalizeToElementConfig<T extends Function>(
-	view: ElementDefinition | T,
+	view: ViewElementDefinition | T,
 	viewElementType: 'container' | 'attribute' | 'ui'
 ): T {
 	if ( typeof view == 'function' ) {
@@ -2299,10 +2318,10 @@ function normalizeToElementConfig<T extends Function>(
 }
 
 /**
- * Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
+ * Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ViewElementDefinition} and class.
  */
 function createViewElementFromDefinition(
-	viewElementDefinition: ElementDefinition,
+	viewElementDefinition: ViewElementDefinition,
 	conversionApi: DowncastConversionApi,
 	viewElementType: 'container' | 'attribute' | 'ui'
 ): ViewElement {
@@ -2351,7 +2370,7 @@ function createViewElementFromDefinition(
 	return element;
 }
 
-function getFromAttributeCreator<T extends AttributeElementCreatorFunction | AttributeCreatorFunction>( config: any ): T {
+function getFromAttributeCreator<T extends DowncastAttributeElementCreatorFunction | DowncastAttributeCreatorFunction>( config: any ): T {
 	if ( config.model.values ) {
 		return ( ( modelAttributeValue: any, conversionApi: DowncastConversionApi, data: any ) => {
 			const view = config.view[ modelAttributeValue ];
@@ -2373,7 +2392,7 @@ function getFromAttributeCreator<T extends AttributeElementCreatorFunction | Att
  *
  * @param view View configuration.
  */
-function normalizeToAttributeConfig( view: any ): AttributeCreatorFunction {
+function normalizeToAttributeConfig( view: any ): DowncastAttributeCreatorFunction {
 	if ( typeof view == 'string' ) {
 		return modelAttributeValue => ( { key: view, value: modelAttributeValue as string } );
 	} else if ( typeof view == 'object' ) {
@@ -2395,13 +2414,13 @@ function normalizeToAttributeConfig( view: any ): AttributeCreatorFunction {
  * Helper function for `highlight`. Prepares the actual descriptor object using value passed to the converter.
  */
 function prepareDescriptor(
-	highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction,
+	highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction,
 	data: {
 		markerName: string;
 		markerRange: ModelRange;
 	},
 	conversionApi: DowncastConversionApi
-): HighlightDescriptor | null {
+): DowncastHighlightDescriptor | null {
 	// If passed descriptor is a creator function, call it. If not, just use passed value.
 	const descriptor = typeof highlightDescriptor == 'function' ?
 		highlightDescriptor( data, conversionApi ) :
@@ -2433,7 +2452,7 @@ function prepareDescriptor(
  * @param model.children Whether the child list change should trigger reconversion.
  */
 function createChangeReducerCallback( model: NormalizedModelElementConfig ) {
-	return ( node: ModelNode, change: DiffItem | DiffItemReinsert ): boolean => {
+	return ( node: ModelNode, change: DifferItem | DifferItemReinsert ): boolean => {
 		if ( !node.is( 'element', model.name ) ) {
 			return false;
 		}
@@ -2466,9 +2485,9 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 
 	return (
 		evt: unknown,
-		data: { changes: Iterable<DiffItem | DiffItemReinsert>; reconvertedElements?: Set<ModelNode> }
+		data: { changes: Iterable<DifferItem | DifferItemReinsert>; reconvertedElements?: Set<ModelNode> }
 	) => {
-		const reducedChanges: Array<DiffItem | DiffItemReinsert> = [];
+		const reducedChanges: Array<DifferItem | DifferItemReinsert> = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();
@@ -2562,7 +2581,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by the writer as `createSlot()`.
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
+	return ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;
@@ -2603,7 +2622,7 @@ function validateSlotsChildren(
 		 * Filters provided to `writer.createSlot()` overlap (at least two filters accept the same child element).
 		 *
 		 * @error conversion-slot-filter-overlap
-		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * @param {module:engine/model/element~ModelElement} element The element of which children would not be properly
 		 * allocated to multiple slots.
 		 */
 		throw new CKEditorError( 'conversion-slot-filter-overlap', conversionApi.dispatcher, { element } );
@@ -2615,7 +2634,7 @@ function validateSlotsChildren(
 		 * the children elements would not be assigned to any of the slots).
 		 *
 		 * @error conversion-slot-filter-incomplete
-		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * @param {module:engine/model/element~ModelElement} element The element of which children would not be properly
 		 * allocated to multiple slots.
 		 */
 		throw new CKEditorError( 'conversion-slot-filter-incomplete', conversionApi.dispatcher, { element } );
@@ -2751,24 +2770,24 @@ function defaultConsumer(
  * An object describing how the marker highlight should be represented in the view.
  *
  * Each text node contained in a highlighted range will be wrapped in a `<span>`
- * {@link module:engine/view/attributeelement~AttributeElement view attribute element} with CSS class(es), attributes and a priority
+ * {@link module:engine/view/attributeelement~ViewAttributeElement view attribute element} with CSS class(es), attributes and a priority
  * described by this object.
  *
- * Additionally, each {@link module:engine/view/containerelement~ContainerElement container element} can handle displaying the highlight
+ * Additionally, each {@link module:engine/view/containerelement~ViewContainerElement container element} can handle displaying the highlight
  * separately by providing the `addHighlight` and `removeHighlight` custom properties. In this case:
  *
- *  * The `HighlightDescriptor` object is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
- *  the element.
+ *  * The `DowncastHighlightDescriptor` object is passed to the `addHighlight` function upon conversion and
+ *  should be used to apply the highlight to the element.
  *  * The descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight with the
  *  given ID from the element.
  */
-export interface HighlightDescriptor {
+export interface DowncastHighlightDescriptor {
 
 	/**
 	 * A CSS class or an array of classes to set. If the descriptor is used to
-	 * create an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these classes will be set
-	 * on that attribute element. If the descriptor is applied to an element, usually these classes will be set on that element, however,
-	 * this depends on how the element converts the descriptor.
+	 * create an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} over text nodes,
+	 * these classes will be set on that attribute element. If the descriptor is applied to an element, usually these
+	 * classes will be set on that element, however, this depends on how the element converts the descriptor.
 	 */
 	classes: string | Array<string>;
 
@@ -2779,15 +2798,15 @@ export interface HighlightDescriptor {
 
 	/**
 	 * Descriptor priority. If not provided, it defaults to `10`. If the descriptor is used to create
-	 * an {@link module:engine/view/attributeelement~AttributeElement attribute element}, it will be that element's
-	 * {@link module:engine/view/attributeelement~AttributeElement#priority priority}. If the descriptor is applied to an element,
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}, it will be that element's
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement#priority priority}. If the descriptor is applied to an element,
 	 * the priority will be used to determine which descriptor is more important.
 	 */
 	priority?: number;
 
 	/**
 	 * Attributes to set. If the descriptor is used to create
-	 * an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these attributes will be set
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} over text nodes, these attributes will be set
 	 * on that attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
 	 * this depends on how the element converts the descriptor.
 	 */
@@ -2796,25 +2815,25 @@ export interface HighlightDescriptor {
 
 /**
  * A filtering function used to choose model child nodes to be downcasted into the specific view
- * {@link module:engine/view/downcastwriter~DowncastWriter#createSlot "slot"} while executing the
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createSlot "slot"} while executing the
  * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
  *
- * @callback module:engine/conversion/downcasthelpers~SlotFilter
+ * @callback module:engine/conversion/downcasthelpers~DowncastSlotFilter
  *
  * @param node A model node.
  * @returns Whether the provided model node should be downcasted into this slot.
  *
- * @see module:engine/view/downcastwriter~DowncastWriter#createSlot
+ * @see module:engine/view/downcastwriter~ViewDowncastWriter#createSlot
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
-export type SlotFilter = ( node: ModelNode ) => boolean;
+export type DowncastSlotFilter = ( node: ModelNode ) => boolean;
 
 /**
  * A view element creator function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi
  * downcast conversion API} as parameters and returns a view container element.
  *
- * @callback module:engine/conversion/downcasthelpers~ElementCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastElementCreatorFunction
  *
  * @param element The model element to be converted to the view structure.
  * @param conversionApi The conversion interface.
@@ -2827,7 +2846,7 @@ export type SlotFilter = ( node: ModelNode ) => boolean;
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement
  * @see module:engine/conversion/downcasthelpers~insertElement
  */
-export type ElementCreatorFunction = (
+export type DowncastElementCreatorFunction = (
 	element: ModelElement,
 	conversionApi: DowncastConversionApi,
 	data: {
@@ -2840,7 +2859,7 @@ export type ElementCreatorFunction = (
  * A function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
  * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
  *
- * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastStructureCreatorFunction
  *
  * @param element The model element to be converted to the view structure.
  * @param conversionApi The conversion interface.
@@ -2853,14 +2872,14 @@ export type ElementCreatorFunction = (
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
-export type StructureCreatorFunction = ElementCreatorFunction;
+export type DowncastStructureCreatorFunction = DowncastElementCreatorFunction;
 
 /**
  * A view element creator function that takes the model attribute value and
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters and returns a view
  * attribute element.
  *
- * @callback module:engine/conversion/downcasthelpers~AttributeElementCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastAttributeElementCreatorFunction
  *
  * @param attributeValue The model attribute value to be converted to the view attribute element.
  * @param conversionApi The conversion interface.
@@ -2876,7 +2895,7 @@ export type StructureCreatorFunction = ElementCreatorFunction;
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement
  * @see module:engine/conversion/downcasthelpers~wrap
  */
-export type AttributeElementCreatorFunction = (
+export type DowncastAttributeElementCreatorFunction = (
 	attributeValue: any,
 	conversionApi: DowncastConversionApi,
 	data: {
@@ -2893,7 +2912,7 @@ export type AttributeElementCreatorFunction = (
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
  * as parameters.
  *
- * @callback module:engine/conversion/downcasthelpers~AttributeCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastAttributeCreatorFunction
  *
  * @param attributeValue The model attribute value to be converted to the view attribute element.
  * @param conversionApi The conversion interface.
@@ -2909,7 +2928,7 @@ export type AttributeElementCreatorFunction = (
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute
  */
-export type AttributeCreatorFunction = (
+export type DowncastAttributeCreatorFunction = (
 	attributeValue: unknown,
 	conversionApi: DowncastConversionApi,
 	data: {
@@ -2919,9 +2938,9 @@ export type AttributeCreatorFunction = (
 		attributeOldValue: unknown;
 		attributeNewValue: unknown;
 	}
-) => AttributeDescriptor | null;
+) => DowncastAttributeDescriptor | null;
 
-export type AttributeDescriptor = {
+export type DowncastAttributeDescriptor = {
 	key: 'class';
 	value: string | Array<string>;
 } | {
@@ -2932,36 +2951,36 @@ export type AttributeDescriptor = {
 	value: string;
 };
 
-export type MarkerElementCreatorFunction = (
+export type DowncastMarkerElementCreatorFunction = (
 	data: {
 		markerRange: ModelRange;
 		markerName: string;
 		isOpening?: boolean;
 	},
 	conversionApi: DowncastConversionApi
-) => UIElement | null;
+) => ViewUIElement | null;
 
-export type HighlightDescriptorCreatorFunction = (
+export type DowncastHighlightDescriptorCreatorFunction = (
 	data: {
 		markerRange: ModelRange;
 		markerName: string;
 	},
 	conversionApi: DowncastConversionApi
-) => HighlightDescriptor | null;
+) => DowncastHighlightDescriptor | null;
 
-export type AddHighlightCallback = (
+export type DowncastAddHighlightCallback = (
 	viewElement: ViewElement,
-	descriptor: HighlightDescriptor,
-	writer: DowncastWriter
+	descriptor: DowncastHighlightDescriptor,
+	writer: ViewDowncastWriter
 ) => void;
 
-export type RemoveHighlightCallback = (
+export type DowncastRemoveHighlightCallback = (
 	viewElement: ViewElement,
 	id: string,
-	writer: DowncastWriter
+	writer: ViewDowncastWriter
 ) => void;
 
-export type MarkerDataCreatorFunction = (
+export type DowncastMarkerDataCreatorFunction = (
 	markerName: string,
 	conversionApi: DowncastConversionApi
 ) => { name: string; group: string } | null;
@@ -2971,6 +2990,7 @@ export type MarkerDataCreatorFunction = (
  *
  * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
  *
+ * @internal
  * @param element The model element to be converted to the view structure.
  * @param consumable The `ModelConsumable` same as in
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.

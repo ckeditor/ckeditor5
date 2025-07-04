@@ -11,7 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
@@ -220,11 +220,11 @@ describe( 'FontFamilyUI', () => {
 				const listView = dropdown.listView;
 				const fontFamilyArialButton = listView.items.get( 1 ).children.first;
 
-				setModelData( editor.model, '<paragraph>f[oo]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[oo]</paragraph>' );
 
 				fontFamilyArialButton.fire( 'execute' );
 
-				expect( getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).to.equal(
 					'<paragraph>f[<$text fontFamily="Arial, Helvetica, sans-serif">oo</$text>]</paragraph>'
 				);
 

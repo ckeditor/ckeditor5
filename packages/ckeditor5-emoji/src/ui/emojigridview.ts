@@ -10,7 +10,7 @@
 import { addKeyboardHandlingForGrid, ButtonView, type FilteredView, View, type ViewCollection } from 'ckeditor5/src/ui.js';
 import { FocusTracker, global, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 import type { EmojiCategory, EmojiEntry } from '../emojirepository.js';
-import type { SkinToneId } from '../emojiconfig.js';
+import type { EmojiSkinToneId } from '../emojiconfig.js';
 
 import '../../theme/emojigrid.css';
 
@@ -30,7 +30,7 @@ export class EmojiGridView extends View<HTMLDivElement> implements FilteredView 
 	 *
 	 * @observable
 	 */
-	declare public skinTone: SkinToneId;
+	declare public skinTone: EmojiSkinToneId;
 
 	/**
 	 * Set to `true` when the {@link #tiles} collection does not contain items to display.
@@ -78,7 +78,7 @@ export class EmojiGridView extends View<HTMLDivElement> implements FilteredView 
 		categoryName: string;
 		emojiCategories: Array<EmojiCategory>;
 		getEmojiByQuery: EmojiSearchQueryCallback;
-		skinTone: SkinToneId;
+		skinTone: EmojiSkinToneId;
 	} ) {
 		super( locale );
 

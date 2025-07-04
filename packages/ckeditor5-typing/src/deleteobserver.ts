@@ -16,7 +16,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import {
 	BubblingEventInfo,
-	DomEventData,
+	ViewDocumentDomEventData,
 	Observer,
 	type BubblingEvent,
 	type ViewDocumentInputEvent,
@@ -125,7 +125,9 @@ const DELETE_EVENT_TYPES: Record<string, DeleteEventSpec> = {
 };
 
 /**
- * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
+ * Delete observer introduces the {@link module:engine/view/document~ViewDocument#event:delete} event.
+ *
+ * @internal
  */
 export class DeleteObserver extends Observer {
 	/**
@@ -191,7 +193,7 @@ export class DeleteObserver extends Observer {
 
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRanges[ 0 ] );
 
-			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
+			document.fire( eventInfo, new ViewDocumentDomEventData( view, domEvent, deleteData ) );
 
 			// Stop the beforeinput event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
@@ -223,7 +225,7 @@ export class DeleteObserver extends Observer {
  * Note: This event is fired by the {@link module:typing/deleteobserver~DeleteObserver delete observer}
  * (usually registered by the {@link module:typing/delete~Delete delete feature}).
  *
- * @eventName module:engine/view/document~Document#delete
+ * @eventName module:engine/view/document~ViewDocument#delete
  * @param data The event data.
  */
 export type ViewDocumentDeleteEvent = BubblingEvent<{
@@ -231,7 +233,7 @@ export type ViewDocumentDeleteEvent = BubblingEvent<{
 	args: [ data: DeleteEventData ];
 }>;
 
-export interface DeleteEventData extends DomEventData<InputEvent> {
+export interface DeleteEventData extends ViewDocumentDomEventData<InputEvent> {
 
 	/**
 	 * The direction in which the deletion should happen.
@@ -290,7 +292,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 				selectionToRemove: selection
 			};
 
-			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
+			document.fire( eventInfo, new ViewDocumentDomEventData( view, domEvent, deleteData ) );
 		}
 	} );
 

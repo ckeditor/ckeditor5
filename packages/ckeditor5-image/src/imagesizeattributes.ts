@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine.js';
+import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, ModelElement } from 'ckeditor5/src/engine.js';
 import { ImageUtils } from './imageutils.js';
 import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils.js';
 
@@ -157,7 +157,7 @@ export class ImageSizeAttributes extends Plugin {
 				}
 
 				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const img = imageUtils.findViewImgElement( viewElement )!;
 
 				if ( data.attributeNewValue !== null ) {

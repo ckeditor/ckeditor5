@@ -5,8 +5,8 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 
 import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
@@ -105,7 +105,7 @@ describe( 'TableCaptionEditing', () => {
 						plugins: [ TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing, FakePlugin ]
 					} );
 
-				setModelData( editor.model,
+				_setModelData( editor.model,
 					'<foo>' +
 						'<caption>Foo caption</caption>' +
 					'</foo>'
@@ -119,7 +119,7 @@ describe( 'TableCaptionEditing', () => {
 			} );
 
 			it( 'should convert to figure > table + figcaption', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -145,7 +145,7 @@ describe( 'TableCaptionEditing', () => {
 			} );
 
 			it( 'should merge many captions into one', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -172,7 +172,7 @@ describe( 'TableCaptionEditing', () => {
 			} );
 
 			it( 'should place new caption at the end of the table model', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -221,7 +221,7 @@ describe( 'TableCaptionEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
 						'<table>' +
 							'<tableRow>' +
@@ -250,7 +250,7 @@ describe( 'TableCaptionEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
 						'<table>' +
 							'<tableRow>' +
@@ -281,7 +281,7 @@ describe( 'TableCaptionEditing', () => {
 					'</figure>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( String(
 						'<table>' +
 							'<tableRow>' +
@@ -299,11 +299,11 @@ describe( 'TableCaptionEditing', () => {
 	describe( 'editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert caption element to figcaption contenteditable', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<table><tableRow><tableCell><paragraph>xyz</paragraph></tableCell></tableRow><caption>Foo caption</caption></table>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +

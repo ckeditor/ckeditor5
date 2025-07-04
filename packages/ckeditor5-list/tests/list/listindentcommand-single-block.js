@@ -11,7 +11,7 @@ import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListIndentCommand (multiBlock=false)', () => {
 	let editor, model, root;
@@ -51,7 +51,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -65,7 +65,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts in first list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []0',
 					'* 1',
 					'  * 2',
@@ -79,7 +79,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts in first list item at given indent', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  * 1',
 					'* 2',
@@ -91,7 +91,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts in first list item (different list type)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  * 1',
 					'# 2',
@@ -103,7 +103,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection is in first list item with different type than previous list', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'# []1'
 				] ) );
@@ -112,7 +112,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * []2',
@@ -126,7 +126,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts before a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[]0',
 					'* 1',
 					'* 2'
@@ -138,7 +138,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -158,7 +158,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should increment indent attribute by 1', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -170,7 +170,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -182,7 +182,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should increment indent of all sub-items of indented item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* []1',
 					'  * 2',
@@ -194,7 +194,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'  * []1',
 					'    * 2',
@@ -207,7 +207,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 			describe( 'mixed list types', () => {
 				it( 'should not change list item type if the indented list item is the first one in the nested list (bulleted)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* 0',
 						'* 1[]',
 						'  # 2',
@@ -216,7 +216,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
 						'  * 1[]',
 						'    # 2',
@@ -225,7 +225,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should not change list item type if the indented list item is the first one in the nested list (numbered)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'# 0',
 						'# 1[]',
 						'  * 2',
@@ -234,7 +234,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'# 0',
 						'  # 1[]',
 						'    * 2',
@@ -243,7 +243,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should adjust list type to the previous list item (numbered)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* 0',
 						'* 1',
 						'  # 2',
@@ -252,7 +252,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
 						'* 1',
 						'  # 2',
@@ -261,7 +261,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should not change list item type if the indented list item is the first one in the nested list', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* 0',
 						'* []1',
 						'  # 2',
@@ -271,7 +271,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    # 2',
@@ -281,7 +281,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 				} );
 
 				it( 'should not change list item type if the first item in the nested list (has more items)', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* 0',
 						'* []1',
 						'  # 2',
@@ -293,7 +293,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
 						'  * []1',
 						'    # 2',
@@ -307,7 +307,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 			describe( 'non-collapsed selection', () => {
 				it( 'should increment indent of all selected item when multiple items are selected', () => {
-					setData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* 0',
 						'* [1',
 						'  * 2',
@@ -319,7 +319,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
+					expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
 						'  * [1',
 						'    * 2',
@@ -332,7 +332,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				describe( 'mixed list types', () => {
 					it( 'should not change list types for the first list items', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* 0',
 							'* [1',
 							'  # 2]',
@@ -341,7 +341,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* 0',
 							'  * [1',
 							'    # 2]',
@@ -350,7 +350,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should not change list types for the first list items (with nested lists)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* 0',
 							'* [1',
 							'  # 2]',
@@ -359,7 +359,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* 0',
 							'  * [1',
 							'    # 2]',
@@ -368,7 +368,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should align the list type if become a part of other list (bulleted)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -378,7 +378,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -388,7 +388,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should align the list type if become a part of other list (numbered)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -398,7 +398,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -408,7 +408,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should align the list type (bigger structure)', () => {
-						setData( model, modelList( [
+						_setModelData( model, modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -421,7 +421,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 						command.execute();
 
-						expect( getData( model ) ).to.equalMarkup( modelList( [
+						expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 							'* 0',
 							'* 1',
 							'  # 2',
@@ -436,7 +436,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* []1',
 					'  * 2',
@@ -476,7 +476,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -490,7 +490,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if selection starts in first list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []0',
 					'* 1',
 					'  * 2',
@@ -504,7 +504,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * []2',
@@ -518,7 +518,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be false if selection starts before a list', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'[0',
 					'* 1]',
 					'  * 2'
@@ -528,7 +528,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true with selection in the middle block of a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  []1',
 					'  2'
@@ -538,7 +538,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should be true with selection in the last block of a list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  1',
 					'  []2'
@@ -550,7 +550,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 		describe( 'execute()', () => {
 			it( 'should decrement indent attribute by 1 (if it is higher than 0)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -562,7 +562,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  * 2',
@@ -574,7 +574,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should remove list attributes (if indent is less than to 0)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* []0',
 					'* 1',
 					'  * 2',
@@ -586,7 +586,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'[]0',
 					'* 1',
 					'  * 2',
@@ -598,7 +598,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should decrement indent of all sub-items of outdented item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* []1',
 					'  * 2',
@@ -610,7 +610,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'[]1',
 					'* 2',
@@ -622,7 +622,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should outdent all selected item when multiple items are selected', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* [1',
 					'  * 2',
@@ -634,7 +634,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'[1',
 					'* 2',
@@ -646,7 +646,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should not merge item if parent has no more following blocks', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  * []1',
 					'* 2'
@@ -654,7 +654,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* []1',
 					'* 2'
@@ -662,7 +662,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should handle higher indent drop between items', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  * 1',
 					'    * 2',
@@ -673,7 +673,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'  * 1',
 					'    * 2',
@@ -684,7 +684,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should align a list item type after outdenting item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  # 2[]',
@@ -693,7 +693,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'* 2[]',
@@ -702,7 +702,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should align a list item type after outdenting the last list item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'# 0',
 					'  * 1',
 					'  * 2[]',
@@ -711,7 +711,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'# 0',
 					'  * 1',
 					'# 2[]',
@@ -720,7 +720,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should align the list item type after the more indented item', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',
@@ -730,7 +730,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',
@@ -740,7 +740,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should outdent the whole nested list (and align appropriate list item types)', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'  # []1',
 					'    # 2',
@@ -752,7 +752,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* []1',
 					'  # 2',
@@ -764,7 +764,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 			} );
 
 			it( 'should align list item typed after outdenting a bigger structure', () => {
-				setData( model, modelList( [
+				_setModelData( model, modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',
@@ -777,7 +777,7 @@ describe( 'ListIndentCommand (multiBlock=false)', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup( modelList( [
+				expect( _getModelData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'* 1',
 					'  # 2',

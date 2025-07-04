@@ -17,7 +17,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { setupTestHelpers } from './_utils/utils.js';
 import { stubUid } from './_utils/uid.js';
 
@@ -1956,8 +1956,8 @@ describe( 'ListEditing - converters - changes', () => {
 						const item2 = '<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 						model.change( writer => {
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);
@@ -2239,8 +2239,8 @@ describe( 'ListEditing - converters - changes', () => {
 
 						model.change( writer => {
 							writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);

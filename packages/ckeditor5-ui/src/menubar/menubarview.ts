@@ -430,7 +430,7 @@ export type MenuBarConfigAddedMenu = {
  * Any namespaced event fired by menu a {@link module:ui/menubar/menubarview~MenuBarView#menus menu view instance} of the
  * {@link module:ui/menubar/menubarview~MenuBarView menu bar}.
  */
-interface MenuBarMenuEvent extends BaseEvent {
+export interface MenuBarMenuEvent extends BaseEvent {
 	name: `menu:${ string }` | `menu:change:${ string }`;
 }
 

@@ -8,7 +8,7 @@
  */
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
-import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine.js';
+import type { DowncastAttributeEvent, DowncastDispatcher, ModelElement, ViewElement } from 'ckeditor5/src/engine.js';
 import { type MediaRegistry } from './mediaregistry.js';
 import type { MediaOptions } from './utils.js';
 
@@ -53,7 +53,7 @@ export function modelToViewUrlAttributeConverter(
 
 		const url = data.attributeNewValue as string;
 		const viewWriter = conversionApi.writer;
-		const figure = conversionApi.mapper.toViewElement( data.item as Element )!;
+		const figure = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 		const mediaContentElement = [ ...figure.getChildren() ]
 			.find( child => ( child as ViewElement ).getCustomProperty( 'media-content' ) )!;
 

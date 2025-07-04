@@ -8,7 +8,7 @@ import { blockAutoformatEditing } from '../src/blockautoformatediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
 
@@ -43,7 +43,7 @@ describe( 'blockAutoformatEditing', () => {
 
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -60,14 +60,14 @@ describe( 'blockAutoformatEditing', () => {
 
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
 			sinon.assert.calledOnce( spy );
-			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should not autoformat if command is disabled', () => {
@@ -82,7 +82,7 @@ describe( 'blockAutoformatEditing', () => {
 
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, 'testCommand' );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -97,7 +97,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -111,7 +111,7 @@ describe( 'blockAutoformatEditing', () => {
 
 			plugin.isEnabled = false;
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -123,7 +123,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.remove( doc.selection.getFirstRange() );
 			} );
@@ -137,7 +137,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>[* ]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[* ]foo</paragraph>' );
 			model.change( writer => {
 				writer.setAttribute( 'foo', true, model.document.selection.getFirstRange() );
 			} );
@@ -149,7 +149,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -177,7 +177,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>*<softBreak></softBreak>[]</paragraph>' );
+			_setModelData( model, '<paragraph>*<softBreak></softBreak>[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -189,7 +189,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>* foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>* foo[]bar</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -217,7 +217,7 @@ describe( 'blockAutoformatEditing', () => {
 			const spy = testUtils.sinon.spy();
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-			setData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
+			_setModelData( model, '<paragraph>* <softBreak></softBreak>[]</paragraph>' );
 
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -229,12 +229,12 @@ describe( 'blockAutoformatEditing', () => {
 		it( 'should stop if callback returned false', () => {
 			blockAutoformatEditing( editor, plugin, /^[*]\s$/, () => false );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
 		} );
 	} );
 
@@ -242,7 +242,7 @@ describe( 'blockAutoformatEditing', () => {
 		const spy = testUtils.sinon.spy();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-		setData( model, '<paragraph>*[]</paragraph>' );
+		_setModelData( model, '<paragraph>*[]</paragraph>' );
 		model.enqueueChange( { isLocal: false }, writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
@@ -254,7 +254,7 @@ describe( 'blockAutoformatEditing', () => {
 		const spy = testUtils.sinon.spy();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
-		setData( model, '<paragraph>*[]</paragraph>' );
+		_setModelData( model, '<paragraph>*[]</paragraph>' );
 		model.enqueueChange( { isUndo: true }, writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );

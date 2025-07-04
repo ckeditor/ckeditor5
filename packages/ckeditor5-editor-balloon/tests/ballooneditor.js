@@ -17,7 +17,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { ElementApiMixin } from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin.js';
-import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -78,7 +78,7 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'creates main root element', () => {
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {

@@ -9,7 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 const config = {
 	plugins: [ Essentials, Paragraph, Bold, Italic, Heading ],
@@ -21,7 +21,7 @@ window.setInterval( function() {
 	const doc2 = window.editor2.model.document;
 
 	if ( window.editor1.editing.view.document.isFocused ) {
-		console.log( 'editor 1', getData( window.editor1.model ) );
+		console.log( 'editor 1', _getModelData( window.editor1.model ) );
 
 		const modelSel = doc1.selection;
 
@@ -42,7 +42,7 @@ window.setInterval( function() {
 	}
 
 	if ( window.editor2.editing.view.document.isFocused ) {
-		console.log( 'editor 2', getData( window.editor2.model ) );
+		console.log( 'editor 2', _getModelData( window.editor2.model ) );
 
 		const modelSel = doc2.selection;
 

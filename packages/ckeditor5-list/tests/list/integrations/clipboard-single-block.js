@@ -21,11 +21,11 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
-	getData as getModelData,
-	parse as parseModel,
-	setData as setModelData
+	_getModelData,
+	_parseModel,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { stubUid } from '../_utils/uid.js';
 
@@ -73,7 +73,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 	describe( 'copy and getSelectedContent()', () => {
 		it( 'should be able to downcast part of a nested list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'[<listItem listType="bulleted" listItemId="b" listIndent="1">B1</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="1">B2</listItem>' +
@@ -98,7 +98,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should be able to downcast part of a deep nested list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B1</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="1">B2</listItem>' +
@@ -121,7 +121,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		describe( 'UX enhancements', () => {
 			describe( 'preserving list structure when a cross-list item selection existed', () => {
 				it( 'should return a list structure, if more than a single list item was selected', () => {
-					setModelData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* Fo[o',
 						'* Ba]r'
 					] ) );
@@ -133,7 +133,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				} );
 
 				it( 'should return a list structure, if a nested items were included in the selection', () => {
-					setModelData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* Fo[o',
 						'  Bar',
 						'  * B]az'
@@ -147,7 +147,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 				// Note: This test also verifies support for arbitrary selection passed to getSelectedContent().
 				it( 'should return a list structure, if multiple list items were selected from the outside', () => {
-					setModelData( model, modelList( [
+					_setModelData( model, modelList( [
 						'* Foo',
 						'* Bar'
 					] ) );
@@ -169,21 +169,21 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 	describe( 'paste and insertContent() integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
 			);
 
 			editor.model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listItemId="x" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listItemId="y" listIndent="1">Y</listItem>',
 					model.schema
 				)
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listItemId="y" listType="bulleted">Y[]</listItem>' +
@@ -192,14 +192,14 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should be triggered when selectable is passed', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
 			);
 
 			model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listItemId="x" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listItemId="y" listIndent="1">Y</listItem>',
 					model.schema
@@ -210,7 +210,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				)
 			);
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B[]X</listItem>' +
 				'<listItem listIndent="2" listItemId="y" listType="bulleted">Y</listItem>' +
@@ -220,7 +220,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -233,7 +233,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				model.insertContent( item );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listItemId="c" listType="bulleted">C</listItem>'
@@ -242,7 +242,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent() - case #69', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -252,7 +252,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				model.insertContent( writer.createText( 'X' ) );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX[]</listItem>' +
 				'<listItem listIndent="2" listItemId="c" listType="bulleted">C</listItem>'
@@ -260,7 +260,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should fix indents of pasted list items', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -269,10 +269,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">Y[]</listItem>' +
@@ -281,7 +281,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should not fix indents of list items that are separated by non-list element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -290,10 +290,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">X</listItem>' +
@@ -304,7 +304,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should co-work correctly with post fixer', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -313,10 +313,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
+				content: _parseView( '<p>X</p><ul><li>Y</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BX</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">Y[]</listItem>' +
@@ -328,7 +328,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 					'<listItem listType="bulleted" listItemId="b" listIndent="1">B</listItem>[]' +
 					'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -337,11 +337,11 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+					content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B</listItem>' +
 				'<listItem listIndent="1" listItemId="a01" listType="bulleted">X</listItem>' +
@@ -351,7 +351,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should create correct model when list items are pasted in top-level list', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B</listItem>'
 			);
@@ -359,10 +359,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AX</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">Y[]</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">B</listItem>'
@@ -370,7 +370,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should create correct model when list items are pasted in non-list context', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>A[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
@@ -378,10 +378,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>AX</paragraph>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
@@ -389,7 +389,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should not crash when "empty content" is inserted', () => {
-			setModelData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
 				model.change( writer => {
@@ -402,7 +402,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
@@ -414,11 +414,11 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X</li>' )
+					content: _parseView( '<li>X</li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -432,7 +432,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
@@ -444,11 +444,11 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+					content: _parseView( '<li>X<ul><li>Y</li></ul></li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -463,7 +463,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
@@ -474,11 +474,11 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X</li>' )
+					content: _parseView( '<li>X</li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -491,7 +491,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
-				setModelData( model,
+				_setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listItemId="a" listIndent="0">A</listItem>' +
 					'<listItem listType="numbered" listItemId="b" listIndent="1">B</listItem>' +
@@ -502,11 +502,11 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 				clipboard.fire( 'inputTransformation', {
-					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+					content: _parseView( '<li>X<ul><li>Y</li></ul></li>' )
 				} );
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<paragraph>Foo</paragraph>' +
 				'<listItem listIndent="0" listItemId="a" listType="numbered">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="numbered">B</listItem>' +
@@ -517,7 +517,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should handle block elements inside pasted list #1', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -526,10 +526,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">A</listItem>' +
 				'<listItem listIndent="1" listItemId="b" listType="bulleted">BW</listItem>' +
 				'<listItem listIndent="2" listItemId="a00" listType="bulleted">X</listItem>' +
@@ -540,7 +540,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should handle block elements inside pasted list #2', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -549,10 +549,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+				content: _parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">X</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">Y</listItem>' +
@@ -563,7 +563,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should handle block elements inside pasted list #3', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -572,10 +572,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
+				content: _parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup(
+			expect( _getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">AW</listItem>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">X</listItem>' +
 				'<listItem listIndent="0" listItemId="a02" listType="bulleted">Y</listItem>' +
@@ -586,7 +586,7 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 		} );
 
 		it( 'should properly handle split of list items with non-standard converters', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listType="bulleted" listItemId="a" listIndent="0">A[]</listItem>' +
 				'<listItem listType="bulleted" listItemId="b" listIndent="1">B</listItem>' +
 				'<listItem listType="bulleted" listItemId="c" listIndent="2">C</listItem>'
@@ -606,10 +606,10 @@ describe( 'ListEditing (multiBlock=false) integrations: clipboard copy & paste',
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
+				content: _parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">Aa</listItem>' +
 				'<splitBlock></splitBlock>' +
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">b</listItem>' +

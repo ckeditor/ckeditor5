@@ -11,12 +11,12 @@ import { Plugin } from 'ckeditor5/src/core.js';
 
 import { ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 
-import { MSWordNormalizer } from './normalizers/mswordnormalizer.js';
+import { PasteFromOfficeMSWordNormalizer } from './normalizers/mswordnormalizer.js';
 import { GoogleDocsNormalizer } from './normalizers/googledocsnormalizer.js';
 import { GoogleSheetsNormalizer } from './normalizers/googlesheetsnormalizer.js';
 
-import { parseHtml } from './filters/parse.js';
-import type { Normalizer, NormalizerData } from './normalizer.js';
+import { parsePasteOfficeHtml } from './filters/parse.js';
+import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from './normalizer.js';
 
 /**
  * The Paste from Office plugin.
@@ -24,9 +24,9 @@ import type { Normalizer, NormalizerData } from './normalizer.js';
  * This plugin handles content pasted from Office apps and transforms it (if necessary)
  * to a valid structure which can then be understood by the editor features.
  *
- * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~Normalizer normalizers}.
+ * Transformation is made by a set of predefined {@link module:paste-from-office/normalizer~PasteFromOfficeNormalizer normalizers}.
  * This plugin includes following normalizers:
- * * {@link module:paste-from-office/normalizers/mswordnormalizer~MSWordNormalizer Microsoft Word normalizer}
+ * * {@link module:paste-from-office/normalizers/mswordnormalizer~PasteFromOfficeMSWordNormalizer Microsoft Word normalizer}
  * * {@link module:paste-from-office/normalizers/googledocsnormalizer~GoogleDocsNormalizer Google Docs normalizer}
  *
  * For more information about this feature check the {@glink api/paste-from-office package page}.
@@ -60,16 +60,16 @@ export class PasteFromOffice extends Plugin {
 		const editor = this.editor;
 		const clipboardPipeline: ClipboardPipeline = editor.plugins.get( 'ClipboardPipeline' );
 		const viewDocument = editor.editing.view.document;
-		const normalizers: Array<Normalizer> = [];
+		const normalizers: Array<PasteFromOfficeNormalizer> = [];
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
 
-		normalizers.push( new MSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
+		normalizers.push( new PasteFromOfficeMSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 
 		clipboardPipeline.on(
 			'inputTransformation',
-			( evt, data: NormalizerData ) => {
+			( evt, data: PasteFromOfficeNormalizerData ) => {
 				if ( data._isTransformedWithPasteFromOffice ) {
 					return;
 				}
@@ -85,7 +85,7 @@ export class PasteFromOffice extends Plugin {
 
 				if ( activeNormalizer ) {
 					if ( !data._parsedData ) {
-						data._parsedData = parseHtml( htmlString, viewDocument.stylesProcessor );
+						data._parsedData = parsePasteOfficeHtml( htmlString, viewDocument.stylesProcessor );
 					}
 
 					activeNormalizer.execute( data );

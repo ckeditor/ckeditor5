@@ -139,7 +139,7 @@ export class LinkProviderItemsView extends View {
 
 		// Close the panel on esc key press when the **form has focus**.
 		this.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this.fire<CancelEvent>( 'cancel' );
+			this.fire<LinkProvidersCancelEvent>( 'cancel' );
 			cancel();
 		} );
 
@@ -296,7 +296,7 @@ export class LinkProviderItemsView extends View {
  *
  * @eventName ~LinkProviderItemsView#cancel
  */
-export type CancelEvent = {
+export type LinkProvidersCancelEvent = {
 	name: 'cancel';
 	args: [];
 };

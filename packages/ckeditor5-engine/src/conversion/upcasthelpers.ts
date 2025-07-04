@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Matcher, type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
+import { Matcher, type MatchClassPatterns, type MatcherPattern, type MatchPropertyPatterns } from '../view/matcher.js';
 import { ConversionHelpers } from './conversionhelpers.js';
 
 import type { UpcastDispatcher, UpcastElementEvent, UpcastConversionApi, UpcastConversionData } from './upcastdispatcher.js';
@@ -43,7 +43,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * view `<p>Foo</p>` becomes `<paragraph>Foo</paragraph>` in the model.
 	 *
 	 * Keep in mind that the element will be inserted only if it is allowed
-	 * by {@link module:engine/model/schema~Schema schema} configuration.
+	 * by {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).elementToElement( {
@@ -91,7 +91,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public elementToElement( config: {
 		view: MatcherPattern;
-		model: string | ElementCreatorFunction;
+		model: string | UpcastElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToElement( config ) );
@@ -101,7 +101,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * View element to model attribute conversion helper.
 	 *
 	 * This conversion results in setting an attribute on a model node. For example, view `<strong>Foo</strong>` becomes
-	 * `Foo` {@link module:engine/model/text~Text model text node} with `bold` attribute set to `true`.
+	 * `Foo` {@link module:engine/model/text~ModelText model text node} with `bold` attribute set to `true`.
 	 *
 	 * This helper is meant to set a model attribute on all the elements that are inside the converted element:
 	 *
@@ -113,7 +113,8 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
 	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute} for comparison.
 	 *
-	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 * Keep in mind that the attribute will be set only if it is allowed by
+	 * {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -217,7 +218,8 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
 	 *
-	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 * Keep in mind that the attribute will be set only if it is allowed by
+	 * {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
@@ -324,9 +326,9 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			name?: string;
 		} | {
 			name?: string | RegExp;
-			styles?: PropertyPatterns;
-			classes?: ClassPatterns;
-			attributes?: PropertyPatterns;
+			styles?: MatchPropertyPatterns;
+			classes?: MatchClassPatterns;
+			attributes?: MatchPropertyPatterns;
 		};
 		model: string | {
 			key: string;
@@ -391,7 +393,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public elementToMarker( config: {
 		view: MatcherPattern;
-		model: string | MarkerFromElementCreatorFunction;
+		model: string | UpcastMarkerFromElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToMarker( config ) );
@@ -470,7 +472,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public dataToMarker( config: {
 		view: string;
-		model?: MarkerFromAttributeCreatorFunction;
+		model?: UpcastMarkerFromAttributeCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastDataToMarker( config ) );
@@ -478,19 +480,23 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 }
 
 /**
- * Function factory, creates a converter that converts {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
- * or all children of {@link module:engine/view/element~Element} into
- * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+ * Function factory, creates a converter that converts
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}
+ * or all children of {@link module:engine/view/element~ViewElement} into
+ * {@link module:engine/model/documentfragment~ModelDocumentFragment model document fragment}.
  * This is the "entry-point" converter for upcast (view to model conversion). This converter starts the conversion of all children
- * of passed view document fragment. Those children {@link module:engine/view/node~Node view nodes} are then handled by other converters.
+ * of passed view document fragment. Those children {@link module:engine/view/node~ViewNode view nodes} are then
+ * handled by other converters.
  *
  * This also a "default", last resort converter for all view elements that has not been converted by other converters.
  * When a view element is being converted to the model but it does not have converter specified, that view element
- * will be converted to {@link module:engine/model/documentfragment~DocumentFragment model document fragment} and returned.
+ * will be converted to {@link module:engine/model/documentfragment~ModelDocumentFragment model document fragment} and returned.
  *
- * @returns Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
- * {@link module:engine/view/element~Element elements} that returns
- * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
+ * @returns Universal converter for view {@link module:engine/view/documentfragment~ViewDocumentFragment fragments} and
+ * {@link module:engine/view/element~ViewElement elements} that returns
+ * {@link module:engine/model/documentfragment~ModelDocumentFragment model fragment} with children of converted view item.
+ *
+ * @internal
  */
 export function convertToModelFragment() {
 	return (
@@ -509,9 +515,11 @@ export function convertToModelFragment() {
 }
 
 /**
- * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
+ * Function factory, creates a converter that converts
+ * {@link module:engine/view/text~ViewText} to {@link module:engine/model/text~ModelText}.
  *
- * @returns {@link module:engine/view/text~Text View text} converter.
+ * @returns {@link module:engine/view/text~ViewText View text} converter.
+ * @internal
  */
 export function convertText() {
 	return (
@@ -554,9 +562,9 @@ export function convertText() {
 }
 
 /**
- * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection
- * view selection} taken from the {@link module:engine/view/document~Document#event:selectionChange} event
- * and sets in on the {@link module:engine/model/document~Document#selection model}.
+ * Function factory, creates a callback function which converts a {@link module:engine/view/selection~ViewSelection
+ * view selection} taken from the {@link module:engine/view/document~ViewDocument#event:selectionChange} event
+ * and sets in on the {@link module:engine/model/document~ModelDocument#selection model}.
  *
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
  * conversion mechanism, the callback should be set directly on view document.
@@ -567,7 +575,8 @@ export function convertText() {
  *
  * @param model Data model.
  * @param mapper Conversion mapper.
- * @returns {@link module:engine/view/document~Document#event:selectionChange} callback function.
+ * @returns {@link module:engine/view/document~ViewDocument#event:selectionChange} callback function.
+ * @internal
  */
 export function convertSelectionChange( model: Model, mapper: Mapper ) {
 	return (
@@ -607,7 +616,7 @@ export function convertSelectionChange( model: Model, mapper: Mapper ) {
  */
 function upcastElementToElement( config: {
 	view: MatcherPattern;
-	model: string | ElementCreatorFunction;
+	model: string | UpcastElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -639,7 +648,7 @@ function upcastElementToAttribute( config: {
 	view: MatcherPattern;
 	model: string | {
 		key: string;
-		value?: unknown | AttributeCreatorFunction;
+		value?: unknown | UpcastAttributeCreatorFunction;
 	};
 	converterPriority?: PriorityString;
 } ) {
@@ -679,9 +688,9 @@ function upcastAttributeToAttribute( config: {
 		key?: string;
 		value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
 		name?: string | RegExp;
-		styles?: PropertyPatterns;
-		classes?: ClassPatterns;
-		attributes?: PropertyPatterns;
+		styles?: MatchPropertyPatterns;
+		classes?: MatchClassPatterns;
+		attributes?: MatchPropertyPatterns;
 	};
 	model: string | {
 		key: string;
@@ -721,7 +730,7 @@ function upcastAttributeToAttribute( config: {
  */
 function upcastElementToMarker( config: {
 	view: MatcherPattern;
-	model: string | MarkerFromElementCreatorFunction;
+	model: string | UpcastMarkerFromElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeElementToMarkerModelConfig( config.model );
@@ -738,7 +747,7 @@ function upcastElementToMarker( config: {
  */
 function upcastDataToMarker( config: {
 	view: string;
-	model?: MarkerFromAttributeCreatorFunction;
+	model?: UpcastMarkerFromAttributeCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -805,7 +814,7 @@ function upcastDataToMarker( config: {
  */
 function upcastAttributeToMarker( config: {
 	view: string;
-	model: MarkerFromAttributeCreatorFunction;
+	model: UpcastMarkerFromAttributeCreatorFunction;
 } ) {
 	return (
 		evt: EventInfo,
@@ -895,7 +904,7 @@ function getViewElementNameFromConfig( viewConfig: any ): string | null {
  */
 function prepareToElementConverter( config: {
 	view: MatcherPattern;
-	model: string | ElementCreatorFunction;
+	model: string | UpcastElementCreatorFunction;
 } ) {
 	const matcher = new Matcher( config.view );
 
@@ -944,7 +953,7 @@ function prepareToElementConverter( config: {
  * @param conversionApi The upcast conversion API.
  */
 function getModelElement(
-	model: string | ElementCreatorFunction,
+	model: string | UpcastElementCreatorFunction,
 	input: ViewElement,
 	conversionApi: UpcastConversionApi
 ): ModelElement | null {
@@ -1027,7 +1036,7 @@ function prepareToAttributeConverter(
 		view: MatcherPattern;
 		model: {
 			key: string;
-			value: AttributeCreatorFunction | unknown;
+			value: UpcastAttributeCreatorFunction | unknown;
 		};
 	},
 	shallow: boolean
@@ -1119,8 +1128,8 @@ function onlyViewNameIsDefined( viewConfig: any, viewItem: ViewElement ): boolea
 }
 
 /**
- * Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
- * to ensure proper model structure.
+ * Helper function for to-model-attribute converter. Sets model attribute on given range.
+ * Checks {@link module:engine/model/schema~ModelSchema} to ensure proper model structure.
  *
  * If any node on the given range has already defined an attribute with the same name, its value will not be updated.
  *
@@ -1168,7 +1177,7 @@ function setAttributeOn(
  * Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
  * function and converts it to a format that is supported by `upcastElementToElement()` function.
  */
-function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementCreatorFunction ): ElementCreatorFunction {
+function normalizeElementToMarkerModelConfig( model: string | UpcastMarkerFromElementCreatorFunction ): UpcastElementCreatorFunction {
 	return ( viewElement, conversionApi ) => {
 		const markerName = typeof model == 'string' ? model : model( viewElement, conversionApi );
 
@@ -1183,11 +1192,11 @@ function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementC
 function normalizeDataToMarkerConfig(
 	config: {
 		view: string;
-		model: MarkerFromAttributeCreatorFunction;
+		model: UpcastMarkerFromAttributeCreatorFunction;
 	},
 	type: string
 ) {
-	const elementCreatorFunction: ElementCreatorFunction = ( viewElement, conversionApi ) => {
+	const elementCreatorFunction: UpcastElementCreatorFunction = ( viewElement, conversionApi ) => {
 		const viewName = viewElement.getAttribute( 'name' )!;
 		const markerName = config.model( viewName, conversionApi );
 
@@ -1201,22 +1210,22 @@ function normalizeDataToMarkerConfig(
 	};
 }
 
-export type ElementCreatorFunction = (
+export type UpcastElementCreatorFunction = (
 	viewElement: ViewElement,
 	conversionApi: UpcastConversionApi
 ) => ModelElement | null;
 
-export type AttributeCreatorFunction = (
+export type UpcastAttributeCreatorFunction = (
 	modelElement: ModelElement,
 	conversionApi: UpcastConversionApi
 ) => unknown;
 
-export type MarkerFromElementCreatorFunction = (
+export type UpcastMarkerFromElementCreatorFunction = (
 	viewElement: ViewElement,
 	conversionApi: UpcastConversionApi
 ) => string;
 
-export type MarkerFromAttributeCreatorFunction = (
+export type UpcastMarkerFromAttributeCreatorFunction = (
 	attributeValue: string,
 	conversionApi: UpcastConversionApi
 ) => string;

@@ -4,7 +4,7 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
@@ -40,17 +40,17 @@ describe( 'FindCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be enabled by default', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be enabled in readonly mode editor', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			editor.enableReadOnlyMode( 'unit-test' );
 
@@ -58,7 +58,7 @@ describe( 'FindCommand', () => {
 		} );
 
 		it( 'should be enabled after disabling readonly mode', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			editor.enableReadOnlyMode( 'unit-test' );
 			editor.disableReadOnlyMode( 'unit-test' );
@@ -70,18 +70,18 @@ describe( 'FindCommand', () => {
 	describe( 'execute()', () => {
 		describe( 'with string passed', () => {
 			it( 'places markers correctly in the model', () => {
-				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const markers = getSimplifiedMarkersFromResults( results );
 
-				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+				expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <Y:start></Y:start>bar<Y:end></Y:end> bom.</paragraph>'
 				);
 			} );
 
 			it( 'calls model.change() only once', () => {
-				setData( model, '<paragraph>[]Foo bar baz. Bam bar bar bar bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bar bar bar bom.</paragraph>' );
 				const spy = sinon.spy( model, 'change' );
 
 				command.execute( 'bar' );
@@ -92,7 +92,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'returns no result if nothing matched', () => {
-				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'missing' );
 
@@ -100,7 +100,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns proper labels to matches', () => {
-				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const labels = results.map( result => result.label );
@@ -109,7 +109,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns non-empty ids for each match', () => {
-				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>Foo bar b[]az. Bam bar bom.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const ids = results.map( result => result.id );
@@ -123,7 +123,7 @@ describe( 'FindCommand', () => {
 			} );
 
 			it( 'assigns an unique ids for each match', () => {
-				setData( model, '<paragraph>Foo bar b[]az. Bam bar bom bar.</paragraph>' );
+				_setModelData( model, '<paragraph>Foo bar b[]az. Bam bar bom bar.</paragraph>' );
 
 				const { results } = command.execute( 'bar' );
 				const ids = results.map( result => result.id );
@@ -141,7 +141,7 @@ describe( 'FindCommand', () => {
 
 				const markers = getSimplifiedMarkersFromResults( results );
 
-				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+				expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>-[\\<X:start></X:start>]{<X:end></X:end>}()*+?.,^$|#\\s</paragraph>'
 				);
 			} );
@@ -155,7 +155,7 @@ describe( 'FindCommand', () => {
 
 				const markers = getSimplifiedMarkersFromResults( results );
 
-				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+				expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph><X:start></X:start>' +
 						'-[\\]{}()*+?.,^$|#\\s' +
 					'<X:end></X:end></paragraph>'
@@ -171,7 +171,7 @@ describe( 'FindCommand', () => {
 
 				const markers = getSimplifiedMarkersFromResults( results );
 
-				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+				expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>foo <X:start></X:start>🐛<X:end></X:end> bar</paragraph>'
 				);
 			} );
@@ -203,7 +203,7 @@ describe( 'FindCommand', () => {
 
 					const markers = getSimplifiedMarkersFromResults( results );
 
-					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
 					);
 				} );
@@ -217,7 +217,7 @@ describe( 'FindCommand', () => {
 
 					const markers = getSimplifiedMarkersFromResults( results );
 
-					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 						'<paragraph>foo <X:start></X:start>bAr<X:end></X:end></paragraph>'
 					);
 				} );
@@ -247,7 +247,7 @@ describe( 'FindCommand', () => {
 
 					const markers = getSimplifiedMarkersFromResults( results );
 
-					expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
+					expect( _stringifyModel( model.document.getRoot(), null, markers ) ).to.equal(
 						'<paragraph>foo <X:start></X:start>bar<X:end></X:end> baz</paragraph>'
 					);
 				} );
@@ -340,8 +340,8 @@ describe( 'FindCommand', () => {
 					multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
 					multiRootModel = multiRootEditor.model;
 
-					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>' );
-					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+					_setModelData( multiRootModel, '<paragraph>Foo bar baz</paragraph>' );
+					_setModelData( multiRootModel, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
 				} );
 
 				afterEach( async () => {
@@ -352,11 +352,11 @@ describe( 'FindCommand', () => {
 					const { results } = multiRootEditor.execute( 'find', 'z' );
 					const [ markerMain, markerSecond ] = getSimplifiedMarkersFromResults( results );
 
-					expect( stringify( multiRootModel.document.getRoot( 'main' ), null, [ markerMain ] ) ).to.equal(
+					expect( _stringifyModel( multiRootModel.document.getRoot( 'main' ), null, [ markerMain ] ) ).to.equal(
 						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
 					);
 
-					expect( stringify( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
+					expect( _stringifyModel( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
 						'<paragraph>Foo bar ba<Y:start></Y:start>z<Y:end></Y:end></paragraph>'
 					);
 				} );
@@ -368,7 +368,7 @@ describe( 'FindCommand', () => {
 				} );
 
 				it( 'should properly search for all occurrences if the first occurrence is not in the main root', () => {
-					setData( multiRootModel, '<paragraph>Foo bar bar</paragraph>' );
+					_setModelData( multiRootModel, '<paragraph>Foo bar bar</paragraph>' );
 
 					const { results } = multiRootEditor.execute( 'find', 'z' );
 
@@ -381,7 +381,7 @@ describe( 'FindCommand', () => {
 			it( 'sets returned searchText attribute to the object result', () => {
 				const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
-				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const searchText = 'bar';
 				const { results } = command.execute( ( ...args ) => ( {
@@ -396,7 +396,7 @@ describe( 'FindCommand', () => {
 			it( 'sets empty searchText if array is returned', () => {
 				const findAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
-				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
+				_setModelData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
 				const searchText = 'bar';
 				const { results } = command.execute( findAndReplaceUtils.findByTextCallback( searchText, {} ) );

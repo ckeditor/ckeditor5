@@ -8,12 +8,12 @@
  */
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	MatcherPattern,
-	Schema,
-	Selection,
+	ModelSchema,
+	ModelSelection,
 	ViewContainerElement,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
@@ -32,7 +32,7 @@ import { type ImageUtils } from '../imageutils.js';
  *
  * @internal
  */
-export function createInlineImageViewElement( writer: DowncastWriter ): ViewContainerElement {
+export function createInlineImageViewElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
 		writer.createEmptyElement( 'img' )
 	);
@@ -49,7 +49,7 @@ export function createInlineImageViewElement( writer: DowncastWriter ): ViewCont
  *
  * @internal
  */
-export function createBlockImageViewElement( writer: DowncastWriter ): ViewContainerElement {
+export function createBlockImageViewElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
 		writer.createEmptyElement( 'img' ),
 		writer.createSlot( 'children' )
@@ -116,8 +116,8 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
  * @internal
  */
 export function determineImageTypeForInsertionAtSelection(
-	schema: Schema,
-	selection: Selection | DocumentSelection
+	schema: ModelSchema,
+	selection: ModelSelection | ModelDocumentSelection
 ): 'imageBlock' | 'imageInline' {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
@@ -138,6 +138,8 @@ export function determineImageTypeForInsertionAtSelection(
 
 /**
  * Returns parsed value of the size, but only if it contains unit: px.
+ *
+ * @internal
  */
 export function getSizeValueIfInPx( size: string | undefined ): number | null {
 	if ( size && size.endsWith( 'px' ) ) {
@@ -153,6 +155,8 @@ export function getSizeValueIfInPx( size: string | undefined ): number | null {
  * If both image styles: width & height are set, they will override the image width & height attributes in the
  * browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
  * That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+ *
+ * @internal
  */
 export function widthAndHeightStylesAreBothSet( viewElement: ViewElement ): boolean {
 	const widthStyle = getSizeValueIfInPx( viewElement.getStyle( 'width' ) );

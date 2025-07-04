@@ -12,7 +12,7 @@ import { IconTable, IconTableColumn, IconTableRow, IconTableMergeCell } from 'ck
 import {
 	addListToDropdown,
 	createDropdown,
-	ViewModel,
+	UIModel,
 	SplitButtonView,
 	SwitchButtonView,
 	type DropdownView,
@@ -383,7 +383,7 @@ function addListOption(
 	itemDefinitions: Collection<ListDropdownItemDefinition>
 ) {
 	if ( option.type === 'button' || option.type === 'switchbutton' ) {
-		const model = option.model = new ViewModel( option.model );
+		const model = option.model = new UIModel( option.model );
 		const { commandName, bindIsOn } = option.model;
 		const command = editor.commands.get( commandName as string )!;
 

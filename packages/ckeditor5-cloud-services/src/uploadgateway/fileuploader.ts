@@ -85,7 +85,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 	 * Registers callback on `progress` event.
 	 */
 	public onProgress( callback: ( status: { total: number; uploaded: number } ) => void ): this {
-		this.on<FileUploaderProgressErrorEvent>( 'progress', ( event, data ) => callback( data ) );
+		this.on<CloudServicesFileUploaderProgressErrorEvent>( 'progress', ( event, data ) => callback( data ) );
 
 		return this;
 	}
@@ -94,7 +94,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 	 * Registers callback on `error` event. Event is called once when error occurs.
 	 */
 	public onError( callback: ( error: string ) => void ): this {
-		this.once<FileUploaderErrorEvent>( 'error', ( event, data ) => callback( data ) );
+		this.once<CloudServicesFileUploaderErrorEvent>( 'error', ( event, data ) => callback( data ) );
 
 		return this;
 	}
@@ -136,7 +136,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 		const xhr = this.xhr!;
 
 		const onError = ( message: string ) => {
-			return () => this.fire<FileUploaderErrorEvent>( 'error', message );
+			return () => this.fire<CloudServicesFileUploaderErrorEvent>( 'error', message );
 		};
 
 		xhr.addEventListener( 'error', onError( 'Network Error' ) );
@@ -146,7 +146,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', event => {
 				if ( event.lengthComputable ) {
-					this.fire<FileUploaderProgressErrorEvent>( 'progress', {
+					this.fire<CloudServicesFileUploaderProgressErrorEvent>( 'progress', {
 						total: event.total,
 						uploaded: event.loaded
 					} );
@@ -159,7 +159,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 			const xhrResponse = xhr.response;
 
 			if ( statusCode < 200 || statusCode > 299 ) {
-				return this.fire<FileUploaderErrorEvent>( 'error', xhrResponse.message || xhrResponse.error );
+				return this.fire<CloudServicesFileUploaderErrorEvent>( 'error', xhrResponse.message || xhrResponse.error );
 			}
 		} );
 	}
@@ -212,7 +212,7 @@ export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
  * @eventName ~FileUploader#error
  * @param error Error message
  */
-export type FileUploaderErrorEvent = {
+export type CloudServicesFileUploaderErrorEvent = {
 	name: 'error';
 	args: [ error: string ];
 };
@@ -223,7 +223,7 @@ export type FileUploaderErrorEvent = {
  * @eventName ~FileUploader#progress
  * @param status Total and uploaded status
  */
-export type FileUploaderProgressErrorEvent = {
+export type CloudServicesFileUploaderProgressErrorEvent = {
 	name: 'progress';
 	args: [ status: { total: number; uploaded: number } ];
 };

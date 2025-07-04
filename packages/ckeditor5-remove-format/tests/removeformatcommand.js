@@ -7,8 +7,8 @@ import { RemoveFormatCommand } from '../src/removeformatcommand.js';
 import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import {
-	getData,
-	setData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'RemoveFormatCommand', () => {
@@ -137,7 +137,7 @@ describe( 'RemoveFormatCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		const expectModelToBeEqual = expectedValue => expect( getData( model ) ).to.equal( expectedValue );
+		const expectModelToBeEqual = expectedValue => expect( _getModelData( model ) ).to.equal( expectedValue );
 		const cases = {
 			'state when in non-formatting markup': {
 				input: '<p>fo[]o</p>',
@@ -202,7 +202,7 @@ describe( 'RemoveFormatCommand', () => {
 	function generateTypicalUseCases( useCases, options ) {
 		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
 			it( key, () => {
-				setData( model, testConfig.input, testConfig.setDataOptions );
+				_setModelData( model, testConfig.input, testConfig.setDataOptions );
 
 				if ( options && options.beforeAssert ) {
 					options.beforeAssert();

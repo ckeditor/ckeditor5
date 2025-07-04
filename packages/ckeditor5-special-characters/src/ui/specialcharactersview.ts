@@ -19,6 +19,8 @@ import { type SpecialCharactersCategoriesView } from './specialcharacterscategor
  * * the navigation view (allows selecting the category),
  * * the grid view (displays characters as a grid),
  * * and the info view (displays detailed info about a specific character).
+ *
+ * @internal
  */
 export class SpecialCharactersView extends View<HTMLDivElement> {
 	/**

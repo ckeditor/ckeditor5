@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -50,7 +50,7 @@ describe( 'TableContentToolbar integration', () => {
 		} );
 
 		it( 'should allow the BalloonToolbar to be displayed when a table is selected with surrounding text', () => {
-			setModelData( newEditor.model, '<paragraph>fo[o</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>]' );
+			_setModelData( newEditor.model, '<paragraph>fo[o</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
 			balloonToolbar.show();
 
@@ -58,7 +58,7 @@ describe( 'TableContentToolbar integration', () => {
 		} );
 
 		it( 'should allow the BalloonToolbar to be displayed when a table content is selected', () => {
-			setModelData(
+			_setModelData(
 				newEditor.model,
 				'<paragraph>foo</paragraph><table><tableRow><tableCell><paragraph>x[y]z</paragraph></tableCell></tableRow></table>'
 			);
@@ -69,7 +69,7 @@ describe( 'TableContentToolbar integration', () => {
 		} );
 
 		it( 'should prevent the BalloonToolbar from being displayed when a table is selected as whole', () => {
-			setModelData(
+			_setModelData(
 				newEditor.model,
 				'<paragraph>foo</paragraph>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
 			);
@@ -85,7 +85,7 @@ describe( 'TableContentToolbar integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an table
-			setModelData(
+			_setModelData(
 				newEditor.model,
 				'<paragraph>foo</paragraph>[<table><tableRow><tableCell><paragraph>x</paragraph></tableCell></tableRow></table>]'
 			);
@@ -134,7 +134,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -188,7 +188,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -242,7 +242,7 @@ describe( 'TableContentToolbar integration', () => {
 				'</table>'
 			);
 
-			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

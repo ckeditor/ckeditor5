@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Model, ViewElement, ViewNode, ModelWriter } from 'ckeditor5/src/engine.js';
 import { global } from 'ckeditor5/src/utils.js';
 import { type TableUtils } from '../tableutils.js';
 import {
@@ -23,11 +23,12 @@ import {
  *
  * Most notably if an entire table is removed it will not be included in returned set.
  *
+ * @internal
  * @param model The model to collect the affected elements from.
  * @returns A set of table model elements.
  */
-export function getChangedResizedTables( model: Model ): Set<Element> {
-	const affectedTables: Set<Element> = new Set();
+export function getChangedResizedTables( model: Model ): Set<ModelElement> {
+	const affectedTables: Set<ModelElement> = new Set();
 
 	for ( const change of model.document.differ.getChanges() ) {
 		let referencePosition = null;
@@ -53,7 +54,9 @@ export function getChangedResizedTables( model: Model ): Set<Element> {
 
 			case 'attribute':
 				if ( change.range.start.nodeAfter ) {
-					referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes( ( change.range.start.nodeAfter as Element ).name ) ?
+					referencePosition = [ 'table', 'tableRow', 'tableCell' ].includes(
+						( change.range.start.nodeAfter as ModelElement ).name
+					) ?
 						change.range.start :
 						null;
 				}
@@ -88,22 +91,24 @@ export function getChangedResizedTables( model: Model ): Set<Element> {
 /**
  * Calculates the percentage of the minimum column width given in pixels for a given table.
  *
+ * @internal
  * @param modelTable A table model element.
  * @param editor The editor instance.
  * @returns The minimal column width in percentage.
  */
-export function getColumnMinWidthAsPercentage( modelTable: Element, editor: Editor ): number {
+export function getColumnMinWidthAsPercentage( modelTable: ModelElement, editor: Editor ): number {
 	return COLUMN_MIN_WIDTH_IN_PIXELS * 100 / getTableWidthInPixels( modelTable, editor );
 }
 
 /**
  * Calculates the table width in pixels.
  *
+ * @internal
  * @param modelTable A table model element.
  * @param editor The editor instance.
  * @returns The width of the table in pixels.
  */
-export function getTableWidthInPixels( modelTable: Element, editor: Editor ): number {
+export function getTableWidthInPixels( modelTable: ModelElement, editor: Editor ): number {
 	// It is possible for a table to not have a <tbody> element - see #11878.
 	const referenceElement = getChildrenViewElement( modelTable, 'tbody', editor ) || getChildrenViewElement( modelTable, 'thead', editor );
 	const domReferenceElement = editor.editing.view.domConverter.mapViewToDom( referenceElement! )!;
@@ -118,7 +123,7 @@ export function getTableWidthInPixels( modelTable: Element, editor: Editor ): nu
  * @param elementName Name of a view to be looked for, e.g. `'colgroup`', `'thead`'.
  * @returns Matched view or `undefined` otherwise.
  */
-function getChildrenViewElement( modelTable: Element, elementName: string, editor: Editor ) {
+function getChildrenViewElement( modelTable: ModelElement, elementName: string, editor: Editor ) {
 	const viewFigure = editor.editing.mapper.toViewElement( modelTable )!;
 	const viewTable = [ ...viewFigure.getChildren() ]
 		.find( ( node: ViewNode ): node is ViewElement & { name: 'table' } => node.is( 'element', 'table' ) )!;
@@ -130,6 +135,7 @@ function getChildrenViewElement( modelTable: Element, elementName: string, edito
 /**
  * Returns the computed width (in pixels) of the DOM element without padding and borders.
  *
+ * @internal
  * @param domElement A DOM element.
  * @returns The width of the DOM element in pixels.
  */
@@ -153,11 +159,12 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
  * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
  * across multiple columns.
  *
+ * @internal
  * @param cell A table cell model element.
  * @param tableUtils The Table Utils plugin instance.
  * @returns An object containing the indexes of the left and right edges of the cell.
  */
-export function getColumnEdgesIndexes( cell: Element, tableUtils: TableUtils ): { leftEdge: number; rightEdge: number } {
+export function getColumnEdgesIndexes( cell: ModelElement, tableUtils: TableUtils ): { leftEdge: number; rightEdge: number } {
 	const cellColumnIndex = tableUtils.getCellLocation( cell ).column;
 	const cellWidth = cell.getAttribute( 'colspan' ) as number || 1;
 
@@ -170,6 +177,7 @@ export function getColumnEdgesIndexes( cell: Element, tableUtils: TableUtils ): 
 /**
  * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
  *
+ * @internal
  * @param value A number to be rounded.
  * @returns The rounded number.
  */
@@ -184,6 +192,7 @@ export function toPrecision( value: number | string ): number {
  * Clamps the number within the inclusive lower (min) and upper (max) bounds. Returned number is rounded using the
  * {@link ~toPrecision `toPrecision()`} function.
  *
+ * @internal
  * @param number A number to be clamped.
  * @param min A lower bound.
  * @param max An upper bound.
@@ -204,6 +213,7 @@ export function clamp( number: number, min: number, max: number ): number {
 /**
  * Creates an array with defined length and fills all elements with defined value.
  *
+ * @internal
  * @param length The length of the array.
  * @param value The value to fill the array with.
  * @returns An array with defined length and filled with defined value.
@@ -215,6 +225,7 @@ export function createFilledArray<T>( length: number, value: T ): Array<T> {
 /**
  * Sums all array values that can be parsed to a float.
  *
+ * @internal
  * @param array An array of numbers.
  * @returns The sum of all array values.
  */
@@ -230,6 +241,7 @@ export function sumArray( array: Array<number | string> ): number {
  * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
  * after assigning the known widths will be distributed equally between them.
  *
+ * @internal
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
@@ -304,6 +316,7 @@ function calculateMissingColumnWidths( columnWidths: Array<number | string> ): A
  *  * left and red padding,
  *  * border width.
  *
+ * @internal
  * @param domCell A DOM cell element.
  * @returns Width in pixels without `px` at the end.
  */
@@ -325,16 +338,17 @@ export function getDomCellOuterWidth( domCell: HTMLElement ): number {
 /**
  * Updates column elements to match columns widths.
  *
+ * @internal
  * @param columns
  * @param tableColumnGroup
  * @param normalizedWidths
  * @param writer
  */
 export function updateColumnElements(
-	columns: Array<Element>,
-	tableColumnGroup: Element,
+	columns: Array<ModelElement>,
+	tableColumnGroup: ModelElement,
 	normalizedWidths: Array<string>,
-	writer: Writer
+	writer: ModelWriter
 ): void {
 	for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
 		const column = columns[ i ];
@@ -360,7 +374,7 @@ export function updateColumnElements(
  * @param element A 'table' or 'tableColumnGroup' element.
  * @returns A 'tableColumnGroup' element.
  */
-export function getColumnGroupElement( element: Element ): Element {
+export function getColumnGroupElement( element: ModelElement ): ModelElement {
 	if ( element.is( 'element', 'tableColumnGroup' ) ) {
 		return element;
 	}
@@ -369,7 +383,7 @@ export function getColumnGroupElement( element: Element ): Element {
 
 	return Array
 		.from( children )
-		.find( element => element.is( 'element', 'tableColumnGroup' ) )! as Element;
+		.find( element => element.is( 'element', 'tableColumnGroup' ) )! as ModelElement;
 }
 
 /**
@@ -379,14 +393,14 @@ export function getColumnGroupElement( element: Element ): Element {
  * @param element A 'table' or 'tableColumnGroup' element.
  * @returns An array of 'tableColumn' elements.
  */
-export function getTableColumnElements( element: Element ): Array<Element> {
+export function getTableColumnElements( element: ModelElement ): Array<ModelElement> {
 	const columnGroupElement = getColumnGroupElement( element );
 
 	if ( !columnGroupElement ) {
 		return [];
 	}
 
-	return Array.from( columnGroupElement.getChildren() as IterableIterator<Element> );
+	return Array.from( columnGroupElement.getChildren() as IterableIterator<ModelElement> );
 }
 
 /**
@@ -396,7 +410,7 @@ export function getTableColumnElements( element: Element ): Array<Element> {
  * @param element A 'table' or 'tableColumnGroup' element.
  * @returns An array of table column widths.
  */
-export function getTableColumnsWidths( element: Element ): Array<string> {
+export function getTableColumnsWidths( element: ModelElement ): Array<string> {
 	return getTableColumnElements( element ).map( column => column.getAttribute( 'columnWidth' ) as string );
 }
 
@@ -408,7 +422,7 @@ export function getTableColumnsWidths( element: Element ): Array<string> {
  * @param writer A writer instance.
  * @returns An array of table column widths.
  */
-export function translateColSpanAttribute( element: Element, writer: Writer ): Array<string> {
+export function translateColSpanAttribute( element: ModelElement, writer: ModelWriter ): Array<string> {
 	const tableColumnElements = getTableColumnElements( element );
 
 	return tableColumnElements.reduce( ( acc: Array<string>, element ) => {

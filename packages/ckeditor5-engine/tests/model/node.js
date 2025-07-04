@@ -4,11 +4,11 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
-import { Node } from '../../src/model/node.js';
-import { Element } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
-import { RootElement } from '../../src/model/rootelement.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelNode } from '../../src/model/node.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
@@ -20,14 +20,14 @@ describe( 'Node', () => {
 	beforeEach( () => {
 		const model = new Model();
 
-		node = new Node();
+		node = new ModelNode();
 
-		one = new Element( 'one' );
-		two = new Element( 'two', null, [ new Text( 'ba' ), new Element( 'img' ), new Text( 'r' ) ] );
+		one = new ModelElement( 'one' );
+		two = new ModelElement( 'two', null, [ new ModelText( 'ba' ), new ModelElement( 'img' ), new ModelText( 'r' ) ] );
 		textBA = two.getChild( 0 );
 		img = two.getChild( 1 );
 		textR = two.getChild( 2 );
-		three = new Element( 'three' );
+		three = new ModelElement( 'three' );
 
 		doc = model.document;
 		root = doc.createRoot();
@@ -84,7 +84,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
-			const foo = new Node( { foo: true, bar: false } );
+			const foo = new ModelNode( { foo: true, bar: false } );
 
 			expect( count( foo.getAttributes() ) ).to.equal( 2 );
 			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
@@ -94,13 +94,13 @@ describe( 'Node', () => {
 
 	describe( 'index', () => {
 		it( 'should return null if not set', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.index ).to.equal( null );
 		} );
 
 		it( 'should return _index value', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			a._index = 2;
 
@@ -110,7 +110,7 @@ describe( 'Node', () => {
 
 	describe( '_clone()', () => {
 		it( 'should return a copy of cloned node', () => {
-			const node = new Node( { foo: 'bar' } );
+			const node = new ModelNode( { foo: 'bar' } );
 			const copy = node._clone();
 
 			expect( copy ).not.to.equal( node );
@@ -120,7 +120,7 @@ describe( 'Node', () => {
 
 	describe( '_remove()', () => {
 		it( 'should remove node from it\'s parent', () => {
-			const element = new Element( 'p' );
+			const element = new ModelElement( 'p' );
 			element._appendChild( node );
 
 			node._remove();
@@ -152,13 +152,13 @@ describe( 'Node', () => {
 
 	describe( 'startOffset', () => {
 		it( 'should return null after node is created', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.startOffset ).to.equal( null );
 		} );
 
 		it( 'should return _startOffset value', () => {
-			const a = new Node();
+			const a = new ModelNode();
 			a._startOffset = 7;
 
 			expect( a.startOffset ).to.equal( 7 );
@@ -167,13 +167,13 @@ describe( 'Node', () => {
 
 	describe( 'endOffset', () => {
 		it( 'should return null if start offset is null', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.endOffset ).to.equal( null );
 		} );
 
 		it( 'should return offset at which the node ends', () => {
-			class MyNode extends Node {
+			class MyNode extends ModelNode {
 				get offsetSize() {
 					return 5;
 				}
@@ -235,7 +235,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return null for detached subtrees', () => {
-			const detached = new Element( 'foo' );
+			const detached = new ModelElement( 'foo' );
 
 			expect( img.getCommonAncestor( detached ) ).to.be.null;
 			expect( detached.getCommonAncestor( img ) ).to.be.null;
@@ -265,14 +265,14 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const bom = new Text( 'bom' );
-			const d = new Element( 'd', null, [ bar ] );
-			const c = new Element( 'c', null, [ foo, d ] );
-			const b = new Element( 'b', null, [ c ] );
-			const e = new Element( 'e', null, [ bom ] );
-			const a = new Element( 'a', null, [ b, e ] );
+			const foo = new ModelText( 'foo' );
+			const bar = new ModelText( 'bar' );
+			const bom = new ModelText( 'bom' );
+			const d = new ModelElement( 'd', null, [ bar ] );
+			const c = new ModelElement( 'c', null, [ foo, d ] );
+			const b = new ModelElement( 'b', null, [ c ] );
+			const e = new ModelElement( 'e', null, [ bom ] );
+			const a = new ModelElement( 'a', null, [ b, e ] );
 
 			// <a><b><c>foo<d>bar</d></c></b><e>bom</e></a>
 
@@ -292,9 +292,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const df = new DocumentFragment( [ foo, bar ] );
+			const foo = new ModelText( 'foo' );
+			const bar = new ModelText( 'bar' );
+			const df = new ModelDocumentFragment( [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
 		} );
@@ -329,8 +329,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( 'root' );
-			const otherElement = new Element( 'element' );
+			const otherRoot = new ModelElement( 'root' );
+			const otherElement = new ModelElement( 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -367,8 +367,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return false if elements are in different roots', () => {
-			const otherRoot = new Element( 'root' );
-			const otherElement = new Element( 'element' );
+			const otherRoot = new ModelElement( 'root' );
+			const otherElement = new ModelElement( 'element' );
 
 			otherRoot._appendChild( otherElement );
 
@@ -378,8 +378,8 @@ describe( 'Node', () => {
 
 	describe( 'isAttached()', () => {
 		it( 'returns false for a fresh node', () => {
-			const char = new Text( 'x' );
-			const el = new Element( 'one' );
+			const char = new ModelText( 'x' );
+			const el = new ModelElement( 'one' );
 
 			expect( char.isAttached() ).to.equal( false );
 			expect( el.isAttached() ).to.equal( false );
@@ -387,14 +387,14 @@ describe( 'Node', () => {
 
 		it( 'returns true for the root element', () => {
 			const model = new Model();
-			const root = new RootElement( model.document, 'root' );
+			const root = new ModelRootElement( model.document, 'root' );
 
 			expect( root.isAttached() ).to.equal( true );
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
-			const foo = new Text( 'foo' );
-			new DocumentFragment( [ foo ] ); // eslint-disable-line no-new
+			const foo = new ModelText( 'foo' );
+			new ModelDocumentFragment( [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
 		} );
@@ -426,7 +426,7 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		const node = new Node( { foo: 'bar' } );
+		const node = new ModelNode( { foo: 'bar' } );
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element contains attribute with given key', () => {

@@ -8,13 +8,13 @@
  */
 
 import type { StylesProcessor } from '../stylesmap.js';
-import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils.js';
+import { getPositionStyleShorthandNormalizer, getBoxSidesStyleValueReducer } from './utils.js';
 
 /**
  * Adds a margin CSS styles processing rules.
  *
  * ```ts
- * editor.data.addStyleProcessorRules( addMarginRules );
+ * editor.data.addStyleProcessorRules( addMarginStylesRules );
  * ```
  *
  * The normalized value is stored as:
@@ -30,15 +30,15 @@ import { getPositionShorthandNormalizer, getBoxSidesValueReducer } from './utils
  * };
  * ```
  */
-export function addMarginRules( stylesProcessor: StylesProcessor ): void {
-	stylesProcessor.setNormalizer( 'margin', getPositionShorthandNormalizer( 'margin' ) );
+export function addMarginStylesRules( stylesProcessor: StylesProcessor ): void {
+	stylesProcessor.setNormalizer( 'margin', getPositionStyleShorthandNormalizer( 'margin' ) );
 
 	stylesProcessor.setNormalizer( 'margin-top', value => ( { path: 'margin.top', value } ) );
 	stylesProcessor.setNormalizer( 'margin-right', value => ( { path: 'margin.right', value } ) );
 	stylesProcessor.setNormalizer( 'margin-bottom', value => ( { path: 'margin.bottom', value } ) );
 	stylesProcessor.setNormalizer( 'margin-left', value => ( { path: 'margin.left', value } ) );
 
-	stylesProcessor.setReducer( 'margin', getBoxSidesValueReducer( 'margin' ) );
+	stylesProcessor.setReducer( 'margin', getBoxSidesStyleValueReducer( 'margin' ) );
 
 	stylesProcessor.setStyleRelation( 'margin', [ 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ] );
 }

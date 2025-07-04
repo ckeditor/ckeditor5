@@ -4,14 +4,14 @@
  */
 
 import { SizeView } from '../../src/widgetresize/sizeview.js';
-import { ResizeState } from '../../src/widgetresize/resizerstate.js';
+import { WidgetResizeState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'SizeView', () => {
 	let sizeView, state;
 
 	beforeEach( () => {
 		sizeView = new SizeView();
-		state = new ResizeState();
+		state = new WidgetResizeState();
 
 		sizeView._bindToState( {}, state );
 		sizeView.render();

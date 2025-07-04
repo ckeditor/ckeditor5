@@ -64,13 +64,21 @@ export class CKEditorError extends Error {
 	 * @param data Additional data describing the error. A stringified version of this object
 	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
+	 * @param originalError An optional original error that is being wrapped in the `CKEditorError` instance.
 	 */
-	constructor( errorName: string, context?: object | null, data?: object ) {
-		super( getErrorMessage( errorName, data ) );
+	constructor( errorName: string, context?: object | null, data?: object, originalError?: Error ) {
+		super( getErrorMessage( errorName, data, originalError ) );
 
 		this.name = 'CKEditorError';
 		this.context = context;
 		this.data = data;
+
+		// Wrapping an original error in a CKEditorError instance.
+		if ( originalError ) {
+			// Restore the original stack trace to make the error look like the original one.
+			// See https://github.com/ckeditor/ckeditor5/issues/5595 for more details.
+			this.stack = originalError.stack;
+		}
 	}
 
 	/**
@@ -85,13 +93,13 @@ export class CKEditorError extends Error {
 	 * It is useful when combined with the {@link module:watchdog/watchdog~Watchdog} feature, which can restart the editor in case
 	 * of a {@link module:utils/ckeditorerror~CKEditorError} error.
 	 *
-	 * @param err The error to rethrow.
+	 * @param error The error to rethrow.
 	 * @param context An object connected through properties with the editor instance. This context will be used
 	 * by the watchdog to verify which editor should be restarted.
 	 */
-	public static rethrowUnexpectedError( err: Error, context: object ): never {
-		if ( ( err as any ).is && ( err as any ).is( 'CKEditorError' ) ) {
-			throw err;
+	public static rethrowUnexpectedError( error: Error, context: object ): never {
+		if ( ( error as any ).is && ( error as any ).is( 'CKEditorError' ) ) {
+			throw error;
 		}
 
 		/**
@@ -103,13 +111,7 @@ export class CKEditorError extends Error {
 		 *
 		 * @error unexpected-error
 		 */
-		const error = new CKEditorError( err.message, context );
-
-		// Restore the original stack trace to make the error look like the original one.
-		// See https://github.com/ckeditor/ckeditor5/issues/5595 for more details.
-		error.stack = err.stack;
-
-		throw error;
+		throw new CKEditorError( 'unexpected-error', context, undefined, error );
 	}
 }
 
@@ -174,7 +176,7 @@ function getLinkToDocumentationMessage( errorName: string ): string {
 /**
  * Returns formatted error message.
  */
-function getErrorMessage( errorName: string, data?: object ): string {
+function getErrorMessage( errorName: string, data?: object, originalError?: Error ): string {
 	const processedObjects = new WeakSet();
 	const circularReferencesReplacer = ( key: string, value: unknown ) => {
 		if ( typeof value === 'object' && value !== null ) {
@@ -190,8 +192,9 @@ function getErrorMessage( errorName: string, data?: object ): string {
 
 	const stringifiedData = data ? ` ${ JSON.stringify( data, circularReferencesReplacer ) }` : '';
 	const documentationLink = getLinkToDocumentationMessage( errorName );
+	const originalErrorMessage = originalError ? `\nOriginal error: ${ originalError.name }: ${ originalError.message }` : '';
 
-	return errorName + stringifiedData + documentationLink;
+	return errorName + stringifiedData + documentationLink + originalErrorMessage;
 }
 
 /**

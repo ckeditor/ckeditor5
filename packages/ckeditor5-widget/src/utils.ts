@@ -17,15 +17,15 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	type AddHighlightCallback,
-	type HighlightDescriptor,
-	type RemoveHighlightCallback,
+	type DowncastAddHighlightCallback,
+	type DowncastHighlightDescriptor,
+	type DowncastRemoveHighlightCallback,
 	type MapperViewToModelPositionEvent,
-	type DocumentSelection,
-	type DowncastWriter,
+	type ModelDocumentSelection,
+	type ViewDowncastWriter,
 	type Model,
-	type Range,
-	type Selection,
+	type ModelRange,
+	type ModelSelection,
 	type ViewContainerElement,
 	type ViewEditableElement,
 	type ViewElement,
@@ -34,7 +34,7 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import { HighlightStack, type HighlightStackChangeEvent } from './highlightstack.js';
+import { WidgetHighlightStack, type WidgetHighlightStackChangeEvent } from './highlightstack.js';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 /**
@@ -48,7 +48,7 @@ export const WIDGET_CLASS_NAME = 'ck-widget';
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~Element} and a widget.
+ * Returns `true` if given {@link module:engine/view/node~ViewNode} is an {@link module:engine/view/element~ViewElement} and a widget.
  */
 export function isWidget( node: ViewTypeCheckable ): boolean {
 	if ( !node.is( 'element' ) ) {
@@ -59,11 +59,11 @@ export function isWidget( node: ViewTypeCheckable ): boolean {
 }
 
 /**
- * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
+ * Converts the given {@link module:engine/view/element~ViewElement} to a widget in the following way:
  *
  * * sets the `contenteditable` attribute to `"false"`,
  * * adds the `ck-widget` CSS class,
- * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
+ * * adds a custom {@link module:engine/view/element~ViewElement#getFillerOffset `getFillerOffset()`} method returning `null`,
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
  * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *
@@ -106,7 +106,7 @@ export function isWidget( node: ViewTypeCheckable ): boolean {
  */
 export function toWidget(
 	element: ViewElement,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	options: {
 		label?: string | ( () => string );
 		hasSelectionHandle?: boolean;
@@ -114,7 +114,7 @@ export function toWidget(
 ): ViewElement {
 	if ( !element.is( 'containerElement' ) ) {
 		/**
-		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
+		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ViewContainerElement}
 		 * instance.
 		 *
 		 * @error widget-to-widget-wrong-element-type
@@ -152,7 +152,7 @@ export function toWidget(
  * Default handler for adding a highlight on a widget.
  * It adds CSS class and attributes basing on the given highlight descriptor.
  */
-function addHighlight( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
+function addHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.addClass( toArray( descriptor.classes ), element );
 	}
@@ -168,7 +168,7 @@ function addHighlight( element: ViewElement, descriptor: HighlightDescriptor, wr
  * Default handler for removing a highlight from a widget.
  * It removes CSS class and attributes basing on the given highlight descriptor.
  */
-function removeHighlight( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
+function removeHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.removeClass( toArray( descriptor.classes ), element );
 	}
@@ -181,18 +181,18 @@ function removeHighlight( element: ViewElement, descriptor: HighlightDescriptor,
 }
 
 /**
- * Sets highlight handling methods. Uses {@link module:widget/highlightstack~HighlightStack} to
+ * Sets highlight handling methods. Uses {@link module:widget/highlightstack~WidgetHighlightStack} to
  * properly determine which highlight descriptor should be used at given time.
  */
 export function setHighlightHandling(
 	element: ViewElement,
-	writer: DowncastWriter,
-	add: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
-	remove: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
+	writer: ViewDowncastWriter,
+	add: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) => void = addHighlight,
+	remove: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) => void = removeHighlight
 ): void {
-	const stack = new HighlightStack();
+	const stack = new WidgetHighlightStack();
 
-	stack.on<HighlightStackChangeEvent>( 'change:top', ( evt, data ) => {
+	stack.on<WidgetHighlightStackChangeEvent>( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {
 			remove( element, data.oldDescriptor, data.writer );
 		}
@@ -202,8 +202,8 @@ export function setHighlightHandling(
 		}
 	} );
 
-	const addHighlightCallback: AddHighlightCallback = ( element, descriptor, writer ) => stack.add( descriptor, writer );
-	const removeHighlightCallback: RemoveHighlightCallback = ( element, id, writer ) => stack.remove( id, writer );
+	const addHighlightCallback: DowncastAddHighlightCallback = ( element, descriptor, writer ) => stack.add( descriptor, writer );
+	const removeHighlightCallback: DowncastRemoveHighlightCallback = ( element, id, writer ) => stack.remove( id, writer );
 
 	writer.setCustomProperty( 'addHighlight', addHighlightCallback, element );
 	writer.setCustomProperty( 'removeHighlight', removeHighlightCallback, element );
@@ -236,9 +236,10 @@ export function getLabel( element: ViewElement ): string {
 }
 
 /**
- * Adds functionality to the provided {@link module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+ * Adds functionality to the provided {@link module:engine/view/editableelement~ViewEditableElement} to act as a widget's editable:
  *
- * * sets the `contenteditable` attribute to `true` when {@link module:engine/view/editableelement~EditableElement#isReadOnly} is `false`,
+ * * sets the `contenteditable` attribute to `true` when
+ * {@link module:engine/view/editableelement~ViewEditableElement#isReadOnly} is `false`,
  * otherwise sets it to `false`,
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
@@ -281,7 +282,7 @@ export function getLabel( element: ViewElement ): string {
  */
 export function toWidgetEditable(
 	editable: ViewEditableElement,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	options: {
 		label?: string;
 		withAriaRole?: boolean;
@@ -337,9 +338,9 @@ export function toWidgetEditable(
  * @returns The optimal range.
  */
 export function findOptimalInsertionRange(
-	selection: Selection | DocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	model: Model
-): Range {
+): ModelRange {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement ) {
@@ -434,7 +435,7 @@ function getFillerOffset() {
 /**
  * Adds a drag handle to the widget.
  */
-function addSelectionHandle( widgetElement: ViewContainerElement, writer: DowncastWriter ) {
+function addSelectionHandle( widgetElement: ViewContainerElement, writer: ViewDowncastWriter ) {
 	const selectionHandle = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handle' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 

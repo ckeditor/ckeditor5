@@ -8,3 +8,5 @@
  */
 
 export { DecoupledEditor } from './decouplededitor.js';
+export { DecoupledEditorUI } from './decouplededitorui.js';
+export { DecoupledEditorUIView } from './decouplededitoruiview.js';

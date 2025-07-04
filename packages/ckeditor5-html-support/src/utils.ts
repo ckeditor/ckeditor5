@@ -8,12 +8,12 @@
  */
 
 import type {
-	DocumentSelection,
-	DowncastWriter,
-	Item,
-	Range,
+	ModelDocumentSelection,
+	ViewDowncastWriter,
+	ModelItem,
+	ModelRange,
 	ViewElement,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 import { startCase, cloneDeep } from 'es-toolkit/compat';
 
@@ -30,9 +30,10 @@ export interface GHSViewAttributes {
 * @param oldViewAttributes The previous GHS attribute value.
 * @param newViewAttributes The current GHS attribute value.
 * @param viewElement The view element to update.
+* @internal
 */
 export function updateViewAttributes(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	oldViewAttributes: GHSViewAttributes,
 	newViewAttributes: GHSViewAttributes,
 	viewElement: ViewElement
@@ -52,8 +53,9 @@ export function updateViewAttributes(
  * @param writer The view writer.
  * @param viewAttributes The GHS attribute value.
  * @param viewElement The view element to update.
+ * @internal
  */
-export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function setViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -75,8 +77,9 @@ export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSVi
  * @param writer The view writer.
  * @param viewAttributes The GHS attribute value.
  * @param viewElement The view element to update.
+ * @internal
  */
-export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function removeViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.removeAttribute( key, viewElement );
@@ -96,6 +99,8 @@ export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GH
 
 /**
 * Merges view element attribute objects.
+*
+* @internal
 */
 export function mergeViewElementAttributes( target: GHSViewAttributes, source: GHSViewAttributes ): GHSViewAttributes {
 	const result = cloneDeep( target ) as Record<string, any>;
@@ -121,11 +126,13 @@ type ModifyGhsStylesCallback = ( t: Map<string, string> ) => void;
 
 /**
  * Updates a GHS attribute on a specified item.
+ *
  * @param callback That receives a map as an argument and should modify it (add or remove entries).
+ * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes',
 	callback: ModifyGhsAttributesCallback
@@ -133,11 +140,13 @@ export function modifyGhsAttribute(
 
 /**
  * Updates a GHS attribute on a specified item.
+ *
  * @param callback That receives a set as an argument and should modify it (add or remove entries).
+ * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'classes',
 	callback: ModifyGhsClassesCallback
@@ -148,16 +157,16 @@ export function modifyGhsAttribute(
  * @param callback That receives a map as an argument and should modify it (add or remove entries).
  */
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'styles',
 	callback: ModifyGhsStylesCallback
 ): void;
 
 export function modifyGhsAttribute(
-	writer: Writer,
-	item: Item | DocumentSelection,
+	writer: ModelWriter,
+	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes' | 'styles' | 'classes',
 	callback: ModifyGhsClassesCallback | ModifyGhsAttributesCallback | ModifyGhsStylesCallback
@@ -211,7 +220,7 @@ export function modifyGhsAttribute(
  *
  * @internal
  */
-export function removeFormatting( ghsAttributeName: string, itemRange: Range, writer: Writer ): void {
+export function removeFormatting( ghsAttributeName: string, itemRange: ModelRange, writer: ModelWriter ): void {
 	for ( const item of itemRange.getItems( { shallow: true } ) ) {
 		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 
@@ -233,6 +242,8 @@ export function removeFormatting( ghsAttributeName: string, itemRange: Range, wr
  * * `div` => `Div`
  * * `h1` => `H1`
  * * `table` => `Table`
+ *
+ * @internal
  */
 export function toPascalCase( data: string ): string {
 	return startCase( data ).replace( / /g, '' );
@@ -240,6 +251,8 @@ export function toPascalCase( data: string ): string {
 
 /**
  * Returns the attribute name of the model element that holds raw HTML attributes.
+ *
+ * @internal
  */
 export function getHtmlAttributeName( viewElementName: string ): string {
 	return `html${ toPascalCase( viewElementName ) }Attributes`;

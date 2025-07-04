@@ -19,6 +19,7 @@ import { tryCastDimensionsToUnit, tryParseDimensionWithUnit } from './tryparsedi
  * @param editor Editor instance.
  * @param targetUnit Unit in which dimension will be returned.
  * @returns Possible resize range in numeric form.
+ * @internal
  */
 export function getSelectedImagePossibleResizeRange( editor: Editor, targetUnit: string ): PossibleResizeImageRange | null {
 	const imageNodes = getSelectedImageEditorNodes( editor );

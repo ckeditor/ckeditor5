@@ -30,4 +30,6 @@ export { UnderlineEditing } from './underline/underlineediting.js';
 export { UnderlineUI } from './underline/underlineui.js';
 export { AttributeCommand } from './attributecommand.js';
 
+export { getButtonCreator as _getBasicStylesButtonCreator } from './utils.js';
+
 import './augmentation.js';

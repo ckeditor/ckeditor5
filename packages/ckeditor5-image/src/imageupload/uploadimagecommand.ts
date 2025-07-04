@@ -6,7 +6,7 @@
 import { FileRepository } from 'ckeditor5/src/upload.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type { Position } from 'ckeditor5/src/engine.js';
+import type { ModelPosition } from 'ckeditor5/src/engine.js';
 
 import { type ImageUtils } from '../imageutils.js';
 
@@ -118,7 +118,7 @@ export class UploadImageCommand extends Command {
 	/**
 	 * Handles uploading single file.
 	 */
-	private _uploadImage( file: File, attributes: object, position?: Position ): void {
+	private _uploadImage( file: File, attributes: object, position?: ModelPosition ): void {
 		const editor = this.editor;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const loader = fileRepository.createLoader( file );
