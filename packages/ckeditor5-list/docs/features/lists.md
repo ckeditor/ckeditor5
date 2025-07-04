@@ -86,6 +86,8 @@ Select the entire content of a list item and apply a format like bold, italic, o
 
 {@snippet features/lists-marker-formatting}
 
+#### Disabling marker formatting
+
 This feature is enabled by default. To disable it, use the following configuration:
 
 <code-switcher>
