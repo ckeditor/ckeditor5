@@ -9,7 +9,7 @@ meta-description: Discover how to create a custom inline widget in CKEditor 5 wi
 
 In this tutorial, you will learn how to implement an inline widget. You will build a "placeholder" feature that allows the users to insert predefined placeholders, like a date or a surname, into the document.
 
-<info-box warning>
+<info-box>
 	**We have an official implementation of this feature!**
 
 	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options.
