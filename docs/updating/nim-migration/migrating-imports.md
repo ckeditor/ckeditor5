@@ -44,12 +44,12 @@ Now, you can import them from the package's root entry point with the new name:
 import { _getCKFinderCsrfToken } from 'ckeditor5';
 ```
 
-## Changed exports
+## Changed imports
 
 Below, you will find all name changes in packages listed alphabetically for convenience.
 
 <info-box info>
-	The tables below list only these exports that have changed names and may introduce breaking changes. Newly exported methods that did not exist before NIM are **not** included here.
+	The tables below list only these imports that have changed names and may introduce breaking changes. New methods that did not exist before NIM are **not** included here.
 </info-box>
 
 <info-box info>
@@ -1080,7 +1080,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 |----------|--------------------------|------------------------------|
 | utils.ts | modelElementToPlainText  | _modelElementToPlainText     |
 
-## New exports
+## New imports
 
 Listed below are exports introduced with NIM.
 
