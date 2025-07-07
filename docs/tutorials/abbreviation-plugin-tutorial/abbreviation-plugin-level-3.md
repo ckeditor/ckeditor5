@@ -50,7 +50,7 @@ import {
 	createLabeledInputText,
 	ButtonView,
 	submitHandler,
-	icons,
+	IconCheck,
 	FocusTracker,		// ADDED
 	KeystrokeHandler,	// ADDED
 } from 'ckeditor5';
