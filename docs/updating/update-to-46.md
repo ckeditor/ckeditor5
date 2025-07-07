@@ -50,9 +50,9 @@ We have added the `config.cloudServices.autoRefresh` configuration property to d
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
-### Unified imports & renames in the editor's API
+### Unified imports and renames in the editor API
 
-This release is also about tidying up the rough edges that showed up after the big New Installation Method release (v42.0.0+). In cases where many helpers or methods from the framework’s APIs were used, some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named …` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
+This release is also about tidying up the rough edges that showed up after the big New Installation Method release (v42.0.0+). In cases where many helpers or methods from the framework’s APIs were used, some developers upgrading from v41.x to v42.x were greeted by the `does not provide an export named …` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
 We spent the last several months discussing how to prepare the CKEditor 5 API layer for the years to come. This release is the result of the rules we are introducing from now on:
 
@@ -83,19 +83,19 @@ To improve the out-of-the-box experience and accessibility, we are introducing o
 ```css
 
 :root {
-  --ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
-  --ck-content-font-size: medium;
-  --ck-content-font-color: #000;
-  --ck-content-line-height: 1.5;
-  --ck-content-word-break: break-word;
+	--ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	--ck-content-font-size: medium;
+	--ck-content-font-color: #000;
+	--ck-content-line-height: 1.5;
+	--ck-content-word-break: break-word;
 }
 
 .ck-content {
-  font-family: var(--ck-content-font-family);
-  font-size: var(--ck-content-font-size);
-  color: var(--ck-content-font-color);
-  line-height: var(--ck-content-line-height);
-  word-break: var(--ck-content-word-break);
+	font-family: var(--ck-content-font-family);
+	font-size: var(--ck-content-font-size);
+	color: var(--ck-content-font-color);
+	line-height: var(--ck-content-line-height);
+	word-break: var(--ck-content-word-break);
 }
 ```
 
@@ -138,8 +138,8 @@ Example:
 
 ```css
 :root {
-  --ck-content-highlight-marker-yellow: #fdfd77;
-  --ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+	--ck-content-highlight-marker-yellow: #fdfd77;
+	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
 }
 ```
 
@@ -161,15 +161,15 @@ Example:
 
 ```css
 :root {
-  --ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
-  --ck-color-table-column-resizer-hover: var(--ck-color-base-active);
-  --ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
+	--ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
+	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+	--ck-color-table-focused-cell-background: hsla(212, 90%, 80%, .3);
 }
 ```
 
 ### Multi-level list markup change
 
-Due to work on fixing [the list markers formatting](https://github.com/ckeditor/ckeditor5/issues/5752), we changed the markup of the Multi-level list feature. This has no visual affect, but may trigger some automated tests issues. **There is no need to migrate content during the update.**
+Due to work on fixing the [list markers formatting](https://github.com/ckeditor/ckeditor5/issues/5752), we changed the markup of the Multi-level list feature. This has no visual affect, but may trigger some automated tests issues. **There is no need to migrate content during the update.**
 
 **Before:**
 ```html
@@ -192,27 +192,27 @@ Due to work on fixing [the list markers formatting](https://github.com/ckeditor/
 
 ### List item identification in editor data
 
-The `data-list-item-id` attribute is now added to `<li>` elements in editor data to improve integration between the lists feature and other editor features. This attribute provides a stable identifier for list items that remains consistent across data loads and saves, resolving issues with data stability and improving compatibility with external systems and diffing algorithms.
+The `data-list-item-id` attribute is now added to the `<li>` elements in the editor data to improve integration between the list feature and other editor features. This attribute provides a stable identifier for list items that remains consistent across data loads and saves, resolving issues with data stability and improving compatibility with external systems and diffing algorithms.
 
 **Before:**
 ```html
 <ul>
-    <li>
-        <p>First item</p>
-        <p>Second paragraph</p>
-    </li>
-    <li>Another item</li>
+		<li>
+				<p>First item</p>
+				<p>Second paragraph</p>
+		</li>
+		<li>Another item</li>
 </ul>
 ```
 
 **After:**
 ```html
 <ul>
-    <li data-list-item-id="abc123">
-        <p>First item</p>
-        <p>Second paragraph</p>
-    </li>
-    <li data-list-item-id="def456">Another item</li>
+		<li data-list-item-id="abc123">
+				<p>First item</p>
+				<p>Second paragraph</p>
+		</li>
+		<li data-list-item-id="def456">Another item</li>
 </ul>
 ```
 
@@ -240,13 +240,13 @@ These variables have default values based on the editor's UI styles, which may b
 
 **Migration:**
 1. Review the comments appearance after updating the editor
-2. If the new default styles don't match your design requirements, set custom values using the new CSS variables:
+2. If the new default styles do not match your design requirements, set custom values using the new CSS variables:
 
 ```css
 :root {
-  --ck-comment-content-font-family: "Your preferred font family";
-  --ck-comment-content-font-size: 14px;
-  --ck-comment-content-font-color: hsl(0, 0%, 0%); /* or your preferred color */
+	--ck-comment-content-font-family: "Your preferred font family";
+	--ck-comment-content-font-size: 14px;
+	--ck-comment-content-font-color: hsl(0, 0%, 0%); /* or your preferred color */
 }
 ```
 
@@ -308,17 +308,17 @@ We have introduced dedicated methods for an easier way to get specific annotatio
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Removed vertical spacing in list items by resetting margins for `<p>` elements that are the child of a `<li>` element.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Removed vertical spacing in table cells by collapsing margins of <p> elements that are the only child of a `<td>` or `<th>` element.
 * The editor now enforces default browser styles for text content in both the editing view and rendered output. This change may affect existing styling and layout, so any custom CSS overrides should be reviewed. See [#18710](https://github.com/ckeditor/ckeditor5/issues/18710) for details. The following CSS variables and their default values are now applied:
-  * `--ck-content-font-family`: `Helvetica, Arial, Tahoma, Verdana, sans-serif`
-  * `--ck-content-font-size`: `medium`
-  * `--ck-content-font-color`: `#000` (_HEX instead of `hsl()` to ensure compatibility with email clients_)
-  * `--ck-content-line-height`: `1.5`
-  * `--ck-content-word-break`: `break-word`
+	* `--ck-content-font-family`: `Helvetica, Arial, Tahoma, Verdana, sans-serif`
+	* `--ck-content-font-size`: `medium`
+	* `--ck-content-font-color`: `#000` (_HEX instead of `hsl()` to ensure compatibility with email clients_)
+	* `--ck-content-line-height`: `1.5`
+	* `--ck-content-word-break`: `break-word`
 * The default styles for comment annotations have changed to provide better consistency with the editor UI. A new set of CSS variables is now used to control the appearance of the comment content and input fields. These changes may affect the current appearance of comments in your integration, so please review them after updating. The following CSS variables are now applied:
-  * `--ck-comment-content-font-family`
-  * `--ck-comment-content-font-size`
-  * `--ck-comment-content-font-color` (default changed from `hsl(0, 0%, 0%)` to `hsl(0, 0%, 20%)`)
+	* `--ck-comment-content-font-family`
+	* `--ck-comment-content-font-size`
+	* `--ck-comment-content-font-color` (default changed from `hsl(0, 0%, 0%)` to `hsl(0, 0%, 20%)`)
 
-  These variables default to values derived from the editor 's UI styles, and they may differ from your current settings. Customize these variables as needed to match your desired appearance.
+	These variables default to values derived from the editor 's UI styles, and they may differ from your current settings. Customize these variables as needed to match your desired appearance.
 * Content area CSS variables have been renamed to use the `--ck-content-*` prefix for better consistency in the Highlight, Image, List, and Table features. This requires action if you have overridden the variables. See the update guide for details.
 * Table-related CSS variables with improper `*-selector-*` naming have been renamed to use `*-table-*` for better clarity. This requires action if you have overridden the variables. See the update guide for details.
 
