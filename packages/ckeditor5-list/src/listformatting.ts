@@ -242,6 +242,9 @@ function getSingleListItemConsistentFormat( model: Model, listItem: ModelElement
 					attributesToCheck.delete( attributeKey );
 					valuesMap[ attributeKey ] = undefined;
 				}
+			} else if ( !( attributeKey in valuesMap ) ) {
+				// Store it so a format would be removed when all items in the given list item does not allow that formatting.
+				valuesMap[ attributeKey ] = undefined;
 			}
 		}
 
