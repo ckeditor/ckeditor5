@@ -2,12 +2,13 @@
 category: nim-migration
 order: 70
 modified_at: 2025-06-23
-meta-title: Migrating imports (v46.0.0+) | CKEditor 5 Documentation
+menu-title: Migrating imports
+meta-title: Migrating imports (v46+) | CKEditor 5 Documentation
 meta-description: Migrate CKEditor 5 to new, clearer, standardized public API names.
 toc-limit: 1
 ---
 
-# Migrating imports (v46.0.0+)
+# Migrating imports (v46+)
 
 As part of the transition to the New Installation Methods (NIM) in version, we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
 
@@ -19,13 +20,13 @@ As part of the transition to the New Installation Methods (NIM) in version, we h
 
 For a long time in Old Installation Methods (OIM), it was possible to grab internal-purpose functions from specific files if they were exported just for the package's internal purposes.
 
-We want to clean up this situation in the New Installation Methods, and internal APIs will not be available in the index. After deprecating OIM, source files won't be available, so some internal APIs that were previously used in this way will no longer be available.
+We want to clean up this situation in the New Installation Methods, and internal APIs will not be available in the index. After deprecating OIM, source files will not be available, so some internal APIs that were previously used in this way will no longer be available.
 
 To ease the migration, all internal exports that were available before, are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix.
 
 Keep in mind that:
 * we may remove them in the future.
-* all new internal methods won't be added to the indexes.
+* all new internal methods will not be added to the indexes.
 
 If you think one of our internal methods, classes, etc. should be available in the public API, please let us know via [the support channel](https://ckeditor.com/contact/) or on [the GitHub issue tracker](https://github.com/ckeditor/ckeditor5/issues).
 

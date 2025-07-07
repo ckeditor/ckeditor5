@@ -16,13 +16,9 @@ modified_at: 2025-07-04
 
 ## Update to CKEditor&nbsp;5 v46.0.0
 
-Released on xxx, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0))
+Released on 9 July, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0))
 
-Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
-
-## Release highlights
-
-CKEditor 5 v46.0.0 brings several major improvements and changes that enhance both the developer and end-user experience. This release includes significant API refinements, new features, and improvements to existing functionality.
+CKEditor 5 v46.0.0 brings several major improvements and changes that enhance both the developer and end-user experience. This release includes significant API refinements, new features, and improvements to existing functionality. Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
 ### Line height feature (⭐)
 
@@ -54,7 +50,7 @@ We have added the `config.cloudServices.autoRefresh` configuration property to d
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
-### Unified exports & renames
+### Unified internal imports & renames
 
 This release is also about tidying up the rough edges that showed up after the big New Installation Method release (v42.0.0+). In cases where many helpers or methods from the framework’s APIs were used, some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named …` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
@@ -74,7 +70,7 @@ This resulted in:
 
 At the same time, we have developed an internal tooling to make sure guardrails are set for the future.
 
-If your build throws errors after the update, search and replace the old names with the new ones from the update guide. **We have not changed the behavior of these APIs, just the names**.
+If your build throws errors after the update, search and replace the old names with the new ones from the {@link updating/nim-migration/migrating-imports update guide}. **We have not changed the behavior of these APIs, just the names**.
 
 <info-box info>
 	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
@@ -187,4 +183,33 @@ We have introduced dedicated methods for an easier way to get specific annotatio
 
 ### Major breaking changes in this release
 
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant now uses the more advanced `gpt-4o` model by default, replacing the previous `gpt-3.5-turbo`. This update improves response quality and overall capabilities. Additionally, the default limit set by `max_tokens` parameter has been removed, allowing for better and more detailed responses. If you relied on the previous default settings and wish to continue using them, be sure to explicitly define the editor configuration entry `ai.openAi.requestParameters` to `{ model: 'gpt-3.5-turbo', max_tokens: 2000, stream: true }`.
+* **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Content area CSS variables have been renamed to use the --ck-content-* prefix for better consistency in the Table of Contents feature. This requires action if you have overridden the variables. See the update guide for details.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Removed vertical spacing in list items by resetting margins for `<p>` elements that are the child of a `<li>` element.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Removed vertical spacing in table cells by collapsing margins of <p> elements that are the only child of a `<td>` or `<th>` element.
+* The editor now enforces default browser styles for text content in both the editing view and rendered output. This change may affect existing styling and layout, so any custom CSS overrides should be reviewed. See [#18710](https://github.com/ckeditor/ckeditor5/issues/18710) for details. The following CSS variables and their default values are now applied:
+  * `--ck-content-font-family`: `Helvetica, Arial, Tahoma, Verdana, sans-serif`
+  * `--ck-content-font-size`: `medium`
+  * `--ck-content-font-color`: `#000` (_HEX instead of `hsl()` to ensure compatibility with email clients_)
+  * `--ck-content-line-height`: `1.5`
+  * `--ck-content-word-break`: `break-word`
+* The default styles for comment annotations have changed to provide better consistency with the editor UI. A new set of CSS variables is now used to control the appearance of the comment content and input fields. These changes may affect the current appearance of comments in your integration, so please review them after updating. The following CSS variables are now applied:
+  * `--ck-comment-content-font-family`
+  * `--ck-comment-content-font-size`
+  * `--ck-comment-content-font-color` (default changed from `hsl(0, 0%, 0%)` to `hsl(0, 0%, 20%)`)
+
+  These variables default to values derived from the editor 's UI styles, and they may differ from your current settings. Customize these variables as needed to match your desired appearance.
+* Content area CSS variables have been renamed to use the `--ck-content-*` prefix for better consistency in the Highlight, Image, List, and Table features. This requires action if you have overridden the variables. See the update guide for details.
+* Table-related CSS variables with improper `*-selector-*` naming have been renamed to use `*-table-*` for better clarity. This requires action if you have overridden the variables. See the update guide for details.
+
 ### Minor breaking changes in this release
+
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Removed the deprecated `DataApiMixin` function and `DataApi` interface. Their functionality is the part of the Editor class.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Removed `Batch#type` deprecated property.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Removed `DocumentList`, `DocumentListProperties` and `TodoDocumentList` plugins. They were aliases for plugins `List`, `ListProperties` and `DocumentList` respectively.
+* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Migrated from `marked` and `turndown` to `remark` and `rehype` for improved extensibility and alignment with the modern Markdown ecosystem.
+* **[markdown-gfm](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm)**: Enabled the autolinking feature in Markdown when loading Markdown content into the editor.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Removed the deprecated `buttonView` property from buttons created with `FileDialogViewMixin`. Use the button object itself.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Removed the deprecated `mix` function.
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Removed the deprecated `Locale#language` property. Use `Locale#uiLanguage` instead.ase
