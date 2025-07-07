@@ -33,20 +33,22 @@ We have added the `config.cloudServices.autoRefresh` configuration property to d
 
 #### Comment threads improvements
 
-* **New thread command changes**
-  We have also introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
-* **Minor breaking change**
-  The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
-* **Comments and suggestions annotations**
-  We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
+##### New thread command changes
+We have also introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
 
-#### Unified exports & renames
+**Minor breaking change**
+The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
+
+##### Comments and suggestions annotations
+We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
+
+#### Unified internal imports & renames
 
 After the big New Installation Method release (v42.0.0+), some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named ...` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
-With this release, we introduced a new, clear set of rules about exports, and also added re-exports if they were missing, changed the names of items to be more descriptive and avoid collisions, took care of internal methods that were already exported but not tagged, and cleaned up `@deprecated` code that was stale for some time.
+With this release, we introduced a new, clear set of rules about internal imports, and also added re-exports if they were missing, changed the names of items to be more descriptive and avoid collisions, took care of internal methods that were already exported but not tagged, and cleaned up `@deprecated` code that was stale for some time.
 
-If your build throws errors after the update, search and replace the old names with the new ones from the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#unified-exports-renames). **We have not changed the behavior of these APIs, just the names**.
+If your build throws errors after the update, search and replace the old names with the new ones from the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migrating-imports.html). **We have not changed the behavior of these APIs, just the names**.
 
 Last but not least, this release put us on the clean and straight path towards the [deprecation of old installation methods](https://github.com/ckeditor/ckeditor5/issues/17779). Please let us know if you have any questions on GitHub or support channels.
 
@@ -54,11 +56,11 @@ Last but not least, this release put us on the clean and straight path towards t
 
 To improve the out-of-the-box experience and accessibility, we are introducing opinionated defaults for content styling. From this version, we ship a small defaults layer applied to `.ck-content`.  These content styles are easily replaceable via CSS variable override. You may have already styled those things with more specific selectors.
 
-While working on this initiative, we decided to standardize the CSS naming, too. All older variables that applied to the content styles now share the consistent `--ck-content-*` prefix. Read about the details in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#unified-exports-renames).
+While working on this initiative, we decided to standardize the CSS naming, too. All older variables that applied to the content styles now share the consistent `--ck-content-*` prefix. Read about the details in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#content-area-css-variables-renamed-to-ck-content-prefix).
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant now uses the more advanced `gpt-4o` model by default, replacing the previous `gpt-3.5-turbo`. This update improves response quality and overall capabilities. Additionally, the default limit set by `max_tokens` parameter has been removed, allowing for more complete and detailed responses. If you relied on the previous default settings and wish to continue using them, be sure to explicitly define the editor configuration entry `ai.openAi.requestParameters` to `{ model: 'gpt-3.5-turbo', max_tokens: 2000, stream: true }`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Assistant now uses the more advanced `gpt-4o` model by default, replacing the previous `gpt-3.5-turbo`. This update improves response quality and overall capabilities. Additionally, the default limit set by `max_tokens` parameter has been removed, allowing for better and more detailed responses. If you relied on the previous default settings and wish to continue using them, be sure to explicitly define the editor configuration entry `ai.openAi.requestParameters` to `{ model: 'gpt-3.5-turbo', max_tokens: 2000, stream: true }`.
 * **[document-outline](https://www.npmjs.com/package/@ckeditor/ckeditor5-document-outline)**: Content area CSS variables have been renamed to use the --ck-content-* prefix for better consistency in the Table of Contents feature. This requires action if you have overridden the variables. See the update guide for details.
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Removed vertical spacing in list items by resetting margins for `<p>` elements that are the child of a `<li>` element.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Removed vertical spacing in table cells by collapsing margins of <p> elements that are the only child of a `<td>` or `<th>` element.
@@ -91,7 +93,7 @@ While working on this initiative, we decided to standardize the CSS naming, too.
 
 ### Features
 
-* **[cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)**: Added a configuration property: `config.cloudServices.autoRefresh` that allows disabling the automatic token refresh mechanism. When set to `false`, the token must be refreshed manually, enabling custom token handling. ([commit](https://github.com/ckeditor/ckeditor5/commit/c28f7b427c339b1313d97aabcc25a51b860008cf))
+* **[cloud-services](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)**: Added the `config.cloudServices.autoRefresh` configuration property that allows disabling the automatic token refresh mechanism. When set to `false`, the token must be refreshed manually, enabling custom token handling. ([commit](https://github.com/ckeditor/ckeditor5/commit/c28f7b427c339b1313d97aabcc25a51b860008cf))
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Extended the `options` argument passed to the `AddCommentThreadCommand#execute()` method. The command now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment, using the provided comment content.
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Added the integration with the remove format command for block elements. Closes [#13983](https://github.com/ckeditor/ckeditor5/issues/13983). ([commit](https://github.com/ckeditor/ckeditor5/commit/1b75f6260560c7709d794c47597749e16aed43e4))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Image style and resized size can now be removed by the remove format command. See [#13983](https://github.com/ckeditor/ckeditor5/issues/13983). ([commit](https://github.com/ckeditor/ckeditor5/commit/1b75f6260560c7709d794c47597749e16aed43e4))
