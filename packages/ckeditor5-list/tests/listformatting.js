@@ -7,6 +7,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { RemoveFormatEditing } from '@ckeditor/ckeditor5-remove-format';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -26,7 +27,7 @@ describe( 'ListFormatting', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListFormatting, Paragraph, BlockQuoteEditing, CodeBlockEditing, MyPlugin, MyPlugin2 ]
+			plugins: [ ListFormatting, Paragraph, BlockQuoteEditing, CodeBlockEditing, RemoveFormatEditing, MyPlugin, MyPlugin2 ]
 		} );
 
 		model = editor.model;
@@ -262,6 +263,76 @@ describe( 'ListFormatting', () => {
 						'<$text inlineFormat="foo">bar</$text>' +
 					'</paragraph>'
 				);
+			} );
+
+			describe( 'with remove-format feature', () => {
+				it( 'should remove marker format when whole text format is removed', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">[foo]</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
+							'[foo]' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should remove marker format when part of text format is removed', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">f[o]o</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">f</$text>' +
+							'[o]' +
+							'<$text inlineFormat="foo">o</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should not remove marker format for a collapsed selection', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">foo[]</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">foo</$text>[]' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
 			} );
 		} );
 
