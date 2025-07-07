@@ -821,7 +821,7 @@ npm run dev
 
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
-First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+First, clone the repository the same way as before. **But do not install the dependencies.** Instead, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>
