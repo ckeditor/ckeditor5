@@ -167,6 +167,126 @@ Example:
 }
 ```
 
+### Multi-level list markup change
+
+Due to work on fixing [the list markers formatting](https://github.com/ckeditor/ckeditor5/issues/5752), we changed the markup of the Multi-level list feature. This has no visual affect, but may trigger some automated tests issues. **There is no need to migrate content during the update.**
+
+**Before:**
+```html
+<ol class="multi-level-list legal-list" style="list-style-type:none;">
+	<li>
+		<span class="multi-level-list__marker">1. </span>Foo bar
+	</li>
+</ol>
+```
+
+**After:**
+
+```html
+<ol class="multi-level-list legal-list" style="list-style-type:none;">
+	<li>
+		<span class="multi-level-list__marker"><span>1.</span>&nbsp;</span>Foo bar
+	</li>
+</ol>
+```
+
+### List item identification in editor data
+
+The `data-list-item-id` attribute is now added to `<li>` elements in editor data to improve integration between the lists feature and other editor features. This attribute provides a stable identifier for list items that remains consistent across data loads and saves, resolving issues with data stability and improving compatibility with external systems and diffing algorithms.
+
+**Before:**
+```html
+<ul>
+    <li>
+        <p>First item</p>
+        <p>Second paragraph</p>
+    </li>
+    <li>Another item</li>
+</ul>
+```
+
+**After:**
+```html
+<ul>
+    <li data-list-item-id="abc123">
+        <p>First item</p>
+        <p>Second paragraph</p>
+    </li>
+    <li data-list-item-id="def456">Another item</li>
+</ul>
+```
+
+This change ensures that list items maintain consistent identifiers across editor sessions, improving the reliability of features that depend on list structure tracking. The attribute is automatically generated and maintained by the editor, requiring no action from developers.
+
+If you need to export clean HTML without these IDs (for presentation purposes only), you can use the `skipListItemIds` option when calling `editor.getData()`:
+
+```js
+// Get data without list item IDs (for presentation only)
+const cleanHtml = editor.getData({ skipListItemIds: true });
+```
+
+For more technical details, see [GitHub issue #18407](https://github.com/ckeditor/ckeditor5/issues/18407).
+
+### Comments annotation styles standardization
+
+The default styles for comments annotations have changed significantly. Previously, the defaults were set only on part of the comments UI, and the comments UI was affected by the main editor content styles. Now, we have introduced a standardized set of CSS variables that are applied to both the comments content and input field.
+
+**New CSS variables introduced:**
+- `--ck-comment-content-font-family`
+- `--ck-comment-content-font-size`
+- `--ck-comment-content-font-color`
+
+These variables have default values based on the editor's UI styles, which may be different from styles you currently have set. Most notably, the default font color has changed from black `hsl(0, 0%, 0%)` to dark gray `hsl(0, 0%, 20%)` to match the rest of the editor UI.
+
+**Migration:**
+1. Review the comments appearance after updating the editor
+2. If the new default styles don't match your design requirements, set custom values using the new CSS variables:
+
+```css
+:root {
+  --ck-comment-content-font-family: "Your preferred font family";
+  --ck-comment-content-font-size: 14px;
+  --ck-comment-content-font-color: hsl(0, 0%, 0%); /* or your preferred color */
+}
+```
+
+This change ensures consistent styling across all comments-related UI elements and provides better integration with the overall editor design system.
+
+### Improved vertical spacing for paragraphs in lists and tables  
+
+During the work on Line Height, we changed the behavior how paragraphs behave in lists and table cells. It was [a long-reported bug](https://github.com/ckeditor/ckeditor5/issues/11347) which caused a confusion in writers. We decided to solve it with opinionated content styles, and it may result in a **visual change** of your content after the update. If you are not satisfied with the result, you can revert the change in the CSS:
+
+```css
+.ck-content li > p:first-of-type {
+		margin-top: revert;
+	}
+
+
+.ck-content li > p:only-child {
+	margin-top: revert;
+	margin-bottom: revert;
+}
+
+.ck-content table.table:not(.layout-table),
+.ck-content figure.table:not(.layout-table) > table {
+	> thead,
+	> tbody {
+		> tr {
+			> td,
+			> th {
+				> p:first-of-type {
+					margin-top: revert;
+				}
+
+				> p:last-of-type {
+					margin-bottom: revert;
+				}
+			}
+		}
+	}
+}
+```
+
 ### Comment threads improvements
 
 #### New thread command changes
