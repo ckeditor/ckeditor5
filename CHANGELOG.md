@@ -7,7 +7,54 @@ We are happy to announce the release of CKEditor 5 v46.0.0.
 
 ### Release highlights
 
-...
+#### Line Height (⭐)
+
+The new [Line Height](https://ckeditor.com/docs/ckeditor5/latest/features/line-height.html) feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
+
+#### Remove Format improvements
+
+Unneeded styles on block elements, such as tables and images, and General HTML Support nodes and attributes are finally eliminated when you hit the [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html) button. The feature now cleans what it should, leaving the document structure untouched.
+
+#### List markers styling
+
+Working with styled [lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles) becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties such as font size adjustments, text color changes, and font weight modifications (bold, italic).
+
+This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports [Multi-level lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html).
+
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor 's new version (for the better in our opinion). But if this is not something you expect, you can [opt out](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#disabling-marker-formatting).
+
+#### Markdown processor dependency refresh
+
+The [Markdown](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html) feature dependencies have been modernized with a switch to the `unified` ecosystem, replacing the previous `marked` / `turndown` implementation. This change brings more consistent and symmetrical HTML ↔ Markdown conversion. By adopting `remark` and `rehype` from the same family of tools, we have created a more reliable and maintainable implementation that will better serve your document processing needs.
+
+#### Manual token refreshing
+
+We have added the `config.cloudServices.autoRefresh` configuration property to disable the automatic token refresh mechanism. When it 's set to `false`, the token must be refreshed manually. This property opens up the ability to implement custom token handling if a certain use case requires this.
+
+#### Comment threads improvements
+
+* **New thread command changes**
+  We have also introduced improvements to the `addCommandThread` command, which now supports creating comment threads on specified ranges. Additionally, it allows for creating a comment thread with an initial comment with the provided comment content.
+* **Minor breaking change**
+  The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the current document selection is empty, as the command now allows for creating comment threads on custom ranges. If you previously used this property (for example, to provide a custom UI element), you should now use the observable `AddCommentThreadCommand#hasContent` property instead.
+* **Comments and suggestions annotations**
+  We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
+
+#### Unified exports & renames
+
+After the big New Installation Method release (v42.0.0+), some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named ...` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
+
+With this release, we introduced a new, clear set of rules about exports, and also added re-exports if they were missing, changed the names of items to be more descriptive and avoid collisions, took care of internal methods that were already exported but not tagged, and cleaned up `@deprecated` code that was stale for some time.
+
+If your build throws errors after the update, search and replace the old names with the new ones from the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#unified-exports-renames). **We have not changed the behavior of these APIs, just the names**.
+
+Last but not least, this release put us on the clean and straight path towards the [deprecation of old installation methods](https://github.com/ckeditor/ckeditor5/issues/17779). Please let us know if you have any questions on GitHub or support channels.
+
+#### Opinionated default content styles and CSS renames
+
+To improve the out-of-the-box experience and accessibility, we are introducing opinionated defaults for content styling. From this version, we ship a small defaults layer applied to `.ck-content`.  These content styles are easily replaceable via CSS variable override. You may have already styled those things with more specific selectors.
+
+While working on this initiative, we decided to standardize the CSS naming, too. All older variables that applied to the content styles now share the consistent `--ck-content-*` prefix. Read about the details in the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#unified-exports-renames).
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -26,7 +73,7 @@ We are happy to announce the release of CKEditor 5 v46.0.0.
   * `--ck-comment-content-font-size`
   * `--ck-comment-content-font-color` (default changed from `hsl(0, 0%, 0%)` to `hsl(0, 0%, 20%)`)
 
-  These variables default to values derived from the editor’s UI styles, and they may differ from your current settings. Customize these variables as needed to match your desired appearance.
+  These variables default to values derived from the editor 's UI styles, and they may differ from your current settings. Customize these variables as needed to match your desired appearance.
 * Content area CSS variables have been renamed to use the `--ck-content-*` prefix for better consistency in the Highlight, Image, List, and Table features. This requires action if you have overridden the variables. See the update guide for details.
 * Table-related CSS variables with improper `*-selector-*` naming have been renamed to use `*-table-*` for better clarity. This requires action if you have overridden the variables. See the update guide for details.
 
@@ -672,21 +719,21 @@ A long-requested feature has finally arrived with the [introduction of full-scre
 
 Linking in CKEditor 5 has been significantly [upgraded with a redesigned user interface](https://ckeditor.com/docs/ckeditor5/latest/features/link.html), making adding and editing links more intuitive. We added the possibility to add and edit the display text of a link. Users can now easily link to bookmarks within the document and select links from predefined lists (defined by the developer). These improvements make inserting and managing links faster and more flexible than ever before.
 
-During this initiative, we also aligned visual and technical components of the editor. Each balloon got a header with the tile, we also unified the toolbar behavior and keystrokes of Link and Bookmarks with other widget’s toolbars like image and tables.
+During this initiative, we also aligned visual and technical components of the editor. Each balloon got a header with the tile, we also unified the toolbar behavior and keystrokes of Link and Bookmarks with other widget 's toolbars like image and tables.
 
 > [!NOTE]
 > The UI got updated in several places: main view, link properties (decorators), and also its technical implementation changed. Make sure to give special attention to the update if you did any customizations to the link interface.
 
 #### New installation methods improvements: icons replacement
 
-We are continuing to strengthen the new installation methods while phasing out older solutions. We added one of the key components you asked for: replacing our icons with your custom ones. It is now possible to replace the icons via the [package’s override mechanism](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/customizing-icons.html).
+We are continuing to strengthen the new installation methods while phasing out older solutions. We added one of the key components you asked for: replacing our icons with your custom ones. It is now possible to replace the icons via the [package 's override mechanism](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/customizing-icons.html).
 
 > [!NOTE]
 > To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
 
 #### ⚠️ Deprecations in old installation methods: stage 1 completed
 
-We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
+We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds ' packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
 
 We also dropped support for Webpack 4 in both the **old and new** installation methods. All packages and CDN from this version are now distributed with ES2022 as the target ECMAScript version, providing better compatibility with modern JavaScript features and improved performance.
 
