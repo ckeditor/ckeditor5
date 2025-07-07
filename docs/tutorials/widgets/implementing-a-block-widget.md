@@ -331,7 +331,7 @@ Once you have the converters, you can try to see the simple box in action. You h
 			</section>
 		</div>
 
-		<script src="dist/bundle.js"></script>
+		<script type="module" src="./main.js"></script>
 	</body>
 </html>
 ```
@@ -535,10 +535,6 @@ export default class SimpleBoxEditing extends Plugin {
 	}
 }
 ```
-
-<info-box>
-	As you can see, the code became much more verbose and far longer. This is because you used lower-level converters. We plan to provide more handy widget conversion utilities in the future. Read more (and 👍) in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1228).
-</info-box>
 
 ### Behavior after turning simple box into a widget
 
@@ -825,7 +821,7 @@ npm run dev
 
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
-First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+First, clone the repository the same way as before. **But do not install the dependencies.** Instead, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>

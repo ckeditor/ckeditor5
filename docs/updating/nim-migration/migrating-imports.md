@@ -2,20 +2,35 @@
 category: nim-migration
 order: 70
 modified_at: 2025-06-23
-meta-title: Migrating internal exports | CKEditor 5 Documentation
-meta-description: Mihgrate CKEditor 5 to new, clearer, standardized public API names.
+menu-title: Migrating imports
+meta-title: Migrating imports (v46+) | CKEditor 5 Documentation
+meta-description: Migrate CKEditor 5 to new, clearer, standardized public API names.
 toc-limit: 1
 ---
 
-# Migrating internal exports
+# Migrating imports (v46+)
 
-As part of the transition to the New Installation Methods (NIM), we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
+As part of the transition to the New Installation Methods (NIM) in version, we have standardized how public API elements are exposed in CKEditor&nbsp;5 and related packages. We introduced a unified export policy that ensures every public entity is exported via the package’s `index.ts` file. We also gave the exported classes, functions, and helpers more descriptive and context-appropriate names ensuring they are unambiguous and unique within the scope of CKEditor&nbsp;5. This includes renaming existing exports where needed. The changes are semantically equivalent but introduce breaking changes in naming.
 
-## Internal exports
+<info-box info>
+	Please note that while New Installation Methods were introduced since CKEditor&nbsp;5 42.0.0, these changes to exports name came with version 46.0.0.
+</info-box>
 
-All internal exports are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix. This means you no longer need to specify the file path within a package to access these exports.
+## Using internal APIs
 
-### Example usage
+For a long time in Old Installation Methods (OIM), it was possible to grab internal-purpose functions from specific files if they were exported just for the package's internal purposes.
+
+We want to clean up this situation in the New Installation Methods, and internal APIs will not be available in the index. After deprecating OIM, source files will not be available, so some internal APIs that were previously used in this way will no longer be available.
+
+To ease the migration, all internal exports that were available before, are now available directly from the `ckeditor5` (or `ckeditor5-premium-features`) package root with an underscore (`_`) prefix.
+
+Keep in mind that:
+* we may remove them in the future.
+* all new internal methods will not be added to the indexes.
+
+If you think one of our internal methods, classes, etc. should be available in the public API, please let us know via [the support channel](https://ckeditor.com/contact/) or on [the GitHub issue tracker](https://github.com/ckeditor/ckeditor5/issues).
+
+### Example migration
 
 Previously, importing internal exports required specifying the exact file path:
 
@@ -29,14 +44,16 @@ Now, you can import them from the package's root entry point with the new name:
 import { _getCKFinderCsrfToken } from 'ckeditor5';
 ```
 
-This standardized approach simplifies imports while clearly distinguishing internal implementation details from the public API through the underscore prefix.
-
 ## Changed exports
 
 Below, you will find all name changes in packages listed alphabetically for convenience.
 
 <info-box info>
 	The tables below list only these exports that have changed names and may introduce breaking changes. Newly exported methods that did not exist before NIM are **not** included here.
+</info-box>
+
+<info-box info>
+	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
 </info-box>
 
 ### @ckeditor/ckeditor5-adapter-ckfinder
@@ -196,7 +213,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-engine
 
-| file                     | originalName                          | reExportedName                          |
+| file                     | original name                          | re-exported name                          |
 |--------------------------|-------------------------------------|---------------------------------------|
 | conversion/downcastdispatcher.ts | DiffItemReinsert                | DifferItemReinsert                     |
 | conversion/downcasthelpers.ts    | insertText                     | _downcastInsertText                    |
@@ -435,7 +452,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-enter
 
-| file           | original_method_name           | re_exported_method_name           |
+| file           | original name           | re-exported name           |
 |----------------|-------------------------------|----------------------------------|
 | enterobserver.ts      | EnterObserver                | EnterObserver                   |
 | enterobserver.ts      | EnterEventData               | ViewDocumentEnterEventData       |
@@ -443,7 +460,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-export-word
 
-| file           | original_method_name                         | re_exported_method_name                      |
+| file           | original name                         | re-exported name                      |
 |----------------|---------------------------------------------|---------------------------------------------|
 | exportword.ts  | ExportWordConverterInternalOptions           | _ExportWordConverterInternalOptions          |
 | exportword.ts  | ExportWordConverterInternalOptionsV2         | _ExportWordConverterInternalOptionsV2        |
@@ -455,7 +472,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-find-and-replace
 
-| File                | Original Method Name           | New Re-exported Method Name          |
+| File                | original name           | re-exported name          |
 |---------------------|-------------------------------|-------------------------------------|
 | findandreplace.ts    | ResultType                    | FindResultType                      |
 | findandreplacestate.ts | sortSearchResultsByMarkerPositions | _sortFindResultsByMarkerPositions  |
@@ -464,7 +481,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-font
 
-| File                | Original Method Name           | New Re-exported Method Name          |
+| File                | original name           | re-exported name          |
 |---------------------|-------------------------------|-------------------------------------|
 | fontfamily/utils.ts  | normalizeOptions              | _normalizeFontFamilyOptions          |
 | fontsize/utils.ts    | normalizeOptions              | _normalizeFontSizeOptions            |
@@ -477,7 +494,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-fullscreen
 
-| File                            | Original Method Name         | New Re-exported Method Name          |
+| File                            | original name         | re-exported name          |
 |--------------------------------|-----------------------------|-------------------------------------|
 | handlers/abstracteditorhandler.ts | AbstractEditorHandler       | FullscreenAbstractEditorHandler     |
 | handlers/classiceditorhandler.ts   | ClassicEditorHandler        | FullscreenClassicEditorHandler      |
@@ -485,20 +502,20 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-heading
 
-| File        | Original Method Name     | New Re-exported Method Name      |
+| File        | original name     | re-exported name      |
 |-------------|-------------------------|---------------------------------|
 | title.ts    | TitleConfig             | HeadingTitleConfig              |
 | utils.ts    | getLocalizedOptions     | _getLocalizedHeadingOptions     |
 
 ### @ckeditor/ckeditor5-html-embed
 
-| File                | Original Method Name     | New Re-exported Method Name    |
+| File                | original name     | re-exported name    |
 |---------------------|-------------------------|-------------------------------|
 | htmlembedediting.ts  | RawHtmlApi              | _RawHtmlEmbedApi              |
 
 ### @ckeditor/ckeditor5-html-support
 
-| file                | original_method                      | reexported_method                          |
+| file                | original name                      | re-exported name                          |
 |---------------------|------------------------------------|-------------------------------------------|
 | converters.ts       | viewToModelObjectConverter          | _viewToModelObjectContentHtmlSupportConverter |
 | converters.ts       | toObjectWidgetConverter             | _toObjectWidgetHtmlSupportConverter        |
@@ -526,7 +543,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-image
 
-| file                       | original_method                      | reexported_method                         |
+| file                       | original name                      | re-exported name                         |
 |----------------------------|------------------------------------|------------------------------------------|
 | image/converters.ts        | upcastImageFigure                   | _upcastImageFigure                        |
 | image/converters.ts        | upcastPicture                      | _upcastImagePicture                       |
@@ -568,28 +585,28 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-import-word
 
-| file                    | original_method          | reexported_method              |
+| file                    | original name          | re-exported name              |
 |-------------------------|-------------------------|-------------------------------|
 | importword.ts           | FormattingOptions        | ImportWordFormattingOptions    |
 | importwordcommand.ts    | DataInsertEvent          | ImportWordDataInsertEvent      |
 
 ### @ckeditor/ckeditor5-indent
 
-| file                      | original method name   | re-exported method name  |
+| file                      | original name   | re-exported name  |
 |---------------------------|-----------------------|--------------------------|
 | indentcommandbehavior/indentusingclasses.ts | IndentUsingClasses      | _IndentUsingClasses       |
 | indentcommandbehavior/indentusingoffset.ts  | IndentUsingOffset       | _IndentUsingOffset        |
 
 ### @ckeditor/ckeditor5-language
 
-| file           | original method name        | re-exported method name       |
+| file           | original name        | re-exported name       |
 |----------------|-----------------------------|-------------------------------|
 | utils.ts       | stringifyLanguageAttribute   | _stringifyLanguageAttribute    |
 | utils.ts       | parseLanguageAttribute       | _parseLanguageAttribute        |
 
 ### @ckeditor/ckeditor5-link
 
-| file                      | original method name       | re-exported method name          |
+| file                      | original name       | re-exported name          |
 |---------------------------|----------------------------|---------------------------------|
 | ui/linkbuttonview.ts       | LinkButtonView             | _LinkButtonView                 |
 | ui/linkformview.ts         | SubmitEvent                | LinkFormSubmitEvent             |
@@ -610,7 +627,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-list
 
-| file                                   | original method name               | re-exported method name              |
+| file                                   | original name               | re-exported name              |
 |----------------------------------------|----------------------------------|------------------------------------|
 | list/converters.ts                      | listItemUpcastConverter           | _listItemUpcastConverter            |
 | list/converters.ts                      | reconvertItemsOnDataChange        | _reconvertListItemsOnDataChange     |
@@ -679,7 +696,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-list-multi-level
 
-| file                 | original method name              | new re-exported method name          |
+| file                 | original name              | re-exported name          |
 |----------------------|---------------------------------|------------------------------------|
 | multilevellist.ts    | MultiLevelListConfig             | _MultiLevelListConfig               |
 | multilevellist.ts    | MultiLevelListDefinition         | _MultiLevelListDefinition           |
@@ -688,7 +705,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-markdown-gfm
 
-| file                     | original method name       | new re-exported method name      |
+| file                     | original name       | re-exported name      |
 |--------------------------|----------------------------|---------------------------------|
 | gfmdataprocessor.ts       | GFMDataProcessor            | MarkdownGfmDataProcessor         |
 | html2markdown.ts          | HtmlToMarkdown              | MarkdownGfmHtmlToMd              |
@@ -696,7 +713,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-media-embed
 
-| file                    | original method name              | new re-exported method name                 |
+| file                    | original name              | re-exported name                 |
 |-------------------------|---------------------------------|--------------------------------------------|
 | converters.ts           | modelToViewUrlAttributeConverter | _modelToViewUrlAttributeMediaConverter      |
 | ui/mediaformview.ts     | MediaFormView                    | _MediaFormView                              |
@@ -709,7 +726,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-mention
 
-| file                    | original method name      | new re-exported method name         |
+| file                    | original name      | re-exported name         |
 |-------------------------|--------------------------|------------------------------------|
 | mentionconfig.ts        | FeedCallback             | MentionFeedbackCallback             |
 | mentionconfig.ts        | ItemRenderer             | MentionItemRenderer                 |
@@ -720,14 +737,14 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-merge-fields
 
-| file                    | original method name  | new re-exported method name          |
+| file                    | original name  | re-exported name          |
 |-------------------------|----------------------|-------------------------------------|
 | mergefieldsconfig.ts    | GroupDefinition       | MergeFieldsGroupDefinition           |
 | mergefieldsconfig.ts    | DataSetDefinition     | MergeFieldsDataSetDefinition          |
 
 ### @ckeditor/ckeditor5-minimap
 
-| file                       | original method name           | new re-exported method name            |
+| file                       | original name           | re-exported name            |
 |----------------------------|-------------------------------|---------------------------------------|
 | minimapiframeview.ts        | MinimapIframeView              | _MinimapIframeView                    |
 | minimappositiontrackerview.ts | MinimapPositionTrackerView  | _MinimapPositionTrackerView           |
@@ -741,7 +758,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-paste-from-office
 
-| file                           | original method name                    | new re-exported method name                    |
+| file                           | original name                    | re-exported name                    |
 |--------------------------------|---------------------------------------|------------------------------------------------|
 | filters/bookmark.ts            | transformBookmarks                     | _transformPasteOfficeBookmarks                  |
 | filters/br.ts                 | transformBlockBrsToParagraphs          | _transformPasteOfficeBlockBrsToParagraphs       |
@@ -771,7 +788,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-real-time-collaboration
 
-| file                               | original method name        | new re-exported method name         |
+| file                               | original name        | re-exported name         |
 |------------------------------------|-----------------------------|------------------------------------|
 | config.ts                         | PresenceListConfig          | RtcPresenceListConfig              |
 | presencelist/view/presencedropdownlistview.ts | PresenceDropdownListView   | _RtcPresenceDropdownListView       |
@@ -785,7 +802,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-restricted-editing
 
-| file                             | original method name                   | new re-exported method name                   |
+| file                             | original name                   | re-exported name                   |
 |----------------------------------|-------------------------------------|-----------------------------------------------|
 | restrictededitingmode/converters.ts | setupExceptionHighlighting          | _setupRestrictedEditingExceptionHighlighting  |
 | restrictededitingmode/converters.ts | resurrectCollapsedMarkerPostFixer   | _resurrectRestrictedEditingCollapsedMarkerPostFixer |
@@ -797,7 +814,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-revision-history
 
-| file                   | original method name  | new re-exported method name        |
+| file                   | original name  | re-exported name        |
 |------------------------|----------------------|-----------------------------------|
 | revisionhistory.ts     | TapeValue             | _RevisionHistoryTapeValue          |
 | revisionhistory.ts     | TapeItem              | _RevisionHistoryTapeItem           |
@@ -805,7 +822,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-special-characters
 
-| file                      | original method name          | new re-exported method name           |
+| file                      | original name          | re-exported name           |
 |---------------------------|------------------------------|--------------------------------------|
 | ui/charactergridview.ts    | CharacterGridView             | _SpecialCharactersGridView           |
 | ui/charactergridview.ts    | CharacterGridViewExecuteEvent | SpecialCharactersGridViewExecuteEvent |
@@ -818,7 +835,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-style
 
-| file                           | original method name                           | new re-exported method name             |
+| file                           | original name                           | re-exported name             |
 |--------------------------------|----------------------------------------------|----------------------------------------|
 | styleutils.ts                  | StyleUtilsIsEnabledForBlockEvent              | StyleUtilsIsEnabledForBlockEvent        |
 | styleutils.ts                  | StyleUtilsIsActiveForBlockEvent               | StyleUtilsIsActiveForBlockEvent         |
@@ -835,7 +852,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-table
 
-| file                      | original method name                 | re-exported method name                  |
+| file                      | original name                 | re-exported name                  |
 |---------------------------|------------------------------------|-----------------------------------------|
 | converters/downcast.ts    | downcastTable                     | _downcastTable                          |
 | converters/downcast.ts    | downcastRow                       | _downcastTableRow                       |
@@ -934,7 +951,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-track-changes
 
-| file                        | original method name       | re-exported method name           |
+| file                        | original name       | re-exported name           |
 |-----------------------------|----------------------------|----------------------------------|
 | suggestiondescriptionfactory.ts | Description               | SuggestionDescription             |
 | suggestiondescriptionfactory.ts | DescriptionCallback       | SuggestionDescriptionCallback     |
@@ -949,7 +966,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-typing
 
-| file                    | original method name           | re-exported method name                |
+| file                    | original name           | re-exported name                |
 |-------------------------|-------------------------------|---------------------------------------|
 | deleteobserver.ts       | DeleteObserver                | _DeleteObserver                       |
 | inserttextobserver.ts   | InsertTextObserver            | InsertTextObserver                    |
@@ -964,7 +981,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 
 ### @ckeditor/ckeditor5-ui
 
-| file                             | original method name                  | re-exported method name                 |
+| file                             | original name                  | re-exported name                 |
 |----------------------------------|-------------------------------------|----------------------------------------|
 | bindings/preventdefault.ts       | preventDefault                      | _preventUiViewDefault                  |
 | colorpicker/colorpickerview.ts  | tryParseHexColor                   | _tryNormalizeHexColor                   |

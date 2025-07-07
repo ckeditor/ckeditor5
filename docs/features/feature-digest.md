@@ -270,7 +270,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 			</td>
 			<td>
 				The image feature allows adding images of various kinds to the rich
-				content inside the editor. A large set of subfeature background-grays lets the users
+				content inside the editor. A large set of subfeatures lets the users
 				fully control this process. Upload or paste images, insert
 				via URL, use responsive images, resize images, add captions, set
 				different image styles, and link images.
@@ -380,9 +380,12 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="line-height" class="feature">
 			<td>
-				{@link features/line-height Links<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+				<span>
+					{@link features/line-height Line height
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
-				}
+					}
+				</span>
 			</td>
 			<td>
 				The line height feature lets you adjust the vertical spacing between lines of text,
@@ -413,7 +416,9 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		</tr>
 		<tr id="list-indentation" class="subfeature background-gray">
 			<td>
-				{@link features/lists-editing#indenting-lists List indentation}
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/lists-editing#indenting-lists List indentation}
+				</span>
 			</td>
 			<td>
 				Besides controlling
@@ -1977,7 +1982,9 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="custom-components" class="subfeature background-gray">
 			<td>
-				{@link features/custom-components Custom Widgets and Components}
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/custom-components Custom Widgets and Components}
+				</span>
 			</td>
 			<td>
 				Build custom interactive components using CKEditor 5's widget system. Create block widgets, inline elements, external data integrations, and framework components (React, Vue, Angular) that seamlessly integrate with the editor's content model and UI.
