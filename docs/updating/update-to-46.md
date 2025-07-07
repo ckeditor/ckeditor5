@@ -254,7 +254,7 @@ This change ensures consistent styling across all comments-related UI elements a
 
 ### Improved vertical spacing for paragraphs in lists and tables  
 
-During the work on Line Height, we changed the behavior how paragraphs behave in lists and table cells. It was [a long-reported bug](https://github.com/ckeditor/ckeditor5/issues/11347) which caused a confusion in writers. We decided to solve it with opinionated content styles, and it may result in a **visual change** of your content after the update. If you are not satisfied with the result, you can revert the change in the CSS:
+During the work on Line Height, we changed the behavior how paragraphs behave in lists and table cells. It was [a long-reported bug](https://github.com/ckeditor/ckeditor5/issues/11347) which caused a confusion for writers. We decided to solve it with opinionated content styles, and it may result in a **visual change** of your content after the update. If you are not satisfied with the result, you can revert the change in the CSS:
 
 ```css
 .ck-content li > p:first-of-type {
