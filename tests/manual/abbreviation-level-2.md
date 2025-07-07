@@ -62,26 +62,26 @@ We will use {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView `Lab
 // abbreviation/abbreviationview.js
 
 import {
-    View,
-    LabeledFieldView,               // ADDED
-    createLabeledInputText          // ADDED
-    } from '@ckeditor/ckeditor5-ui';
+	View,
+	LabeledFieldView,               // ADDED
+	createLabeledInputText          // ADDED
+} from '@ckeditor/ckeditor5-ui';
 
 export default class FormView extends View {
 	constructor( locale ) {
-        // ...
+		// ...
 
-        this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
+		this.abbrInputView = this._createInput( t( 'Add abbreviation' ) );
 		this.titleInputView = this._createInput( t( 'Add title' ) );
 	}
 
-    _createInput( label ) {
-        const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
+	_createInput( label ) {
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-        labeledInput.label = label;
+		labeledInput.label = label;
 
-        return labeledInput;
-    }
+		return labeledInput;
+	}
 }
 ```
 
@@ -99,41 +99,39 @@ Last thing is to delegate `cancelButtonView#execute` to the FormView, so pressin
 // abbreviation/abbreviationview.js
 
 import {
-    View,
-    LabeledFieldView,
-    createLabeledInputText,
-    ButtonView                                      // ADDED
-} from '@ckeditor/ckeditor5-ui';
-import {
-    IconCheck,
-		IconCancel
-} from '@ckeditor/ckeditor5-icons';					 // ADDED
+	IconCheck,
+	IconCancel,
+	View,
+	LabeledFieldView,
+	createLabeledInputText,
+	ButtonView // ADDED
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
-        // ...
+		// ...
 
-        // Create the save and cancel buttons.
-        this.saveButtonView = this._createButton(
-            t( 'Save' ), IconCheck, 'ck-button-save'
-        );
+		// Create the save and cancel buttons.
+		this.saveButtonView = this._createButton(
+			t( 'Save' ), IconCheck, 'ck-button-save'
+		);
 		// Set the type to 'submit', which will trigger
 		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
-            t( 'Cancel' ), IconCancel, 'ck-button-cancel'
-        );
+			t( 'Cancel' ), IconCancel, 'ck-button-cancel'
+		);
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
 
 	}
 
-    _createInput( label ) {
-        // ...
-    }
+	_createInput( label ) {
+		// ...
+	}
 
-    _createButton( label, icon, className ) {
+	_createButton( label, icon, className ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
@@ -211,20 +209,19 @@ We also need a `focus()` method, which will focus on the first child, so our `ab
 // abbreviation/abbreviationview.js
 
 import {
-    View,
-    LabeledFieldView,
-    createLabeledInputText,
-    ButtonView,
-    submitHandler                                   // ADDED
-    } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';
+	View,
+	LabeledFieldView,
+	createLabeledInputText,
+	ButtonView,
+	submitHandler                                   // ADDED
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {
 
-        // ...
+		// ...
 
-        this.childViews = this.createCollection( [
+		this.childViews = this.createCollection( [
 			this.abbrInputView,
 			this.titleInputView,
 			this.saveButtonView,
@@ -234,33 +231,33 @@ export default class FormView extends View {
 		this.setTemplate( {
 			tag: 'form',
 			attributes: {
-                // ...
+				// ...
 			},
 			children: this.childViews               // ADDED
 		} );
 	}
 
-    render() {
-        super.render();
+	render() {
+		super.render();
 
 		// Submit the form when the user clicked the save button
 		// or pressed enter in the input.
-        submitHandler( {
-            view: this
-        } );
-    }
+		submitHandler( {
+			view: this
+		} );
+	}
 
-    focus() {
-        this.childViews.first.focus();
-    }
+	focus() {
+		this.childViews.first.focus();
+	}
 
-    _createInput( label ) {
-        // ...
-    }
+	_createInput( label ) {
+		// ...
+	}
 
-    _createButton( label, icon, className ) {
-        // ...
-    }
+	_createButton( label, icon, className ) {
+		// ...
+	}
 }
 ```
 
@@ -275,8 +272,7 @@ This is where we ended up with our UI in the first part of the tutorial.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from 'ckeditor5';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin, ButtonView } from 'ckeditor5';
 
 class AbbreviationUI extends Plugin {
 	init() {
@@ -319,9 +315,13 @@ Finally, let's add our balloon and form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from 'ckeditor5';
-import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
-import FormView from './abbreviationview';                          	// ADDED
+import {
+	Plugin,
+	ButtonView,			// ADDED
+	ContextualBalloon	// ADDED
+} from 'ckeditor5';
+
+import FormView from './abbreviationview';	// ADDED
 
 class AbbreviationUI extends Plugin {
 	static get requires() {
@@ -329,15 +329,15 @@ class AbbreviationUI extends Plugin {
 	}
 
 	init() {
-        const editor = this.editor;
+		const editor = this.editor;
 		const { t } = editor.locale;
 
-        // Create the balloon and the form view.
+		// Create the balloon and the form view.
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 		this.formView = this._createFormView();
 
 		editor.ui.componentFactory.add( 'abbreviation', locale => {
-            // ...
+			// ...
 		} );
 	}
 
@@ -353,7 +353,7 @@ class AbbreviationUI extends Plugin {
 		const viewDocument = view.document;
 		let target = null;
 
-        // Set a target position by converting view selection range to DOM
+		// Set a target position by converting view selection range to DOM
 		target = () => view.domConverter.viewRangeToDom(
 			viewDocument.selection.getFirstRange()
 		);
@@ -419,7 +419,7 @@ class AbbreviationUI extends Plugin {
 	}
 
 	init() {
-        // ...
+		// ...
 	}
 
 	_createFormView() {
@@ -442,7 +442,7 @@ class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
-        // ...
+		// ...
 	}
 
 	_showUI() {
@@ -467,7 +467,7 @@ Additionally, we will import {@link module:ui/bindings/clickoutsidehandler~click
 // abbreviation/abbreviationui.js
 
 // ...
-import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui'; // ADDED
+import { ContextualBalloon, clickOutsideHandler } from 'ckeditor5'; // ADDED
 
 class AbbreviationUI extends Plugin {
 	static get requires() {
@@ -475,17 +475,17 @@ class AbbreviationUI extends Plugin {
 	}
 
 	init() {
-        // ...
+		// ...
 	}
 
 	_createFormView() {
 		const editor = this.editor;
 		const formView = new FormView( editor.locale );
 
-        this.listenTo( formView, 'submit', () => {
-            // ...
+		this.listenTo( formView, 'submit', () => {
+			// ...
 
-            // Hide the form view after submit.
+			// Hide the form view after submit.
 			this._hideUI();
 		} );
 
@@ -494,7 +494,7 @@ class AbbreviationUI extends Plugin {
 			this._hideUI();
 		} );
 
-        // Hide the form view when clicking outside the balloon.
+		// Hide the form view when clicking outside the balloon.
 		clickOutsideHandler( {
 			emitter: formView,
 			activator: () => this._balloon.visibleView === formView,
@@ -517,7 +517,7 @@ class AbbreviationUI extends Plugin {
 	}
 
 	_getBalloonPositionData() {
-        // ...
+		// ...
 	}
 
 	_showUI() {
