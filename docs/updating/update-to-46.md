@@ -50,7 +50,7 @@ We have added the `config.cloudServices.autoRefresh` configuration property to d
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
-### Unified internal imports & renames
+### Unified imports & renames in the editor's API
 
 This release is also about tidying up the rough edges that showed up after the big New Installation Method release (v42.0.0+). In cases where many helpers or methods from the framework’s APIs were used, some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named …` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
