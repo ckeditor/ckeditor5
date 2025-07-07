@@ -42,7 +42,7 @@ The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the c
 ##### Comments and suggestions annotations
 We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
 
-#### Unified internal imports & renames
+#### Unified imports and renames in the editor API
 
 After the big New Installation Method release (v42.0.0+), some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named ...` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
