@@ -1,7 +1,7 @@
 ---
 menu-title: Next.js
-meta-title: Using CKEditor 5 with Next.js from CDN | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and CDN.
+meta-title: Using the CKEditor 5 rich-text editor with Next.js from CDN | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with the Next.js framework using both routing strategies (App Router or Pages Router) and CDN.
 category: cloud
 order: 40
 modified_at: 2023-11-14
@@ -88,7 +88,7 @@ export default CustomEditor;
 
 The `CustomEditor` component is ready to be used inside a page. The page's directory will differ depending on the selected routing strategy.
 
-CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
+The CKEditor&nbsp;5 HTML editor is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
 
 Prepare a wrapper for the `CustomEditor` component to load it on the client side.
 
