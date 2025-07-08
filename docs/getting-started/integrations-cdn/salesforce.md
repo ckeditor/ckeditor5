@@ -1,7 +1,7 @@
 ---
 menu-title: Salesforce
-meta-title: Using CKEditor 5 with Salesforce from CDN | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with Salesforce and CKEditor 5 CDN
+meta-title: Using the CKEditor 5 rich-text editor with Salesforce from CDN | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with Salesforce and CKEditor 5 CDN
 category: cloud
 order: 110
 modified_at: 2025-04-04
@@ -20,7 +20,7 @@ This section assumes you are working within the [Salesforce development platform
 ## Creating a Visualforce page
 
 <info-box>
-	The Visualforce page with CKEditor&nbsp;5 will be displayed in an iframe after embedding it in your Lightning page.
+	The Visualforce page with the CKEditor&nbsp;5 HTML editor will be displayed in an iframe after embedding it in your Lightning page.
 </info-box>
 
 To start the integration, you need to create a new Visualforce page that will be used for the CKEditor&nbsp;5 integration. Navigate to the *Setup* page of your development platform and use the search input to find *Visualforce pages*.

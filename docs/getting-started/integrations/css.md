@@ -1,20 +1,20 @@
 ---
 menu-title: CSS frameworks
-meta-title: Compatibility with CSS frameworks with npm | CKEditor 5 Documentation
-meta-description: Install, integrate, and configure CKEditor 5 using CSS frameworks
+meta-title: Compatibility of the CKEditor 5 WYSIWYG editor with CSS frameworks with npm | CKEditor 5 Documentation
+meta-description: Install, integrate, and configure the CKEditor 5 rich-text editor using CSS frameworks
 category: installation
 order: 90
 ---
 
 # Compatibility with CSS frameworks
 
-CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, to properly integrate with some of them, additional tweaks may be necessary. This is mostly because:
+CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, to properly integrate our robust HTML editor with some of them, additional tweaks may be necessary. This is mostly because:
 
 * CSS frameworks often use a higher [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) in their style sheets and override default editor styles, distorting the user interface.
 * Modal components of various UI frameworks use high `z-index` values in their styles and render over (cover) the UI of CKEditor&nbsp;5.
 * Framework modals use an aggressive focus management policy that breaks the input fields in the rich-text editor (for example, the link input).
 
-In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 WYSIWYG editor with the most popular frontend frameworks.
+In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 HTML editor with the most popular frontend frameworks.
 
 {@snippet getting-started/use-builder}
 
