@@ -157,7 +157,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true">`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const getLayeredStyles = ( layer, hrefs ) =>
-		'<style type="text/css">' +
+		'<style>' +
 			hrefs.map( href => `@import '${ href }' layer(${ layer });` ).join( '\n' ) +
 		'</style>';
 
