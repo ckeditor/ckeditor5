@@ -1,7 +1,7 @@
 ---
 category: self-hosted
 meta-title: Using the CKEditor 5 rich-text editor with Laravel from ZIP archive | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 WYSIWYG editor with Laravel using a ZIP archive.
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with Laravel using a ZIP archive. Follow step-by-step instructions for fast installation and setup.
 order: 80
 menu-title: Laravel
 ---

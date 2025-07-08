@@ -1,7 +1,7 @@
 ---
 category: cloud
 meta-title: Using the CKEditor 5 rich-text editor with Laravel from CDN | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 WYSIWYG editor with Laravel using CDN.
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with Laravel using CDN. Follow step-by-step instructions for fast installation and setup.
 order: 80
 menu-title: Laravel
 ---

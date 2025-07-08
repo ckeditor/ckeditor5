@@ -1,7 +1,7 @@
 ---
 menu-title: Salesforce
 meta-title: Using the CKEditor 5 rich-text editor with Salesforce from CDN | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 WYSIWYG editor with Salesforce and CKEditor 5 CDN
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with Salesforce and CKEditor 5 CDN. Follow step-by-step instructions for fast installation and setup.
 category: cloud
 order: 110
 modified_at: 2025-04-04

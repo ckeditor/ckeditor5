@@ -1,7 +1,7 @@
 ---
 category: cloud
 meta-title: Using the CKEditor 5 WYSIWYG editor with Spring Boot from CDN | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 rich-text editor with Spring Boot using CDN.
+meta-description: Integrate the CKEditor 5 rich-text editor with Spring Boot using CDN. Follow step-by-step instructions for fast installation and setup.
 order: 130
 menu-title: Spring Boot
 modified_at: 2025-05-06

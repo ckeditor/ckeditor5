@@ -1,7 +1,7 @@
 ---
 menu-title: CSS frameworks
 meta-title: Compatibility of the CKEditor 5 WYSIWYG editor with CSS frameworks with npm | CKEditor 5 Documentation
-meta-description: Install, integrate, and configure the CKEditor 5 rich-text editor using CSS frameworks
+meta-description: Install, integrate, and configure the CKEditor 5 rich-text editor using CSS frameworks. Follow step-by-step instructions for fast setup.
 category: installation
 order: 90
 ---

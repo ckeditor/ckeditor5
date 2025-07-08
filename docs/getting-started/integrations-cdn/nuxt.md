@@ -1,7 +1,7 @@
 ---
 menu-title: Nuxt
 meta-title: Using the CKEditor 5 rich-text editor with Nuxt from CDN | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 WYSIWYG editor with the Nuxt framework using CDN.
+meta-description: Integrate the CKEditor 5 WYSIWYG editor with the Nuxt framework using CDN. Follow step-by-step instructions for fast installation and setup.
 category: cloud
 order: 50
 modified_at: 2025-03-13

@@ -1,7 +1,7 @@
 ---
 menu-title: SharePoint (SPFx)
 meta-title: Using the CKEditor 5 WYSIWYG editor with SharePoint SPFx | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 rich-text editor with SharePoint SPFx using npm
+meta-description: Integrate the CKEditor 5 rich-text editor with SharePoint SPFx using npm. Follow step-by-step instructions for fast installation and setup.
 category: self-hosted
 order: 120
 modified_at: 2025-04-30
