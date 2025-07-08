@@ -283,6 +283,63 @@ export default class MediaEmbedEditing extends Plugin {
 					}
 				},
 				{
+					name: 'Clari',
+					url: [
+						/https:\/\/copilot\.clari\.com\/call\/([\w-]+)/
+					],
+					html: match => {
+						const callId = match[ 1 ];
+						const url = `https://copilot.clari.com/callembed/${ callId }`;
+
+						return (
+							'<div style="position: relative; height: 431px;">' +
+								`<iframe src="${ url }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
+				},
+				{
+					name: 'Chorus',
+					url: [
+						/https:\/\/chorus\.ai\/meeting\/([\w-]+)/
+					],
+					html: match => {
+						const url = match[ 0 ];
+						return (
+							'<div style="position: relative; height: 431px;">' +
+								`<iframe src="${ url }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
+				},
+				{
+					name: 'Salesloft',
+					url: [
+						/https:\/\/app\.salesloft\.com\/app\/conversation-intelligence\/recordings\/[\w-]+/
+					],
+					html: match => {
+						const url = match[ 0 ];
+						return (
+							`<a href="${ url }" target="_blank" rel="noopener noreferrer" style="display: flex; flex-direction: column; width: 100%; height: 550px; border-radius: 16px; justify-content: center; align-items: center; font-size: 14px; font-weight: 500; text-decoration: none; background-color: rgb(204, 240, 217);">
+								<svg width="58" height="74" viewBox="0 0 58 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M45.6836 67.3373C45.6836 64.0134 48.2383 61.1523 51.7967 61.1523C55.3563 61.1523 58.001 64.0134 58.001 67.3373C58.001 70.6611 55.4467 73.5222 51.8882 73.5222C48.3289 73.5222 45.6836 70.6611 45.6836 67.3373Z" fill="#B3D334"/>
+									<path d="M12.6413 14.8204C12.6413 9.8578 17.272 5.89401 23.2114 5.89401C30.9633 5.89401 35.5094 9.56083 38.1278 28.3004H39.739L42.1545 2.73675C25.0397 -3.37357 3.59581 2.94116 3.29323 21.3757C3.29323 41.2359 34.561 41.2248 34.561 59.3653C34.561 64.6612 29.9292 68.3274 24.6954 68.3274C10.8937 68.3274 7.62246 56.6157 6.91785 44.3931H5.20608L0.675781 67.4103C0.675781 67.4103 10.9444 73.522 22.0192 73.522C35.3083 73.3186 44.1677 63.4384 44.3688 53.0506C44.3688 33.0888 12.6402 28.978 12.6402 14.8213L12.6413 14.8204Z" fill="#02524B"/>
+								</svg>
+								<span style="margin-top: 32px; display: flex; align-items: center;">
+									<span class="ant-typography" style="text-align: center; font-size: 16px; color: rgb(2, 82, 75); font-weight: 500; padding: 0px; margin: 0px;">Click to open call in Salesloft</span>
+									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#02524B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px; margin-left: 8px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+								</span>
+							</a>`
+						);
+					}
+				},
+				{
 					name: 'Fireflies.AI',
 					url: [
 						/^https:\/\/app\.fireflies\.ai\/view\/[a-zA-Z0-9-_]+::([a-zA-Z0-9-_]+)?$/
