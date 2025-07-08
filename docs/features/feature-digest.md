@@ -46,20 +46,6 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='full-page-html'>
-			Full page HTML
-		</ck:card-title>
-		<ck:card-description>
-			Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
-		</ck:card-description>
-		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/full-page-html}'>
-				Feature page
-			</ck:button-link>
-		</ck:card-footer>
-	</ck:card>
-
-	<ck:card>
 		<ck:card-title level='4' heading-id='general-html-support'>
 			General HTML Support (GHS)
 		</ck:card-title>
