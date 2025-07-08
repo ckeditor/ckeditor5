@@ -1,6 +1,6 @@
 ---
 menu-title: Salesforce
-meta-title: Using the CKEditor 5 rich-text editor with Salesforcefrom ZIP archive | CKEditor 5 Documentation
+meta-title: Using the CKEditor 5 rich-text editor with Salesforce from ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate the CKEditor 5 WYSIWYG editor with Salesforce using a ZIP archive
 category: self-hosted
 order: 100
