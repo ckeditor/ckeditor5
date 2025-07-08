@@ -46,20 +46,6 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 	</ck:card>
 
 	<ck:card>
-		<ck:card-title level='4' heading-id='general-html-support'>
-			General HTML Support (GHS)
-		</ck:card-title>
-		<ck:card-description>
-			With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
-		</ck:card-description>
-		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/general-html-support}'>
-				Feature page
-			</ck:button-link>
-		</ck:card-footer>
-	</ck:card>
-
-	<ck:card>
 		<ck:card-title level='4' heading-id='html-comments'>
 			HTML comment
 		</ck:card-title>
