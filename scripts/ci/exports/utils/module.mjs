@@ -14,6 +14,12 @@ import { Import } from './import.mjs';
 import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
+import {
+	createExportResolutionError,
+	createModuleResolutionError,
+	createImportReferenceError,
+	createASTParsingError
+} from './error-utils.mjs';
 
 export class Module {
 	static load( fileName ) {
@@ -71,7 +77,14 @@ export class Module {
 						}
 					}
 					else {
-						throw new Error( 'Unknown AST export node' );
+						const errorMessage = createASTParsingError( {
+							fileName: this.fileName,
+							nodeType: 'ExportDeclaration',
+							line: node.loc?.start?.line,
+							column: node.loc?.start?.column,
+							node: node.declaration
+						} );
+						throw new Error( errorMessage );
 					}
 				} else {
 					// export type { Marker };
@@ -173,7 +186,14 @@ export class Module {
 							} ) );
 						}
 						else {
-							throw new Error( 'Unknown AST import specifier:' + specifier.imported );
+							const errorMessage = createASTParsingError( {
+								fileName: this.fileName,
+								nodeType: 'ImportSpecifier',
+								line: specifier.loc?.start?.line,
+								column: specifier.loc?.start?.column,
+								node: specifier.imported
+							} );
+							throw new Error( errorMessage );
 						}
 					}
 					else if ( specifier.type === 'ImportNamespaceSpecifier' ) {
@@ -189,9 +209,14 @@ export class Module {
 						} ) );
 					}
 					else {
-						throw new Error( 'Unknown AST import specifier:' + specifier.type + ' ' +
-							this.relativeFileName + '#' + node.loc.start.line
-						);
+						const errorMessage = createASTParsingError( {
+							fileName: this.fileName,
+							nodeType: 'ImportSpecifier',
+							line: specifier.loc?.start?.line,
+							column: specifier.loc?.start?.column,
+							node: specifier
+						} );
+						throw new Error( errorMessage );
 					}
 				}
 			},
@@ -382,7 +407,13 @@ export class Module {
 					new ExternalModule( item.importFrom );
 
 				if ( !otherModule ) {
-					throw new Error( 'No module found: ' + importFrom );
+					const errorMessage = createModuleResolutionError( {
+						fileName: this.fileName,
+						importFrom: item.importFrom,
+						packageName: this.packageName,
+						availablePackages: Array.from( packages.keys() )
+					} );
+					throw new Error( errorMessage );
 				}
 
 				return item.resolveImport( otherModule );
@@ -466,8 +497,23 @@ export class Module {
 				this._findImportReference( exportItem.importFrom, exportItem.localName ) :
 				this._findReference( exportItem.localName );
 
+			// Skip validation for external modules
+			// if (exportItem.importFrom instanceof ExternalModule) {
+			// 	continue;
+			// }
+
 			if ( !references || !references.length ) {
-				throw new Error( 'declaration not found for export' );
+				const errorMessage = createExportResolutionError( {
+					fileName: this.fileName,
+					exportName: exportItem.name,
+					localName: exportItem.localName,
+					importFrom: exportItem.importFrom?.fileName,
+					isExternalModule: exportItem.importFrom instanceof ExternalModule,
+					exportKind: exportItem.exportKind,
+					availableDeclarations: this.declarations.map( d => ( { localName: d.localName, type: d.type } ) ),
+					availableImports: this.imports.map( i => ( { localName: i.localName, importFrom: i.importFrom } ) )
+				} );
+				throw new Error( errorMessage );
 			}
 
 			exportItem.references = references;
@@ -495,7 +541,7 @@ export class Module {
 
 	_findImportReference( importFrom, referenceName ) {
 		if ( importFrom instanceof ExternalModule ) {
-			return;
+			return [];
 		}
 
 		// For `export * as ... from ...`;
@@ -506,7 +552,13 @@ export class Module {
 		const reference = importFrom.exports.find( exportItem => exportItem.name === referenceName );
 
 		if ( !reference ) {
-			throw new Error( 'No importFrom found for import ' + importFrom.fileName );
+			const errorMessage = createImportReferenceError( {
+				referenceName,
+				fileName: this.fileName,
+				importFrom: importFrom.fileName,
+				availableExports: importFrom.exports
+			} );
+			throw new Error( errorMessage );
 		}
 
 		return [ reference ];
