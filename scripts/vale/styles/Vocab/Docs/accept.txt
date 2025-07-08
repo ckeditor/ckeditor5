@@ -21,6 +21,7 @@ breakpoint
 Browserify
 bulletedList
 Chai
+[Cc]hangesets
 CKBox
 ckbox
 CKEditor
@@ -53,6 +54,7 @@ exportPdf
 exportWord
 [Ff]ocusable
 formatter
+frontmatter
 Gantt
 [Gg]etter
 global

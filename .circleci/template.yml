@@ -4,6 +4,9 @@
 # To modify commands to execute on CI review this file, and the script that generates it.
 version: 2.1
 
+orbs:
+  browser-tools: circleci/browser-tools@2.1.2
+
 # List of parameters must be synchronized between configuration files.
 parameters:
   isNightly:
@@ -40,14 +43,6 @@ commands:
               circleci step halt
             fi
 
-  prepare_environment_command:
-    description: "Prepare environment (RAM, browsers, hosts, etc.)"
-    steps:
-      # CircleCI does not use the latest Chrome. Hence, we must install it manually.
-      - run:
-          name: Install the latest Chrome
-          command: yarn ckeditor5-dev-ci-install-latest-chrome
-
   install_ssh_keys_command:
     description: "Install SSH keys"
     steps:
@@ -68,8 +63,13 @@ commands:
     description: "Clone the CKEditor 5 repository with limited depth and branches"
     steps:
       - run:
+          name: Add GitHub to known_hosts
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
           name: Checkout code (single branch)
-          command: git clone --single-branch --depth 10 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
+          command: git clone --single-branch --depth 1 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
 
   # In the PRs that come from forked repositories, we do not share secret variables.
   # Hence, some of the scripts will not be executed. See: https://github.com/ckeditor/ckeditor5/issues/7745.
@@ -101,13 +101,14 @@ commands:
 
 jobs:
   cke5_manual:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0-browsers
     resource_class: large
     steps:
       - checkout_command
       - halt_if_short_flow
       - bootstrap_repository_command
-      - prepare_environment_command
+      - browser-tools/install_chrome
       - install_newest_emoji
       - run:
           name: Prepare DLL builds in CKEditor 5
@@ -117,12 +118,12 @@ jobs:
           command: bash scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
 
   cke5_validators:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     steps:
       - checkout_command
       - bootstrap_repository_command
-      - prepare_environment_command
       - run:
           when: always
           name: Validate versions of CKEditor 5 dependencies
@@ -161,14 +162,14 @@ jobs:
           command: yarn run validate-module-re-exports
 
   cke5_coverage:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     steps:
       - community_verification_command
       - checkout_command
       - halt_if_short_flow
       - bootstrap_repository_command
-      - prepare_environment_command
       - attach_workspace:
           at: .out
       - run:
@@ -185,7 +186,8 @@ jobs:
           command: npx coveralls -v < .out/combined_lcov.info
 
   cke5_trigger_release_process:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -213,7 +215,8 @@ jobs:
           command: yarn ckeditor5-dev-ci-trigger-circle-build
 
   cke5_trigger_uber_ci:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -224,13 +227,13 @@ jobs:
           command: yarn ckeditor5-dev-ci-trigger-circle-build
 
   release_prepare:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: large
     steps:
       - checkout_command
       - halt_if_short_flow
       - bootstrap_repository_command
-      - prepare_environment_command
       - run:
           name: Check if packages are ready to be released
           command: npm run release:prepare-packages -- --compile-only --verbose
@@ -242,7 +245,8 @@ jobs:
           command: yarn run check-dependencies
 
   notify_ci_failure:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     parameters:
       hideAuthor:
@@ -261,7 +265,8 @@ jobs:
           no_output_timeout: 2h
 
   stale_bot:
-    machine: true
+    docker:
+      - image: cimg/node:22.12.0
     resource_class: medium
     steps:
       - checkout_command
