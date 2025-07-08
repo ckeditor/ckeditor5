@@ -1,7 +1,7 @@
 ---
 category: self-hosted
 meta-title: Using the CKEditor 5 WYSIWYG editor with Spring Boot from ZIP archive | CKEditor 5 Documentation
-meta-description: Integrate the CKEditor 5 rich-text editor with Spring Boot using a ZIP archive.
+meta-description: Integrate the CKEditor 5 rich-text editor with Spring Boot using a ZIP archive
 order: 130
 menu-title: Spring Boot
 modified_at: 2025-05-06
