@@ -1,19 +1,19 @@
 ---
 menu-title: SharePoint (SPFx)
-meta-title: Using CKEditor 5 with with SharePoint SPFx | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with SharePoint SPFx using npm
+meta-title: Using the CKEditor 5 WYSIWYG editor with with SharePoint SPFx | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 rich-text editor with SharePoint SPFx using npm
 category: self-hosted
 order: 120
 modified_at: 2025-04-30
 ---
 
-# Integrating CKEditor&nbsp;5 with SharePoint SPFx from npm
+# Integrating CKEditor&nbsp;5 rich-text editor with SharePoint SPFx from npm
 
 [The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in the SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 applications.
 
 ## Prerequisites
 
-Before integrating CKEditor&nbsp;5 with SharePoint, make sure you have the following installed:
+Before integrating CKEditor&nbsp;5 rich-text editor with SharePoint, make sure you have the following installed:
 
 1. [Node.js](https://nodejs.org/) (LTS version)
 2. [Yeoman generator](https://yeoman.io/) and SharePoint generator plugin:
@@ -164,15 +164,15 @@ gulp serve
 
 ### Adding the editor web part on page
 
-You should be now able to add CKEditor&nbsp;5 by clicking the plus icon on the main page:
+You should be now able to add CKEditor&nbsp;5 HTML editor  to your SharePoint application by clicking the plus icon on the main page:
 
 {@img assets/img/sharepoint-integration_03.png Screenshot of SharePoint application.}
 
-Then choose CKEditor 5 component:
+Then choose CKEditor&nbsp;5 component:
 
 {@img assets/img/sharepoint-integration_04.png Screenshot of SharePoint application.}
 
-You should now be able to use the editor:
+You should now be able to use the ricz-text editor with SharePoint:
 
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 

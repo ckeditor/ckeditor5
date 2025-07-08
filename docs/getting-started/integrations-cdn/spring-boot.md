@@ -1,7 +1,7 @@
 ---
 category: cloud
-meta-title: Using CKEditor 5 with Spring Boot from CDN | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with Spring Boot using CDN.
+meta-title: Using the CKEditor 5 WYSIWYG editor with Spring Boot from CDN | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 rich-text editor with Spring Boot using CDN.
 order: 130
 menu-title: Spring Boot
 modified_at: 2025-05-06
@@ -9,7 +9,7 @@ modified_at: 2025-05-06
 
 # Integrating CKEditor&nbsp;5 with Spring Boot from CDN
 
-As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the Java-based [Spring Boot](https://spring.io/projects/spring-boot).
+As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 rich-text editor will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the Java-based [Spring Boot](https://spring.io/projects/spring-boot).
 
 {@snippet getting-started/use-builder}
 
@@ -192,7 +192,7 @@ Now, we need to put our script in the previous template. We need to put the scri
 </html>
 ```
 
-To make this work with Spring Boot, you need to create a controller to serve the HTML page. Create a file named `HomeController.java` in your project's main package:
+To make the HTML editor work with Spring Boot, you need to create a controller to serve the HTML page. Create a file named `HomeController.java` in your project's main package:
 
 ```java
 package com.example.demo;
