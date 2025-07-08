@@ -1470,7 +1470,7 @@ CKEditor 5 provides a wide variety of tools and functions for editing almost any
 
 CKEditor 5 provides 38 professionally translated language options, along with additional languages provided by community translations. CKEditor 5 also supports right-to-left (RTL) languages natively. When an RTL language is selected, the editor automatically adjusts its interface, including elements like toolbars, dropdowns, and buttons, to ensure an optimal editing experience.
 
-<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/ui-language'>
+<ck:button-link size='sm' variant='secondary' href='{@link getting-started/setup/ui-language}'>
 	Feature page
 </ck:button-link>
 
