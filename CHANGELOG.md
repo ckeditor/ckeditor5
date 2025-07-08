@@ -7,6 +7,13 @@ We are happy to announce the release of CKEditor 5 v46.0.0.
 
 ### Release highlights
 
+> [!IMPORTANT]  
+> This is a **major release** with significant amount of changes that may affect your CKEditor&nbsp;5 integration. We strongly encourage you to read the entire [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46) to understand all the changes.
+> Pay special attention to:
+> * [Unified exports and renames in the editor API](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46#unified-exports-and-renames-in-the-editor-api): Many import/export names have changed
+> * [Introduction of the default content styles](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46#introduction-of-the-default-content-styles): New default styling that may affect your content appearance
+> These changes are designed to improve the long-term stability and maintainability of CKEditor&nbsp;5, but they require careful attention during the upgrade process.
+
 #### Line Height (⭐)
 
 The new [Line Height](https://ckeditor.com/docs/ckeditor5/latest/features/line-height.html) feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
@@ -42,7 +49,7 @@ The `AddCommandThreadCommand#isEnabled` property is no longer `false` when the c
 ##### Comments and suggestions annotations
 We have introduced dedicated methods for an easier way to get specific annotations related to a comment or a suggestion and vice versa.
 
-#### Unified imports and renames in the editor API
+#### Unified exports and renames in the editor API
 
 After the big New Installation Method release (v42.0.0+), some developers upgrading from v41-x to v42-x were greeted by the `does not provide an export named ...` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 

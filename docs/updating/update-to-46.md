@@ -20,6 +20,17 @@ Released on 9 July, 2025. ([See full release notes](https://github.com/ckeditor/
 
 CKEditor 5 v46.0.0 brings several major improvements and changes that enhance both the developer and end-user experience. This release includes significant API refinements, new features, and improvements to existing functionality. Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v46.0.0.
 
+<info-box warning>
+	This is a **major release** with significant amount of changes that may affect your CKEditor&nbsp;5 integration. We strongly encourage you to read the entire update guide to understand all the changes.
+
+	Pay special attention to:
+	* [Unified exports and renames in the editor API](#unified-exports-and-renames-in-the-editor-api): Many import/export names have changed
+	* [Introduction of the default content styles](#introduction-of-the-default-content-styles): New default styling that may affect your content appearance
+
+	These changes are designed to improve the long-term stability and maintainability of CKEditor&nbsp;5, but they require careful attention during the upgrade process.
+</info-box>
+
+
 ### Line height feature (⭐)
 
 The new {@link features/line-height line height} feature allows you to adjust the vertical spacing between lines of text, improving readability and visual harmony in your documents. This premium feature lets you set consistent line spacing across paragraphs and text blocks to enhance document accessibility and maintain visual hierarchy in your content.
@@ -50,7 +61,7 @@ We have added the `config.cloudServices.autoRefresh` configuration property to d
 
 This property opens up the ability to implement custom token handling if a certain use case requires this.
 
-### Unified imports and renames in the editor API
+### Unified exports and renames in the editor API
 
 This release is also about tidying up the rough edges that showed up after the big New Installation Method release (v42.0.0+). In cases where many helpers or methods from the framework’s APIs were used, some developers upgrading from v41.x to v42.x were greeted by the `does not provide an export named …` error. We addressed issues immediately as they were reported, but we knew it required a deeper are more comprehensive approach long-term.
 
