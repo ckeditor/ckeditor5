@@ -19,6 +19,7 @@ export {
 
 export { EditorWatchdog, type EditorWatchdogCreatorFunction, type EditorWatchdogRestartEvent } from './editorwatchdog.js';
 export { Watchdog, type WatchdogConfig } from './watchdog.js';
+export { ActionsRecorder } from './actionsrecorder.js';
 
 export type {
 	EventMap,
