@@ -440,3 +440,7 @@ return myPlugin.doSomething();
 ```
 
 For more information about creating custom plugins, see the {@link framework/architecture/plugins Plugins architecture} guide and the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial.
+
+## Error handling
+
+If an error occurs while processing the script on the server side, the API will return an error and include the specific information about the encountered problem in the `data.error` object. Additionally, a `trace_id` is returned, which allows you to look up more detailed information about the specific event on the server. This makes it easier to quickly diagnose and resolve issues based on the provided identifier.
