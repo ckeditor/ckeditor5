@@ -1,6 +1,6 @@
 ---
 menu-title: Next.js
-meta-title: Using the CKEditor 5 rich-text editor with Next.jsfrom npm | CKEditor 5 Documentation
+meta-title: Using the CKEditor 5 rich-text editor with Next.js from npm | CKEditor 5 Documentation
 meta-description: Integrate the CKEditor 5 WYSIWYG editor with the Next.js framework using both routing strategies (App Router or Pages Router) and npm.
 category: self-hosted
 order: 40
