@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Context from '@ckeditor/ckeditor5-core/src/context.js';
-import CloudServicesCore from '../src/cloudservicescore.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
+import { CloudServicesCore } from '../src/cloudservicescore.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import UploadGateway from '../src/uploadgateway/uploadgateway.js';
-import Token from '../src/token/token.js';
+import { UploadGateway } from '../src/uploadgateway/uploadgateway.js';
+import { Token } from '../src/token/token.js';
 
 describe( 'CloudServicesCore', () => {
 	let context, cloudServicesCorePlugin, requests;

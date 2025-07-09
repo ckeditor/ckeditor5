@@ -7,9 +7,9 @@
  * @module show-blocks
  */
 
-export { default as ShowBlocks } from './showblocks.js';
-export { default as ShowBlocksCommand } from './showblockscommand.js';
-export { default as ShowBlocksEditing } from './showblocksediting.js';
-export { default as ShowBlocksUI } from './showblocksui.js';
+export { ShowBlocks } from './showblocks.js';
+export { ShowBlocksCommand } from './showblockscommand.js';
+export { ShowBlocksEditing } from './showblocksediting.js';
+export { ShowBlocksUI } from './showblocksui.js';
 
 import './augmentation.js';

@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../../src/view/view.js';
-import UIElement from '../../../src/view/uielement.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import ViewAttribtueElement from '../../../src/view/attributeelement.js';
-import ViewText from '../../../src/view/text.js';
-import ViewRange from '../../../src/view/range.js';
+import { EditingView } from '../../../src/view/view.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewText } from '../../../src/view/text.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import createViewRoot from '../_utils/createroot.js';
-import { setData as setViewData } from '../../../src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createViewRoot } from '../_utils/createroot.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'View', () => {
 	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
 	function createUIElement( name, contents ) {
-		const element = new UIElement( viewDocument, name );
+		const element = new ViewUIElement( viewDocument, name );
 
 		element.render = function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
@@ -38,7 +38,7 @@ describe( 'View', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		view = new View( new StylesProcessor() );
+		view = new EditingView( new StylesProcessor() );
 		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
@@ -187,7 +187,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 1', () => {
 				// <container:p><attribute:b>foo{}</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -208,7 +208,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 2', () => {
 				// <container:p><attribute:b>foo[]</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -237,8 +237,8 @@ describe( 'View', () => {
 				// 		</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
-				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttributeElement( viewDocument, 'i', null, b );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 
 				viewRoot._appendChild( p );
@@ -267,8 +267,8 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
@@ -298,8 +298,8 @@ describe( 'View', () => {
 				// 		bar
 				// </container:p>
 
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
@@ -320,42 +320,42 @@ describe( 'View', () => {
 			} );
 
 			it( 'do nothing if selection is not directly before ui element', () => {
-				setViewData( view, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
+				_setViewData( view, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 2 );
 			} );
 
 			it( 'do nothing if selection is in attribute element but not before ui element', () => {
-				setViewData( view, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
+				_setViewData( view, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before non-empty attribute element', () => {
-				setViewData( view, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
+				_setViewData( view, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'fo', 2 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 1', () => {
-				setViewData( view, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
+				_setViewData( view, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 2', () => {
-				setViewData( view, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
+				_setViewData( view, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is at the end of last container element', () => {
-				setViewData( view, '<container:p>foo{}</container:p>' );
+				_setViewData( view, '<container:p>foo{}</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
@@ -364,14 +364,14 @@ describe( 'View', () => {
 
 		describe( 'non-collapsed selection', () => {
 			it( 'should do nothing', () => {
-				setViewData( view, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
+				_setViewData( view, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 1, 'foo', 3 );
 			} );
 
 			it( 'should do nothing if selection is not before ui element - shift key pressed', () => {
-				setViewData( view, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
+				_setViewData( view, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
 				check( 'foo', 1, 'foo', 2 );
@@ -406,8 +406,8 @@ describe( 'View', () => {
 				// 		<ui:span>xxx</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
-				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttributeElement( viewDocument, 'i', null, b );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -435,8 +435,8 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 				viewRoot._appendChild( p );
 

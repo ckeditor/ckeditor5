@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Observer from '../../../src/view/observer/observer.js';
-import View from '../../../src/view/view.js';
+import { Observer } from '../../../src/view/observer/observer.js';
+import { EditingView } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'Observer', () => {
 	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
-			const view = new View( new StylesProcessor() );
+			const view = new EditingView( new StylesProcessor() );
 			const observer = new Observer( view );
 
 			expect( observer ).to.be.an.instanceof( Observer );

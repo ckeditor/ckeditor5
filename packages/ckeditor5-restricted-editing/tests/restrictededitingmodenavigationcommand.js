@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand.js';
+import { RestrictedEditingModeNavigationCommand } from '../src/restrictededitingmodenavigationcommand.js';
 
 describe( 'RestrictedEditingModeNavigationCommand', () => {
 	let editor, forwardCommand, backwardCommand, model;
@@ -43,7 +43,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 		describe( 'isEnabled', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should be true when there is a marker after the selection position if editor is read-write', () => {
-					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -60,7 +60,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be true when there is a marker after the selection position if editor is read-only', () => {
-					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -78,7 +78,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when there is no marker after the selection position', () => {
-					setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -95,7 +95,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -112,7 +112,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -129,7 +129,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -148,7 +148,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 			describe( 'expanded selection', () => {
 				it( 'should be true when there is a marker after the first selection position if editor is read-write', () => {
-					setModelData( model, '<paragraph>[fo]o bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[fo]o bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -165,7 +165,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be true when there is a marker after the first selection position if editor is read-only', () => {
-					setModelData( model, '<paragraph>[fo]o bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[fo]o bar baz</paragraph>' );
 					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -183,7 +183,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be true when the selection overlaps the marker but the start position is before it', () => {
-					setModelData( model, '<paragraph>[foo ba]r baz</paragraph>' );
+					_setModelData( model, '<paragraph>[foo ba]r baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -200,7 +200,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the start position is after it', () => {
-					setModelData( model, '<paragraph>foo ba[r baz]</paragraph>' );
+					_setModelData( model, '<paragraph>foo ba[r baz]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -221,7 +221,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 		describe( 'execute()', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should move to the next marker', () => {
-					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -244,14 +244,14 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when at the end of adjacent one', () => {
-					setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+					_setModelData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
 
 					const fiirstParagraph = model.document.getRoot().getChild( 0 );
 					const secondParagraph = model.document.getRoot().getChild( 1 );
@@ -275,11 +275,11 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[bar]</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[bar]</paragraph>' );
 				} );
 
 				it( 'should move to the closest marker when created in a reverse order', () => {
-					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -302,16 +302,16 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 
 			describe( 'expanded selection', () => {
 				it( 'should move to the next marker when the selection end overlaps the marker', () => {
-					setModelData( model, '<paragraph>[foo b]ar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[foo b]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -334,14 +334,14 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 
 				it( 'should move to the next marker when the selection start overlaps the marker', () => {
-					setModelData( model, '<paragraph>foo b[ar b]az</paragraph>' );
+					_setModelData( model, '<paragraph>foo b[ar b]az</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -364,7 +364,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					forwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 				} );
 			} );
 		} );
@@ -374,7 +374,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 		describe( 'isEnabled', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should be true when there is a marker before the selection position if editor is read-write', () => {
-					setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -391,7 +391,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be true when there is a marker before the selection position if editor is read-only', () => {
-					setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
 					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -409,7 +409,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when there is no marker before the selection position', () => {
-					setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -426,7 +426,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is at a marker end and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -443,7 +443,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is in a marker and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo b[]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -460,7 +460,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection position is at a marker start and there are no more markers', () => {
-					setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
+					_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -479,7 +479,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 			describe( 'expanded selection', () => {
 				it( 'should be true when there is a marker before the first selection position if editor is read-write', () => {
-					setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -496,7 +496,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be true when there is a marker before the first selection position if editor is read-only', () => {
-					setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
 					editor.enableReadOnlyMode( 'unit-test' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
@@ -514,7 +514,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the start position is after it', () => {
-					setModelData( model, '<paragraph>foo b[ar baz]</paragraph>' );
+					_setModelData( model, '<paragraph>foo b[ar baz]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -531,7 +531,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 				} );
 
 				it( 'should be false when the selection overlaps the marker but the after position is after it', () => {
-					setModelData( model, '<paragraph>[foo b]ar baz</paragraph>' );
+					_setModelData( model, '<paragraph>[foo b]ar baz</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -552,7 +552,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 		describe( 'execute()', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should move to the previous marker', () => {
-					setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz[]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -575,11 +575,11 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 
 				it( 'should move to the previous marker when at the beginning of adjacent one', () => {
-					setModelData( model, '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+					_setModelData( model, '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
 					const fiirstParagraph = model.document.getRoot().getChild( 0 );
 					const secondParagraph = model.document.getRoot().getChild( 1 );
@@ -603,11 +603,11 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph><paragraph>bar</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph><paragraph>bar</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker', () => {
-					setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -630,14 +630,14 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 
 				it( 'should move to the closest previous marker when created in a reverse order', () => {
-					setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar baz qux[]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -660,16 +660,16 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar [baz] qux</paragraph>' );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz qux</paragraph>' );
 				} );
 			} );
 
 			describe( 'expanded selection', () => {
 				it( 'should move to the previous marker when the selection end overlaps the marker', () => {
-					setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
+					_setModelData( model, '<paragraph>foo bar b[az]</paragraph>' );
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -692,7 +692,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 					} );
 
 					backwardCommand.execute();
-					expect( getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
+					expect( _getModelData( model ) ).to.equal( '<paragraph>foo [bar] baz</paragraph>' );
 				} );
 			} );
 		} );

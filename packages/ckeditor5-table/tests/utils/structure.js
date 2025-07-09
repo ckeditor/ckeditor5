@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import TableEditing from '../../src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { TableEditing } from '../../src/tableediting.js';
 
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable } from '../_utils/utils.js';
 import { getHorizontallyOverlappingCells, getVerticallyOverlappingCells } from '../../src/utils/structure.js';
 
@@ -43,7 +43,7 @@ describe( 'table utils', () => {
 				// +    +    +----+----+----+
 				// |    |    | 42 | 43 | 44 |
 				// +----+----+----+----+----+
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { contents: '00', rowspan: 5 }, { contents: '01', rowspan: 3 }, '02', { contents: '03', rowspan: 2 }, '04' ],
 					[ { contents: '12', rowspan: 3 }, '14' ],
 					[ { contents: '23', rowspan: 2 }, '24' ],
@@ -90,7 +90,7 @@ describe( 'table utils', () => {
 				// +----+----+----+----+----+
 				// | 40 | 41 | 42 | 43 | 44 |
 				// +----+----+----+----+----+
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { contents: '00', colspan: 5 } ],
 					[ { contents: '10', colspan: 3 }, { contents: '13', colspan: 2 } ],
 					[ '20', { contents: '21', colspan: 3 }, '24' ],

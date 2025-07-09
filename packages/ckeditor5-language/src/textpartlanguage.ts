@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import TextPartLanguageEditing from './textpartlanguageediting.js';
-import TextPartLanguageUI from './textpartlanguageui.js';
+import { TextPartLanguageEditing } from './textpartlanguageediting.js';
+import { TextPartLanguageUI } from './textpartlanguageui.js';
 
 /**
  * The text part language feature.
@@ -27,7 +27,7 @@ import TextPartLanguageUI from './textpartlanguageui.js';
  * {@link module:language/textpartlanguageediting~TextPartLanguageEditing text part language editing feature}
  * and the {@link module:language/textpartlanguageui~TextPartLanguageUI text part language UI feature}.
  */
-export default class TextPartLanguage extends Plugin {
+export class TextPartLanguage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

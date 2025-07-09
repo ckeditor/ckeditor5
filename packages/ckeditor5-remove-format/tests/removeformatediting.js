@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import RemoveFormatCommand from '../src/removeformatcommand.js';
-import RemoveFormatEditing from '../src/removeformatediting.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { RemoveFormatCommand } from '../src/removeformatcommand.js';
+import { RemoveFormatEditing } from '../src/removeformatediting.js';
 
 describe( 'RemoveFormat', () => {
 	let editor;

@@ -7,7 +7,7 @@
  * @module ui/editableui/editableuiview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
@@ -15,7 +15,7 @@ import type { Locale, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 /**
  * The editable UI view class.
  */
-export default class EditableUIView extends View {
+export class EditableUIView extends View {
 	/**
 	 * The name of the editable UI view.
 	 */

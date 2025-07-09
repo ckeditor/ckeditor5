@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BubblingEventInfo from '../../../src/view/observer/bubblingeventinfo.js';
+import { BubblingEventInfo } from '../../../src/view/observer/bubblingeventinfo.js';
 
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 
 describe( 'BubblingEventInfo', () => {
 	it( 'should be created properly', () => {

@@ -7,14 +7,14 @@
  * @module find-and-replace/replacecommand
 */
 
-import type { ResultType } from './findandreplace.js';
+import type { FindResultType } from './findandreplace.js';
 import { sortSearchResultsByMarkerPositions } from './findandreplacestate.js';
-import { ReplaceCommandBase } from './replacecommandbase.js';
+import { FindReplaceCommandBase } from './replacecommandbase.js';
 
 /**
  * The replace command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  */
-export default class ReplaceCommand extends ReplaceCommandBase {
+export class ReplaceCommand extends FindReplaceCommandBase {
 	/**
 	 * Replace a given find result by a string or a callback.
 	 *
@@ -22,7 +22,7 @@ export default class ReplaceCommand extends ReplaceCommandBase {
 	 *
 	 * @fires execute
 	 */
-	public override execute( replacementText: string, result: ResultType ): void {
+	public override execute( replacementText: string, result: FindResultType ): void {
 		// We save highlight offset here, as the information about the highlighted result will be lost after the changes.
 		//
 		// It happens because result list is partially regenerated if the result is removed from the paragraph.

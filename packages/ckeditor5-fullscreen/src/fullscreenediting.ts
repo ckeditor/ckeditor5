@@ -10,12 +10,12 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { env } from 'ckeditor5/src/utils.js';
 
-import FullscreenCommand from './fullscreencommand.js';
+import { FullscreenCommand } from './fullscreencommand.js';
 
 /**
  * A plugin that registers the fullscreen mode command.
  */
-export default class FullscreenEditing extends Plugin {
+export class FullscreenEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

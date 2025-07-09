@@ -9,16 +9,16 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import PageBreakCommand from './pagebreakcommand.js';
+import { PageBreakCommand } from './pagebreakcommand.js';
 
 import '../theme/pagebreak.css';
 
 /**
  * The page break editing feature.
  */
-export default class PageBreakEditing extends Plugin {
+export class PageBreakEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -111,7 +111,18 @@ export default class PageBreakEditing extends Plugin {
 						return null;
 					}
 
-					return { name: true };
+					return {
+						name: true,
+
+						styles: [
+							...( hasPageBreakBefore ? [ 'page-break-before' ] : [] ),
+							...( hasPageBreakAfter ? [ 'page-break-after' ] : [] )
+						],
+
+						...element.hasClass( 'page-break' ) && {
+							classes: [ 'page-break' ]
+						}
+					};
 				},
 				model: 'pageBreak',
 
@@ -125,12 +136,12 @@ export default class PageBreakEditing extends Plugin {
 }
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a page break widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+ * Converts a given {@link module:engine/view/element~ViewElement} to a page break widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} allowing to
  *   recognize the page break widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  */
-function toPageBreakWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+function toPageBreakWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'pageBreak', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );

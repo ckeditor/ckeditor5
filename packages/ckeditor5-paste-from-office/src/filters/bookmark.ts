@@ -8,16 +8,18 @@
  */
 
 import {
-	type UpcastWriter,
+	type ViewUpcastWriter,
 	type ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 /**
  * Transforms `<a>` elements which are bookmarks by moving their children after the element.
+ *
+ * @internal
  */
-export default function transformBookmarks(
+export function transformBookmarks(
 	documentFragment: ViewDocumentFragment,
-	writer: UpcastWriter
+	writer: ViewUpcastWriter
 ): void {
 	const elementsToChange = [];
 

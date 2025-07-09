@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import normalizeToolbarConfig from '../../src/toolbar/normalizetoolbarconfig.js';
+import { normalizeToolbarConfig } from '../../src/toolbar/normalizetoolbarconfig.js';
 
 describe( 'normalizeToolbarConfig()', () => {
 	it( 'normalizes the config specified as an Array', () => {

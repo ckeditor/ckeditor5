@@ -12,7 +12,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { IconBrowseFiles, IconImageAssetManager } from 'ckeditor5/src/icons.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
-import type CKFinderCommand from './ckfindercommand.js';
+import { type CKFinderCommand } from './ckfindercommand.js';
 
 /**
  * Introduces UI components for `CKFinder` plugin.
@@ -24,7 +24,7 @@ import type CKFinderCommand from './ckfindercommand.js';
  *
  * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component.
  */
-export default class CKFinderUI extends Plugin {
+export class CKFinderUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

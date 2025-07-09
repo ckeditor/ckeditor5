@@ -4,8 +4,8 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import HighlightedTextView from '../../src/highlightedtext/highlightedtextview.js';
-import LabelWithHighlightView from '../../src/highlightedtext/labelwithhighlightview.js';
+import { HighlightedTextView } from '../../src/highlightedtext/highlightedtextview.js';
+import { LabelWithHighlightView } from '../../src/highlightedtext/labelwithhighlightview.js';
 
 describe( 'LabelWithHighlightView', () => {
 	let view;

@@ -16,7 +16,7 @@ import {
 /**
  * The code block indentation increase command plugin.
  */
-export default class IndentCodeBlockCommand extends Command {
+export class IndentCodeBlockCommand extends Command {
 	/**
 	 * A sequence of characters added to the line when the command is executed.
 	 */

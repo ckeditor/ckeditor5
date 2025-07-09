@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../../src/list/listediting.js';
+import { ListEditing } from '../../../src/list/listediting.js';
 
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import EmptyBlock from '@ckeditor/ckeditor5-html-support/src/emptyblock.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { EmptyBlock } from '@ckeditor/ckeditor5-html-support/src/emptyblock.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { setupTestHelpers } from '../_utils/utils.js';
-import stubUid from '../_utils/uid.js';
+import { stubUid } from '../_utils/uid.js';
 
 describe( 'ListEditing - EmptyBlock integration', () => {
 	let editor, view, test;

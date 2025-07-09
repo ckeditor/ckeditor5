@@ -10,7 +10,7 @@
 import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import { IconContentLock } from 'ckeditor5/src/icons.js';
 import {
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	MenuBarMenuListItemButtonView,
@@ -25,7 +25,7 @@ import { Collection } from 'ckeditor5/src/utils.js';
  * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate between exceptions across
  * the document.
  */
-export default class RestrictedEditingModeUI extends Plugin {
+export class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -144,7 +144,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 		const command: Command = editor.commands.get( commandName )!;
 		const definition: ListDropdownItemDefinition = {
 			type: 'button' as const,
-			model: new ViewModel( {
+			model: new UIModel( {
 				label,
 				withText: true,
 				keystroke,

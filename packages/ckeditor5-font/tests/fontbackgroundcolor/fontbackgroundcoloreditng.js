@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { FontBackgroundColorEditing } from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'FontBackgroundColorEditing', () => {
@@ -177,7 +177,7 @@ describe( 'FontBackgroundColorEditing', () => {
 
 			tests.forEach( test => {
 				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
-					setModelData( doc, `<paragraph>fo<$text fontBackgroundColor="${ test }">o b</$text>ar</paragraph>` );
+					_setModelData( doc, `<paragraph>fo<$text fontBackgroundColor="${ test }">o b</$text>ar</paragraph>` );
 
 					expect( editor.getData() ).to.equal( `<p>fo<span style="background-color:${ test };">o b</span>ar</p>` );
 				} );
@@ -224,7 +224,7 @@ describe( 'FontBackgroundColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
 		} );
@@ -234,7 +234,7 @@ describe( 'FontBackgroundColorEditing', () => {
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+			expect( _getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
 		} );
@@ -256,7 +256,7 @@ describe( 'FontBackgroundColorEditing', () => {
 					const data = `<p>f<span style="background-color: ${ test }">o</span>o</p>`;
 					editor.setData( data );
 
-					expect( getModelData( doc ) )
+					expect( _getModelData( doc ) )
 						.to.equal( `<paragraph>[]f<$text fontBackgroundColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
 
 					expect( editor.getData() )
@@ -273,7 +273,7 @@ describe( 'FontBackgroundColorEditing', () => {
 				'<p>b<span style="background-color:#fff;">a</span>z</p>'
 			);
 
-			expect( getModelData( doc ) ).to.equal(
+			expect( _getModelData( doc ) ).to.equal(
 				'<paragraph>[]f<$text fontBackgroundColor="lightgreen">o</$text>o</paragraph>' +
 				'<paragraph>f<$text fontBackgroundColor="hsl(200,100%,50%)">o</$text>o</paragraph>' +
 				'<paragraph>b<$text fontBackgroundColor="rgba(1,2,3,.4)">a</$text>r</paragraph>' +

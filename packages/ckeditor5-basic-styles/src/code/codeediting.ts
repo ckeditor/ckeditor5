@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { TwoStepCaretMovement, inlineHighlight } from 'ckeditor5/src/typing.js';
 
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const CODE = 'code';
 const HIGHLIGHT_CLASS = 'ck-code_selected';
@@ -21,7 +21,7 @@ const HIGHLIGHT_CLASS = 'ck-code_selected';
  * It registers the `'code'` command and introduces the `code` attribute in the model which renders to the view
  * as a `<code>` element.
  */
-export default class CodeEditing extends Plugin {
+export class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

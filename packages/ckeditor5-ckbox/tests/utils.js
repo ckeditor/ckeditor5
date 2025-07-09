@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getWorkspaceId, getImageUrls, blurHashToDataUrl, convertMimeTypeToExtension, getContentTypeOfUrl } from '../src/utils.js';
 
 describe( 'utils', () => {

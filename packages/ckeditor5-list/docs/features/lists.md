@@ -71,6 +71,43 @@ Click the second list and use the ordered list {@icon @ckeditor/ckeditor5-icons/
 	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Feature-rich editor} and {@link examples/builds/document-editor Document editor} examples.
 </info-box>
 
+### List item marker formatting
+
+The list item marker formatting feature automatically applies text formatting to list item markers when the entire content of the list item shares the same formatting. It integrates with the {@link features/font font feature} and {@link features/basic-styles basic styles feature}, supporting the following formatting options:
+
+* **Bold** and **italic** (from basic styles),
+* **Font color**, **font size**, and **font family** (from font).
+
+When this feature is enabled, if the whole list item content is consistently styled using any of the supported formats, the bullet or number marker will reflect the same style automatically. For example, if a list item is entirely bold, its marker will appear bold as well.
+
+#### Demo
+
+Select the entire content of a list item and apply a format like bold, italic, or a font style. If the whole item is formatted, the list marker will automatically update to match.
+
+{@snippet features/lists-marker-formatting}
+
+#### Disabling marker formatting
+
+This feature is enabled by default. To disable it, use the following configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, List, Bold } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ List, Bold, /* ... */ ],
+		toolbar: [ 'bulletedList', 'numberedList', 'bold', /* ... */ ]
+		list: {
+			enableListItemMarkerFormatting: false
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
 ## Installation
 
 <info-box info>
@@ -133,6 +170,34 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
+
+### Editor output configuration
+
+Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute `data-list-item-id`. The attribute is necessary to ensure that the lists feature work correctly with other editor features and mechanisms.
+
+```html
+<ul>
+	<li data-list-item-id="e72808ee4144975064acb5d66e5cfba13">Hello</li>
+	<li data-list-item-id="e5d719ab356409767e9d4358485476358">There!</li>
+</ul>
+```
+
+If data loaded in the editor does not contain the `data-list-item-id` attributes on list items, they will be automatically added when data is saved.
+
+If you wish to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method. **However, please note, that data without IDs should be used only for presentation purposes (such as displaying the document as HTML), and should not be used to initialize the editor.**
+
+```js
+editor.getData( { skipListItemIds: true } );
+```
+
+Such output will not contain `data-list-item-id` attribute:
+
+```html
+<ul>
+	<li>Hello</li>
+	<li>There!</li>
+</ul>
+```
 
 ## Related features
 

@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { FontColorEditing } from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import DataFilter from '../src/datafilter.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { DataFilter } from '../src/datafilter.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getModelDataWithAttributes } from './_utils/utils.js';
-import { addBackgroundRules, addBorderRules, addMarginRules, addPaddingRules } from '@ckeditor/ckeditor5-engine';
+import { addBackgroundStylesRules, addBorderStylesRules, addMarginStylesRules, addPaddingStylesRules } from '@ckeditor/ckeditor5-engine';
 import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
-import GeneralHtmlSupport from '../src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema, htmlSupport;
@@ -85,7 +85,7 @@ describe( 'DataFilter', () => {
 		it( 'should allow element registered in init() method', () => {
 			initEditor.setData( '<article><p>foobar</p></article>' );
 
-			expect( getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( initModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlArticle><paragraph>foobar</paragraph></htmlArticle>'
 			);
 
@@ -95,7 +95,7 @@ describe( 'DataFilter', () => {
 		it( 'should allow element registered in afterInit() method', () => {
 			initEditor.setData( '<section><p>foobar</p></section>' );
 
-			expect( getModelData( initModel, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( initModel, { withoutSelection: true } ) ).to.equal(
 				'<htmlSection><paragraph>foobar</paragraph></htmlSection>'
 			);
 
@@ -159,7 +159,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><htmlInput htmlContent=""></htmlInput></paragraph>'
 			);
 
@@ -174,7 +174,7 @@ describe( 'DataFilter', () => {
 				' Your browser does not support the video tag.</video>' +
 				'</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
 				'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag."></htmlVideo>' +
@@ -200,14 +200,14 @@ describe( 'DataFilter', () => {
 					'Your browser does not support the video tag.</video>' +
 				'</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>' +
 					'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
 					'Your browser does not support the video tag."></htmlVideo>' +
 				'</paragraph>'
 			);
 
-			expect( getViewData( editor.editing.view, {
+			expect( _getViewData( editor.editing.view, {
 				withoutSelection: true,
 				renderRawElements: true,
 				domConverter: editor.editing.view.domConverter
@@ -237,7 +237,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foobar</xyz>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<htmlXyz htmlContent="foobar"></htmlXyz>'
 			);
 
@@ -428,7 +428,7 @@ describe( 'DataFilter', () => {
 				'<section><paragraph>section2</paragraph></section></article>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<htmlArticle><paragraph>section1section2</paragraph></htmlArticle>'
 			);
 
@@ -443,7 +443,7 @@ describe( 'DataFilter', () => {
 				'<section><paragraph>section2</paragraph></section></article>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<htmlArticle>' +
 				'<htmlSection><paragraph>section1</paragraph></htmlSection>' +
 				'<htmlSection><paragraph>section2</paragraph></htmlSection></htmlArticle>'
@@ -466,7 +466,7 @@ describe( 'DataFilter', () => {
 				'</section></section></section>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<htmlSection><paragraph>1</paragraph>' +
 				'<htmlSection><paragraph>2</paragraph>' +
 				'<htmlSection><paragraph>3</paragraph>' +
@@ -486,13 +486,13 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<hr>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<htmlHr></htmlHr>'
 			);
 
 			expect( editor.getData() ).to.equal( '<hr>' );
 
-			expect( getViewData( editor.editing.view, {
+			expect( _getViewData( editor.editing.view, {
 				withoutSelection: true,
 				renderRawElements: true,
 				showType: true,
@@ -672,7 +672,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<section data-foo="a" data-bar="b"><p>foobar</p></section>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.deep.equal(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.deep.equal(
 				'<htmlSection htmlSectionAttributes="{"attributes":{"data-foo":"a","data-bar":"b"}}">' +
 					'<paragraph>foobar</paragraph>' +
 				'</htmlSection>'
@@ -902,7 +902,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foo</xyz>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should not register converters for non registered builtin features (register only fallbacks)', () => {
@@ -922,7 +922,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foo</xyz>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foo</htmlXyz>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foo</htmlXyz>' );
 			expect( model.schema.isRegistered( 'xyz' ), 'xyz' ).to.be.false;
 			expect( model.schema.isRegistered( 'htmlXyz' ), 'htmlXyz' ).to.be.true;
 		} );
@@ -1381,7 +1381,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><xyz>foobar</xyz></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			editor.getData( '<p>foobar</p>' );
 		} );
@@ -1397,7 +1397,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><xyz>foobar</xyz></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
 
 			editor.getData( '<p>foobar</p>' );
 		} );
@@ -1405,7 +1405,7 @@ describe( 'DataFilter', () => {
 		it( 'should use correct priority level for existing features', () => {
 			// 'a' element is registered by data schema with priority 5.
 			// We are checking if this element will be correctly nested due to different
-			// AttributeElement priority than default.
+			// ViewAttributeElement priority than default.
 			dataFilter.allowElement( 'a' );
 			dataFilter.allowAttributes( { name: 'a', attributes: { 'data-foo': 'foo' } } );
 
@@ -3167,7 +3167,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new styles if no attribute element is present', () => {
-				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				htmlSupport.setModelHtmlStyles( 'cite', {
 					'background-color': 'blue',
@@ -3192,7 +3192,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new styles if no classes or other attributes are present', () => {
-				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				htmlSupport.setModelHtmlStyles( 'cite', {
 					'background-color': 'blue',
@@ -3386,7 +3386,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes if no attribute element is present', () => {
-				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
@@ -3405,11 +3405,11 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes to a collapsed selection', () => {
-				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo","bar"]}">[]</$text>bar</paragraph>'
 				);
 
@@ -3419,7 +3419,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should remove classes from a collapsed selection', () => {
-				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'htmlCite', {
@@ -3429,7 +3429,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', 'bar', model.document.selection );
 
-				expect( getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo<$text htmlCite="{"classes":["foo"]}">[]</$text>bar</paragraph>'
 				);
 
@@ -3439,7 +3439,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should remove all classes from a collapsed selection', () => {
-				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'htmlCite', {
@@ -3449,7 +3449,7 @@ describe( 'DataFilter', () => {
 
 				htmlSupport.removeModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
-				expect( getModelData( model ) ).to.deep.equal(
+				expect( _getModelData( model ) ).to.deep.equal(
 					'<paragraph>foo[]bar</paragraph>'
 				);
 
@@ -3459,7 +3459,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new classes if no styles or other attributes are present', () => {
-				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], model.document.selection );
 
@@ -3639,7 +3639,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new attributes if no attribute element is present', () => {
-				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				htmlSupport.setModelHtmlAttributes( 'cite', {
 					'data-foo': 'bar',
@@ -3664,7 +3664,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should add new attributes if no classes or styles are present', () => {
-				setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<$text>foobar</$text>]</paragraph>' );
 
 				htmlSupport.setModelHtmlAttributes( 'cite', {
 					'data-foo': 'bar',
@@ -3856,7 +3856,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should not add new styles if the attribute is forbidden', () => {
-				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				model.schema.addAttributeCheck( ( context, attributeName ) => {
 					if ( attributeName == 'htmlCite' ) {
@@ -3880,7 +3880,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should not add new styles if the attribute is forbidden (collapsed selection)', () => {
-				setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				model.schema.addAttributeCheck( ( context, attributeName ) => {
 					if ( attributeName == 'htmlCite' ) {
@@ -3904,7 +3904,7 @@ describe( 'DataFilter', () => {
 			} );
 
 			it( 'should not add classes if selectable is null', () => {
-				setModelData( model, '<paragraph>[foobar]</paragraph>' );
+				_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 				htmlSupport.addModelHtmlClass( 'cite', [ 'foo', 'bar' ], null );
 
@@ -4280,7 +4280,7 @@ describe( 'DataFilter', () => {
 
 	describe( 'expanded styles (shorthand vs longhand notation)', () => {
 		it( 'should handle expanded styles by matcher', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: true } );
@@ -4302,7 +4302,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle longhand style for shorthand filter (background vs background-color)', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'background' } );
@@ -4324,7 +4324,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle shorthand style for longhand filter (background vs background-color)', () => {
-			editor.data.addStyleProcessorRules( addBackgroundRules );
+			editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'background' } );
@@ -4346,7 +4346,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (single box side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4368,7 +4368,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for specific full padding filter (single box side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding-left' } );
@@ -4390,7 +4390,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (multiple sides)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4413,7 +4413,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial padding for generic padding filter (box top side)', () => {
-			editor.data.addStyleProcessorRules( addPaddingRules );
+			editor.data.addStyleProcessorRules( addPaddingStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'padding' } );
@@ -4435,7 +4435,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4457,7 +4457,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style only)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4479,7 +4479,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (box bottom side style and color)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4502,7 +4502,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (missing border color)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-left' } );
@@ -4525,7 +4525,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for partial border filter (box bottom side)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-bottom' } );
@@ -4547,7 +4547,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for partial border filter (color only)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border-color' } );
@@ -4569,7 +4569,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (mixed)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4593,7 +4593,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial border for generic border filter (partly consumed)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'border' } );
@@ -4633,7 +4633,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should handle partial margin consumed for generic margin filter', () => {
-			editor.data.addStyleProcessorRules( addMarginRules );
+			editor.data.addStyleProcessorRules( addMarginStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: 'margin' } );
@@ -4677,7 +4677,7 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should store only reduced styles in model attribute (without duplicated long and shorthand)', () => {
-			editor.data.addStyleProcessorRules( addBorderRules );
+			editor.data.addStyleProcessorRules( addBorderStylesRules );
 
 			dataFilter.allowElement( 'p' );
 			dataFilter.allowAttributes( { name: 'p', styles: [ 'border' ] } );
@@ -5000,7 +5000,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<xyz>foobar</xyz>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foobar</htmlXyz>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foobar</htmlXyz>' );
 			expect( editor.getData() ).to.equal( '<xyz>foobar</xyz>' );
 		} );
 

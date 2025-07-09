@@ -7,7 +7,7 @@
  * @module ui/toolbar/block/blockbuttonview
  */
 
-import ButtonView from '../../button/buttonview.js';
+import { ButtonView } from '../../button/buttonview.js';
 
 import { toUnit, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -22,7 +22,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  *
  * See {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}.
  */
-export default class BlockButtonView extends ButtonView {
+export class BlockButtonView extends ButtonView {
 	/**
 	 * Top offset.
 	 *

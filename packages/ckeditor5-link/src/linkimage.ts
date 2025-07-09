@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import LinkImageEditing from './linkimageediting.js';
-import LinkImageUI from './linkimageui.js';
+import { LinkImageEditing } from './linkimageediting.js';
+import { LinkImageUI } from './linkimageui.js';
 
 import '../theme/linkimage.css';
 
@@ -19,7 +19,7 @@ import '../theme/linkimage.css';
  * This is a "glue" plugin that loads the {@link module:link/linkimageediting~LinkImageEditing link image editing feature}
  * and {@link module:link/linkimageui~LinkImageUI link image UI feature}.
  */
-export default class LinkImage extends Plugin {
+export class LinkImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

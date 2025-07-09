@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import TableSelection from '../src/tableselection.js';
-import TableUtils from '../src/tableutils.js';
+import { TableSelection } from '../src/tableselection.js';
+import { TableUtils } from '../src/tableutils.js';
 
-import TableClipboard from '../src/tableclipboard.js';
+import { TableClipboard } from '../src/tableclipboard.js';
 
 describe( 'table clipboard', () => {
 	let editor;

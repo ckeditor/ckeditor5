@@ -8,12 +8,12 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The resize image command. Currently, it only supports the width attribute.
  */
-export default class ResizeImageCommand extends Command {
+export class ResizeImageCommand extends Command {
 	/**
 	 * Desired image width and height.
 	 */

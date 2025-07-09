@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-list-marker-color: var(--ck-content-font-color);
+	--ck-content-list-marker-font-family: var(--ck-content-font-family);
+	--ck-content-list-marker-font-size: var(--ck-content-font-size);
+}
+
+.ck-content li {
+	/* Opinionated list content styling: prevents content shift
+	 * when a list becomes multi-block (Enter + Backspace scenario).
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:first-of-type {
+		margin-top: 0;
+	}
+
+	/* Prevents margins from appearing when a bogus paragraph
+	 * receives line height or text alignment.
+	 * Ensures a consistent experience with the first paragraph.
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:only-child {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	&.ck-list-marker-bold::marker {
+		font-weight: bold;
+	}
+
+	&.ck-list-marker-italic::marker {
+		font-style: italic;
+	}
+
+	&.ck-list-marker-color::marker {
+		color: var(--ck-content-list-marker-color);
+	}
+
+	&.ck-list-marker-font-family::marker {
+		font-family: var(--ck-content-list-marker-font-family);
+	}
+
+	&.ck-list-marker-font-size::marker {
+		font-size: var(--ck-content-list-marker-font-size);
+	}
+
+	&.ck-list-marker-font-size-tiny::marker {
+		font-size: var(--ck-content-font-size-tiny);
+	}
+
+	&.ck-list-marker-font-size-small::marker {
+		font-size: var(--ck-content-font-size-small);
+	}
+
+	&.ck-list-marker-font-size-big::marker {
+		font-size: var(--ck-content-font-size-big);
+	}
+
+	&.ck-list-marker-font-size-huge::marker {
+		font-size: var(--ck-content-font-size-huge);
+	}
+}

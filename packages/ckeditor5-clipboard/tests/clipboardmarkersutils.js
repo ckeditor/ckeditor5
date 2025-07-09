@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Clipboard from '../src/clipboard.js';
-import ClipboardMarkersUtils from '../src/clipboardmarkersutils.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+
+import { Clipboard } from '../src/clipboard.js';
+import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
 
 describe( 'Clipboard Markers Utils', () => {
 	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, getUniqueMarkerNameStub;
@@ -51,7 +52,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that is inside selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -88,7 +89,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that is outside selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -127,7 +128,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that starts before selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -165,7 +166,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that starts after selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -203,7 +204,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste markers does not affect position of markers that are after selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -247,7 +248,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to right', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -288,7 +289,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to left', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -329,7 +330,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another larger fake marker', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -372,7 +373,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( 'Restrictions', () => {
 		it( 'should not be possible to copy and paste with restrictions', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -407,7 +408,7 @@ describe( 'Clipboard Markers Utils', () => {
 				duplicateOnPaste: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -437,7 +438,7 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'should not be possible to copy partially selected markers if `copyPartiallySelected` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', copyPartiallySelected: false } );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -473,7 +474,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[Hello World]' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -516,7 +517,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -560,7 +561,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -607,7 +608,7 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			model.change( writer => {
-				const fragment = new DocumentFragment( [
+				const fragment = new ModelDocumentFragment( [
 					...createFakeMarkerElements( writer, 'comment:123', [
 						writer.createElement( 'paragraph' )
 					] ),
@@ -630,7 +631,7 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			model.change( writer => {
-				const fragment = new DocumentFragment( [
+				const fragment = new ModelDocumentFragment( [
 					...createFakeMarkerElements( writer, 'comment:123', [
 						writer.createElement( 'paragraph' )
 					] ),
@@ -678,7 +679,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		it( 'should be possible to force markers copy', () => {
 			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				setModelData(
+				_setModelData(
 					model,
 					wrapWithTag( 'paragraph', 'Start' ) +
 						wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -719,7 +720,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
 			clipboardMarkersUtils._forceMarkersCopy( 'new', () => {
-				setModelData(
+				_setModelData(
 					model,
 					wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -778,7 +779,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[Hello World]' )
 			);
@@ -795,7 +796,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_getPasteMarkersFromRangeMap', () => {
 		it( 'keeps unknown markers', () => {
-			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+			const copyMarkers = createCopyableMarkersMap( new ModelDocumentFragment(), {
 				'unknown-marker': { start: [ 0, 0 ], end: [ 0, 6 ] }
 			} );
 
@@ -809,7 +810,7 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'properly filters markers Map instance', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
-			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+			const copyMarkers = createCopyableMarkersMap( new ModelDocumentFragment(), {
 				'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
 				'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
 			} );
@@ -828,7 +829,7 @@ describe( 'Clipboard Markers Utils', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
 			const markers = Object.fromEntries(
-				createCopyableMarkersMap( new DocumentFragment(), {
+				createCopyableMarkersMap( new ModelDocumentFragment(), {
 					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
 					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
 				} ).entries()
@@ -967,7 +968,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	async function createEditor() {
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Undo, Paragraph, Clipboard ]
+			plugins: [ UndoEditing, Paragraph, Clipboard ]
 		} );
 
 		model = editor.model;
@@ -999,12 +1000,12 @@ describe( 'Clipboard Markers Utils', () => {
 	}
 
 	function createFragment( content ) {
-		let parsedContent = parse( content, model.schema, {
+		let parsedContent = _parseModel( content, model.schema, {
 			context: [ '$clipboardHolder' ]
 		} );
 
 		if ( !parsedContent.is( 'documentFragment' ) ) {
-			parsedContent = new DocumentFragment( [ parsedContent ] );
+			parsedContent = new ModelDocumentFragment( [ parsedContent ] );
 		}
 
 		return parsedContent;
@@ -1014,8 +1015,8 @@ describe( 'Clipboard Markers Utils', () => {
 		const markersMap = new Map();
 
 		for ( const [ name, value ] of Object.entries( markers ) ) {
-			markersMap.set( name, new Range(
-				new Position( fragment, value.start ), new Position( fragment, value.end )
+			markersMap.set( name, new ModelRange(
+				new ModelPosition( fragment, value.start ), new ModelPosition( fragment, value.end )
 			) );
 		}
 
@@ -1042,7 +1043,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		expect( marker ).to.not.be.null;
 
-		if ( range instanceof Range ) {
+		if ( range instanceof ModelRange ) {
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
 		} else {
 			const markerRange = marker.getRange();

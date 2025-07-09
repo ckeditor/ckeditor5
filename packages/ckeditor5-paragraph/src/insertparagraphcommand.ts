@@ -8,11 +8,11 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, ModelPosition, ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
- * {@link module:engine/model/position~Position document position}.
+ * {@link module:engine/model/position~ModelPosition document position}.
  *
  * ```ts
  * // Insert a new paragraph before an element in the document.
@@ -27,7 +27,7 @@ import type { Element, Position, Writer } from '@ckeditor/ckeditor5-engine';
  *
  * **Note**: This command moves the selection to the inserted paragraph.
  */
-export default class InsertParagraphCommand extends Command {
+export class InsertParagraphCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 
@@ -44,13 +44,13 @@ export default class InsertParagraphCommand extends Command {
 	 * @fires execute
 	 */
 	public override execute( options: {
-		position: Position;
+		position: ModelPosition;
 		attributes?: Record<string, unknown>;
-	} ): Position | null {
+	} ): ModelPosition | null {
 		const model = this.editor.model;
 		const attributes = options.attributes;
 
-		let position: Position | null = options.position;
+		let position: ModelPosition | null = options.position;
 
 		// Don't execute command if position is in non-editable place.
 		if ( !model.canEditAt( position ) ) {
@@ -80,7 +80,7 @@ export default class InsertParagraphCommand extends Command {
 	/**
 	 * Returns the best position to insert a new paragraph.
 	 */
-	private _findPositionToInsertParagraph( position: Position, writer: Writer ): Position | null {
+	private _findPositionToInsertParagraph( position: ModelPosition, writer: ModelWriter ): ModelPosition | null {
 		const model = this.editor.model;
 
 		if ( model.schema.checkChild( position, 'paragraph' ) ) {
@@ -95,7 +95,7 @@ export default class InsertParagraphCommand extends Command {
 			return null;
 		}
 
-		const positionParent = position.parent as Element;
+		const positionParent = position.parent as ModelElement;
 		const isTextAllowed = model.schema.checkChild( positionParent, '$text' );
 
 		// At empty $block or at the end of $block.

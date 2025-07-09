@@ -54,19 +54,19 @@ The {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin became a "gl
 
 From v27.0.0, the {@link module:clipboard/clipboardpipeline~ClipboardPipeline `ClipboardPipeline`} plugin is responsible for firing the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event and also the new {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event.
 
-The {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired nor stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
+The {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} and {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} events should not be fired nor stopped in your feature code. The `data.content` property should be assigned to override the default content instead. You can stop this event only if you want to completely disable pasting/dropping of some specific content.
 
 You can read about the whole input pipeline in detail in the {@link framework/deep-dive/clipboard#input-pipeline Clipboard deep-dive guide}.
 
 ### The `view.Document` event bubbling
 
-CKEditor v27.0.0 introduces bubbling of the {@link module:engine/view/document~Document `view.Document`} events, similar to how bubbling works in the DOM. This allowed us to re-prioritize many listeners that relied on the `priority` property before. However, it means that existing listeners that use priorities may now be executed at the wrong time (in a different order). You should review these listeners in terms of when to execute them (in what context/element/phase).
+CKEditor v27.0.0 introduces bubbling of the {@link module:engine/view/document~ViewDocument `view.Document`} events, similar to how bubbling works in the DOM. This allowed us to re-prioritize many listeners that relied on the `priority` property before. However, it means that existing listeners that use priorities may now be executed at the wrong time (in a different order). You should review these listeners in terms of when to execute them (in what context/element/phase).
 
 Read more about bubbling events in the {@link framework/deep-dive/event-system#view-events-bubbling Event system guide}.
 
 #### The `delete` event
 
-Before, the {@link module:engine/view/document~Document#event:delete `delete`} event was handled by different features on different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~RootEditableElement root element}.
+Before, the {@link module:engine/view/document~ViewDocument#event:delete `delete`} event was handled by different features on different priority levels to, for example, ensure the precedence of the list item over the block quote that is wrapping it. From v27.0.0 on, this precedence is handled by the events bubbling over the view document tree. Listeners registered for the view elements deeper in the view tree are now triggered before listeners for elements closer to the {@link module:engine/view/rooteditableelement~ViewRootEditableElement root element}.
 
 Take a look at the list of `delete` listeners across the core editor features and their {@link module:utils/priorities~PriorityString priorities}:
 
@@ -98,7 +98,7 @@ We recommend reviewing your integration if you attached some of your listeners t
 
 #### The `enter` event
 
-The case for the {@link module:engine/view/document~Document#event:enter `enter`} event is similar to the `delete` event.
+The case for the {@link module:engine/view/document~ViewDocument#event:enter `enter`} event is similar to the `delete` event.
 
 Here is an example of changes you may need for proper integration with the widget system:
 
@@ -125,6 +125,6 @@ We recommend reviewing your integration if you attached some of your listeners t
 
 #### The `arrowKey` event
 
-This is a new event type introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~Document#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
+This is a new event type introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~ViewDocument#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
 
 You should review your integration if you attached some of your listeners to the `keydown` event to handle arrow key presses.

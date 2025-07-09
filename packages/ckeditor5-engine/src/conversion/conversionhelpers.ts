@@ -10,7 +10,7 @@
 /**
  * Base class for conversion helpers.
  */
-export default class ConversionHelpers<TDispatcher> {
+export class ConversionHelpers<TDispatcher> {
 	private readonly _dispatchers: Array<TDispatcher>;
 
 	/**

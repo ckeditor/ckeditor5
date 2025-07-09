@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import EmojiMention from './emojimention.js';
-import EmojiPicker from './emojipicker.js';
+import { EmojiMention } from './emojimention.js';
+import { EmojiPicker } from './emojipicker.js';
 
 /**
  * The emoji plugin.
@@ -19,7 +19,7 @@ import EmojiPicker from './emojipicker.js';
  * * {@link module:emoji/emojimention~EmojiMention},
  * * {@link module:emoji/emojipicker~EmojiPicker},
  */
-export default class Emoji extends Plugin {
+export class Emoji extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
+import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
-import EditableElement from '../../src/view/editableelement.js';
-import Range from '../../src/view/range.js';
-import Document from '../../src/view/document.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
+import { ViewRange } from '../../src/view/range.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-describe( 'EditableElement', () => {
+describe( 'ViewEditableElement', () => {
 	describe( 'is', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( new Document( new StylesProcessor() ), 'div' );
+			el = new ViewEditableElement( new ViewDocument( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {
@@ -56,16 +56,16 @@ describe( 'EditableElement', () => {
 		let docMock, viewMain, viewHeader;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
+			docMock = createViewDocumentMock();
 
-			viewMain = new EditableElement( docMock, 'div' );
+			viewMain = new ViewEditableElement( docMock, 'div' );
 
-			viewHeader = new EditableElement( docMock, 'h1' );
+			viewHeader = new ViewEditableElement( docMock, 'h1' );
 			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			expect( root.isFocused ).to.be.false;
 
@@ -81,8 +81,8 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should change isFocused when selection changes', () => {
-			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = ViewRange._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = ViewRange._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
@@ -96,8 +96,8 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should change isFocused when document.isFocus changes', () => {
-			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = ViewRange._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = ViewRange._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
@@ -120,11 +120,11 @@ describe( 'EditableElement', () => {
 		let docMock;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
+			docMock = createViewDocumentMock();
 		} );
 
 		it( 'should be observable', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			expect( root.isReadOnly ).to.be.false;
 
@@ -140,7 +140,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should be bound to the document#isReadOnly', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			root.document.isReadOnly = false;
 
@@ -156,8 +156,8 @@ describe( 'EditableElement', () => {
 		let element, docMock;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
-			element = new EditableElement( docMock, 'div' );
+			docMock = createViewDocumentMock();
+			element = new ViewEditableElement( docMock, 'div' );
 		} );
 
 		it( 'should be cloned properly', () => {

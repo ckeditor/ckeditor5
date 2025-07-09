@@ -7,8 +7,8 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-import View from '../../view.js';
-import type ViewCollection from '../../viewcollection.js';
+import { View } from '../../view.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import {
 	getOptimalPosition,
@@ -21,7 +21,7 @@ import {
 	type Locale,
 	type ObservableChangeEvent,
 	type DomPoint,
-	type PositionOptions,
+	type DomOptimalPositionOptions,
 	Rect,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
@@ -53,7 +53,7 @@ const POSITION_OFF_SCREEN: DomPoint = {
  *
  * A floating container which can
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#pin pin} to any
- * {@link module:utils/dom/position~Options#target target} in the DOM and remain in that position
+ * {@link module:utils/dom/position~DomOptimalPositionOptions#target target} in the DOM and remain in that position
  * e.g. when the web page is scrolled.
  *
  * The balloon panel can be used to display contextual, non-blocking UI like forms, toolbars and
@@ -64,7 +64,7 @@ const POSITION_OFF_SCREEN: DomPoint = {
  * that the balloon can use, automatically switching from one to another when the viewport space becomes
  * scarce to keep the balloon visible to the user as long as it is possible. The balloon will also
  * accept any custom position set provided by the user compatible with the
- * {@link module:utils/dom/position~Options options}.
+ * {@link module:utils/dom/position~DomOptimalPositionOptions options}.
  *
  * ```ts
  * const panel = new BalloonPanelView( locale );
@@ -87,7 +87,7 @@ const POSITION_OFF_SCREEN: DomPoint = {
  * } );
  * ```
  */
-export default class BalloonPanelView extends View {
+export class BalloonPanelView extends View {
 	/**
 	 * A collection of the child views that creates the balloon panel contents.
 	 */
@@ -231,11 +231,11 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Attaches the panel to a specified {@link module:utils/dom/position~Options#target} with a
+	 * Attaches the panel to a specified {@link module:utils/dom/position~DomOptimalPositionOptions#target} with a
 	 * smart positioning heuristics that chooses from available positions to make sure the panel
 	 * is visible to the user i.e. within the limits of the viewport.
 	 *
-	 * This method accepts configuration {@link module:utils/dom/position~Options options}
+	 * This method accepts configuration {@link module:utils/dom/position~DomOptimalPositionOptions options}
 	 * to set the `target`, optional `limiter` and `positions` the balloon should choose from.
 	 *
 	 * ```ts
@@ -264,7 +264,7 @@ export default class BalloonPanelView extends View {
 	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
 	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	public attachTo( options: Partial<PositionOptions> ): boolean {
+	public attachTo( options: Partial<DomOptimalPositionOptions> ): boolean {
 		const target = getDomElement( options.target );
 
 		if ( target && !isVisible( target ) ) {
@@ -291,7 +291,7 @@ export default class BalloonPanelView extends View {
 			],
 			limiter: global.document.body,
 			fitInViewport: true
-		}, options ) as PositionOptions;
+		}, options ) as DomOptimalPositionOptions;
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions ) || POSITION_OFF_SCREEN;
 
@@ -316,11 +316,11 @@ export default class BalloonPanelView extends View {
 	 * Works the same way as the {@link #attachTo} method except that the position of the panel is
 	 * continuously updated when:
 	 *
-	 * * any ancestor of the {@link module:utils/dom/position~Options#target}
-	 * or {@link module:utils/dom/position~Options#limiter} is scrolled,
+	 * * any ancestor of the {@link module:utils/dom/position~DomOptimalPositionOptions#target}
+	 * or {@link module:utils/dom/position~DomOptimalPositionOptions#limiter} is scrolled,
 	 * * the browser window gets resized or scrolled.
 	 *
-	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~Options#target}
+	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~DomOptimalPositionOptions#target}
 	 * and is immune to the changing environment.
 	 *
 	 * ```ts
@@ -346,7 +346,7 @@ export default class BalloonPanelView extends View {
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	public pin( options: Partial<PositionOptions> ): void {
+	public pin( options: Partial<DomOptimalPositionOptions> ): void {
 		this.unpin();
 
 		if ( !this._startPinning( options ) ) {
@@ -392,7 +392,7 @@ export default class BalloonPanelView extends View {
 	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
 	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	private _startPinning( options: Partial<PositionOptions> ): boolean {
+	private _startPinning( options: Partial<DomOptimalPositionOptions> ): boolean {
 		if ( !this.attachTo( options ) ) {
 			return false;
 		}

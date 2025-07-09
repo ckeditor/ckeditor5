@@ -10,12 +10,12 @@
 import { escapeRegExp } from 'es-toolkit/compat';
 import { createLabeledInputText, SearchTextView, View, type SearchTextViewSearchEvent, type SearchInfoView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
-import type EmojiGridView from './emojigridview.js';
+import { type EmojiGridView } from './emojigridview.js';
 
 /**
  * A view responsible for providing an input element that allows filtering emoji by the provided query.
  */
-export default class EmojiSearchView extends View {
+export class EmojiSearchView extends View {
 	/**
 	 * The find in text input view that stores the searched string.
 	 */

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import uid from '../src/uid.js';
+import { uid } from '../src/uid.js';
 
 describe( 'utils', () => {
 	describe( 'uid', () => {

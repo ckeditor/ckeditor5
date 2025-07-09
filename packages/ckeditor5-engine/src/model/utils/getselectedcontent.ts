@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type DocumentFragment from '../documentfragment.js';
-import type DocumentSelection from '../documentselection.js';
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Range from '../range.js';
-import type Selection from '../selection.js';
-import type Writer from '../writer.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentSelection } from '../documentselection.js';
+import { type ModelElement } from '../element.js';
+import { type Model } from '../model.js';
+import { type ModelRange } from '../range.js';
+import { type ModelSelection } from '../selection.js';
+import { type ModelWriter } from '../writer.js';
 
 /**
  * @module engine/model/utils/getselectedcontent
@@ -32,11 +32,12 @@ import type Writer from '../writer.js';
  *
  * @param model The model in context of which the selection modification should be performed.
  * @param selection The selection of which content will be returned.
+ * @internal
  */
-export default function getSelectedContent(
+export function getSelectedContent(
 	model: Model,
-	selection: Selection | DocumentSelection
-): DocumentFragment {
+	selection: ModelSelection | ModelDocumentSelection
+): ModelDocumentFragment {
 	return model.change( writer => {
 		const frag = writer.createDocumentFragment();
 		const range = selection.getFirstRange();
@@ -62,7 +63,7 @@ export default function getSelectedContent(
 		// <p>x</p>[<quote><p>y</p><h>first</h></quote><p>second</p>]<p>z</p>
 		//
 		// We can easily clone this structure, preserving e.g. the <quote> element.
-		let flatSubtreeRange: Range;
+		let flatSubtreeRange: ModelRange;
 
 		if ( range.start.parent == range.end.parent ) {
 			// The original range is flat, so take it.
@@ -81,7 +82,7 @@ export default function getSelectedContent(
 			if ( item.is( '$textProxy' ) ) {
 				writer.appendText( item.data, item.getAttributes(), frag );
 			} else {
-				writer.append( writer.cloneElement( item as Element, true ), frag );
+				writer.append( writer.cloneElement( item as ModelElement, true ), frag );
 			}
 		}
 
@@ -117,8 +118,8 @@ export default function getSelectedContent(
 
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
-function removeRangeContent( range: Range, writer: Writer ) {
-	const parentsToCheck: Array<Element | DocumentFragment> = [];
+function removeRangeContent( range: ModelRange, writer: ModelWriter ) {
+	const parentsToCheck: Array<ModelElement | ModelDocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity

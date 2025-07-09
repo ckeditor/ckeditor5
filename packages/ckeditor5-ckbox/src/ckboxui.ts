@@ -23,7 +23,7 @@ import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
  *
  * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component.
  */
-export default class CKBoxUI extends Plugin {
+export class CKBoxUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

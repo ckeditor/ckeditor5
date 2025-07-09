@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Range from '../../src/model/range.js';
-import Position from '../../src/model/position.js';
-import LiveRange from '../../src/model/liverange.js';
-import Selection from '../../src/model/selection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import { parse, setData } from '../../src/dev-utils/model.js';
-import Schema from '../../src/model/schema.js';
+import { Model } from '../../src/model/model.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
+import { ModelSelection } from '../../src/model/selection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { _parseModel, _setModelData } from '../../src/dev-utils/model.js';
+import { ModelSchema } from '../../src/model/schema.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { stringifyBlocks } from './_utils/utils.js';
@@ -28,22 +28,22 @@ describe( 'Selection', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		root._appendChild( [
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) )
 		] );
-		selection = new Selection();
+		selection = new ModelSelection();
 
-		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
+		liveRange = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
+		range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2, 2 ] ) );
 
-		range1 = new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) );
-		range2 = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
-		range3 = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
+		range1 = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 4 ] ) );
+		range2 = new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) );
+		range3 = new ModelRange( new ModelPosition( root, [ 6 ] ), new ModelPosition( root, [ 7 ] ) );
 	} );
 
 	afterEach( () => {
@@ -53,20 +53,20 @@ describe( 'Selection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should be able to create an empty selection', () => {
-			const selection = new Selection();
+			const selection = new ModelSelection();
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should be able to create a selection from the given ranges', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges );
+			const selection = new ModelSelection( ranges );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, { backward: true } );
+			const selection = new ModelSelection( range1, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
@@ -74,7 +74,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, { backward: true } );
+			const selection = new ModelSelection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
@@ -82,15 +82,15 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the other selection', () => {
 			const ranges = [ range1, range2, range3 ];
-			const otherSelection = new Selection( ranges, { backward: true } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new ModelSelection( ranges, { backward: true } );
+			const selection = new ModelSelection( otherSelection );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 		} );
 
 		it( 'should be able to create a selection at the start position of an item', () => {
-			const selection = new Selection( root, 0 );
+			const selection = new ModelSelection( root, 0 );
 			const focus = selection.focus;
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
@@ -99,7 +99,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection before the specified element', () => {
-			const selection = new Selection( root.getChild( 1 ), 'before' );
+			const selection = new ModelSelection( root.getChild( 1 ), 'before' );
 			const focus = selection.focus;
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
@@ -111,11 +111,11 @@ describe( 'Selection', () => {
 		it( 'should throw an error if added ranges intersects', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [
+				new ModelSelection( [
 					liveRange,
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0, 4 ] ),
+						new ModelPosition( root, [ 1, 2 ] )
 					)
 				] );
 			}, /model-selection-range-intersects/, model );
@@ -124,7 +124,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when trying to set selection to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( {} );
+				new ModelSelection( {} );
 			}, 'model-selection-setto-not-selectable' );
 		} );
 	} );
@@ -133,7 +133,7 @@ describe( 'Selection', () => {
 		let selection;
 
 		beforeEach( () => {
-			selection = new Selection();
+			selection = new ModelSelection();
 		} );
 
 		it( 'should return true for "selection"', () => {
@@ -160,15 +160,15 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true when there is single collapsed ranges', () => {
-			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ) );
 
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should return false when there are multiple ranges', () => {
 			selection.setTo( [
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
-				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
 			] );
 
 			expect( selection.isCollapsed ).to.be.false;
@@ -185,13 +185,13 @@ describe( 'Selection', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 0 );
 
-			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ) );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 
 			selection.setTo( [
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
-				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
 			] );
 
 			expect( selection.rangeCount ).to.equal( 2 );
@@ -208,7 +208,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'is false when last range is collapsed', () => {
-			const pos = Position._createAt( root, 0 );
+			const pos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( pos );
 
@@ -220,9 +220,9 @@ describe( 'Selection', () => {
 		let r1, r2, r3;
 
 		beforeEach( () => {
-			r1 = new Range( Position._createAt( root, 2 ), Position._createAt( root, 4 ) );
-			r2 = new Range( Position._createAt( root, 4 ), Position._createAt( root, 6 ) );
-			r3 = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			r1 = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 4 ) );
+			r2 = new ModelRange( ModelPosition._createAt( root, 4 ), ModelPosition._createAt( root, 6 ) );
+			r3 = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 			selection.setTo( [ r1, r2 ] );
 		} );
 
@@ -248,7 +248,7 @@ describe( 'Selection', () => {
 		it( 'should set selection to be same as given selection, using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
 
-			const otherSelection = new Selection( [ range1, range2 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1, range2 ], { backward: true } );
 
 			selection.setTo( otherSelection );
 
@@ -282,7 +282,7 @@ describe( 'Selection', () => {
 
 		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
-			const position = new Position( root, [ 4 ] );
+			const position = new ModelPosition( root, [ 4 ] );
 
 			selection.setTo( position );
 
@@ -298,9 +298,9 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo( [
 					liveRange,
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0, 4 ] ),
+						new ModelPosition( root, [ 1, 2 ] )
 					)
 				] );
 			}, /model-selection-range-intersects/, model );
@@ -319,7 +319,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+			const element = new ModelElement( 'p', null, [ new ModelText( 'foo' ), new ModelText( 'bar' ) ] );
 
 			selection.setTo( element, 'in' );
 
@@ -332,10 +332,10 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection on an item', () => {
-			const textNode1 = new Text( 'foo' );
-			const textNode2 = new Text( 'bar' );
-			const textNode3 = new Text( 'baz' );
-			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const textNode1 = new ModelText( 'foo' );
+			const textNode2 = new ModelText( 'bar' );
+			const textNode3 = new ModelText( 'baz' );
+			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on' );
 
@@ -348,10 +348,10 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting backward selection on an item', () => {
-			const textNode1 = new Text( 'foo' );
-			const textNode2 = new Text( 'bar' );
-			const textNode3 = new Text( 'baz' );
-			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const textNode1 = new ModelText( 'foo' );
+			const textNode2 = new ModelText( 'bar' );
+			const textNode3 = new ModelText( 'baz' );
+			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on', { backward: true } );
 
@@ -425,7 +425,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should set selection at the specified position', () => {
-				const pos = Position._createAt( root, 3 );
+				const pos = ModelPosition._createAt( root, 3 );
 
 				selection.setTo( pos );
 
@@ -457,13 +457,13 @@ describe( 'Selection', () => {
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.setFocus( Position._createAt( root, 'end' ) );
+			selection.setFocus( ModelPosition._createAt( root, 'end' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position._createAt( root, 'end' );
+			const endPos = ModelPosition._createAt( root, 'end' );
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
@@ -471,8 +471,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
 
 			selection.setTo( startPos );
 
@@ -483,8 +483,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( startPos );
 
@@ -496,11 +496,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing non-collapsed selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 3 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 3 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -509,11 +509,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -523,11 +523,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing backward selection a forward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 3 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 3 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ModelRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -537,11 +537,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ModelRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -552,16 +552,16 @@ describe( 'Selection', () => {
 
 		it( 'modifies only the last range', () => {
 			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
-			const startPos1 = Position._createAt( root, 4 );
-			const endPos1 = Position._createAt( root, 5 );
-			const startPos2 = Position._createAt( root, 1 );
-			const endPos2 = Position._createAt( root, 2 );
+			const startPos1 = ModelPosition._createAt( root, 4 );
+			const endPos1 = ModelPosition._createAt( root, 5 );
+			const startPos2 = ModelPosition._createAt( root, 1 );
+			const endPos2 = ModelPosition._createAt( root, 2 );
 
-			const newEndPos = Position._createAt( root, 0 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( [
-				new Range( startPos1, endPos1 ),
-				new Range( startPos2, endPos2 )
+				new ModelRange( startPos1, endPos1 ),
+				new ModelRange( startPos2, endPos2 )
 			] );
 
 			const spy = sinon.spy();
@@ -584,10 +584,10 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'collapses the selection when extending to the anchor', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( startPos );
 
@@ -633,8 +633,8 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			newRanges = [
-				new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ),
-				new Range( new Position( root, [ 5, 0 ] ), new Position( root, [ 6, 0 ] ) )
+				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 5, 0 ] ), new ModelPosition( root, [ 6, 0 ] ) )
 			];
 
 			selection.setTo( [ liveRange, range ] );
@@ -789,7 +789,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1, range2 ] );
+			const otherSelection = new ModelSelection( [ range1, range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -797,13 +797,13 @@ describe( 'Selection', () => {
 		it( 'should return true if backward selections equal', () => {
 			selection.setTo( [ range1 ], { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return true if both selections have no ranges', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ModelSelection();
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -811,7 +811,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range2 ] );
+			const otherSelection = new ModelSelection( [ range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -819,7 +819,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges (other than the last added range) do not equal', () => {
 			selection.setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ModelSelection( [ range2, range3 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -827,7 +827,7 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -909,21 +909,21 @@ describe( 'Selection', () => {
 		let schema;
 
 		beforeEach( () => {
-			schema = new Schema();
+			schema = new ModelSchema();
 			schema.register( '$root' );
 			schema.register( 'p', { allowIn: '$root' } );
 			schema.register( '$text', { allowIn: 'p' } );
 		} );
 
 		it( 'should return selected element', () => {
-			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
+			const { selection, model } = _parseModel( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
 			const p = model.getChild( 1 );
 
 			expect( selection.getSelectedElement() ).to.equal( p );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
+			const { selection } = _parseModel( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -933,13 +933,13 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
+			const { selection } = _parseModel( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection } = parse( '<p>{bar}</p>', schema );
+			const { selection } = _parseModel( '<p>{bar}</p>', schema );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -971,19 +971,19 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns an iterator', () => {
-			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+			_setModelData( model, '<p>a</p><p>[]b</p><p>c</p>' );
 
 			expect( doc.selection.getSelectedBlocks().next ).to.be.a( 'function' );
 		} );
 
 		it( 'returns block for a collapsed selection', () => {
-			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+			_setModelData( model, '<p>a</p><p>[]b</p><p>c</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b' ] );
 		} );
 
 		it( 'returns block for a collapsed selection (empty block)', () => {
-			setData( model, '<p>a</p><p>[]</p><p>c</p>' );
+			_setModelData( model, '<p>a</p><p>[]</p><p>c</p>' );
 
 			const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
@@ -992,70 +992,70 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns block for a non collapsed selection', () => {
-			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
+			_setModelData( model, '<p>a</p><p>[b]</p><p>c</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b' ] );
 		} );
 
 		it( 'returns two blocks for a non collapsed selection', () => {
-			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
+			_setModelData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c' ] );
 		} );
 
 		it( 'returns one block for a non collapsed selection (starts at block end)', () => {
-			setData( model, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
+			_setModelData( model, '<p>a</p><h>b[</h><p>c]</p><p>d</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#c' ] );
 		} );
 
 		it( 'returns proper block for a multi-range selection', () => {
-			setData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
+			_setModelData( model, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'h#b', 'p#c', 'p#e' ] );
 		} );
 
 		it( 'does not return a block twice if two ranges are anchored in it', () => {
-			setData( model, '<p>[a]b[c]</p>' );
+			_setModelData( model, '<p>[a]b[c]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#abc' ] );
 		} );
 
 		it( 'returns only blocks', () => {
-			setData( model, '<p>[a</p><imageBlock>b</imageBlock><p>c]</p>' );
+			_setModelData( model, '<p>[a</p><imageBlock>b</imageBlock><p>c]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#c' ] );
 		} );
 
 		it( 'gets deeper into the tree', () => {
-			setData( model, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
+			_setModelData( model, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
 				.to.deep.equal( [ 'p#a', 'p#b', 'p#c', 'p#d' ] );
 		} );
 
 		it( 'gets deeper into the tree (end deeper)', () => {
-			setData( model, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
+			_setModelData( model, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
 				.to.deep.equal( [ 'p#a', 'p#b' ] );
 		} );
 
 		it( 'gets deeper into the tree (start deeper)', () => {
-			setData( model, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
+			_setModelData( model, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) )
 				.to.deep.equal( [ 'p#c', 'p#d' ] );
 		} );
 
 		it( 'returns an empty array if none of the selected elements is a block', () => {
-			setData( model, '<p>a</p><imageBlock>[a</imageBlock><imageBlock>b]</imageBlock><p>b</p>' );
+			_setModelData( model, '<p>a</p><imageBlock>[a</imageBlock><imageBlock>b]</imageBlock><p>b</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		it( 'returns an empty array if the selected element is not a block', () => {
-			setData( model, '<p>a</p><imageBlock>[]a</imageBlock><p>b</p>' );
+			_setModelData( model, '<p>a</p><imageBlock>[]a</imageBlock><p>b</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
@@ -1063,14 +1063,14 @@ describe( 'Selection', () => {
 		// Super edge case – should not happen (blocks should never be nested),
 		// but since the code handles it already it's worth testing.
 		it( 'returns only the lowest block if blocks are nested (case #1)', () => {
-			setData( model, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
+			_setModelData( model, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'nestedBlock#b' ] );
 		} );
 
 		// Like above but - with multiple ranges.
 		it( 'returns only the lowest block if blocks are nested (case #2)', () => {
-			setData(
+			_setModelData(
 				model,
 				'<nestedBlock>a<nestedBlock>[b</nestedBlock></nestedBlock>' +
 				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
@@ -1082,7 +1082,7 @@ describe( 'Selection', () => {
 
 		// Like above but - with multiple collapsed ranges.
 		it( 'returns only the lowest block if blocks are nested (case #3)', () => {
-			setData(
+			_setModelData(
 				model,
 				'<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' +
 				'<nestedBlock>c<nestedBlock>d[]</nestedBlock></nestedBlock>'
@@ -1095,7 +1095,7 @@ describe( 'Selection', () => {
 		it( 'returns nothing if directly in a root', () => {
 			doc.createRoot( 'p', 'inlineOnlyRoot' );
 
-			setData( model, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
+			_setModelData( model, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
@@ -1103,25 +1103,25 @@ describe( 'Selection', () => {
 		it( 'does not go cross limit elements', () => {
 			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
 
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
 
 		it( 'returns only top most blocks (multiple selected)', () => {
-			setData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
+			_setModelData( model, '<p>[foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
 		} );
 
 		it( 'returns only top most block (one selected)', () => {
-			setData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
+			_setModelData( model, '[<table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table>]' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'table' ] );
 		} );
 
 		it( 'returns only selected blocks even if nested in other blocks', () => {
-			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
+			_setModelData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
 		} );
@@ -1129,7 +1129,7 @@ describe( 'Selection', () => {
 		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
 			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
 
-			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
 		} );
@@ -1140,11 +1140,11 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			root._insertChild( 0, [
-				new Element( 'p', [], new Text( 'foobar' ) ),
-				new Element( 'p', [], [] )
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
+				new ModelElement( 'p', [], [] )
 			] );
 
-			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
+			rangeInFullP = new ModelRange( new ModelPosition( root, [ 0, 4 ] ), new ModelPosition( root, [ 0, 4 ] ) );
 		} );
 
 		describe( 'setAttribute()', () => {
@@ -1257,19 +1257,19 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns true if the entire content in $root is selected', () => {
-			setData( model, '<p>[Foo</p><p>Bom</p><p>Bar]</p>' );
+			_setModelData( model, '<p>[Foo</p><p>Bom</p><p>Bar]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( true );
 		} );
 
 		it( 'returns false when only a fragment of the content in $root is selected', () => {
-			setData( model, '<p>Fo[o</p><p>Bom</p><p>Bar]</p>' );
+			_setModelData( model, '<p>Fo[o</p><p>Bom</p><p>Bar]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 
 		it( 'returns true if the entire content in specified element is selected', () => {
-			setData( model, '<p>Foo</p><p>[Bom]</p><p>Bar</p>' );
+			_setModelData( model, '<p>Foo</p><p>[Bom]</p><p>Bar</p>' );
 
 			const root = doc.getRoot();
 			const secondParagraph = root.getNodeByPath( [ 1 ] );
@@ -1278,7 +1278,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns false if the entire content in specified element is not selected', () => {
-			setData( model, '<p>Foo</p><p>[Bom</p><p>B]ar</p>' );
+			_setModelData( model, '<p>Foo</p><p>[Bom</p><p>B]ar</p>' );
 
 			const root = doc.getRoot();
 			const secondParagraph = root.getNodeByPath( [ 1 ] );
@@ -1291,19 +1291,19 @@ describe( 'Selection', () => {
 				allowIn: 'p'
 			} );
 
-			setData( model, '<p><img></img>[Foo]</p>' );
+			_setModelData( model, '<p><img></img>[Foo]</p>' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 
 		it( 'returns true if the content is empty', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( true );
 		} );
 
 		it( 'returns false if empty selection is at the end of non-empty content', () => {
-			setData( model, '<p>Foo bar bom.</p>[]' );
+			_setModelData( model, '<p>Foo bar bom.</p>[]' );
 
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );

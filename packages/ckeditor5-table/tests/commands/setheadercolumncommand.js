@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableSelection from '../../src/tableselection.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/index.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand.js';
+import { SetHeaderColumnCommand } from '../../src/commands/setheadercolumncommand.js';
 
 describe( 'SetHeaderColumnCommand', () => {
 	let editor, model, command;
@@ -35,17 +35,17 @@ describe( 'SetHeaderColumnCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be false if selection is not in a table', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'should be true if selection is in table', () => {
-			setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true if multiple columns are selected', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02', '03' ]
 			] ) );
 
@@ -60,7 +60,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be true if multiple header columns are selected', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
@@ -94,12 +94,12 @@ describe( 'SetHeaderColumnCommand', () => {
 			} );
 
 			it( 'should be true if selection is in table', () => {
-				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+				_setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if selection is in table with `tableType="layout"`', () => {
-				setData( model,
+				_setModelData( model,
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow>' +
 					'</table>' );
@@ -110,7 +110,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 	describe( 'value', () => {
 		it( 'should be false if selection is not in a heading column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02' ],
 				[ '11', '12[]' ]
 			], { headingColumns: 1 } ) );
@@ -119,7 +119,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be true if selection is in a heading column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01[]', '02' ],
 				[ '11', '12' ]
 			], { headingColumns: 1 } ) );
@@ -128,7 +128,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be true if multiple header columns are selected', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
@@ -143,7 +143,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be true if multiple header columns are selected in reversed order', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
@@ -158,7 +158,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be false if selection is in a heading row', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02[]' ],
 				[ '11', '12' ]
 			], { headingRows: 1, headingColumns: 1 } ) );
@@ -167,7 +167,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should be false if only part of selected columns are headers', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '01', '02', '03', '04' ]
 			], { headingColumns: 2 } ) );
 
@@ -184,19 +184,19 @@ describe( 'SetHeaderColumnCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should set heading columns attribute that cover column with collapsed selection', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			] ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
 
 		it( 'should set heading columns attribute that cover column with entire cell selected', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01', '02', '03' ]
 			] ) );
 
@@ -209,7 +209,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 			command.execute();
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
@@ -219,25 +219,25 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should set heading columns attribute below current selection column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );
 
 		it( 'should remove "headingColumns" attribute from table if no value was given', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '[]00', '01', '02', '03' ]
 			], { headingColumns: 3 } ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]00', '01', '02', '03' ]
 			] ) );
 		} );
@@ -245,7 +245,7 @@ describe( 'SetHeaderColumnCommand', () => {
 		describe( 'multi-cell selection', () => {
 			describe( 'setting header', () => {
 				it( 'should set it correctly in a middle of single-row, multiple cell selection', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					] ) );
 
@@ -258,7 +258,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ]
 					], {
 						headingColumns: 3
@@ -270,7 +270,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should set it correctly in a middle of multi-row, multiple cell selection', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10', '11', '12', '13' ]
 					] ) );
@@ -284,7 +284,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ],
 						[ '10', '11', '12', '13' ]
 					], {
@@ -298,7 +298,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should remove header columns in case of multiple cell selection', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					], { headingColumns: 4 } ) );
 
@@ -311,7 +311,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 						[ '00', '01', '02', '03' ]
 					], {
 						headingColumns: 1
@@ -323,7 +323,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should remove header columns in case of multiple cell selection - reversed order', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					], {
 						headingColumns: 4
@@ -338,7 +338,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						modelTable( [ [ '00', '01', '02', '03' ] ], { headingColumns: 1 } )
 					);
 
@@ -348,7 +348,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should respect forceValue=true in case of multiple cell selection', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					], {
 						headingColumns: 3
@@ -363,7 +363,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute( { forceValue: true } );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						modelTable( [ [ '00', '01', '02', '03' ] ], { headingColumns: 3 } )
 					);
 
@@ -373,7 +373,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should respect forceValue=false in case of multiple cell selection', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '00', '01', '02', '03' ]
 					], {
 						headingColumns: 1
@@ -388,7 +388,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute( { forceValue: false } );
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						modelTable( [ [ '00', '01', '02', '03' ] ], { headingColumns: 1 } )
 					);
 
@@ -398,7 +398,7 @@ describe( 'SetHeaderColumnCommand', () => {
 				} );
 
 				it( 'should set it correctly in table with more than 10 columns (array sort bug)', () => {
-					setData( model, modelTable( [
+					_setModelData( model, modelTable( [
 						[ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14' ]
 					] ) );
 
@@ -411,7 +411,7 @@ describe( 'SetHeaderColumnCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 						[ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14' ]
 					], { headingColumns: 14 } ) );
 				} );
@@ -419,43 +419,43 @@ describe( 'SetHeaderColumnCommand', () => {
 		} );
 
 		it( 'should toggle of selected column', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 
 			command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
 
 		it( 'should respect forceValue parameter (forceValue=true)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
 
 			command.execute( { forceValue: true } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 3 } ) );
 		} );
 
 		it( 'should respect forceValue parameter (forceValue=false)', () => {
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 
 			command.execute( { forceValue: false } );
 
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );
@@ -469,7 +469,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 20 | 21 | 22 |
 			// +----+----+----+
 			//      ^-- heading columns
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { contents: '[]01', colspan: 2, rowspan: 2 } ],
 				[ '10' ],
 				[ '20', '21', '22' ]
@@ -485,7 +485,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 20 | 21 | 22 |
 			// +----+----+----+
 			//           ^-- heading columns
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { contents: '[]01', rowspan: 2 }, { contents: '', rowspan: 2 } ],
 				[ '10' ],
 				[ '20', '21', '22' ]
@@ -501,7 +501,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 20 | 21 | 22 | 23 | 24 | 25 |
 			// +----+----+----+----+----+----+
 			//      ^-- heading columns
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '00', { contents: '01', colspan: 5, rowspan: 2 } ],
 				[ '10' ],
 				[ '20', '21', '22[]', '23', '24', '25' ]
@@ -517,7 +517,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 20 | 21 | 22 | 23 | 24 | 25 |
 			// +----+----+----+----+----+----+
 			//                ^-- heading columns
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', { contents: '01', colspan: 2, rowspan: 2 }, { contents: '', colspan: 3, rowspan: 2 } ],
 				[ '10' ],
 				[ '20', '21', '22[]', '23', '24', '25' ]
@@ -531,7 +531,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 10 | 11 |
 			// +----+----+
 			//           ^-- heading columns
-			setData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ { contents: '00', colspan: 2 } ],
 				[ '10', '[]11' ]
 			], { headingColumns: 2 } ) );
@@ -544,7 +544,7 @@ describe( 'SetHeaderColumnCommand', () => {
 			// | 10 | 11 |
 			// +----+----+
 			//      ^-- heading columns
-			expect( getData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '' ],
 				[ '10', '[]11' ]
 			], { headingColumns: 1 } ) );

@@ -17,7 +17,7 @@ const BOLD = 'bold';
 /**
  * The bold UI feature. It introduces the Bold button.
  */
-export default class BoldUI extends Plugin {
+export class BoldUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

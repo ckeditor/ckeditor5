@@ -17,7 +17,7 @@ import { Plugin, MultiCommand } from 'ckeditor5/src/core.js';
  * **Note**: In order for the commands to work, at least one of the compatible features is required. Read more in the
  * {@link module:indent/indent~Indent indent feature} API documentation.
  */
-export default class IndentEditing extends Plugin {
+export class IndentEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

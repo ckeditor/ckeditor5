@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import formattingLongP from './formatting-long-paragraphs.js';
-import ghs from './ghs.js';
-import inlineStyles from './inline-styles.js';
-import lists from './lists.js';
-import mixed from './mixed.js';
-import paragraphs from './paragraphs.js';
-import tableHuge from './table-huge.js';
-import wiki from './wiki.js';
+import { makeData as formattingLongP } from './formatting-long-paragraphs.js';
+import { makeData as ghs } from './ghs.js';
+import { makeData as inlineStyles } from './inline-styles.js';
+import { makeData as lists } from './lists.js';
+import { makeData as mixed } from './mixed.js';
+import { makeData as paragraphs } from './paragraphs.js';
+import { makeData as tableHuge } from './table-huge.js';
+import { makeData as wiki } from './wiki.js';
 
-export default {
-	formattingLongP,
-	ghs,
-	inlineStyles,
-	lists,
-	mixed,
-	paragraphs,
-	tableHuge,
-	wiki
+export const allDataSets = {
+	formattingLongP: formattingLongP(),
+	ghs: ghs(),
+	inlineStyles: inlineStyles(),
+	lists: lists(),
+	mixed: mixed(),
+	paragraphs: paragraphs(),
+	tableHuge: tableHuge(),
+	wiki: wiki()
 };

@@ -4,10 +4,10 @@
  */
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
-import CollapsibleView from '../../src/collapsible/collapsibleview.js';
-import ButtonView from '../../src/button/buttonview.js';
+import { CollapsibleView } from '../../src/collapsible/collapsibleview.js';
+import { ButtonView } from '../../src/button/buttonview.js';
 
-import ViewCollection from '../../src/viewcollection.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 
 describe( 'CollapsibleView', () => {
 	let view, locale;

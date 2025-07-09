@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Undo from '../src/undo.js';
-import UndoEditing from '../src/undoediting.js';
-import UndoUI from '../src/undoui.js';
+import { Undo } from '../src/undo.js';
+import { UndoEditing } from '../src/undoediting.js';
+import { UndoUI } from '../src/undoui.js';
 
 describe( 'Undo', () => {
 	it( 'should be named', () => {

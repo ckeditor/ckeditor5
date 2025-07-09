@@ -7,36 +7,36 @@
  * @module engine/view/text
  */
 
-import Node from './node.js';
+import { ViewNode } from './node.js';
 
-import type Document from './document.js';
+import { type ViewDocument } from './document.js';
 
 /**
  * Tree view text node.
  *
  * The constructor of this class should not be used directly. To create a new text node instance
- * use the {@link module:engine/view/downcastwriter~DowncastWriter#createText `DowncastWriter#createText()`}
+ * use the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createText `ViewDowncastWriter#createText()`}
  * method when working on data downcasted from the model or the
- * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
+ * {@link module:engine/view/upcastwriter~ViewUpcastWriter#createText `ViewUpcastWriter#createText()`}
  * method when working on non-semantic views.
  */
-export default class Text extends Node {
+export class ViewText extends ViewNode {
 	/**
 	 * The text content.
 	 *
-	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 * Setting the data fires the {@link module:engine/view/node~ViewNode#event:change:text change event}.
 	 */
 	private _textData: string;
 
 	/**
 	 * Creates a tree view text node.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createText
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createText
 	 * @internal
 	 * @param document The document instance to which this text node belongs.
 	 * @param data The text's data.
 	 */
-	constructor( document: Document, data: string ) {
+	constructor( document: ViewDocument, data: string ) {
 		super( document );
 
 		this._textData = data;
@@ -64,7 +64,7 @@ export default class Text extends Node {
 	 *
 	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
 	 *
-	 * The setter sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 * The setter sets data and fires the {@link module:engine/view/node~ViewNode#event:change:text change event}.
 	 *
 	 * @internal
 	 */
@@ -84,8 +84,8 @@ export default class Text extends Node {
 	 *
 	 * @param otherNode Node to check if it is same as this node.
 	 */
-	public isSimilar( otherNode: Node ): boolean {
-		if ( !( otherNode instanceof Text ) ) {
+	public isSimilar( otherNode: ViewNode ): boolean {
+		if ( !( otherNode instanceof ViewText ) ) {
 			return false;
 		}
 
@@ -98,8 +98,8 @@ export default class Text extends Node {
 	 * @internal
 	 * @returns Text node that is a clone of this node.
 	 */
-	public _clone(): Text {
-		return new Text( this.document, this.data );
+	public _clone(): ViewText {
+		return new ViewText( this.document, this.data );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -117,7 +117,7 @@ export default class Text extends Node {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Text.prototype.is = function( type: string ): boolean {
+ViewText.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'view:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'view:text' ||

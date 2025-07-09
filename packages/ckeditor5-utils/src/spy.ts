@@ -16,10 +16,8 @@
  *
  * @returns The spy function.
  */
-function spy(): { (): void; called?: boolean } {
+export function spy(): { (): void; called?: boolean } {
 	return function spy() {
 		( spy as any ).called = true;
 	};
 }
-
-export default spy;

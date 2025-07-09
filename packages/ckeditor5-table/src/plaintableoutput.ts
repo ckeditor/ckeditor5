@@ -8,9 +8,9 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { DowncastWriter, Element, Node, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ModelElement, ModelNode, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
-import Table from './table.js';
+import { Table } from './table.js';
 
 /**
  * The plain table output feature.
@@ -18,7 +18,7 @@ import Table from './table.js';
  * This feature strips the `<figure>` tag from the table data. This is because this tag is not supported
  * by most popular email clients and removing it ensures compatibility.
  */
-export default class PlainTableOutput extends Plugin {
+export class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -89,21 +89,21 @@ export default class PlainTableOutput extends Plugin {
  * @param conversionApi The conversion API object.
  * @returns Created element.
  */
-function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
+function downcastTableElement( table: ModelElement, { writer }: { writer: ViewDowncastWriter } ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
-	const headRowsSlot = writer.createSlot( ( element: Node ) =>
+	const headRowsSlot = writer.createSlot( ( element: ModelNode ) =>
 		element.is( 'element', 'tableRow' ) && element.index! < headingRows
 	);
 
 	// Table body rows slot.
-	const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
+	const bodyRowsSlot = writer.createSlot( ( element: ModelNode ) =>
 		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
 	);
 
 	// Table children slot.
-	const childrenSlot = writer.createSlot( ( element: Node ) => !element.is( 'element', 'tableRow' ) );
+	const childrenSlot = writer.createSlot( ( element: ModelNode ) => !element.is( 'element', 'tableRow' ) );
 
 	// Table <thead> element with all the heading rows.
 	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );

@@ -7,13 +7,28 @@
  * @module media-embed
  */
 
-export { default as MediaEmbed } from './mediaembed.js';
-export { default as MediaEmbedEditing } from './mediaembedediting.js';
-export { default as MediaEmbedUI } from './mediaembedui.js';
-export { default as AutoMediaEmbed } from './automediaembed.js';
-export { default as MediaEmbedToolbar } from './mediaembedtoolbar.js';
+export { MediaEmbed } from './mediaembed.js';
+export { MediaEmbedEditing } from './mediaembedediting.js';
+export { MediaEmbedUI } from './mediaembedui.js';
+export { AutoMediaEmbed } from './automediaembed.js';
+export { MediaEmbedToolbar } from './mediaembedtoolbar.js';
+export { MediaEmbedCommand } from './mediaembedcommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
-export type { default as MediaEmbedCommand } from './mediaembedcommand.js';
+
+export { modelToViewUrlAttributeConverter as _modelToViewUrlAttributeMediaConverter } from './converters.js';
+export { MediaFormView as _MediaFormView } from './ui/mediaformview.js';
+export {
+	toMediaWidget as _toMediaWidget,
+	getSelectedMediaViewWidget as _getSelectedMediaViewWidget,
+	isMediaWidget as _isMediaWidget,
+	createMediaFigureElement as _createMediaFigureElement,
+	getSelectedMediaModelWidget as _getSelectedMediaModelWidget,
+	insertMedia as _insertMedia,
+	type MediaOptions
+} from './utils.js';
+
+export type { MediaEmbedProvider } from './mediaembedconfig.js';
+export { MediaRegistry } from './mediaregistry.js';
 
 import './augmentation.js';

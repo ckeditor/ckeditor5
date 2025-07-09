@@ -99,7 +99,7 @@ The `ProductPreviewEditing` plugin defines the `productPreview` element in the e
 </info-box>
 
 * In the **data view**, the `productPreview` is represented as an empty `<section class="product" data-id="..."></section>` element with a `data-id` attribute associating it with a particular product. A semantic representation of the product saved in the database can be then consumed in the frontend by retrieving a fresh preview using the `data-id`. Since it does not carry any formatting or styling, the data representation will never get outdated, even if the layout or styles of the application change in the future.
-* In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~UIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link getting-started/setup/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
+* In the **editing view**, on the other hand, the product preview is a {@link tutorials/widgets/implementing-a-block-widget block widget}, which acts as a self–contained piece of content the user can insert, copy, and paste as a whole but they cannot change its internal structure. Inside the widget, there is a {@link module:engine/view/uielement~ViewUIElement `UIElement`} with a `.product__react-wrapper` class that hosts a React `<ProductPreview>` component. Each time the model element is upcasted, the rendering function specified in the {@link getting-started/setup/configuration editor configuration} (`editor.config.products.productRenderer`) mounts a React component inside the `UIElement`.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -471,7 +471,7 @@ export default function App( props ) {
 								productRenderer: ( id, domElement ) => {
 									const product = props.products.find( product => product.id === id );
 									const root = createRoot( domElement );
-						
+
 									root.render(
 										<ProductPreview id={ id } { ...product } />
 									);
@@ -518,7 +518,7 @@ import App from './app';
 
 // Render the <App> in the <div class="root"></div> element found in the DOM.
 ReactDOM.createRoot( document.getElementById( 'root' ) ).render(
-	<App 
+	<App
 		// Feeding the application with predefined products.
 		// In a real-life application, this sort of data would be loaded
 		// from a database. To keep this tutorial simple, a few

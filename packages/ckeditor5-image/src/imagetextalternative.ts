@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageTextAlternativeEditing from './imagetextalternative/imagetextalternativeediting.js';
-import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeui.js';
+import { ImageTextAlternativeEditing } from './imagetextalternative/imagetextalternativeediting.js';
+import { ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui.js';
 
 /**
  * The image text alternative plugin.
@@ -20,7 +20,7 @@ import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeu
  *  {@link module:image/imagetextalternative/imagetextalternativeediting~ImageTextAlternativeEditing}
  * and {@link module:image/imagetextalternative/imagetextalternativeui~ImageTextAlternativeUI} plugins.
  */
-export default class ImageTextAlternative extends Plugin {
+export class ImageTextAlternative extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

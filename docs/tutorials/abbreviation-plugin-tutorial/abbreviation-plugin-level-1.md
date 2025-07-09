@@ -191,7 +191,7 @@ Converting the full title of the abbreviation is a little bit tricky, because we
 
 In the downcast conversion, we will use one of our conversion helpers &ndash; {@link framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} &ndash; to transform the model abbreviation attribute into the view `<abbr>` element.
 
-We will need to use a callback function to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the `DowncastConversionApi` object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the `DowncastWriter`.
+We will need to use a callback function to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the `DowncastConversionApi` object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the `ViewDowncastWriter`.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -216,7 +216,7 @@ export default class AbbreviationEditing extends Plugin {
 		conversion.for( 'downcast' ).attributeToElement( {
 			model: 'abbreviation',
 			// Callback function provides access to the model attribute value
-			// and the DowncastWriter.
+			// and the ViewDowncastWriter.
 			view: ( modelAttributeValue, conversionApi ) => {
 				const { writer } = conversionApi;
 

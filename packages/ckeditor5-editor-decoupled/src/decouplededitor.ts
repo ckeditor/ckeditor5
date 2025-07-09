@@ -19,8 +19,8 @@ import {
 	getDataFromElement
 } from 'ckeditor5/src/utils.js';
 
-import DecoupledEditorUI from './decouplededitorui.js';
-import DecoupledEditorUIView from './decouplededitoruiview.js';
+import { DecoupledEditorUI } from './decouplededitorui.js';
+import { DecoupledEditorUIView } from './decouplededitoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -40,7 +40,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * Note that you will need to attach the editor toolbar and menu bar to your web page manually, in a desired place,
  * after the editor is initialized.
  */
-export default class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

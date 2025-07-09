@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import UnderlineEditing from '../../src/underline/underlineediting.js';
+import { UnderlineEditing } from '../../src/underline/underlineediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import AttributeCommand from '../../src/attributecommand.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { AttributeCommand } from '../../src/attributecommand.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'UnderlineEditing', () => {
 	let editor, model;
@@ -83,7 +83,7 @@ describe( 'UnderlineEditing', () => {
 		it( 'should convert <u> to underline attribute', () => {
 			editor.setData( '<p><u>foo</u>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
@@ -92,7 +92,7 @@ describe( 'UnderlineEditing', () => {
 		it( 'should convert text-decoration:underline to underline attribute', () => {
 			editor.setData( '<p><span style="text-decoration: underline;">foo</span>bar</p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
@@ -101,7 +101,7 @@ describe( 'UnderlineEditing', () => {
 		it( 'should be integrated with autoparagraphing', () => {
 			editor.setData( '<u>foo</u>bar' );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
@@ -110,9 +110,9 @@ describe( 'UnderlineEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( model, '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
+			_setModelData( model, '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><u>foo</u>bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><u>foo</u>bar</p>' );
 		} );
 	} );
 } );

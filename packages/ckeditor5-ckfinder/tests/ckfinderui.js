@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
 import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 
-import CKFinder from '../src/ckfinder.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import CKFinderUI from '../src/ckfinderui.js';
+import { CKFinder } from '../src/ckfinder.js';
+import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { CKFinderUI } from '../src/ckfinderui.js';
 
 describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;
@@ -204,7 +204,7 @@ describe( 'CKFinderUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new UIModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'url',

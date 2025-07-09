@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { TableCaption } from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import { TableColumnResize } from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { priorities } from 'ckeditor5/src/utils.js';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import TableElementSupport from '../../src/integrations/table.js';
+import { TableElementSupport } from '../../src/integrations/table.js';
 
 import { range } from 'es-toolkit/compat';
 
@@ -1332,7 +1332,7 @@ describe( 'TableElementSupport', () => {
 			}
 		} );
 
-		setData( editor.model, '<paragraph>[]</paragraph>' );
+		_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 		pasteHtml( editor,
 			'<custom-element>' +
@@ -1346,7 +1346,7 @@ describe( 'TableElementSupport', () => {
 			'</custom-element>'
 		);
 
-		expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 			'<paragraph>' +
 				'<htmlCustomElement ' +
 					'htmlContent="<table dir="ltr"><tbody><tr><td>Foo</td></tr></tbody></table>" ' +

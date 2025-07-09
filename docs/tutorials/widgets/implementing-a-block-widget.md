@@ -331,7 +331,7 @@ Once you have the converters, you can try to see the simple box in action. You h
 			</section>
 		</div>
 
-		<script src="dist/bundle.js"></script>
+		<script type="module" src="./main.js"></script>
 	</body>
 </html>
 ```
@@ -423,7 +423,7 @@ See what else you can improve.
 	CKEditor&nbsp;5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
 </info-box>
 
-The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ContainerElement `ContainerElement`}s in the view (and back during upcasting).
+The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ViewContainerElement `ContainerElement`}s in the view (and back during upcasting).
 
 You want to change this behavior a bit so the structure created in the editing view is enhanced with the {@link module:widget/utils~toWidget `toWidget()`} and {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} utilities. You do not want to affect the data view, though. Therefore, you will need to define converters for the editing and data downcasting separately.
 
@@ -535,10 +535,6 @@ export default class SimpleBoxEditing extends Plugin {
 	}
 }
 ```
-
-<info-box>
-	As you can see, the code became much more verbose and far longer. This is because you used lower-level converters. We plan to provide more handy widget conversion utilities in the future. Read more (and 👍) in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1228).
-</info-box>
 
 ### Behavior after turning simple box into a widget
 
@@ -662,7 +658,7 @@ console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
 
 It is always `true` except when the selection is in one place &ndash; in other simple box's title. You can also observe that executing the command when the selection is in that place takes no effect.
 
-Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~Schema#addChildCheck defining a custom child check}:
+Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~ModelSchema#addChildCheck defining a custom child check}:
 
 ```js
 // simplebox/simpleboxediting.js
@@ -825,7 +821,7 @@ npm run dev
 
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
-First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+First, clone the repository the same way as before. **But do not install the dependencies.** Instead, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>

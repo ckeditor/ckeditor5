@@ -20,10 +20,10 @@ import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
+import { SpecialCharacters } from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
+import { SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { ButtonView, Dialog, View } from '../../../src/index.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 

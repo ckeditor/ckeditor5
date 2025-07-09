@@ -23,8 +23,10 @@ import '../../../theme/imageinsert.css';
  * The view displayed in the insert image dropdown.
  *
  * See {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
+ *
+ * @internal
  */
-export default class ImageInsertFormView extends View {
+export class ImageInsertFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */

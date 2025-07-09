@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-export default {
+export const xssTemplates = {
 	'img onerror': '<p><img onerror="%xss%" src="produce404" /></p>',
 	'video onerror': '<p><video onerror="%xss%">foo</video></p>',
 	'video onerror + src': '<p><video onerror="%xss%" src="produce404">foo</video></p>',

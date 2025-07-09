@@ -12,7 +12,7 @@
  *
  * @param stylesheets An array of stylesheet paths delivered by the user through the plugin configuration.
  */
-export default async function collectStylesheets( stylesheets?: Array<string> ): Promise<string> {
+export async function collectStylesheets( stylesheets?: Array<string> ): Promise<string> {
 	if ( !stylesheets ) {
 		return '';
 	}

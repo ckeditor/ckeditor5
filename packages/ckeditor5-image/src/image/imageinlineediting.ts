@@ -9,23 +9,23 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ClipboardPipeline, type ClipboardInputTransformationEvent, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
-import { UpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
+import { ViewUpcastWriter, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import {
 	downcastImageAttribute,
 	downcastSrcsetAttribute
 } from './converters.js';
 
-import ImageEditing from './imageediting.js';
-import ImageSizeAttributes from '../imagesizeattributes.js';
-import ImageTypeCommand from './imagetypecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageEditing } from './imageediting.js';
+import { ImageSizeAttributes } from '../imagesizeattributes.js';
+import { ImageTypeCommand } from './imagetypecommand.js';
+import { ImageUtils } from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from './utils.js';
-import ImagePlaceholder from './imageplaceholder.js';
+import { ImagePlaceholder } from './imageplaceholder.js';
 
 /**
  * The image inline plugin.
@@ -37,7 +37,7 @@ import ImagePlaceholder from './imageplaceholder.js';
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeInline'`} command that converts block images into
  * inline images.
  */
-export default class ImageInlineEditing extends Plugin {
+export class ImageInlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -177,7 +177,7 @@ export default class ImageInlineEditing extends Plugin {
 				// Convert block images into inline images only when pasting or dropping into non-empty blocks
 				// and when the block is not an object (e.g. pasting to replace another widget).
 				if ( determineImageTypeForInsertionAtSelection( model.schema, selection ) === 'imageInline' ) {
-					const writer = new UpcastWriter( editingView.document );
+					const writer = new ViewUpcastWriter( editingView.document );
 
 					// Unwrap <figure class="image"><img .../></figure> -> <img ... />
 					// but <figure class="image"><img .../><figcaption>...</figcaption></figure> -> stays the same

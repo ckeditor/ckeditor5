@@ -12,7 +12,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js';
 import { env } from 'ckeditor5/src/utils.js';
 
-import FullscreenEditing from './fullscreenediting.js';
+import { FullscreenEditing } from './fullscreenediting.js';
 import '../theme/fullscreen.css';
 
 const COMMAND_NAME = 'toggleFullscreen';
@@ -20,7 +20,7 @@ const COMMAND_NAME = 'toggleFullscreen';
 /**
  * A plugin registering the fullscreen mode buttons.
  */
-export default class FullscreenUI extends Plugin {
+export class FullscreenUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

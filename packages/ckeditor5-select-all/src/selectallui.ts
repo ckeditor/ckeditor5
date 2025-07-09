@@ -18,7 +18,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-u
  * {@link module:ui/componentfactory~ComponentFactory component factory}. When clicked, the button
  * executes the {@link module:select-all/selectallcommand~SelectAllCommand select all command}.
  */
-export default class SelectAllUI extends Plugin {
+export class SelectAllUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

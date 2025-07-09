@@ -7,9 +7,9 @@
  * @module ui/formrow/formrowview
  */
 
-import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
-import type LabelView from '../label/labelview.js';
+import { View } from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { type LabelView } from '../label/labelview.js';
 import { toArray, type ArrayOrItem, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/formrow/formrow.css';
@@ -17,7 +17,7 @@ import '../../theme/components/formrow/formrow.css';
 /**
  * The class representing a single row in a form,
  */
-export default class FormRowView extends View {
+export class FormRowView extends View {
 	/**
 	 * An additional CSS class added to the {@link #element}.
 	 *

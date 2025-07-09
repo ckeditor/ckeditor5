@@ -10,6 +10,6 @@
 /**
  * Checks whether the object is a native DOM Comment node.
  */
-export default function isComment( obj: any ): obj is Comment {
+export function isComment( obj: any ): obj is Comment {
 	return obj && obj.nodeType === Node.COMMENT_NODE;
 }

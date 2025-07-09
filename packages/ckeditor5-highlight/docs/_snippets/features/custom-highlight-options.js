@@ -43,14 +43,14 @@ HighlightEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: 'var(--ck-highlight-marker-green)',
+					color: 'var(--ck-content-highlight-marker-green)',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: 'var(--ck-highlight-pen-red)',
+					color: 'var(--ck-content-highlight-pen-red)',
 					type: 'pen'
 				}
 			]

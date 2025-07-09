@@ -17,7 +17,7 @@ const UNDERLINE = 'underline';
 /**
  * The underline UI feature. It introduces the Underline button.
  */
-export default class UnderlineUI extends Plugin {
+export class UnderlineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

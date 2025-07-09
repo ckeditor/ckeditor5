@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import addKeyboardHandlingForGrid from '../../src/bindings/addkeyboardhandlingforgrid.js';
-import View from '../../src/view.js';
-import ButtonView from '../../src/button/buttonview.js';
+import { addKeyboardHandlingForGrid } from '../../src/bindings/addkeyboardhandlingforgrid.js';
+import { View } from '../../src/view.js';
+import { ButtonView } from '../../src/button/buttonview.js';
 import { KeystrokeHandler, FocusTracker, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'addKeyboardHandlingForGrid()', () => {

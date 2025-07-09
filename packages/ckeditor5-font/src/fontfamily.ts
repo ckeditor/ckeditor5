@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import FontFamilyEditing from './fontfamily/fontfamilyediting.js';
-import FontFamilyUI from './fontfamily/fontfamilyui.js';
+import { FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
+import { FontFamilyUI } from './fontfamily/fontfamilyui.js';
 
 /**
  * The font family plugin.
@@ -20,7 +20,7 @@ import FontFamilyUI from './fontfamily/fontfamilyui.js';
  * This is a "glue" plugin which loads the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
  * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
  */
-export default class FontFamily extends Plugin {
+export class FontFamily extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

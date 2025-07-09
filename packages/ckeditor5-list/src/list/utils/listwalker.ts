@@ -10,16 +10,18 @@
 import { first, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import { isListItemBlock, type ListElement } from './model.js';
 
-import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 
 /**
  * Document list blocks iterator.
+ *
+ * @internal
  */
-export default class ListWalker {
+export class ListWalker {
 	/**
 	 * The start list item block element.
 	 */
-	private _startElement: Node;
+	private _startElement: ModelNode;
 
 	/**
 	 * The reference indent. Initialized by the indent of the start block.
@@ -71,7 +73,7 @@ export default class ListWalker {
 	 * in the result.
 	 */
 	constructor(
-		startElement: Node,
+		startElement: ModelNode,
 		options: ListWalkerOptions
 	) {
 		this._startElement = startElement;
@@ -99,7 +101,7 @@ export default class ListWalker {
 	 * in the result.
 	 */
 	public static first(
-		startElement: Node,
+		startElement: ModelNode,
 		options: ListWalkerOptions
 	): ListElement | null {
 		const walker = new this( startElement, options );
@@ -191,9 +193,11 @@ export default class ListWalker {
 
 /**
  * Iterates sibling list blocks starting from the given node.
+ *
+ * @internal
  */
 export class SiblingListBlocksIterator implements IterableIterator<ListIteratorValue> {
-	private _node: Node | null;
+	private _node: ModelNode | null;
 	private _isForward: boolean;
 	private _previousNodesByIndent: Array<ListElement> = [];
 	private _previous: ListElement | null = null;
@@ -204,7 +208,7 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
 	 * @param direction Iteration direction.
 	 */
 	constructor(
-		node: Node | null,
+		node: ModelNode | null,
 		direction: 'forward' | 'backward' = 'forward'
 	) {
 		this._node = node;
@@ -262,12 +266,12 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
  * @internal
  */
 export class ListBlocksIterable {
-	private _listHead: Element;
+	private _listHead: ModelElement;
 
 	/**
 	 * @param listHead The head element of a list.
 	 */
-	constructor( listHead: Element ) {
+	constructor( listHead: ModelElement ) {
 		this._listHead = listHead;
 	}
 
@@ -306,6 +310,8 @@ export interface ListIteratorValue {
 
 /**
  * Document list blocks iterator options.
+ *
+ * @internal
  */
 export type ListWalkerOptions = {
 	direction?: 'forward' | 'backward';

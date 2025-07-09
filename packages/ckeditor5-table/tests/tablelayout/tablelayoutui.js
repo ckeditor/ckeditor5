@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ListItemView } from '@ckeditor/ckeditor5-ui';
-import TableEditing from '../../src/tableediting.js';
-import TableLayoutUI from '../../src/tablelayout/tablelayoutui.js';
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import InsertTableView from '../../src/ui/inserttableview.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableLayoutUI } from '../../src/tablelayout/tablelayoutui.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { InsertTableView } from '../../src/ui/inserttableview.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { IconTableLayout, IconTableProperties } from '@ckeditor/ckeditor5-icons';
-import TableProperties from '../../src/tableproperties.js';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
-import TableTypeCommand from '../../src/tablelayout/commands/tabletypecommand.js';
-import TableUI from '../../src/tableui.js';
+import { TableProperties } from '../../src/tableproperties.js';
+import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { TableTypeCommand } from '../../src/tablelayout/commands/tabletypecommand.js';
+import { TableUI } from '../../src/tableui.js';
 
 describe( 'TableLayoutUI', () => {
 	let editor, element;

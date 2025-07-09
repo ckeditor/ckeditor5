@@ -10,12 +10,12 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
 
-import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
+import type { ModelSchema, ModelSelection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The paragraph command.
  */
-export default class ParagraphCommand extends Command {
+export class ParagraphCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 
@@ -44,16 +44,16 @@ export default class ParagraphCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. All the blocks (see {@link module:engine/model/schema~Schema}) in the selection
+	 * Executes the command. All the blocks (see {@link module:engine/model/schema~ModelSchema}) in the selection
 	 * will be turned to paragraphs.
 	 *
 	 * @fires execute
 	 * @param options Options for the executed command.
 	 * @param options.selection The selection that the command should be applied to. By default,
-	 * if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
+	 * if not provided, the command is applied to the {@link module:engine/model/document~ModelDocument#selection}.
 	 */
 	public override execute( options: {
-		selection?: Selection | DocumentSelection;
+		selection?: ModelSelection | ModelDocumentSelection;
 	} = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;
@@ -83,6 +83,6 @@ export default class ParagraphCommand extends Command {
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-function checkCanBecomeParagraph( block: Element, schema: Schema ): boolean {
-	return schema.checkChild( block.parent as Element, 'paragraph' ) && !schema.isObject( block );
+function checkCanBecomeParagraph( block: ModelElement, schema: ModelSchema ): boolean {
+	return schema.checkChild( block.parent as ModelElement, 'paragraph' ) && !schema.isObject( block );
 }

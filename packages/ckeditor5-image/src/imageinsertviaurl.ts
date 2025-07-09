@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageInsertUI from './imageinsert/imageinsertui.js';
-import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui.js';
+import { ImageInsertUI } from './imageinsert/imageinsertui.js';
+import { ImageInsertViaUrlUI } from './imageinsert/imageinsertviaurlui.js';
 
 /**
  * The image insert via URL plugin.
@@ -22,7 +22,7 @@ import ImageInsertViaUrlUI from './imageinsert/imageinsertviaurlui.js';
  *
  * * {@link module:image/imageinsert/imageinsertui~ImageInsertUI},
  */
-export default class ImageInsertViaUrl extends Plugin {
+export class ImageInsertViaUrl extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

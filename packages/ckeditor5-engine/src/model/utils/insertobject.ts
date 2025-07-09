@@ -7,13 +7,13 @@
  * @module engine/model/utils/insertobject
  */
 
-import type DocumentSelection from '../documentselection.js';
-import type Selection from '../selection.js';
+import { type ModelDocumentSelection } from '../documentselection.js';
+import { type ModelSelection } from '../selection.js';
 
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Range from '../range.js';
-import type Writer from '../writer.js';
+import { type ModelElement } from '../element.js';
+import { type Model } from '../model.js';
+import { type ModelRange } from '../range.js';
+import { type ModelWriter } from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 
@@ -29,7 +29,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * @param model The model in context of which the insertion should be performed.
  * @param object An object to be inserted into the model document.
  * @param selectable A selectable where the content should be inserted. If not specified, the current
- * {@link module:engine/model/document~Document#selection document selection} will be used instead.
+ * {@link module:engine/model/document~ModelDocument#selection document selection} will be used instead.
  * @param options Additional options.
  * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
  * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
@@ -39,7 +39,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  *
  * Note that this option works only for block objects. Inline objects are inserted into text and do not split blocks.
  * @param options.setSelection An option that, when set, moves the
- * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
+ * {@link module:engine/model/document~ModelDocument#selection document selection} after inserting the object.
  * * When `'on'`, the document selection will be set on the inserted object.
  * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
  * such text node, a paragraph will be created and the document selection will be moved inside it.
@@ -47,20 +47,20 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * would return the model to the state before the insertion. If no changes were preformed by `insertObject()`, returns a range collapsed
  * at the insertion position.
  */
-export default function insertObject(
+export function insertObject(
 	model: Model,
-	object: Element,
-	selectable?: Selection | DocumentSelection | null,
+	object: ModelElement,
+	selectable?: ModelSelection | ModelDocumentSelection | null,
 	options: {
 		findOptimalPosition?: 'auto' | 'before' | 'after';
 		setSelection?: 'on' | 'after';
 	} = {}
-): Range {
+): ModelRange {
 	if ( !model.schema.isObject( object ) ) {
 		/**
 		 * Tried to insert an element with {@link module:engine/model/utils/insertobject insertObject()} function
 		 * that is not defined as an object in schema.
-		 * See {@link module:engine/model/schema~SchemaItemDefinition#isObject `SchemaItemDefinition`}.
+		 * See {@link module:engine/model/schema~ModelSchemaItemDefinition#isObject `SchemaItemDefinition`}.
 		 * If you want to insert content that is not an object you might want to use
 		 * {@link module:engine/model/utils/insertcontent insertContent()} function.
 		 * @error insertobject-element-not-an-object
@@ -69,7 +69,7 @@ export default function insertObject(
 	}
 
 	// Normalize selectable to a selection instance.
-	const originalSelection: Selection | DocumentSelection = selectable ? selectable : model.document.selection;
+	const originalSelection: ModelSelection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
 
 	// Adjust the insertion selection.
 	let insertionSelection = originalSelection;
@@ -139,8 +139,8 @@ export default function insertObject(
  * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
  */
 function updateSelection(
-	writer: Writer,
-	contextElement: Element,
+	writer: ModelWriter,
+	contextElement: ModelElement,
 	place: 'after' | 'on',
 	paragraphAttributes: Record<string, unknown>
 ) {

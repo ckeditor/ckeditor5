@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { RestrictedEditingModeEditing } from './../src/restrictededitingmodeediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
 describe( 'RestrictedEditingEditing - commands', () => {
 	let editor;
@@ -26,7 +26,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, Typing, RestrictedEditingModeEditing, ClipboardPipeline ] } );
 			model = editor.model;
 
-			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -581,7 +581,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			model = editor.model;
 			editor.commands.add( 'allowed', buildFakeCommand( editor ) );
 
-			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -746,7 +746,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			} );
 			model = editor.model;
 
-			setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo bar baz</paragraph>' );
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {

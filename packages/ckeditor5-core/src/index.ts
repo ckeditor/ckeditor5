@@ -7,40 +7,60 @@
  * @module core
  */
 
-export { default as Plugin, type PluginDependencies, type PluginConstructor } from './plugin.js';
-export { default as Command, type CommandExecuteEvent } from './command.js';
-export { default as MultiCommand } from './multicommand.js';
-export type { CommandsMap } from './commandcollection.js';
-export type { PluginsMap, default as PluginCollection } from './plugincollection.js';
+export {
+	Plugin,
+	type PluginDependencies,
+	type PluginConstructor,
+	type PluginInterface,
+	type PluginClassConstructor,
+	type PluginFunctionConstructor,
+	type PluginStaticMembers,
+	type LoadedPlugins
+} from './plugin.js';
 
-export { default as Context, type ContextConfig } from './context.js';
-export { default as ContextPlugin, type ContextPluginDependencies } from './contextplugin.js';
-export { type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
+export { Command, type CommandExecuteEvent } from './command.js';
+export { MultiCommand } from './multicommand.js';
+export { CommandCollection, type CommandsMap } from './commandcollection.js';
+export type { PluginsMap, PluginCollection, PluginEntry } from './plugincollection.js';
+
+export { Context, type ContextConfig } from './context.js';
+export { ContextPlugin, type ContextInterface, type ContextPluginDependencies } from './contextplugin.js';
+export { EditingKeystrokeHandler, type EditingKeystrokeCallback } from './editingkeystrokehandler.js';
 
 export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
-export { default as Editor, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
+export { Editor, type EditorCollectUsageDataEvent, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
 export type {
 	EditorConfig,
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
 	UiConfig,
-	ViewportOffsetConfig
+	ViewportOffsetConfig,
+	PoweredByConfig
 } from './editor/editorconfig.js';
 
-export { default as attachToForm } from './editor/utils/attachtoform.js';
-export { default as DataApiMixin, type DataApi } from './editor/utils/dataapimixin.js';
-export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
-export { default as secureSourceElement } from './editor/utils/securesourceelement.js';
+export { attachToForm } from './editor/utils/attachtoform.js';
+export { ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
+export { secureSourceElement } from './editor/utils/securesourceelement.js';
 
-export { default as PendingActions, type PendingAction } from './pendingactions.js';
+export { PendingActions, type PendingAction, type PendingActionsAddEvent, type PendingActionsRemoveEvent } from './pendingactions.js';
 
-export type {
-	KeystrokeInfos as KeystrokeInfoDefinitions,
-	KeystrokeInfoGroup as KeystrokeInfoGroupDefinition,
-	KeystrokeInfoCategory as KeystrokeInfoCategoryDefinition,
-	KeystrokeInfoDefinition as KeystrokeInfoDefinition
+export {
+	Accessibility,
+	DEFAULT_GROUP_ID as _DEFAULT_ACCESSIBILITY_GROUP_ID,
+	type AddKeystrokeInfoCategoryData,
+	type AddKeystrokeInfoGroupData,
+	type AddKeystrokeInfosData,
+	type KeystrokeInfoDefinition,
+	type KeystrokeInfoDefinitions,
+	type KeystrokeInfoGroupDefinition,
+	type KeystrokeInfoCategoryDefinition
 } from './accessibility.js';
+
+export {
+	getEditorUsageData as _getEditorUsageData,
+	type EditorUsageData as _EditorUsageData
+} from './editor/utils/editorusagedata.js';
 
 import './augmentation.js';

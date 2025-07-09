@@ -8,8 +8,8 @@
 */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { Writer } from 'ckeditor5/src/engine.js';
-import type TableCaptionEditing from './tablecaptionediting.js';
+import type { ModelWriter } from 'ckeditor5/src/engine.js';
+import { type TableCaptionEditing } from './tablecaptionediting.js';
 
 import { getCaptionFromTableModelElement } from './utils.js';
 import { getSelectionAffectedTable } from '../utils/common.js';
@@ -37,7 +37,7 @@ import { getSelectionAffectedTable } from '../utils/common.js';
  * editor.execute( 'toggleTableCaption', { focusCaptionOnShow: true } );
  * ```
  */
-export default class ToggleTableCaptionCommand extends Command {
+export class ToggleTableCaptionCommand extends Command {
 	declare public value: boolean;
 
 	/**
@@ -85,7 +85,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 *
 	 * @param focusCaptionOnShow Default focus behavior when showing the caption.
 	 */
-	private _showTableCaption( writer: Writer, focusCaptionOnShow: boolean ) {
+	private _showTableCaption( writer: ModelWriter, focusCaptionOnShow: boolean ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const tableCaptionEditing: TableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );
@@ -107,7 +107,7 @@ export default class ToggleTableCaptionCommand extends Command {
 	 * The content of the caption is stored in the `TableCaptionEditing` caption registry to make this
 	 * a reversible action.
 	 */
-	private _hideTableCaption( writer: Writer ) {
+	private _hideTableCaption( writer: ModelWriter ) {
 		const model = this.editor.model;
 		const tableElement = getSelectionAffectedTable( model.document.selection );
 		const tableCaptionEditing: TableCaptionEditing = this.editor.plugins.get( 'TableCaptionEditing' );

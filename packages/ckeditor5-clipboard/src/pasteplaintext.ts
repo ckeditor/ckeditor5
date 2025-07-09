@@ -9,17 +9,17 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import type { DocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentFragment, Model, ModelElement } from '@ckeditor/ckeditor5-engine';
 
-import ClipboardObserver from './clipboardobserver.js';
-import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
+import { ClipboardObserver } from './clipboardobserver.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
 
 /**
  * The plugin detects the user's intention to paste plain text.
  *
  * For example, it detects the <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  */
-export default class PastePlainText extends Plugin {
+export class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -88,7 +88,7 @@ export default class PastePlainText extends Plugin {
 /**
  * Returns true if specified `documentFragment` represents the unformatted inline content.
  */
-function isUnformattedInlineContent( documentFragment: DocumentFragment, model: Model ): boolean {
+function isUnformattedInlineContent( documentFragment: ModelDocumentFragment, model: Model ): boolean {
 	let range = model.createRangeIn( documentFragment );
 
 	// We consider three scenarios here. The document fragment may include:
@@ -105,7 +105,7 @@ function isUnformattedInlineContent( documentFragment: DocumentFragment, model: 
 
 		if ( child.is( 'element' ) && model.schema.isBlock( child ) && !model.schema.isObject( child ) && !model.schema.isLimit( child ) ) {
 			// Scenario 2. as described above.
-			range = model.createRangeIn( child as Element );
+			range = model.createRangeIn( child as ModelElement );
 		}
 	}
 

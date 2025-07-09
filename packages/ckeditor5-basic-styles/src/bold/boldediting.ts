@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const BOLD = 'bold';
 
@@ -18,7 +18,7 @@ const BOLD = 'bold';
  * It registers the `'bold'` command and introduces the `bold` attribute in the model which renders to the view
  * as a `<strong>` element.
  */
-export default class BoldEditing extends Plugin {
+export class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

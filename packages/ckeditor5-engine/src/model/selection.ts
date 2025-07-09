@@ -7,26 +7,26 @@
  * @module engine/model/selection
  */
 
-import TypeCheckable from './typecheckable.js';
-import Node from './node.js';
-import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
+import { ModelTypeCheckable } from './typecheckable.js';
+import { ModelNode } from './node.js';
+import { ModelPosition, type ModelPositionOffset } from './position.js';
+import { ModelRange } from './range.js';
 
-import type DocumentFragment from './documentfragment.js';
-import type DocumentSelection from './documentselection.js';
-import type Element from './element.js';
-import type Item from './item.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type ModelDocumentSelection } from './documentselection.js';
+import { type ModelElement } from './element.js';
+import { type ModelItem } from './item.js';
 
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
- * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}
- * (it can be {@link module:engine/model/selection~Selection#isBackward forward or backward}).
+ * Selection is a set of {@link module:engine/model/range~ModelRange ranges}. It has a direction specified by its
+ * {@link module:engine/model/selection~ModelSelection#anchor anchor} and {@link module:engine/model/selection~ModelSelection#focus focus}
+ * (it can be {@link module:engine/model/selection~ModelSelection#isBackward forward or backward}).
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  */
-export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
 	 */
@@ -38,10 +38,10 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	protected _attrs: Map<string, unknown> = new Map();
 
 	/** @internal */
-	public _ranges: Array<Range> = [];
+	public _ranges: Array<ModelRange> = [];
 
 	/**
-	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~ModelSelectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * ```ts
@@ -74,11 +74,11 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * const paragraph = writer.createElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
@@ -95,12 +95,12 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	constructor(
 		...args: [] |
 		[
-			selectable: Node,
-			placeOrOffset: PlaceOrOffset,
+			selectable: ModelNode,
+			placeOrOffset: ModelPlaceOrOffset,
 			options?: { backward?: boolean }
 		] |
 		[
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<ModelSelectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	) {
@@ -118,15 +118,15 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * Anchor and {@link #focus} define the direction of the selection, which is important
 	 * when expanding/shrinking selection. The focus moves, while the anchor should remain in the same place.
 	 *
-	 * Anchor is always set to the {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the last of selection's ranges. Whether it is
+	 * Anchor is always set to the {@link module:engine/model/range~ModelRange#start start} or
+	 * {@link module:engine/model/range~ModelRange#end end} position of the last of selection's ranges. Whether it is
 	 * the `start` or `end` depends on the specified `options.backward`. See the {@link #setTo `setTo()`} method.
 	 *
 	 * May be set to `null` if there are no ranges in the selection.
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ModelPosition | null {
 		if ( this._ranges.length > 0 ) {
 			const range = this._ranges[ this._ranges.length - 1 ];
 
@@ -144,7 +144,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ModelPosition | null {
 		if ( this._ranges.length > 0 ) {
 			const range = this._ranges[ this._ranges.length - 1 ];
 
@@ -189,7 +189,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | DocumentSelection ): boolean {
+	public isEqual( otherSelection: ModelSelection | ModelDocumentSelection ): boolean {
 		if ( this.rangeCount != otherSelection.rangeCount ) {
 			return false;
 		} else if ( this.rangeCount === 0 ) {
@@ -221,21 +221,21 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	/**
 	 * Returns an iterable object that iterates over copies of selection ranges.
 	 */
-	public* getRanges(): IterableIterator<Range> {
+	public* getRanges(): IterableIterator<ModelRange> {
 		for ( const range of this._ranges ) {
-			yield new Range( range.start, range.end );
+			yield new ModelRange( range.start, range.end );
 		}
 	}
 
 	/**
 	 * Returns a copy of the first range in the selection.
-	 * First range is the one which {@link module:engine/model/range~Range#start start} position
-	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
+	 * First range is the one which {@link module:engine/model/range~ModelRange#start start} position
+	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ModelRange | null {
 		let first = null;
 
 		for ( const range of this._ranges ) {
@@ -244,18 +244,18 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 			}
 		}
 
-		return first ? new Range( first.start, first.end ) : null;
+		return first ? new ModelRange( first.start, first.end ) : null;
 	}
 
 	/**
 	 * Returns a copy of the last range in the selection.
-	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
-	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
-	 * recently added to the selection).
+	 * Last range is the one which {@link module:engine/model/range~ModelRange#end end} position
+	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all other
+	 * ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ModelRange | null {
 		let last = null;
 
 		for ( const range of this._ranges ) {
@@ -264,17 +264,17 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 			}
 		}
 
-		return last ? new Range( last.start, last.end ) : null;
+		return last ? new ModelRange( last.start, last.end ) : null;
 	}
 
 	/**
 	 * Returns the first position in the selection.
-	 * First position is the position that {@link module:engine/model/position~Position#isBefore is before}
+	 * First position is the position that {@link module:engine/model/position~ModelPosition#isBefore is before}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ModelPosition | null {
 		const first = this.getFirstRange();
 
 		return first ? first.start.clone() : null;
@@ -282,12 +282,12 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Returns the last position in the selection.
-	 * Last position is the position that {@link module:engine/model/position~Position#isAfter is after}
+	 * Last position is the position that {@link module:engine/model/position~ModelPosition#isAfter is after}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ModelPosition | null {
 		const lastRange = this.getLastRange();
 
 		return lastRange ? lastRange.end.clone() : null;
@@ -295,7 +295,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selectable selectable}.
+	 * {@link module:engine/model/selection~ModelSelectable selectable}.
 	 *
 	 * ```ts
 	 * // Removes all selection's ranges.
@@ -316,7 +316,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 *
 	 * // Sets selection to the given document selection.
 	 * // Note: It doesn't copy selection attributes.
-	 * const documentSelection = new DocumentSelection( doc );
+	 * const documentSelection = new ModelDocumentSelection( doc );
 	 * selection.setTo( documentSelection );
 	 *
 	 * // Sets collapsed selection at the given position.
@@ -327,14 +327,14 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * selection.setTo( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
  	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
 	 * selection.setTo( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * selection.setTo( paragraph, 'on' );
@@ -349,11 +349,11 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 */
 	public setTo(
 		...args: [
-			selectable: Node,
-			placeOrOffset: PlaceOrOffset,
+			selectable: ModelNode,
+			placeOrOffset: ModelPlaceOrOffset,
 			options?: { backward?: boolean }
 		] | [
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<ModelSelectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	): void {
@@ -366,26 +366,26 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 		if ( selectable === null ) {
 			this._setRanges( [] );
-		} else if ( selectable instanceof Selection ) {
+		} else if ( selectable instanceof ModelSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable && typeof ( selectable as any ).getRanges == 'function' ) {
-			// We assume that the selectable is a DocumentSelection.
+			// We assume that the selectable is a ModelDocumentSelection.
 			// It can't be imported here, because it would lead to circular imports.
-			this._setRanges( ( selectable as DocumentSelection ).getRanges(), ( selectable as DocumentSelection ).isBackward );
-		} else if ( selectable instanceof Range ) {
+			this._setRanges( ( selectable as ModelDocumentSelection ).getRanges(), ( selectable as ModelDocumentSelection ).isBackward );
+		} else if ( selectable instanceof ModelRange ) {
 			this._setRanges( [ selectable ], !!options && !!options.backward );
-		} else if ( selectable instanceof Position ) {
-			this._setRanges( [ new Range( selectable ) ] );
-		} else if ( selectable instanceof Node ) {
+		} else if ( selectable instanceof ModelPosition ) {
+			this._setRanges( [ new ModelRange( selectable ) ] );
+		} else if ( selectable instanceof ModelNode ) {
 			const backward = !!options && !!options.backward;
 			let range;
 
 			if ( placeOrOffset == 'in' ) {
-				range = Range._createIn( selectable as Element );
+				range = ModelRange._createIn( selectable as ModelElement );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range._createOn( selectable );
+				range = ModelRange._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
-				range = new Range( Position._createAt( selectable, placeOrOffset ) );
+				range = new ModelRange( ModelPosition._createAt( selectable, placeOrOffset ) );
 			} else {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
@@ -405,8 +405,8 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 			 *
 			 * Invalid parameters were specified when setting the selection. Common issues:
 			 *
-			 * * A {@link module:engine/model/textproxy~TextProxy} instance was passed instead of
-			 * a real {@link module:engine/model/text~Text}.
+			 * * A {@link module:engine/model/textproxy~ModelTextProxy} instance was passed instead of
+			 * a real {@link module:engine/model/text~ModelText}.
 			 * * View nodes were passed instead of model nodes.
 			 * * `null`/`undefined` was passed.
 			 *
@@ -418,24 +418,24 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link module:engine/model/selection~Selection#anchor} and
-	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made.
+	 * is treated like the last added range and is used to set {@link module:engine/model/selection~ModelSelection#anchor} and
+	 * {@link module:engine/model/selection~ModelSelection#focus}. Accepts a flag describing in which direction the selection is made.
 	 *
 	 * @fires change:range
 	 * @param newRanges Ranges to set.
 	 * @param isLastBackward Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	protected _setRanges( newRanges: Iterable<Range>, isLastBackward: boolean = false ): void {
+	protected _setRanges( newRanges: Iterable<ModelRange>, isLastBackward: boolean = false ): void {
 		const ranges = Array.from( newRanges );
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
 		const anyNewRange = ranges.some( newRange => {
-			if ( !( newRange instanceof Range ) ) {
+			if ( !( newRange instanceof ModelRange ) ) {
 				/**
-				 * Selection range set to an object that is not an instance of {@link module:engine/model/range~Range}.
+				 * Selection range set to an object that is not an instance of {@link module:engine/model/range~ModelRange}.
 				 *
-				 * Only {@link module:engine/model/range~Range} instances can be used to set a selection.
+				 * Only {@link module:engine/model/range~ModelRange} instances can be used to set a selection.
 				 * Common mistakes leading to this error are:
 				 *
 				 * * using DOM `Range` object,
@@ -463,19 +463,19 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 		this._lastRangeBackward = !!isLastBackward;
 
-		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<ModelSelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
-	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
+	 * Moves {@link module:engine/model/selection~ModelSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @fires change:range
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
@@ -485,7 +485,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 			throw new CKEditorError( 'model-selection-setfocus-no-ranges', [ this, itemOrPosition ] );
 		}
 
-		const newFocus = Position._createAt( itemOrPosition, offset );
+		const newFocus = ModelPosition._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus! ) == 'same' ) {
 			return;
@@ -498,14 +498,14 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 		}
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this._pushRange( new Range( newFocus, anchor ) );
+			this._pushRange( new ModelRange( newFocus, anchor ) );
 			this._lastRangeBackward = true;
 		} else {
-			this._pushRange( new Range( anchor, newFocus ) );
+			this._pushRange( new ModelRange( anchor, newFocus ) );
 			this._lastRangeBackward = false;
 		}
 
-		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<ModelSelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -558,7 +558,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 		if ( this.hasAttribute( key ) ) {
 			this._attrs.delete( key );
 
-			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<ModelSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -576,16 +576,16 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 		if ( this.getAttribute( key ) !== value ) {
 			this._attrs.set( key, value );
 
-			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<ModelSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/model/element~ModelElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ModelElement | null {
 		if ( this.rangeCount !== 1 ) {
 			return null;
 		}
@@ -594,7 +594,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~ModelSchema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
@@ -656,8 +656,8 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * <paragraph>]c</paragraph> // This block will not be returned
 	 * ```
 	 */
-	public* getSelectedBlocks(): IterableIterator<Element> {
-		const visited = new WeakSet<Node | DocumentFragment>();
+	public* getSelectedBlocks(): IterableIterator<ModelElement> {
+		const visited = new WeakSet<ModelNode | ModelDocumentFragment>();
 
 		for ( const range of this.getRanges() ) {
 			// Get start block of range in case of a collapsed range.
@@ -673,7 +673,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				const block = value.item;
 
 				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
-					yield block as Element;
+					yield block as ModelElement;
 				}
 				// If element is block, we can skip its children and jump to the end of it.
 				else if (
@@ -681,7 +681,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 					block.is( 'model:element' ) &&
 					block.root.document!.model.schema.isBlock( block )
 				) {
-					treewalker.jumpTo( Position._createAt( block, 'end' ) );
+					treewalker.jumpTo( ModelPosition._createAt( block, 'end' ) );
 				}
 			}
 
@@ -695,15 +695,15 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
-	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * at a position {@link module:engine/model/position~ModelPosition#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
 	 *
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
 	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
 	 */
-	public containsEntireContent( element: Element = this.anchor!.root as Element ): boolean {
-		const limitStartPosition = Position._createAt( element, 0 );
-		const limitEndPosition = Position._createAt( element, 'end' );
+	public containsEntireContent( element: ModelElement = this.anchor!.root as ModelElement ): boolean {
+		const limitStartPosition = ModelPosition._createAt( element, 0 );
+		const limitEndPosition = ModelPosition._createAt( element, 'end' );
 
 		return limitStartPosition.isTouching( this.getFirstPosition()! ) &&
 			limitEndPosition.isTouching( this.getLastPosition()! );
@@ -713,23 +713,23 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * Adds given range to internal {@link #_ranges ranges array}. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 */
-	protected _pushRange( range: Range ): void {
+	protected _pushRange( range: ModelRange ): void {
 		this._checkRange( range );
-		this._ranges.push( new Range( range.start, range.end ) );
+		this._ranges.push( new ModelRange( range.start, range.end ) );
 	}
 
 	/**
 	 * Checks if given range intersects with ranges that are already in the selection. Throws an error if it does.
 	 */
-	protected _checkRange( range: Range ): void {
+	protected _checkRange( range: ModelRange ): void {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**
 				 * Trying to add a range that intersects with another range in the selection.
 				 *
 				 * @error model-selection-range-intersects
-				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
+				 * @param {module:engine/model/range~ModelRange} addedRange Range that was added to the selection.
+				 * @param {module:engine/model/range~ModelRange} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'model-selection-range-intersects',
@@ -744,7 +744,7 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * Replaces all the ranges by the given ones.
 	 * Uses {@link #_popRange _popRange} and {@link #_pushRange _pushRange} to ensure proper ranges removal and addition.
 	 */
-	protected _replaceAllRanges( ranges: Array<Range> ): void {
+	protected _replaceAllRanges( ranges: Array<ModelRange> ): void {
 		this._removeAllRanges();
 
 		for ( const range of ranges ) {
@@ -772,14 +772,14 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Selection.prototype.is = function( type: string ): boolean {
+ModelSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
 };
 
 /**
  * Describes one of the events: `change:range` or `change:attribute`.
  */
-export type SelectionChangeEvent = {
+export type ModelSelectionChangeEvent = {
 	name: 'change' | 'change:range' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
@@ -790,16 +790,16 @@ export type SelectionChangeEvent = {
 /**
  * Fired when selection range(s) changed.
  *
- * @eventName ~Selection#change:range
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @eventName ~ModelSelection#change:range
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
- * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
+ * was directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  */
-export type SelectionChangeRangeEvent = {
+export type ModelSelectionChangeRangeEvent = {
 	name: 'change' | 'change:range';
 	args: [ {
 		directChange: boolean;
@@ -809,17 +809,17 @@ export type SelectionChangeRangeEvent = {
 /**
  * Fired when selection attribute changed.
  *
- * @eventName ~Selection#change:attribute
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @eventName ~ModelSelection#change:attribute
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
- * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
+ * were directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  * @param attributeKeys Array containing keys of attributes that changed.
  */
-export type SelectionChangeAttributeEvent = {
+export type ModelSelectionChangeAttributeEvent = {
 	name: 'change' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
@@ -831,7 +831,7 @@ export type SelectionChangeAttributeEvent = {
  * Checks whether the given element extends $block in the schema and has a parent (is not a root).
  * Marks it as already visited.
  */
-function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<Node | DocumentFragment> ) {
+function isUnvisitedBlock( element: ModelNode | ModelDocumentFragment, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -844,7 +844,7 @@ function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<No
 /**
  * Checks if the given element is a $block was not previously visited and is a top block in a range.
  */
-function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | DocumentFragment>, range: Range ) {
+function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<ModelNode | ModelDocumentFragment>, range: ModelRange ) {
 	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
@@ -853,7 +853,7 @@ function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | Document
  * It will search until first ancestor that is a limit element.
  * Marks all ancestors as already visited to not include any of them later on.
  */
-function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFragment> ) {
+function getParentBlock( position: ModelPosition, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 
@@ -861,7 +861,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 
 	let hasParentLimit = false;
 
-	const block = ancestors.find( ( element ): element is Element => {
+	const block = ancestors.find( ( element ): element is ModelElement => {
 		// Stop searching after first parent node that is limit element.
 		if ( hasParentLimit ) {
 			return false;
@@ -882,7 +882,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFra
 /**
  * Checks if the blocks is not nested in other block inside a range.
  */
-function isTopBlockInRange( block: Node, range: Range ) {
+function isTopBlockInRange( block: ModelNode, range: ModelRange ) {
 	const parentBlock = findAncestorBlock( block );
 
 	if ( !parentBlock ) {
@@ -890,7 +890,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
 	}
 
 	// Add loose flag to check as parentRange can be equal to range.
-	const isParentInRange = range.containsRange( Range._createOn( parentBlock ), true );
+	const isParentInRange = range.containsRange( ModelRange._createOn( parentBlock ), true );
 
 	return !isParentInRange;
 }
@@ -911,7 +911,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
  * <paragraph>a[]</paragraph> // This block will be returned
  * ```
  */
-function isStartBlockSelected( startBlock: Element | undefined, range: Range ): boolean {
+function isStartBlockSelected( startBlock: ModelElement | undefined, range: ModelRange ): boolean {
 	if ( !startBlock ) {
 		return false;
 	}
@@ -920,7 +920,7 @@ function isStartBlockSelected( startBlock: Element | undefined, range: Range ): 
 		return true;
 	}
 
-	if ( range.start.isTouching( Position._createAt( startBlock, startBlock.maxOffset ) ) ) {
+	if ( range.start.isTouching( ModelPosition._createAt( startBlock, startBlock.maxOffset ) ) ) {
 		return false;
 	}
 
@@ -943,7 +943,7 @@ function isStartBlockSelected( startBlock: Element | undefined, range: Range ): 
  * <paragraph>[]a</paragraph> // this block will be returned
  * ```
  */
-function isEndBlockSelected( endBlock: Element | undefined, range: Range ): boolean {
+function isEndBlockSelected( endBlock: ModelElement | undefined, range: ModelRange ): boolean {
 	if ( !endBlock ) {
 		return false;
 	}
@@ -952,7 +952,7 @@ function isEndBlockSelected( endBlock: Element | undefined, range: Range ): bool
 		return true;
 	}
 
-	if ( range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
+	if ( range.end.isTouching( ModelPosition._createAt( endBlock, 0 ) ) ) {
 		return false;
 	}
 
@@ -962,14 +962,14 @@ function isEndBlockSelected( endBlock: Element | undefined, range: Range ): bool
 /**
  * Returns first ancestor block of a node.
  */
-function findAncestorBlock( node: Node | DocumentFragment ) {
+function findAncestorBlock( node: ModelNode | ModelDocumentFragment ) {
 	const schema = node.root.document!.model.schema;
 
 	let parent = node.parent;
 
 	while ( parent ) {
 		if ( schema.isBlock( parent ) ) {
-			return parent as Element;
+			return parent as ModelElement;
 		}
 
 		parent = parent.parent;
@@ -979,11 +979,17 @@ function findAncestorBlock( node: Node | DocumentFragment ) {
 /**
  * An entity that is used to set selection.
  *
- * See also {@link module:engine/model/selection~Selection#setTo}.
+ * See also {@link module:engine/model/selection~ModelSelection#setTo}.
  */
-export type Selectable = Selection | DocumentSelection | Position | Range | Node | Iterable<Range> | null;
+export type ModelSelectable =
+	| ModelSelection
+	| ModelDocumentSelection
+	| ModelPosition
+	| ModelRange
+	| ModelNode
+	| Iterable<ModelRange> | null;
 
 /**
  * The place or offset of the selection.
  */
-export type PlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
+export type ModelPlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';

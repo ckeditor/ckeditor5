@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Highlight from '../src/highlight.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
+import { Highlight } from '../src/highlight.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Highlight', () => {
 	let editor, model, element;
@@ -41,18 +41,18 @@ describe( 'Highlight', () => {
 
 	describe( 'compatibility with images', () => {
 		it( 'does work inside image caption', () => {
-			setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[bar]baz</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[bar]baz</caption></imageBlock>' );
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( getModelData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( '<imageBlock src="/assets/sample.png">' +
 					'<caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption>' +
 				'</imageBlock>' );
 		} );
 
 		it( 'does work on selection with image', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<paragraph>foo[foo</paragraph>' +
 					'<imageBlock src="/assets/sample.png"><caption>abc</caption></imageBlock>' +
@@ -61,7 +61,7 @@ describe( 'Highlight', () => {
 
 			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo[<$text highlight="yellowMarker">foo</$text></paragraph>' +
 				'<imageBlock src="/assets/sample.png"><caption><$text highlight="yellowMarker">abc</$text></caption></imageBlock>' +
 				'<paragraph><$text highlight="yellowMarker">bar</$text>]bar</paragraph>'

@@ -8,12 +8,12 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import ListView from '../../list/listview.js';
+import { ListView } from '../../list/listview.js';
 
 /**
  * Represents a dropdown menu list view.
  */
-export default class DropdownMenuListView extends ListView {
+export class DropdownMenuListView extends ListView {
 	/**
 	 * Represents whether the dropdown menu list view is visible or not.
 	 */

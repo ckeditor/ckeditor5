@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FontColorCommand from '../../src/fontcolor/fontcolorcommand.js';
-import FontCommand from '../../src/fontcommand.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { FontColorCommand } from '../../src/fontcolor/fontcolorcommand.js';
+import { FontCommand } from '../../src/fontcommand.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'FontColorCommand', () => {
 	let editor, command;
