@@ -32,7 +32,7 @@ The following block formatting options are available:
 * {@link features/todo-lists To-do list} &ndash; Start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item, respectively.
 * {@link features/headings Headings} &ndash; Start a line with `#` or `##` or `###` followed by a space to create a heading 1, heading 2, or heading 3 (up to heading 6 if {@link module:heading/headingconfig~HeadingConfig#options} defines more headings).
 * {@link features/block-quote Block quote} &ndash; Start a line with `>` followed by a space.
-* {@link features/code-blocks Code block} &ndash; Start a line with `` ``` ``.
+* {@link features/code-blocks Code block} &ndash; Start a line with `` `backticks` ``.
 * {@link features/horizontal-line Horizontal line} &ndash; Start a line with `---`.
 
 ## Inline formatting
