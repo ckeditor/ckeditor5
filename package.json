@@ -108,7 +108,7 @@
     "@ckeditor/ckeditor5-export-word": "46.0.0",
     "@ckeditor/ckeditor5-format-painter": "46.0.0",
     "@ckeditor/ckeditor5-import-word": "46.0.0",
-    "@ckeditor/ckeditor5-inspector": "^4.0.0",
+    "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-list-multi-level": "46.0.0",
     "@ckeditor/ckeditor5-merge-fields": "46.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.4",
