@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * Insert image command.
@@ -47,7 +47,7 @@ import type ImageUtils from '../imageutils.js';
  * } );
  * ```
  */
-export default class InsertImageCommand extends Command {
+export class InsertImageCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -10,17 +10,17 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
-	LiveRange,
+	ModelLiveRange,
 	MouseObserver,
-	type DataTransfer,
-	type Element,
+	type ViewDataTransfer,
+	type ModelElement,
 	type Model,
-	type Range,
-	type Position,
+	type ModelRange,
+	type ModelPosition,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type DomEventData
+	type ViewDocumentDomEventData
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -42,11 +42,13 @@ import {
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import ClipboardPipeline, {
+import {
+	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
 } from './clipboardpipeline.js';
 
-import ClipboardObserver, {
+import {
+	ClipboardObserver,
 	type ViewDocumentDragEndEvent,
 	type ViewDocumentDragEnterEvent,
 	type ViewDocumentDraggingEvent,
@@ -55,8 +57,8 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import DragDropTarget from './dragdroptarget.js';
-import DragDropBlockToolbar from './dragdropblocktoolbar.js';
+import { DragDropTarget } from './dragdroptarget.js';
+import { DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
 import '../theme/clipboard.css';
 
@@ -145,11 +147,11 @@ import '../theme/clipboard.css';
  *
  * @internal
  */
-export default class DragDrop extends Plugin {
+export class DragDrop extends Plugin {
 	/**
 	 * The live range over the original content that is being dragged.
 	 */
-	private _draggedRange!: LiveRange | null;
+	private _draggedRange!: ModelLiveRange | null;
 
 	/**
 	 * The UID of current dragging that is used to verify if the drop started in the same editor as the drag start.
@@ -161,7 +163,7 @@ export default class DragDrop extends Plugin {
 	/**
 	 * The reference to the model element that currently has a `draggable` attribute set (it is set while dragging).
 	 */
-	private _draggableElement!: Element | null;
+	private _draggableElement!: ModelElement | null;
 
 	/**
 	 * A delayed callback removing draggable attributes.
@@ -350,7 +352,7 @@ export default class DragDrop extends Plugin {
 				return;
 			}
 
-			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 
 			dragDropTarget.updateDropMarker(
 				data.target,
@@ -395,7 +397,7 @@ export default class DragDrop extends Plugin {
 				return;
 			}
 
-			const { clientX, clientY } = ( data as DomEventData<DragEvent> ).domEvent;
+			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 			const targetRange = dragDropTarget.getFinalDropRange(
 				data.target,
 				data.targetRanges,
@@ -580,7 +582,7 @@ export default class DragDrop extends Plugin {
 				model.deleteContent( selection, { doNotAutoparagraph: true } );
 
 				// Check result selection if it does not require auto-paragraphing of empty container.
-				const selectionParent = selection.getFirstPosition()!.parent as Element;
+				const selectionParent = selection.getFirstPosition()!.parent as ModelElement;
 
 				if (
 					selectionParent.isEmpty &&
@@ -610,7 +612,7 @@ export default class DragDrop extends Plugin {
 		if ( draggableWidget ) {
 			const modelElement = editor.editing.mapper.toModelElement( draggableWidget )!;
 
-			this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+			this._draggedRange = ModelLiveRange.fromRange( model.createRangeOn( modelElement ) );
 			this._blockMode = model.schema.isBlock( modelElement );
 
 			// Disable toolbars so they won't obscure the drop area.
@@ -624,7 +626,7 @@ export default class DragDrop extends Plugin {
 		}
 
 		// If this was not a widget we should check if we need to drag some text content.
-		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as ModelElement ).isEmpty ) {
 			return;
 		}
 
@@ -632,7 +634,7 @@ export default class DragDrop extends Plugin {
 		const draggedRange = selection.getFirstRange()!;
 
 		if ( blocks.length == 0 ) {
-			this._draggedRange = LiveRange.fromRange( draggedRange );
+			this._draggedRange = ModelLiveRange.fromRange( draggedRange );
 
 			return;
 		}
@@ -640,14 +642,14 @@ export default class DragDrop extends Plugin {
 		const blockRange = getRangeIncludingFullySelectedParents( model, blocks );
 
 		if ( blocks.length > 1 ) {
-			this._draggedRange = LiveRange.fromRange( blockRange );
+			this._draggedRange = ModelLiveRange.fromRange( blockRange );
 			this._blockMode = true;
 			// TODO block mode for dragging from outside editor? or inline? or both?
 		} else if ( blocks.length == 1 ) {
 			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
-			this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+			this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
 			this._blockMode = touchesBlockEdges;
 		}
 
@@ -662,7 +664,7 @@ export default class DragDrop extends Plugin {
 		domTarget,
 		clientX
 	}: {
-		dataTransfer: DataTransfer;
+		dataTransfer: ViewDataTransfer;
 		domTarget: HTMLElement;
 		clientX: number;
 	} ): void {
@@ -715,7 +717,7 @@ export default class DragDrop extends Plugin {
  * Returns the drop effect that should be a result of dragging the content.
  * This function is handling a quirk when checking the effect in the 'drop' DOM event.
  */
-function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEffect' ] {
+function getFinalDropEffect( dataTransfer: ViewDataTransfer ): ViewDataTransfer[ 'dropEffect' ] {
 	if ( env.isGecko ) {
 		return dataTransfer.dropEffect;
 	}
@@ -768,12 +770,12 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  * Because all elements inside the `blockQuote` are selected, the range is extended to include the `blockQuote` too.
  * If only first and second paragraphs would be selected, the range would not include it.
  */
-function getRangeIncludingFullySelectedParents( model: Model, elements: Array<Element> ): Range {
+function getRangeIncludingFullySelectedParents( model: Model, elements: Array<ModelElement> ): ModelRange {
 	const firstElement = elements[ 0 ];
 	const lastElement = elements[ elements.length - 1 ];
 	const parent = firstElement.getCommonAncestor( lastElement );
-	const startPosition: Position = model.createPositionBefore( firstElement );
-	const endPosition: Position = model.createPositionAfter( lastElement );
+	const startPosition: ModelPosition = model.createPositionBefore( firstElement );
+	const endPosition: ModelPosition = model.createPositionAfter( lastElement );
 
 	if (
 		parent &&

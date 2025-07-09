@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-font-family: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;
+	--ck-content-font-size: medium;
+	/* stylelint-disable-next-line declaration-property-value-disallowed-list */
+	--ck-content-font-color: #000;
+	--ck-content-line-height: 1.5;
+	--ck-content-word-break: break-word;
+}
+
+.ck-content {
+	font-family: var(--ck-content-font-family);
+	font-size: var(--ck-content-font-size);
+	color: var(--ck-content-font-color);
+	line-height: var(--ck-content-line-height);
+	word-break: var(--ck-content-word-break);
+}

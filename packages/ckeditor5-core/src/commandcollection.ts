@@ -8,12 +8,12 @@
  */
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type Command from './command.js';
+import { type Command } from './command.js';
 
 /**
  * Collection of commands. Its instance is available in {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  */
-export default class CommandCollection implements Iterable<[ string, Command ]> {
+export class CommandCollection implements Iterable<[ string, Command ]> {
 	/**
 	 * Command map.
 	 */

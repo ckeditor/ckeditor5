@@ -9,7 +9,7 @@
 // Note, that long, non-formatted paragraphs are not problematic as these texts are treated as one text node.
 // We had instances where long non-formatted paragraphs were problematic, but these had always some formatting and `<br>`s which also
 // spread text into multiple text nodes.
-export default function makeData() {
+export function makeData() {
 	let initialData = '';
 
 	for ( let i = 0; i < 40; i++ ) {

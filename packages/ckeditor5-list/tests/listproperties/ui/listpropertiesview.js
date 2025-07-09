@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListPropertiesView from '../../../src/listproperties/ui/listpropertiesview.js';
+import { ListPropertiesView } from '../../../src/listproperties/ui/listpropertiesview.js';
 
 import {
 	ButtonView,

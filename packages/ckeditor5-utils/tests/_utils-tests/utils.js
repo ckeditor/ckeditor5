@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ObservableMixin from '../../src/observablemixin.js';
-import EmitterMixin from '../../src/emittermixin.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ObservableMixin } from '../../src/observablemixin.js';
+import { EmitterMixin } from '../../src/emittermixin.js';
 import { createObserver } from '../_utils/utils.js';
 
 describe( 'utils - testUtils', () => {

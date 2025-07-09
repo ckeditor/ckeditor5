@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ArticlePluginSet from '../_utils/articlepluginset.js';
-import ClassicTestEditor from '../_utils/classictesteditor.js';
+import { ArticlePluginSet } from '../_utils/articlepluginset.js';
+import { ClassicTestEditor } from '../_utils/classictesteditor.js';
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { ImageStyle } from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import { ImageToolbar } from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 describe( 'ArticlePluginSet', () => {
 	let editor, editorElement;

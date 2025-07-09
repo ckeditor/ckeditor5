@@ -11,10 +11,10 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import BookmarkEditing from '../src/bookmarkediting.js';
-import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
+import { UpdateBookmarkCommand } from '../src/updatebookmarkcommand.js';
 
 describe( 'UpdateBookmarkCommand', () => {
 	let domElement, editor, model, command, stub;
@@ -51,7 +51,7 @@ describe( 'UpdateBookmarkCommand', () => {
 	describe( '#isEnabled()', () => {
 		describe( 'should be `true`', () => {
 			it( 'when only bookmark element is selected', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				expect( command.isEnabled ).to.equal( true );
 			} );
@@ -59,25 +59,25 @@ describe( 'UpdateBookmarkCommand', () => {
 
 		describe( 'should be `false`', () => {
 			it( 'when selection is collapsed inside paragraph text', () => {
-				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'when an image is selected', () => {
-				setModelData( model, '<paragraph>foo [<imageInline src="#"></imageInline>] bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo [<imageInline src="#"></imageInline>] bar</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'when a link is selected', () => {
-				setModelData( model, '<paragraph>foo [<$text linkHref="foo">link</$text>] bar</paragraph>' );
+				_setModelData( model, '<paragraph>foo [<$text linkHref="foo">link</$text>] bar</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
 
 			it( 'when selection contains a bookmark and a text', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>bar]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>bar]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -87,39 +87,39 @@ describe( 'UpdateBookmarkCommand', () => {
 	describe( '#execute()', () => {
 		describe( 'should do nothing', () => {
 			it( 'if bookmarkId was not passed', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute();
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 
 			it( 'if bookmarkId is an empty string', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute( '' );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 
 			it( 'if bookmarkId is not a string', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute( true );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 		} );
 
 		describe( 'if a bookmarkId was passed', () => {
 			beforeEach( () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			} );
 
 			it( 'should update the bookmarkId of bookmark element with the proper id attribute', () => {
 				command.execute( { bookmarkId: 'bar' } );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph><bookmark bookmarkId="bar"></bookmark></paragraph>'
 				);
 			} );
@@ -127,7 +127,7 @@ describe( 'UpdateBookmarkCommand', () => {
 
 		describe( 'id validation', () => {
 			it( 'should warn if the command is executed with invalid id (only spaces)', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute( { bookmarkId: '   ' } );
 
@@ -135,7 +135,7 @@ describe( 'UpdateBookmarkCommand', () => {
 			} );
 
 			it( 'should warn if the command is executed with invalid id (spaces with bookmark name)', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute( { bookmarkId: 'bookmark name' } );
 
@@ -143,7 +143,7 @@ describe( 'UpdateBookmarkCommand', () => {
 			} );
 
 			it( 'should warn if the command is executed with invalid id (empty name)', () => {
-				setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				command.execute( { bookmarkId: '' } );
 

@@ -11,7 +11,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Bold, Code, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import EmptyBlock from '../../src/emptyblock.js';
+import { EmptyBlock } from '../../src/emptyblock.js';
 
 const config = {
 	plugins: [ Table, Essentials, List, ListProperties, Bold, Italic, Code, Paragraph, Heading, SourceEditing, EmptyBlock ],

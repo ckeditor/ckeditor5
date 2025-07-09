@@ -7,8 +7,8 @@
  * @module ui/tooltipmanager
  */
 
-import View from './view.js';
-import BalloonPanelView from './panel/balloon/balloonpanelview.js';
+import { View } from './view.js';
+import { BalloonPanelView } from './panel/balloon/balloonpanelview.js';
 import type { EditorUIUpdateEvent } from './editorui/editorui.js';
 
 import {
@@ -22,7 +22,7 @@ import {
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import { isElement, debounce, type DebouncedFunction } from 'es-toolkit/compat';
+import { isElement, debounce, type DebouncedFunc } from 'es-toolkit/compat';
 
 import '../theme/components/tooltip/tooltip.css';
 
@@ -90,7 +90,7 @@ const BALLOON_CLASS = 'ck-tooltip';
  * **Note**: This class is a singleton. All editor instances re-use the same instance loaded by
  * {@link module:ui/editorui/editorui~EditorUI} of the first editor.
  */
-export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
+export class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * The view rendering text of the tooltip.
 	 */
@@ -130,12 +130,12 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	 * A debounced version of {@link #_pinTooltip}. Tooltips show with a delay to avoid flashing and
 	 * to improve the UX.
 	 */
-	private _pinTooltipDebounced!: DebouncedFunction<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
+	private _pinTooltipDebounced!: DebouncedFunc<( targetDomElement: HTMLElement, data: TooltipData ) => void>;
 
 	/**
 	 * A debounced version of {@link #_unpinTooltip}. Tooltips hide with a delay to allow hovering of their titles.
 	 */
-	private _unpinTooltipDebounced!: DebouncedFunction<VoidFunction>;
+	private _unpinTooltipDebounced!: DebouncedFunc<VoidFunction>;
 
 	private readonly _watchdogExcluded!: true;
 

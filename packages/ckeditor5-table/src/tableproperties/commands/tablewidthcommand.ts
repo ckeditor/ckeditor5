@@ -7,7 +7,7 @@
  * @module table/tableproperties/commands/tablewidthcommand
  */
 
-import TablePropertyCommand from './tablepropertycommand.js';
+import { TablePropertyCommand } from './tablepropertycommand.js';
 import { addDefaultUnitToNumericValue } from '../../utils/table-properties.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
@@ -35,7 +35,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
  *
  * will set the `width` attribute to `'50px'` in the model.
  */
-export default class TableWidthCommand extends TablePropertyCommand {
+export class TableWidthCommand extends TablePropertyCommand {
 	/**
 	 * Creates a new `TableWidthCommand` instance.
 	 *

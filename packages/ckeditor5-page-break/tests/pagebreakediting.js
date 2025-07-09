@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import PageBreakEditing from '../src/pagebreakediting.js';
-import PageBreakCommand from '../src/pagebreakcommand.js';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { PageBreakEditing } from '../src/pagebreakediting.js';
+import { PageBreakCommand } from '../src/pagebreakcommand.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'PageBreakEditing', () => {
 	let editor, model, view, viewDocument;
@@ -71,7 +71,7 @@ describe( 'PageBreakEditing', () => {
 	// Proper integration testing of this is too complex.
 	// Making sure the label is no longer a regular text element should be enough.
 	it( 'should have label as a RawElement', () => {
-		setModelData( model, '[<pageBreak></pageBreak>]' );
+		_setModelData( model, '[<pageBreak></pageBreak>]' );
 		const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 		expect( element.is( 'rawElement' ) ).to.be.true;
@@ -81,7 +81,7 @@ describe( 'PageBreakEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<pageBreak></pageBreak>' );
+				_setModelData( model, '<pageBreak></pageBreak>' );
 
 				expect( editor.getData() ).to.equal(
 					'<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>'
@@ -97,7 +97,7 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
@@ -108,7 +108,7 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
@@ -130,49 +130,49 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div> </div>' );
 			} );
 
 			it( 'should not convert if outer div has wrong styles', () => {
 				editor.setData( '<div class="page-break" style="page-break-after:auto;"><span style="display:none;">&nbsp;</span></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
 			it( 'should convert if outer div has no children', () => {
 				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
 			it( 'should convert if outer div has page-break-before style', () => {
 				editor.setData( '<div class="page-break" style="page-break-before:always;"></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
 			it( 'should convert if outer div has page-break-after style', () => {
 				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
 			it( 'should convert if page-break-after style is on br element', () => {
 				editor.setData( '<br style="page-break-after:always;"/>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
 			it( 'should convert if page-break-before style is on br element', () => {
 				editor.setData( '<br style="page-break-after:always;"/>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
@@ -184,7 +184,7 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
@@ -195,7 +195,7 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak>' );
 			} );
 
@@ -206,7 +206,7 @@ describe( 'PageBreakEditing', () => {
 					'</div>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
 
@@ -236,8 +236,36 @@ describe( 'PageBreakEditing', () => {
 					'</section>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak><section><$text foo="true">Foo</$text></section>' );
+			} );
+
+			it( 'should consume page-break and page-break-after styles', () => {
+				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+					const testMatch = match => conversionApi.consumable.test( data.viewItem, match );
+
+					expect( testMatch( { classes: [ 'page-break' ] } ) ).to.be.false;
+					expect( testMatch( { styles: [ 'page-break-after' ] } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', upcastCheck, { priority: 'lowest' } );
+
+				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
+				expect( upcastCheck ).to.be.calledOnce;
+			} );
+
+			it( 'should consume page-break and page-break-before styles', () => {
+				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+					const testMatch = match => conversionApi.consumable.test( data.viewItem, match );
+
+					expect( testMatch( { classes: [ 'page-break' ] } ) ).to.be.false;
+					expect( testMatch( { styles: [ 'page-break-before' ] } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', upcastCheck, { priority: 'lowest' } );
+
+				editor.setData( '<div class="page-break" style="page-break-before:always;"></div>' );
+				expect( upcastCheck ).to.be.calledOnce;
 			} );
 		} );
 	} );
@@ -245,20 +273,20 @@ describe( 'PageBreakEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				setModelData( model, '<pageBreak></pageBreak>' );
+				_setModelData( model, '<pageBreak></pageBreak>' );
 
 				// The page break label should be an UI element, thus should not be rendered by default.
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label"></span></div>'
 				);
 
-				expect( getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
+				expect( _getViewData( view, { withoutSelection: true, renderRawElements: true } ) ).to.equal(
 					'<div class="ck-widget page-break" contenteditable="false"><span class="page-break__label">Page break</span></div>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				setModelData( model, '<pageBreak></pageBreak>' );
+				_setModelData( model, '<pageBreak></pageBreak>' );
 				const widget = viewDocument.getRoot().getChild( 0 );
 
 				expect( widget.name ).to.equal( 'div' );

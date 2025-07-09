@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ElementReplacer from '../src/elementreplacer.js';
+import { ElementReplacer } from '../src/elementreplacer.js';
 
 describe( 'ElementReplacer', () => {
 	let replacer;

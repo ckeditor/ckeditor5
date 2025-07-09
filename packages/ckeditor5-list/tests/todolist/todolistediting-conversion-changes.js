@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
+import { TodoListEditing } from '../../src/todolist/todolistediting.js';
 import { setupTestHelpers } from '../list/_utils/utils.js';
 
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'TodoListEditing - conversion - changes', () => {
 	let editor, model, test, modelRoot;
@@ -3233,13 +3233,13 @@ describe( 'TodoListEditing - conversion - changes', () => {
 			view = editor.editing.view;
 			viewRoot = view.document.getRoot();
 
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>0</paragraph>' +
 				'<paragraph listItemId="a" listIndent="0" listType="todo">1</paragraph>' +
 				'<paragraph listItemId="a" listIndent="0" listType="todo">2</paragraph>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<p>0</p>' +
 				'<ul class="todo-list">' +
 					'<li>' +
@@ -3344,11 +3344,11 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					converterPriority: 'low'
 				} );
 
-				setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo<input></input>bar</paragraph>' );
+				_setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo<input></input>bar</paragraph>' );
 
 				testList( [ 0, 7 ], [ 0, 0, 0, 1, 2, 3 ] );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul class="todo-list">' +
 						'<li>' +
 							'<span class="todo-list__label">' +
@@ -3366,7 +3366,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 					view: ( data, { writer } ) => writer.createUIElement( 'input' )
 				} );
 
-				setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo[]bar</paragraph>' );
+				_setModelData( model, '<paragraph listItemId="a" listIndent="0" listType="todo">foo[]bar</paragraph>' );
 
 				model.change( writer => {
 					writer.addMarker( 'input', {
@@ -3378,7 +3378,7 @@ describe( 'TodoListEditing - conversion - changes', () => {
 
 				testList( [ 0, 6 ], [ 0, 0, 0, 1, 2, 3 ] );
 
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<ul class="todo-list">' +
 						'<li>' +
 							'<span class="todo-list__label">' +

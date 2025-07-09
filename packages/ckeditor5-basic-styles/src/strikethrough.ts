@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import StrikethroughEditing from './strikethrough/strikethroughediting.js';
-import StrikethroughUI from './strikethrough/strikethroughui.js';
+import { StrikethroughEditing } from './strikethrough/strikethroughediting.js';
+import { StrikethroughUI } from './strikethrough/strikethroughui.js';
 
 /**
  * The strikethrough feature.
@@ -20,7 +20,7 @@ import StrikethroughUI from './strikethrough/strikethroughui.js';
  * This is a "glue" plugin which loads the {@link module:basic-styles/strikethrough/strikethroughediting~StrikethroughEditing} and
  * {@link module:basic-styles/strikethrough/strikethroughui~StrikethroughUI} plugins.
  */
-export default class Strikethrough extends Plugin {
+export class Strikethrough extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

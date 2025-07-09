@@ -17,8 +17,10 @@ import './../../theme/inserttable.css';
  * The table size view.
  *
  * It renders a 10x10 grid to choose the inserted table size.
+ *
+ * @internal
  */
-export default class InsertTableView extends View {
+export class InsertTableView extends View {
 	/**
 	 * A collection of table size box items.
 	 */

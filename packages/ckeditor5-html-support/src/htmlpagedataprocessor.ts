@@ -7,13 +7,13 @@
  * @module html-support/htmlpagedataprocessor
  */
 
-import { HtmlDataProcessor, UpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine.js';
+import { HtmlDataProcessor, ViewUpcastWriter, type ViewDocumentFragment } from 'ckeditor5/src/engine.js';
 
 /**
  * The full page HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
  */
-export default class HtmlPageDataProcessor extends HtmlDataProcessor {
+export class HtmlPageDataProcessor extends HtmlDataProcessor {
 	/**
 	 * @inheritDoc
 	 */
@@ -48,7 +48,7 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 			{ skipComments: this.skipComments }
 		) as ViewDocumentFragment;
 
-		const writer = new UpcastWriter( viewFragment.document );
+		const writer = new ViewUpcastWriter( viewFragment.document );
 
 		// Using the DOM document with body content extracted as a skeleton of the page.
 		writer.setCustomProperty( '$fullPageDocument', domFragment.ownerDocument.documentElement.outerHTML, viewFragment );

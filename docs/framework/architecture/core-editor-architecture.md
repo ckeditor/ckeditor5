@@ -114,7 +114,7 @@ refresh() {
 }
 ```
 
-This method is called automatically (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
+This method is called automatically (by the command itself) when {@link module:engine/model/document~ModelDocument#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
 The important thing about commands is that every change in their state as well as calling the `execute()` method fire events. Some examples of these are {@link module:core/command~Command#event-set:{property} `#set:value`} and {@link module:core/command~Command#event-change:{property} `#change:value`} when you change the `#value` property and {@link module:core/command~Command#event:execute `#execute`} when you execute the command.
 

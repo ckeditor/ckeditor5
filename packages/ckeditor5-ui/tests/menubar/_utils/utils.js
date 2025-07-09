@@ -9,7 +9,7 @@ import {
 	MenuBarMenuListView,
 	MenuBarMenuListItemView
 } from '../../../src/index.js';
-import ListSeparatorView from '../../../src/list/listseparatorview.js';
+import { ListSeparatorView } from '../../../src/list/listseparatorview.js';
 
 /**
  * Returns an abstract object representation of the menu bar structure with submenus and items (and their state).

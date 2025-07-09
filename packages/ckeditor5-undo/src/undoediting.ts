@@ -9,8 +9,8 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
-import RedoCommand from './redocommand.js';
+import { UndoCommand, type UndoCommandRevertEvent } from './undocommand.js';
+import { RedoCommand } from './redocommand.js';
 
 import type {
 	Batch,
@@ -22,7 +22,7 @@ import type {
  *
  * It introduces the `'undo'` and `'redo'` commands to the editor.
  */
-export default class UndoEditing extends Plugin {
+export class UndoEditing extends Plugin {
 	/**
 	 * The command that manages the undo {@link module:engine/model/batch~Batch batches} stack (history).
 	 * Created and registered during the {@link #init feature initialization}.

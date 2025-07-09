@@ -3,25 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import utils from '../../src/imagestyle/utils.js';
-import ImageToolbar from '../../src/imagetoolbar.js';
-import ImageStyleEditing from '../../src/imagestyle/imagestyleediting.js';
-import ImageStyleUI from '../../src/imagestyle/imagestyleui.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { DEFAULT_OPTIONS, utils } from '../../src/imagestyle/utils.js';
+import { ImageToolbar } from '../../src/imagetoolbar.js';
+import { ImageStyleEditing } from '../../src/imagestyle/imagestyleediting.js';
+import { ImageStyleUI } from '../../src/imagestyle/imagestyleui.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { SplitButtonView } from '../../../../src/ui.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ImageStyleUI', () => {
 	let editor, editorElement, factory, defaultDropdowns;
 
-	const { DEFAULT_OPTIONS, getDefaultDropdownDefinitions } = utils;
 	const allStyles = Object.values( DEFAULT_OPTIONS );
 	const customDropdowns = [ {
 		name: 'imageStyle:custom',
@@ -48,7 +47,7 @@ describe( 'ImageStyleUI', () => {
 			} );
 
 		factory = editor.ui.componentFactory;
-		defaultDropdowns = getDefaultDropdownDefinitions( editor.plugins );
+		defaultDropdowns = utils.getDefaultDropdownDefinitions( editor.plugins );
 	} );
 
 	afterEach( () => {
@@ -381,7 +380,7 @@ describe( 'ImageStyleUI', () => {
 
 			customEditor.ui.focusTracker.isFocused = true;
 
-			setData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledOnce( console.warn );
 			sinon.assert.calledWithExactly( console.warn,
@@ -424,7 +423,7 @@ describe( 'ImageStyleUI', () => {
 
 			customEditor.ui.focusTracker.isFocused = true;
 
-			setData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
+			_setModelData( customEditor.model, '[<imageBlock src=""></imageBlock>]' );
 
 			sinon.assert.calledTwice( console.warn );
 			sinon.assert.calledWithExactly( console.warn,

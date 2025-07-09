@@ -14,7 +14,7 @@ import { isPlainObject, isElement, cloneDeepWith } from 'es-toolkit/compat';
  *
  * @typeParam Cfg A type of the configuration dictionary.
  */
-export default class Config<Cfg> {
+export class Config<Cfg> {
 	/**
 	 * Store for the whole configuration.
 	 */

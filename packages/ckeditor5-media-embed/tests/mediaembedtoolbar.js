@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
-import MediaEmbed from '../src/mediaembed.js';
-import MediaEmbedToolbar from '../src/mediaembedtoolbar.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import { MediaEmbed } from '../src/mediaembed.js';
+import { MediaEmbedToolbar } from '../src/mediaembedtoolbar.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MediaEmbedToolbar', () => {
 	let editor, element, widgetToolbarRepository, balloon, toolbar, model;
@@ -63,7 +63,7 @@ describe( 'MediaEmbedToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<media url=""></media>]' );
+			_setModelData( model, '[<media url=""></media>]' );
 
 			expect( toolbar.items ).to.have.length( 1 );
 			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
@@ -74,7 +74,7 @@ describe( 'MediaEmbedToolbar', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '[<media url=""></media>]' );
+			_setModelData( model, '[<media url=""></media>]' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 				return view === toolbar && balloonClassName === 'ck-toolbar-container';
@@ -94,7 +94,7 @@ describe( 'MediaEmbedToolbar', () => {
 		it( 'should show the toolbar when the editor gains focus and the media widget is selected', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( editor.model, '[<media url=""></media>]' );
+			_setModelData( editor.model, '[<media url=""></media>]' );
 
 			editor.ui.focusTracker.isFocused = false;
 			expect( balloon.visibleView ).to.be.null;
@@ -106,7 +106,7 @@ describe( 'MediaEmbedToolbar', () => {
 		it( 'should hide the toolbar when the editor loses focus and the media widget is selected', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			setData( editor.model, '[<media url=""></media>]' );
+			_setModelData( editor.model, '[<media url=""></media>]' );
 
 			editor.ui.focusTracker.isFocused = true;
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -122,7 +122,7 @@ describe( 'MediaEmbedToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the media widget is selected', () => {
-			setData( editor.model, '<paragraph>[foo]</paragraph><media url=""></media>' );
+			_setModelData( editor.model, '<paragraph>[foo]</paragraph><media url=""></media>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -144,7 +144,7 @@ describe( 'MediaEmbedToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( editor.model, '<media url=""></media>' );
+			_setModelData( editor.model, '<media url=""></media>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -166,7 +166,7 @@ describe( 'MediaEmbedToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on ui#update if the media is de–selected', () => {
-			setData( model, '<paragraph>foo</paragraph>[<media url=""></media>]' );
+			_setModelData( model, '<paragraph>foo</paragraph>[<media url=""></media>]' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -219,7 +219,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 	} );
 
 	it( 'balloon toolbar should be hidden when media widget is selected', () => {
-		setData( model, '<paragraph>[abc]</paragraph><media url=""></media>' );
+		_setModelData( model, '<paragraph>[abc]</paragraph><media url=""></media>' );
 		editor.editing.view.document.isFocused = true;
 
 		expect( balloon.visibleView ).to.equal( null );
@@ -237,7 +237,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 	} );
 
 	it( 'balloon toolbar should be visible when media widget is not selected', () => {
-		setData( model, '<paragraph>abc</paragraph>[<media url=""></media>]' );
+		_setModelData( model, '<paragraph>abc</paragraph>[<media url=""></media>]' );
 		editor.editing.view.document.isFocused = true;
 
 		expect( balloon.visibleView ).to.equal( toolbar );

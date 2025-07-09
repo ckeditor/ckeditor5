@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { addBackgroundRules } from '../../../src/view/styles/background.js';
+import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
+import { addBackgroundStylesRules } from '../../../src/view/styles/background.js';
 
 describe( 'Background styles normalization', () => {
 	let styles;
 
 	beforeEach( () => {
 		const stylesProcessor = new StylesProcessor();
-		addBackgroundRules( stylesProcessor );
+		addBackgroundStylesRules( stylesProcessor );
 		styles = new StylesMap( stylesProcessor );
 	} );
 

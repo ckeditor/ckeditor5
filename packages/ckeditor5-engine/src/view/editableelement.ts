@@ -7,23 +7,23 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement.js';
+import { ViewContainerElement } from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection.js';
-import type { ElementAttributes } from './element.js';
-import type Document from './document.js';
-import type Node from './node.js';
+import type { ViewElementAttributes } from './element.js';
+import { type ViewDocument } from './document.js';
+import { type ViewNode } from './node.js';
 
 /**
- * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
+ * Editable element which can be a {@link module:engine/view/rooteditableelement~ViewRootEditableElement root}
  * or nested editable area in the editor.
  *
- * Editable is automatically read-only when its {@link module:engine/view/document~Document Document} is read-only.
+ * Editable is automatically read-only when its {@link module:engine/view/document~ViewDocument Document} is read-only.
  *
- * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
+ * The constructor of this class shouldn't be used directly. To create new `ViewEditableElement` use the
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export default class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerElement ) {
+export class ViewEditableElement extends /* #__PURE__ */ ObservableMixin( ViewContainerElement ) {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *
@@ -34,7 +34,7 @@ export default class EditableElement extends /* #__PURE__ */ ObservableMixin( Co
 	/**
 	 * Whether the editable is focused.
 	 *
-	 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
+	 * This property updates when {@link module:engine/view/document~ViewDocument#isFocused document.isFocused} or view
 	 * selection is changed.
 	 *
 	 * @readonly
@@ -56,7 +56,7 @@ export default class EditableElement extends /* #__PURE__ */ ObservableMixin( Co
 	/**
 	 * Creates an editable element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
@@ -64,10 +64,10 @@ export default class EditableElement extends /* #__PURE__ */ ObservableMixin( Co
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
-		attributes?: ElementAttributes,
-		children?: Node | Iterable<Node>
+		attributes?: ViewElementAttributes,
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attributes, children );
 
@@ -96,7 +96,7 @@ export default class EditableElement extends /* #__PURE__ */ ObservableMixin( Co
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-EditableElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewEditableElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'editableElement' || type === 'view:editableElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.

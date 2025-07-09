@@ -36,6 +36,8 @@ for ( const { listStyle, typeAttribute, listType } of LIST_STYLE_TYPES ) {
 
 /**
  * Gets all the style types supported by given list type.
+ *
+ * @internal
  */
 export function getAllSupportedStyleTypes(): Array<string> {
 	return LIST_STYLE_TYPES.map( x => x.listStyle );
@@ -43,6 +45,8 @@ export function getAllSupportedStyleTypes(): Array<string> {
 
 /**
  * Checks whether the given list-style-type is supported by numbered or bulleted list.
+ *
+ * @internal
  */
 export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted' | 'numbered' | null {
 	return LIST_STYLE_TO_LIST_TYPE[ listStyleType ] || null;
@@ -50,6 +54,8 @@ export function getListTypeFromListStyleType( listStyleType: string ): 'bulleted
 
 /**
  * Converts `type` attribute of `<ul>` or `<ol>` elements to `list-style-type` equivalent.
+ *
+ * @internal
  */
 export function getListStyleTypeFromTypeAttribute( value: string ): string | null {
 	return TYPE_ATTRIBUTE_TO_LIST_STYLE[ value ] || null;
@@ -57,6 +63,8 @@ export function getListStyleTypeFromTypeAttribute( value: string ): string | nul
 
 /**
  * Converts `list-style-type` style to `type` attribute of `<ul>` or `<ol>` elements.
+ *
+ * @internal
  */
 export function getTypeAttributeFromListStyleType( value: string ): string | null {
 	return LIST_STYLE_TO_TYPE_ATTRIBUTE[ value ] || null;
@@ -65,6 +73,7 @@ export function getTypeAttributeFromListStyleType( value: string ): string | nul
 /**
  * Normalizes list style by converting aliases to their canonical form.
  *
+ * @internal
  * @param listStyle The list style value to normalize.
  * @returns The canonical form of the list style.
  *

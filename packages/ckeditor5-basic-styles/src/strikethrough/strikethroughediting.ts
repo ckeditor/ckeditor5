@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const STRIKETHROUGH = 'strikethrough';
 
@@ -19,7 +19,7 @@ const STRIKETHROUGH = 'strikethrough';
  * `strikethroughsthrough` attribute in the model which renders to the view
  * as a `<s>` element.
  */
-export default class StrikethroughEditing extends Plugin {
+export class StrikethroughEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

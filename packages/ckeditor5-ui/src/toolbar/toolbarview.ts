@@ -7,18 +7,18 @@
  * @module ui/toolbar/toolbarview
  */
 
-import View from '../view.js';
-import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
-import ToolbarSeparatorView from './toolbarseparatorview.js';
-import ToolbarLineBreakView from './toolbarlinebreakview.js';
-import preventDefault from '../bindings/preventdefault.js';
+import { View } from '../view.js';
+import { FocusCycler, isFocusable, type FocusableView } from '../focuscycler.js';
+import { ToolbarSeparatorView } from './toolbarseparatorview.js';
+import { ToolbarLineBreakView } from './toolbarlinebreakview.js';
+import { preventDefault } from '../bindings/preventdefault.js';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils.js';
-import normalizeToolbarConfig from './normalizetoolbarconfig.js';
+import { normalizeToolbarConfig } from './normalizetoolbarconfig.js';
 
-import type ComponentFactory from '../componentfactory.js';
-import type ViewCollection from '../viewcollection.js';
-import type DropdownView from '../dropdown/dropdownview.js';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
+import { type ComponentFactory } from '../componentfactory.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { type DropdownView } from '../dropdown/dropdownview.js';
+import { type DropdownPanelFocusable } from '../dropdown/dropdownpanelfocusable.js';
 
 import {
 	FocusTracker,
@@ -51,6 +51,9 @@ import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
+/**
+ * @internal
+ */
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
 	alignLeft: IconAlignLeft,
 	bold: IconBold,
@@ -66,7 +69,7 @@ export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PU
 /**
  * The toolbar view class.
  */
-export default class ToolbarView extends View implements DropdownPanelFocusable {
+export class ToolbarView extends View implements DropdownPanelFocusable {
 	/**
 	 * A reference to the options object passed to the constructor.
 	 */
@@ -626,7 +629,7 @@ export type ToolbarViewGroupedItemsUpdateEvent = {
  * An inner block of the {@link module:ui/toolbar/toolbarview~ToolbarView} hosting its
  * {@link module:ui/toolbar/toolbarview~ToolbarView#items}.
  */
-class ItemsView extends View {
+export class ItemsView extends View {
 	/**
 	 * A collection of items (buttons, dropdowns, etc.).
 	 */
@@ -1171,6 +1174,7 @@ export interface ToolbarOptions {
  * {@link module:ui/toolbar/toolbarview~ToolbarView#element} template or
  * {@link module:ui/toolbar/toolbarview~ToolbarView#render rendering}. They can be enabled
  * conditionally, e.g. depending on the configuration of the toolbar.
+ * @internal
  */
 export interface ToolbarBehavior {
 

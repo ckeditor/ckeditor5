@@ -9,10 +9,10 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	addBorderRules,
-	addPaddingRules,
-	addBackgroundRules,
-	type Schema,
+	addBorderStylesRules,
+	addPaddingStylesRules,
+	addBackgroundStylesRules,
+	type ModelSchema,
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
@@ -20,16 +20,16 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
-import TableEditing from './../tableediting.js';
-import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting.js';
-import TableCellPaddingCommand from './commands/tablecellpaddingcommand.js';
-import TableCellHeightCommand from './commands/tablecellheightcommand.js';
-import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand.js';
-import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand.js';
-import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand.js';
-import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
-import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand.js';
-import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand.js';
+import { TableEditing } from './../tableediting.js';
+import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
+import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
+import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
+import { TableCellBackgroundColorCommand } from './commands/tablecellbackgroundcolorcommand.js';
+import { TableCellVerticalAlignmentCommand } from './commands/tablecellverticalalignmentcommand.js';
+import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizontalalignmentcommand.js';
+import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
+import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
+import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
@@ -55,7 +55,7 @@ const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
  * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
  * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
  */
-export default class TableCellPropertiesEditing extends Plugin {
+export class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -97,7 +97,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 			}
 		);
 
-		editor.data.addStyleProcessorRules( addBorderRules );
+		editor.data.addStyleProcessorRules( addBorderStylesRules );
 		enableBorderProperties( schema, conversion, {
 			color: defaultTableCellProperties.borderColor,
 			style: defaultTableCellProperties.borderStyle,
@@ -110,11 +110,13 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellHeight',
 			styleName: 'height',
+			attributeName: 'height',
+			attributeType: 'length',
 			defaultValue: defaultTableCellProperties.height
 		} );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
 
-		editor.data.addStyleProcessorRules( addPaddingRules );
+		editor.data.addStyleProcessorRules( addPaddingStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellPadding',
 			styleName: 'padding',
@@ -123,10 +125,12 @@ export default class TableCellPropertiesEditing extends Plugin {
 		} );
 		editor.commands.add( 'tableCellPadding', new TableCellPaddingCommand( editor, defaultTableCellProperties.padding! ) );
 
-		editor.data.addStyleProcessorRules( addBackgroundRules );
+		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellBackgroundColor',
 			styleName: 'background-color',
+			attributeName: 'bgcolor',
+			attributeType: 'color',
 			defaultValue: defaultTableCellProperties.backgroundColor
 		} );
 		editor.commands.add(
@@ -156,7 +160,11 @@ export default class TableCellPropertiesEditing extends Plugin {
  * @param defaultBorder.style The default `tableCellBorderStyle` value.
  * @param defaultBorder.width The default `tableCellBorderWidth` value.
  */
-function enableBorderProperties( schema: Schema, conversion: Conversion, defaultBorder: { color: string; style: string; width: string } ) {
+function enableBorderProperties(
+	schema: ModelSchema,
+	conversion: Conversion,
+	defaultBorder: { color: string; style: string; width: string }
+) {
 	const modelAttributes = {
 		width: 'tableCellBorderWidth',
 		color: 'tableCellBorderColor',
@@ -166,6 +174,10 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
 	schema.extend( 'tableCell', {
 		allowAttributes: Object.values( modelAttributes )
 	} );
+
+	for ( const modelAttribute of Object.values( modelAttributes ) ) {
+		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+	}
 
 	upcastBorderStyles( conversion, 'td', modelAttributes, defaultBorder );
 	upcastBorderStyles( conversion, 'th', modelAttributes, defaultBorder );
@@ -179,10 +191,12 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
  *
  * @param defaultValue The default horizontal alignment value.
  */
-function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
+function enableHorizontalAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellHorizontalAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableCellHorizontalAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -213,7 +227,12 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getStyle( 'text-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
 		} )
@@ -231,7 +250,12 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
@@ -242,10 +266,12 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
  *
  * @param defaultValue The default vertical alignment value.
  */
-function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion, defaultValue: string ) {
+function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string ) {
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellVerticalAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableCellVerticalAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -276,7 +302,12 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const align = viewElement.getStyle( 'vertical-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'vertical-align' } );
 				}
 			}
 		} )
@@ -294,7 +325,12 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const valign = viewElement.getAttribute( 'valign' );
 
-					return valign === localDefaultValue ? null : valign;
+					if ( valign !== localDefaultValue ) {
+						return valign;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'valign' } );
 				}
 			}
 		} );

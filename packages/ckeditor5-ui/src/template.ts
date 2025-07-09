@@ -7,8 +7,8 @@
  * @module ui/template
  */
 
-import View from './view.js';
-import ViewCollection from './viewcollection.js';
+import { View } from './view.js';
+import { ViewCollection } from './viewcollection.js';
 
 import {
 	CKEditorError,
@@ -63,7 +63,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
  * See {@link module:ui/template~TemplateDefinition} to know more about templates and complex
  * template definitions.
  */
-export default class Template extends /* #__PURE__ */ EmitterMixin() {
+export class Template extends /* #__PURE__ */ EmitterMixin() {
 	public ns?: string;
 
 	/**
@@ -646,7 +646,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	 * }
 	 * ```
 	 *
-	 * or values bound to {@link module:ui/model~Model} properties:
+	 * or values bound to {@link module:ui/model~UIModel} properties:
 	 *
 	 * ```ts
 	 * attributes: {
@@ -859,7 +859,7 @@ export default class Template extends /* #__PURE__ */ EmitterMixin() {
 	}
 }
 
-type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
+export type AttributeValues = Array<TemplateSimpleValue | TemplateBinding> |
 	[ NamespacedValue<Array<TemplateSimpleValue | TemplateBinding>> ];
 
 /**
@@ -2012,6 +2012,7 @@ export interface BindChain<TObservable> {
 
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
+ * @internal
  */
 export interface RenderData {
 

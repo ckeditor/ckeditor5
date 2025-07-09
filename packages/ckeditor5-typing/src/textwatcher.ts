@@ -8,14 +8,14 @@
  */
 
 import { ObservableMixin, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import getLastTextLine from './utils/getlasttextline.js';
+import { getLastTextLine } from './utils/getlasttextline.js';
 
 import type {
 	Batch,
 	Model,
-	Range,
-	DocumentChangeEvent,
-	DocumentSelectionChangeEvent
+	ModelRange,
+	ModelDocumentChangeEvent,
+	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -25,7 +25,7 @@ import type {
  * {@link module:typing/textwatcher~TextWatcher#event:matched:selection `matched:selection`} and
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  */
-export default class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
+export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor's model.
 	 */
@@ -103,7 +103,7 @@ export default class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 		const model = this.model;
 		const document = model.document;
 
-		this.listenTo<DocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
+		this.listenTo<ModelDocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
@@ -122,7 +122,7 @@ export default class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		this.listenTo<DocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
+		this.listenTo<ModelDocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
 			if ( batch.isUndo || !batch.isLocal ) {
 				return;
 			}
@@ -153,7 +153,7 @@ export default class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 		const testResult = this.testCallback( text );
 
 		if ( !testResult && this.hasMatch ) {
-			this.fire<TextWatcherUnmatchedEvent>( 'unmatched' );
+			this.fire<TextWatcherUnmatchedTypingEvent>( 'unmatched' );
 		}
 
 		this._hasMatch = !!testResult;
@@ -175,7 +175,7 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
 	name: 'matched' | 'matched:data' | 'matched:selection';
 	args: [ {
 		text: string;
-		range: Range;
+		range: ModelRange;
 		batch?: Batch;
 	} & TCallbackResult ];
 };
@@ -189,10 +189,10 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
  */
 export type TextWatcherMatchedDataEvent<TCallbackResult extends Record<string, unknown>> = {
 	name: 'matched:data';
-	args: [ data: TextWatcherMatchedDataEventData & TCallbackResult ];
+	args: [ data: TextWatcherMatchedTypingDataEventData & TCallbackResult ];
 };
 
-export interface TextWatcherMatchedDataEventData {
+export interface TextWatcherMatchedTypingDataEventData {
 
 	/**
 	 * The full text before selection to which the regexp was applied.
@@ -202,7 +202,7 @@ export interface TextWatcherMatchedDataEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 
 	batch: Batch;
 }
@@ -214,12 +214,12 @@ export interface TextWatcherMatchedDataEventData {
  * @param data Event data.
  * @param data.testResult The additional data returned from the {@link module:typing/textwatcher~TextWatcher#testCallback}.
  */
-export type TextWatcherMatchedSelectionEvent<TCallbackResult extends Record<string, unknown>> = {
+export type TextWatcherMatchedTypingSelectionEvent<TCallbackResult extends Record<string, unknown>> = {
 	name: 'matched:selection';
-	args: [ data: TextWatcherMatchedSelectionEventData & TCallbackResult ];
+	args: [ data: TextWatcherMatchedTypingSelectionEventData & TCallbackResult ];
 };
 
-export interface TextWatcherMatchedSelectionEventData {
+export interface TextWatcherMatchedTypingSelectionEventData {
 
 	/**
 	 * The full text before selection.
@@ -229,7 +229,7 @@ export interface TextWatcherMatchedSelectionEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 }
 
 /**
@@ -237,7 +237,7 @@ export interface TextWatcherMatchedSelectionEventData {
  *
  * @eventName ~TextWatcher#unmatched
  */
-export type TextWatcherUnmatchedEvent = {
+export type TextWatcherUnmatchedTypingEvent = {
 	name: 'unmatched';
 	args: [];
 };

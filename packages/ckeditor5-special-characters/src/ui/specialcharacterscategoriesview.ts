@@ -13,7 +13,7 @@ import {
 	createLabeledDropdown,
 	LabeledFieldView,
 	View,
-	ViewModel,
+	UIModel,
 	type DropdownView,
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
@@ -21,8 +21,10 @@ import {
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
  * for describing the feature and allowing the user to select a particular character group.
+ *
+ * @internal
  */
-export default class SpecialCharactersCategoriesView extends View {
+export class SpecialCharactersCategoriesView extends View {
 	/**
 	 * Currently selected special characters group's name.
 	 */
@@ -82,7 +84,7 @@ export default class SpecialCharactersCategoriesView extends View {
 		for ( const [ name, label ] of this._groupNames ) {
 			const item: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new ViewModel( {
+				model: new UIModel( {
 					name,
 					label,
 					role: 'menuitemradio',
@@ -117,7 +119,7 @@ export default class SpecialCharactersCategoriesView extends View {
 		this._dropdownView.fieldView.buttonView.bind( 'label' )
 			.to( this, 'currentGroupName', value => this._groupNames.get( value )! );
 		this._dropdownView.fieldView.on( 'execute', ( { source } ) => {
-			this.currentGroupName = ( source as ViewModel ).name as string;
+			this.currentGroupName = ( source as UIModel ).name as string;
 		} );
 
 		addListToDropdown( this._dropdownView.fieldView, items, {

@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import FontColorCommand from './fontcolorcommand.js';
+import { FontColorCommand } from './fontcolorcommand.js';
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils.js';
 
@@ -20,7 +20,7 @@ import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../uti
  * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="color: ...">`),
  * depending on the {@link module:font/fontconfig~FontColorConfig configuration}.
  */
-export default class FontColorEditing extends Plugin {
+export class FontColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,13 +7,13 @@
  * @module ui/button/buttonlabel
 */
 
-import type View from '../view.js';
+import { type View } from '../view.js';
 
 /**
  * The button label interface. Implemented by the {@link module:ui/button/buttonlabelview~ButtonLabelView}
  * and any label view that can be used with the {@link module:ui/button/buttonview~ButtonView}.
  */
-export default interface ButtonLabel extends View {
+export interface ButtonLabel extends View {
 
 	/**
 	 * The `id` attribute of the button label. It is used for accessibility purposes

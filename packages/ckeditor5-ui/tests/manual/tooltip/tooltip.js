@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ListProperties } from '@ckeditor/ckeditor5-list/src/listproperties.js';
+import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
 
 initEditor( '#editor' );
 initEditor( '#editor-scrollable-parent' );

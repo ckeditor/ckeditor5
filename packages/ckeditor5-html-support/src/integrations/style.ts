@@ -15,13 +15,13 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
-import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
+import type { HtmlSupportDataSchemaBlockElementDefinition } from '../dataschema.js';
 
 /**
  * Provides the General HTML Support for `style` elements.
  */
-export default class StyleElementSupport extends Plugin {
+export class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -49,7 +49,7 @@ export default class StyleElementSupport extends Plugin {
 	public init(): void {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:style', ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:style', ( evt, definition ) => {
 			const editor = this.editor;
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
@@ -71,7 +71,7 @@ export default class StyleElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter(
-				definition as DataSchemaBlockElementDefinition, dataFilter
+				definition as HtmlSupportDataSchemaBlockElementDefinition, dataFilter
 			) );
 
 			conversion.for( 'downcast' ).elementToElement( {
@@ -81,7 +81,8 @@ export default class StyleElementSupport extends Plugin {
 				}
 			} );
 
-			conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition as DataSchemaBlockElementDefinition ) );
+			conversion.for( 'downcast' )
+				.add( modelToViewBlockAttributeConverter( definition as HtmlSupportDataSchemaBlockElementDefinition ) );
 
 			evt.stop();
 		} );

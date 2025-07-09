@@ -8,9 +8,9 @@
  */
 
 import type { ArrayOrItem, Translations } from '@ckeditor/ckeditor5-utils';
-import type Context from '../context.js';
+import { type Context } from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
-import type Editor from './editor.js';
+import { type Editor } from './editor.js';
 import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
 
 /**
@@ -172,7 +172,7 @@ export interface EditorConfig {
 	 * </script>
 	 * <script type="module">
 	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 * import { translations } from 'ckeditor5/dist/translations/pl.js';
 	 *
 	 * await ClassicEditor.create( document.querySelector( '#editor' ), {
 	 *   plugins: [
@@ -191,7 +191,7 @@ export interface EditorConfig {
 	 *
 	 * ```html
 	 * import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
-	 * import translations from 'ckeditor5/dist/translations/pl.js';
+	 * import { translations } from 'ckeditor5/dist/translations/pl.js';
 	 *
 	 * import 'ckeditor5/dist/styles.css';
 	 *

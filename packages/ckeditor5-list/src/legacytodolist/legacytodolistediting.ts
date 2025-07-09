@@ -10,8 +10,8 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
-	Element,
-	Item,
+	ModelElement,
+	ModelItem,
 	MapperModelToViewPositionEvent,
 	Model,
 	ModelApplyOperationEvent,
@@ -20,8 +20,8 @@ import type {
 	ViewDocumentKeyDownEvent,
 	AttributeOperation,
 	RenameOperation,
-	SelectionChangeRangeEvent,
-	DocumentFragment
+	ModelSelectionChangeRangeEvent,
+	ModelDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -34,9 +34,9 @@ import {
 	type GetCallback
 } from 'ckeditor5/src/utils.js';
 
-import LegacyListCommand from '../legacylist/legacylistcommand.js';
-import LegacyListEditing from '../legacylist/legacylistediting.js';
-import LegacyCheckTodoListCommand from './legacychecktodolistcommand.js';
+import { LegacyListCommand } from '../legacylist/legacylistcommand.js';
+import { LegacyListEditing } from '../legacylist/legacylistediting.js';
+import { LegacyCheckTodoListCommand } from './legacychecktodolistcommand.js';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -58,7 +58,7 @@ const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
  * - `'checkTodoList'`,
  * - `'todoListCheck'` as an alias for `checkTodoList` command.
  */
-export default class LegacyTodoListEditing extends Plugin {
+export class LegacyTodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -111,7 +111,7 @@ export default class LegacyTodoListEditing extends Plugin {
 		editor.commands.add( 'todoListCheck', checkTodoListCommand );
 
 		// Define converters.
-		data.downcastDispatcher.on<DowncastInsertEvent<Element>>(
+		data.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>(
 			'insert:listItem',
 			dataModelViewInsertion( model ),
 			{ priority: 'high' }
@@ -122,16 +122,16 @@ export default class LegacyTodoListEditing extends Plugin {
 			{ priority: 'high' }
 		);
 
-		editing.downcastDispatcher.on<DowncastInsertEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>(
 			'insert:listItem',
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		editing.downcastDispatcher.on<DowncastAttributeEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastAttributeEvent<ModelElement>>(
 			'attribute:listType:listItem',
 			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ), editing.view )
 		);
-		editing.downcastDispatcher.on<DowncastAttributeEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastAttributeEvent<ModelElement>>(
 			'attribute:todoListChecked:listItem',
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
@@ -165,7 +165,7 @@ export default class LegacyTodoListEditing extends Plugin {
 		}, { priority: 'high' } );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
-		const listItemsToFix = new Set<Item>();
+		const listItemsToFix = new Set<ModelItem>();
 
 		this.listenTo<ModelApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ] as RenameOperation | AttributeOperation;
@@ -209,7 +209,7 @@ export default class LegacyTodoListEditing extends Plugin {
 	 * is not a clear solution. We need to design an API for using commands beyond the selection range.
 	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
 	 */
-	private _handleCheckmarkChange( listItem: Element ) {
+	private _handleCheckmarkChange( listItem: ModelElement ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const previousSelectionRanges = Array.from( model.document.selection.getRanges() );
@@ -229,13 +229,13 @@ export default class LegacyTodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+		let lastFocusedCodeBlock: ModelElement | ModelDocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
 		}
 
-		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
+		model.document.selection.on<ModelSelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
 			const lastElementIsTodoList = isLegacyTodoListItemElement( lastFocusedCodeBlock );
 			const currentElementIsTodoList = isLegacyTodoListItemElement( focusParent );
@@ -293,6 +293,6 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isLegacyTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+function isLegacyTodoListItemElement( element: ModelElement | ModelDocumentFragment | null ): boolean {
 	return !!element && element.is( 'element', 'listItem' ) && element.getAttribute( 'listType' ) === 'todo';
 }

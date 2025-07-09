@@ -7,14 +7,14 @@
  * @module ui/inputnumber/inputnumberview
  */
 
-import InputView from '../input/inputview.js';
+import { InputView } from '../input/inputview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The number input view class.
  */
-export default class InputNumberView extends InputView {
+export class InputNumberView extends InputView {
 	/**
 	 * The value of the `min` DOM attribute (the lowest accepted value) set on the {@link #element}.
 	 *

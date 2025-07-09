@@ -5,7 +5,7 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'paragraphs', () => {
 		it( 'single line', () => {
 			testDataProcessor(
@@ -80,7 +80,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'single line\n' +
 				'\n' +
-				'*   item'
+				'* item'
 			);
 		} );
 	} );

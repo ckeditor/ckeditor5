@@ -101,7 +101,7 @@ execute() {
 }
 ```
 
-All changes to the model are made using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so we will use it.
+All changes to the model are made using the {@link module:engine/model/writer~ModelWriter model writer}. Its instance is available in the callback passed to the {@link module:engine/model/model~Model#change `model.change()`} method, so we will use it.
 
 In the callback, we first check if the selection is collapsed. Unlike a standard selection, which can span multiple letters, elements, or even blocks, a collapsed selection has a range of zero, meaning that it starts and ends at the same position. In other words, the collapsed selection is just a caret.
 

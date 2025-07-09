@@ -8,8 +8,8 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
+import { type TableUtils } from '../tableutils.js';
 
 import { updateNumericAttribute } from '../utils/common.js';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';
@@ -28,10 +28,10 @@ import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/struc
  * **Note:** All preceding rows will also become headers. If the current row is already a header, executing this command
  * will make it a regular row back again (including the following rows).
  */
-export default class SetHeaderRowCommand extends Command {
+export class SetHeaderRowCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
-	 * {@link module:engine/model/selection~Selection} is in a header row.
+	 * {@link module:engine/model/selection~ModelSelection} is in a header row.
 	 *
 	 * @observable
 	 */
@@ -56,7 +56,7 @@ export default class SetHeaderRowCommand extends Command {
 		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
 
 		this.isEnabled = model.schema.checkAttribute( table, 'headingRows' );
-		this.value = selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
+		this.value = selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as ModelElement ) );
 	}
 
 	/**
@@ -104,9 +104,9 @@ export default class SetHeaderRowCommand extends Command {
 	/**
 	 * Checks if a table cell is in the heading section.
 	 */
-	private _isInHeading( tableCell: Element, table: Element ): boolean {
+	private _isInHeading( tableCell: ModelElement, table: ModelElement ): boolean {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
-		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
+		return !!headingRows && ( tableCell.parent as ModelElement ).index! < headingRows;
 	}
 }

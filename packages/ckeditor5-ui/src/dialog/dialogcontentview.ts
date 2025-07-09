@@ -7,15 +7,15 @@
  * @module ui/dialog/dialogcontentview
  */
 
-import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
+import { View } from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * A dialog content view class.
  */
-export default class DialogContentView extends View {
+export class DialogContentView extends View {
 	/**
 	 * A collection of content items.
 	 */

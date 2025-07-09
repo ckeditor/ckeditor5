@@ -3,42 +3,42 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 
-import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
 
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 
-import HighlightEditing from '@ckeditor/ckeditor5-highlight/src/highlightediting.js';
+import { HighlightEditing } from '@ckeditor/ckeditor5-highlight/src/highlightediting.js';
 
-import HtmlEmbedEditing from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting.js';
+import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting.js';
 
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
 
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
 
-import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import LegacyListPropertiesEditing from '@ckeditor/ckeditor5-list/src/legacylistproperties/legacylistpropertiesediting.js';
-import LegacyTodoListEditing from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import { LegacyListPropertiesEditing } from '@ckeditor/ckeditor5-list/src/legacylistproperties/legacylistpropertiesediting.js';
+import { LegacyTodoListEditing } from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
 
-import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
 
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { TableCaption } from '@ckeditor/ckeditor5-table/src/tablecaption.js';
 
-import HtmlComment from '../src/htmlcomment.js';
+import { HtmlComment } from '../src/htmlcomment.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 describe( 'HtmlComment integration', () => {

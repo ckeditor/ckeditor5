@@ -15,7 +15,7 @@ import { IconBulletedList, IconNumberedList } from 'ckeditor5/src/icons.js';
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
  * allow to convert paragraphs to and from list items and indent or outdent them.
  */
-export default class ListUI extends Plugin {
+export class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

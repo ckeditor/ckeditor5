@@ -20,7 +20,7 @@ import './mediaembedconfig.js';
  * Instances of toolbar components (e.g. buttons) are created based on the
  * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
  */
-export default class MediaEmbedToolbar extends Plugin {
+export class MediaEmbedToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

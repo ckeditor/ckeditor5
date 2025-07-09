@@ -13,7 +13,7 @@
  * @param domEvent The mouse event.
  * @returns The DOM range.
  */
-export default function getRangeFromMouseEvent(
+export function getRangeFromMouseEvent(
 	domEvent: MouseEvent & {
 		rangeParent?: HTMLElement;
 		rangeOffset?: number;

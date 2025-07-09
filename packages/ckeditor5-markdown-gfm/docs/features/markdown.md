@@ -35,7 +35,7 @@ Please remember that Markdown syntax is really simple and it does not cover all 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor}:
 
 <code-switcher>
 ```js
@@ -63,7 +63,7 @@ If you need more extensive Markdown support for formatting elements (for example
 
 ## The Markdown data processor
 
-The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
+The Markdown plugin uses a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} (implemented by the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor} class) which changes the default output from HTML to Markdown. This means that you can {@link module:core/editor/editor~Editor#setData set} or {@link module:core/editor/editor~Editor#getData get} data from the editor in the Markdown format:
 
 ```js
 editor.getData(); // -> 'This is [CKEditor&nbsp;5](https://ckeditor.com).'
@@ -93,6 +93,7 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 
 * Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
 * The Markdown code generated with the Markdown output feature will not properly render {@link features/tables#nesting-tables nested tables}. GitHub issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
+* Code blocks inside To-do lists will not properly render. GitHub issue: [#18754](https://github.com/ckeditor/ckeditor5/issues/18754).
 
 ## Related features
 

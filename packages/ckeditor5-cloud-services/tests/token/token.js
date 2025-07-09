@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Token from '../../src/token/token.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Token } from '../../src/token/token.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Token', () => {
 	let requests;
@@ -210,6 +210,23 @@ describe( 'Token', () => {
 			token.destroy();
 
 			clock.restore();
+		} );
+
+		it( 'should warn when token expiration time exceeds 32-bit integer range', () => {
+			const consoleStub = sinon.stub( console, 'warn' );
+			const tokenValue = `header.${ btoa( JSON.stringify( { exp: 2147483648 } ) ) }.signature`;
+			const token = new Token( 'http://token-endpoint', { initValue: tokenValue } );
+
+			token.init();
+
+			sinon.assert.calledWithMatch( consoleStub,
+				'Token expiration time exceeds 32-bit integer range. This might cause unpredictable token refresh timing. ' +
+				'Token expiration time should always be provided in seconds.',
+				{ tokenExpireTime: 2147483648 }
+			);
+
+			consoleStub.restore();
+			token.destroy();
 		} );
 	} );
 

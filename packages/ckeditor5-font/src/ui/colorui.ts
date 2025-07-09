@@ -23,12 +23,12 @@ import {
 
 import {
 	addColorSelectorToDropdown,
-	type ColorSelectorDropdownView,
+	type FontColorSelectorDropdownView,
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils.js';
-import type FontColorCommand from '../fontcolor/fontcolorcommand.js';
-import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand.js';
+import { type FontColorCommand } from '../fontcolor/fontcolorcommand.js';
+import { type FontBackgroundColorCommand } from '../fontbackgroundcolor/fontbackgroundcolorcommand.js';
 import type { FontColorConfig } from '../fontconfig.js';
 
 /**
@@ -37,7 +37,7 @@ import type { FontColorConfig } from '../fontconfig.js';
  * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
  * a {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  */
-export default class ColorUI extends Plugin {
+export class FontColorUIBase extends Plugin {
 	/**
 	 * The name of the command which will be executed when a color tile is clicked.
 	 */
@@ -115,7 +115,7 @@ export default class ColorUI extends Plugin {
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
-			const dropdownView: ColorSelectorDropdownView = createDropdown( locale );
+			const dropdownView: FontColorSelectorDropdownView = createDropdown( locale );
 			// Font color dropdown rendering is deferred once it gets open to improve performance (#6192).
 			let dropdownContentRendered = false;
 
@@ -176,7 +176,7 @@ export default class ColorUI extends Plugin {
 			colorSelectorView.on<ColorSelectorColorPickerCancelEvent>( 'colorPicker:cancel', () => {
 				if ( this._undoStepBatch!.operations.length ) {
 					// We need to close the dropdown before the undo batch.
-					// Otherwise, ColorUI treats undo as a selected color change,
+					// Otherwise, FontColorUIBase treats undo as a selected color change,
 					// propagating the update to the whole selection.
 					// That's an issue if spans with various colors were selected.
 					dropdownView.isOpen = false;

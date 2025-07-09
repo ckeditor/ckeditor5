@@ -7,23 +7,23 @@
  * @module utils/dom/createelement
  */
 
-import isIterable from '../isiterable.js';
+import { isIterable } from '../isiterable.js';
 import { isString } from 'es-toolkit/compat';
 
 /**
  * Attributes to be applied to the HTML element.
  */
-type HTMLElementAttributes = { readonly [ key: string ]: string };
+export type HTMLElementAttributes = { readonly [ key: string ]: string };
 
 /**
  * Attributes to be applied to the SVG element.
  */
-type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
+export type SVGElementAttributes = HTMLElementAttributes & { xmlns: string };
 
 /**
  * Element or elements that will be added to the created element as children. Strings will be automatically turned into Text nodes.
  */
-type ChildrenElements = Node | string | Iterable<Node | string>;
+export type ChildrenElements = Node | string | Iterable<Node | string>;
 
 /**
  * Creates an SVG element with attributes and children elements.
@@ -42,7 +42,7 @@ type ChildrenElements = Node | string | Iterable<Node | string>;
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns SVG element.
  */
-export default function createElement<T extends keyof SVGElementTagNameMap>(
+export function createElement<T extends keyof SVGElementTagNameMap>(
 	doc: Document,
 	name: T,
 	attributes: SVGElementAttributes,
@@ -66,7 +66,7 @@ export default function createElement<T extends keyof SVGElementTagNameMap>(
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns HTML element.
  */
-export default function createElement<T extends keyof HTMLElementTagNameMap>(
+export function createElement<T extends keyof HTMLElementTagNameMap>(
 	doc: Document,
 	name: T,
 	attributes?: HTMLElementAttributes,
@@ -87,7 +87,7 @@ export default function createElement<T extends keyof HTMLElementTagNameMap>(
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns HTML or SVG element.
  */
-export default function createElement(
+export function createElement(
 	doc: Document,
 	name: string,
 	attributes: SVGElementAttributes | HTMLElementAttributes = {},

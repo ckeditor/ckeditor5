@@ -9,14 +9,14 @@
 
 import {
 	type DowncastAttributeEvent,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type EditingController,
-	type Element,
-	type ElementCreatorFunction,
+	type ModelElement,
+	type DowncastElementCreatorFunction,
 	type Mapper,
 	type Model,
 	type ModelConsumable,
-	type Node,
+	type ModelNode,
 	type UpcastElementEvent,
 	type ViewDocumentFragment,
 	type ViewElement,
@@ -25,7 +25,7 @@ import {
 	type EditingView,
 	type MapperModelToViewPositionEvent,
 	type ViewTreeWalker,
-	type Schema
+	type ModelSchema
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -47,15 +47,15 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
+import { ListWalker, SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
-	default as ListEditing,
+	ListEditing,
 	ListEditingCheckAttributesEvent,
 	ListEditingCheckElementEvent,
 	ListItemAttributesMap,
-	DowncastStrategy
+	ListDowncastStrategy
 } from './listediting.js';
 
 /**
@@ -72,13 +72,16 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		}
 
 		const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( ( item ): item is Element => schema.checkAttribute( item, 'listItemId' ) );
+			.filter( ( item ): item is ModelElement => schema.checkAttribute( item, 'listItemId' ) );
 
 		if ( !items.length ) {
 			return;
 		}
 
-		const listItemId = ListItemUid.next();
+		const listItemId = data.viewItem.getAttribute( 'data-list-item-id' ) || ListItemUid.next();
+
+		conversionApi.consumable.consume( data.viewItem, { attributes: 'data-list-item-id' } );
+
 		const listIndent = getIndent( data.viewItem );
 		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
 
@@ -138,8 +141,8 @@ export function reconvertItemsOnDataChange(
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
 		const itemToListHead = new Set<ListElement>();
-		const changedItems = new Set<Node>();
-		const visited = new Set<Element>();
+		const changedItems = new Set<ModelNode>();
+		const visited = new Set<ModelElement>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
@@ -167,7 +170,7 @@ export function reconvertItemsOnDataChange(
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
-						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
+						if ( doesItemBlockRequiresRefresh( item as ModelElement ) ) {
 							itemsToRefresh.push( item );
 						}
 					} else {
@@ -192,10 +195,13 @@ export function reconvertItemsOnDataChange(
 		}
 	};
 
-	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<Node> ) {
+	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<ModelNode> ) {
 		const itemsToRefresh = [];
 		const visited = new Set();
-		const stack: Array<ListItemAttributesMap> = [];
+		const stack: Array<{
+			modelAttributes: ListItemAttributesMap;
+			modelElement: ListElement;
+		}> = [];
 
 		for ( const { node, previous } of new SiblingListBlocksIterator( listHead ) ) {
 			if ( visited.has( node ) ) {
@@ -210,10 +216,13 @@ export function reconvertItemsOnDataChange(
 			}
 
 			// Update the stack for the current indent level.
-			stack[ itemIndent ] = Object.fromEntries(
-				Array.from( node.getAttributes() )
-					.filter( ( [ key ] ) => attributeNames.includes( key ) )
-			);
+			stack[ itemIndent ] = {
+				modelAttributes: Object.fromEntries(
+					Array.from( node.getAttributes() )
+						.filter( ( [ key ] ) => attributeNames.includes( key ) )
+				),
+				modelElement: node
+			};
 
 			// Find all blocks of the current node.
 			const blocks = getListItemBlocks( node, { direction: 'forward' } );
@@ -235,7 +244,7 @@ export function reconvertItemsOnDataChange(
 		return itemsToRefresh;
 	}
 
-	function doesItemBlockRequiresRefresh( item: Element, blocks?: Array<Node> ) {
+	function doesItemBlockRequiresRefresh( item: ModelElement, blocks?: Array<ModelNode> ) {
 		const viewElement = editing.mapper.toViewElement( item );
 
 		if ( !viewElement ) {
@@ -267,9 +276,12 @@ export function reconvertItemsOnDataChange(
 	}
 
 	function doesItemWrappingRequiresRefresh(
-		item: Element,
-		stack: Array<ListItemAttributesMap>,
-		changedItems: Set<Node>
+		item: ModelElement,
+		stack: Array<{
+			modelAttributes: ListItemAttributesMap;
+			modelElement: ListElement;
+		}>,
+		changedItems: Set<ModelNode>
 	) {
 		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
 		if ( changedItems.has( item ) ) {
@@ -295,7 +307,8 @@ export function reconvertItemsOnDataChange(
 			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }` as const;
 			const needsRefresh = listEditing.fire<ListEditingCheckAttributesEvent>( eventName, {
 				viewElement: element as ViewElement,
-				modelAttributes: stack[ indent ]
+				modelAttributes: stack[ indent ].modelAttributes,
+				modelReferenceElement: stack[ indent ].modelElement
 			} );
 
 			if ( needsRefresh ) {
@@ -326,7 +339,7 @@ export function reconvertItemsOnDataChange(
  */
 export function listItemDowncastConverter(
 	attributeNames: Array<string>,
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	model: Model,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
@@ -346,6 +359,11 @@ export function listItemDowncastConverter(
 			return;
 		}
 
+		const options = {
+			...conversionApi.options,
+			dataPipeline
+		};
+
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model )!;
@@ -357,17 +375,19 @@ export function listItemDowncastConverter(
 		unwrapListItemBlock( viewElement, writer );
 
 		// Insert custom item marker.
-		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
+		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, options );
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
-		wrapListItemBlock( listItem, viewRange, strategies, writer );
+		wrapListItemBlock( listItem, viewRange, strategies, writer, options );
 	};
 }
 
 /**
  * The 'remove' downcast converter for custom markers.
+ *
+ * @internal
  */
-export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
+export function listItemDowncastRemoveConverter( schema: ModelSchema ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper } = conversionApi;
 		const elementName = evt.name.split( ':' )[ 1 ];
@@ -410,7 +430,7 @@ export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<D
 export function bogusParagraphCreator(
 	attributeNames: Array<string>,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
 		if ( !shouldUseBogusParagraph( modelElement, attributeNames ) ) {
@@ -439,7 +459,7 @@ export function bogusParagraphCreator(
  * @param mapper The mapper instance.
  * @param model The model.
  */
-export function findMappedViewElement( element: Element, mapper: Mapper, model: Model ): ViewElement | null {
+export function findMappedViewElement( element: ModelElement, mapper: Mapper, model: Model ): ViewElement | null {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
@@ -448,9 +468,11 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 
 /**
  * The model to view custom position mapping for cases when marker is injected at the beginning of a block.
+ *
+ * @internal
  */
 export function createModelToViewPositionMapper(
-	strategies: Array<DowncastStrategy>,
+	strategies: Array<ListDowncastStrategy>,
 	view: EditingView
 ): GetCallback<MapperModelToViewPositionEvent> {
 	return ( evt, data ) => {
@@ -479,7 +501,7 @@ export function createModelToViewPositionMapper(
 		let positionAfterLastMarker = viewRange.start;
 
 		for ( const { item } of viewWalker ) {
-			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			// Walk only over the non-mapped elements (UIElements, ViewAttributeElements, $text, or any other element without mapping).
 			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) || item.is( '$textProxy' ) ) {
 				break;
 			}
@@ -499,7 +521,7 @@ export function createModelToViewPositionMapper(
 /**
  * Removes a custom marker elements and item wrappers related to that marker.
  */
-function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
+function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: ViewDowncastWriter, mapper: Mapper ): void {
 	// Remove item wrapper.
 	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
 		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), viewElement.parent );
@@ -520,7 +542,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 
 	function collectMarkersToRemove( viewWalker: ViewTreeWalker ) {
 		for ( const { item } of viewWalker ) {
-			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			// Walk only over the non-mapped elements (UIElements, ViewAttributeElements, $text, or any other element without mapping).
 			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
 				break;
 			}
@@ -536,10 +558,10 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
  * Inserts a custom marker elements and wraps first block of a list item if marker requires it.
  */
 function insertCustomMarkerElements(
-	listItem: Element,
+	listItem: ModelElement,
 	viewElement: ViewElement,
-	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter,
+	strategies: Array<ListDowncastStrategy>,
+	writer: ViewDowncastWriter,
 	{ dataPipeline }: { dataPipeline?: boolean }
 ): ViewRange {
 	let viewRange = writer.createRangeOn( viewElement );
@@ -603,7 +625,7 @@ function insertCustomMarkerElements(
 /**
  * Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
  */
-function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWriter ) {
+function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncastWriter ) {
 	let attributeElement: ViewElement | ViewDocumentFragment = viewElement.parent!;
 
 	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
@@ -621,8 +643,9 @@ function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWrit
 function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
-	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter
+	strategies: Array<ListDowncastStrategy>,
+	writer: ViewDowncastWriter,
+	options?: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -643,7 +666,8 @@ function wrapListItemBlock(
 				strategy.setAttributeOnDowncast(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
-					strategy.scope == 'list' ? listViewElement : listItemViewElement
+					strategy.scope == 'list' ? listViewElement : listItemViewElement,
+					options
 				);
 			}
 		}
@@ -667,7 +691,7 @@ function wrapListItemBlock(
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
 function createAttributesConsumer( attributeNames: Array<string> ) {
-	return ( node: Node, consumable: ModelConsumable ) => {
+	return ( node: ModelNode, consumable: ModelConsumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
@@ -689,9 +713,9 @@ function createAttributesConsumer( attributeNames: Array<string> ) {
 
 // Whether the given item should be rendered as a bogus paragraph.
 function shouldUseBogusParagraph(
-	item: Node,
+	item: ModelNode,
 	attributeNames: Array<string>,
-	blocks: Array<Node> = getAllListItemBlocks( item )
+	blocks: Array<ModelNode> = getAllListItemBlocks( item )
 ) {
 	if ( !isListItemBlock( item ) ) {
 		return false;

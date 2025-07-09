@@ -7,7 +7,7 @@
  * @module table/converters/upcasttable
  */
 
-import type { Element, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 
 import { createEmptyTableCell } from '../utils/common.js';
 import { first } from 'ckeditor5/src/utils.js';
@@ -24,6 +24,8 @@ import { first } from 'ckeditor5/src/utils.js';
  * ```xml
  * <table></table>
  * ```
+ *
+ * @internal
  */
 export function upcastTableFigure() {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -48,7 +50,7 @@ export function upcastTableFigure() {
 			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
 
 			// Get table element from conversion result.
-			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<Element> );
+			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable ) {
@@ -70,8 +72,9 @@ export function upcastTableFigure() {
  * This conversion helper converts the table element as well as table rows.
  *
  * @returns Conversion helper.
+ * @internal
  */
-export default function upcastTable() {
+export function upcastTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -131,6 +134,7 @@ export default function upcastTable() {
  * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
  * of an improper table with all empty rows.
  *
+ * @internal
  * @returns Conversion helper.
  */
 export function skipEmptyTableRow() {
@@ -146,6 +150,7 @@ export function skipEmptyTableRow() {
 /**
  * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
  *
+ * @internal
  * @returns Conversion helper.
  */
 export function ensureParagraphInTableCell( elementName: string ) {
@@ -156,7 +161,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
 				return;
 			}
 
-			const tableCell = data.modelRange.start.nodeAfter as Element;
+			const tableCell = data.modelRange.start.nodeAfter as ModelElement;
 			const modelCursor = writer.createPositionAt( tableCell, 0 );
 
 			// Ensure a paragraph in the model for empty table cells for converted table cells.

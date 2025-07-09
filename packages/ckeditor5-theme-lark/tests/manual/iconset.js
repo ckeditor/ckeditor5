@@ -4,9 +4,9 @@
  */
 
 import * as icons from 'ckeditor5/src/icons.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
 
 const toolbar = new ToolbarView( new Locale() );
 

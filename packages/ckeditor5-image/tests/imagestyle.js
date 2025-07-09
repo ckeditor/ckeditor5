@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Image from '../src/image.js';
-import ImageStyle from '../src/imagestyle.js';
-import ImageStyleEditing from '../src/imagestyle/imagestyleediting.js';
-import ImageStyleUI from '../src/imagestyle/imagestyleui.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '../src/image.js';
+import { ImageStyle } from '../src/imagestyle.js';
+import { ImageStyleEditing } from '../src/imagestyle/imagestyleediting.js';
+import { ImageStyleUI } from '../src/imagestyle/imagestyleui.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 describe( 'ImageStyle', () => {
 	let editor, editorElement;

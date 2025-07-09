@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type Operation from './operation/operation.js';
+import { type Operation } from './operation/operation.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -12,9 +12,9 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  */
 
 /**
- * `History` keeps the track of all the operations applied to the {@link module:engine/model/document~Document document}.
+ * `History` keeps the track of all the operations applied to the {@link module:engine/model/document~ModelDocument document}.
  */
-export default class History {
+export class History {
 	/**
 	 * Operations added to the history.
 	 */

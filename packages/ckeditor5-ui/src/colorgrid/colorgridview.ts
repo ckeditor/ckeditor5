@@ -7,13 +7,13 @@
  * @module ui/colorgrid/colorgridview
  */
 
-import View from '../view.js';
-import ColorTileView from './colortileview.js';
-import addKeyboardHandlingForGrid from '../bindings/addkeyboardhandlingforgrid.js';
+import { View } from '../view.js';
+import { ColorTileView } from './colortileview.js';
+import { addKeyboardHandlingForGrid } from '../bindings/addkeyboardhandlingforgrid.js';
 
 import type { ButtonExecuteEvent } from '../button/button.js';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
-import type ViewCollection from '../viewcollection.js';
+import { type DropdownPanelFocusable } from '../dropdown/dropdownpanelfocusable.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 import {
 	FocusTracker,
@@ -29,7 +29,7 @@ import '../../theme/components/colorgrid/colorgrid.css';
 /**
  * A grid of {@link module:ui/colorgrid/colortileview~ColorTileView color tiles}.
  */
-export default class ColorGridView extends View implements DropdownPanelFocusable {
+export class ColorGridView extends View implements DropdownPanelFocusable {
 	/**
 	 * A number of columns for the tiles grid.
 	 */

@@ -7,21 +7,22 @@
  * @module engine/view/upcastwriter
  */
 
-import DocumentFragment from './documentfragment.js';
-import Element, { type ElementAttributes } from './element.js';
-import Text from './text.js';
+import { ViewDocumentFragment } from './documentfragment.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
+import { ViewText } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
-import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
-import Selection, {
-	type PlaceOrOffset,
-	type Selectable,
-	type SelectionOptions
+import { ViewPosition, type ViewPositionOffset } from './position.js';
+import { ViewRange } from './range.js';
+import {
+	ViewSelection,
+	type ViewPlaceOrOffset,
+	type ViewSelectable,
+	type ViewSelectionOptions
 } from './selection.js';
 
-import type Document from './document.js';
-import type Item from './item.js';
-import type Node from './node.js';
+import { type ViewDocument } from './document.js';
+import { type ViewItem } from './item.js';
+import { type ViewNode } from './node.js';
 
 /**
  * View upcast writer. It provides a set of methods used to manipulate non-semantic view trees.
@@ -29,46 +30,46 @@ import type Node from './node.js';
  * It should be used only while working on a non-semantic view
  * (e.g. a view created from HTML string on paste).
  * To manipulate a view which was or is being downcasted from the the model use the
- * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter downcast writer}.
  *
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  *
- * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
- * `UpcastWriter` can be created wherever you need it:
+ * Unlike `ViewDowncastWriter`, which is available in the {@link module:engine/view/view~EditingView#change `View#change()`} block,
+ * `ViewUpcastWriter` can be created wherever you need it:
  *
  * ```ts
- * const writer = new UpcastWriter( viewDocument );
+ * const writer = new ViewUpcastWriter( viewDocument );
  * const text = writer.createText( 'foo!' );
  *
  * writer.appendChild( text, someViewElement );
  * ```
  */
-export default class UpcastWriter {
+export class ViewUpcastWriter {
 	/**
 	 * The view document instance in which this upcast writer operates.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * @param document The view document instance in which this upcast writer operates.
 	 */
-	constructor( document: Document ) {
+	constructor( document: ViewDocument ) {
 		this.document = document;
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 * Creates a new {@link module:engine/view/documentfragment~ViewDocumentFragment} instance.
 	 *
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
-		return new DocumentFragment( this.document, children );
+	public createDocumentFragment( children?: ViewNode | Iterable<ViewNode> ): ViewDocumentFragment {
+		return new ViewDocumentFragment( this.document, children );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/element~Element} instance.
+	 * Creates a new {@link module:engine/view/element~ViewElement} instance.
 	 *
 	 * Attributes can be passed in various formats:
 	 *
@@ -85,32 +86,32 @@ export default class UpcastWriter {
 	 */
 	public createElement(
 		name: string,
-		attrs?: ElementAttributes,
-		children?: Node | Iterable<Node>
-	): Element {
-		return new Element( this.document, name, attrs, children );
+		attrs?: ViewElementAttributes,
+		children?: ViewNode | Iterable<ViewNode>
+	): ViewElement {
+		return new ViewElement( this.document, name, attrs, children );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/text~Text} instance.
+	 * Creates a new {@link module:engine/view/text~ViewText} instance.
 	 *
 	 * @param data The text's data.
 	 * @returns The created text node.
 	 */
-	public createText( data: string ): Text {
-		return new Text( this.document, data );
+	public createText( data: string ): ViewText {
+		return new ViewText( this.document, data );
 	}
 
 	/**
 	 * Clones the provided element.
 	 *
-	 * @see module:engine/view/element~Element#_clone
+	 * @see module:engine/view/element~ViewElement#_clone
 	 * @param element Element to be cloned.
 	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
 	 * @returns Clone of this element.
 	 */
-	public clone( element: Element, deep: boolean = false ): Element {
+	public clone( element: ViewElement, deep: boolean = false ): ViewElement {
 		return element._clone( deep );
 	}
 
@@ -118,12 +119,12 @@ export default class UpcastWriter {
 	 * Appends a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
-	 * @see module:engine/view/element~Element#_appendChild
+	 * @see module:engine/view/element~ViewElement#_appendChild
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be appended.
 	 * @returns Number of appended nodes.
 	 */
-	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | DocumentFragment ): number {
+	public appendChild( items: ViewItem | string | Iterable<ViewItem | string>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._appendChild( items );
 	}
 
@@ -131,26 +132,26 @@ export default class UpcastWriter {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 * @see module:engine/view/element~Element#_insertChild
+	 * @see module:engine/view/element~ViewElement#_insertChild
 	 * @param index Offset at which nodes should be inserted.
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be inserted.
 	 * @returns Number of inserted nodes.
 	 */
-	public insertChild( index: number, items: Item | Iterable<Item>, element: Element | DocumentFragment ): number {
+	public insertChild( index: number, items: ViewItem | Iterable<ViewItem>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._insertChild( index, items );
 	}
 
 	/**
 	 * Removes the given number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * @see module:engine/view/element~Element#_removeChildren
+	 * @see module:engine/view/element~ViewElement#_removeChildren
 	 * @param index Offset from which nodes will be removed.
 	 * @param howMany Number of nodes to remove.
 	 * @param element Element which children will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public removeChildren( index: number, howMany: number, element: Element | DocumentFragment ): Array<Node> {
+	public removeChildren( index: number, howMany: number, element: ViewElement | ViewDocumentFragment ): Array<ViewNode> {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -160,7 +161,7 @@ export default class UpcastWriter {
 	 * @param element Element which will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public remove( element: Node ): Array<Node> {
+	public remove( element: ViewNode ): Array<ViewNode> {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -177,7 +178,7 @@ export default class UpcastWriter {
 	 * @param newElement Element which will be inserted in the place of the old element.
 	 * @returns Whether old element was successfully replaced.
 	 */
-	public replace( oldElement: Element, newElement: Element ): boolean {
+	public replace( oldElement: ViewElement, newElement: ViewElement ): boolean {
 		const parent = oldElement.parent;
 
 		if ( parent ) {
@@ -198,7 +199,7 @@ export default class UpcastWriter {
 	 *
 	 * @param element Element to unwrap.
 	 */
-	public unwrapElement( element: Element ): void {
+	public unwrapElement( element: ViewElement ): void {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -219,8 +220,8 @@ export default class UpcastWriter {
 	 * @param  element Element to be renamed.
 	 * @returns New element or null if the old element was not replaced (happens for detached elements).
 	 */
-	public rename( newName: string, element: Element ): Element | null {
-		const newElement = new Element( this.document, newName, element.getAttributes(), element.getChildren() );
+	public rename( newName: string, element: ViewElement ): ViewElement | null {
+		const newElement = new ViewElement( this.document, newName, element.getAttributes(), element.getChildren() );
 
 		return this.replace( element, newElement ) ? newElement : null;
 	}
@@ -232,12 +233,12 @@ export default class UpcastWriter {
 	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_setAttribute
+	 * @see module:engine/view/element~ViewElement#_setAttribute
 	 * @param key Attribute key.
 	 * @param value Attribute value.
 	 * @param element Element for which attribute will be set.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: ViewElement ): void {
 		element._setAttribute( key, value );
 	}
 
@@ -248,11 +249,11 @@ export default class UpcastWriter {
 	 * writer.removeAttribute( 'href', linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_removeAttribute
+	 * @see module:engine/view/element~ViewElement#_removeAttribute
 	 * @param key Attribute key.
 	 * @param element Element from which attribute will be removed.
 	 */
-	public removeAttribute( key: string, element: Element ): void {
+	public removeAttribute( key: string, element: ViewElement ): void {
 		element._removeAttribute( key );
 	}
 
@@ -264,11 +265,11 @@ export default class UpcastWriter {
 	 * writer.addClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_addClass
+	 * @see module:engine/view/element~ViewElement#_addClass
 	 * @param className Single class name or array of class names which will be added.
 	 * @param element Element for which class will be added.
 	 */
-	public addClass( className: string | Array<string>, element: Element ): void {
+	public addClass( className: string | Array<string>, element: ViewElement ): void {
 		element._addClass( className );
 	}
 
@@ -280,11 +281,11 @@ export default class UpcastWriter {
 	 * writer.removeClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_removeClass
+	 * @see module:engine/view/element~ViewElement#_removeClass
 	 * @param className Single class name or array of class names which will be removed.
 	 * @param element Element from which class will be removed.
 	 */
-	public removeClass( className: string | Array<string>, element: Element ): void {
+	public removeClass( className: string | Array<string>, element: ViewElement ): void {
 		element._removeClass( className );
 	}
 
@@ -299,13 +300,13 @@ export default class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_setStyle
+	 * @see module:engine/view/element~ViewElement#_setStyle
 	 * @label KEY_VALUE
 	 * @param property Property name.
 	 * @param value Value to set.
 	 * @param element Element for which style will be added.
 	 */
-	public setStyle( property: string, value: string, element: Element ): void;
+	public setStyle( property: string, value: string, element: ViewElement ): void;
 
 	/**
 	 * Adds style to the element.
@@ -321,16 +322,16 @@ export default class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_setStyle
+	 * @see module:engine/view/element~ViewElement#_setStyle
 	 * @label OBJECT
 	 * @param properties Object with key - value pairs.
 	 * @param element Element for which style will be added.
 	 */
-	public setStyle( properties: Record<string, string>, element: Element ): void;
+	public setStyle( properties: Record<string, string>, element: ViewElement ): void;
 
-	public setStyle( property: string | Record<string, string>, valueOrElement: string | Element, element?: Element ): void {
+	public setStyle( property: string | Record<string, string>, valueOrElement: string | ViewElement, element?: ViewElement ): void {
 		if ( isPlainObject( property ) && element === undefined ) {
-			( valueOrElement as Element )._setStyle( property as Record<string, string> );
+			( valueOrElement as ViewElement )._setStyle( property as Record<string, string> );
 		} else {
 			element!._setStyle( property as string, valueOrElement as string );
 		}
@@ -348,11 +349,11 @@ export default class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_removeStyle
+	 * @see module:engine/view/element~ViewElement#_removeStyle
 	 * @param property Style property name or names to be removed.
 	 * @param element Element from which style will be removed.
 	 */
-	public removeStyle( property: string | Array<string>, element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: ViewElement ): void {
 		element._removeStyle( property );
 	}
 
@@ -360,44 +361,44 @@ export default class UpcastWriter {
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
-	 * @see module:engine/view/element~Element#_setCustomProperty
+	 * @see module:engine/view/element~ViewElement#_setCustomProperty
 	 * @param key Custom property name/key.
 	 * @param value Custom property value to be stored.
 	 * @param element Element for which custom property will be set.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: ViewElement | ViewDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
 	/**
 	 * Removes a custom property stored under the given key.
 	 *
-	 * @see module:engine/view/element~Element#_removeCustomProperty
+	 * @see module:engine/view/element~ViewElement#_removeCustomProperty
 	 * @param key Name/key of the custom property to be removed.
 	 * @param element Element from which the custom property will be removed.
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: ViewElement | ViewDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/view/position~Position position},
+	 * * a {@link module:engine/view/position~ViewPosition position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~ViewItem view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link #createPositionBefore},
 	 * * {@link #createPositionAfter},
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~ViewItem view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
-		return Position._createAt( itemOrPosition, offset );
+	public createPositionAt( itemOrPosition: ViewItem | ViewPosition, offset?: ViewPositionOffset ): ViewPosition {
+		return ViewPosition._createAt( itemOrPosition, offset );
 	}
 
 	/**
@@ -405,8 +406,8 @@ export default class UpcastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
-		return Position._createAfter( item );
+	public createPositionAfter( item: ViewItem ): ViewPosition {
+		return ViewPosition._createAfter( item );
 	}
 
 	/**
@@ -414,52 +415,52 @@ export default class UpcastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
-		return Position._createBefore( item );
+	public createPositionBefore( item: ViewItem ): ViewPosition {
+		return ViewPosition._createBefore( item );
 	}
 
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 * **Note:** This factory method creates it's own {@link module:engine/view/position~ViewPosition} instances basing on passed values.
 	 *
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end: Position ): Range {
-		return new Range( start, end );
+	public createRange( start: ViewPosition, end: ViewPosition ): ViewRange {
+		return new ViewRange( start, end );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~ViewItem view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
-		return Range._createOn( item );
+	public createRangeOn( item: ViewItem ): ViewRange {
+		return ViewRange._createOn( item );
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
-		return Range._createIn( element );
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): ViewRange {
+		return ViewRange._createIn( element );
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/selection~Selection} instance.
+	 * Creates a new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
 	 * const paragraph = writer.createContainerElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/view/item~ViewItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
@@ -487,10 +488,10 @@ export default class UpcastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: ViewPlaceOrOffset, options?: ViewSelectionOptions ): ViewSelection;
 
 	/**
-	 * Creates a new {@link module:engine/view/selection~Selection} instance.
+	 * Creates a new {@link module:engine/view/selection~ViewSelection} instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -539,9 +540,9 @@ export default class UpcastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<ViewSelectable, ViewNode>, options?: ViewSelectionOptions ): ViewSelection;
 
-	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
-		return new Selection( ...args );
+	public createSelection( ...args: ConstructorParameters<typeof ViewSelection> ): ViewSelection {
+		return new ViewSelection( ...args );
 	}
 }

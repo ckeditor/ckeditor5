@@ -7,11 +7,13 @@
  * @module utils/env
  */
 
-import global from './dom/global.js';
+import { global } from './dom/global.js';
 
 /**
  * Safely returns `userAgent` from browser's navigator API in a lower case.
  * If navigator API is not available it will return an empty string.
+ *
+ * @internal
  */
 export function getUserAgent(): string {
 	// In some environments navigator API might not be available.
@@ -100,7 +102,7 @@ export interface EnvFeaturesType {
 /**
  * A namespace containing environment and browser information.
  */
-const env: EnvType = {
+export const env: EnvType = {
 	isMac: /* #__PURE__ */ isMac( userAgent ),
 
 	isWindows: /* #__PURE__ */ isWindows( userAgent ),
@@ -128,11 +130,10 @@ const env: EnvType = {
 	}
 };
 
-export default env;
-
 /**
  * Checks if User Agent represented by the string is running on Macintosh.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is running on Macintosh or not.
  */
@@ -143,6 +144,7 @@ export function isMac( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is running on Windows.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is running on Windows or not.
  */
@@ -153,6 +155,7 @@ export function isWindows( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is Firefox (Gecko).
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is Firefox or not.
  */
@@ -163,6 +166,7 @@ export function isGecko( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is Safari.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is Safari or not.
  */
@@ -173,6 +177,7 @@ export function isSafari( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is running in iOS.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is running in iOS or not.
  */
@@ -184,6 +189,7 @@ export function isiOS( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is Android mobile device.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is Safari or not.
  */
@@ -194,6 +200,7 @@ export function isAndroid( userAgent: string ): boolean {
 /**
  * Checks if User Agent represented by the string is Blink engine.
  *
+ * @internal
  * @param userAgent **Lowercase** `navigator.userAgent` string.
  * @returns Whether User Agent is Blink engine or not.
  */
@@ -207,6 +214,8 @@ export function isBlink( userAgent: string ): boolean {
  * Checks if the current environment supports ES2018 Unicode properties like `\p{P}` or `\p{L}`.
  * More information about unicode properties might be found
  * [in Unicode Standard Annex #44](https://www.unicode.org/reports/tr44/#GC_Values_Table).
+ *
+ * @internal
  */
 export function isRegExpUnicodePropertySupported(): boolean {
 	let isSupported = false;
@@ -228,6 +237,8 @@ export function isRegExpUnicodePropertySupported(): boolean {
  * Checks if the user agent has enabled a forced colors mode (e.g. Windows High Contrast mode).
  *
  * Returns `false` in environments where `window` global object is not available.
+ *
+ * @internal
  */
 export function isMediaForcedColors(): boolean {
 	return global.window.matchMedia ? global.window.matchMedia( '(forced-colors: active)' ).matches : false;
@@ -237,6 +248,8 @@ export function isMediaForcedColors(): boolean {
  * Checks if the user enabled "prefers reduced motion" setting in browser.
  *
  * Returns `false` in environments where `window` global object is not available.
+ *
+ * @internal
  */
 export function isMotionReduced(): boolean {
 	return global.window.matchMedia ? global.window.matchMedia( '(prefers-reduced-motion)' ).matches : false;

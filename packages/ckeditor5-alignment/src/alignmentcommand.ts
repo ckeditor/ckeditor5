@@ -9,24 +9,24 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 
 import { isDefault } from './utils.js';
-import type { SupportedOption } from './alignmentconfig.js';
+import type { AlignmentSupportedOption } from './alignmentconfig.js';
 
 const ALIGNMENT = 'alignment';
 
 /**
  * The alignment command plugin.
  */
-export default class AlignmentCommand extends Command {
+export class AlignmentCommand extends Command {
 	/**
 	 * A value of the current block's alignment.
 	 *
 	 * @observable
 	 * @readonly
 	 */
-	declare public value: SupportedOption;
+	declare public value: AlignmentSupportedOption;
 
 	/**
 	 * @inheritDoc
@@ -40,7 +40,7 @@ export default class AlignmentCommand extends Command {
 		this.isEnabled = Boolean( firstBlock ) && this._canBeAligned( firstBlock );
 
 		if ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) {
-			this.value = firstBlock.getAttribute( 'alignment' ) as SupportedOption;
+			this.value = firstBlock.getAttribute( 'alignment' ) as AlignmentSupportedOption;
 		} else {
 			this.value = locale.contentLanguageDirection === 'rtl' ? 'right' : 'left';
 		}
@@ -55,7 +55,7 @@ export default class AlignmentCommand extends Command {
 	 * @param options.value The value to apply.
 	 * @fires execute
 	 */
-	public override execute( options: { value?: SupportedOption } = {} ): void {
+	public override execute( options: { value?: AlignmentSupportedOption } = {} ): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const model = editor.model;
@@ -87,7 +87,7 @@ export default class AlignmentCommand extends Command {
 	 *
 	 * @param block The block to be checked.
 	 */
-	private _canBeAligned( block: Element ) {
+	private _canBeAligned( block: ModelElement ) {
 		return this.editor.model.schema.checkAttribute( block, ALIGNMENT );
 	}
 }
@@ -95,7 +95,7 @@ export default class AlignmentCommand extends Command {
 /**
  * Removes the alignment attribute from blocks.
  */
-function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) {
+function removeAlignmentFromSelection( blocks: Array<ModelElement>, writer: ModelWriter ) {
 	for ( const block of blocks ) {
 		writer.removeAttribute( ALIGNMENT, block );
 	}
@@ -104,7 +104,7 @@ function removeAlignmentFromSelection( blocks: Array<Element>, writer: Writer ) 
 /**
  * Sets the alignment attribute on blocks.
  */
-function setAlignmentOnSelection( blocks: Array<Element>, writer: Writer, alignment: string ) {
+function setAlignmentOnSelection( blocks: Array<ModelElement>, writer: ModelWriter, alignment: string ) {
 	for ( const block of blocks ) {
 		writer.setAttribute( ALIGNMENT, alignment, block );
 	}

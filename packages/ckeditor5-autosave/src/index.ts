@@ -7,6 +7,6 @@
  * @module autosave
  */
 
-export { default as Autosave, type AutosaveConfig } from './autosave.js';
+export { Autosave, type AutosaveConfig, type AutosaveAdapter } from './autosave.js';
 
 import './augmentation.js';

@@ -8,19 +8,20 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import type { DataFilter } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsConfigureGHSDataFilterEvent
 } from '../styleutils.js';
 
-export default class TableStyleSupport extends Plugin {
+export class TableStyleSupport extends Plugin {
 	private _tableUtils!: TableUtils;
 	private _styleUtils!: StyleUtils;
 
@@ -94,7 +95,7 @@ export default class TableStyleSupport extends Plugin {
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the defintion-block pair meet the plugin criteria, false otherwise.
 	 */
-	private _isApplicable( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isApplicable( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		if ( [ 'td', 'th' ].includes( definition.element ) ) {
 			return block.name == 'tableCell';
 		}
@@ -113,12 +114,12 @@ export default class TableStyleSupport extends Plugin {
 	 * @param block Block element to check if should be styled.
 	 * @returns True if the block should be style with the style description, false otherwise.
 	 */
-	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	private _isStyleEnabledForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		if ( [ 'td', 'th' ].includes( definition.element ) ) {
 			const location = this._tableUtils.getCellLocation( block )!;
 
 			const tableRow = block.parent!;
-			const table = tableRow.parent as Element;
+			const table = tableRow.parent as ModelElement;
 
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
@@ -152,7 +153,7 @@ export default class TableStyleSupport extends Plugin {
 	 * @param block A block element from selection.
 	 * @returns An array with the block that was passed as an argument if meets the criteria, null otherwise.
 	 */
-	private _getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
+	private _getAffectedBlocks( definition: BlockStyleDefinition, block: ModelElement ): Array<ModelElement> | null {
 		if ( !this._isStyleEnabledForBlock( definition, block ) ) {
 			return null;
 		}

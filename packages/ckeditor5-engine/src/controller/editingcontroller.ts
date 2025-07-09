@@ -12,10 +12,11 @@ import {
 	ObservableMixin
 } from '@ckeditor/ckeditor5-utils';
 
-import RootEditableElement from '../view/rooteditableelement.js';
-import View from '../view/view.js';
-import Mapper from '../conversion/mapper.js';
-import DowncastDispatcher, {
+import { ViewRootEditableElement } from '../view/rooteditableelement.js';
+import { EditingView } from '../view/view.js';
+import { Mapper } from '../conversion/mapper.js';
+import {
+	DowncastDispatcher,
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
 	type DowncastSelectionEvent,
@@ -32,14 +33,14 @@ import {
 
 import { convertSelectionChange } from '../conversion/upcasthelpers.js';
 
-import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
-import type ModelItem from '../model/item.js';
-import type ModelText from '../model/text.js';
-import type ModelTextProxy from '../model/textproxy.js';
-import type { DocumentChangeEvent } from '../model/document.js';
+import type { Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
+import { type ModelItem } from '../model/item.js';
+import { type ModelText } from '../model/text.js';
+import { type ModelTextProxy } from '../model/textproxy.js';
+import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
-import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
+import type { ViewDocumentObserverSelectionChangeEvent } from '../view/observer/selectionobserver.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 
@@ -48,7 +49,7 @@ import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectio
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  */
-export default class EditingController extends /* #__PURE__ */ ObservableMixin() {
+export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Editor model.
 	 */
@@ -57,7 +58,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * Editing view controller.
 	 */
-	public readonly view: View;
+	public readonly view: EditingView;
 
 	/**
 	 * A mapper that describes the model-view binding.
@@ -79,7 +80,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 		super();
 
 		this.model = model;
-		this.view = new View( stylesProcessor );
+		this.view = new EditingView( stylesProcessor );
 		this.mapper = new Mapper();
 
 		this.downcastDispatcher = new DowncastDispatcher( {
@@ -107,7 +108,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo<DocumentChangeEvent>( doc, 'change', () => {
+		this.listenTo<ModelDocumentChangeEvent>( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
@@ -115,7 +116,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 		}, { priority: 'low' } );
 
 		// Convert selection from the view to the model when it changes in the view.
-		this.listenTo<ViewDocumentSelectionChangeEvent>( this.view.document, 'selectionChange',
+		this.listenTo<ViewDocumentObserverSelectionChangeEvent>( this.view.document, 'selectionChange',
 			convertSelectionChange( this.model, this.mapper )
 		);
 
@@ -129,8 +130,8 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
-		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
-		// {@link module:engine/model/document~Document#roots model roots collection} so creating
+		// Binds {@link module:engine/view/document~ViewDocument#roots view roots collection} to
+		// {@link module:engine/model/document~ModelDocument#roots model roots collection} so creating
 		// model root automatically creates corresponding view root.
 		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {
 			// $graveyard is a special root that has no reflection in the view.
@@ -138,7 +139,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 				return null;
 			}
 
-			const viewRoot = new RootEditableElement( this.view.document, root.name );
+			const viewRoot = new ViewRootEditableElement( this.view.document, root.name );
 
 			viewRoot.rootName = root.rootName;
 			this.mapper.bindElements( root, viewRoot );
@@ -169,7 +170,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * Calling this method will refresh the marker by triggering the downcast conversion for it.
 	 *
-	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~Element view element}
+	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~ViewElement view element}
 	 * without changing any marker data. For instance:
 	 *
 	 * ```ts

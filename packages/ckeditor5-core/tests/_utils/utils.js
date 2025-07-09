@@ -6,18 +6,18 @@
 /**
  * General test utils for CKEditor.
  */
-const utils = {
+export const testUtils = {
 	sinon,
 
 	/**
-	 * Creates Sinon sandbox in {@link utils#sinon} and plugs `afterEach()` callback which
+	 * Creates Sinon sandbox in {@link testUtils#sinon} and plugs `afterEach()` callback which
 	 * restores all spies and stubs created in this sandbox.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-design/issues/72 and http://sinonjs.org/docs/#sinon-sandbox
 	 *
 	 * Usage:
 	 *
-	 *		import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+	 *		import { testUtils } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 	 *
 	 *		describe( 'MyClass', () => {
 	 *			// Create Sinon sandbox inside top-level describe block:
@@ -36,7 +36,7 @@ const utils = {
 	createSinonSandbox() {
 		// eslint-disable-next-line mocha/no-top-level-hooks
 		afterEach( () => {
-			utils.sinon.restore();
+			testUtils.sinon.restore();
 		} );
 	},
 
@@ -83,7 +83,7 @@ const utils = {
 	},
 
 	/**
-	 * Checks if given mixin i mixed to given class using {@link module:utils/mix mix} util.
+	 * Checks if given mixin is mixed to given class.
 	 *
 	 * @param {Function} targetClass Class to check.
 	 * @param {Object} mixin Mixin to check.
@@ -103,5 +103,3 @@ const utils = {
 		return isValid;
 	}
 };
-
-export default utils;

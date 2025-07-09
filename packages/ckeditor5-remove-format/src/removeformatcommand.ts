@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { DocumentSelection, Item, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -21,8 +21,16 @@ import { first } from 'ckeditor5/src/utils.js';
  * editor.execute( 'removeFormat' );
  * ```
  */
-export default class RemoveFormatCommand extends Command {
+export class RemoveFormatCommand extends Command {
 	declare public value: boolean;
+
+	/**
+	 * List of all registered custom attribute handlers.
+	 */
+	private _customAttributesHandlers: Array<{
+		isFormatting: IsFormattingCallback;
+		removeFormatting: RemoveFormattingCallback;
+	}> = [];
 
 	/**
 	 * @inheritDoc
@@ -30,7 +38,7 @@ export default class RemoveFormatCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 
-		this.isEnabled = !!first( this._getFormattingItems( model.document.selection, model.schema ) );
+		this.isEnabled = !!first( this._getFormattingItems( model.document.selection ) );
 	}
 
 	/**
@@ -38,12 +46,11 @@ export default class RemoveFormatCommand extends Command {
 	 */
 	public override execute(): void {
 		const model = this.editor.model;
-		const schema = model.schema;
 
 		model.change( writer => {
-			for ( const item of this._getFormattingItems( model.document.selection, schema ) ) {
+			for ( const item of this._getFormattingItems( model.document.selection ) ) {
 				if ( item.is( 'selection' ) ) {
-					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
+					for ( const attributeName of this._getFormattingAttributes( item ) ) {
 						writer.removeSelectionAttribute( attributeName );
 					}
 				} else {
@@ -51,8 +58,8 @@ export default class RemoveFormatCommand extends Command {
 					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 					const itemRange = writer.createRangeOn( item );
 
-					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
-						writer.removeAttribute( attributeName, itemRange );
+					for ( const attributeName of this._getFormattingAttributes( item ) ) {
+						this._removeFormatting( attributeName, item, itemRange, writer );
 					}
 				}
 			}
@@ -60,26 +67,62 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
+	 * Registers a custom attribute handler that will be used to determine if an attribute is formatting and how to remove it.
+	 *
+	 * @internal
+	 */
+	public registerCustomAttribute( isFormatting: IsFormattingCallback, removeFormatting: RemoveFormattingCallback ): void {
+		this._customAttributesHandlers.push( {
+			isFormatting,
+			removeFormatting
+		} );
+	}
+
+	/**
+	 * Helper method that removes a formatting attribute from an item either using custom callbacks or writer remove attribute.
+	 */
+	private _removeFormatting( attributeName: string, item: ModelItem, itemRange: ModelRange, writer: ModelWriter ) {
+		let customHandled = false;
+
+		for ( const { isFormatting, removeFormatting } of this._customAttributesHandlers ) {
+			if ( isFormatting( attributeName, item ) ) {
+				removeFormatting( attributeName, itemRange, writer );
+				customHandled = true;
+			}
+		}
+
+		if ( !customHandled ) {
+			writer.removeAttribute( attributeName, itemRange );
+		}
+	}
+
+	/**
 	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
-	 *
-	 * @param schema The schema describing the item.
 	 */
-	private* _getFormattingItems( selection: DocumentSelection, schema: Schema ) {
-		const itemHasRemovableFormatting = ( item: Item | DocumentSelection ) => {
-			return !!first( this._getFormattingAttributes( item, schema ) );
+	private* _getFormattingItems( selection: ModelDocumentSelection ) {
+		const model = this.editor.model;
+		const schema = model.schema;
+
+		const itemHasRemovableFormatting = ( item: ModelItem | ModelDocumentSelection ) => {
+			return !!first( this._getFormattingAttributes( item ) );
 		};
 
-		// Check formatting on selected items that are not blocks.
+		// Check formatting on selected items.
 		for ( const curRange of selection.getRanges() ) {
 			for ( const item of curRange.getItems() ) {
-				if ( !schema.isBlock( item ) && itemHasRemovableFormatting( item ) ) {
+				// Ignore last block if range ends at the beginning of it.
+				if ( schema.isBlock( item ) && curRange.end.isTouching( model.createPositionAt( item, 0 ) ) ) {
+					continue;
+				}
+
+				if ( itemHasRemovableFormatting( item ) ) {
 					yield item;
 				}
 			}
 		}
 
-		// Check formatting from selected blocks.
+		// Check formatting from selected blocks (to include partly selected blocks).
 		for ( const block of selection.getSelectedBlocks() ) {
 			if ( itemHasRemovableFormatting( block ) ) {
 				yield block;
@@ -97,11 +140,18 @@ export default class RemoveFormatCommand extends Command {
 	 *
 	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
-	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: Item | DocumentSelection, schema: Schema ) {
+	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection ) {
+		const schema = this.editor.model.schema;
+
 		for ( const [ attributeName ] of item.getAttributes() ) {
+			for ( const { isFormatting } of this._customAttributesHandlers ) {
+				if ( isFormatting( attributeName, item ) ) {
+					yield attributeName;
+				}
+			}
+
 			const attributeProperties = schema.getAttributeProperties( attributeName );
 
 			if ( attributeProperties && attributeProperties.isFormatting ) {
@@ -110,3 +160,17 @@ export default class RemoveFormatCommand extends Command {
 		}
 	}
 }
+
+/**
+ * Callback that checks if an attribute is a formatting attribute.
+ *
+ * @internal
+ */
+export type IsFormattingCallback = ( attributeName: string, item: ModelItem | ModelDocumentSelection ) => boolean;
+
+/**
+ * Callback that removes formatting from an item.
+ *
+ * @internal
+ */
+export type RemoveFormattingCallback = ( attributeName: string, range: ModelRange, writer: ModelWriter ) => void;

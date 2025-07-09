@@ -14,7 +14,7 @@ type DomFileReader = globalThis.FileReader;
 /**
  * Wrapper over the native `FileReader`.
  */
-export default class FileReader extends /* #__PURE__ */ ObservableMixin() {
+export class FileReader extends /* #__PURE__ */ ObservableMixin() {
 	public total!: number;
 
 	/**

@@ -4,13 +4,13 @@
  */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { TextAlternativeFormView } from '../../../src/imagetextalternative/ui/textalternativeformview.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusCycler } from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'TextAlternativeFormView', () => {
 	let view;

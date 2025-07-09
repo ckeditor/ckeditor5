@@ -7,7 +7,7 @@
  * @module list/list/listsplitcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
@@ -22,7 +22,7 @@ import {
  *
  * It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListSplitCommand extends Command {
+export class ListSplitCommand extends Command {
 	/**
 	 * Whether list item should be split before or after the selected block.
 	 */
@@ -68,7 +68,7 @@ export default class ListSplitCommand extends Command {
 	 *
 	 * @param changedBlocks The changed list elements.
 	 */
-	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+	private _fireAfterExecute( changedBlocks: Array<ModelElement> ) {
 		this.fire<ListSplitCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
@@ -93,7 +93,7 @@ export default class ListSplitCommand extends Command {
 		const doc = this.editor.model.document;
 		const positionParent = doc.selection.getFirstPosition()!.parent;
 
-		return ( this._direction == 'before' ? positionParent : positionParent.nextSibling ) as Element;
+		return ( this._direction == 'before' ? positionParent : positionParent.nextSibling ) as ModelElement;
 	}
 }
 
@@ -108,5 +108,5 @@ export default class ListSplitCommand extends Command {
  */
 export type ListSplitCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ changedBlocks: Array<Element> ];
+	args: [ changedBlocks: Array<ModelElement> ];
 };

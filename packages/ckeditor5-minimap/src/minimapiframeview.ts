@@ -18,7 +18,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  *
  * @internal
  */
-export default class MinimapIframeView extends IframeView {
+export class MinimapIframeView extends IframeView {
 	/**
 	 * The CSS `top` used to scroll the minimap.
 	 *

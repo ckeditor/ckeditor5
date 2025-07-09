@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageCaptionEditing from './imagecaption/imagecaptionediting.js';
-import ImageCaptionUI from './imagecaption/imagecaptionui.js';
+import { ImageCaptionEditing } from './imagecaption/imagecaptionediting.js';
+import { ImageCaptionUI } from './imagecaption/imagecaptionui.js';
 
 import '../theme/imagecaption.css';
 
@@ -18,7 +18,7 @@ import '../theme/imagecaption.css';
  *
  * For a detailed overview, check the {@glink features/images/images-captions image caption} documentation.
  */
-export default class ImageCaption extends Plugin {
+export class ImageCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

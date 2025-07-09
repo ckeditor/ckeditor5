@@ -123,7 +123,7 @@ At this stage you can run the project and open it in the browser to verify if it
 
 ## The model and the view layers
 
-The external data widget feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text, like `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
+The external data widget feature will be {@link module:engine/model/schema~ModelSchemaItemDefinition defined as an inline} (text-like) element so it will be inserted into other editor blocks that allow text, like `<paragraph>`. The external data widget will also have a `data-resource-url` attribute. This means that the model representation of the external data widget will look like this:
 
 ```html
 <paragraph>

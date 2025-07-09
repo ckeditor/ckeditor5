@@ -8,12 +8,12 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The image text alternative command. It is used to change the `alt` attribute of `<imageBlock>` and `<imageInline>` model elements.
  */
-export default class ImageTextAlternativeCommand extends Command {
+export class ImageTextAlternativeCommand extends Command {
 	/**
 	 * The command value: `false` if there is no `alt` attribute, otherwise the value of the `alt` attribute.
 	 *

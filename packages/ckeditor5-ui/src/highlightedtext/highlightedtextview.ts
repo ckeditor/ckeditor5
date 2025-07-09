@@ -7,7 +7,7 @@
  * @module ui/highlightedtext/highlightedtextview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 import { escape } from 'es-toolkit/compat';
 
 import '../../theme/components/highlightedtext/highlightedtext.css';
@@ -16,7 +16,7 @@ import '../../theme/components/highlightedtext/highlightedtext.css';
  * A class representing a view that displays a text which subset can be highlighted using the
  * {@link #highlightText} method.
  */
-export default class HighlightedTextView extends View {
+export class HighlightedTextView extends View {
 	/**
 	 * The text that can be highlighted using the {@link #highlightText} method.
 	 *

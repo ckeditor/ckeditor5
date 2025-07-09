@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -13,13 +13,13 @@ import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, Bal
 import { IconBookmark, IconPencil, IconRemove, IconBookmarkSmall, IconBookmarkMedium } from '@ckeditor/ckeditor5-icons';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import BookmarkFormView from '../src/ui/bookmarkformview.js';
-import BookmarkEditing from '../src/bookmarkediting.js';
-import BookmarkUI from '../src/bookmarkui.js';
+import { BookmarkFormView } from '../src/ui/bookmarkformview.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
+import { BookmarkUI } from '../src/bookmarkui.js';
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, widgetToolbarRepository, toolbarView;
@@ -319,7 +319,7 @@ describe( 'BookmarkUI', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			expect( toolbarView.items ).to.have.length( 4 );
 			expect( toolbarView.items.get( 0 ).text ).to.equal( 'foo' );
@@ -332,7 +332,7 @@ describe( 'BookmarkUI', () => {
 
 			editor.ui.focusTracker.isFocused = true;
 
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
@@ -351,7 +351,7 @@ describe( 'BookmarkUI', () => {
 			const spy = sinon.spy( balloon, 'add' );
 			editor.ui.focusTracker.isFocused = true;
 
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			const bookmarkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 			const defaultPositions = BalloonPanelView.defaultPositions;
@@ -386,7 +386,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should show the toolbar on ui#update when the bookmark is selected', () => {
-				setModelData( editor.model, '<paragraph>[]<bookmark bookmarkId="foo"></bookmark></paragraph>' );
+				_setModelData( editor.model, '<paragraph>[]<bookmark bookmarkId="foo"></bookmark></paragraph>' );
 
 				expect( balloon.visibleView ).to.be.null;
 
@@ -409,7 +409,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should hide the toolbar on ui#update if the bookmark is de–selected', () => {
-				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 				expect( balloon.visibleView ).to.equal( toolbarView );
 
@@ -461,7 +461,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should be able to open "Bookmark" tab in the link panel with single item', () => {
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			linkUI._showUI();
 			clickNthLinksProvider( 0 );
@@ -472,7 +472,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should show bookmark items that are ordered alphabetically', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>f[o]o' +
 					'<bookmark bookmarkId="zzz"></bookmark>' +
 					'<bookmark bookmarkId="aaa"></bookmark>' +
@@ -491,7 +491,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should show proper icon and tooltip in link preview button', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>f[o]o' +
 					'<bookmark bookmarkId="zzz"></bookmark>' +
 				'</paragraph>'
@@ -513,7 +513,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should scroll to the bookmark when the link preview button is clicked', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>f[o]o' +
 					'<bookmark bookmarkId="zzz"></bookmark>' +
 				'</paragraph>'
@@ -534,7 +534,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should perform default browser action if tried to scroll to non-existing bookmark', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>f[o]o' +
 					'<bookmark bookmarkId="zzz"></bookmark>' +
 				'</paragraph>'
@@ -600,7 +600,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should create #formView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._showFormView();
 
@@ -608,7 +608,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should not throw if the UI is already visible', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._showFormView();
 
@@ -618,7 +618,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._showFormView();
 			formView = bookmarkUIFeature.formView;
@@ -685,7 +685,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon when bookmark is selected and bookmark toolbar is already visible', () => {
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			const bookmarkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
 
 			editor.ui.update();
@@ -710,7 +710,7 @@ describe( 'BookmarkUI', () => {
 			formView = bookmarkUIFeature.formView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			balloon.add( {
 				view: new View(),
@@ -727,7 +727,7 @@ describe( 'BookmarkUI', () => {
 			formView = bookmarkUIFeature.formView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>fo[<bookmark bookmarkId="foo"></bookmark>]ar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>fo[<bookmark bookmarkId="foo"></bookmark>]ar</paragraph>' );
 
 			const customView = new View();
 			const BookmarkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 );
@@ -765,7 +765,7 @@ describe( 'BookmarkUI', () => {
 			formView = bookmarkUIFeature.formView;
 			formView.render();
 
-			setModelData( editor.model, '<paragraph>fo[<bookmark bookmarkId="foo"></bookmark>]ar</paragraph>' );
+			_setModelData( editor.model, '<paragraph>fo[<bookmark bookmarkId="foo"></bookmark>]ar</paragraph>' );
 
 			balloon.add( {
 				view: new View(),
@@ -779,7 +779,7 @@ describe( 'BookmarkUI', () => {
 
 		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
 			// (#7926)
-			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 			bookmarkUIFeature._showFormView();
 			formView = bookmarkUIFeature.formView;
 
@@ -798,7 +798,7 @@ describe( 'BookmarkUI', () => {
 		it( 'should update the id when bookmark selected', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 			bookmarkUIFeature._showFormView();
 			formView = bookmarkUIFeature.formView;
 
@@ -818,7 +818,7 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._createViews();
 			formView = bookmarkUIFeature.formView;
 
-			setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[foo]</paragraph>' );
 
 			bookmarkUIFeature._showFormView();
 
@@ -837,7 +837,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -853,7 +853,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
+				_setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
 				bookmarkUIFeature._showFormView();
 
 				formView.idInputView.fieldView.value = '';
@@ -868,7 +868,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -884,7 +884,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
+				_setModelData( editor.model, '<paragraph><bookmark bookmarkId="foo"></bookmark>[]</paragraph>' );
 				bookmarkUIFeature._showFormView();
 
 				formView.idInputView.fieldView.value = 'foo';
@@ -899,7 +899,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 				bookmarkUIFeature._showFormView();
 
 				formView.idInputView.fieldView.value = 'name with space';
@@ -916,7 +916,7 @@ describe( 'BookmarkUI', () => {
 
 		describe( 'response to ui#update', () => {
 			it( 'should not duplicate #update listeners', () => {
-				setModelData( editor.model, '<paragraph>f[<bookmark bookmarkId="id"></bookmark>]oo</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[<bookmark bookmarkId="id"></bookmark>]oo</paragraph>' );
 
 				expect( balloon.visibleView ).to.equal( toolbarView );
 
@@ -933,7 +933,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'updates the position of the panel – creating a new bookmark, then the selection moved', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
@@ -958,7 +958,7 @@ describe( 'BookmarkUI', () => {
 				formView = bookmarkUIFeature.formView;
 				formView.render();
 
-				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -986,7 +986,7 @@ describe( 'BookmarkUI', () => {
 				bookmarkUIFeature._createViews();
 				formView = bookmarkUIFeature.formView;
 
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -1010,7 +1010,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'hides of the panel – editing a bookmark, then the selection moved out of the bookmark', () => {
-				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]bar</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -1029,7 +1029,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'hides the panel – editing a bookmark, then the selection expands', () => {
-				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]foo</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]foo</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -1051,7 +1051,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'hides the panel – creating a new bookmark, then the selection moved to another parent', () => {
-				setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 
 				bookmarkUIFeature._showFormView();
 
@@ -1076,7 +1076,7 @@ describe( 'BookmarkUI', () => {
 		describe( 'fake visual selection', () => {
 			describe( 'non-collapsed', () => {
 				it( 'should be displayed when a text fragment is selected', () => {
-					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 					bookmarkUIFeature._showFormView();
 
@@ -1091,13 +1091,15 @@ describe( 'BookmarkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-bookmark-selection">o</span>}o</p>' );
+					expect( _getViewData( editor.editing.view ) ).to.equal(
+						'<p>f{<span class="ck-fake-bookmark-selection">o</span>}o</p>'
+					);
 					expect( editor.getData() ).to.equal( '<p>foo</p>' );
 				} );
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the empty block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
 
 					bookmarkUIFeature._showFormView();
 
@@ -1113,7 +1115,7 @@ describe( 'BookmarkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>[</p>' +
 						'<p><span class="ck-fake-bookmark-selection">foo</span>]</p>'
 					);
@@ -1122,7 +1124,7 @@ describe( 'BookmarkUI', () => {
 
 				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
 					'of the first block in the multiline selection', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+					_setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 
 					bookmarkUIFeature._showFormView();
 
@@ -1138,7 +1140,7 @@ describe( 'BookmarkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>foo{</p>' +
 						'<p><span class="ck-fake-bookmark-selection">bar</span>]</p>'
 					);
@@ -1146,7 +1148,7 @@ describe( 'BookmarkUI', () => {
 				} );
 
 				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -1177,7 +1179,7 @@ describe( 'BookmarkUI', () => {
 						'<p></p>' +
 						'<p>}baz</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal(
 						'<p>foo</p>' +
 						'<p>&nbsp;</p><p>&nbsp;</p>' +
@@ -1190,7 +1192,7 @@ describe( 'BookmarkUI', () => {
 
 			describe( 'collapsed', () => {
 				it( 'should be displayed on a collapsed selection', () => {
-					setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+					_setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
 
 					bookmarkUIFeature._showFormView();
 
@@ -1205,7 +1207,7 @@ describe( 'BookmarkUI', () => {
 
 					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-					expect( getViewData( editor.editing.view ) ).to.equal(
+					expect( _getViewData( editor.editing.view ) ).to.equal(
 						'<p>f{}<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>o</p>'
 					);
 					expect( editor.getData() ).to.equal( '<p>fo</p>' );
@@ -1213,7 +1215,7 @@ describe( 'BookmarkUI', () => {
 
 				it( 'should be displayed on selection focus when selection contains only one empty element ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]bar</paragraph>' );
 
@@ -1234,13 +1236,13 @@ describe( 'BookmarkUI', () => {
 						'<p></p>' +
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is at the beginning of the first non-empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]bar</paragraph>' );
@@ -1263,13 +1265,13 @@ describe( 'BookmarkUI', () => {
 						'<p></p>' +
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 
 				it( 'should be displayed on selection focus when selection contains few empty elements ' +
 					'(selection focus is inside an empty element)', () => {
-					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+					_setModelData( editor.model, '<paragraph>foo[</paragraph>' +
 						'<paragraph></paragraph>' +
 						'<paragraph>]</paragraph>' +
 						'<paragraph>bar</paragraph>' );
@@ -1292,7 +1294,7 @@ describe( 'BookmarkUI', () => {
 						'<p>]<span class="ck-fake-bookmark-selection ck-fake-bookmark-selection_collapsed"></span></p>' +
 						'<p>bar</p>';
 
-					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( _getViewData( editor.editing.view ) ).to.equal( expectedViewData );
 					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
 				} );
 			} );
@@ -1305,7 +1307,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should create #formView', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._addFormView();
 
@@ -1313,7 +1315,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._addFormView();
 			formView = bookmarkUIFeature.formView;
@@ -1322,7 +1324,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should implement the CSS transition disabling feature', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 			bookmarkUIFeature._addFormView();
 
@@ -1338,7 +1340,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should have "Insert" label when bookmark is not selected', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
@@ -1349,7 +1351,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should have "Save" label when bookmark is selected', () => {
-				setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
+				_setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="id"></bookmark>]</paragraph>' );
 
 				bookmarkUIFeature._addFormView();
 				formView = bookmarkUIFeature.formView;
@@ -1360,7 +1362,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should have "Save" label when bookmark already inserted but balloon is not closed.', () => {
-				setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+				_setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 				bookmarkUIFeature._showFormView();
 				formView = bookmarkUIFeature.formView;
 
@@ -1438,7 +1440,7 @@ describe( 'BookmarkUI', () => {
 		it( 'should not throw if selection includes soft break before text item', () => {
 			bookmarkUIFeature._hideFormView();
 
-			setModelData( editor.model, '<paragraph>[<softBreak></softBreak>fo]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[<softBreak></softBreak>fo]</paragraph>' );
 
 			bookmarkUIFeature._showFormView();
 

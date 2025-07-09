@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RemoveFormatCommand from '../src/removeformatcommand.js';
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { RemoveFormatCommand } from '../src/removeformatcommand.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import {
-	getData,
-	setData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'RemoveFormatCommand', () => {
@@ -49,6 +49,34 @@ describe( 'RemoveFormatCommand', () => {
 
 				model.schema.setAttributeProperties( 'someBlockFormatting', {
 					isFormatting: true
+				} );
+
+				// Custom attribute handling.
+				model.schema.extend( 'p', { allowAttributes: [ 'fooA', 'fooB' ] } );
+
+				command.registerCustomAttribute(
+					attributeName => attributeName.startsWith( 'foo' ),
+					( attributeName, itemRange, writer ) => {
+						for ( const item of itemRange.getItems( { shallow: true } ) ) {
+							const value = item.getAttribute( attributeName );
+
+							if ( value ) {
+								writer.setAttribute( attributeName, value.toUpperCase(), item );
+							}
+						}
+					}
+				);
+
+				model.schema.register( 'mockTable', {
+					inheritAllFrom: '$blockObject'
+				} );
+
+				model.schema.register( 'mockCell', {
+					allowContentOf: '$container',
+					allowIn: 'mockTable',
+					allowAttributes: 'someBlockFormatting',
+					isLimit: true,
+					isSelectable: true
 				} );
 			} );
 	} );
@@ -109,6 +137,11 @@ describe( 'RemoveFormatCommand', () => {
 			'state with block formatting (collapsed selection)': {
 				input: '<p someBlockFormatting="foo">f[]oo</p>',
 				assert: () => expectEnabledPropertyToBe( true )
+			},
+
+			'state with custom block formatting': {
+				input: '<p fooA="bar">f[oo</p><p fooB="baz">b]ar</p>',
+				assert: () => expectEnabledPropertyToBe( true )
 			}
 		};
 
@@ -116,7 +149,7 @@ describe( 'RemoveFormatCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		const expectModelToBeEqual = expectedValue => expect( getData( model ) ).to.equal( expectedValue );
+		const expectModelToBeEqual = expectedValue => expect( _getModelData( model ) ).to.equal( expectedValue );
 		const cases = {
 			'state when in non-formatting markup': {
 				input: '<p>fo[]o</p>',
@@ -165,8 +198,102 @@ describe( 'RemoveFormatCommand', () => {
 			'state with block formatting (collapsed selection)': {
 				input: '<p someBlockFormatting="foo">f[]oo</p><p someBlockFormatting="bar">bar</p>',
 				assert: () => expectModelToBeEqual( '<p>f[]oo</p><p someBlockFormatting="bar">bar</p>' )
-			}
+			},
 
+			'state with custom block formatting': {
+				input: '<p fooA="bar">f[oo</p><p fooB="baz">b]ar</p>',
+				assert: () => expectModelToBeEqual( '<p fooA="BAR">f[oo</p><p fooB="BAZ">b]ar</p>' )
+			},
+
+			'removes formatting from a nested table (selection within paragraph in cell)': {
+				input:
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange">B[a<$text bold="true">r</$text> B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
+				assert: () => expectModelToBeEqual(
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p>B[ar B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
+				)
+			},
+
+			'removes formatting from a nested table (whole nested cell selected)': {
+				input:
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange"><$text bold="true">Bar</$text> Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
+				assert: () => expectModelToBeEqual(
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell>' +
+									'<p>Bar Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
+				)
+			},
+
+			'removes formatting from a table content (whole content selected)': {
+				input:
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p someBlockFormatting="bar">abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="abc">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p someBlockFormatting="123"><$text bold="red">Bar</$text> Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p someBlockFormatting="foo">abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>',
+				assert: () => expectModelToBeEqual(
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p>abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell>' +
+							'<p>Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p>Bar Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p>abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>'
+				)
+			}
 		};
 
 		generateTypicalUseCases( cases, {
@@ -177,7 +304,7 @@ describe( 'RemoveFormatCommand', () => {
 	function generateTypicalUseCases( useCases, options ) {
 		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
 			it( key, () => {
-				setData( model, testConfig.input, testConfig.setDataOptions );
+				_setModelData( model, testConfig.input, testConfig.setDataOptions );
 
 				if ( options && options.beforeAssert ) {
 					options.beforeAssert();

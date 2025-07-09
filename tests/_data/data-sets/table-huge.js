@@ -5,7 +5,7 @@
 
 // Creates one table with 2000 rows and 10 columns, total 20000 cells.
 // This tests editor performance when huge tables are in content.
-export default function makeData() {
+export function makeData() {
 	let initialData = '';
 
 	initialData += '<table>';

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _stringifyView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import MentionEditing, { _toMentionAttribute } from '../src/mentionediting.js';
-import MentionCommand from '../src/mentioncommand.js';
+import { MentionEditing, _toMentionAttribute } from '../src/mentionediting.js';
+import { MentionCommand } from '../src/mentioncommand.js';
 
 describe( 'MentionEditing', () => {
 	let editor, model, doc;
@@ -98,7 +98,7 @@ describe( 'MentionEditing', () => {
 			const expectedView = '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should be overridable', () => {
@@ -117,7 +117,7 @@ describe( 'MentionEditing', () => {
 			const expectedView = '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
@@ -128,7 +128,7 @@ describe( 'MentionEditing', () => {
 				'</p>'
 			);
 
-			// getModelData() merges text blocks with "same" attributes:
+			// _getModelData() merges text blocks with "same" attributes:
 			// So expected: <$text mention="{"name":"John"}">@John</$text><$text mention="{"name":"John"}">@John</$text>'
 			// Is returned as: <$text mention="{"name":"John"}">@John@John</$text>'
 			const paragraph = doc.getRoot().getChild( 0 );
@@ -147,7 +147,7 @@ describe( 'MentionEditing', () => {
 				'<span class="mention" data-mention="@John">@John</span></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 
 			function assertTextNode( textNode ) {
 				expect( textNode ).to.not.be.null;
@@ -172,7 +172,7 @@ describe( 'MentionEditing', () => {
 			const expectedView = '<p><span class="mention" data-mention="@John">@Jo</span></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should not downcast partial mention (default converter)', done => {
@@ -188,7 +188,7 @@ describe( 'MentionEditing', () => {
 			const preventDefaultSpy = sinon.spy();
 
 			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
-				expect( stringifyView( data.content ) ).to.equal( 'Hello @Jo' );
+				expect( _stringifyView( data.content ) ).to.equal( 'Hello @Jo' );
 
 				done();
 			} );
@@ -233,7 +233,7 @@ describe( 'MentionEditing', () => {
 			const preventDefaultSpy = sinon.spy();
 
 			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
-				expect( stringifyView( data.content ) ).to.equal( 'Hello Ted' );
+				expect( _stringifyView( data.content ) ).to.equal( 'Hello Ted' );
 
 				done();
 			} );
@@ -247,12 +247,12 @@ describe( 'MentionEditing', () => {
 		it( 'should not convert empty mentions', () => {
 			editor.setData( '<p>foo<span class="mention" data-mention="@John"></span></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 
 			const expectedView = '<p>foo</p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/8370
@@ -355,7 +355,7 @@ describe( 'MentionEditing', () => {
 				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo @Jaohn bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
@@ -378,7 +378,7 @@ describe( 'MentionEditing', () => {
 				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) )
+			expect( _getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo @J<$text bold="true">a</$text>ohn bar</paragraph>' );
 		} );
 

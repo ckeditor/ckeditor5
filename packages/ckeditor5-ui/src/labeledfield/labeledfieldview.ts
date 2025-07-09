@@ -7,11 +7,11 @@
  * @module ui/labeledfield/labeledfieldview
  */
 
-import View from '../view.js';
-import LabelView from '../label/labelview.js';
+import { View } from '../view.js';
+import { LabelView } from '../label/labelview.js';
 
 import type { FocusableView } from '../focuscycler.js';
-import type ViewCollection from '../viewcollection.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 import { uid, type Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -55,7 +55,7 @@ import '../../theme/components/labeledfield/labeledfieldview.css';
  * See {@link module:ui/labeledfield/utils} to discover ready–to–use labeled input helpers for common
  * UI components.
  */
-export default class LabeledFieldView<TFieldView extends FocusableView = FocusableView> extends View {
+export class LabeledFieldView<TFieldView extends FocusableView = FocusableView> extends View {
 	/**
 	 * The field view that gets labeled.
 	 */

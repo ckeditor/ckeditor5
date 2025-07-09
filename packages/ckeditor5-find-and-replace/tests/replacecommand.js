@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import FindAndReplaceEditing from '../src/findandreplaceediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
 describe( 'ReplaceCommand', () => {
 	let editor, model, command;
@@ -32,7 +32,7 @@ describe( 'ReplaceCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
-			setData( model, '[]' );
+			_setModelData( model, '[]' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -41,7 +41,7 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should be enabled at the end of paragraph', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -60,7 +60,7 @@ describe( 'ReplaceCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should replace single search result using text', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo [bar] baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo [bar] baz</paragraph>' );
 
 			const range = editor.model.document.selection.getFirstRange();
 			const markerId = 'my-marker-id';
@@ -79,7 +79,7 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should replace all with text', () => {
-			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+			_setModelData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
 
 			const root = editor.model.document.getRoot();
 			const markerId = 'my-marker-id';
@@ -98,7 +98,7 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should highlight next match', () => {
-			setData( model, '<paragraph>foo foo foo foo []</paragraph>' );
+			_setModelData( model, '<paragraph>foo foo foo foo []</paragraph>' );
 
 			const { results } = editor.execute( 'find', 'foo' );
 			editor.execute( 'replace', 'bar', results.get( 0 ) );
@@ -115,7 +115,7 @@ describe( 'ReplaceCommand', () => {
 				}
 			}
 
-			expect( getData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
 				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
 					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:1:end></findResult:1:end>' +
 					'<findResultHighlighted:x:end></findResultHighlighted:x:end> ' +
@@ -127,57 +127,57 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'replacement should retain text attribute', () => {
-			setData( model, '<paragraph><$text italic="true">foo bar foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text italic="true">foo bar foo</$text></paragraph>' );
 
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><$text italic="true">foo bom foo</$text></paragraph>'
 			);
 		} );
 
 		it( 'replacement should retain text multiple attributes', () => {
-			setData( model, '<paragraph><$text bold="true" italic="true">foo bar foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bold="true" italic="true">foo bar foo</$text></paragraph>' );
 
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><$text bold="true" italic="true">foo bom foo</$text></paragraph>'
 			);
 		} );
 
 		it( 'replacement should retain replaced text formatting', () => {
-			setData( model, '<paragraph>foo <$text bold="true">bar</$text> foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo <$text bold="true">bar</$text> foo</paragraph>' );
 
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>foo <$text bold="true">bom</$text> foo</paragraph>'
 			);
 		} );
 
 		it( 'should not replace if selectable is not editable', () => {
-			setData( model, '<paragraph>foo</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph>' );
 
 			model.document.isReadOnly = true;
 			const { results } = editor.execute( 'find', 'foo' );
 			editor.execute( 'replace', 'bar', results.get( 0 ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph>foo</paragraph>'
 			);
 		} );
 
 		it( 'doesn\'t pick attributes from sibling nodes', () => {
-			setData( model, '<paragraph><$text italic="true">foo </$text>bar<$text italic="true"> foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text italic="true">foo </$text>bar<$text italic="true"> foo</$text></paragraph>' );
 
 			const { results } = editor.execute( 'find', 'bar' );
 			editor.execute( 'replace', 'bom', results.get( 0 ) );
 
-			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );

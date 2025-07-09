@@ -10,13 +10,13 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 
-import type LinkCommand from './linkcommand.js';
+import { type LinkCommand } from './linkcommand.js';
 import { isLinkableElement } from './utils.js';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.
  */
-export default class UnlinkCommand extends Command {
+export class UnlinkCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

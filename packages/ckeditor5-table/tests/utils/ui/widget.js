@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection.js';
+import { ViewSelection } from '@ckeditor/ckeditor5-engine/src/view/selection.js';
 import { getTableWidgetAncestor } from '../../../src/utils/ui/widget.js';
 
 describe( 'table utils', () => {

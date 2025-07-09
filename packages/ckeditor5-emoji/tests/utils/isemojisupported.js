@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isEmojiSupported from '../../src/utils/isemojisupported.js';
+import { isEmojiSupported } from '../../src/utils/isemojisupported.js';
 
 describe( 'isEmojiSupported()', () => {
 	it( 'should return true when emoji is supported', () => {

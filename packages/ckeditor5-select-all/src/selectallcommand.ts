@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, ModelSchema } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The select all command.
@@ -18,13 +18,13 @@ import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
  *
  * Executing this command changes the {@glink framework/architecture/editing-engine#model model}
  * selection so it contains the entire content of the editable root of the editor the selection is
- * {@link module:engine/model/selection~Selection#anchor anchored} in.
+ * {@link module:engine/model/selection~ModelSelection#anchor anchored} in.
  *
  * If the selection was anchored in a {@glink framework/tutorials/widgets/implementing-a-block-widget nested editable}
  * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
  * will expand the selection to encompass more and more content up to the entire editable root of the editor.
  */
-export default class SelectAllCommand extends Command {
+export class SelectAllCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -41,13 +41,13 @@ export default class SelectAllCommand extends Command {
 	public override execute(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		let scopeElement: Element | null = model.schema.getLimitElement( selection );
+		let scopeElement: ModelElement | null = model.schema.getLimitElement( selection );
 
 		// If an entire scope is selected, or the selection's ancestor is not a scope yet,
 		// browse through ancestors to find the enclosing parent scope.
 		if ( selection.containsEntireContent( scopeElement ) || !isSelectAllScope( model.schema, scopeElement ) ) {
 			do {
-				scopeElement = scopeElement.parent as Element | null;
+				scopeElement = scopeElement.parent as ModelElement | null;
 
 				// Do nothing, if the entire `root` is already selected.
 				if ( !scopeElement ) {
@@ -64,11 +64,11 @@ export default class SelectAllCommand extends Command {
 
 /**
  * Checks whether the element is a valid select-all scope. Returns true, if the element is a
- * {@link module:engine/model/schema~Schema#isLimit limit}, and can contain any text or paragraph.
+ * {@link module:engine/model/schema~ModelSchema#isLimit limit}, and can contain any text or paragraph.
  *
  * @param schema Schema to check against.
  * @param element Model element.
  */
-function isSelectAllScope( schema: Schema, element: Element ): boolean {
+function isSelectAllScope( schema: ModelSchema, element: ModelElement ): boolean {
 	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }

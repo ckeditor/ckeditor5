@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createElement from '../../src/dom/createelement.js';
+import { createElement } from '../../src/dom/createelement.js';
 
 describe( 'createElement', () => {
 	it( 'should create element', () => {

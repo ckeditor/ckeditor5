@@ -9,14 +9,14 @@
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
-import ButtonView from '../../button/buttonview.js';
+import { ButtonView } from '../../button/buttonview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenulistitembutton.css';
 
 /**
  * Represents a view for a button in a dropdown menu list item.
  */
-export default class DropdownMenuListItemButtonView extends ButtonView {
+export class DropdownMenuListItemButtonView extends ButtonView {
 	public readonly id: string;
 
 	constructor( locale: Locale, id: string, label: string ) {

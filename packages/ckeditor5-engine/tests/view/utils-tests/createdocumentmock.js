@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createDocumentMock from '../../../tests/view/_utils/createdocumentmock.js';
+import { createViewDocumentMock } from '../../../tests/view/_utils/createdocumentmock.js';
 
-describe( 'createDocumentMock', () => {
+describe( 'createViewDocumentMock', () => {
 	it( 'should create document mock', () => {
-		const docMock = createDocumentMock();
+		const docMock = createViewDocumentMock();
 		const rootMock = {};
 
 		const isFocusedSpy = sinon.spy();
