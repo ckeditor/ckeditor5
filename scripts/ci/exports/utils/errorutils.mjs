@@ -3,15 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import chalk from 'chalk';
-
 /**
  * Utility functions for creating detailed error messages with context information.
  */
 
-export function createExportResolutionErrorSummary( context ) {
+export function createExportResolutionError( context ) {
 	const { fileName, exportName, isExternalModule, exportKind } = context;
-	const relativePath = getRelativePath( fileName );
 	const exportType = exportKind || 'value';
 
 	const reason = isExternalModule ? 'External module re-export' : 'Declaration not found';
@@ -20,27 +17,28 @@ export function createExportResolutionErrorSummary( context ) {
 		'Check if the export exists in the source module and verify import path';
 
 	return {
-		summary: `[${ relativePath }]\n${ chalk.red( `Export '${ exportName }' (${ exportType }): ${ reason }` ) }`,
+		path: getRelativePath( fileName ),
+		message: `Export '${ exportName }' (${ exportType }): ${ reason }`,
 		solution
 	};
 }
 
-export function createModuleResolutionErrorSummary( context ) {
+export function createModuleResolutionError( context ) {
 	const { fileName, importFrom } = context;
-	const relativePath = getRelativePath( fileName );
 
 	return {
-		summary: `[${ relativePath }]\n${ chalk.red( `Module '${ importFrom }' not found` ) }`,
+		path: getRelativePath( fileName ),
+		message: `Module '${ importFrom }' not found`,
 		solution: 'Check if the package exists and has a proper index.ts file'
 	};
 }
 
-export function createImportReferenceErrorSummary( context ) {
+export function createImportReferenceError( context ) {
 	const { fileName, referenceName } = context;
-	const relativePath = getRelativePath( fileName );
 
 	return {
-		summary: `[${ relativePath }]\n${ chalk.red( `Import '${ referenceName }' not found` ) }`,
+		path: getRelativePath( fileName ),
+		message: `Import '${ referenceName }' not found`,
 		solution: 'Verify the export exists in the source module and check for typos'
 	};
 }

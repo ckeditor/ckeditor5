@@ -9,8 +9,8 @@
 
 import { Module } from './module.mjs';
 import { packageDirName } from './misc.mjs';
-import { ErrorCollector } from './error-collector.mjs';
-import { createExportResolutionErrorSummary } from './error-utils.mjs';
+import { ErrorCollector } from './errorcollector.mjs';
+import { createExportResolutionError } from './errorutils.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 
 export class Library {
@@ -67,14 +67,14 @@ export class Library {
 					const srcExport = exportItem.importFrom.exports.find( item => item.name === exportItem.localName );
 
 					if ( !srcExport ) {
-						const { summary, solution } = createExportResolutionErrorSummary( {
+						const exportResolutionError = createExportResolutionError( {
 							fileName: exportItem.fileName,
 							exportName: exportItem.name,
 							isExternalModule: exportItem.importFrom instanceof ExternalModule,
 							exportKind: exportItem.exportKind
 						} );
 
-						this.errorCollector.addError( summary, { solution } );
+						this.errorCollector.addError( exportResolutionError );
 
 						continue;
 					}

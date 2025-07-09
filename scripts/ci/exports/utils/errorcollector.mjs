@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import chalk from 'chalk';
+
 /**
  * Error collector for gathering multiple validation errors instead of stopping at the first one.
  */
@@ -11,8 +13,8 @@ export class ErrorCollector {
 		this.errors = [];
 	}
 
-	addError( message, context = {} ) {
-		this.errors.push( { message, context } );
+	addError( { path, message, solution } ) {
+		this.errors.push( { path, message, solution } );
 	}
 
 	hasErrors() {
@@ -22,11 +24,12 @@ export class ErrorCollector {
 	printReport() {
 		if ( this.hasErrors() ) {
 			for ( const error of this.errors ) {
-				console.log( `${ error.message }` );
+				console.log( `[${ error.path }]` );
+				console.log( chalk.red( 'Error: ' + error.message ) );
 
 				// Show solution if available
-				if ( error.context && error.context.solution ) {
-					console.log( `- Possible solution: ${ error.context.solution }\n` );
+				if ( error.solution ) {
+					console.log( `- Possible solution: ${ error.solution }\n` );
 				}
 			}
 		}

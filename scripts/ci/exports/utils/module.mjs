@@ -13,10 +13,10 @@ import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
 import {
-	createModuleResolutionErrorSummary,
-	createImportReferenceErrorSummary,
-	createExportResolutionErrorSummary
-} from './error-utils.mjs';
+	createModuleResolutionError,
+	createImportReferenceError,
+	createExportResolutionError
+} from './errorutils.mjs';
 
 export class Module {
 	static load( fileName, errorCollector ) {
@@ -388,12 +388,9 @@ export class Module {
 				if ( !otherModule ) {
 					const context = { fileName: this.fileName, importFrom: item.importFrom };
 
-					const { summary, solution } = createModuleResolutionErrorSummary( context );
+					const moduleResolutionError = createModuleResolutionError( context );
 
-					this.errorCollector.addError( summary, {
-						...context,
-						solution
-					} );
+					this.errorCollector.addError( moduleResolutionError );
 				}
 
 				return item.resolveImport( otherModule );
@@ -485,12 +482,9 @@ export class Module {
 					exportKind: exportItem.exportKind
 				};
 
-				const { summary, solution } = createExportResolutionErrorSummary( context );
+				const exportResolutionError = createExportResolutionError( context );
 
-				this.errorCollector.addError( summary, {
-					...context,
-					solution
-				} );
+				this.errorCollector.addError( exportResolutionError );
 			}
 
 			exportItem.references = references;
@@ -540,12 +534,9 @@ export class Module {
 				availableExports: importFrom.exports
 			};
 
-			const { summary, solution } = createImportReferenceErrorSummary( context );
+			const importReferenceError = createImportReferenceError( context );
 
-			this.errorCollector.addError( summary, {
-				...context,
-				solution
-			} );
+			this.errorCollector.addError( importReferenceError );
 		}
 
 		return [ reference ];
