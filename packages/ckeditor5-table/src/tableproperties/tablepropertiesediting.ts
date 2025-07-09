@@ -363,6 +363,14 @@ function enableTableToFigureProperty(
 
 	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
 
-	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
+	upcastStyleToAttribute( conversion, {
+		viewElement: /^(table|figure)$/,
+		shouldUpcast: ( viewElement: ViewElement ) => !(
+			viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
+			viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
+		),
+		...options
+	} );
+
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

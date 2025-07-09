@@ -572,6 +572,8 @@ export class ImageUploadEditing extends Plugin {
 }
 
 /**
+ * TODO move this to the clipboard package.
+ *
  * Returns `true` if non-empty `text/html` is included in the data transfer.
  */
 export function isHtmlInDataTransfer( dataTransfer: ViewDataTransfer ): boolean {

@@ -172,7 +172,7 @@ export class LinkEditing extends Plugin {
 	 * Processes an array of configured {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}
 	 * and registers a {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}
 	 * for each one of them. Downcast dispatchers are obtained using the
-	 * {@link module:link/utils/automaticdecorators~AutomaticDecorators#getDispatcher} method.
+	 * {@link module:link/utils/automaticdecorators~AutomaticLinkDecorators#getDispatcher} method.
 	 *
 	 * **Note**: This method also activates the automatic external link decorator if enabled with
 	 * {@link module:link/linkconfig~LinkConfig#addTargetToExternalLinks `config.link.addTargetToExternalLinks`}.

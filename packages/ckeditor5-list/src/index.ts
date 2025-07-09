@@ -14,9 +14,9 @@ export {
 	ListEditing,
 	type ListEditingPostFixerEvent,
 	type ListType,
-	type AttributeDowncastStrategy,
-	type ItemMarkerDowncastStrategy,
-	type DowncastStrategy
+	type ListAttributeDowncastStrategy,
+	type ListItemMarkerDowncastStrategy,
+	type ListDowncastStrategy
 } from './list/listediting.js';
 
 export { ListUtils } from './list/listutils.js';

@@ -314,13 +314,13 @@ However, we understand that migrating to a new setup, even if easy, requires pla
 
 ### Deprecation of the predefined builds
 
-Our provided predefined editor builds, such as `ckeditor5-build-classic`, will be supported until **the end of Q1 (March), 2025**.
+Our provided predefined editor builds, such as `ckeditor5-build-classic`, were supported until **the end of Q1 (March), 2025**.
 
-What we will sunset on this date:
+What we sunset on this date:
 
-1. The documentation for the predefined builds and superbuild will be removed.
-2. No more new versions of predefined builds packages will be published to npm.
-5. We will update our environment to target ES2022 (or newer), thus dropping the support for webpack 4.
+1. The documentation for the predefined builds and superbuild was removed.
+2. No more new versions of predefined builds packages are published to npm.
+5. We updated our environment to target ES2022, thus dropping the support for webpack 4.
 
 ### Deprecation of the custom builds
 
