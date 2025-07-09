@@ -54,13 +54,6 @@ export class Library {
 			module.resolveReferences();
 		}
 
-		if ( Module.unknownReferences.size ) {
-			const unknownReferences = Array.from( Module.unknownReferences ).map( name => `'${ name }'` ).sort().join( ',\n' );
-
-			// Make sure that DOM/global declarations are listed in `Module.ignoredStdTypes`.
-			console.warn( 'Unknown references:\n' + unknownReferences );
-		}
-
 		// Mark exports with the re-exported name.
 		for ( const pkg of this.packages.values() ) {
 			for ( const exportItem of pkg.index.exports ) {
