@@ -12,11 +12,7 @@ import { Import } from './import.mjs';
 import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
-import {
-	createModuleResolutionError,
-	createImportReferenceError,
-	createExportResolutionError
-} from './errorutils.mjs';
+import { createExportResolutionError } from './errorutils.mjs';
 
 export class Module {
 	static load( fileName, errorCollector ) {
@@ -385,14 +381,6 @@ export class Module {
 					modules.find( module => module.fileName === importFrom ) :
 					new ExternalModule( item.importFrom );
 
-				if ( !otherModule ) {
-					const context = { fileName: this.fileName, importFrom: item.importFrom };
-
-					const moduleResolutionError = createModuleResolutionError( context );
-
-					this.errorCollector.addError( moduleResolutionError );
-				}
-
 				return item.resolveImport( otherModule );
 			} else {
 				return [ item ];
@@ -529,12 +517,13 @@ export class Module {
 
 		if ( !reference ) {
 			const context = {
-				referenceName,
 				fileName: this.fileName,
-				availableExports: importFrom.exports
+				exportName: referenceName,
+				isExternalModule: false,
+				exportKind: importFrom.exportKind
 			};
 
-			const importReferenceError = createImportReferenceError( context );
+			const importReferenceError = createExportResolutionError( context );
 
 			this.errorCollector.addError( importReferenceError );
 		}

@@ -54,16 +54,26 @@ export class Library {
 
 		// Mark exports with the re-exported name.
 		for ( const pkg of this.packages.values() ) {
+			if ( !pkg.index ) {
+				continue;
+			}
+
 			for ( const exportItem of pkg.index.exports ) {
 				if ( exportItem.localName === '*' ) {
 					// `export * as x from 'y'`
-					for ( const srcExport of exportItem.importFrom.exports ) {
-						srcExport.reExported.push( {
-							name: exportItem.name + '.' + srcExport.name,
-							kind: exportItem.exportKind
-						} );
+					if ( exportItem.importFrom && exportItem.importFrom.exports ) {
+						for ( const srcExport of exportItem.importFrom.exports ) {
+							srcExport.reExported.push( {
+								name: exportItem.name + '.' + srcExport.name,
+								kind: exportItem.exportKind
+							} );
+						}
 					}
 				} else {
+					if ( !exportItem.importFrom || !exportItem.importFrom.exports ) {
+						continue;
+					}
+
 					const srcExport = exportItem.importFrom.exports.find( item => item.name === exportItem.localName );
 
 					if ( !srcExport ) {
