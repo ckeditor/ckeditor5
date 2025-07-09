@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import findClosestScrollableAncestor from '../../src/dom/findclosestscrollableancestor.js';
-import createElement from '../../src/dom/createelement.js';
+import { findClosestScrollableAncestor } from '../../src/dom/findclosestscrollableancestor.js';
+import { createElement } from '../../src/dom/createelement.js';
 
 describe( 'findClosestScrollableAncestor', () => {
 	const overflowAutoStyleAttribute = { style: 'overflow-y: auto;' };

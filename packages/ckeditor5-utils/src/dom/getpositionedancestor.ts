@@ -7,14 +7,14 @@
  * @module utils/dom/getpositionedancestor
  */
 
-import global from './global.js';
+import { global } from './global.js';
 
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".
  *
  * @param element The native DOM element to be checked.
  */
-export default function getPositionedAncestor( element?: HTMLElement ): HTMLElement | null {
+export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | null {
 	if ( !element || !element.parentNode ) {
 		return null;
 	}

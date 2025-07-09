@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import DecoupledEditorHandler from '../../src/handlers/decouplededitorhandler.js';
-import FullscreenEditing from '../../src/fullscreenediting.js';
+import { FullscreenDecoupledEditorHandler } from '../../src/handlers/decouplededitorhandler.js';
+import { FullscreenEditing } from '../../src/fullscreenediting.js';
 
 describe( 'DecoupledEditorHandler', () => {
 	let decoupledEditorHandler, domElement, editor;
@@ -30,7 +30,7 @@ describe( 'DecoupledEditorHandler', () => {
 			}
 		} );
 
-		decoupledEditorHandler = new DecoupledEditorHandler( editor );
+		decoupledEditorHandler = new FullscreenDecoupledEditorHandler( editor );
 	} );
 
 	afterEach( () => {

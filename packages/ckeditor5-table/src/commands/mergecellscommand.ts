@@ -8,12 +8,12 @@
  */
 
 import type {
-	Element,
-	Writer
+	ModelElement,
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { Command } from 'ckeditor5/src/core.js';
-import TableUtils from '../tableutils.js';
+import { TableUtils } from '../tableutils.js';
 import { updateNumericAttribute } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
 
@@ -28,7 +28,7 @@ import { removeEmptyRowsColumns } from '../utils/structure.js';
  * editor.execute( 'mergeTableCells' );
  * ```
  */
-export default class MergeCellsCommand extends Command {
+export class MergeCellsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -78,7 +78,7 @@ export default class MergeCellsCommand extends Command {
  * paragraph. If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
  */
-function mergeTableCells( cellBeingMerged: Element, targetCell: Element, writer: Writer ) {
+function mergeTableCells( cellBeingMerged: ModelElement, targetCell: ModelElement, writer: ModelWriter ) {
 	if ( !isEmpty( cellBeingMerged ) ) {
 		if ( isEmpty( targetCell ) ) {
 			writer.remove( writer.createRangeIn( targetCell ) );
@@ -94,13 +94,13 @@ function mergeTableCells( cellBeingMerged: Element, targetCell: Element, writer:
 /**
  * Checks if the passed table cell contains an empty paragraph.
  */
-function isEmpty( tableCell: Element ): boolean {
+function isEmpty( tableCell: ModelElement ): boolean {
 	const firstTableChild = tableCell.getChild( 0 );
 
 	return tableCell.childCount == 1 && firstTableChild!.is( 'element', 'paragraph' ) && firstTableChild.isEmpty;
 }
 
-function getMergeDimensions( firstTableCell: Element, selectedTableCells: Array<Element>, tableUtils: TableUtils ) {
+function getMergeDimensions( firstTableCell: ModelElement, selectedTableCells: Array<ModelElement>, tableUtils: TableUtils ) {
 	let maxWidthOffset = 0;
 	let maxHeightOffset = 0;
 
@@ -120,7 +120,7 @@ function getMergeDimensions( firstTableCell: Element, selectedTableCells: Array<
 	return { mergeWidth, mergeHeight };
 }
 
-function getMaxOffset( tableCell: Element, start: number, currentMaxOffset: number, which: string ) {
+function getMaxOffset( tableCell: ModelElement, start: number, currentMaxOffset: number, which: string ) {
 	const dimensionValue = parseInt( tableCell.getAttribute( which ) as string || '1' );
 
 	return Math.max( currentMaxOffset, start + dimensionValue );

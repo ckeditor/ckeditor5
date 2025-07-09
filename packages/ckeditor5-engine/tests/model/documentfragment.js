@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import TextProxy from '../../src/model/textproxy.js';
-import DocumentFragment from '../../src/model/documentfragment.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {
 		it( 'should create empty document fragment', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.childCount ).to.equal( 0 );
 			expect( frag.maxOffset ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
-			const frag = new DocumentFragment( [ new Text( 'xx' ), new Element( 'p' ), new Text( 'yy' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelText( 'xx' ), new ModelElement( 'p' ), new ModelText( 'yy' ) ] );
 
 			expect( frag.childCount ).to.equal( 3 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -30,13 +30,13 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should have markers list', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag ).to.have.property( 'markers' ).to.instanceof( Map );
 		} );
 
 		it( 'should have artificial properties', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag ).to.have.property( 'root' ).that.equals( frag );
 			expect( frag ).to.have.property( 'parent' ).that.is.null;
@@ -46,7 +46,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should have `getAncestor` method that returns empty array', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.getAncestors() ).to.be.an( 'array' ).that.is.empty;
 		} );
@@ -54,10 +54,10 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'iterator', () => {
 		it( 'should iterate over document fragment\'s children', () => {
-			const xx = new Text( 'xx' );
-			const p = new Element( 'p' );
-			const yy = new Text( 'yy' );
-			const frag = new DocumentFragment( [ xx, p, yy ] );
+			const xx = new ModelText( 'xx' );
+			const p = new ModelElement( 'p' );
+			const yy = new ModelText( 'yy' );
+			const frag = new ModelDocumentFragment( [ xx, p, yy ] );
 
 			expect( Array.from( frag ) ).to.deep.equal( [ xx, p, yy ] );
 		} );
@@ -65,7 +65,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getPath', () => {
 		it( 'should return empty array', () => {
-			const frag = new DocumentFragment( [ new Text( 'x' ), new Element( 'p' ), new Text( 'y' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelText( 'x' ), new ModelElement( 'p' ), new ModelText( 'y' ) ] );
 
 			expect( frag.getPath() ).to.deep.equal( [] );
 		} );
@@ -75,7 +75,7 @@ describe( 'DocumentFragment', () => {
 		let frag;
 
 		before( () => {
-			frag = new DocumentFragment();
+			frag = new ModelDocumentFragment();
 		} );
 
 		it( 'should return true for documentFragment', () => {
@@ -95,13 +95,13 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'isEmpty', () => {
 		it( 'should return true if document fragment has no children', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if document fragment has children', () => {
-			const frag = new DocumentFragment( new Text( 'a' ) );
+			const frag = new ModelDocumentFragment( new ModelText( 'a' ) );
 
 			expect( frag.isEmpty ).to.be.false;
 		} );
@@ -109,7 +109,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'isAttached()', () => {
 		it( 'returns false', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.isAttached() ).to.be.false;
 		} );
@@ -119,7 +119,7 @@ describe( 'DocumentFragment', () => {
 		let frag;
 
 		beforeEach( () => {
-			frag = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			frag = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 		} );
 
 		it( 'should return index of a node that occupies given offset in this element', () => {
@@ -147,8 +147,8 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_insertChild', () => {
 		it( 'should add children to the document fragment', () => {
-			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag._insertChild( 1, new Text( 'foo' ) );
+			const frag = new ModelDocumentFragment( new ModelText( 'xy' ) );
+			frag._insertChild( 1, new ModelText( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -157,7 +157,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should accept strings and arrays', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			frag._insertChild( 0, 'abc' );
 			expect( frag.childCount ).to.equal( 1 );
@@ -165,7 +165,7 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 			frag._removeChildren( 0, 1 );
-			frag._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
+			frag._insertChild( 0, [ new ModelElement( 'p' ), 'abc' ] );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 4 );
@@ -174,15 +174,15 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should accept and correctly handle text proxies', () => {
-			const frag = new DocumentFragment();
-			const text = new Text( 'abcxyz', { bold: true } );
-			const textProxy = new TextProxy( text, 2, 3 );
+			const frag = new ModelDocumentFragment();
+			const text = new ModelText( 'abcxyz', { bold: true } );
+			const textProxy = new ModelTextProxy( text, 2, 3 );
 
 			frag._insertChild( 0, textProxy );
 
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 3 );
-			expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( frag.getChild( 0 ) ).to.be.instanceof( ModelText );
 			expect( frag.getChild( 0 ).data ).to.equal( 'cxy' );
 			expect( frag.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
 		} );
@@ -190,8 +190,8 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_appendChild', () => {
 		it( 'should add children to the end of the element', () => {
-			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag._appendChild( new Text( 'foo' ) );
+			const frag = new ModelDocumentFragment( new ModelText( 'xy' ) );
+			frag._appendChild( new ModelText( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -202,7 +202,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
-			const frag = new DocumentFragment( [ new Text( 'foobar' ), new Element( 'imageBlock' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelText( 'foobar' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 1, 1 );
 
 			expect( frag.childCount ).to.equal( 1 );
@@ -215,7 +215,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should remove one child when second parameter is not specified', () => {
-			const frag = new DocumentFragment( [ new Text( 'foo' ), new Element( 'imageBlock' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelText( 'foo' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 0 );
 
 			expect( frag.childCount ).to.equal( 1 );
@@ -229,14 +229,14 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_removeChildrenArray', () => {
 		it( 'should remove children from the element', () => {
-			const _1 = new Text( '_1' );
-			const _2 = new Text( '_2' );
-			const _3 = new Text( '_3' );
-			const _4 = new Text( '_4' );
-			const _5 = new Text( '_5' );
-			const _6 = new Text( '_6' );
+			const _1 = new ModelText( '_1' );
+			const _2 = new ModelText( '_2' );
+			const _3 = new ModelText( '_3' );
+			const _4 = new ModelText( '_4' );
+			const _5 = new ModelText( '_5' );
+			const _6 = new ModelText( '_6' );
 
-			const frag = new DocumentFragment( [ _1, _2, _3, _4, _5, _6 ] );
+			const frag = new ModelDocumentFragment( [ _1, _2, _3, _4, _5, _6 ] );
 
 			frag._removeChildrenArray( [ _2, _3, _4 ] );
 
@@ -250,7 +250,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
 			const h = frag.getChild( 2 );
@@ -263,7 +263,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildStartOffset', () => {
 		it( 'should return child start offset', () => {
-			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
@@ -275,9 +275,9 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return null if node is not a child of that document fragment', () => {
-			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 
 			expect( frag.getChildStartOffset( p ) ).to.equal( null );
 		} );
@@ -285,7 +285,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildAtOffset', () => {
 		it( 'should return child at given offset', () => {
-			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
@@ -299,7 +299,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return null for incorrect offset', () => {
-			const frag = new DocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
 			expect( frag.getChildAtOffset( -1 ) ).to.be.null;
 			expect( frag.getChildAtOffset( 5 ) ).to.be.null;
@@ -308,7 +308,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildCount', () => {
 		it( 'should return number of children nodes', () => {
-			const frag = new DocumentFragment( new Text( 'bar' ) );
+			const frag = new ModelDocumentFragment( new ModelText( 'bar' ) );
 
 			expect( frag.childCount ).to.equal( 1 );
 		} );
@@ -316,7 +316,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getMaxOffset', () => {
 		it( 'should return offset after the last children', () => {
-			const frag = new DocumentFragment( new Text( 'bar' ) );
+			const frag = new ModelDocumentFragment( new ModelText( 'bar' ) );
 
 			expect( frag.maxOffset ).to.equal( 3 );
 		} );
@@ -324,18 +324,18 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize empty document fragment', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.toJSON() ).to.deep.equal( [] );
 		} );
 
 		it( 'should serialize document fragment with children', () => {
-			const img = new Element( 'img' );
-			const one = new Element( 'one' );
-			const two = new Element( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
-			const three = new Element( 'three' );
+			const img = new ModelElement( 'img' );
+			const one = new ModelElement( 'one' );
+			const two = new ModelElement( 'two', null, [ new ModelText( 'ba' ), img, new ModelText( 'r' ) ] );
+			const three = new ModelElement( 'three' );
 
-			const frag = new DocumentFragment( [ one, two, three ] );
+			const frag = new ModelDocumentFragment( [ one, two, three ] );
 
 			expect( frag.toJSON() ).to.deep.equal( [
 				{ name: 'one' },
@@ -354,21 +354,21 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create document fragment without children', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			const serialized = frag.toJSON();
-			const deserialized = DocumentFragment.fromJSON( serialized );
+			const deserialized = ModelDocumentFragment.fromJSON( serialized );
 
 			expect( deserialized.isEmpty ).to.be.true;
 		} );
 
 		it( 'should create element with children', () => {
-			const p = new Element( 'p' );
-			const foo = new Text( 'foo' );
-			const frag = new DocumentFragment( [ p, foo ] );
+			const p = new ModelElement( 'p' );
+			const foo = new ModelText( 'foo' );
+			const frag = new ModelDocumentFragment( [ p, foo ] );
 
 			const serialized = frag.toJSON();
-			const deserialized = DocumentFragment.fromJSON( serialized );
+			const deserialized = ModelDocumentFragment.fromJSON( serialized );
 
 			expect( deserialized.childCount ).to.equal( 2 );
 
@@ -382,21 +382,21 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getNodeByPath', () => {
 		it( 'should return the whole document fragment if path is empty', () => {
-			const frag = new DocumentFragment();
+			const frag = new ModelDocumentFragment();
 
 			expect( frag.getNodeByPath( [] ) ).to.equal( frag );
 		} );
 
 		it( 'should return a descendant of this node', () => {
-			const foo = new Text( 'foo' );
-			const image = new Element( 'imageBlock' );
-			const element = new Element( 'elem', [], [
-				new Element( 'elem', [], [
+			const foo = new ModelText( 'foo' );
+			const image = new ModelElement( 'imageBlock' );
+			const element = new ModelElement( 'elem', [], [
+				new ModelElement( 'elem', [], [
 					foo,
 					image
 				] )
 			] );
-			const frag = new DocumentFragment( element );
+			const frag = new ModelDocumentFragment( element );
 
 			expect( frag.getNodeByPath( [ 0, 0, 0 ] ) ).to.equal( foo );
 			expect( frag.getNodeByPath( [ 0, 0, 1 ] ) ).to.equal( foo );
@@ -405,20 +405,20 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'works fine with offsets', () => {
-			const abc = new Text( 'abc' );
-			const xyz = new Text( 'xyz' );
-			const bar = new Text( 'bar' );
-			const foo = new Text( 'foo' );
-			const bom = new Text( 'bom' );
-			const bold = new Element( 'b', [], [
+			const abc = new ModelText( 'abc' );
+			const xyz = new ModelText( 'xyz' );
+			const bar = new ModelText( 'bar' );
+			const foo = new ModelText( 'foo' );
+			const bom = new ModelText( 'bom' );
+			const bold = new ModelElement( 'b', [], [
 				bar
 			] );
-			const paragraph = new Element( 'paragraph', [], [
+			const paragraph = new ModelElement( 'paragraph', [], [
 				foo,
 				bold,
 				bom
 			] );
-			const frag = new DocumentFragment( [
+			const frag = new ModelDocumentFragment( [
 				abc,
 				paragraph,
 				xyz

@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
-import HorizontalLineEditing from './horizontallineediting.js';
-import HorizontalLineUI from './horizontallineui.js';
+import { HorizontalLineEditing } from './horizontallineediting.js';
+import { HorizontalLineUI } from './horizontallineui.js';
 
 /**
  * The horizontal line feature.
@@ -19,7 +19,7 @@ import HorizontalLineUI from './horizontallineui.js';
  *
  * For a detailed overview, check the {@glink features/horizontal-line Horizontal line feature} documentation.
  */
-export default class HorizontalLine extends Plugin {
+export class HorizontalLine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

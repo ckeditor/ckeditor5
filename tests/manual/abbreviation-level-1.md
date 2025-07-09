@@ -192,7 +192,7 @@ We can do it by defining the model's schema. Thanks to a couple lines of code, w
 	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our{@link framework/architecture/editing-engine#schema introduction to the editing engine architecture}.
 </info-box>
 
-So, we will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
+So, we will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~ModelSchema#extend `Schema#extend()`} method.
 
 Update the `AbbreviationEditing` plugin with this definition:
 
@@ -233,7 +233,7 @@ Converting the full title of the abbreviation is a little bit tricky, because we
 
 In the downcast conversion, we will use one of our conversion helpers - {@link framework/deep-dive/conversion/helpers/downcast#attribute-to-element-conversion-helper `attributeToElement()`} - to transform the model abbreviation attribute into the view `<abbr>` element.
 
-We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`}.
+We will need to use a callback function, in order to get the title stored as a model attribute value and transform it into the title value of the view element. Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} object. We will use its `writer` property, which will allow us to manipulate the data during downcast conversion, as it contains an instance of the {@link module:engine/view/downcastwriter~ViewDowncastWriter `ViewDowncastWriter`}.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -258,7 +258,7 @@ export default class AbbreviationEditing extends Plugin {
 			model: 'abbreviation',
 
 			// Callback function provides access to the model attribute value
-			// and the DowncastWriter
+			// and the ViewDowncastWriter
 			view: ( modelAttributeValue, conversionApi ) => {
 				const { writer } = conversionApi;
 
@@ -276,7 +276,7 @@ export default class AbbreviationEditing extends Plugin {
 
 In the upcast conversion, we're telling the editor how the view `<abbr>` element is supposed to look like in the model. We will transform it using another conversion helper - {@link framework/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper `elementToAttribute()`}.
 
-We also need to grab the title value from content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~Element view element}.
+We also need to grab the title value from content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~ViewElement view element}.
 
 ```js
 // abbreviation/abbreviationediting.js
@@ -386,7 +386,7 @@ ClassicEditor
 
 We have the button, so let's define what should happen after the user clicks it.
 
-We will use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~Writer#createText `writer.createText()`}.
+We will use the {@link module:engine/model/model~Model#insertContent `writer.insertContent()`} method to insert our abbreviation and its title attribute into the document. Inside, we just need to create a new text node with {@link module:engine/model/writer~ModelWriter#createText `writer.createText()`}.
 
 ```js
 // abbreviation/abbreviationui.js

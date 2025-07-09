@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import SuperscriptEditing from './superscript/superscriptediting.js';
-import SuperscriptUI from './superscript/superscriptui.js';
+import { SuperscriptEditing } from './superscript/superscriptediting.js';
+import { SuperscriptUI } from './superscript/superscriptui.js';
 
 /**
  * The superscript feature.
@@ -17,7 +17,7 @@ import SuperscriptUI from './superscript/superscriptui.js';
  * It loads the {@link module:basic-styles/superscript/superscriptediting~SuperscriptEditing} and
  * {@link module:basic-styles/superscript/superscriptui~SuperscriptUI} plugins.
  */
-export default class Superscript extends Plugin {
+export class Superscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

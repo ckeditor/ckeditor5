@@ -7,51 +7,108 @@
  * @module markdown-gfm/markdown2html/markdown2html
  */
 
-import { marked } from 'marked';
+import { unified, type Plugin } from 'unified';
+import remarkGfm from 'remark-gfm';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import remarkBreaks from 'remark-breaks';
+import rehypeStringify from 'rehype-dom-stringify';
+import { visit } from 'unist-util-visit';
+import { toHtml } from 'hast-util-to-html';
+import { fromDom } from 'hast-util-from-dom';
+import type { Element, Node, Root, RootContent } from 'hast';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
  */
-export class MarkdownToHtml {
-	private _parser: typeof marked;
-
-	private _options = {
-		gfm: true,
-		breaks: true,
-		tables: true,
-		xhtml: true,
-		headerIds: false
-	};
+export class MarkdownGfmMdToHtml {
+	private _processor;
 
 	constructor() {
-		// Overrides.
-		marked.use( {
-			tokenizer: {
-				// Disable the autolink rule in the lexer.
-				autolink: () => null as any,
-				url: () => null as any
-			},
-			renderer: {
-				checkbox( ...args: Array<any> ) {
-					// Remove bogus space after <input type="checkbox"> because it would be preserved
-					// by DomConverter as it's next to an inline object.
-					return Object.getPrototypeOf( this ).checkbox.call( this, ...args ).trimRight();
-				},
-
-				code( ...args: Array<any> ) {
-					// Since marked v1.2.8, every <code> gets a trailing "\n" whether it originally
-					// ended with one or not (see https://github.com/markedjs/marked/issues/1884 to learn why).
-					// This results in a redundant soft break in the model when loaded into the editor, which
-					// is best prevented at this stage. See https://github.com/ckeditor/ckeditor5/issues/11124.
-					return Object.getPrototypeOf( this ).code.call( this, ...args ).replace( '\n</code>', '</code>' );
-				}
-			}
-		} );
-
-		this._parser = marked;
+		this._processor = unified()
+			// Parses Markdown to an abstract syntax tree (AST).
+			.use( remarkParse )
+			// Adds support for GitHub Flavored Markdown (GFM).
+			.use( remarkGfm, { singleTilde: true } )
+			// Replaces line breaks with `<br>` tags.
+			.use( remarkBreaks )
+			// Turns markdown syntax tree to HTML syntax tree, ignoring embedded HTML.
+			.use( remarkRehype, { allowDangerousHtml: true } )
+			// Handles HTML embedded in Markdown.
+			.use( rehypeDomRaw )
+			// Removes classes from list elements.
+			.use( deleteClassesFromToDoLists )
+			// Serializes HTML syntax tree to HTML string.
+			.use( rehypeStringify );
 	}
 
 	public parse( markdown: string ): string {
-		return this._parser.parse( markdown, this._options );
+		return this._processor
+			.processSync( markdown )
+			.toString()
+			.replaceAll( '\n</code>', '</code>' );
 	}
+}
+
+/**
+ * Rehype plugin that improves handling of the To-do lists by removing:
+ *  * default classes added to `<ul>`, `<ol>`, and `<li>` elements.
+ *  * bogus space after <input type="checkbox"> because it would be preserved by ViewDomConverter as it's next to an inline object.
+ */
+function deleteClassesFromToDoLists(): ReturnType<Plugin> {
+	return ( tree: Node ): void => {
+		visit( tree, 'element', ( node: Element ) => {
+			if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
+				node.children = node.children.filter( child => child.type !== 'text' || !!child.value.trim() );
+				delete node.properties.className;
+			}
+		} );
+	};
+}
+
+/**
+ * Rehype plugin to parse raw HTML nodes inside Markdown. This plugin is used instead of `rehype-raw` or `rehype-stringify`,
+ * because those plugins rely on `parse5` DOM parser which is heavy and redundant in the browser environment where we can
+ * use the native DOM APIs.
+ *
+ * This plugins finds any node (root or element) whose children include `raw` nodes and reparses them like so:
+ * 1. Serializes its children to an HTML string.
+ * 2. Reparses the HTML string using a `<template>` element.
+ * 3. Converts each parsed DOM node back into HAST nodes.
+ * 4. Replaces the original children with the newly created HAST nodes.
+ */
+function rehypeDomRaw(): ReturnType<Plugin> {
+	return ( tree: Node ): void => {
+		visit( tree, [ 'root', 'element' ], ( node: Node | Element ) => {
+			/* istanbul ignore next -- @preserve */
+			if ( !isNodeRootOrElement( node ) ) {
+				return;
+			}
+
+			// Only act on nodes with at least one raw child.
+			if ( !node.children.some( child => child.type === 'raw' ) ) {
+				return;
+			}
+
+			const template = document.createElement( 'template' );
+
+			// Serialize all children to an HTML fragment.
+			template.innerHTML = toHtml(
+				{ type: 'root', children: node.children },
+				{ allowDangerousHtml: true }
+			);
+
+			// Convert each parsed DOM node back into HAST and replace the original children.
+			node.children = Array
+				.from( template.content.childNodes )
+				.map( domNode => fromDom( domNode ) as RootContent );
+		} );
+	};
+}
+
+/**
+ * Only needed for the type guard.
+ */
+function isNodeRootOrElement( node: any ): node is Root | Element {
+	return ( node.type === 'root' || node.type === 'element' ) && node.children;
 }

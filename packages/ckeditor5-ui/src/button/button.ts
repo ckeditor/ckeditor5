@@ -12,7 +12,7 @@
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} and
  * {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}.
  */
-export default interface Button {
+export interface Button {
 
 	/**
 	 * The label of the button view visible to the user when {@link #withText} is `true`.

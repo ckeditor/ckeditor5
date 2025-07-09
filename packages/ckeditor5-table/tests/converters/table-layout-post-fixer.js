@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
+import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from './../_utils/utils.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 
 describe( 'Table layout post-fixer', () => {
 	let editor, model, root;
@@ -32,7 +32,7 @@ describe( 'Table layout post-fixer', () => {
 
 	describe( 'on insert table', () => {
 		it( 'should add missing columns to tableRows that are shorter then the longest table row', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
 				[ '20', '21' ]
@@ -43,7 +43,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '' ]
@@ -51,7 +51,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 1)', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' } ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21' ]
@@ -62,7 +62,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21', '', '' ]
@@ -70,7 +70,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
 				[ '21', '22' ]
@@ -81,7 +81,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
@@ -89,7 +89,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should remove empty rows', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', '01' ],
 				[ ],
 				[ '20', '21', '22' ],
@@ -101,14 +101,14 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '' ],
 				[ '20', '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should fix the wrong rowspan attribute of a table cell inside the header', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],
 				[ { rowspan: 8, contents: '12' } ],
 				[ '20', '21', '22' ]
@@ -119,7 +119,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
 				[ '20', '21', '22' ]
@@ -127,7 +127,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should fix the wrong rowspan attribute of a table cell inside the body', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 3, contents: '11' }, '12' ],
 				[ { rowspan: 8, contents: '22' } ]
@@ -138,7 +138,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
 				[ '22' ]
@@ -159,7 +159,7 @@ describe( 'Table layout post-fixer', () => {
 				[ 'yy', 'yy' ]
 			] );
 
-			const parsed = parse( tableA + tableB + tableC, model.schema );
+			const parsed = _parseModel( tableA + tableB + tableC, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -181,11 +181,11 @@ describe( 'Table layout post-fixer', () => {
 
 			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedTables );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedTables );
 		} );
 
 		it( 'should not crash on table remove', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11', '12' ]
 			] ) );
 
@@ -195,7 +195,7 @@ describe( 'Table layout post-fixer', () => {
 				} );
 			} ).to.not.throw();
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 	} );
 
@@ -389,21 +389,21 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
-			setModelData( model, initialData );
+			_setModelData( model, initialData );
 
 			model.change( localCallback );
 
 			model.enqueueChange( { isUndoable: false }, externalCallback );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 
 			editor.execute( 'undo' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfterUndo );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfterUndo );
 
 			editor.execute( 'redo' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 		}
 
 		function _removeColumn( writer, columnIndex, rows ) {
@@ -427,7 +427,7 @@ describe( 'Table layout post-fixer', () => {
 		function _insertRow( writer, rowIndex, rowData ) {
 			const table = root.getChild( 0 );
 
-			const parsedTable = parse(
+			const parsedTable = _parseModel(
 				modelTable( [ rowData ] ),
 				model.schema
 			);

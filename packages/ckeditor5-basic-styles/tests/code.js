@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Code from '../src/code.js';
-import CodeEditing from '../src/code/codeediting.js';
-import CodeUI from '../src/code/codeui.js';
+import { Code } from '../src/code.js';
+import { CodeEditing } from '../src/code/codeediting.js';
+import { CodeUI } from '../src/code/codeui.js';
 
 describe( 'Code', () => {
 	it( 'should require CodeEditing and CodeUI', () => {

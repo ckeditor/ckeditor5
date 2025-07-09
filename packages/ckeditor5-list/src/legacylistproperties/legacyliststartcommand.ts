@@ -14,7 +14,7 @@ import { getSelectedListItems } from '../legacylist/legacyutils.js';
  * The list start index command. It changes the `listStart` attribute of the selected list items.
  * It is used by the {@link module:list/legacylistproperties~LegacyListProperties legacy list properties feature}.
  */
-export default class LegacyListStartCommand extends Command {
+export class LegacyListStartCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

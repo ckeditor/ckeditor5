@@ -5,36 +5,37 @@
 
 import { testDataProcessor } from '../_utils/utils.js';
 
-describe( 'GFMDataProcessor', () => {
+describe( 'MarkdownGfmDataProcessor', () => {
 	describe( 'links', () => {
-		it( 'should not autolink', () => {
+		it( 'should autolink', () => {
 			testDataProcessor(
 				'Link: http://example.com/.',
-				'<p>Link: http://example.com/.</p>'
+				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
+				'Link: [http://example.com/](http://example.com/).'
 			);
 		} );
 
-		it( 'should not autolink with params', () => {
+		it( 'should autolink with params', () => {
 			testDataProcessor(
 				'Link: http://example.com/?foo=1&bar=2.',
-				'<p>Link: http://example.com/?foo=1&bar=2.</p>'
+				'<p>Link: <a href="http://example.com/?foo=1&bar=2">http://example.com/?foo=1&bar=2</a>.</p>',
+				'Link: [http://example.com/?foo=1\\&bar=2](http://example.com/?foo=1\\&bar=2).'
 			);
 		} );
 
-		it( 'should not autolink inside list', () => {
+		it( 'should autolink inside list', () => {
 			testDataProcessor(
-				'*   http://example.com/',
-				'<ul><li>http://example.com/</li></ul>'
+				'* http://example.com/',
+				'<ul><li><a href="http://example.com/">http://example.com/</a></li></ul>',
+				'* [http://example.com/](http://example.com/)'
 			);
 		} );
 
-		it( 'should not autolink inside blockquote', () => {
+		it( 'should autolink inside blockquote', () => {
 			testDataProcessor(
 				'> Blockquoted: http://example.com/',
-
-				'<blockquote>' +
-				'<p>Blockquoted: http://example.com/</p>' +
-				'</blockquote>'
+				'<blockquote><p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p></blockquote>',
+				'> Blockquoted: [http://example.com/](http://example.com/)'
 			);
 		} );
 
@@ -252,7 +253,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[this][]</p>',
 
-				'\\[this\\]\\[\\]'
+				'\\[this]\\[]'
 			);
 		} );
 
@@ -262,7 +263,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[this]</p>',
 
-				'\\[this\\]'
+				'\\[this]'
 			);
 		} );
 
@@ -273,7 +274,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[a reference inside <a href="foo">this</a>]</p>',
 
-				'\\[a reference inside [this](foo)\\]'
+				'\\[a reference inside [this](foo)]'
 			);
 		} );
 
@@ -284,7 +285,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[a reference inside <a href="foo">this</a>]</p>',
 
-				'\\[a reference inside [this](foo)\\]'
+				'\\[a reference inside [this](foo)]'
 			);
 		} );
 
@@ -306,7 +307,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>Suppress [this] and [this].</p>',
 
-				'Suppress \\[this\\] and \\[this\\].'
+				'Suppress \\[this] and \\[this].'
 			);
 		} );
 

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import BaseCommand from '../src/basecommand.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { UndoRedoBaseCommand } from '../src/basecommand.js';
 
-describe( 'BaseCommand', () => {
+describe( 'UndoRedoBaseCommand', () => {
 	let editor, base;
 
 	beforeEach( () => {
 		editor = new ModelTestEditor();
-		base = new BaseCommand( editor );
+		base = new UndoRedoBaseCommand( editor );
 	} );
 
 	afterEach( () => {

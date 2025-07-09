@@ -35,7 +35,7 @@ import '../../theme/emojipickerform.css';
 /**
  * The emoji picker form view.
  */
-export default class EmojiPickerFormView extends View {
+export class EmojiPickerFormView extends View {
 	/**
 	 * The Back button view displayed in the header.
 	 */

@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Title from '../../src/title.js';
-import Heading from '../../src/heading.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Title } from '../../src/title.js';
+import { Heading } from '../../src/heading.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor1' ), {

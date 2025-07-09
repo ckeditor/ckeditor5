@@ -10,7 +10,7 @@
 /**
  * Checks if the object is a native DOM Node.
  */
-export default function isNode( obj: any ): obj is Node {
+export function isNode( obj: any ): obj is Node {
 	if ( obj ) {
 		if ( obj.defaultView ) {
 			return obj instanceof obj.defaultView.Document;

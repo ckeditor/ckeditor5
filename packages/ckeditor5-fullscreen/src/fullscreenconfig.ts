@@ -25,7 +25,7 @@
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  */
-export default interface FullscreenConfig {
+export interface FullscreenConfig {
 
 	/**
 	 * Customizable callback that is called when you enter the fullscreen mode.

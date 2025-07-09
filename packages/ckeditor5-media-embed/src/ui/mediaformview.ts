@@ -26,7 +26,7 @@ import '../../theme/mediaform.css';
  *
  * See {@link module:media-embed/ui/mediaformview~MediaFormView}.
  */
-export default class MediaFormView extends View {
+export class MediaFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */

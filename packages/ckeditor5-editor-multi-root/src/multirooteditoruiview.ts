@@ -20,7 +20,7 @@ import type { EditingView } from 'ckeditor5/src/engine.js';
  * See {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`}
  * to learn more about this view.
  */
-export default class MultiRootEditorUIView extends EditorUIView {
+export class MultiRootEditorUIView extends EditorUIView {
 	/**
 	 * The main toolbar of the multi-root editor UI.
 	 */

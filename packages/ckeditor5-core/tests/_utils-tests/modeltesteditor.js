@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '../../src/editor/editor.js';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
-import ModelTestEditor from '../../tests/_utils/modeltesteditor.js';
+import { Editor } from '../../src/editor/editor.js';
+import { EditingController } from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
+import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import testUtils from '../../tests/_utils/utils.js';
+import { testUtils } from '../../tests/_utils/utils.js';
 
 describe( 'ModelTestEditor', () => {
 	testUtils.createSinonSandbox();
@@ -44,7 +44,7 @@ describe( 'ModelTestEditor', () => {
 		it( 'creates main root element', async () => {
 			const editor = new ModelTestEditor();
 
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
 
 			editor.fire( 'ready' );
 			await editor.destroy();
@@ -72,7 +72,7 @@ describe( 'ModelTestEditor', () => {
 
 			editor.setData( 'foo' );
 
-			expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -93,7 +93,7 @@ describe( 'ModelTestEditor', () => {
 		} );
 
 		it( 'should set data of the first root', () => {
-			setData( editor.model, 'foo' );
+			_setModelData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
 		} );

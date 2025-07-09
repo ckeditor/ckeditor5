@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Document from '../../src/model/document.js';
-import RootElement from '../../src/model/rootelement.js';
-import Text from '../../src/model/text.js';
-import Batch from '../../src/model/batch.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Model } from '../../src/model/model.js';
+import { ModelDocument } from '../../src/model/document.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
+import { ModelText } from '../../src/model/text.js';
+import { Batch } from '../../src/model/batch.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Document', () => {
@@ -22,12 +22,12 @@ describe( 'Document', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
-			const doc = new Document( model );
+			const doc = new ModelDocument( model );
 
 			expect( doc ).to.have.property( 'model' ).to.equal( model );
 			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Collection );
 			expect( doc.roots.length ).to.equal( 1 );
-			expect( doc.graveyard ).to.be.instanceof( RootElement );
+			expect( doc.graveyard ).to.be.instanceof( ModelRootElement );
 			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
 		} );
@@ -203,23 +203,25 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'createRoot()', () => {
-		it( 'should create a new RootElement, attached, with default element and root names, add it to roots map and return it', () => {
-			const root = doc.createRoot();
+		it(
+			'should create a new ModelRootElement, attached, with default element and root names' +
+			', add it to roots map and return it', () => {
+				const root = doc.createRoot();
 
-			expect( root.isAttached() ).to.be.true;
-			expect( doc.roots.length ).to.equal( 2 );
-			expect( root ).to.be.instanceof( RootElement );
-			expect( root.maxOffset ).to.equal( 0 );
-			expect( root ).to.have.property( 'name', '$root' );
-			expect( root ).to.have.property( 'rootName', 'main' );
-		} );
+				expect( root.isAttached() ).to.be.true;
+				expect( doc.roots.length ).to.equal( 2 );
+				expect( root ).to.be.instanceof( ModelRootElement );
+				expect( root.maxOffset ).to.equal( 0 );
+				expect( root ).to.have.property( 'name', '$root' );
+				expect( root ).to.have.property( 'rootName', 'main' );
+			} );
 
-		it( 'should create a new RootElement, attached, with custom element and root names, add it to roots map and return it', () => {
+		it( 'should create a new ModelRootElement, attached, with custom element and root names, add it to roots map and return it', () => {
 			const root = doc.createRoot( 'customElementName', 'customRootName' );
 
 			expect( root.isAttached() ).to.be.true;
 			expect( doc.roots.length ).to.equal( 2 );
-			expect( root ).to.be.instanceof( RootElement );
+			expect( root ).to.be.instanceof( ModelRootElement );
 			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', 'customElementName' );
 			expect( root ).to.have.property( 'rootName', 'customRootName' );
@@ -235,13 +237,13 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'getRoot()', () => {
-		it( 'should return a RootElement with default "main" name', () => {
+		it( 'should return a ModelRootElement with default "main" name', () => {
 			const newRoot = doc.createRoot( 'main' );
 
 			expect( doc.getRoot() ).to.equal( newRoot );
 		} );
 
-		it( 'should return a RootElement with custom name', () => {
+		it( 'should return a ModelRootElement with custom name', () => {
 			const newRoot = doc.createRoot( 'custom', 'custom' );
 
 			expect( doc.getRoot( 'custom' ) ).to.equal( newRoot );
@@ -449,7 +451,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change', spy );
 
@@ -498,7 +500,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -513,7 +515,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -529,7 +531,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -545,7 +547,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -561,7 +563,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -591,7 +593,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when marker changes affecting data', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const sandbox = sinon.createSandbox();
 			const changeDataSpy = sandbox.spy();
@@ -626,7 +628,7 @@ describe( 'Document', () => {
 
 		it( 'should not be fired when marker does not affect data', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const sandbox = sinon.createSandbox();
 			const changeDataSpy = sandbox.spy();
@@ -651,7 +653,7 @@ describe( 'Document', () => {
 
 		it( 'should not be fired when the marker range does not change', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -675,7 +677,7 @@ describe( 'Document', () => {
 		// even when the marker is empty. But if there is a problem with it, this behavior can be easily changed.
 		it( 'should be fired when the marker updates range from null to null', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -699,7 +701,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when the marker updates range from non-null range to null', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -719,7 +721,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when the marker updates range from null to a non-null range', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 

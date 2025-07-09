@@ -127,10 +127,10 @@ function downcastCustomClasses( modelElementName ) {
 /**
  * Helper method that searches for a given view element in all children of the model element.
  *
- * @param {module:engine/view/item~Item} viewElement
+ * @param {module:engine/view/item~ViewItem} viewElement
  * @param {String} viewElementName
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
- * @return {module:engine/view/item~Item}
+ * @return {module:engine/view/item~ViewItem}
  */
 function findViewChild( viewElement, viewElementName, conversionApi ) {
 	const viewChildren = Array.from( conversionApi.writer.createRangeIn( viewElement ).getItems() );

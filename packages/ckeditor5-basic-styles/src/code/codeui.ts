@@ -19,7 +19,7 @@ const CODE = 'code';
 /**
  * The code UI feature. It introduces the Code button.
  */
-export default class CodeUI extends Plugin {
+export class CodeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

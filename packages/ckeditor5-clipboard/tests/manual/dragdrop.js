@@ -3,26 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink.js';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { UpcastWriter } from '@ckeditor/ckeditor5-engine';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
+import { AutoImage } from '@ckeditor/ckeditor5-image/src/autoimage.js';
+import { AutoLink } from '@ckeditor/ckeditor5-link/src/autolink.js';
+import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { ImageResize } from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -121,7 +122,7 @@ class HCardEditing extends Plugin {
 			}
 
 			const contact = JSON.parse( contactData );
-			const writer = new UpcastWriter( viewDocument );
+			const writer = new ViewUpcastWriter( viewDocument );
 			const fragment = writer.createDocumentFragment();
 
 			writer.appendChild(

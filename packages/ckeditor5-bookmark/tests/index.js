@@ -4,7 +4,7 @@
  */
 
 import { Bookmark as BookmarkDLL } from '../src/index.js';
-import Bookmark from '../src/bookmark.js';
+import { Bookmark } from '../src/bookmark.js';
 
 describe( 'Bookmark DLL', () => {
 	it( 'exports Bookmark', () => {

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DocumentColorCollection from '../../src/colorselector/documentcolorcollection.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { DocumentColorCollection } from '../../src/colorselector/documentcolorcollection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 
 describe( 'DocumentColorCollection', () => {
 	let documentColorCollection;

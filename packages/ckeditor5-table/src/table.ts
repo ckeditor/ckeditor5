@@ -10,12 +10,12 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
 
-import TableEditing from './tableediting.js';
-import TableUI from './tableui.js';
-import TableSelection from './tableselection.js';
-import TableClipboard from './tableclipboard.js';
-import TableKeyboard from './tablekeyboard.js';
-import TableMouse from './tablemouse.js';
+import { TableEditing } from './tableediting.js';
+import { TableUI } from './tableui.js';
+import { TableSelection } from './tableselection.js';
+import { TableClipboard } from './tableclipboard.js';
+import { TableKeyboard } from './tablekeyboard.js';
+import { TableMouse } from './tablemouse.js';
 
 import '../theme/table.css';
 
@@ -33,7 +33,7 @@ import '../theme/table.css';
  * * {@link module:table/tableclipboard~TableClipboard clipboard feature},
  * * {@link module:table/tableui~TableUI UI feature}.
  */
-export default class Table extends Plugin {
+export class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

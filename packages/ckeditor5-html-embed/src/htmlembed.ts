@@ -10,8 +10,8 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
 
-import HtmlEmbedEditing from './htmlembedediting.js';
-import HtmlEmbedUI from './htmlembedui.js';
+import { HtmlEmbedEditing } from './htmlembedediting.js';
+import { HtmlEmbedUI } from './htmlembedui.js';
 
 /**
  * The HTML embed feature.
@@ -20,7 +20,7 @@ import HtmlEmbedUI from './htmlembedui.js';
  *
  * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
  */
-export default class HtmlEmbed extends Plugin {
+export class HtmlEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

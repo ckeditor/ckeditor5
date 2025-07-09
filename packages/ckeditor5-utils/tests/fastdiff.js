@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import fastDiff from '../src/fastdiff.js';
-import diff from '../src/diff.js';
-import diffToChanges from '../src/difftochanges.js';
+import { fastDiff } from '../src/fastdiff.js';
+import { diff } from '../src/diff.js';
+import { diffToChanges } from '../src/difftochanges.js';
 
 describe( 'fastDiff', () => {
 	describe( 'input types', () => {

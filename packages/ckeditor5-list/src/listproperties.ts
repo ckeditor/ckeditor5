@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ListPropertiesEditing from './listproperties/listpropertiesediting.js';
-import ListPropertiesUI from './listproperties/listpropertiesui.js';
+import { ListPropertiesEditing } from './listproperties/listpropertiesediting.js';
+import { ListPropertiesUI } from './listproperties/listpropertiesui.js';
 
 /**
  * The list properties feature.
@@ -18,7 +18,7 @@ import ListPropertiesUI from './listproperties/listpropertiesui.js';
  * {@link module:list/listproperties/listpropertiesediting~ListPropertiesEditing list properties
  * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
  */
-export default class ListProperties extends Plugin {
+export class ListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

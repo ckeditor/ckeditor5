@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Autoformat from '../src/autoformat.js';
-import inlineAutoformatEditing from '../src/inlineautoformatediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Autoformat } from '../src/autoformat.js';
+import { inlineAutoformatEditing } from '../src/inlineautoformatediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'inlineAutoformatEditing', () => {
 	let editor, model, doc, plugin, formatSpy;
@@ -41,7 +41,7 @@ describe( 'inlineAutoformatEditing', () => {
 		it( 'should not call the formatCallback if there are less than 3 capture groups', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
-			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			_setModelData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
@@ -52,7 +52,7 @@ describe( 'inlineAutoformatEditing', () => {
 		it( 'should call the formatCallback when the pattern is matched', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
-			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			_setModelData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
@@ -63,7 +63,7 @@ describe( 'inlineAutoformatEditing', () => {
 		it( 'should not call the formatCallback if the selection is not collapsed', () => {
 			inlineAutoformatEditing( editor, plugin, /(\*)(.+?)\*/g, formatSpy );
 
-			setData( model, '<paragraph>*foob[ar]</paragraph>' );
+			_setModelData( model, '<paragraph>*foob[ar]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
@@ -81,7 +81,7 @@ describe( 'inlineAutoformatEditing', () => {
 
 			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -97,7 +97,7 @@ describe( 'inlineAutoformatEditing', () => {
 
 			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
-			setData( model, '<paragraph>*[]</paragraph>' );
+			_setModelData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -113,7 +113,7 @@ describe( 'inlineAutoformatEditing', () => {
 
 			inlineAutoformatEditing( editor, plugin, testStub, formatSpy );
 
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -126,7 +126,7 @@ describe( 'inlineAutoformatEditing', () => {
 
 			plugin.isEnabled = false;
 
-			setData( model, '<paragraph>*foobar[]</paragraph>' );
+			_setModelData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
 			} );
@@ -135,7 +135,7 @@ describe( 'inlineAutoformatEditing', () => {
 		} );
 
 		it( 'should not autoformat if callback returned false', () => {
-			setData( model, '<paragraph>Foobar[]</paragraph>' );
+			_setModelData( model, '<paragraph>Foobar[]</paragraph>' );
 
 			const p = model.document.getRoot().getChild( 0 );
 
@@ -152,31 +152,31 @@ describe( 'inlineAutoformatEditing', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>Foobar []</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foobar []</paragraph>' );
 		} );
 	} );
 
 	it( 'should ignore non-local batches', () => {
 		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
-		setData( model, '<paragraph>*foobar[]</paragraph>' );
+		_setModelData( model, '<paragraph>*foobar[]</paragraph>' );
 		model.enqueueChange( { isLocal: false }, writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
 		sinon.assert.notCalled( formatSpy );
-		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 
 	it( 'should ignore undo batches', () => {
 		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
-		setData( model, '<paragraph>*foobar[]</paragraph>' );
+		_setModelData( model, '<paragraph>*foobar[]</paragraph>' );
 		model.enqueueChange( { isUndo: true }, writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 
 		sinon.assert.notCalled( formatSpy );
-		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 	} );
 } );

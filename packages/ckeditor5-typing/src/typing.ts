@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import Input from './input.js';
-import Delete from './delete.js';
+import { Input } from './input.js';
+import { Delete } from './delete.js';
 
 /**
  * The typing feature. It handles typing.
@@ -17,7 +17,7 @@ import Delete from './delete.js';
  * This is a "glue" plugin which loads the {@link module:typing/input~Input} and {@link module:typing/delete~Delete}
  * plugins.
  */
-export default class Typing extends Plugin {
+export class Typing extends Plugin {
 	public static get requires() {
 		return [ Input, Delete ] as const;
 	}

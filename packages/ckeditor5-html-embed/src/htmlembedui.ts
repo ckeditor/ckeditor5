@@ -11,12 +11,12 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { IconHtml } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { RawHtmlApi } from './htmlembedediting.js';
-import type HtmlEmbedCommand from './htmlembedcommand.js';
+import { type HtmlEmbedCommand } from './htmlembedcommand.js';
 
 /**
  * The HTML embed UI plugin.
  */
-export default class HtmlEmbedUI extends Plugin {
+export class HtmlEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,11 +7,11 @@
  * @module image/image/ui/utils
  */
 
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import type { DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
 
-import type ImageUtils from '../../imageutils.js';
+import { type ImageUtils } from '../../imageutils.js';
 
 /**
  * A helper utility that positions the
@@ -19,6 +19,7 @@ import type ImageUtils from '../../imageutils.js';
  * with respect to the image in the editor content, if one is selected.
  *
  * @param editor The editor instance.
+ * @internal
  */
 export function repositionContextualBalloon( editor: Editor ): void {
 	const balloon: ContextualBalloon = editor.plugins.get( 'ContextualBalloon' );
@@ -37,8 +38,9 @@ export function repositionContextualBalloon( editor: Editor ): void {
  * to the selected element in the editor content.
  *
  * @param editor The editor instance.
+ * @internal
  */
-export function getBalloonPositionData( editor: Editor ): Partial<PositionOptions> {
+export function getBalloonPositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );

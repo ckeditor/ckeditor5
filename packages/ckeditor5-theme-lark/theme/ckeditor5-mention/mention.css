@@ -4,11 +4,11 @@
  */
 
 :root {
-	--ck-color-mention-background: hsla(341, 100%, 30%, 0.1);
-	--ck-color-mention-text: hsl(341, 100%, 30%);
+	--ck-content-color-mention-background: hsla(341, 100%, 30%, 0.1);
+	--ck-content-color-mention-text: hsl(341, 100%, 30%);
 }
 
 .ck-content .mention {
-	background: var(--ck-color-mention-background);
-	color: var(--ck-color-mention-text);
+	background: var(--ck-content-color-mention-background);
+	color: var(--ck-content-color-mention-text);
 }

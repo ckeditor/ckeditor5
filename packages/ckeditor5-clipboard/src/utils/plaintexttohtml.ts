@@ -13,7 +13,7 @@
  * @param text The plain text to convert.
  * @returns HTML generated from the plain text.
  */
-export default function plainTextToHtml( text: string ): string {
+export function plainTextToHtml( text: string ): string {
 	text = text
 		// Encode &.
 		.replace( /&/g, '&amp;' )

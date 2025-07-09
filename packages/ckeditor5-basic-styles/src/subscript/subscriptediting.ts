@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const SUBSCRIPT = 'subscript';
 
@@ -18,7 +18,7 @@ const SUBSCRIPT = 'subscript';
  * It registers the `sub` command and introduces the `sub` attribute in the model which renders to the view
  * as a `<sub>` element.
  */
-export default class SubscriptEditing extends Plugin {
+export class SubscriptEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

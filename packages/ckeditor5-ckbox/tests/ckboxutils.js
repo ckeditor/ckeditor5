@@ -3,27 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
-import CKBoxEditing from '../src/ckboxediting.js';
-import CKBoxUploadAdapter from '../src/ckboxuploadadapter.js';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import CKBoxUtils from '../src/ckboxutils.js';
-import Token from '@ckeditor/ckeditor5-cloud-services/src/token/token.js';
+import { CKBoxEditing } from '../src/ckboxediting.js';
+import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { CKBoxUtils } from '../src/ckboxutils.js';
+import { Token } from '@ckeditor/ckeditor5-cloud-services/src/token/token.js';
 import { Image } from '@ckeditor/ckeditor5-image';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
 

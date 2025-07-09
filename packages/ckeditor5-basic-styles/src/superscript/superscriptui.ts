@@ -17,7 +17,7 @@ const SUPERSCRIPT = 'superscript';
 /**
  * The superscript UI feature. It introduces the Superscript button.
  */
-export default class SuperscriptUI extends Plugin {
+export class SuperscriptUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

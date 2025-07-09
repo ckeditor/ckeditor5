@@ -42,7 +42,7 @@ Learn more about {@link getting-started/advanced/integrating-from-source-webpack
 
 ### How to add an attribute to the editor editable in DOM?
 
-If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
+If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer}:
 
 ```js
 editor.editing.view.change( writer => {
@@ -158,9 +158,9 @@ editor.model.change( writer => {
 } );
 ```
 
-You may have noticed that a link is represented as a text with an attribute in the editor model. See the API of the {@link module:engine/model/writer~Writer model writer} to learn about other useful methods that can help you modify the editor model. {@link module:engine/model/model~Model#insertContent model.insertContent} will ensure that the content can be inserted to the selected place according to the schema.
+You may have noticed that a link is represented as a text with an attribute in the editor model. See the API of the {@link module:engine/model/writer~ModelWriter model writer} to learn about other useful methods that can help you modify the editor model. {@link module:engine/model/model~Model#insertContent model.insertContent} will ensure that the content can be inserted to the selected place according to the schema.
 
-To insert some longer HTML code, you can parse it to the {@link module:engine/model/documentfragment~DocumentFragment model fragment} first and then {@link module:engine/model/model~Model#insertContent insert} it into the editor model:
+To insert some longer HTML code, you can parse it to the {@link module:engine/model/documentfragment~ModelDocumentFragment model fragment} first and then {@link module:engine/model/model~Model#insertContent insert} it into the editor model:
 
 ```js
 const content =

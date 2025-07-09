@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
+import { TableEditing } from '../../src/tableediting.js';
 import {
 	getCaptionFromModelSelection,
 	getCaptionFromTableModelElement,
@@ -23,7 +23,7 @@ describe( 'table caption utils', () => {
 	let view, document;
 
 	beforeEach( async () => {
-		view = new View();
+		view = new EditingView();
 		document = view.document;
 
 		editor = await VirtualTestEditor.create( {
@@ -33,7 +33,7 @@ describe( 'table caption utils', () => {
 		model = editor.model;
 		modelRoot = model.document.getRoot();
 
-		setModelData( model,
+		_setModelData( model,
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell>' +
@@ -80,7 +80,7 @@ describe( 'table caption utils', () => {
 
 	describe( 'getCaptionFromTableModelElement', () => {
 		it( 'should return null when given table has no caption', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -104,7 +104,7 @@ describe( 'table caption utils', () => {
 
 	describe( 'getCaptionFromModelSelection', () => {
 		it( 'should return null when given table has no caption - selection in a cell', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -118,7 +118,7 @@ describe( 'table caption utils', () => {
 		} );
 
 		it( 'should return null when given table has no caption - selection on a table', () => {
-			setModelData( model,
+			_setModelData( model,
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -138,7 +138,7 @@ describe( 'table caption utils', () => {
 		} );
 
 		it( 'should return null when no table has been found', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>[]</paragraph>'
 			);
 

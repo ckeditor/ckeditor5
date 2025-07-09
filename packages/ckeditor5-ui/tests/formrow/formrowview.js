@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FormRowView from '../../src/formrow/formrowview.js';
-import View from '../../src/view.js';
-import ViewCollection from '../../src/viewcollection.js';
+import { FormRowView } from '../../src/formrow/formrowview.js';
+import { View } from '../../src/view.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 
 describe( 'FormRowView', () => {
 	let view, locale;

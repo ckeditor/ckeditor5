@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The insert column command.
@@ -28,7 +28,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'insertTableColumnRight' );
  * ```
  */
-export default class InsertColumnCommand extends Command {
+export class InsertColumnCommand extends Command {
 	/**
 	 * The order of insertion relative to the column in which the caret is located.
 	 */

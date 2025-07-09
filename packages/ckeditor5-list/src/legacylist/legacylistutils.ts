@@ -7,7 +7,7 @@
  * @module list/legacylist/legacylistutils
  */
 
-import type { Element, Model, Position } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Model, ModelPosition } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
@@ -19,7 +19,7 @@ import {
 /**
  * A set of helpers related to legacy lists.
  */
-export default class LegacyListUtils extends Plugin {
+export class LegacyListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -48,7 +48,7 @@ export default class LegacyListUtils extends Plugin {
 	 * If no list is selected, it returns an empty array.
 	 * The order of the elements is not specified.
 	 */
-	public getSelectedListItems( model: Model ): Array<Element> {
+	public getSelectedListItems( model: Model ): Array<ModelElement> {
 		return getSelectedListItems( model );
 	}
 
@@ -62,7 +62,7 @@ export default class LegacyListUtils extends Plugin {
 	 * @param position Starting position.
 	 * @param direction Walking direction.
 	 */
-	public getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<Element> {
+	public getSiblingNodes( position: ModelPosition, direction: 'forward' | 'backward' ): Array<ModelElement> {
 		return getSiblingNodes( position, direction );
 	}
 }

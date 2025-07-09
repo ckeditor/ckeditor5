@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import Text from '../../../src/model/text.js';
-import MarkerOperation from '../../../src/model/operation/markeroperation.js';
+import { Model } from '../../../src/model/model.js';
+import { ModelText } from '../../../src/model/text.js';
+import { MarkerOperation } from '../../../src/model/operation/markeroperation.js';
 
 function matchRange( range ) {
 	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );
@@ -18,7 +18,7 @@ describe( 'MarkerOperation', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		root._appendChild( new Text( 'foo' ) );
+		root._appendChild( new ModelText( 'foo' ) );
 		range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );
 	} );
 

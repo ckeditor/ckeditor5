@@ -61,7 +61,7 @@ export interface EmojiConfig {
 	 *
 	 * @default 'default'
 	 */
-	skinTone?: SkinToneId;
+	skinTone?: EmojiSkinToneId;
 
 	/**
 	 * The URL from which the emoji definitions should be loaded.
@@ -113,6 +113,6 @@ export interface EmojiConfig {
 	useCustomFont?: boolean;
 }
 
-export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
+export type EmojiSkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
 
 export type EmojiVersion = 15 | 16;

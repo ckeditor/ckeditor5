@@ -4,7 +4,6 @@ meta-title: Update to version 45.x | CKEditor 5 Documentation
 meta-description: Follow the guide to update CKEditor 5 to version 45.x, including key changes, migration tips, and compatibility considerations.
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-05-08
 ---
 
 # Update to CKEditor&nbsp;5 v45.x

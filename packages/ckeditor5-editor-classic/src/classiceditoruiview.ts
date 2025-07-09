@@ -17,7 +17,7 @@ import '../theme/classiceditor.css';
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
  * enclosed in a boxed UI view.
  */
-export default class ClassicEditorUIView extends BoxedEditorUIView {
+export class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
 	 * Sticky panel view instance. This is a parent view of a {@link #toolbar}
 	 * that makes toolbar sticky.

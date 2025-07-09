@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import FontColorEditing from './fontcolor/fontcolorediting.js';
-import FontColorUI from './fontcolor/fontcolorui.js';
+import { FontColorEditing } from './fontcolor/fontcolorediting.js';
+import { FontColorUI } from './fontcolor/fontcolorui.js';
 
 /**
  * The font color plugin.
@@ -20,7 +20,7 @@ import FontColorUI from './fontcolor/fontcolorui.js';
  * This is a "glue" plugin which loads the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} and
  * {@link module:font/fontcolor/fontcolorui~FontColorUI} features in the editor.
  */
-export default class FontColor extends Plugin {
+export class FontColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MultiRootEditorUIView from '../src/multirooteditoruiview.js';
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { MultiRootEditorUIView } from '../src/multirooteditoruiview.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import { MenuBarView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
+import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MultiRootEditorUIView', () => {
 	let locale, view, editingView, fooViewRoot, barViewRoot;
@@ -21,8 +21,8 @@ describe( 'MultiRootEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 		editingView = new EditingView();
-		fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
-		barViewRoot = createRoot( editingView.document, 'div', 'bar' );
+		fooViewRoot = createViewRoot( editingView.document, 'div', 'foo' );
+		barViewRoot = createViewRoot( editingView.document, 'div', 'bar' );
 
 		view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ] );
 
@@ -56,7 +56,7 @@ describe( 'MultiRootEditorUIView', () => {
 
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
 					const editingView = new EditingView();
-					const editingViewRoot = createRoot( editingView.document, 'div', 'foo' );
+					const editingViewRoot = createViewRoot( editingView.document, 'div', 'foo' );
 					const view = new MultiRootEditorUIView( locale, editingView, [ 'foo' ], {
 						shouldToolbarGroupWhenFull: true
 					} );
@@ -128,8 +128,8 @@ describe( 'MultiRootEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (string format)', () => {
 				const editingView = new EditingView();
-				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
-				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
+				const fooViewRoot = createViewRoot( editingView.document, 'div', 'foo' );
+				const barViewRoot = createViewRoot( editingView.document, 'div', 'bar' );
 				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], {
 					label: 'Foo'
 				} );
@@ -146,8 +146,8 @@ describe( 'MultiRootEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (object format)', () => {
 				const editingView = new EditingView();
-				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
-				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
+				const fooViewRoot = createViewRoot( editingView.document, 'div', 'foo' );
+				const barViewRoot = createViewRoot( editingView.document, 'div', 'bar' );
 				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], {
 					label: {
 						foo: 'Foo',
@@ -175,7 +175,7 @@ describe( 'MultiRootEditorUIView', () => {
 		} );
 
 		it( 'uses given HTML element inside editable', () => {
-			createRoot( editingView.document, 'div', 'new' );
+			createViewRoot( editingView.document, 'div', 'new' );
 
 			const domElement = document.createElement( 'div' );
 			const editable = view.createEditable( 'new', domElement );
@@ -202,7 +202,7 @@ describe( 'MultiRootEditorUIView', () => {
 		} );
 
 		it( 'new editable is given an accessible aria label', () => {
-			const newViewRoot = createRoot( editingView.document, 'div', 'new' );
+			const newViewRoot = createViewRoot( editingView.document, 'div', 'new' );
 
 			view.createEditable( 'new' );
 			view.editables.new.name = 'new';
@@ -215,7 +215,7 @@ describe( 'MultiRootEditorUIView', () => {
 		} );
 
 		it( 'new editable is given an accessible aria label (custom)', () => {
-			const newViewRoot = createRoot( editingView.document, 'div', 'new' );
+			const newViewRoot = createViewRoot( editingView.document, 'div', 'new' );
 
 			view.createEditable( 'new', undefined, 'Custom label' );
 			view.editables.new.name = 'new';

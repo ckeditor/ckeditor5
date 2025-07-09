@@ -7,7 +7,7 @@
  * @module core/pendingactions
  */
 
-import ContextPlugin from './contextplugin.js';
+import { ContextPlugin } from './contextplugin.js';
 
 import {
 	CKEditorError,
@@ -63,7 +63,7 @@ import {
  * Read more about saving the data in the
  * {@glink getting-started/setup/getting-and-setting-data Saving and getting data} guide.
  */
-export default class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
+export class PendingActions extends ContextPlugin implements Iterable<PendingAction> {
 	/**
 	 * Defines whether there is any registered pending action.
 	 *

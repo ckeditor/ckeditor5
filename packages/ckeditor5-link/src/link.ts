@@ -8,9 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import LinkEditing from './linkediting.js';
-import LinkUI from './linkui.js';
-import AutoLink from './autolink.js';
+import { LinkEditing } from './linkediting.js';
+import { LinkUI } from './linkui.js';
+import { AutoLink } from './autolink.js';
 
 /**
  * The link plugin.
@@ -18,7 +18,7 @@ import AutoLink from './autolink.js';
  * This is a "glue" plugin that loads the {@link module:link/linkediting~LinkEditing link editing feature}
  * and {@link module:link/linkui~LinkUI link UI feature}.
  */
-export default class Link extends Plugin {
+export class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

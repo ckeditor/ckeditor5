@@ -11,8 +11,8 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 
-import Paragraph from './paragraph.js';
-import type ParagraphCommand from './paragraphcommand.js';
+import { Paragraph } from './paragraph.js';
+import { type ParagraphCommand } from './paragraphcommand.js';
 
 /**
  * This plugin defines the `'paragraph'` button. It can be used together with
@@ -31,7 +31,7 @@ import type ParagraphCommand from './paragraphcommand.js';
  *   .catch( ... );
  * ```
  */
-export default class ParagraphButtonUI extends Plugin {
+export class ParagraphButtonUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -10,12 +10,12 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import {
 	Matcher,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type MatcherPattern,
 	type ModelPostFixer,
-	type Position,
+	type ModelPosition,
 	type UpcastDispatcher,
-	type Writer,
+	type ModelWriter,
 	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -34,6 +34,8 @@ const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
  * * The class is added in the view post-fixer, after other changes in the model tree are converted to the view.
  *
  * This way, adding and removing the highlight does not interfere with conversion.
+ *
+ * @internal
  */
 export function setupExceptionHighlighting( editor: Editor ): void {
 	const view = editor.editing.view;
@@ -41,7 +43,7 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 	const highlightedMarkers = new Set<ViewElement>();
 
 	// Adding the class.
-	view.document.registerPostFixer( ( writer: DowncastWriter ): boolean => {
+	view.document.registerPostFixer( ( writer: ViewDowncastWriter ): boolean => {
 		const modelSelection = model.document.selection;
 
 		const marker = getMarkerAtPosition( editor, modelSelection.anchor! );
@@ -79,6 +81,8 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 
 /**
  * A post-fixer that prevents removing a collapsed marker from the document.
+ *
+ * @internal
  */
 export function resurrectCollapsedMarkerPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
@@ -101,6 +105,8 @@ export function resurrectCollapsedMarkerPostFixer( editor: Editor ): ModelPostFi
 
 /**
  * A post-fixer that extends a marker when the user types on its boundaries.
+ *
+ * @internal
  */
 export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
@@ -123,6 +129,7 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
  * A view highlight-to-marker conversion helper.
  *
  * @param config Conversion configuration.
+ * @internal
  */
 export function upcastHighlightToMarker( config: { view: MatcherPattern; model: () => string } ) {
 	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
@@ -163,7 +170,7 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 /**
  * Extend marker if change detected on marker's start position.
  */
-function _tryExtendMarkerStart( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
@@ -180,7 +187,7 @@ function _tryExtendMarkerStart( editor: Editor, position: Position, length: numb
 /**
  * Extend marker if change detected on marker's end position.
  */
-function _tryExtendMarkedEnd( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkedEnd( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {

@@ -9,12 +9,12 @@
 
 import type {
 	DowncastConversionApi,
-	Element,
-	Schema,
+	ModelElement,
+	ModelSchema,
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment,
-	Range
+	ModelRange
 } from 'ckeditor5/src/engine.js';
 
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
@@ -57,7 +57,7 @@ export function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean 
 }
 
 /**
- * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~ViewAttributeElement} with the provided `href` attribute.
  */
 export function createLinkElement( href: string, { writer }: DowncastConversionApi ): ViewAttributeElement {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
@@ -105,6 +105,7 @@ function isSafeUrl( url: string, customRegexp: RegExp ): boolean {
  *
  * @param t Shorthand for {@link module:utils/locale~Locale#t Locale#t}.
  * @param decorators The decorator reference where the label values should be localized.
+ * @internal
  */
 export function getLocalizedDecorators(
 	t: LocaleTranslate,
@@ -129,6 +130,8 @@ export function getLocalizedDecorators(
 /**
  * Converts an object with defined decorators to a normalized array of decorators. The `id` key is added for each decorator and
  * is used as the attribute's name in the model.
+ *
+ * @internal
  */
 export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDefinition> ): Array<NormalizedLinkDecoratorDefinition> {
 	const retArray: Array<NormalizedLinkDecoratorDefinition> = [];
@@ -151,7 +154,7 @@ export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDe
 /**
  * Returns `true` if the specified `element` can be linked (the element allows the `linkHref` attribute).
  */
-export function isLinkableElement( element: Element | null, schema: Schema ): element is Element {
+export function isLinkableElement( element: ModelElement | null, schema: ModelSchema ): element is ModelElement {
 	if ( !element ) {
 		return false;
 	}
@@ -161,6 +164,8 @@ export function isLinkableElement( element: Element | null, schema: Schema ): el
 
 /**
  * Returns `true` if the specified `value` is an email.
+ *
+ * @internal
  */
 export function isEmail( value: string ): boolean {
 	return EMAIL_REG_EXP.test( value );
@@ -182,6 +187,8 @@ export function addLinkProtocolIfApplicable( link: string, defaultProtocol?: str
 
 /**
  * Checks if protocol is already included in the link.
+ *
+ * @internal
  */
 export function linkHasProtocol( link: string ): boolean {
 	return PROTOCOL_REG_EXP.test( link );
@@ -199,7 +206,7 @@ export function openLink( link: string ): void {
  *
  * If the returned value is `undefined`, the range contains elements other than text nodes.
  */
-export function extractTextFromLinkRange( range: Range ): string | undefined {
+export function extractTextFromLinkRange( range: ModelRange ): string | undefined {
 	let text = '';
 
 	for ( const item of range.getItems() ) {

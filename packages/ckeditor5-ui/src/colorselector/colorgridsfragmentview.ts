@@ -7,17 +7,17 @@
  * @module ui/colorselector/colorgridsfragmentview
  */
 
-import View from '../view.js';
-import ButtonView from '../button/buttonview.js';
-import ColorGridView, { type ColorDefinition } from '../colorgrid/colorgridview.js';
-import ColorTileView from '../colorgrid/colortileview.js';
-import Template from '../template.js';
+import { View } from '../view.js';
+import { ButtonView } from '../button/buttonview.js';
+import { ColorGridView, type ColorDefinition } from '../colorgrid/colorgridview.js';
+import { ColorTileView } from '../colorgrid/colortileview.js';
+import { Template } from '../template.js';
 
-import DocumentColorCollection from './documentcolorcollection.js';
+import { DocumentColorCollection } from './documentcolorcollection.js';
 
 import type { Model } from '@ckeditor/ckeditor5-engine';
 import type { FocusTracker, Locale } from '@ckeditor/ckeditor5-utils';
-import type ViewCollection from '../viewcollection.js';
+import { type ViewCollection } from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
 
@@ -35,7 +35,7 @@ import { IconEraser, IconColorPalette } from '@ckeditor/ckeditor5-icons';
  * * A dynamic {@link module:ui/colorgrid/colorgridview~ColorGridView} of colors used in the document.
  * * If color picker is configured, the "Color Picker" button is visible too.
  */
-export default class ColorGridsFragmentView extends View {
+export class ColorGridsFragmentView extends View {
 	/**
 	 * A collection of the children of the table.
 	 */

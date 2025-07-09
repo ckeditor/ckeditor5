@@ -23,18 +23,18 @@ In some cases, different browsers produces different input data. For such situat
 
 _For example file see `_data/basic-style/index.js`_.
 
-Each group of fixtures contains an index file (`index.js` in a group folder – e.g. `_data/basic-styles/index.js`). Its purpose is to import all fixture files from the group and expose them for further use. An index file has the following structure:
+Each group of fixtures contains an index file (`index.js` in a group folder – e.g. `_data/basic-styles/index.js`). Its purpose is to import { all fixture files } from the group and expose them for further use. An index file has the following structure:
 
 ```js
 // Import default/generic fixtures.
 // Input fixtures.
-import boldWithinText from './bold-within-text/input.word2016.html';
+import { boldWithinText } from './bold-within-text/input.word2016.html';
 
 // Expected normalized fixtures.
-import boldWithinTextNormalized from './bold-within-text/normalized.word2016.html';
+import { boldWithinTextNormalized } from './bold-within-text/normalized.word2016.html';
 
 // Expected model fixtures.
-import boldWithinTextModel from './bold-within-text/model.word2016.html';
+import { boldWithinTextModel } from './bold-within-text/model.word2016.html';
 
 // Export imported generic fixtures for future use.
 export const fixtures = {

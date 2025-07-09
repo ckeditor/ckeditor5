@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import priorities, { type PriorityString } from './priorities.js';
+import { priorities, type PriorityString } from './priorities.js';
 
 /**
  * @module utils/inserttopriorityarray
@@ -32,7 +32,7 @@ export interface ObjectWithPriority {
  * @param objects Array of objects with priority to insert object to.
  * @param objectToInsert Object with `priority` property.
  */
-export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
+export function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
 	const priority = priorities.get( objectToInsert.priority );
 
 	// Binary search for better performance in large tables.

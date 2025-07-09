@@ -7,13 +7,13 @@
  * @module ui/dropdown/menu/dropdownmenurootlistview
  */
 
-import DropdownMenuListItemButtonView from './dropdownmenulistitembuttonview.js';
-import DropdownMenuNestedMenuView from './dropdownmenunestedmenuview.js';
-import DropdownMenuListView from './dropdownmenulistview.js';
-import DropdownMenuListItemView from './dropdownmenulistitemview.js';
+import { DropdownMenuListItemButtonView } from './dropdownmenulistitembuttonview.js';
+import { DropdownMenuNestedMenuView } from './dropdownmenunestedmenuview.js';
+import { DropdownMenuListView } from './dropdownmenulistview.js';
+import { DropdownMenuListItemView } from './dropdownmenulistitemview.js';
 import { DropdownRootMenuBehaviors } from './dropdownmenubehaviors.js';
 
-import type BodyCollection from '../../editorui/bodycollection.js';
+import { type BodyCollection } from '../../editorui/bodycollection.js';
 import type { DropdownMenuDefinition } from './utils.js';
 
 import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
@@ -77,7 +77,7 @@ import type { Locale, BaseEvent } from '@ckeditor/ckeditor5-utils';
  *
  * It is recommended to use this class together with {@link module:ui/dropdown/utils~addMenuToDropdown `addMenuToDropdown()` helper}.
  */
-export default class DropdownMenuRootListView extends DropdownMenuListView {
+export class DropdownMenuRootListView extends DropdownMenuListView {
 	/**
 	 * The CSS class to be applied to nested menu panels in this dropdown menu.
 	 *

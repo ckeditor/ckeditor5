@@ -23,14 +23,14 @@ import {
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
 
-import MultiRootEditorUI from './multirooteditorui.js';
-import MultiRootEditorUIView from './multirooteditoruiview.js';
+import { MultiRootEditorUI } from './multirooteditorui.js';
+import { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 import {
-	type RootElement,
+	type ModelRootElement,
 	type ViewRootEditableElement,
-	type Writer,
+	type ModelWriter,
 	type ModelCanEditAtEvent
 } from 'ckeditor5/src/engine.js';
 
@@ -48,7 +48,7 @@ import {
  *
  * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
  */
-export default class MultiRootEditor extends Editor {
+export class MultiRootEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */
@@ -238,7 +238,7 @@ export default class MultiRootEditor extends Editor {
 			let selectionInReadOnlyRoot = false;
 
 			for ( const range of selection.getRanges() ) {
-				const root = range.root as RootElement;
+				const root = range.root as ModelRootElement;
 
 				if ( this._readOnlyRootLocks.has( root.rootName ) ) {
 					selectionInReadOnlyRoot = true;
@@ -403,7 +403,7 @@ export default class MultiRootEditor extends Editor {
 		rootName: string,
 		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
 	): void {
-		const _addRoot = ( writer: Writer ) => {
+		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, elementName );
 
 			if ( data ) {
@@ -434,7 +434,7 @@ export default class MultiRootEditor extends Editor {
 	 *
 	 * After a root is detached all its children are removed, all markers inside it are removed, and whenever something is inserted to it,
 	 * it is automatically removed as well. Finally, a detached root is not returned by
-	 * {@link module:engine/model/document~Document#getRootNames} by default.
+	 * {@link module:engine/model/document~ModelDocument#getRootNames} by default.
 	 *
 	 * It is possible to re-add a previously detached root calling {@link #addRoot}.
 	 *
@@ -496,7 +496,7 @@ export default class MultiRootEditor extends Editor {
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: RootElement, placeholder?: string, label?: string ): HTMLElement {
+	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement {
 		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
 
 		this.ui.addEditable( editable, placeholder );
@@ -512,7 +512,7 @@ export default class MultiRootEditor extends Editor {
 	 * @param root Root for which the editable element should be detached.
 	 * @returns The DOM element that was detached. You may want to remove it from your application DOM structure.
 	 */
-	public detachEditable( root: RootElement ): HTMLElement {
+	public detachEditable( root: ModelRootElement ): HTMLElement {
 		const rootName = root.rootName;
 		const editable = this.ui.view.editables[ rootName ];
 
@@ -544,7 +544,7 @@ export default class MultiRootEditor extends Editor {
 	 *
 	 * When a root becomes loaded, it will be treated by the editor as though it was just added. This, among others, means that all
 	 * related events and mechanisms will be fired, including {@link ~MultiRootEditor#event:addRoot `addRoot` event},
-	 * {@link module:engine/model/document~Document#event:change `model.Document` `change` event}, model post-fixers and conversion.
+	 * {@link module:engine/model/document~ModelDocument#event:change `model.Document` `change` event}, model post-fixers and conversion.
 	 *
 	 * Until the root becomes loaded, all above mechanisms are suppressed.
 	 *
@@ -645,7 +645,7 @@ export default class MultiRootEditor extends Editor {
 
 	/**
 	 * Registers given string as a root attribute key. Registered root attributes are added to
-	 * {@link module:engine/model/schema~Schema schema}, and also returned by
+	 * {@link module:engine/model/schema~ModelSchema schema}, and also returned by
 	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
 	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
 	 *
@@ -965,7 +965,7 @@ function isElement( value: any ): value is Element {
  */
 export type AddRootEvent = {
 	name: 'addRoot';
-	args: [ root: RootElement ];
+	args: [ root: ModelRootElement ];
 };
 
 /**
@@ -982,7 +982,7 @@ export type AddRootEvent = {
  */
 export type DetachRootEvent = {
 	name: 'detachRoot';
-	args: [ root: RootElement ];
+	args: [ root: ModelRootElement ];
 };
 
 /**

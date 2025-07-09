@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getLongText from '../../tests/_utils/longtext.js';
+import { getLongText } from '../../tests/_utils/longtext.js';
 
 describe( 'utils', () => {
 	describe( 'getLongText', () => {

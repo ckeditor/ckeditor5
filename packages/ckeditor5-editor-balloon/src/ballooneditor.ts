@@ -19,8 +19,8 @@ import {
 import { BalloonToolbar } from 'ckeditor5/src/ui.js';
 import { CKEditorError, getDataFromElement } from 'ckeditor5/src/utils.js';
 
-import BalloonEditorUI from './ballooneditorui.js';
-import BalloonEditorUIView from './ballooneditoruiview.js';
+import { BalloonEditorUI } from './ballooneditorui.js';
+import { BalloonEditorUIView } from './ballooneditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 
@@ -32,7 +32,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
  * In order to create a balloon editor instance, use the static
  * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method.
  */
-export default class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
+export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

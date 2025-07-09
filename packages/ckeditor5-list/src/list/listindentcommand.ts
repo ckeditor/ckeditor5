@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { DocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
 
 import {
 	expandListBlocksToCompleteItems,
@@ -21,12 +21,12 @@ import {
 	splitListItemBefore,
 	type ListElement
 } from './utils/model.js';
-import ListWalker from './utils/listwalker.js';
+import { ListWalker } from './utils/listwalker.js';
 
 /**
  * The document list indent command. It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListIndentCommand extends Command {
+export class ListIndentCommand extends Command {
 	/**
 	 * Determines by how much the command will change the list item's indent attribute.
 	 */
@@ -109,7 +109,7 @@ export default class ListIndentCommand extends Command {
 	 *
 	 * @param changedBlocks The changed list elements.
 	 */
-	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+	private _fireAfterExecute( changedBlocks: Array<ModelElement> ) {
 		this.fire<ListIndentCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
@@ -159,7 +159,7 @@ export default class ListIndentCommand extends Command {
 /**
  * Returns an array of selected blocks truncated to the first non list block element.
  */
-function getSelectedListBlocks( selection: DocumentSelection ) {
+function getSelectedListBlocks( selection: ModelDocumentSelection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );
 	const firstNonListBlockIndex = blocks.findIndex( block => !isListItemBlock( block ) );
 
@@ -181,5 +181,5 @@ function getSelectedListBlocks( selection: DocumentSelection ) {
  */
 export type ListIndentCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ changedBlocks: Array<Element> ];
+	args: [ changedBlocks: Array<ModelElement> ];
 };

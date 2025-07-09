@@ -11,8 +11,8 @@ import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	UpcastElementEvent,
-	Element,
-	Schema,
+	ModelElement,
+	ModelSchema,
 	DowncastDispatcher,
 	UpcastDispatcher,
 	DowncastAttributeEvent
@@ -51,7 +51,7 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * <td>&nbsp;</td>
  * ```
  */
-export default class EmptyBlock extends Plugin {
+export class EmptyBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -128,7 +128,7 @@ export default class EmptyBlock extends Plugin {
  */
 function createEmptyBlockDowncastConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 			const { mapper, consumable } = conversionApi;
 			const { item } = data;
 
@@ -136,7 +136,7 @@ function createEmptyBlockDowncastConverter() {
 				return;
 			}
 
-			const viewElement = mapper.toViewElement( item as Element );
+			const viewElement = mapper.toViewElement( item as ModelElement );
 
 			if ( viewElement && data.attributeNewValue ) {
 				viewElement.getFillerOffset = () => null;
@@ -149,7 +149,7 @@ function createEmptyBlockDowncastConverter() {
  * Creates an upcast converter for handling empty blocks.
  * The converter detects empty elements and marks them with the empty block attribute.
  */
-function createEmptyBlockUpcastConverter( schema: Schema ) {
+function createEmptyBlockUpcastConverter( schema: ModelSchema ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 			const { viewItem, modelRange } = data;
@@ -159,7 +159,7 @@ function createEmptyBlockUpcastConverter( schema: Schema ) {
 			}
 
 			// Handle element itself.
-			const modelElement = modelRange && modelRange.start.nodeAfter as Element;
+			const modelElement = modelRange && modelRange.start.nodeAfter as ModelElement;
 
 			if ( !modelElement || !schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
 				return;

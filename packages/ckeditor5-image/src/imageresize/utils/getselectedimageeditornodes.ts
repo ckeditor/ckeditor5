@@ -7,13 +7,14 @@
  * @module image/imageresize/utils/getselectedimageeditornodes
  */
 
-import type { ViewElement, Element } from 'ckeditor5/src/engine.js';
+import type { ViewElement, ModelElement } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
  * Finds model, view and DOM element for selected image element. Returns `null` if there is no image selected.
  *
  * @param editor Editor instance.
+ * @internal
  */
 export function getSelectedImageEditorNodes( editor: Editor ): ImageEditorNodes | null {
 	const { editing } = editor;
@@ -39,7 +40,7 @@ export function getSelectedImageEditorNodes( editor: Editor ): ImageEditorNodes 
  * @internal;
  */
 type ImageEditorNodes = {
-	model: Element;
+	model: ModelElement;
 	view: ViewElement;
 	dom: HTMLElement;
 };

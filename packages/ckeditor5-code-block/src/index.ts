@@ -7,12 +7,32 @@
  * @module code-block
  */
 
-export { default as CodeBlock } from './codeblock.js';
-export { default as CodeBlockEditing } from './codeblockediting.js';
-export { default as CodeBlockUI } from './codeblockui.js';
-export type { default as CodeBlockCommand } from './codeblockcommand.js';
-export type { default as IndentCodeBlockCommand } from './indentcodeblockcommand.js';
-export type { default as OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
-export type { CodeBlockConfig } from './codeblockconfig.js';
+export { CodeBlock } from './codeblock.js';
+export { CodeBlockEditing } from './codeblockediting.js';
+export { CodeBlockUI } from './codeblockui.js';
+export { CodeBlockCommand } from './codeblockcommand.js';
+export { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
+export { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
+export type { CodeBlockConfig, CodeBlockLanguageDefinition } from './codeblockconfig.js';
+
+export {
+	modelToViewCodeBlockInsertion as _modelToViewCodeBlockInsertion,
+	modelToDataViewSoftBreakInsertion as _modelToDataViewCodeBlockSoftBreakInsertion,
+	dataViewToModelCodeBlockInsertion as _dataViewToModelCodeBlockInsertion,
+	dataViewToModelTextNewlinesInsertion as _dataViewToModelCodeBlockTextNewlinesInsertion,
+	dataViewToModelOrphanNodeConsumer as _dataViewToModelCodeBlockOrphanNodeConsumer
+} from './converters.js';
+
+export {
+	getNormalizedAndLocalizedLanguageDefinitions as _getNormalizedAndLocalizedCodeBlockLanguageDefinitions,
+	getPropertyAssociation as _getCodeBlockPropertyAssociation,
+	getLeadingWhiteSpaces as _getCodeBlockLeadingWhiteSpaces,
+	rawSnippetTextToViewDocumentFragment as _rawCodeBlockSnippetTextToViewDocumentFragment,
+	getIndentOutdentPositions as _getCodeBlockIndentOutdentPositions,
+	isModelSelectionInCodeBlock as _isModelSelectionInCodeBlock,
+	canBeCodeBlock as _canBeCodeBlock,
+	getCodeBlockAriaAnnouncement as _getCodeBlockAriaAnnouncement,
+	getTextNodeAtLineStart as _getCodeBlockTextNodeAtLineStart
+} from './utils.js';
 
 import './augmentation.js';

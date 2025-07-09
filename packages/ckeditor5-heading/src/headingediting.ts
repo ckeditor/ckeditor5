@@ -13,7 +13,7 @@ import { priorities } from 'ckeditor5/src/utils.js';
 import type { EnterCommandAfterExecuteEvent } from 'ckeditor5/src/enter.js';
 import type { HeadingOption } from './headingconfig.js';
 
-import HeadingCommand from './headingcommand.js';
+import { HeadingCommand } from './headingcommand.js';
 
 const defaultModelElement = 'paragraph';
 
@@ -22,7 +22,7 @@ const defaultModelElement = 'paragraph';
  * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
  * It introduces `heading1`-`headingN` commands which allow to convert paragraphs into headings.
  */
-export default class HeadingEditing extends Plugin {
+export class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

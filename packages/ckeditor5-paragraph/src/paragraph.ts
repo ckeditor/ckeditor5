@@ -7,8 +7,8 @@
  * @module paragraph/paragraph
  */
 
-import ParagraphCommand from './paragraphcommand.js';
-import InsertParagraphCommand from './insertparagraphcommand.js';
+import { ParagraphCommand } from './paragraphcommand.js';
+import { InsertParagraphCommand } from './insertparagraphcommand.js';
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
@@ -24,7 +24,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
  * * The {@link module:paragraph/insertparagraphcommand~InsertParagraphCommand `'insertParagraph'`} command
  * that inserts a new paragraph at a specified location in the model.
  */
-export default class Paragraph extends Plugin {
+export class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

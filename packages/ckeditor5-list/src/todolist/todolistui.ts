@@ -15,7 +15,7 @@ import { IconTodoList } from 'ckeditor5/src/icons.js';
  * The to-do list UI feature. It introduces the `'todoList'` button that
  * allows to convert elements to and from to-do list items and to indent or outdent them.
  */
-export default class TodoListUI extends Plugin {
+export class TodoListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

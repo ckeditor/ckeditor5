@@ -40,7 +40,7 @@ import '../../theme/bookmarkform.css';
  *
  * See {@link module:bookmark/ui/bookmarkformview~BookmarkFormView}.
  */
-export default class BookmarkFormView extends View {
+export class BookmarkFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */

@@ -8,12 +8,12 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ShowBlocksCommand from './showblockscommand.js';
+import { ShowBlocksCommand } from './showblockscommand.js';
 
 /**
  * The show blocks editing plugin.
  */
-export default class ShowBlocksEditing extends Plugin {
+export class ShowBlocksEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

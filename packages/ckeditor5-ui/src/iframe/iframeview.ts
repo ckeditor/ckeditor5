@@ -7,7 +7,7 @@
  * @module ui/iframe/iframeview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -27,7 +27,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * iframe.element.src = 'https://ckeditor.com';
  * ```
  */
-export default class IframeView extends View<HTMLIFrameElement> {
+export class IframeView extends View<HTMLIFrameElement> {
 	/**
 	 * Creates a new instance of the iframe view.
 	 *
