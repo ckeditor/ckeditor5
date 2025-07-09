@@ -124,6 +124,109 @@
 			]
 		},
 		{
+			"name": "List formatting",
+			"className": "ListFormatting",
+			"description": "Enables integration with formatting plugins to style the list marker. Supports font color, font size, font family, bold, and italic formatting.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting.js",
+			"requires": [
+				"ListItemBoldIntegration",
+				"ListItemItalicIntegration",
+				"ListItemFontSizeIntegration",
+				"ListItemFontColorIntegration",
+				"ListItemFontFamilyIntegration"
+			]
+		},
+		{
+			"name": "List item bold integration",
+			"className": "ListItemBoldIntegration",
+			"description": "Integrates bold formatting with list items to style list markers with bold formatting when the content is consistently bold.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting/listitemboldintegration.js",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": "ck-list-marker-bold"
+				}
+			]
+		},
+		{
+			"name": "List item italic integration",
+			"className": "ListItemItalicIntegration",
+			"description": "Integrates italic formatting with list items to style list markers with italic formatting when the content is consistently italic.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting/listitemitalicintegration.js",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": "ck-list-marker-italic"
+				}
+			]
+		},
+		{
+			"name": "List item font size integration",
+			"className": "ListItemFontSizeIntegration",
+			"description": "Integrates font size formatting with list items to style list markers with specific font sizes when the content has consistent font sizing.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting/listitemfontsizeintegration.js",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": [
+						"ck-list-marker-font-size",
+						"ck-list-marker-font-size-tiny",
+						"ck-list-marker-font-size-small",
+						"ck-list-marker-font-size-big",
+						"ck-list-marker-font-size-huge"
+					],
+					"styles": "--ck-content-list-marker-font-size"
+				}
+			]
+		},
+		{
+			"name": "List item font color integration",
+			"className": "ListItemFontColorIntegration",
+			"description": "Integrates font color formatting with list items to style list markers with specific colors when the content has consistent font coloring.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting/listitemfontcolorintegration.js",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": "ck-list-marker-color",
+					"styles": "--ck-content-list-marker-color"
+				}
+			]
+		},
+		{
+			"name": "List item font family integration",
+			"className": "ListItemFontFamilyIntegration",
+			"description": "Integrates font family formatting with list items to style list markers with specific font families when the content has consistent font family formatting.",
+			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"path": "src/listformatting/listitemfontfamilyintegration.js",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": "ck-list-marker-font-family",
+					"styles": "--ck-content-list-marker-font-family"
+				}
+			]
+		},
+		{
 			"name": "To-do list",
 			"className": "TodoList",
 			"description": "Allows for creating a list of interactive checkboxes with labels. Supports all features of lists so you can nest a to-do list together with bulleted and numbered lists in any combination.",

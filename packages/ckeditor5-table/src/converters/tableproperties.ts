@@ -32,6 +32,7 @@ export function upcastStyleToAttribute(
 		viewElement: string | RegExp;
 		defaultValue: string;
 		reduceBoxSides?: boolean;
+		shouldUpcast?: ( viewElement: ViewElement ) => boolean;
 	}
 ): void {
 	const {
@@ -41,6 +42,7 @@ export function upcastStyleToAttribute(
 		attributeType,
 		viewElement,
 		defaultValue,
+		shouldUpcast = () => true,
 		reduceBoxSides = false
 	} = options;
 
@@ -55,10 +57,7 @@ export function upcastStyleToAttribute(
 			key: modelAttribute,
 			value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
 				// Ignore table elements inside figures and figures without the table class.
-				if (
-					viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
-					viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
-				) {
+				if ( !shouldUpcast( viewElement ) ) {
 					return;
 				}
 

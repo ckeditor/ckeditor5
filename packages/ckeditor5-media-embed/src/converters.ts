@@ -41,6 +41,8 @@ import type { MediaOptions } from './utils.js';
  * - renderMediaPreview When `true`, the converter will create the view in the non-semantic form.
  * - renderForEditingView When `true`, the converter will create a view specific for the
  * editing pipeline (e.g. including CSS classes, content placeholders).
+ *
+ * @internal
  */
 export function modelToViewUrlAttributeConverter(
 	registry: MediaRegistry,
