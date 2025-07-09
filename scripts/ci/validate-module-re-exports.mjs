@@ -13,7 +13,7 @@ import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
 
-const INCORRECT_EXPORTS_MESSAGE = 'Some modules have incorrect exports in the index.ts file. See the table above to see the details.\n';
+const INCORRECT_EXPORTS_MESSAGE = '❌ Some modules have incorrect exports in the index.ts file. See the table above to see the details.\n';
 
 main().catch( err => {
 	if ( err.message.includes( INCORRECT_EXPORTS_MESSAGE ) ) {
@@ -46,7 +46,7 @@ async function main() {
 		logData( data );
 
 		console.log( chalk.yellow(
-			'\nIf you want to exclude an export and mark it as valid, add it ' +
+			'\n⚠️ If you want to exclude an export and mark it as valid, add it ' +
 			'to the `removeExpectedExceptions()` function in `validate-module-re-exports.mjs`.\n'
 		) );
 
@@ -60,7 +60,7 @@ async function main() {
 		throw new Error( INCORRECT_EXPORTS_MESSAGE );
 	}
 
-	console.log( chalk.green( '\n✅  All packages use correct export names in `index.ts` file.\n' ) );
+	console.log( chalk.green( '\n✅ All packages use correct export names in `index.ts` file.\n' ) );
 }
 
 function getExportsToFix( library ) {
