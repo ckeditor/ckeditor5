@@ -756,6 +756,20 @@ CKEditor 5 provides developers with text editing and formatting features such as
 	</ck:card>
 
 	<ck:card>
+		<ck:card-title level='4' heading-id='line-height'>
+			Line height <ck:badge variant='premium' />
+		</ck:card-title>
+		<ck:card-description>
+			The line height feature lets you adjust the vertical spacing between lines of text, controlling how tightly or loosely text is packed within paragraphs.
+		</ck:card-description>
+		<ck:card-footer>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/line-height}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-footer>
+	</ck:card>
+
+	<ck:card>
 		<ck:card-title level='4' heading-id='strikethrough'>
 			Strikethrough
 		</ck:card-title>
