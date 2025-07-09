@@ -7,20 +7,62 @@
  * Utility functions for creating detailed error messages with context information.
  */
 
-/**
- * Creates a detailed error message for export resolution failures.
- *
- * @param {Object} context - The context information
- * @param {string} context.fileName - The file where the error occurred
- * @param {string} context.exportName - The name of the export
- * @param {string} context.localName - The local name of the export
- * @param {string} context.importFrom - The module being imported from
- * @param {boolean} context.isExternalModule - Whether the import is from an external module
- * @param {string} context.exportKind - The kind of export (value, type, etc.)
- * @param {Array} context.availableDeclarations - Available declarations in the module
- * @param {Array} context.availableImports - Available imports in the module
- * @returns {string} A detailed error message
- */
+export function createExportResolutionSummary( context ) {
+	const { fileName, exportName, isExternalModule, exportKind } = context;
+
+	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+	const exportType = exportKind || 'value';
+
+	let reason, solution;
+
+	if ( isExternalModule ) {
+		reason = 'External module re-export';
+		solution = 'Create local declarations for external exports or use type-only exports';
+	} else {
+		reason = 'Declaration not found';
+		solution = 'Check if the export exists in the source module and verify import path';
+	}
+
+	return {
+		summary: `[${ relativePath }] Export '${ exportName }' (${ exportType }): ${ reason }`,
+		solution
+	};
+}
+
+export function createModuleResolutionSummary( context ) {
+	const { fileName, importFrom } = context;
+
+	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+
+	return {
+		summary: `[${ relativePath }] Module '${ importFrom }' not found`,
+		solution: 'Check if the package exists and has a proper index.ts file'
+	};
+}
+
+export function createImportReferenceSummary( context ) {
+	const { fileName, importFrom, referenceName } = context;
+
+	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+
+	return {
+		summary: `[${ relativePath }] Import '${ referenceName }' from '${ importFrom }' not found`,
+		solution: 'Verify the export exists in the source module and check for typos'
+	};
+}
+
+export function createASTParsingSummary( context ) {
+	const { fileName, nodeType, line, column } = context;
+
+	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+	const location = line ? `:${ line }${ column ? `:${ column }` : '' }` : '';
+
+	return {
+		summary: `[${ relativePath }${ location }] AST parsing failed for ${ nodeType }`,
+		solution: 'Check for unsupported TypeScript syntax or parser configuration issues'
+	};
+}
+
 export function createExportResolutionError( context ) {
 	const {
 		fileName,
@@ -33,27 +75,27 @@ export function createExportResolutionError( context ) {
 		availableImports = []
 	} = context;
 
-	let message = '\n❌ Export resolution failed\n';
-	message += `- File: ${ fileName }\n`;
-	message += `- Export: ${ exportName }\n`;
-	message += `- Local name: ${ localName }\n`;
+	let message = '\nExport resolution failed\n';
+	message += `File: ${ fileName }\n`;
+	message += `Export: ${ exportName }\n`;
+	message += `Local name: ${ localName }\n`;
 
 	if ( exportKind ) {
-		message += `- Export kind: ${ exportKind }\n`;
+		message += `Export kind: ${ exportKind }\n`;
 	}
 
 	if ( importFrom ) {
-		message += `- Import from: ${ importFrom }\n`;
-		message += `- External module: ${ isExternalModule ? 'Yes' : 'No' }\n`;
+		message += `Import from: ${ importFrom }\n`;
+		message += `External module: ${ isExternalModule ? 'Yes' : 'No' }\n`;
 	}
 
 	if ( isExternalModule ) {
-		message += '\n   This appears to be a re-export from an external module.\n';
-		message += '   The validation script cannot resolve external module exports.\n';
-		message += '   Consider:\n';
-		message += '   1. Skipping validation for external modules\n';
-		message += '   2. Creating local declarations for external exports\n';
-		message += '   3. Using type-only exports for external types\n';
+		message += '\nThis appears to be a re-export from an external module.\n';
+		message += 'The validation script cannot resolve external module exports.\n';
+		message += 'Consider:\n';
+		message += '1. Skipping validation for external modules\n';
+		message += '2. Creating local declarations for external exports\n';
+		message += '3. Using type-only exports for external types\n';
 	} else {
 		message += '\nAvailable declarations in this module:\n';
 		if ( availableDeclarations.length > 0 ) {
@@ -64,7 +106,7 @@ export function createExportResolutionError( context ) {
 			message += '   (none)\n';
 		}
 
-		message += '\n📦 Available imports in this module:\n';
+		message += '\nAvailable imports in this module:\n';
 		if ( availableImports.length > 0 ) {
 			availableImports.forEach( imp => {
 				message += `   - ${ imp.localName } from ${ imp.importFrom }\n`;
@@ -73,26 +115,16 @@ export function createExportResolutionError( context ) {
 			message += '   (none)\n';
 		}
 
-		message += '\n💡 Possible solutions:\n';
-		message += '   1. Check if the declaration exists in the imported module\n';
-		message += '   2. Verify the import path is correct\n';
-		message += '   3. Ensure the export is properly declared in the source module\n';
-		message += '   4. Check for typos in the export/import names\n';
+		message += '\nPossible solutions:\n';
+		message += '1. Check if the declaration exists in the imported module\n';
+		message += '2. Verify the import path is correct\n';
+		message += '3. Ensure the export is properly declared in the source module\n';
+		message += '4. Check for typos in the export/import names\n';
 	}
 
 	return message;
 }
 
-/**
- * Creates a detailed error message for module resolution failures.
- *
- * @param {Object} context - The context information
- * @param {string} context.fileName - The file where the error occurred
- * @param {string} context.importFrom - The module path that couldn't be resolved
- * @param {string} context.packageName - The package name
- * @param {Array} context.availablePackages - Available packages
- * @returns {string} A detailed error message
- */
 export function createModuleResolutionError( context ) {
 	const {
 		fileName,
@@ -101,12 +133,12 @@ export function createModuleResolutionError( context ) {
 		availablePackages = []
 	} = context;
 
-	let message = '\n❌ Module resolution failed\n';
-	message += `- File: ${ fileName }\n`;
-	message += `- Package: ${ packageName }\n`;
-	message += `- Import path: ${ importFrom }\n`;
+	let message = '\nModule resolution failed\n';
+	message += `File: ${ fileName }\n`;
+	message += `Package: ${ packageName }\n`;
+	message += `Import path: ${ importFrom }\n`;
 
-	message += '\n* Available packages:\n';
+	message += '\nAvailable packages:\n';
 	if ( availablePackages.length > 0 ) {
 		availablePackages.slice( 0, 10 ).forEach( pkg => {
 			message += `   - ${ pkg }\n`;
@@ -118,25 +150,15 @@ export function createModuleResolutionError( context ) {
 		message += '   (none)\n';
 	}
 
-	message += '\n* Possible solutions:\n';
-	message += '   1. Check if the package exists in the workspace\n';
-	message += '   2. Verify the import path is correct\n';
-	message += '   3. Ensure the package has a proper index.ts file\n';
-	message += '   4. Check for typos in the package name or path\n';
+	message += '\nPossible solutions:\n';
+	message += '1. Check if the package exists in the workspace\n';
+	message += '2. Verify the import path is correct\n';
+	message += '3. Ensure the package has a proper index.ts file\n';
+	message += '4. Check for typos in the package name or path\n';
 
 	return message;
 }
 
-/**
- * Creates a detailed error message for import reference failures.
- *
- * @param {Object} context - The context information
- * @param {string} context.fileName - The file where the error occurred
- * @param {string} context.importFrom - The module being imported from
- * @param {string} context.referenceName - The reference name that couldn't be found
- * @param {Array} context.availableExports - Available exports in the source module
- * @returns {string} A detailed error message
- */
 export function createImportReferenceError( context ) {
 	const {
 		fileName,
@@ -145,12 +167,12 @@ export function createImportReferenceError( context ) {
 		availableExports = []
 	} = context;
 
-	let message = '\n❌ Import reference not found\n';
-	message += `- File: ${ fileName }\n`;
-	message += `- Import from: ${ importFrom }\n`;
-	message += `- Reference name: ${ referenceName }\n`;
+	let message = '\nImport reference not found\n';
+	message += `File: ${ fileName }\n`;
+	message += `Import from: ${ importFrom }\n`;
+	message += `Reference name: ${ referenceName }\n`;
 
-	message += '\n- Available exports in source module:\n';
+	message += '\nAvailable exports in source module:\n';
 	if ( availableExports.length > 0 ) {
 		availableExports.slice( 0, 10 ).forEach( exp => {
 			message += `   - ${ exp.name } (${ exp.exportKind || 'value' })\n`;
@@ -162,26 +184,15 @@ export function createImportReferenceError( context ) {
 		message += '   (none)\n';
 	}
 
-	message += '\n- Possible solutions:\n';
-	message += '   1. Check if the export exists in the source module\n';
-	message += '   2. Verify the export name is spelled correctly\n';
-	message += '   3. Ensure the export is properly declared in the source module\n';
-	message += '   4. Check if the export is a type export when importing as value or vice versa\n';
+	message += '\nPossible solutions:\n';
+	message += '1. Check if the export exists in the source module\n';
+	message += '2. Verify the export name is spelled correctly\n';
+	message += '3. Ensure the export is properly declared in the source module\n';
+	message += '4. Check if the export is a type export when importing as value or vice versa\n';
 
 	return message;
 }
 
-/**
- * Creates a detailed error message for AST parsing failures.
- *
- * @param {Object} context - The context information
- * @param {string} context.fileName - The file where the error occurred
- * @param {string} context.nodeType - The type of AST node
- * @param {string} context.line - The line number
- * @param {string} context.column - The column number
- * @param {Object} context.node - The AST node object
- * @returns {string} A detailed error message
- */
 export function createASTParsingError( context ) {
 	const {
 		fileName,
@@ -191,13 +202,13 @@ export function createASTParsingError( context ) {
 		node
 	} = context;
 
-	let message = '\n❌ AST parsing failed\n';
-	message += `- File: ${ fileName }\n`;
-	message += `- Location: line ${ line }, column ${ column }\n`;
-	message += `- Node type: ${ nodeType }\n`;
+	let message = '\nAST parsing failed\n';
+	message += `File: ${ fileName }\n`;
+	message += `Location: line ${ line }, column ${ column }\n`;
+	message += `Node type: ${ nodeType }\n`;
 
 	if ( node ) {
-		message += '\n* Node details:\n';
+		message += '\nNode details:\n';
 		message += `   Type: ${ node.type }\n`;
 		if ( node.name ) {
 			message += `   Name: ${ node.name }\n`;
@@ -207,11 +218,11 @@ export function createASTParsingError( context ) {
 		}
 	}
 
-	message += '\n* This usually indicates:\n';
-	message += '   1. Unsupported TypeScript/JavaScript syntax\n';
-	message += '   2. A bug in the AST parser configuration\n';
-	message += '   3. Missing Babel/TypeScript parser plugin\n';
-	message += '   4. Syntax error in the source file\n';
+	message += '\nThis usually indicates:\n';
+	message += '1. Unsupported TypeScript/JavaScript syntax\n';
+	message += '2. A bug in the AST parser configuration\n';
+	message += '3. Missing Babel/TypeScript parser plugin\n';
+	message += '4. Syntax error in the source file\n';
 
 	return message;
 }

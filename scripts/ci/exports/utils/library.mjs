@@ -13,15 +13,17 @@
 
 import { Module } from './module.mjs';
 import { packageDirName } from './misc.mjs';
+import { ErrorCollector } from './error-collector.mjs';
 
 export class Library {
 	constructor() {
 		this.modules = [];
 		this.packages = new Map();
+		this.errorCollector = new ErrorCollector();
 	}
 
 	loadModules( typeScriptFileNames ) {
-		this.modules = typeScriptFileNames.map( fileName => Module.load( fileName ) );
+		this.modules = typeScriptFileNames.map( fileName => Module.load( fileName, this.errorCollector ) );
 
 		for ( const module of this.modules ) {
 			const packageName = module.packageName;
