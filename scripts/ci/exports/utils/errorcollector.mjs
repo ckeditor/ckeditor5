@@ -11,17 +11,9 @@ import chalk from 'chalk';
 export class ErrorCollector {
 	constructor() {
 		this.errors = [];
-		this.errorSet = new Set();
 	}
 
 	addError( { path, message, solution } ) {
-		const key = `${ path }|${ message }`;
-
-		if ( this.errorSet.has( key ) ) {
-			return;
-		}
-
-		this.errorSet.add( key );
 		this.errors.push( { path, message, solution } );
 	}
 
