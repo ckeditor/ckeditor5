@@ -63,16 +63,4 @@ export {
 	type EditorUsageData as _EditorUsageData
 } from './editor/utils/editorusagedata.js';
 
-// TEST SCENARIO 1: Export Resolution Error - Non-existent export
-export { NonExistentExport } from './plugin.js';
-
-// TEST SCENARIO 2: Module Resolution Error - Non-existent module
-export { SomeExport } from './non-existent-module.js';
-
-// TEST SCENARIO 3: Import Reference Error - Wrong import name
-export { WrongPluginName } from './plugin.js';
-
-// TEST SCENARIO 4: External Module Error - External module re-export
-export type { ExternalExport } from 'external-package';
-
 import './augmentation.js';
