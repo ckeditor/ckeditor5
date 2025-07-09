@@ -77,6 +77,7 @@ export function getBalloonTablePositionData( editor: Editor ): Partial<DomOptima
  * to the selected table cell in the editor content.
  *
  * @param editor The editor instance.
+ * @internal
  */
 export function getBalloonCellPositionData( editor: Editor ): Partial<DomOptimalPositionOptions> {
 	const mapper = editor.editing.mapper;

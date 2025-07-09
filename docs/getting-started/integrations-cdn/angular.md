@@ -137,7 +137,7 @@ export class MyComponent {
 	public editorData;
 
 	private _setupEditor( cloud ) {
-	 	this.editorData = '<p>Hello, world!</p>';
+		this.editorData = '<p>Hello, world!</p>';
 	}
 	// ...
 }
@@ -169,10 +169,10 @@ export class MyComponent {
 	public isDisabled;
 	// ...
 	private _setupEditor( cloud ) {
-	 	this.isDisabled = false;
+		this.isDisabled = false;
 	}
 	toggleDisabled() {
-		this.isDisabled = !this.isDisabled
+		this.isDisabled = !this.isDisabled;
 	}
 }
 ```
@@ -269,7 +269,7 @@ export class MyComponent {
 
 Allows disabling the two-way data binding mechanism. The default value is `false`.
 
-The reason for the introduction of this option are performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize the data between the editor instance and the connected property. This results in calling the {@link module:core/editor/editor~Editor#getData `editor.getData()`} function, which causes a massive slowdown while typing in large documents.
+The reason for the introduction of this option is performance issues in large documents. By default, while using the `ngModel` directive, whenever the editor's data is changed, the component must synchronize the data between the editor instance and the connected property. This results in calling the {@link module:core/editor/editor~Editor#getData `editor.getData()`} function, which causes a massive slowdown while typing in large documents.
 
 This option allows the integrator to disable the default behavior and only call the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method on demand, which prevents the slowdowns. You can read more in the [relevant issue](https://github.com/ckeditor/ckeditor5-angular/issues/141).
 
@@ -282,7 +282,7 @@ The following `@Output` properties are supported by the CKEditor&nbsp;5 rich tex
 Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
 It is fired with the editor instance.
 
-Note that this method might be called multiple times. Apart from initialization, it is also called whenever the editor is restarted after a crash. Do not keep the reference to the editor instance internally, because it will change in case of restart. Instead, you should use `watchdog.editor` property.
+Note that this method might be called multiple times. Apart from initialization, it is also called whenever the editor is restarted after a crash. Do not keep the reference to the editor instance internally, because it will change in case of a restart. Instead, you should use the `watchdog.editor` property.
 
 ### `change`
 
@@ -332,7 +332,7 @@ It is fired with an object containing the editor and the CKEditor&nbsp;5 `focus`
 
 ### `error`
 
-Fired when the editor crashes. Once the editor is crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
+Fired when the editor crashes. Once the editor has crashed, the internal watchdog mechanism restarts the editor and fires the [ready](#ready) event.
 
 <info-box>
 	Prior to ckeditor5-angular `v7.0.1`, this event was not fired for crashes during the editor initialization.
@@ -382,7 +382,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 }
 ```
 
-Then in the parent component add the relative path to the above style sheet:
+Then, in the parent component, add the relative path to the above style sheet:
 
 ```angular-ts
 /* src/app/app.component.ts */
@@ -405,7 +405,7 @@ To style the component using a global style sheet, first, create it:
 }
 ```
 
-Then, add it in the `angular.json` configuration file:
+Then, add it to the `angular.json` configuration file:
 
 ```json
 "architect": {
@@ -442,7 +442,7 @@ export class MyComponent {
 
 ### Accessing the editor instance
 
-The CKEditor&nbsp;5 rich text editor component provides all the functionality needed for most use cases. When access to the full CKEditor&nbsp;5 API is needed you can get the editor instance with an additional step.
+The CKEditor&nbsp;5 rich text editor component provides all the functionality needed for most use cases. When access to the full CKEditor&nbsp;5 API is needed, you can get the editor instance with an additional step.
 
 To do this, create a template reference variable `#editor` pointing to the `<ckeditor>` component:
 
@@ -466,7 +466,7 @@ export class MyComponent {
 ```
 
 <info-box>
-	The editor creation is asynchronous so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor&nbsp;5 instance on the [`ready`](#ready) event.
+	The editor creation is asynchronous, so the `editorInstance` will not be available until the editor is created. If you want to make changes to an editor that has just been created, a better option would be getting the CKEditor&nbsp;5 instance on the [`ready`](#ready) event.
 </info-box>
 
 ## How to?
@@ -556,7 +556,7 @@ We provide a few **ready-to-use integrations** featuring collaborative editing i
 * [CKEditor&nbsp;5 with the revision history feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/revision-history-for-angular)
 * [CKEditor&nbsp;5 with the track changes feature](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/track-changes-for-angular)
 
-It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+It is not mandatory to build applications on top of the above samples; however, they should help you get started.
 
 ### Localization
 
@@ -686,7 +686,7 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 
 ## Contributing and reporting issues
 
-The source code of the CKEditor&nbsp;5 rich text editor component for Angular is available on GitHub in [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).
+The source code of the CKEditor&nbsp;5 rich text editor component for Angular is available on GitHub at [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).
 
 ## Next steps
 

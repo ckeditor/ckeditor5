@@ -54,9 +54,29 @@
 
 				& > td,
 				& > th {
-					/* stylelint-enable no-descending-specificity */
+					/* Opinionated table content styling: prevents content from shifting
+					 * when Enter is pressed in the first cell.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:first-of-type {
+						margin-top: 0;
+					}
+
+					/* Mirrors the rule above for the last paragraph to keep the
+					 * experience consistent with the first paragraph.
+					 *
+					 * Together, these rules prevent margins from appearing when a
+					 * bogus paragraph becomes a real paragraph after it receives line
+					 * height, text alignment, or other block style.
+					 *
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+					& > p:last-of-type {
+						margin-bottom: 0;
+					}
+
 					min-width: 2em;
-					padding: .4em;
+					padding: 0.4em;
 
 					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
 					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
