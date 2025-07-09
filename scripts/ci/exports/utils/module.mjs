@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
@@ -15,18 +13,13 @@ import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
 import {
-	createExportResolutionError,
-	createExportResolutionSummary,
-	createModuleResolutionError,
 	createModuleResolutionSummary,
-	createImportReferenceError,
-	createImportReferenceSummary,
-	createASTParsingError,
-	createASTParsingSummary
+	createImportReferenceErrorSummary,
+	createExportResolutionSummary
 } from './error-utils.mjs';
 
 export class Module {
-	static load( fileName, errorCollector = null ) {
+	static load( fileName, errorCollector ) {
 		const data = fs.readFileSync( fileName, 'utf8' );
 
 		const ast = parser.parse( data, {
@@ -41,7 +34,7 @@ export class Module {
 		}, errorCollector );
 	}
 
-	constructor( fileName, ast, { publicApiTag }, errorCollector = null ) {
+	constructor( fileName, ast, { publicApiTag }, errorCollector ) {
 		this.fileName = fileName.replace( /\.d\.ts$/, '.ts' );
 		this.isPublicApi = !fileName.includes( '/external/' ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
 		this.exports = [];
@@ -82,26 +75,7 @@ export class Module {
 						}
 					}
 					else {
-						const context = {
-							fileName: this.fileName,
-							nodeType: 'ExportDeclaration',
-							line: node.loc?.start?.line,
-							column: node.loc?.start?.column,
-							node: node.declaration
-						};
-
-						const errorMessage = createASTParsingError( context );
-						const { summary, solution } = createASTParsingSummary( context );
-
-						if ( this.errorCollector ) {
-							this.errorCollector.addError( summary, {
-								...context,
-								solution,
-								fullMessage: errorMessage
-							} );
-						} else {
-							throw new Error( errorMessage );
-						}
+						throw new Error( 'Unknown AST export node' );
 					}
 				} else {
 					// export type { Marker };
@@ -203,26 +177,7 @@ export class Module {
 							} ) );
 						}
 						else {
-							const context = {
-								fileName: this.fileName,
-								nodeType: 'ImportSpecifier',
-								line: specifier.loc?.start?.line,
-								column: specifier.loc?.start?.column,
-								node: specifier.imported
-							};
-
-							const errorMessage = createASTParsingError( context );
-							const { summary, solution } = createASTParsingSummary( context );
-
-							if ( this.errorCollector ) {
-								this.errorCollector.addError( summary, {
-									...context,
-									solution,
-									fullMessage: errorMessage
-								} );
-							} else {
-								throw new Error( errorMessage );
-							}
+							throw new Error( 'Unknown AST import specifier:' + specifier.imported );
 						}
 					}
 					else if ( specifier.type === 'ImportNamespaceSpecifier' ) {
@@ -238,26 +193,9 @@ export class Module {
 						} ) );
 					}
 					else {
-						const context = {
-							fileName: this.fileName,
-							nodeType: 'ImportSpecifier',
-							line: specifier.loc?.start?.line,
-							column: specifier.loc?.start?.column,
-							node: specifier
-						};
-
-						const errorMessage = createASTParsingError( context );
-						const { summary, solution } = createASTParsingSummary( context );
-
-						if ( this.errorCollector ) {
-							this.errorCollector.addError( summary, {
-								...context,
-								solution,
-								fullMessage: errorMessage
-							} );
-						} else {
-							throw new Error( errorMessage );
-						}
+						throw new Error( 'Unknown AST import specifier:' + specifier.type + ' ' +
+							this.relativeFileName + '#' + node.loc.start.line
+						);
 					}
 				}
 			},
@@ -448,25 +386,14 @@ export class Module {
 					new ExternalModule( item.importFrom );
 
 				if ( !otherModule ) {
-					const context = {
-						fileName: this.fileName,
-						importFrom: item.importFrom,
-						packageName: this.packageName,
-						availablePackages: Array.from( packages.keys() )
-					};
+					const context = { fileName: this.fileName, importFrom: item.importFrom };
 
-					const errorMessage = createModuleResolutionError( context );
 					const { summary, solution } = createModuleResolutionSummary( context );
 
-					if ( this.errorCollector ) {
-						this.errorCollector.addError( summary, {
-							...context,
-							solution,
-							fullMessage: errorMessage
-						} );
-					} else {
-						throw new Error( errorMessage );
-					}
+					this.errorCollector.addError( summary, {
+						...context,
+						solution
+					} );
 				}
 
 				return item.resolveImport( otherModule );
@@ -554,26 +481,16 @@ export class Module {
 				const context = {
 					fileName: this.fileName,
 					exportName: exportItem.name,
-					localName: exportItem.localName,
-					importFrom: exportItem.importFrom?.fileName,
 					isExternalModule: exportItem.importFrom instanceof ExternalModule,
-					exportKind: exportItem.exportKind,
-					availableDeclarations: this.declarations.map( d => ( { localName: d.localName, type: d.type } ) ),
-					availableImports: this.imports.map( i => ( { localName: i.localName, importFrom: i.importFrom } ) )
+					exportKind: exportItem.exportKind
 				};
 
-				const errorMessage = createExportResolutionError( context );
 				const { summary, solution } = createExportResolutionSummary( context );
 
-				if ( this.errorCollector ) {
-					this.errorCollector.addError( summary, {
-						...context,
-						solution,
-						fullMessage: errorMessage
-					} );
-				} else {
-					throw new Error( errorMessage );
-				}
+				this.errorCollector.addError( summary, {
+					...context,
+					solution
+				} );
 			}
 
 			exportItem.references = references;
@@ -600,6 +517,11 @@ export class Module {
 	}
 
 	_findImportReference( importFrom, referenceName ) {
+		// Patch: Handle undefined importFrom gracefully to prevent crashes.
+		if ( !importFrom ) {
+			return [];
+		}
+
 		if ( importFrom instanceof ExternalModule ) {
 			return [];
 		}
@@ -615,22 +537,15 @@ export class Module {
 			const context = {
 				referenceName,
 				fileName: this.fileName,
-				importFrom: importFrom.fileName,
 				availableExports: importFrom.exports
 			};
 
-			const errorMessage = createImportReferenceError( context );
-			const { summary, solution } = createImportReferenceSummary( context );
+			const { summary, solution } = createImportReferenceErrorSummary( context );
 
-			if ( this.errorCollector ) {
-				this.errorCollector.addError( summary, {
-					...context,
-					solution,
-					fullMessage: errorMessage
-				} );
-			} else {
-				throw new Error( errorMessage );
-			}
+			this.errorCollector.addError( summary, {
+				...context,
+				solution
+			} );
 		}
 
 		return [ reference ];

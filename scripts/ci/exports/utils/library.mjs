@@ -1,11 +1,7 @@
-#!/usr/bin/env node
-
 /**
  * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
-
-/* eslint-env node */
 
 /**
  * Note: Run this script in root of ckeditor5.
@@ -14,6 +10,8 @@
 import { Module } from './module.mjs';
 import { packageDirName } from './misc.mjs';
 import { ErrorCollector } from './error-collector.mjs';
+import { createExportResolutionSummary } from './error-utils.mjs';
+import { ExternalModule } from './externalmodule.mjs';
 
 export class Library {
 	constructor() {
@@ -67,6 +65,19 @@ export class Library {
 					}
 				} else {
 					const srcExport = exportItem.importFrom.exports.find( item => item.name === exportItem.localName );
+
+					if ( !srcExport ) {
+						const { summary, solution } = createExportResolutionSummary( {
+							fileName: exportItem.fileName,
+							exportName: exportItem.name,
+							isExternalModule: exportItem.importFrom instanceof ExternalModule,
+							exportKind: exportItem.exportKind
+						} );
+
+						this.errorCollector.addError( summary, { solution } );
+
+						continue;
+					}
 
 					srcExport.reExported.push( {
 						name: exportItem.name,

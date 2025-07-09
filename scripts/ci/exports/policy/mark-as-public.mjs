@@ -4,6 +4,10 @@
  */
 
 export function markAsPublic( item ) {
+	if ( !item ) {
+		return;
+	}
+
 	// Already marked as public or marked as internal.
 	if ( item.isPublicTree || item.internal ) {
 		return;
@@ -15,9 +19,11 @@ export function markAsPublic( item ) {
 }
 
 export function markReferencesAsPublic( item ) {
-	if ( item.references ) {
-		for ( const reference of item.references ) {
-			markAsPublic( reference );
-		}
+	if ( !item || !item.references ) {
+		return;
+	}
+
+	for ( const reference of item.references ) {
+		markAsPublic( reference );
 	}
 }
