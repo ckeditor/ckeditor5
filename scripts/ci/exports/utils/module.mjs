@@ -13,9 +13,9 @@ import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
 import {
-	createModuleResolutionSummary,
+	createModuleResolutionErrorSummary,
 	createImportReferenceErrorSummary,
-	createExportResolutionSummary
+	createExportResolutionErrorSummary
 } from './error-utils.mjs';
 
 export class Module {
@@ -388,7 +388,7 @@ export class Module {
 				if ( !otherModule ) {
 					const context = { fileName: this.fileName, importFrom: item.importFrom };
 
-					const { summary, solution } = createModuleResolutionSummary( context );
+					const { summary, solution } = createModuleResolutionErrorSummary( context );
 
 					this.errorCollector.addError( summary, {
 						...context,
@@ -485,7 +485,7 @@ export class Module {
 					exportKind: exportItem.exportKind
 				};
 
-				const { summary, solution } = createExportResolutionSummary( context );
+				const { summary, solution } = createExportResolutionErrorSummary( context );
 
 				this.errorCollector.addError( summary, {
 					...context,

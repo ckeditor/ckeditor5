@@ -9,7 +9,7 @@ import chalk from 'chalk';
  * Utility functions for creating detailed error messages with context information.
  */
 
-export function createExportResolutionSummary( context ) {
+export function createExportResolutionErrorSummary( context ) {
 	const { fileName, exportName, isExternalModule, exportKind } = context;
 	const relativePath = getRelativePath( fileName );
 	const exportType = exportKind || 'value';
@@ -25,7 +25,7 @@ export function createExportResolutionSummary( context ) {
 	};
 }
 
-export function createModuleResolutionSummary( context ) {
+export function createModuleResolutionErrorSummary( context ) {
 	const { fileName, importFrom } = context;
 	const relativePath = getRelativePath( fileName );
 

@@ -10,7 +10,7 @@
 import { Module } from './module.mjs';
 import { packageDirName } from './misc.mjs';
 import { ErrorCollector } from './error-collector.mjs';
-import { createExportResolutionSummary } from './error-utils.mjs';
+import { createExportResolutionErrorSummary } from './error-utils.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 
 export class Library {
@@ -67,7 +67,7 @@ export class Library {
 					const srcExport = exportItem.importFrom.exports.find( item => item.name === exportItem.localName );
 
 					if ( !srcExport ) {
-						const { summary, solution } = createExportResolutionSummary( {
+						const { summary, solution } = createExportResolutionErrorSummary( {
 							fileName: exportItem.fileName,
 							exportName: exportItem.name,
 							isExternalModule: exportItem.importFrom instanceof ExternalModule,
