@@ -3,66 +3,60 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import chalk from 'chalk';
+
 /**
  * Utility functions for creating detailed error messages with context information.
  */
 
 export function createExportResolutionSummary( context ) {
 	const { fileName, exportName, isExternalModule, exportKind } = context;
-
-	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+	const relativePath = getRelativePath( fileName );
 	const exportType = exportKind || 'value';
 
-	let reason, solution;
-
-	if ( isExternalModule ) {
-		reason = 'External module re-export';
-		solution = 'Create local declarations for external exports or use type-only exports';
-	} else {
-		reason = 'Declaration not found';
-		solution = 'Check if the export exists in the source module and verify import path';
-	}
+	const reason = isExternalModule ? 'External module re-export' : 'Declaration not found';
+	const solution = isExternalModule ?
+		'Create local declarations for external exports or use type-only exports' :
+		'Check if the export exists in the source module and verify import path';
 
 	return {
-		summary: `[${ relativePath }] Export '${ exportName }' (${ exportType }): ${ reason }`,
+		summary: `[${ relativePath }]\n${ chalk.red( `Export '${ exportName }' (${ exportType }): ${ reason }` ) }`,
 		solution
 	};
 }
 
 export function createModuleResolutionSummary( context ) {
 	const { fileName, importFrom } = context;
-
-	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+	const relativePath = getRelativePath( fileName );
 
 	return {
-		summary: `[${ relativePath }] Module '${ importFrom }' not found`,
+		summary: `[${ relativePath }]\n${ chalk.red( `Module '${ importFrom }' not found` ) }`,
 		solution: 'Check if the package exists and has a proper index.ts file'
 	};
 }
 
 export function createImportReferenceSummary( context ) {
 	const { fileName, importFrom, referenceName } = context;
-
-	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+	const relativePath = getRelativePath( fileName );
 
 	return {
-		summary: `[${ relativePath }] Import '${ referenceName }' from '${ importFrom }' not found`,
+		summary: `[${ relativePath }]\n${ chalk.red( `Import '${ referenceName }' from '${ importFrom }' not found` ) }`,
 		solution: 'Verify the export exists in the source module and check for typos'
 	};
 }
 
 export function createASTParsingSummary( context ) {
 	const { fileName, nodeType, line, column } = context;
-
-	const relativePath = fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
-	const location = line ? `:${ line }${ column ? `:${ column }` : '' }` : '';
+	const relativePath = getRelativePath( fileName );
+	const location = formatLocation( line, column );
 
 	return {
-		summary: `[${ relativePath }${ location }] AST parsing failed for ${ nodeType }`,
+		summary: `[${ relativePath }${ location }]\n${ chalk.red( `AST parsing failed for ${ nodeType }` ) }`,
 		solution: 'Check for unsupported TypeScript syntax or parser configuration issues'
 	};
 }
 
+// Detailed error functions
 export function createExportResolutionError( context ) {
 	const {
 		fileName,
@@ -75,54 +69,47 @@ export function createExportResolutionError( context ) {
 		availableImports = []
 	} = context;
 
-	let message = '\nExport resolution failed\n';
-	message += `File: ${ fileName }\n`;
-	message += `Export: ${ exportName }\n`;
-	message += `Local name: ${ localName }\n`;
+	const header = buildMessage( [
+		'Export resolution failed',
+		`File: ${ fileName }`,
+		`Export: ${ exportName }`,
+		`Local name: ${ localName }`,
+		exportKind && `Export kind: ${ exportKind }`,
+		importFrom && `Import from: ${ importFrom }`,
+		importFrom && `External module: ${ isExternalModule ? 'Yes' : 'No' }`
+	] );
 
-	if ( exportKind ) {
-		message += `Export kind: ${ exportKind }\n`;
-	}
-
-	if ( importFrom ) {
-		message += `Import from: ${ importFrom }\n`;
-		message += `External module: ${ isExternalModule ? 'Yes' : 'No' }\n`;
-	}
+	let details;
 
 	if ( isExternalModule ) {
-		message += '\nThis appears to be a re-export from an external module.\n';
-		message += 'The validation script cannot resolve external module exports.\n';
-		message += 'Consider:\n';
-		message += '1. Skipping validation for external modules\n';
-		message += '2. Creating local declarations for external exports\n';
-		message += '3. Using type-only exports for external types\n';
+		details = buildMessage( [
+			'',
+			'This appears to be a re-export from an external module.',
+			'Consider:',
+			'1. Creating local declarations for external exports',
+			'2. Using type-only exports for external types'
+		] );
 	} else {
-		message += '\nAvailable declarations in this module:\n';
-		if ( availableDeclarations.length > 0 ) {
-			availableDeclarations.forEach( decl => {
-				message += `   - ${ decl.localName } (${ decl.type })\n`;
-			} );
-		} else {
-			message += '   (none)\n';
-		}
+		const declarationsList = formatList( availableDeclarations,
+			decl => `   - ${ decl.localName } (${ decl.type })` );
+		const importsList = formatList( availableImports,
+			imp => `   - ${ imp.localName } from ${ imp.importFrom }` );
 
-		message += '\nAvailable imports in this module:\n';
-		if ( availableImports.length > 0 ) {
-			availableImports.forEach( imp => {
-				message += `   - ${ imp.localName } from ${ imp.importFrom }\n`;
-			} );
-		} else {
-			message += '   (none)\n';
-		}
-
-		message += '\nPossible solutions:\n';
-		message += '1. Check if the declaration exists in the imported module\n';
-		message += '2. Verify the import path is correct\n';
-		message += '3. Ensure the export is properly declared in the source module\n';
-		message += '4. Check for typos in the export/import names\n';
+		details = buildMessage( [
+			'',
+			'Available declarations in this module:',
+			declarationsList,
+			'Available imports in this module:',
+			importsList,
+			'Possible solutions:',
+			'1. Check if the declaration exists in the imported module',
+			'2. Verify the import path is correct',
+			'3. Ensure the export is properly declared in the source module',
+			'4. Check for typos in the export/import names'
+		] );
 	}
 
-	return message;
+	return buildMessage( [ header, details ] );
 }
 
 export function createModuleResolutionError( context ) {
@@ -133,30 +120,27 @@ export function createModuleResolutionError( context ) {
 		availablePackages = []
 	} = context;
 
-	let message = '\nModule resolution failed\n';
-	message += `File: ${ fileName }\n`;
-	message += `Package: ${ packageName }\n`;
-	message += `Import path: ${ importFrom }\n`;
+	const header = buildMessage( [
+		'Module resolution failed',
+		`File: ${ fileName }`,
+		`Package: ${ packageName }`,
+		`Import path: ${ importFrom }`
+	] );
 
-	message += '\nAvailable packages:\n';
-	if ( availablePackages.length > 0 ) {
-		availablePackages.slice( 0, 10 ).forEach( pkg => {
-			message += `   - ${ pkg }\n`;
-		} );
-		if ( availablePackages.length > 10 ) {
-			message += `   ... and ${ availablePackages.length - 10 } more\n`;
-		}
-	} else {
-		message += '   (none)\n';
-	}
+	const packagesList = formatList( availablePackages, pkg => `   - ${ pkg }` );
 
-	message += '\nPossible solutions:\n';
-	message += '1. Check if the package exists in the workspace\n';
-	message += '2. Verify the import path is correct\n';
-	message += '3. Ensure the package has a proper index.ts file\n';
-	message += '4. Check for typos in the package name or path\n';
+	const details = buildMessage( [
+		'',
+		'Available packages:',
+		packagesList,
+		'Possible solutions:',
+		'1. Check if the package exists in the workspace',
+		'2. Verify the import path is correct',
+		'3. Ensure the package has a proper index.ts file',
+		'4. Check for typos in the package name or path'
+	] );
 
-	return message;
+	return buildMessage( [ header, details ] );
 }
 
 export function createImportReferenceError( context ) {
@@ -167,30 +151,28 @@ export function createImportReferenceError( context ) {
 		availableExports = []
 	} = context;
 
-	let message = '\nImport reference not found\n';
-	message += `File: ${ fileName }\n`;
-	message += `Import from: ${ importFrom }\n`;
-	message += `Reference name: ${ referenceName }\n`;
+	const header = buildMessage( [
+		'Import reference not found',
+		`File: ${ fileName }`,
+		`Import from: ${ importFrom }`,
+		`Reference name: ${ referenceName }`
+	] );
 
-	message += '\nAvailable exports in source module:\n';
-	if ( availableExports.length > 0 ) {
-		availableExports.slice( 0, 10 ).forEach( exp => {
-			message += `   - ${ exp.name } (${ exp.exportKind || 'value' })\n`;
-		} );
-		if ( availableExports.length > 10 ) {
-			message += `   ... and ${ availableExports.length - 10 } more\n`;
-		}
-	} else {
-		message += '   (none)\n';
-	}
+	const exportsList = formatList( availableExports,
+		exp => `   - ${ exp.name } (${ exp.exportKind || 'value' })` );
 
-	message += '\nPossible solutions:\n';
-	message += '1. Check if the export exists in the source module\n';
-	message += '2. Verify the export name is spelled correctly\n';
-	message += '3. Ensure the export is properly declared in the source module\n';
-	message += '4. Check if the export is a type export when importing as value or vice versa\n';
+	const details = buildMessage( [
+		'',
+		'Available exports in source module:',
+		exportsList,
+		'Possible solutions:',
+		'1. Check if the export exists in the source module',
+		'2. Verify the export name is spelled correctly',
+		'3. Ensure the export is properly declared in the source module',
+		'4. Check if the export is a type export when importing as value or vice versa'
+	] );
 
-	return message;
+	return buildMessage( [ header, details ] );
 }
 
 export function createASTParsingError( context ) {
@@ -202,27 +184,65 @@ export function createASTParsingError( context ) {
 		node
 	} = context;
 
-	let message = '\nAST parsing failed\n';
-	message += `File: ${ fileName }\n`;
-	message += `Location: line ${ line }, column ${ column }\n`;
-	message += `Node type: ${ nodeType }\n`;
+	const header = buildMessage( [
+		'AST parsing failed',
+		`File: ${ fileName }`,
+		`Location: line ${ line }, column ${ column }`,
+		`Node type: ${ nodeType }`
+	] );
 
+	let nodeDetails = '';
 	if ( node ) {
-		message += '\nNode details:\n';
-		message += `   Type: ${ node.type }\n`;
+		const nodeInfo = [
+			'Node details:',
+			`   Type: ${ node.type }`
+		];
+
 		if ( node.name ) {
-			message += `   Name: ${ node.name }\n`;
+			nodeInfo.push( `   Name: ${ node.name }` );
 		}
 		if ( node.value ) {
-			message += `   Value: ${ node.value }\n`;
+			nodeInfo.push( `   Value: ${ node.value }` );
 		}
+
+		nodeDetails = buildMessage( [ '', ...nodeInfo ] );
 	}
 
-	message += '\nThis usually indicates:\n';
-	message += '1. Unsupported TypeScript/JavaScript syntax\n';
-	message += '2. A bug in the AST parser configuration\n';
-	message += '3. Missing Babel/TypeScript parser plugin\n';
-	message += '4. Syntax error in the source file\n';
+	const causes = buildMessage( [
+		'',
+		'This usually indicates:',
+		'1. Unsupported TypeScript/JavaScript syntax',
+		'2. A bug in the AST parser configuration',
+		'3. Missing Babel/TypeScript parser plugin',
+		'4. Syntax error in the source file'
+	] );
 
-	return message;
+	return buildMessage( [ header, nodeDetails, causes ] );
+}
+
+function getRelativePath( fileName ) {
+	return fileName.replace( /.*\/packages\//, '' ).replace( /.*\/external\//, '' );
+}
+
+function formatLocation( line, column ) {
+	return line ? `:${ line }${ column ? `:${ column }` : '' }` : '';
+}
+
+function formatList( items, formatter, maxItems = 10 ) {
+	if ( items.length === 0 ) {
+		return '   (none)\n';
+	}
+
+	const formatted = items.slice( 0, maxItems ).map( formatter );
+	const result = formatted.join( '\n' );
+
+	if ( items.length > maxItems ) {
+		return result + `\n   ... and ${ items.length - maxItems } more\n`;
+	}
+
+	return result + '\n';
+}
+
+function buildMessage( parts ) {
+	return parts.filter( Boolean ).join( '\n' );
 }
