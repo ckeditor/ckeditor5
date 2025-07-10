@@ -197,7 +197,10 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/validate-changelog-entry': [ 'error', {
-				allowedScopes: projectPackages,
+				allowedScopes: [
+					...projectPackages,
+					'ckeditor5'
+				],
 				repositoryType: 'mono'
 			} ]
 		}
