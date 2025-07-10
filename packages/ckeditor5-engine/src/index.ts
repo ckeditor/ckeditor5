@@ -217,7 +217,7 @@ export type {
 
 // View.
 export { ViewDataTransfer, type ViewDropEffect, type ViewEffectAllowed } from './view/datatransfer.js';
-export { ViewDomConverter, type BlockFillerMode } from './view/domconverter.js';
+export { ViewDomConverter, type ViewBlockFillerMode } from './view/domconverter.js';
 export { ViewRenderer } from './view/renderer.js';
 export {
 	EditingView,

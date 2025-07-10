@@ -7,6 +7,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 import { modelList } from '../list/_utils/utils.js';
@@ -1087,6 +1088,169 @@ describe( 'ListPropertiesEditing', () => {
 					  * 2.[]
 				` ) );
 			} );
+		} );
+	} );
+
+	describe( 'all styles enabled', () => {
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, ListPropertiesEditing, BoldEditing ],
+				list: {
+					properties: { styles: true, startIndex: true, reversed: true }
+				}
+			} );
+
+			model = editor.model;
+
+			stubUid();
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should not reconvert the whole list on single item marker bold set', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>foo 1.</li>' +
+					'<li>foo 2.' +
+						'<ul>' +
+							'<li>foo 2.1.</li>' +
+							'<li>foo 2.2.</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 2 ), 'in' ) );
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +
+					'foo 1.' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a03" listStyle="default" listType="bulleted">' +
+					'foo 2.' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listStyle="default" listType="bulleted">' +
+					'[foo 2.1.]' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listStyle="default" listType="bulleted">' +
+					'foo 2.2.' +
+				'</paragraph>'
+			);
+
+			const changeDataListener = sinon.spy( () => {
+				const changes = editor.model.document.differ.getChanges();
+
+				expect( changes.length ).to.equal( 2 );
+
+				expect( changes[ 0 ].type ).to.equal( 'attribute' );
+				expect( changes[ 0 ].attributeKey ).to.equal( 'listItemBold' );
+				expect( changes[ 0 ].attributeOldValue ).to.be.null;
+				expect( changes[ 0 ].attributeNewValue ).to.be.true;
+				expect( changes[ 0 ].range.start.path ).to.deep.equal( [ 2 ] );
+				expect( changes[ 0 ].range.end.path ).to.deep.equal( [ 2, 0 ] );
+
+				expect( changes[ 1 ].type ).to.equal( 'attribute' );
+				expect( changes[ 1 ].attributeKey ).to.equal( 'bold' );
+				expect( changes[ 1 ].attributeOldValue ).to.be.null;
+				expect( changes[ 1 ].attributeNewValue ).to.be.true;
+				expect( changes[ 1 ].range.start.path ).to.deep.equal( [ 2, 0 ] );
+				expect( changes[ 1 ].range.end.path ).to.deep.equal( [ 2, 8 ] );
+			} );
+
+			editor.model.document.on( 'change:data', changeDataListener );
+
+			editor.execute( 'bold' );
+
+			expect( changeDataListener.calledOnce ).to.be.true;
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +
+					'foo 1.' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a03" listStyle="default" listType="bulleted">' +
+					'foo 2.' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemBold="true" listItemId="a01" listStyle="default" listType="bulleted">' +
+					'[<$text bold="true">foo 2.1.</$text>]' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listStyle="default" listType="bulleted">' +
+					'foo 2.2.' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should not reconvert the whole list on single item marker bold reset', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>foo 1.</li>' +
+					'<li>foo 2.' +
+						'<ul>' +
+							'<li><b>foo 2.1.</b></li>' +
+							'<li>foo 2.2.</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 2 ), 'in' ) );
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +
+					'foo 1.' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a03" listStyle="default" listType="bulleted">' +
+					'foo 2.' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemBold="true" listItemId="a01" listStyle="default" listType="bulleted">' +
+					'[<$text bold="true">foo 2.1.</$text>]' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listStyle="default" listType="bulleted">' +
+					'foo 2.2.' +
+				'</paragraph>'
+			);
+
+			const changeDataListener = sinon.spy( () => {
+				const changes = editor.model.document.differ.getChanges();
+
+				expect( changes.length ).to.equal( 2 );
+
+				expect( changes[ 0 ].type ).to.equal( 'attribute' );
+				expect( changes[ 0 ].attributeKey ).to.equal( 'listItemBold' );
+				expect( changes[ 0 ].attributeOldValue ).to.be.true;
+				expect( changes[ 0 ].attributeNewValue ).to.be.null;
+				expect( changes[ 0 ].range.start.path ).to.deep.equal( [ 2 ] );
+				expect( changes[ 0 ].range.end.path ).to.deep.equal( [ 2, 0 ] );
+
+				expect( changes[ 1 ].type ).to.equal( 'attribute' );
+				expect( changes[ 1 ].attributeKey ).to.equal( 'bold' );
+				expect( changes[ 1 ].attributeOldValue ).to.be.true;
+				expect( changes[ 1 ].attributeNewValue ).to.be.null;
+				expect( changes[ 1 ].range.start.path ).to.deep.equal( [ 2, 0 ] );
+				expect( changes[ 1 ].range.end.path ).to.deep.equal( [ 2, 8 ] );
+			} );
+
+			editor.model.document.on( 'change:data', changeDataListener );
+
+			editor.execute( 'bold' );
+
+			expect( changeDataListener.calledOnce ).to.be.true;
+
+			expect( _getModelData( model ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemId="a00" listStyle="default" listType="bulleted">' +
+					'foo 1.' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a03" listStyle="default" listType="bulleted">' +
+					'foo 2.' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a01" listStyle="default" listType="bulleted">' +
+					'[foo 2.1.]' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a02" listStyle="default" listType="bulleted">' +
+					'foo 2.2.' +
+				'</paragraph>'
+			);
 		} );
 	} );
 } );

@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { ModelDocumentSelection, ModelItem, ModelSchema, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, ModelRange, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -38,7 +38,7 @@ export class RemoveFormatCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 
-		this.isEnabled = !!first( this._getFormattingItems( model.document.selection, model.schema ) );
+		this.isEnabled = !!first( this._getFormattingItems( model.document.selection ) );
 	}
 
 	/**
@@ -46,12 +46,11 @@ export class RemoveFormatCommand extends Command {
 	 */
 	public override execute(): void {
 		const model = this.editor.model;
-		const schema = model.schema;
 
 		model.change( writer => {
-			for ( const item of this._getFormattingItems( model.document.selection, schema ) ) {
+			for ( const item of this._getFormattingItems( model.document.selection ) ) {
 				if ( item.is( 'selection' ) ) {
-					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
+					for ( const attributeName of this._getFormattingAttributes( item ) ) {
 						writer.removeSelectionAttribute( attributeName );
 					}
 				} else {
@@ -59,7 +58,7 @@ export class RemoveFormatCommand extends Command {
 					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 					const itemRange = writer.createRangeOn( item );
 
-					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
+					for ( const attributeName of this._getFormattingAttributes( item ) ) {
 						this._removeFormatting( attributeName, item, itemRange, writer );
 					}
 				}
@@ -100,24 +99,30 @@ export class RemoveFormatCommand extends Command {
 	/**
 	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
-	 *
-	 * @param schema The schema describing the item.
 	 */
-	private* _getFormattingItems( selection: ModelDocumentSelection, schema: ModelSchema ) {
+	private* _getFormattingItems( selection: ModelDocumentSelection ) {
+		const model = this.editor.model;
+		const schema = model.schema;
+
 		const itemHasRemovableFormatting = ( item: ModelItem | ModelDocumentSelection ) => {
-			return !!first( this._getFormattingAttributes( item, schema ) );
+			return !!first( this._getFormattingAttributes( item ) );
 		};
 
-		// Check formatting on selected items that are not blocks.
+		// Check formatting on selected items.
 		for ( const curRange of selection.getRanges() ) {
 			for ( const item of curRange.getItems() ) {
-				if ( !schema.isBlock( item ) && itemHasRemovableFormatting( item ) ) {
+				// Ignore last block if range ends at the beginning of it.
+				if ( schema.isBlock( item ) && curRange.end.isTouching( model.createPositionAt( item, 0 ) ) ) {
+					continue;
+				}
+
+				if ( itemHasRemovableFormatting( item ) ) {
 					yield item;
 				}
 			}
 		}
 
-		// Check formatting from selected blocks.
+		// Check formatting from selected blocks (to include partly selected blocks).
 		for ( const block of selection.getSelectedBlocks() ) {
 			if ( itemHasRemovableFormatting( block ) ) {
 				yield block;
@@ -135,10 +140,11 @@ export class RemoveFormatCommand extends Command {
 	 *
 	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
-	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection, schema: ModelSchema ) {
+	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection ) {
+		const schema = this.editor.model.schema;
+
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
 				if ( isFormatting( attributeName, item ) ) {

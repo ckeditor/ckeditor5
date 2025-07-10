@@ -7,6 +7,8 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { RemoveFormatEditing } from '@ckeditor/ckeditor5-remove-format';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -25,13 +27,15 @@ describe( 'ListFormatting', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListFormatting, Paragraph, BlockQuoteEditing, MyPlugin, MyPlugin2 ]
+			plugins: [ ListFormatting, Paragraph, BlockQuoteEditing, CodeBlockEditing, RemoveFormatEditing, MyPlugin, MyPlugin2 ]
 		} );
 
 		model = editor.model;
 		docSelection = model.document.selection;
 
 		model.schema.extend( '$text', { allowAttributes: [ 'inlineFormat', 'inlineFormat2' ] } );
+		model.schema.setAttributeProperties( 'inlineFormat', { isFormatting: true } );
+		model.schema.setAttributeProperties( 'inlineFormat2', { isFormatting: true } );
 
 		model.schema.register( 'blockObject', {
 			inheritAllFrom: '$blockObject',
@@ -260,6 +264,76 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 			} );
+
+			describe( 'with remove-format feature', () => {
+				it( 'should remove marker format when whole text format is removed', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">[foo]</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
+							'[foo]' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should remove marker format when part of text format is removed', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">f[o]o</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">f</$text>' +
+							'[o]' +
+							'<$text inlineFormat="foo">o</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should not remove marker format for a collapsed selection', () => {
+					_setModelData( model,
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">foo[]</$text>' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+
+					editor.execute( 'removeFormat' );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+							'<$text inlineFormat="foo">foo</$text>[]' +
+						'</paragraph>' +
+						'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+							'<$text inlineFormat="foo">bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+			} );
 		} );
 
 		describe( 'inserting a text node into a list item', () => {
@@ -316,6 +390,29 @@ describe( 'ListFormatting', () => {
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
 						'<$text inlineFormat="foo">foobar</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should not change attribute on formatted li if inserted inline object does not accept formatting', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+						'<$text inlineFormat="foo">foo[]</$text>' +
+					'</paragraph>'
+				);
+
+				model.schema.extend( 'inlineObject', {
+					disallowAttributes: 'inlineFormat'
+				} );
+
+				model.change( writer => {
+					writer.insert( writer.createElement( 'inlineObject' ), docSelection.getFirstPosition() );
+				} );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+						'<inlineObject></inlineObject>' +
 					'</paragraph>'
 				);
 			} );
@@ -411,6 +508,37 @@ describe( 'ListFormatting', () => {
 							'<$text inlineFormat="foo">abc</$text>' +
 						'</paragraph>' +
 					'</blockQuote>'
+				);
+			} );
+
+			it( 'should reset marker formatting when list item block changed to code block', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="numbered">' +
+						'<$text inlineFormat="foo">fo[]o</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="numbered">' +
+						'<$text inlineFormat="foo">bar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" listType="numbered">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+						'<$text inlineFormat="foo">bar</$text>' +
+					'</paragraph>'
+				);
+
+				editor.execute( 'codeBlock' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<codeBlock language="plaintext" listIndent="0" listItemId="a" listType="numbered">' +
+						'foo' +
+					'</codeBlock>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="b" listType="numbered">' +
+						'<$text inlineFormat="foo">bar</$text>' +
+					'</paragraph>'
 				);
 			} );
 		} );
@@ -833,6 +961,7 @@ describe( 'ListFormatting', () => {
 			const model = this.editor.model;
 
 			model.schema.extend( '$listItem', { allowAttributes: 'listItemFormat' } );
+			model.schema.setAttributeProperties( 'listItemFormat', { isFormatting: true } );
 			model.schema.addAttributeCheck( context => {
 				const item = context.last;
 				if ( !item.getAttribute( 'listItemId' ) ) {
@@ -853,6 +982,7 @@ describe( 'ListFormatting', () => {
 			const model = this.editor.model;
 
 			model.schema.extend( '$listItem', { allowAttributes: 'listItemFormat2' } );
+			model.schema.setAttributeProperties( 'listItemFormat2', { isFormatting: true } );
 			model.schema.addAttributeCheck( context => {
 				const item = context.last;
 				if ( !item.getAttribute( 'listItemId' ) ) {

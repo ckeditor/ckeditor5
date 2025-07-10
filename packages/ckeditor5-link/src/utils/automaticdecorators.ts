@@ -15,7 +15,7 @@ import type { NormalizedLinkDecoratorAutomaticDefinition } from '../utils.js';
  * Helper class that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition} and provides
  * the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatchers} for them.
  */
-export class AutomaticDecorators {
+export class AutomaticLinkDecorators {
 	/**
 	 * Stores the definition of {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}.
 	 * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
@@ -23,7 +23,7 @@ export class AutomaticDecorators {
 	private _definitions = new Set<NormalizedLinkDecoratorAutomaticDefinition>();
 
 	/**
-	 * Gives information about the number of decorators stored in the {@link module:link/utils/automaticdecorators~AutomaticDecorators}
+	 * Gives information about the number of decorators stored in the {@link module:link/utils/automaticdecorators~AutomaticLinkDecorators}
 	 * instance.
 	 */
 	public get length(): number {

@@ -12,6 +12,7 @@ import { isEvent } from './exports/policy/is-event.mjs';
 import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
+import { validateNaming } from './exports/policy/naming.mjs';
 
 const INCORRECT_EXPORTS_MESSAGE = '❌ Detected incorrect exports in some modules or index.ts files.\n';
 
@@ -130,6 +131,12 @@ function getFixingAction( pkg, module, exportItem ) {
 		return 'Add @internal and re-export with `_` suffix';
 	}
 
+	const namingCheck = validateNaming( { pkg, module, item: exportItem } );
+
+	if ( !namingCheck.ok ) {
+		return `Rename: ${ namingCheck.warning }`;
+	}
+
 	return null;
 }
 
@@ -145,10 +152,17 @@ function getDeclarations( { pkg, module } ) {
 	return module.declarations.map( declaration => ( { pkg, module, declaration } ) );
 }
 
+function memberExistInRecord( record, packageName, memberName ) {
+	return record.Package === packageName && record[ 'Local name' ] === memberName;
+}
+
 function removeExpectedExceptions( data ) {
 	return data
 		// TODO: Remove after WProofReader has been adjusted.
-		.filter( record => !( record.Package === '@ckeditor/ckeditor5-ui' && record[ 'Local name' ] === 'UIModel' ) )
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-ui', 'UIModel' ) )
 		// TODO: Remove after MathType has been adjusted.
-		.filter( record => !( record.Package === '@ckeditor/ckeditor5-engine' && record[ 'Local name' ] === 'ViewUpcastWriter' ) );
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-engine', 'ViewUpcastWriter' ) )
+		// TODO Remove after it is moved to the clipboard package.
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-image', 'isHtmlInDataTransfer' ) )
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-find-and-replace', 'FindReplaceCommandBase' ) );
 }
