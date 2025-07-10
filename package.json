@@ -160,7 +160,7 @@
     "schema-utils": "^4.2.0",
     "sharp": "^0.34.2",
     "stylelint": "^16.0.0",
-    "stylelint-config-ckeditor5": "^11.0.0",
+    "stylelint-config-ckeditor5": "^12.0.0",
     "svgo": "^3.3.2",
     "table": "^6.8.1",
     "terser-webpack-plugin": "^5.0.0",
