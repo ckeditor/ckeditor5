@@ -18,17 +18,17 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 
 <style>
 /* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
-.docsearch-txt {
+.doc.b-table {
 	table-layout: fixed;
 }
 
-.docsearch-txt tr th:nth-child( 1 ),
-.docsearch-txt tr td:nth-child( 1 ) {
+.doc.b-table tr th:nth-child( 1 ),
+.doc.b-table tr td:nth-child( 1 ) {
 	width: 280px;
 }
 </style>
 
-<table class="docsearch-txt">
+<table>
 	<thead>
 		<tr>
 			<th>CKEditor 4</th>
