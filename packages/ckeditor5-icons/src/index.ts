@@ -169,6 +169,8 @@ export { default as IconTemplate } from '../theme/icons/template.svg';
 export { default as IconTextAlternative } from '../theme/icons/text-alternative.svg';
 export { default as IconText } from '../theme/icons/text.svg';
 export { default as IconThreeVerticalDots } from '../theme/icons/three-vertical-dots.svg';
+export { default as IconThumbUp } from '../theme/icons/thumb-up.svg';
+export { default as IconThumbDown } from '../theme/icons/thumb-down.svg';
 export { default as IconTodoList } from '../theme/icons/todo-list.svg';
 export { default as IconTrackChangesAccept } from '../theme/icons/track-changes-accept.svg';
 export { default as IconTrackChangesDiscard } from '../theme/icons/track-changes-discard.svg';
