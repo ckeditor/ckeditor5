@@ -1225,6 +1225,10 @@ import { AIAssistant } from 'ckeditor5-premium-features';
 
 This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.
 
+### Valid changelog entries
+
+This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.
+
 ## CKEditor&nbsp;5 custom Stylelint rules
 
 In addition to the rules provided by Stylelint, CKEditor&nbsp;5 uses a few custom rules described below.
