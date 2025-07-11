@@ -1228,3 +1228,29 @@ This rule ensures that SVG files are imported and exported only in the `@ckedito
 ### Valid changelog entries
 
 This rule ensures that changelog entry files are populated with proper data and a clear description of the change. For a full guide on how to populate changelog entries, see the {@link framework/contributing/changelog-entries Changelog entries} guide.
+
+## CKEditor&nbsp;5 custom Stylelint rules
+
+In addition to the rules provided by Stylelint, CKEditor&nbsp;5 uses a few custom rules described below.
+
+### Names of CSS variables within `.ck-content`: `ckeditor5-rules/ck-content-variable-name`
+
+This rule aims to enforce convention of all variables targeting styling of elements within the editor (`.ck-content`) using a common prefix (`--ck-content-*`) 
+
+👎&nbsp; Example of incorrect code for this rule:
+
+```css
+.ck-content {
+	width: var(--variable-name);
+}
+```
+
+👍&nbsp; Example of correct code for this rule:
+
+```css
+.ck-content {
+	width: var(--ck-content-variable-name);
+}
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/18805)
