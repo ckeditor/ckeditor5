@@ -15,6 +15,16 @@ import {
  */
 export class ActionsRecorder extends Plugin {
 	/**
+	 * TODO
+	 */
+	private _entries: Array<any> = [];
+
+	/**
+	 * TODO
+	 */
+	private _frameStack: Array<any> = [];
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -45,6 +55,37 @@ export class ActionsRecorder extends Plugin {
 		}, { priority: 'high' } );
 	}
 
+	/**
+	 * TODO
+	 */
+	private _enterFrame( data: any ) {
+		const callFrame = {
+			...this._frameStack.length && { parentFrame: this._frameStack.at( -1 ) },
+			...data
+		};
+
+		this._entries.push( callFrame );
+		this._frameStack.push( callFrame );
+
+		return callFrame;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _leaveFrame( callFrame: any, data: any = {} ) {
+		const topFrame = this._frameStack.pop();
+
+		if ( topFrame !== callFrame ) {
+			console.error( 'This should never happen' );
+		}
+
+		Object.assign( topFrame, data );
+	}
+
+	/**
+	 * TODO
+	 */
 	private _tapCommands() {
 		// Tap already registered commands.
 		for ( const [ commandName, command ] of this.editor.commands ) {
@@ -61,6 +102,9 @@ export class ActionsRecorder extends Plugin {
 		} );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapOperationApply() {
 		this._tapMethod( this.editor.model, 'applyOperation', {
 			before: ( callContext, [ operation ] ) => {
@@ -71,17 +115,27 @@ export class ActionsRecorder extends Plugin {
 				console.log( 'model before operation apply:', operation );
 				callContext.operation = operation;
 
+				callContext.callFrame = this._enterFrame( {
+					event: 'model.applyOperation',
+					operation
+				} );
+
 				return true;
 			},
 			after: callContext => {
 				console.log( 'model after operation apply:', callContext.operation );
+				this._leaveFrame( callContext.callFrame );
 			},
 			error: ( callContext, error ) => {
 				console.log( 'model operation apply error:', callContext.operation, error );
+				this._leaveFrame( callContext.callFrame, { error } );
 			}
 		} );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapModelMethods() {
 		for ( const methodName of [ 'insertContent', 'insertObject', 'deleteContent' ] ) {
 			this._tapMethod( this.editor.model, methodName, {
@@ -89,63 +143,98 @@ export class ActionsRecorder extends Plugin {
 					console.log( 'model before', methodName, '(', params, ')' );
 					callContext.params = params;
 
+					callContext.callFrame = this._enterFrame( {
+						event: `model.${ methodName }`,
+						params
+					} );
+
 					return true;
 				},
 				after: ( callContext, result ) => {
 					console.log( 'model after', methodName, '(', callContext.params, ')', result );
+					this._leaveFrame( callContext.callFrame, { result } );
 				},
 				error: ( callContext, error ) => {
 					console.log( 'model error', methodName, '(', callContext.params, ')', error );
+					this._leaveFrame( callContext.callFrame, { error } );
 				}
 			}, { source: 'model API' } );
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapCommand( commandName: string, command: Command ) {
 		this._tapMethod( command, 'execute', {
 			before: ( callContext, params ) => {
 				console.log( 'before command execute:', commandName, '(', params, ')' );
 				callContext.params = params;
 
+				callContext.callFrame = this._enterFrame( {
+					event: `commands.${ commandName }:execute`,
+					params
+				} );
+
 				return true;
 			},
 			after: ( callContext, result ) => {
 				console.log( 'after command execute:', commandName, '(', callContext.params, ') =>', result );
+				this._leaveFrame( callContext.callFrame, { result } );
 			},
 			error: ( callContext, error ) => {
 				console.log( 'command execute error:', commandName, '(', callContext.params, ')', error );
+				this._leaveFrame( callContext.callFrame, { error } );
 			}
 		} );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapComponentFactory() {
 		this._tapMethod( this.editor.ui.componentFactory, 'create', {
 			before: ( callContext, [ componentName ] ) => {
 				callContext.componentName = componentName;
+
+				callContext.callFrame = this._enterFrame( {
+					event: `component-factory.create:${ componentName }`
+				} );
 
 				return true;
 			},
 			after: ( callContext, componentInstance ) => {
 				console.log( 'component created:', callContext.componentName, componentInstance );
 
+				const executeContext = {
+					...callContext,
+					eventSource: `component.${ callContext.componentName }`
+				};
+
 				if ( typeof componentInstance.fire == 'function' ) {
-					this._tapFireMethod( componentInstance, [ 'execute' ], callContext );
+					this._tapFireMethod( componentInstance, [ 'execute' ], executeContext );
 				}
 
 				if ( typeof componentInstance.panelView?.fire == 'function' ) {
-					this._tapFireMethod( componentInstance.panelView, [ 'execute' ], callContext );
+					this._tapFireMethod( componentInstance.panelView, [ 'execute' ], executeContext );
 				}
 
 				if ( typeof componentInstance.buttonView?.actionView?.fire == 'function' ) {
-					this._tapFireMethod( componentInstance.buttonView.actionView, [ 'execute' ], callContext );
+					this._tapFireMethod( componentInstance.buttonView.actionView, [ 'execute' ], executeContext );
 				}
+
+				this._leaveFrame( callContext.callFrame );
 			},
 			error: ( callContext, error ) => {
 				console.log( 'component error:', callContext.componentName, error );
+				this._leaveFrame( callContext.callFrame, { error } );
 			}
 		} );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapViewDocumentEvents() {
 		this._tapFireMethod( this.editor.editing.view.document, [
 			'click',
@@ -172,9 +261,12 @@ export class ActionsRecorder extends Plugin {
 			'drop',
 			'imageLoaded',
 			'todoCheckboxChange'
-		], { source: 'observers' } );
+		], { eventSource: 'observers' } );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapFireMethod( emitter: any, eventNames: Array<string>, context: Record<string, any> = {} ) {
 		this._tapMethod( emitter, 'fire', {
 			before: ( callContext, [ eventInfoOrName, ...params ] ) => {
@@ -188,17 +280,27 @@ export class ActionsRecorder extends Plugin {
 				callContext.eventName = eventName;
 				callContext.params = params;
 
+				callContext.callFrame = this._enterFrame( {
+					event: `${ callContext.eventSource }:${ eventName }`,
+					params
+				} );
+
 				return true;
 			},
 			after: ( callContext, result ) => {
 				console.log( 'after fire:', callContext, 'event', callContext.eventName, '(', callContext.params, ')', result );
+				this._leaveFrame( callContext.callFrame, { result } );
 			},
 			error: ( callContext, error ) => {
 				console.log( 'error fire:', callContext, 'event', callContext.eventName, '(', callContext.params, ')', error );
+				this._leaveFrame( callContext.callFrame, { error } );
 			}
 		}, context );
 	}
 
+	/**
+	 * TODO
+	 */
 	private _tapMethod(
 		object: any,
 		methodName: string,
@@ -238,6 +340,9 @@ export class ActionsRecorder extends Plugin {
 	}
 }
 
+/**
+ * TODO
+ */
 interface MethodTap extends Record<string, any> {
 	before?: ( context: Record<string, any>, args: Array<any> ) => boolean;
 	after?: ( context: Record<string, any>, result: any ) => void;
