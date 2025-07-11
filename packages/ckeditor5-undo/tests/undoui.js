@@ -21,7 +21,9 @@ describe( 'UndoUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ UndoEditing, UndoUI ] } )
+		return ClassicTestEditor.create( editorElement, { plugins: [ UndoEditing, UndoUI ],
+			language: { ui: 'en' }
+		} )
 			.then( newEditor => {
 				editor = newEditor;
 			} );
@@ -108,7 +110,11 @@ describe( 'UndoUI', () => {
 				return ClassicTestEditor
 					.create( element, {
 						plugins: [ UndoEditing, UndoUI ],
-						language: 'ar'
+						language: 'ar',
+						translations: [ { ar: {
+							dictionary: [],
+							getPluralForm: sinon.spy()
+						} } ]
 					} )
 					.then( newEditor => {
 						const undoButton = newEditor.ui.componentFactory.create( 'undo' );
@@ -129,7 +135,11 @@ describe( 'UndoUI', () => {
 				return ClassicTestEditor
 					.create( element, {
 						plugins: [ UndoEditing, UndoUI ],
-						language: 'ar'
+						language: 'ar',
+						translations: [ { ar: {
+							dictionary: [],
+							getPluralForm: sinon.spy()
+						} } ]
 					} )
 					.then( newEditor => {
 						const redoButton = newEditor.ui.componentFactory.create( 'redo' );
