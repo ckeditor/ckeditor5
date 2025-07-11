@@ -4,8 +4,6 @@ category: api-reference
 
 # Page break feature for CKEditor&nbsp;5
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-page-break.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break)
-
 This package implements the page break feature for CKEditor&nbsp;5.
 
 ## Demo

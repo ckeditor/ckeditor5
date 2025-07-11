@@ -35,12 +35,19 @@ ClassicEditor
 			text: 'Click to insert an image.',
 			editor
 		} );
+
+		window.umberto.afterDomReady( () => {
+			const { throttle, formatHtml } = window.umberto;
+			const { codeBlock } = document.getElementById( 'base64-upload-console' );
+
+			const refreshDevTools = throttle( () => {
+				codeBlock.setCode( formatHtml( editor.getData() ) );
+			}, 200 );
+
+			editor.model.document.on( 'change:data', refreshDevTools );
+			refreshDevTools();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-// The "Log editor data" button logic.
-document.querySelector( '#log-data' ).addEventListener( 'click', () => {
-	console.log( window.editor.getData() );
-} );
