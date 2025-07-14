@@ -123,7 +123,7 @@ Just like with open-source features, start by attaching a link to style sheets. 
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
-<info-box>
+<info-box tip>
 	If you do not want to use the global variables presented below, you can continue from here and use an alternative, [more advanced setup with import maps](#advanced-setup-with-import-maps).
 </info-box>
 
