@@ -19,6 +19,7 @@ export function getFilePaths() {
 	];
 
 	return globSync( typeScriptFilesGlobPaths )
+		.map( upath.normalize )
 		.filter( file => file.includes( 'ckeditor-cloud-services-collaboration' ) || !file.endsWith( '.d.ts' ) )
 		.filter( file => !file.includes( 'ckeditor5-build' ) )
 		.filter( file => !file.includes( 'ckeditor5-icons/' ) )
