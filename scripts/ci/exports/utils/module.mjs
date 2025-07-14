@@ -532,22 +532,14 @@ export class Module {
 	}
 
 	get packageName() {
-		const normalizedPath = upath.normalize( this.fileName );
-		const pathParts = normalizedPath.split( upath.sep );
-		const packagesIndex = pathParts.indexOf( 'packages' );
-		const externalIndex = pathParts.indexOf( 'external' );
+		const packageDirMatch = this.fileName.match( /.+\/packages\/(.+?)\// );
+		const externalDirMatch = this.fileName.match( /.+\/external\/(.+?)\// );
 
-		const packageName = packagesIndex !== -1 ? pathParts[ packagesIndex + 1 ] : pathParts[ externalIndex + 1 ];
-
-		return upath.join( '@ckeditor', packageName );
+		return '@ckeditor/' + ( packageDirMatch ? packageDirMatch[ 1 ] : externalDirMatch[ 1 ] );
 	}
 
 	get relativeFileName() {
-		const normalizedPath = upath.normalize( this.fileName );
-		const pathParts = normalizedPath.split( upath.sep );
-		const srcIndex = pathParts.indexOf( 'src' );
-
-		return pathParts.slice( srcIndex + 1 ).join( upath.sep );
+		return this.fileName.replace( /.+\/src\//, '' );
 	}
 
 	resolvePath( fileName, packages ) {
