@@ -53,7 +53,7 @@ This improvement makes it easier to create visually consistent and professional-
 
 ### Markdown processor dependency refresh
 
-The {@loink features/markdown Markdown} feature dependencies have been modernized with a switch to the `unified` ecosystem, replacing the previous `marked` / `turndown` implementation. This change brings more consistent and symmetrical HTML ↔ Markdown conversion. By adopting `remark` and `rehype` from the same family of tools, we have created a more reliable and maintainable implementation that will better serve your document processing needs.
+The {@link features/markdown Markdown} feature dependencies have been modernized with a switch to the `unified` ecosystem, replacing the previous `marked` / `turndown` implementation. This change brings more consistent and symmetrical HTML ↔ Markdown conversion. By adopting `remark` and `rehype` from the same family of tools, we have created a more reliable and maintainable implementation that will better serve your document processing needs.
 
 ### Manual token refreshing
 
@@ -84,7 +84,7 @@ At the same time, we have developed an internal tooling to make sure guardrails 
 If your build throws errors after the update, search and replace the old names with the new ones from the {@link updating/nim-migration/migrating-imports update guide}. **We have not changed the behavior of these APIs, just the names**.
 
 <info-box info>
-	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
+	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-imports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
 </info-box>
 
 ### Introduction of the default content styles
