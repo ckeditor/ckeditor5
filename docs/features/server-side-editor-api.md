@@ -11,7 +11,7 @@ badges: [ premium ]
 
 Server-side Editor API enables deep and complex integration of your application with all document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history, and much more, directly from your server-side code (without running editor instance on the client).
 
-The server-side editor REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server.
+The server-side editor REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server. Please note that there are some [security-related limitations](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/security.html) for the executed JavaScript code.
 
 ## Why use server-side editor API?
 
@@ -45,13 +45,13 @@ Below, you will find several examples of practical server-side API applications.
 
 This guide explains how to write scripts that can be executed through the Server-side Editor API endpoint. The following sections provide examples of such scripts, each demonstrating a specific use case that can be automated on the server side.
 
-For information about setting up and using the endpoint itself, see the [link Cloud Services Server-side Editor API](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html) documentation.
-
-### Working with content
+For information about setting up and using the endpoint itself, see the complementary [Cloud Services Server-side Editor API](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html) documentation.
 
 <info-box info>
-	Please note you need to have a bundle uploaded first with proper credentials <!-- link here--> for the service to work properly.
+	Please note you need to have an [editor bundle](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) uploaded first for the service to work properly.
 </info-box>
+
+### Working with content
 
 #### Getting editor data
 
@@ -60,6 +60,7 @@ The most basic action you can perform is getting the editor data.
 // Get the editor data.
 const data = editor.getData();
 
+// The endpoint will respond with the returned data.
 return data;
 ```
 
@@ -94,7 +95,7 @@ editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
 
 This command will find all instances of "Cksource" in your documents and change them to "CKSource". This is perfect for making bulk updates in multiple documents. Simply, execute this call for every document you would like to change.
 
-To learn more about the commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands) guide.
+Most CKEditor 5 features expose one or multiple commands that can be used to manipulate the editor's state. To learn what commands are available, visit [Features guides](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), and look for the "Common API" section at the end of each guide, where commands related to that feature are described.
 
 #### Insert HTML content
 
@@ -144,67 +145,67 @@ This approach is particularly useful when you have to modify the document data i
 
 To learn more about working with the editor engine, see the {@link framework/architecture/editing-engine Editing engine} guide.
 
+### Working with comments
+
+The {@link features/comments comments} feature allows your users to have discussions attached to certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
+
+#### Creating comments
+
+You can create new comments using the `addCommentThread` command. By default, this command would create a comment thread on the current selection and create a "draft" comment thread, which might not be what you want in a server-side context. However, you can customize it using two parameters: `ranges` to specify where to place the comment, and `comment` to set its initial content.
+
+Here is an example that shows how to automatically add comments to images that are missing the `alt` attribute:
+
+```js
+const model = editor.model;
+// Create a range on the whole content.
+const range = model.createRangeIn( model.document.getRoot() );
+
+editor.model.change( () => {
+	// Go through each item in the editor content.
+	for ( const item of range.getItems() ) {
+		const isImage = item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' );
+
+		// Find images without `alt` attribute
+		if ( isImage && !item.getAttribute( 'alt' ) ) {
+			const commentRange = model.createRangeOn( item );
+			const firstCommentMessage = 'The <u>alt</u> attribute is missing.';
+
+			// Add a comment on the image.
+			editor.execute(
+				'addCommentThread',
+				{
+					ranges: [ commentRange ],
+					comment: firstCommentMessage
+				}
+			);
+		}
+	}
+} );
+```
+
+The above example shows how to automatically review your content and add comments where needed. You could use similar code to build automated content review systems, accessibility checkers, or any other validation workflows.
+
+#### Resolving comments
+
+You can use the comments feature API to manage existing comments in your documents. For example, here is a way to resolve all comment threads in a given document:
+
+```js
+// Get all comment threads from the document.
+const threads = editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
+
+// Resolve all open comment threads.
+for ( const thread of threads ) {
+	if ( !thread.isResolved ) {
+		thread.resolve();
+	}
+}
+```
+
+This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
+
 ### Working with track changes
 
 You can leverage the {@link features/track-changes track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
-
-#### Using commands
-
-Track changes is integrated with most editor commands. If you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
-
-Below is an example that shows a basic text replacement:
-
-```js
-// Enable track changes to mark our edits as suggestions.
-editor.execute( 'trackChanges' );
-
-// Make a simple text replacement.
-editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
-```
-
-The `trackChanges` command ensures that all changes made by other commands are marked as suggestions.
-
-#### Content changes
-
-Now, let's see how to suggest deleting a specified part of the document:
-
-```js
-// Enable track changes to mark our edits as suggestions.
-editor.execute( 'trackChanges' );
-
-// Get the section we want to remove and prepare for deletion.
-const firstElement = editor.model.document.getRoot().getChild( 0 );
-const deleteRange = editor.model.createRangeIn( firstElement );
-const deleteSelection = editor.model.createSelection( deleteRange );
-
-// Remove the content as a suggestion.
-editor.model.deleteContent( deleteSelection );
-```
-
-This functionality is essential when building, for example, automated content review systems. You might use it to precisely mark any content that should be removed. All content inside `deleteSelection` will become a deletion suggestion.
-
-You can also suggest adding new content:
-
-```js
-// Enable track changes for the new content.
-editor.execute( 'trackChanges' );
-
-// Prepare the new content we want to add.
-const modelFragment = editor.data.parse( 'Hello <strong>world!</strong>' );
-
-// Add the content as a suggestion at the beginning of the document.
-const firstElement = editor.model.document.getRoot().getChild( 0 );
-const insertPosition = editor.model.createPositionAt( firstElement, 0 );
-
-editor.model.insertContent( modelFragment, insertPosition );
-```
-
-The `insertContent()` method can be used in the following scenarios:
-
-* Automated suggestions based on external data.
-* Creating templates that need review before finalization.
-* Integrating with content management systems to propose changes.
-* Building custom workflows for content creation and review.
 
 #### Working with suggestions
 
@@ -248,7 +249,65 @@ suggestion.accept();
 // suggestion.discard();
 ```
 
-It allows to display and manage suggestions outside of the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
+It allows to display and manage suggestions outside the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
+
+#### Creating new suggestions
+
+Track changes is integrated with most editor commands. If you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
+
+Below is an example that shows a basic text replacement:
+
+```js
+// Enable track changes to mark our edits as suggestions.
+editor.execute( 'trackChanges' );
+
+// Make a simple text replacement.
+editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
+```
+
+The `trackChanges` command ensures that all changes made by other commands are marked as suggestions.
+
+Since Track changes feature is integrated with `Model#insertContent()` function, you can easily suggest adding some new content:
+
+```js
+// Enable track changes for the new content.
+editor.execute( 'trackChanges' );
+
+// Prepare the new content to be added.
+const modelFragment = editor.data.parse( 'Hello <strong>world!</strong>' );
+
+// Add the content as a suggestion at the beginning of the document.
+const firstElement = editor.model.document.getRoot().getChild( 0 );
+const insertPosition = editor.model.createPositionAt( firstElement, 0 );
+
+editor.model.insertContent( modelFragment, insertPosition );
+```
+
+Now, let's see how to suggest deleting a specified part of the document. To do this, use `Model#deleteContent()` while in track changes mode:
+
+```js
+// Enable track changes so that deleted content is marked,
+// instead of being actually removed from the content.
+editor.execute( 'trackChanges' );
+
+// Get the section we want to mark as deletion suggestion.
+const firstElement = editor.model.document.getRoot().getChild( 0 );
+
+// `deleteContent()` expects selection-to-remove as its parameter.
+const deleteRange = editor.model.createRangeIn( firstElement );
+const deleteSelection = editor.model.createSelection( deleteRange );
+
+// Track changes is integrated with `deleteContent()`, so the content
+// will be marked as suggestion, instead of being removed from the document.
+editor.model.deleteContent( deleteSelection );
+```
+
+You can use `insertContent()` and `deleteContent()` methods in the following scenarios:
+
+* Automated suggestions based on external data.
+* Creating templates that need review before finalization.
+* Integrating with content management systems to propose changes.
+* Building custom workflows for content creation and review.
 
 #### Attribute modifications
 
@@ -283,24 +342,38 @@ for ( const item of items ) {
 }
 ```
 
-#### Working with annotations
+#### Extracting additional suggestion data
 
-Each suggestion in the editor is always connected with an annotation. Sometimes, you may want to gather additional data for suggestions based on their annotations, such as the suggestion label or the content in the document on which the suggestion is made, which are not available through REST API.
+Track changes feature stores and exposes more data than is saved on the Cloud Services servers. This dynamic data is evaluated by the feature on-the-fly, hence it is not stored. You can use the editor API to get access to that data. 
 
-The following example demonstrates retrieving suggestion data:
+All active suggestions have a related annotation (UI "balloon" element, located in the sidebar or displayed above the suggestion). You can, for example, retrieve a suggestion label that is displayed inside a suggestion balloon annotation.
+
+Another useful information is content on which the suggestion was made (together with some additional context around it).
+
+The following example demonstrates retrieving additional suggestion data:
 
 ```js
 const results = [];
 const trackChangesUI = editor.plugins.get( 'TrackChangesUI' );
 const annotations = editor.plugins.get( 'Annotations' ).collection;
 
+// Go through all annotations available in the document.
 for ( const annotation of annotations ) {
 	// Check if this is a suggestion annotation.
+	// Note, that another annotation type is `'comment'`.
+	// You can process comments annotations to retrieve additional comments data.
 	if ( annotation.type.startsWith( 'suggestion' ) ) {
 		const suggestion = trackChangesUI.getSuggestionForAnnotation( annotation );
+
+		// Get the suggestion label.
+		const label = annotation.innerView.description;
+
+		// Evaluate the content on which the suggestion was made.
+		// First, get all the ranges in the content related to this suggestion.
 		const ranges = [];
 
-		// Gather all ranges for this suggestion (including adjacent ones).
+		// Note, that suggestions can be organized into "chains" when they
+		// are next to each other. Get all suggestions adjacent to the processed one.
 		for ( const adjacentSuggestion of suggestion.getAllAdjacentSuggestions() ) {
 			ranges.push( ...adjacentSuggestion.getRanges() );
 		}
@@ -323,7 +396,7 @@ for ( const annotation of annotations ) {
 		results.push( {
 			type: 'suggestion',
 			id: suggestion.id,
-			label: annotation.innerView.description,
+			label,
 			context: contextHtml
 		} );
 	}
@@ -331,61 +404,6 @@ for ( const annotation of annotations ) {
 
 return results;
 ```
-
-### Working with comments
-
-The {@link features/comments comments} feature allows your users to have discussions attached to certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
-
-#### Creating comments
-
-You can create new comments using the `addCommentThread` command. By default, this command would create a comment thread on the current selection and create a "draft" comment thread, which might not be what you want in a server-side context. However, you can customize it using two parameters: `ranges` to specify where to place the comment, and `comment` to set its initial content.
-
-Here is an example that shows how to automatically add comments to images that are missing the `alt` attribute:
-
-```js
-const model = editor.model;
-const range = model.createRangeIn( model.document.getRoot() );
-
-editor.model.change( () => {
-	for ( const item of range.getItems() ) {
-		const isImage = item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' );
-
-		if ( isImage && !item.getAttribute( 'alt' ) ) {
-			const commentRange = model.createRangeOn( item );
-			const firstCommentMessage = 'The alt attribute is missing.';
-
-			// Add a comment on image without ALT attribute.
-			editor.execute(
-				'addCommentThread',
-				{
-					ranges: [ commentRange ],
-					comment: firstCommentMessage
-				}
-			);
-		}
-	}
-} );
-```
-
-The above example shows how to automatically review your content and add comments where needed. You could use similar code to build automated content review systems, accessibility checkers, or any other validation workflows.
-
-#### Resolving comments
-
-You can use the comments feature API to manage existing comments in your documents. For example, here is a way to resolve all comment threads in a given document:
-
-```js
-// Get all comment threads from the document.
-const threads = editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
-
-// Resolve all open comment threads.
-for ( const thread of threads ) {
-	if ( !thread.isResolved ) {
-		thread.resolve();
-	}
-}
-```
-
-This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
 
 ### Working with revision history
 
@@ -400,7 +418,7 @@ You can use Revision history API to save a new revision directly from your appli
 editor.plugins.get( 'RevisionTracker' ).saveRevision( { name: 'New revision' } );
 ```
 
-This can be used on an unchanged document just to create a document snapshot, or after you performed some changes to save them as a new revision.
+This can be used on an unchanged document to simply create a document snapshot, or after you performed some changes to save them as a new revision.
 
 Revision history API can help you build an automated mechanism that will automatically create revisions in some time intervals, or based on other factors. It can be particularly useful when you need to create checkpoints for your documents to maintain an audit trail of content modifications.
 
@@ -427,7 +445,7 @@ This is useful if you need particular revision data for further processing. It w
 
 ## Custom plugins
 
-Server-side editor API capabilities could be extended by creating custom plugins. Custom plugins may implement complex logic and maintain reusable functionality across multiple server-side operations. Through the editor instance, you can access custom plugin API in your server-side scripts. This approach will make your code more organized and maintainable. It is especially recommended for complex operations that would be cumbersome to implement directly in the server-side script.
+Server-side editor API capabilities could be extended by creating custom plugins. Custom plugins may implement complex logic and maintain reusable functionality across multiple server-side operations. Through the editor instance, you can access custom plugin API in your server-side scripts. This approach will make your code more organized and maintainable. Using a plugin will be necessary if you need to import a class or a function from one of the CKEditor 5 packages to implement your desired functionality.
 
 To use custom plugins in server-side executed scripts, simply add them to the editor bundle that you upload to Cloud Services. Then you can access them through the editor instance:
 
