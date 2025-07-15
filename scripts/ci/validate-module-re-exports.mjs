@@ -9,6 +9,7 @@ import { publicTree } from './exports/policy/public-tree.mjs';
 import { isCommandClass } from './exports/policy/is-command.mjs';
 import { isPluginClass } from './exports/policy/is-plugin.mjs';
 import { isEvent } from './exports/policy/is-event.mjs';
+import { validateCommandExports } from './exports/policy/validate-command-exports.mjs';
 import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
@@ -38,7 +39,8 @@ async function main() {
 
 	const exportsToFix = getExportsToFix( library );
 	const declarationsWithMissingExports = getDeclarationsWithMissingExports( library );
-	const dataToLogUnwrapped = [ ...declarationsWithMissingExports, ...exportsToFix ];
+	const commandExportErrors = validateCommandExports( library );
+	const dataToLogUnwrapped = [ ...declarationsWithMissingExports, ...exportsToFix, ...commandExportErrors ];
 
 	// Do not log exceptions that are expected as errors.
 	const data = removeExpectedExceptions( dataToLogUnwrapped );
