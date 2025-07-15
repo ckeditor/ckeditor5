@@ -53,21 +53,13 @@ const initialData =
 <h2>License</h2>
 <p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
 
-<div class="raw-html-embed"><script>
-	window.emojicsOpts = {
-		widget: '50c7737f072dfd100f3dad0411f02e',
-		position: 'inline'
-	};
-	( function( d, s, id ) {
-		var js, fjs = d.getElementsByTagName( s )[ 0 ];
-		js = d.createElement( s );
-		js.id = id;
-		js.src = '//connect.emojics.com/dist/sdk.js';
-		fjs.parentNode.insertBefore( js, fjs );
-	} )( document, 'script', 'emojics-js' );
-</script>
-<div id="emojics-root"></div>
-</script></div>
+<div class="raw-html-embed">
+	<script>
+		const element = document.createElement( 'div' );
+		element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
+		document.body.appendChild( element );
+	</script>
+</div>
 `;
 
 ClassicEditor
