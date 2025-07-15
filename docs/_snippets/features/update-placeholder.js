@@ -32,7 +32,7 @@ PlaceholderEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.umberto.afterDomReady( () => {
+		window.umberto.afterReady( () => {
 			const button = document.getElementById( 'update-placeholder-button' );
 			button.addEventListener( 'click', () => {
 				editor.editing.view.document.getRoot( 'main' ).placeholder = 'Updated placeholder';

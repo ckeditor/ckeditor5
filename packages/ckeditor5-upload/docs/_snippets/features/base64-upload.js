@@ -36,7 +36,7 @@ ClassicEditor
 			editor
 		} );
 
-		window.umberto.afterDomReady( () => {
+		window.umberto.afterReady( () => {
 			const { throttle, formatHtml } = window.umberto;
 			const { codeBlock } = document.getElementById( 'base64-upload-console' );
 

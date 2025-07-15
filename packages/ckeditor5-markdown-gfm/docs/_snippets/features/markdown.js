@@ -82,8 +82,10 @@ ClassicEditor
 			codeBlock.setCode( editor.getData() );
 		}, 200 );
 
-		editor.model.document.on( 'change', throttleRefreshPreview );
-		throttleRefreshPreview();
+		window.umberto.afterReady( () => {
+			editor.model.document.on( 'change', throttleRefreshPreview );
+			throttleRefreshPreview();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

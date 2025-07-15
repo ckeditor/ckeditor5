@@ -96,14 +96,16 @@ ClassicEditor
 
 		const { codeBlock } = document.querySelector( '#snippet-paste-from-markdown-output' );
 
-		editor.model.document.on( 'change', () => {
-			codeBlock.setCode( editor.getData() );
-		} );
+		window.umberto.afterReady( () => {
+			editor.model.document.on( 'change', () => {
+				codeBlock.setCode( editor.getData() );
+			} );
 
-		// Set the initial data with delay so hightlight.js doesn't catch it.
-		setTimeout( () => {
-			codeBlock.setCode( editor.getData() );
-		}, 500 );
+			// Set the initial data with delay so hightlight.js doesn't catch it.
+			setTimeout( () => {
+				codeBlock.setCode( editor.getData() );
+			}, 500 );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

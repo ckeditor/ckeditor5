@@ -106,5 +106,5 @@ function updateStatus( editor ) {
 async function updateServerDataConsole( msg ) {
 	const console = document.querySelector( '#snippet-manualsave-console' );
 
-	await console.codeBlock.setCode( msg );
+	await window.umberto.afterReady( () => console.codeBlock.setCode( msg ) );
 }
