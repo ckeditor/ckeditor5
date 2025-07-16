@@ -4,7 +4,7 @@
  */
 
 import minimist from 'minimist';
-import os from 'os';
+import { cpus, freemem } from 'os';
 import replaceKebabCaseWithCamelCase from '../../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
@@ -41,7 +41,16 @@ export default function parseArguments( cliArguments ) {
 			nightly: false,
 			'nightly-alpha': false,
 			'nightly-next': false,
-			concurrency: os.cpus().length / 2,
+			// Set concurrency to guarantee at least 1 CPU core and 1 GB of free RAM per task.
+			// No less than 1, no more than 8.
+			concurrency: Math.max(
+				1,
+				Math.min(
+					cpus().length,
+					Math.floor( freemem() / ( 1024 ** 3 ) ),
+					8
+				)
+			),
 			'compile-only': false,
 			packages: null,
 			branch: 'release',
