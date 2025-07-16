@@ -312,6 +312,6 @@ How to understand this demo:
 
 {@snippet installation/getting-and-setting-data/manualsave}
 
-**Serwer data:**
+**Server data:**
 
 <ck:code-block id='snippet-manualsave-console' language='plain' copyable='false'></ck:code-block>
