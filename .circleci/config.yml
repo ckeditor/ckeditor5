@@ -37,6 +37,68 @@ commands:
             - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
 
 jobs:
+  branch_protection_filter:
+    machine: true
+    resource_class: medium
+    steps:
+      - run:
+          name: Check if the build should continue.
+          command: |
+            #!/usr/bin/env bash
+
+            set -euo pipefail
+
+            PIPELINE_EVENT_ACTION="<< pipeline.event.action >>"
+            PIPELINE_GIT_BRANCH="<< pipeline.git.branch >>"
+
+            readonly PROTECTED_BRANCHES=(
+              master
+              release
+              stable
+            )
+
+            readonly ALLOWED_PATTERNS=(
+              '^epic/'
+              '/epic/'
+            )
+
+            is_protected_branch() {
+              for b in "${PROTECTED_BRANCHES[@]}"; do
+                [[ $PIPELINE_GIT_BRANCH == "$b" ]] && return 0
+              done
+
+              return 1
+            }
+
+            matches_allowed_pattern() {
+              for pattern in "${ALLOWED_PATTERNS[@]}"; do
+                [[ $PIPELINE_GIT_BRANCH =~ $pattern ]] && return 0
+              done
+
+              return 1
+            }
+
+            should_allow_pipeline() {
+              # Allow for non-push events. A job could be trigger via API, a pull request, or a scheduled event.
+              [[ $PIPELINE_EVENT_ACTION != "push" ]] && return 0
+
+              # Direct commits on protected branches (after merging a pull request).
+              is_protected_branch && return 0
+
+              # Epic branches (direct commits or merged pull requests).
+              matches_allowed_pattern && return 0
+
+              # Most probably a direct commit on a feature branch.
+              return 1
+            }
+
+            if ! should_allow_pipeline; then
+              circleci-agent step halt
+              exit 1
+            fi
+
+            exit 0
+
   generate_configuration:
     docker:
       - image: cimg/node:22.12.0
@@ -60,5 +122,8 @@ workflows:
   version: 2
   config:
     jobs:
+      - branch_protection_filter
       - generate_configuration:
           isNightly: false
+          requires:
+            - branch_protection_filter
