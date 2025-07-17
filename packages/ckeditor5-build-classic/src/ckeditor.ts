@@ -25,7 +25,7 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
+import { List, TodoList } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
@@ -59,6 +59,9 @@ import {
 import '../theme/emoji.css';
 import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
@@ -122,12 +125,18 @@ export default class ClassicEditor extends ClassicEditorBase {
 		EmojiActivity,
 		EmojiObjects,
 		EmojiSymbols,
-		EmojiFlags
+		EmojiFlags,
+		TodoList,
+		SourceEditing,
+		Undo,
+		GeneralHtmlSupport
 	];
 
 	public static override defaultConfig = {
 		toolbar: {
 			items: [
+				'undo',
+				'redo',
 				'heading',
 				'|',
 				{
@@ -142,6 +151,7 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'blockQuote',
 				'bulletedList',
 				'numberedList',
+				'todoList',
 				'insertTable',
 				'|',
 				'outdent',
@@ -155,7 +165,8 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'|',
 				'mediaEmbed',
 				'|',
-				'htmlEmbed'
+				'htmlEmbed',
+				'sourceEditing'
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -202,6 +213,14 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'videoStyle:alignLeft',
 				'videoStyle:alignCenter',
 				'videoStyle:alignRight'
+			]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /.*/,
+					attributes: [ 'id' ]
+				}
 			]
 		}
 	};

@@ -38,5 +38,11 @@ export default class ClassicEditor extends ClassicEditorBase {
             styles: string[];
             toolbar: string[];
         };
+        htmlSupport: {
+            allow: {
+                name: RegExp;
+                attributes: string[];
+            }[];
+        };
     };
 }
