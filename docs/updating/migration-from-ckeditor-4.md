@@ -30,122 +30,120 @@ What differentiates CKEditor&nbsp;5 from its predecessor the most is its core ar
 
 Here are the key differences between the two editor versions:
 
-<figure class="table" style="width:100%;">
-    <table>
-        <tbody>
-            <tr>
-                <td>
-                    &nbsp;
-                </td>
-                <td>
-                    <strong>CKEditor 4</strong>
-                </td>
-                <td>
-                    <strong>CKEditor&nbsp;5</strong>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Programming language</strong>
-                </td>
-                <td>
-                    JavaScript
-                </td>
-                <td>
-                    TypeScript
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Data model</strong>
-                </td>
-                <td>
-                    HTML/DOM
-                </td>
-                <td>
-                    Custom data model and virtual DOM implementation
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Architecture</strong>
-                </td>
-                <td>
-                    Plugin-based
-                </td>
-                <td>
-                    Plugin-based, MVC
-                </td>
-            </tr>
-			<tr>
-                <td>
-                    <strong>Editor types</strong>
-                </td>
-                <td>
-                    Classic, inline
-                </td>
-                <td>
-                    Classic, inline, decoupled (document), balloon, balloon block, multi-root
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>Collaboration-ready</strong>
-                </td>
-                <td>
-                    ❌
-                </td>
-                <td>
-                    ✅
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>File management and image upload</strong>
-                </td>
-                <td>
-                    CKFinder
-                </td>
-                <td>
-                    CKBox, CKFinder
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>UI</strong>
-                </td>
-                <td>
-                    Toolbar, dialogs, and features manipulated through right-click context menu
-                </td>
-                <td>
-                    Toolbar, dropdowns, balloons, and features manipulated through on-click feature toolbars
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>UI customization</strong>
-                </td>
-                <td>
-                    Skins, UI color change
-                </td>
-                <td>
-                    Themes, customization with CSS variables
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>License</strong>
-                </td>
-                <td>
-                    GPL, MPL, LGPL, commercial license
-                </td>
-                <td>
-                    GPL 2+ or commercial license
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</figure>
+<table>
+	<tbody>
+		<tr>
+			<td>
+				&nbsp;
+			</td>
+			<td>
+				<strong>CKEditor 4</strong>
+			</td>
+			<td>
+				<strong>CKEditor&nbsp;5</strong>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Programming language</strong>
+			</td>
+			<td>
+				JavaScript
+			</td>
+			<td>
+				TypeScript
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Data model</strong>
+			</td>
+			<td>
+				HTML/DOM
+			</td>
+			<td>
+				Custom data model and virtual DOM implementation
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Architecture</strong>
+			</td>
+			<td>
+				Plugin-based
+			</td>
+			<td>
+				Plugin-based, MVC
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Editor types</strong>
+			</td>
+			<td>
+				Classic, inline
+			</td>
+			<td>
+				Classic, inline, decoupled (document), balloon, balloon block, multi-root
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>Collaboration-ready</strong>
+			</td>
+			<td>
+				❌
+			</td>
+			<td>
+				✅
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>File management and image upload</strong>
+			</td>
+			<td>
+				CKFinder
+			</td>
+			<td>
+				CKBox, CKFinder
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>UI</strong>
+			</td>
+			<td>
+				Toolbar, dialogs, and features manipulated through right-click context menu
+			</td>
+			<td>
+				Toolbar, dropdowns, balloons, and features manipulated through on-click feature toolbars
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>UI customization</strong>
+			</td>
+			<td>
+				Skins, UI color change
+			</td>
+			<td>
+				Themes, customization with CSS variables
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<strong>License</strong>
+			</td>
+			<td>
+				GPL, MPL, LGPL, commercial license
+			</td>
+			<td>
+				GPL 2+ or commercial license
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 ## Feature comparison of CKEditor 4 and CKEditor&nbsp;5
 

@@ -16,6 +16,8 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/h
 
 {@snippet features/html-embed}
 
+<ck:iframe id="preview-data-container"></ck:iframe>
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
@@ -43,8 +45,8 @@ We recommended using the {@link features/media-embed media embed} feature for em
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>

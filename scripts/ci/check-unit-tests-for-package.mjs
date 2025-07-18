@@ -54,6 +54,7 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 		'test',
 		'--reporter=dots',
 		'--production',
+		'-b ChromeHeadless',
 		`-f ${ shortName }`,
 		checkCoverage ? '--coverage' : null
 	].filter( Boolean );

@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 Enter feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)
-
 This package implements the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> key support for CKEditor&nbsp;5.
 
 ## Documentation

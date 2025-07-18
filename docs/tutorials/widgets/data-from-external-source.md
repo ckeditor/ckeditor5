@@ -496,7 +496,7 @@ class ExternalDataWidgetEditing extends Plugin {
 			const updateTime = new Date( data.closeTime );
 
 			// Example parsed data: $17098.35 - 09/11/2022, 18:04:18
-			const parsedData = '$' + Number( data.lastPrice ).toFixed( 2 ) + ' - ' + updateTime.toLocaleString();
+			const parsedData = `$${Number(data.lastPrice).toFixed(2)} - ${updateTime.toLocaleString()}`;
 
 			// Update property with last fetched and parsed data
 			this.externalDataValue = parsedData;

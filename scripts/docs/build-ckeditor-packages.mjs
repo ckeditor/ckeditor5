@@ -13,7 +13,8 @@ import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
 
 buildCKEditorPackages()
-	.catch( () => {
+	.catch( error => {
+		console.error( error );
 		process.exitCode = 1;
 	} );
 

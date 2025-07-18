@@ -9,7 +9,7 @@ The code block feature lets you insert and edit blocks of pre-formatted code. It
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/code-block.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with `` ``` ``, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/code-block.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start a line with a backtick, and the {@link features/autoformat autoformatting feature} will format it as a code block. To add a paragraph under a code block, simply press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
@@ -21,8 +21,8 @@ Each code block has a [specific programming language assigned](#configuring-code
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>

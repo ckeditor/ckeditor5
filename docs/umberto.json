@@ -3,10 +3,7 @@
 	"slug": "ckeditor5",
 	"reportIssueWidget": {
 		"enabled": true,
-		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
-		"skipPages": [
-			"**/index.html"
-		]
+		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=type%3Adocs&template=7-docs-issue-community.yml"
 	},
 	"permalinkDisableDomains": [
 		"ckeditor5.github.io",
@@ -16,7 +13,6 @@
 	],
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
-	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
 		"external/ckeditor5-commercial/",
@@ -397,7 +393,8 @@
 		"examples/framework/content-placeholder.html": "features/merge-fields.html",
 		"features/source-editing.html": "features/source-editing/source-editing.html",
 		"examples/framework/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
-		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html"
+		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
+		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
@@ -405,6 +402,7 @@
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
+		"appId": "BH4D9OD16A",
 		"indexName": "ckeditor_nightly",
 		"customRanking": [
 			{
@@ -445,6 +443,13 @@
 		"config": {
 			"trackingId": "G-H2PK3PSE3F"
 		}
+	},
+	"promobar": {
+		"prefix": {
+			"icon": "premium",
+			"title": "NEW"
+		},
+		"message": "Free 14-Day Trial! <a target=\"_blank\" href=\"https://ckeditor.com/ckeditor-5/\">Learn more</a>"
 	},
 	"og": {
 		"description": "Learn to install and configure CKEditor 5. Work with the CKEditor 5 Framework, customize it, create plugins, and custom editors. Includes API reference."
