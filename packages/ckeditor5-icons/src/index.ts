@@ -45,6 +45,7 @@ export { default as IconContentUnlock } from '../theme/icons/content-unlock.svg'
 export { default as IconContext } from '../theme/icons/context.svg';
 export { default as IconCopy } from '../theme/icons/copy.svg';
 export { default as IconDocument } from '../theme/icons/document.svg';
+export { default as IconDocumentWithLoupe } from '../theme/icons/document-with-loupe.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
 export { default as IconDropbox } from '../theme/icons/dropbox.svg';
@@ -169,6 +170,8 @@ export { default as IconTemplate } from '../theme/icons/template.svg';
 export { default as IconTextAlternative } from '../theme/icons/text-alternative.svg';
 export { default as IconText } from '../theme/icons/text.svg';
 export { default as IconThreeVerticalDots } from '../theme/icons/three-vertical-dots.svg';
+export { default as IconThumbUp } from '../theme/icons/thumb-up.svg';
+export { default as IconThumbDown } from '../theme/icons/thumb-down.svg';
 export { default as IconTodoList } from '../theme/icons/todo-list.svg';
 export { default as IconTrackChangesAccept } from '../theme/icons/track-changes-accept.svg';
 export { default as IconTrackChangesDiscard } from '../theme/icons/track-changes-discard.svg';
