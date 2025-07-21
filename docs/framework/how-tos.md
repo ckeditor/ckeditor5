@@ -513,7 +513,7 @@ class InternalLink extends Plugin {
 
 ### The `JavaScript heap out of memory` error
 
-When building the React application for the production using the `yarn build` command, there is a faint chance it may produce an error related to the memory available on the build machine:
+When building the React application for the production using the `pnpm build` command, there is a faint chance it may produce an error related to the memory available on the build machine:
 
 ```plain
 <--- Last few GCs --->
@@ -540,11 +540,11 @@ The memory limit can be set globally as well:
 # Save it in the `.bash_profile` file to avoid typing it after rebooting the machine.
 export NODE_OPTIONS="--max-old-space-size=4096"
 
-yarn build
+pnpm build
 ```
 
 It can also be set on-demand, per command call:
 
 ```bash
-NODE_OPTIONS="--max-old-space-size=4096" yarn build
+NODE_OPTIONS="--max-old-space-size=4096" pnpm build
 ```

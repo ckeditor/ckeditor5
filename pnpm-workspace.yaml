@@ -1,0 +1,17 @@
+packages:
+  - /*
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@ckeditor/ckeditor5-dev-tests'
+  - '@ocular-d/vale-bin'
+  - '@parcel/watcher'
+  - '@swc/core'
+  - core-js
+  - esbuild
+  - hexo-util
+  - puppeteer
+  - sharp
+
+shamefullyHoist: true
+linkWorkspacePackages: true

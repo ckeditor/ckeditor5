@@ -284,7 +284,7 @@ const tasks = new Listr( [
 				{
 					title: 'Removing local typings.',
 					task: () => {
-						return tools.shExec( 'yarn run release:clean', { async: true, verbosity: 'silent' } );
+						return tools.shExec( 'pnpm run release:clean', { async: true, verbosity: 'silent' } );
 					}
 				}
 			], taskOptions );

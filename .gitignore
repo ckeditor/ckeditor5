@@ -13,8 +13,6 @@
 build/
 dist/
 docs/api/output.json
-yarn.lock
-package-lock.json
 coverage/
 
 # Files associated with external repositories.

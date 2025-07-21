@@ -31,7 +31,7 @@ fs.readdirSync( EXTERNAL_DIR_PATH )
 		return pkgJson && pkgJson.scripts && pkgJson.scripts.postinstall;
 	} )
 	.forEach( externalRepository => {
-		execSync( 'yarn run postinstall', {
+		execSync( 'pnpm run postinstall', {
 			stdio: 'inherit',
 			cwd: externalRepository
 		} );

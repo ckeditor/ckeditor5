@@ -4,6 +4,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "./typings/"
+    "./typings/",
+    "**/*.ts"
   ]
 }

@@ -46,7 +46,7 @@ if ( argv[ 'base-dll-config' ] && !argv[ 'skip-base-dll' ] ) {
 	const baseDllConfigPath = path.relative( baseDllPath, argv[ 'base-dll-config' ] );
 
 	const status = execute( {
-		command: [ 'yarn', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
+		command: [ 'pnpm', 'webpack', `--config=${ normalizePath( baseDllConfigPath ) }` ],
 		cwd: baseDllPath
 	} );
 
@@ -70,7 +70,7 @@ if ( !argv[ 'skip-packages-dll' ] ) {
 			console.log( prefix + `Building ${ fullPackageName }...` );
 
 			const status = execute( {
-				command: [ 'yarn', 'run', 'dll:build' ],
+				command: [ 'pnpm', 'run', 'dll:build' ],
 				cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
 			} );
 

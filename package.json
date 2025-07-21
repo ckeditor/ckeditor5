@@ -84,10 +84,8 @@
     "@ckeditor/ckeditor5-word-count": "46.0.0"
   },
   "devDependencies": {
-    "@babel/parser": "^7.23.3",
-    "@ckeditor/ckeditor5-ai": "46.0.0",
-    "@ckeditor/ckeditor5-case-change": "46.0.0",
-    "@ckeditor/ckeditor5-comments": "46.0.0",
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
     "@ckeditor/ckeditor5-dev-build-tools": "^50.0.0",
     "@ckeditor/ckeditor5-dev-bump-year": "^50.0.0",
     "@ckeditor/ckeditor5-dev-changelog": "^50.0.0",
@@ -100,28 +98,7 @@
     "@ckeditor/ckeditor5-dev-translations": "^50.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
-    "@ckeditor/ckeditor5-document-outline": "46.0.0",
-    "@ckeditor/ckeditor5-email": "46.0.0",
-    "@ckeditor/ckeditor5-line-height": "46.0.0",
-    "@ckeditor/ckeditor5-export-inline-styles": "46.0.0",
-    "@ckeditor/ckeditor5-export-pdf": "46.0.0",
-    "@ckeditor/ckeditor5-export-word": "46.0.0",
-    "@ckeditor/ckeditor5-format-painter": "46.0.0",
-    "@ckeditor/ckeditor5-import-word": "46.0.0",
-    "@ckeditor/ckeditor5-inspector": "^5.0.0",
-    "@ckeditor/ckeditor5-list-multi-level": "46.0.0",
-    "@ckeditor/ckeditor5-merge-fields": "46.0.0",
-    "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.4",
-    "@ckeditor/ckeditor5-pagination": "46.0.0",
-    "@ckeditor/ckeditor5-paste-from-office-enhanced": "46.0.0",
     "@ckeditor/ckeditor5-react": "^9.5.0",
-    "@ckeditor/ckeditor5-real-time-collaboration": "46.0.0",
-    "@ckeditor/ckeditor5-revision-history": "46.0.0",
-    "@ckeditor/ckeditor5-slash-command": "46.0.0",
-    "@ckeditor/ckeditor5-source-editing-enhanced": "46.0.0",
-    "@ckeditor/ckeditor5-template": "46.0.0",
-    "@ckeditor/ckeditor5-track-changes": "46.0.0",
-    "@ckeditor/ckeditor5-uploadcare": "46.0.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
     "@ocular-d/vale-bin": "^2.29.1",
@@ -130,7 +107,6 @@
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "chalk": "^5.0.0",
-    "ckeditor5-premium-features": "46.0.0",
     "coveralls": "^3.1.0",
     "date-fns": "^4.0.0",
     "esbuild": "^0.25.0",
@@ -169,7 +145,8 @@
     "umberto": "^8.0.0",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^6.0.1"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -190,10 +167,9 @@
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
     "manual:verify": "node ./scripts/web-crawler/index.mjs --manual",
-    "bootstrap": "yarn install",
-    "clean": "npx rimraf --glob package-lock.json yarn.lock ./**/node_modules",
-    "reset": "rm -rf ./node_modules && yarn run bootstrap",
-    "reinstall": "yarn run clean && yarn run bootstrap",
+    "clean": "pnpx rimraf --glob ./**/node_modules",
+    "reset": "rm -rf ./node_modules && pnpm install --frozen-lockfile",
+    "reinstall": "pnpm run clean && pnpm install --frozen-lockfile",
     "docs": "node --max-old-space-size=8192 scripts/docs/build-docs.mjs",
     "docs:api": "node scripts/docs/build-api-docs.mjs",
     "docs:ckeditor5": "node scripts/docs/build-ckeditor-packages.mjs",
@@ -233,13 +209,5 @@
       "stylelint --quiet --allow-empty-input"
     ]
   },
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "external/*",
-      "external/*/packages/*",
-      "."
-    ]
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }

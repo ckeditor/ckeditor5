@@ -50,7 +50,8 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 	const shortName = packageName.replace( /^ckeditor5?-/, '' );
 
 	const testCommand = [
-		'yarn',
+		'pnpm',
+		'run',
 		'test',
 		'--reporter=dots',
 		'--production',
@@ -86,7 +87,7 @@ function checkCodeCoverage() {
 	} );
 
 	try {
-		execSync( 'npx nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100', {
+		execSync( 'pnpm nyc check-coverage --branches 100 --functions 100 --lines 100 --statements 100', {
 			cwd: CKEDITOR5_ROOT_PATH,
 			stdio: 'inherit'
 		} );
