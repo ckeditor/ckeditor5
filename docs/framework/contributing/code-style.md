@@ -813,12 +813,22 @@ import insertContent from './utils/insertcontent';
 
 While importing modules from other packages, it is not allowed to use relative paths, and the import must be done using the package name, like this:
 
+Options:
+
+* `newInstallationMethod` (`boolean`) &ndash; (optional) enforces usage of package entry points.
+
 👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
 import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror';
+```
+
+```js
+// Assume we use the `newInstallationMethod` option.
+
+import Foo from '@ckeditor/ckeditor5-core/src/foo.js';
 ```
 
 Even if the import statement works locally, it will throw an error when developers install packages from npm.
@@ -829,6 +839,12 @@ Even if the import statement works locally, it will throw an error when develope
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
 import { CKEditorError } from 'ckeditor5';
+```
+
+```js
+// Assume we use the `newInstallationMethod` option.
+
+import { Foo } from '@ckeditor/ckeditor5-core';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
