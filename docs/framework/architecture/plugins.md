@@ -54,52 +54,30 @@ If a given plugin does not generate any output, the "HTML output" is described a
 The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/contributing/package-metadata package metadata} guide.
 
 <style>
-	table.features-html-output p {
-		padding: 0;
-	}
-
-	table.features-html-output th.plugin {
+	.doc.b-table__cell:first-child {
 		width: 33.333%;
 	}
-
-	table.features-html-output td.plugin a,
-	table.features-html-output td.plugin code {
-		white-space: nowrap;
+	.doc.b-table__cell:last-child {
+		width: 66.667%;
 	}
-
-	table.features-html-output td.html-output > code {
-		display: block;
-		padding: 0;
-		background: none;
-		white-space: pre-wrap;
-	}
-
-	table.features-html-output td.html-output > code + * {
-		margin-top: 1em;
-	}
-
-	table.features-html-output td.html-output.html-output-default {
+	.doc.b-table__cell--default {
 		position: relative;
-		box-shadow: inset 2px 0px 0px 0px hsl(225deg 47% 46%);
-
-		/* Additional space for the "default" badge */
-		padding-right: 60px;
+		padding-right: var(--spacing-18);
 	}
-
-	table.features-html-output td.html-output.html-output-default::after {
+	.doc.b-table__cell--default::after {
 		content: "Default";
-		border: 1px solid hsl(224deg 72% 43%);
-		color: hsl(225deg 85% 30%);
-		opacity: 0.7;
-		border-radius: 2px;
+		border: 1px solid var(--color-primary-400);
+		color: var(--color-primary-400);
+		border-radius: var(--radius-1);
 		display: inline-block;
-		padding: 0px 3px;
-		font-weight: bold;
+		padding: var(--spacing-0) var(--spacing-1);
+		font-weight: var(--font-weight-semibold);
 		text-transform: uppercase;
-		font-size: 10px;
+		font-size: var(--font-size-xs);
+		line-height: var(--line-height-sm);
 		position: absolute;
-		right: 8px;
-		top: 8px;
+		right: var(--spacing-1-5);
+		top: var(--spacing-1-5);
 	}
 </style>
 

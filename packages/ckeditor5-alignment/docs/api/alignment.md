@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 text alignment feature
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-alignment.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment)
-
 This package implements the text alignment feature for CKEditor&nbsp;5.
 
 ## Demo

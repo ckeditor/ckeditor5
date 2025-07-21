@@ -3,7 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CS_CONFIG, InlineEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
+import {
+	CS_CONFIG,
+	InlineEditor,
+	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically
+} from '@snippets/index.js';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
@@ -61,6 +66,8 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		.create( inlineElement, config )
 		.then( editor => {
 			window.editor = editor;
+
+			setViewportTopOffsetDynamically( editor );
 		} )
 		.catch( err => {
 			console.error( err );

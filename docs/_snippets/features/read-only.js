@@ -85,10 +85,3 @@ ReadOnlyEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-// Demo styles.
-const link = document.createElement( 'link' );
-link.rel = 'stylesheet';
-link.href = '../assets/read-only-export-pdf.css';
-
-document.head.appendChild( link );

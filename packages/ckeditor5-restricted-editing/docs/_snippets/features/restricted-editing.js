@@ -36,8 +36,8 @@ ClassicEditor.builtinPlugins.push(
 	CKBox,
 	CKBoxImageEdit );
 
-const restrictedModeButton = document.getElementById( 'mode-restricted' );
-const standardModeButton = document.getElementById( 'mode-standard' );
+const restrictedModeButton = document.getElementById( 'mode-restricted' ).querySelector( 'input' );
+const standardModeButton = document.getElementById( 'mode-standard' ).querySelector( 'input' );
 
 restrictedModeButton.addEventListener( 'change', handleModeChange );
 standardModeButton.addEventListener( 'change', handleModeChange );
