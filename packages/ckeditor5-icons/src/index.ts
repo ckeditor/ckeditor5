@@ -25,6 +25,7 @@ export { default as IconBookmark } from '../theme/icons/bookmark.svg';
 export { default as IconBookmarkMedium } from '../theme/icons/bookmark-medium.svg';
 export { default as IconBookmarkSmall } from '../theme/icons/bookmark-small.svg';
 export { default as IconBrowseFiles } from '../theme/icons/browse-files.svg';
+export { default as IconBulb } from '../theme/icons/bulb.svg';
 export { default as IconBulletedList } from '../theme/icons/bulleted-list.svg';
 export { default as IconCancel } from '../theme/icons/cancel.svg';
 export { default as IconCaption } from '../theme/icons/caption.svg';
