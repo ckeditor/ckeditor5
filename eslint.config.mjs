@@ -3,23 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { readdirSync } from 'fs';
 import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 import ts from 'typescript-eslint';
 import eslintPluginImport from 'eslint-plugin-import';
-
 import rootPkgJson from './package.json' with { type: 'json' };
+import { CKEDITOR5_PACKAGES_PATH } from './scripts/constants.mjs';
 
 const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
 	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
+const projectPackages = readdirSync( CKEDITOR5_PACKAGES_PATH, { withFileTypes: true } )
+	.filter( dirent => dirent.isDirectory() )
+	.map( dirent => dirent.name );
+
 export default defineConfig( [
 	{
 		ignores: [
 			'.*/',
+			'!.changelog/',
 			'build/**',
 			'coverage/**',
 			'dist/**',
@@ -178,6 +184,25 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/ckeditor-imports': 'off'
+		}
+	},
+	{
+		extends: ckeditor5Config,
+
+		files: [ '.changelog/**/*.md' ],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+
+		rules: {
+			'ckeditor5-rules/validate-changelog-entry': [ 'error', {
+				allowedScopes: [
+					...projectPackages,
+					'ckeditor5'
+				],
+				repositoryType: 'mono'
+			} ]
 		}
 	}
 ] );

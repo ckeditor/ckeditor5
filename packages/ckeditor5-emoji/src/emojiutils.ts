@@ -49,6 +49,11 @@ const BASELINE_EMOJI_WIDTH = 24;
  */
 export class EmojiUtils extends Plugin {
 	/**
+	 * Used for testing whether the environment supports the given emoji.
+	 */
+	private _emojiCanvas: CanvasRenderingContext2D | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -60,6 +65,13 @@ export class EmojiUtils extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		this._emojiCanvas = document.createElement( 'canvas' ).getContext( '2d' );
 	}
 
 	/**
@@ -104,13 +116,22 @@ export class EmojiUtils extends Plugin {
 	 * Checks whether the emoji is supported in the operating system.
 	 */
 	public isEmojiZwjSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
-		const emojiWidth = this.getNodeWidth( container, item.emoji );
-
 		// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
 		// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
 		// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
 		// So here we set the threshold at 1.8 times the size of the baseline emoji.
-		return emojiWidth < BASELINE_EMOJI_WIDTH * 1.8;
+
+		const canvasWidth = this.getNodeWidthUsingCanvas( container, item.emoji );
+
+		// Checking emoji using canvas is much faster, so always try it first. Unfortunately canvas has worse emoji coverage.
+		if ( canvasWidth < BASELINE_EMOJI_WIDTH * 1.8 ) {
+			return true;
+		}
+
+		const domWidth = this.getNodeWidth( container, item.emoji );
+
+		// Checking emoji using DOM is much slower, so use it as a fallback.
+		return domWidth < BASELINE_EMOJI_WIDTH * 1.8;
 	}
 
 	/**
@@ -124,6 +145,25 @@ export class EmojiUtils extends Plugin {
 		container.removeChild( span );
 
 		return nodeWidth;
+	}
+
+	/**
+	 * Returns the width of the provided node.
+	 *
+	 * This is a faster alternative to `getNodeWidth` method, which works for great majority of emojis.
+	 */
+	public getNodeWidthUsingCanvas( container: HTMLDivElement, node: string ): number {
+		const style = getComputedStyle( container );
+
+		this._emojiCanvas!.font = [
+			style.fontStyle,
+			style.fontVariant,
+			style.fontWeight,
+			`${ BASELINE_EMOJI_WIDTH }px`,
+			`"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", ${ style.fontFamily }`
+		].join( ' ' );
+
+		return Math.ceil( this._emojiCanvas!.measureText( node ).width );
 	}
 
 	/**
