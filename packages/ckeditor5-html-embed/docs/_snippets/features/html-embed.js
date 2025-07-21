@@ -53,21 +53,13 @@ const initialData =
 <h2>License</h2>
 <p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
 
-<div class="raw-html-embed"><script>
-	window.emojicsOpts = {
-		widget: '50c7737f072dfd100f3dad0411f02e',
-		position: 'inline'
-	};
-	( function( d, s, id ) {
-		var js, fjs = d.getElementsByTagName( s )[ 0 ];
-		js = d.createElement( s );
-		js.id = id;
-		js.src = '//connect.emojics.com/dist/sdk.js';
-		fjs.parentNode.insertBefore( js, fjs );
-	} )( document, 'script', 'emojics-js' );
-</script>
-<div id="emojics-root"></div>
-</script></div>
+<div class="raw-html-embed">
+	<script>
+		const element = document.createElement( 'div' );
+		element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
+		document.body.appendChild( element );
+	</script>
+</div>
 `;
 
 ClassicEditor
@@ -111,8 +103,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		// The "Preview editor data" button logic.
-		document.querySelector( '#preview-data-action' ).addEventListener( 'click', () => {
+		const refreshIframeContent = window.umberto.throttle( () => {
 			const stylesheets = [
 				'css/styles.css',
 				'ckeditor5.css',
@@ -123,11 +114,12 @@ ClassicEditor
 				.from( document.querySelectorAll( 'link' ) )
 				.filter( element => stylesheets.some( name => element.href.endsWith( name ) ) );
 
-			const iframeElement = document.querySelector( '#preview-data-container' );
+			const { iframe } = document.querySelector( '#preview-data-container' );
 
 			// We create the iframe in a careful way and set the base URL to make emojics widget work.
 			// NOTE: the emojics widget works only when hosted on ckeditor.com.
-			const html = '<!DOCTYPE html><html>' +
+			iframe.setContent(
+				'<!DOCTYPE html><html>' +
 				'<head>' +
 					'<meta charset="utf-8">' +
 					`<base href="${ location.href }">` +
@@ -143,16 +135,16 @@ ClassicEditor
 						}
 					</style>` +
 				'</head>' +
-				'<body class="formatted ck-content">' +
+				'<body class="ck-content">' +
 					editor.getData() +
 				'</body>' +
-				'</html>';
+				'</html>'
+			);
+		}, 200 );
 
-			iframeElement.contentWindow.document.open();
-			iframeElement.contentWindow.document.write( html );
-			iframeElement.contentWindow.document.close();
-		} );
+		editor.model.document.on( 'change:data', refreshIframeContent );
 
+		refreshIframeContent();
 		attachTourBalloon( {
 			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
 			text: 'Click to embed a new HTML snippet.',
