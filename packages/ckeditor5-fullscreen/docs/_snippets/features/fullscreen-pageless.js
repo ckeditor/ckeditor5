@@ -383,7 +383,7 @@ FullscreenEditor
 		cloudServices: csConfig,
 		fullscreen: {
 			onEnterCallback: container => container.classList.add( 'formatted', 'live-snippet' ),
-			container: document.querySelector( '.main__content' ),
+			container: document.querySelector( '.l-layout__main' ),
 			menuBar: {
 				isVisible: false
 			}

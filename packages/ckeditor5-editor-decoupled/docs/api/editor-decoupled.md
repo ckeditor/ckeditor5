@@ -4,8 +4,6 @@ category: api-reference
 
 # CKEditor&nbsp;5 decoupled editor implementation
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-decoupled.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled)
-
 The decoupled editor implementation for CKEditor&nbsp;5. See the {@link examples/builds/document-editor demo}.
 
 ## Documentation
