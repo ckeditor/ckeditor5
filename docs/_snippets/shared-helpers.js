@@ -177,8 +177,9 @@ export function createTabs( tabsContainer, onTabChange ) {
  * Returns the URL of the `snippet.css` file used in the snippets.
  * It may be used to load the styles for export PDF or other purposes.
  *
+ * @param {String} snippetName The name of the snippet, e.g. `balloon-block`.
  * @returns {String} The URL of the `snippet.css` file.
  */
-export function querySnippetCSSUrl() {
-	return document.querySelector( 'link[href*="snippet.css"][data-cke]' )?.href || '';
+export function querySnippetCSSUrl( snippetName ) {
+	return document.querySelector( `link[href*="${ snippetName }/snippet.css"][data-cke]` )?.href || '';
 }
