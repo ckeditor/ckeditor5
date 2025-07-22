@@ -166,7 +166,7 @@
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
     "typescript-eslint": "^8.33.0",
-    "umberto": "git+ssh://git@github.com/cksource/umberto.git#82f9295e855586df7ff4a997adaec01f2247db83",
+    "umberto": "git+ssh://git@github.com/cksource/umberto.git#post-release-fixes",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0"
