@@ -71,13 +71,10 @@ jobs:
             corepack prepare pnpm@latest-10 --activate
             pnpm config set store-dir .pnpm-store
       - run:
-          name: Check pnpm version
-          command: pnpm -v
-      - run:
           name: Install dependencies
           command: pnpm install --frozen-lockfile
       - save_cache:
-          name: Save pnpm Package Cache
+          name: Save pnpm cache
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - .pnpm-store
