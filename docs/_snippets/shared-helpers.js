@@ -172,3 +172,13 @@ export function createTabs( tabsContainer, onTabChange ) {
 		onTabChange( tabTextElements.indexOf( selectedTabTextElement ) );
 	}
 }
+
+/**
+ * Returns the URL of the `snippet.css` file used in the snippets.
+ * It may be used to load the styles for export PDF or other purposes.
+ *
+ * @returns {String} The URL of the `snippet.css` file.
+ */
+export function querySnippetCSSUrl() {
+	return document.querySelector( 'link[href*="snippet.css"][data-cke]' )?.href || '';
+}
