@@ -153,7 +153,7 @@ function createNotification( title, message ) {
 		element.setAttribute( 'srcset', srcset );
 	}
 
-	[ ...document.querySelectorAll( '.content-inner img' ) ]
+	[ ...document.querySelectorAll( '.live-snippet .ck-content img' ) ]
 		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
 		.forEach( img => {
 			// Update `<img src="...">`.
