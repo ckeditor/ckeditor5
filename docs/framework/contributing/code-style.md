@@ -815,7 +815,7 @@ While importing modules from other packages, it is not allowed to use relative p
 
 Options:
 
-* `newInstallationMethod` (`boolean`) &ndash; (optional) enforces usage of package entry points.
+* `usePackageEntryPoint` (`boolean`) &ndash; (optional) enforces usage of package entry points.
 
 👎&nbsp; Examples of incorrect code for this rule:
 
@@ -826,7 +826,7 @@ import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror';
 ```
 
 ```js
-// Assume we use the `newInstallationMethod` option.
+// Assume we use the `usePackageEntryPoint` option.
 
 import Foo from '@ckeditor/ckeditor5-core/src/foo.js';
 ```
@@ -842,7 +842,7 @@ import { CKEditorError } from 'ckeditor5';
 ```
 
 ```js
-// Assume we use the `newInstallationMethod` option.
+// Assume we use the `usePackageEntryPoint` option.
 
 import { Foo } from '@ckeditor/ckeditor5-core';
 ```
