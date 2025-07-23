@@ -14,9 +14,9 @@ Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-icons/theme/i
 
 {@snippet features/find-and-replace}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
 

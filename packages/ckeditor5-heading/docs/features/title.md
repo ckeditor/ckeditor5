@@ -27,9 +27,9 @@ Use the editor below to create a document with distinct title and body sections.
 	Here will be the data of the document.
 </ck:code-block>
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Keyboard navigation
 

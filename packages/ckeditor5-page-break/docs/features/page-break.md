@@ -19,9 +19,9 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-icons/theme/
 
 <iframe id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
 

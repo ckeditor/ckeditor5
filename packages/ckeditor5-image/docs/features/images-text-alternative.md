@@ -16,9 +16,9 @@ The editor below has the base image feature enabled. Click any of the images and
 
 {@snippet features/image-text-alternative}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Additional feature information
 

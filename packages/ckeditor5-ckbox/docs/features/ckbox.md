@@ -39,9 +39,9 @@ Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/
 
 {@snippet features/ckbox}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
 

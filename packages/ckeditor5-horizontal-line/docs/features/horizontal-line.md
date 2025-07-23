@@ -15,9 +15,9 @@ To insert a horizontal line in the demo below, use the toolbar button {@icon @ck
 
 {@snippet features/horizontal-line}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
 

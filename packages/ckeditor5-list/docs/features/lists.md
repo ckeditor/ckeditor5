@@ -25,9 +25,9 @@ You can also use Markdown code recognized by the {@link features/autoformat auto
 
 {@snippet features/lists-document}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## List properties
 
