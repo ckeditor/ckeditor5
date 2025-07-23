@@ -288,16 +288,22 @@ export default class MediaEmbedEditing extends Plugin {
 						/https:\/\/copilot\.clari\.com\/call\/([\w-]+)/
 					],
 					html: match => {
-						const callId = match[ 1 ];
-						const url = `https://copilot.clari.com/callembed/${ callId }`;
-
+						const url = match[ 0 ];
 						return (
-							'<div style="position: relative; height: 431px;">' +
-								`<iframe src="${ url }" ` +
-									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-									'frameborder="0">' +
-								'</iframe>' +
-							'</div>'
+							`<a href="${ url }" target="_blank" rel="noopener noreferrer" style="display: flex; flex-direction: column; width: 100%; height: 550px; border-radius: 16px; justify-content: center; align-items: center; font-size: 14px; font-weight: 500; text-decoration: none; background-color: #A1E7D6">
+								<svg width="58" height="58" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M22.3475 6.6969L15.6582 8.51395C15.9288 9.76897 16.0714 11.0996 16.0714 12.4957C16.0714 13.8918 15.9277 15.2214 15.6582 16.4775L22.3475 18.2946C22.7754 16.482 23 14.4956 23 12.4969C23 10.4981 22.7754 8.50945 22.3475 6.6969Z" fill="#00D7B8"/>
+									<path d="M5.40967 4.81921L1 12.4948L7.97889 7.2581C7.30961 6.25479 6.43825 5.42865 5.40967 4.81921Z" fill="#5F3AD7"/>
+									<path d="M5.40967 20.1717L1 12.495L7.97889 17.7316C7.30961 18.7361 6.43825 19.5623 5.40967 20.1717Z" fill="#5F3AD7"/>
+									<path d="M13.4546 3.15051L1 12.4955L15.6589 8.51377C15.23 6.52172 14.4787 4.71818 13.4546 3.15051Z" fill="#0280FF"/>
+									<path d="M13.4546 21.8398L1 12.4948L15.6589 16.4766C15.23 18.4697 14.4787 20.2733 13.4546 21.8398Z" fill="#0280FF"/>
+									<path d="M16.0733 12.4948C16.0733 11.0987 15.9296 9.76911 15.6601 8.51294L1 12.4948L15.6589 16.4766C15.9307 15.2192 16.0733 13.8931 16.0733 12.4948Z" fill="white"/>
+								</svg>
+								<span style="margin-top: 32px; display: flex; align-items: center;">
+									<span class="ant-typography" style="text-align: center; font-size: 16px; color: #303740; font-weight: 500; padding: 0px; margin: 0px;">Click to open call in Clari</span>
+									<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#303740" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px; margin-left: 8px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+								</span>
+							</a>`
 						);
 					}
 				},
