@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
 
 @layer snippets {
@@ -32,6 +37,10 @@
 		border-top: 0;
 		border-left: 0;
 		border-right: 0;
+	}
+
+	.editing-area-scroll-wrapper {
+		overflow-x: auto;
 	}
 
 	.demo-container .editing-area-scroll-wrapper {
@@ -99,10 +108,6 @@
 
 	#demo-container .sidebar.narrow {
 		width: 30px;
-	}
-
-	.editing-area-scroll-wrapper {
-		overflow-x: auto;
 	}
 
 	.live-snippet {
@@ -175,20 +180,20 @@
 
 		100%,
 		0% {
-			stroke: #f75b4b;
+			stroke: hsl(7, 90%, 63%);
 		}
 
 		40% {
-			stroke: #0387d0;
+			stroke: hsl(202, 97%, 42%);
 		}
 
 		66% {
-			stroke: #1ebd60;
+			stroke: hsl(143, 73%, 44%);
 		}
 
 		80%,
 		90% {
-			stroke: #8d44ad;
+			stroke: hsl(282, 46%, 37%);
 		}
 	}
 
@@ -223,7 +228,7 @@
 		box-shadow: 0 2px 8px hsla(0, 0%, 0%, .08);
 		overflow: hidden;
 		flex: 1 1 auto;
-		word-break: break-word;
+		word-break: break-all;
 	}
 
 	.ck-content:not(.ck-comment__content) {
@@ -270,17 +275,17 @@
 		}
 
 		& h3.category {
-			font-family: 'Bebas Neue';
+			font-family: 'Bebas Neue', sans-serif;
 			font-size: 20px;
 			font-weight: bold;
-			color: #555;
+			color: hsl(0, 0%, 33%);
 			letter-spacing: 10px;
 			margin: 0;
 			padding: 0;
 		}
 
 		& h2.document-title {
-			font-family: 'Bebas Neue';
+			font-family: 'Bebas Neue', sans-serif;
 			font-size: 50px;
 			font-weight: bold;
 			margin: 0;
@@ -289,9 +294,9 @@
 		}
 
 		& h3.document-subtitle {
-			font-family: 'Bebas Neue';
+			font-family: 'Bebas Neue', sans-serif;
 			font-size: 20px;
-			color: #555;
+			color: hsl(0, 0%, 33%);
 			margin: 0 0 1em;
 			font-weight: normal;
 			padding: 0;
@@ -299,17 +304,17 @@
 
 		& p.info-box {
 			--background-size: 30px;
-			--background-color: #e91e63;
+			--background-color: hsl(330, 82%, 51%);
 			padding: 1.2em 2em;
 			border: 1px solid var(--background-color);
 			background: linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)), linear-gradient(135deg, transparent calc(100% - var(--background-size)), var(--background-color) calc(100% - var(--background-size)), var(--background-color));
 			border-radius: 10px;
 			margin: 1.5em 2em;
-			box-shadow: 5px 5px 0 #ffe6ef;
+			box-shadow: 5px 5px 0 hsl(340, 100%, 96%);
 		}
 
 		& blockquote.side-quote {
-			font-family: 'Bebas Neue';
+			font-family: 'Bebas Neue', sans-serif;
 			font-style: normal;
 			float: right;
 			width: 35%;
@@ -327,7 +332,7 @@
 			left: -10px;
 			display: block;
 			font-size: 200px;
-			color: #e7e7e7;
+			color: hsl(0, 0%, 91%);
 			z-index: -1;
 			line-height: 1;
 		}
@@ -340,21 +345,21 @@
 		& blockquote.side-quote p:last-child:not(:first-child) {
 			font-size: 1.3em;
 			text-align: right;
-			color: #555;
+			color: hsl(0, 0%, 33%);
 		}
 
 		& span.marker {
-			background: yellow;
+			background: hsl(60, 100%, 50%);
 		}
 
 		& span.spoiler {
-			background: #000;
-			color: #000;
+			background: hsl(0, 0%, 0%);
+			color: hsl(0, 0%, 0%);
 		}
 
 		& span.spoiler:hover {
-			background: #000;
-			color: #fff;
+			background: hsl(0, 0%, 0%);
+			color: hsl(0, 0%, 100%);
 		}
 
 		& pre.fancy-code {
@@ -374,15 +379,15 @@
 		}
 
 		& pre.fancy-code-dark {
-			background: #272822;
-			color: #fff;
-			box-shadow: 5px 5px 0 #0000001f;
+			background: hsl(60, 3%, 15%);
+			color: hsl(0, 0%, 100%);
+			box-shadow: 5px 5px 0 hsl(0, 0%, 12%);
 		}
 
 		& pre.fancy-code-bright {
-			background: #dddfe0;
-			color: #000;
-			box-shadow: 5px 5px 0 #b3b3b3;
+			background: hsl(210, 6%, 87%);
+			color: hsl(0, 0%, 0%);
+			box-shadow: 5px 5px 0 hsl(0, 0%, 70%);
 		}
 	}
 
