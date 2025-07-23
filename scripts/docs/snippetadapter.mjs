@@ -107,6 +107,32 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		},
 		plugins: [
 			/**
+			 * Handles imports ending with `?raw`, loading file contents as plain text. Useful for inlining raw assets.
+			 *
+			 * Must be loaded before `externalize-ckeditor5` to avoid `?raw` imports being marked as external.
+			 */
+			{
+				name: 'raw-import',
+				setup( build ) {
+					build.onResolve( { filter: /\?raw$/ }, async args => {
+						const cleanPath = args.path.replace( /\?raw$/, '' );
+
+						return {
+							path: upath.join( args.resolveDir, cleanPath ),
+							namespace: 'raw-file'
+						};
+					} );
+
+					build.onLoad( { filter: /.*/, namespace: 'raw-file' }, async args => {
+						return {
+							contents: await readFile( args.path, 'utf8' ),
+							loader: 'text'
+						};
+					} );
+				}
+			},
+
+			/**
 			 * Esbuild has an `external` property. However, it doesn't look for direct match, but checks if the path starts
 			 * with the provided value. This means that if the `external` array includes `@ckeditor/ckeditor5-core` and we
 			 * have an import like `@ckeditor/ckeditor5-core/tests/...`, then it will be marked as external instead of being
