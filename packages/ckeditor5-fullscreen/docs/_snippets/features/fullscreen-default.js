@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import './fullscreen-default.css';
 import {
 	TOKEN_URL,
+	querySnippetCSSUrl,
 	getViewportTopOffsetConfig,
 	attachTourBalloon,
 	findToolbarItem
@@ -283,17 +285,21 @@ generateComments( csConfig, channelId, initialCommentsData )
 						'../assets/pagination-fonts.css',
 						'../assets/ckeditor5/ckeditor5.css',
 						'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
-						'../assets/pagination.css'
+						querySnippetCSSUrl( 'fullscreen-default' )
 					],
 					fileName: 'export-pdf-demo.pdf',
 					appID: 'cke5-docs',
 					converterOptions: {
-						format: 'Tabloid',
-						margin_top: '20mm',
-						margin_bottom: '20mm',
-						margin_right: '24mm',
-						margin_left: '24mm',
-						page_orientation: 'portrait'
+						document: {
+							size: 'A4',
+							orientation: 'portrait',
+							margin: {
+								top: '20mm',
+								bottom: '20mm',
+								right: '12mm',
+								left: '12mm'
+							}
+						}
 					},
 					tokenUrl: false
 				},
