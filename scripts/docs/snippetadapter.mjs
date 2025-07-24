@@ -205,12 +205,12 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 				() => `<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>`
 			);
 
-			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
-				documentTags.push( getScript( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.js` ) );
-			}
-
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
 				documentTags.push( getStyle( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.css` ) );
+			}
+
+			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
+				documentTags.push( getScript( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.js` ) );
 			}
 		}
 
