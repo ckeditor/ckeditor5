@@ -75,12 +75,6 @@ The spell and grammar check is compliant with Web Content Accessibility Guidelin
 
 ## Installation
 
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
-
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor preset just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 
 ```
