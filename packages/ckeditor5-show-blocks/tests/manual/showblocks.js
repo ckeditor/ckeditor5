@@ -101,39 +101,6 @@ ClassicEditor
 			],
 			shouldNotGroupWhenFull: true
 		},
-		exportPdf: {
-			stylesheets: [
-				'../../assets/pagination-fonts.css',
-				'EDITOR_STYLES',
-				'../../snippets/features/pagination/snippet.css',
-				'../../assets/pagination.css'
-			],
-			fileName: 'export-pdf-demo.pdf',
-			appID: 'cke5-docs',
-			converterOptions: {
-				format: 'Tabloid',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '24mm',
-				margin_left: '24mm',
-				page_orientation: 'portrait'
-			},
-			tokenUrl: false
-		},
-		exportWord: {
-			stylesheets: [ 'EDITOR_STYLES' ],
-			fileName: 'export-word-demo.docx',
-			appID: 'cke5-docs',
-			converterOptions: {
-				format: 'B4',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '12mm',
-				margin_left: '12mm',
-				page_orientation: 'portrait'
-			},
-			tokenUrl: false
-		},
 		fontFamily: {
 			supportAllValues: true
 		},
@@ -206,10 +173,6 @@ ClassicEditor
 					minimumCharacters: 1
 				}
 			]
-		},
-		importWord: {
-			tokenUrl: false,
-			defaultStyles: true
 		},
 		placeholder: 'Type or paste your content here!',
 		table: {

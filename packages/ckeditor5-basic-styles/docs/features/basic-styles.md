@@ -17,9 +17,9 @@ You may apply basic formatting options with toolbar buttons. You can also make u
 
 {@snippet features/basic-styles}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Available text styles
 
@@ -64,12 +64,6 @@ CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of code
 {@img assets/img/typing-after-code.gif 770 The animation showing typing after the code element in CKEditor&nbsp;5 rich text editor.}
 
 ## Installation
-
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the plugins which you need to your plugin list. Then, simply configure the toolbar items to make the features available in the user interface.
 

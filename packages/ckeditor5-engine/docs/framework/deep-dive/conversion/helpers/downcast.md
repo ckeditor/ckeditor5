@@ -33,7 +33,7 @@ editor.conversion
 
 ### Using view element definition
 
-Sometimes you may need to output a view element that has certain attributes, like a class name. To achieve this, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
+Sometimes you may need to output a view element that has certain attributes, like a class name. To achieve this, you can provide an {@link module:engine/view/elementdefinition~ViewElementDefinition element definition} in the `view` property:
 
 ```js
 editor.conversion
@@ -47,7 +47,7 @@ editor.conversion
 	} );
 ```
 
-Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) for more details.
+Check out the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition `ViewElementObjectDefinition` documentation} for more details.
 
 ### Creating a view element using a callback
 
@@ -66,7 +66,7 @@ editor.conversion
 	} );
 ```
 
-Here, the second parameter of the view callback is the [DowncastConversionApi](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcastdispatcher-DowncastConversionApi.html) object. It contains many properties and methods that can be useful when writing a more complex converters.
+Here, the second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi DowncastConversionApi} object. It contains many properties and methods that can be useful when writing a more complex converters.
 
 The callback should return a single container element. This element should not contain any children except UI elements. If you want to create a richer structure, use the `elementToStructure()` method.
 
@@ -203,7 +203,7 @@ A model text node `"CKEditor&nbsp;5"` with a `bold` attribute will become a `<
 
 ### Using view element definition
 
-You might want to output a view element that has more attributes, like a class name. To achieve that, you can provide an [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
+You might want to output a view element that has more attributes, like a class name. To achieve that, you can provide an {@link module:engine/view/elementdefinition~ViewElementDefinition element definition} in the `view` property:
 
 ```js
 editor.conversion
@@ -217,7 +217,7 @@ editor.conversion
 	} );
 ```
 
-Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) for more details.
+Check out the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition `ViewElementObjectDefinition` documentation} for more details.
 
 ### Creating a view element using a callback
 
@@ -238,7 +238,7 @@ editor.conversion
 	} );
 ```
 
-The second parameter of the view callback is the [DowncastConversionApi](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcastdispatcher-DowncastConversionApi.html) object. It contains many properties and methods that can be useful when writing more complex converters.
+The second parameter of the view callback is the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi DowncastConversionApi} object. It contains many properties and methods that can be useful when writing more complex converters.
 
 ### Changing converter priority
 

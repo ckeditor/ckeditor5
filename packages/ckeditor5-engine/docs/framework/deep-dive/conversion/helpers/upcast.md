@@ -49,7 +49,7 @@ editor.conversion
 	} );
 ```
 
-Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) for more details.
+Check out the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition `ViewElementObjectDefinition` documentation} for more details.
 
 ### Creating a model element using a callback
 
@@ -71,7 +71,7 @@ editor.conversion
 
 In the example above, the model element is created only from the `<p class="heading">` view element. All other `<p>` elements without the `heading` class name will be filtered out and will not be converted.
 
-The second parameter of the model callback is the [UpcastConversionApi](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_upcastdispatcher-UpcastConversionApi.html) object, that contains many properties and methods useful when writing more complex converters.
+The second parameter of the model callback is the {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi UpcastConversionApi} object, that contains many properties and methods useful when writing more complex converters.
 
 ### Handling view elements with attributes
 
@@ -143,7 +143,7 @@ In the example above, the view `<strong>CKEditor&nbsp;5</strong>` will become th
 
 ### Converting attribute in a specific view element
 
-You might want to only convert view elements with a specific class name or other attribute. To achieve it, you can provide [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property.
+You might want to only convert view elements with a specific class name or other attribute. To achieve it, you can provide {@link module:engine/view/elementdefinition~ViewElementDefinition element definition}) in the `view` property.
 
 ```js
 editor.conversion
@@ -157,7 +157,7 @@ editor.conversion
 	} );
 ```
 
-Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) for more details.
+Check out the {@link module:engine/view/elementdefinition~ViewElementObjectDefinition `ViewElementObjectDefinition` documentation} for more details.
 
 ### Setting a predefined value to model attribute
 

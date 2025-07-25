@@ -425,7 +425,7 @@ The following table presents plugins available in CKEditor 4 and their equivalen
 			<p style="margin-left:0px;"><a href="https://ckeditor.com/cke4/addon/htmlwriter">htmlwriter</a></p>
 			</td>
 			<td>
-				<p style="margin-left:0px;">A custom HTML writer can be implemented using the <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_htmlwriter-HtmlWriter.html">HtmlWriter</a> interface</p>
+				<p style="margin-left:0px;">A custom HTML writer can be implemented using the <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_dataprocessor_htmlwriter-DataProcessorHtmlWriter.html>HtmlWriter</a> interface</p>
 			</td>
 		</tr>
 		<tr>
@@ -513,7 +513,7 @@ The following table presents plugins available in CKEditor 4 and their equivalen
 			<p style="margin-left:0px;"><a href="https://ckeditor.com/cke4/addon/lineutils">lineutils</a></p>
 			</td>
 			<td>
-				<p style="margin-left:0px;">Partially covered by <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_widget_widgettypearound-WidgetTypeAround.html">Widget type around</a></p>
+				<p style="margin-left:0px;">Partially covered by <a href="https://ckeditor.com/docs/ckeditor5/latest/api/module_widget_widgettypearound_widgettypearound-WidgetTypeAround.html">Widget type around</a></p>
 			</td>
 		</tr>
 		<tr>
