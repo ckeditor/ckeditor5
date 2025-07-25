@@ -13,6 +13,13 @@ The [default theme](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark
 
 Below, you can see an editor with the dark theme as a result of customizations described in a {@link framework/theme-customization dedicated guide}.
 
+**Mode:**
+
+<div class="u-flex-horizontal u-gap-5">
+	<ck:checkbox id="theme-mode-light" type="radio" name="theme-mode" value="light" label="Light" />
+	<ck:checkbox id="theme-mode-dark" type="radio" name="theme-mode" value="dark" label="Dark" checked />
+</div>
+
 {@snippet examples/theme-lark}
 
 ## Detailed guide
