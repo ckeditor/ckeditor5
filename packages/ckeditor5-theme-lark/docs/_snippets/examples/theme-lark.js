@@ -155,6 +155,12 @@ ClassicEditor
 
 		const command = editor.commands.get( 'darkModeToggle' );
 
+		if ( command.value === 'dark' ) {
+			themeModeDarkInput.checked = true;
+		} else {
+			themeModeLightInput.checked = true;
+		}
+
 		// Reflect the input state based on changing the theme mode via the command.
 		command.on( 'change:value', ( event, property, newValue ) => {
 			if ( newValue === 'dark' ) {
