@@ -3,12 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Plugin, Command, ClassicEditor, CloudServices, EasyImage, ImageUpload, FindAndReplace } from 'ckeditor5';
+import { Plugin, Command, ClassicEditor, CloudServices, EasyImage, ImageUpload, FindAndReplace, CodeBlock } from 'ckeditor5';
 import { CS_CONFIG, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
 
-import './custom.css';
+import DARK_MODE_STYLES from './custom.css?raw';
 
-import DARK_MODE_STYLES from './theme-lark.css?raw';
+// This code snippets is used in the following documentation files:
+//
+// - packages/ckeditor5-theme-lark/docs/examples/theme-customization.md
+// - packages/ckeditor5-theme-lark/docs/framework/theme-customization.md
+//
+// Ensure to update the HTML tree when modifying it in this snippet on both pages.
 
 class DarkModeToggle extends Plugin {
 	static get pluginName() {
@@ -80,7 +85,7 @@ class DarkModeToggleCommand extends Command {
 		this.styleElement = document.createElement( 'style' );
 		document.head.appendChild( this.styleElement );
 
-		this.value = false;
+		this.value = '';
 	}
 
 	destroy() {
@@ -90,7 +95,7 @@ class DarkModeToggleCommand extends Command {
 	}
 
 	execute( mode = undefined ) {
-		const shouldEnableDarkMode = mode === 'dark' || ( !mode && !this.value );
+		const shouldEnableDarkMode = mode === 'dark' || ( !mode && this.value === 'light' );
 
 		if ( shouldEnableDarkMode ) {
 			this.styleElement.innerHTML = DARK_MODE_STYLES;
@@ -104,19 +109,19 @@ class DarkModeToggleCommand extends Command {
 
 	refresh() {
 		this.isEnabled = true;
-		this.value = this.styleElement.innerText.length !== 0;
+		this.value = this.styleElement.innerText.length !== 0 ? 'dark' : 'light';
 	}
 }
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, FindAndReplace, DarkModeToggle ],
+		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, FindAndReplace, CodeBlock, DarkModeToggle ],
 		toolbar: {
 			items: [
 				'undo', 'redo', 'findAndReplace',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -128,10 +133,36 @@ ClassicEditor
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
+		darkMode: {
+			mode: 'dark'
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		const themeModeLightInput = document.getElementById( 'theme-mode-light' ).querySelector( 'input' );
+		const themeModeDarkInput = document.getElementById( 'theme-mode-dark' ).querySelector( 'input' );
+
+		themeModeLightInput.addEventListener( 'change', handleModeChange );
+		themeModeDarkInput.addEventListener( 'change', handleModeChange );
+
+		function handleModeChange( evt ) {
+			const value = evt.target.value === 'dark' ? 'dark' : 'light';
+
+			editor.execute( 'darkModeToggle', value );
+		}
+
+		const command = editor.commands.get( 'darkModeToggle' );
+
+		// Reflect the input state based on changing the theme mode via the command.
+		command.on( 'change:value', ( event, property, newValue ) => {
+			if ( newValue === 'dark' ) {
+				themeModeDarkInput.checked = true;
+			} else {
+				themeModeLightInput.checked = true;
+			}
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
