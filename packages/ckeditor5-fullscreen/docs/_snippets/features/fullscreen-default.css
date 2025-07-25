@@ -219,8 +219,9 @@
 	/* Styles of the editor content container to make it look like a sheet of paper. */
 	.editor-content.ck.ck-content {
 		/* Min and max used to force width in flexbox. */
-		min-height: 297mm;
+		min-height: calc( 297mm + 2px );
 		height: auto;
+		width: calc( 21cm + 2px );
 		padding: 20mm 12mm;
 		margin: calc( 2 * var(--ck-spacing-large) );
 		box-sizing: border-box;
@@ -228,7 +229,6 @@
 		box-shadow: 0 2px 8px hsla(0, 0%, 0%, .08);
 		overflow: hidden;
 		flex: 1 1 auto;
-		word-break: break-all;
 	}
 
 	.ck-content:not(.ck-comment__content) {

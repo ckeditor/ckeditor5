@@ -17,6 +17,7 @@
 	caption-side: bottom;
 	word-break: normal;
 	overflow-wrap: anywhere;
+	break-before: avoid;
 	color: var(--ck-content-color-image-caption-text);
 	background-color: var(--ck-content-color-image-caption-background);
 	padding: .6em;
