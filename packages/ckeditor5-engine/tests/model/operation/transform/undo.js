@@ -798,7 +798,7 @@ describe( 'transform', () => {
 			expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/4371.
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/4371.
 		it( 'add paragraphs and marker, remove marker, undo on both clients', async () => {
 			const kate = await Client.get( 'kate' );
 
@@ -844,7 +844,7 @@ describe( 'transform', () => {
 			return kate.destroy();
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/4341
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/4341
 		it( 'split, type, remove on another client, undo, redo', async () => {
 			const kate = await Client.get( 'kate' );
 
@@ -879,7 +879,7 @@ describe( 'transform', () => {
 			return kate.destroy();
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/1939
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/1939
 		it( 'two intersecting removes through multiple elements, then undo', async () => {
 			const kate = await Client.get( 'kate' );
 

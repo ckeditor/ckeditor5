@@ -393,7 +393,7 @@ export function listItemDowncastRemoveConverter( schema: ModelSchema ): GetCallb
 		const elementName = evt.name.split( ':' )[ 1 ];
 
 		// Do not remove marker if the deleted element is some inline object inside paragraph.
-		// See https://github.com/cksource/ckeditor5-internal/issues/3680.
+		// See https://github.com/ckeditor/ckeditor5-internal/issues/3680.
 		if ( !schema.checkAttribute( elementName, 'listItemId' ) ) {
 			return;
 		}
