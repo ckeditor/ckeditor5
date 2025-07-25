@@ -15,7 +15,7 @@
 	--ck-content-font-color: var(--ck-custom-white);
 
 	--ck-color-base-background: hsl(270, 1%, 29%);
-	--ck-color-base-border: #3a3c3f;
+	--ck-color-base-border: hsl(240, 4%, 24%);
 
 	--ck-color-focus-border: hsl(208, 90%, 62%);
 	--ck-color-text: hsl(0, 0%, 98%);
