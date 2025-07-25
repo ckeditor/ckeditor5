@@ -1109,6 +1109,206 @@ describe( 'utils', () => {
 				} );
 			} );
 
+			describe( 'with ListItemButtonView as LabelledButton', () => {
+				it( 'is populated using item definitions', () => {
+					definitions.add( {
+						type: 'labelledbutton',
+						model: new UIModel( { label: 'a', labelStyle: 'b' } ),
+						label: new View( locale )
+					} );
+
+					definitions.add( {
+						type: 'labelledbutton',
+						model: new UIModel( { label: 'c', labelStyle: 'd' } ),
+						label: new View( locale )
+					} );
+
+					expect( listItems ).to.have.length( 2 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
+
+					expect( listItems.get( 1 ).children.first.label ).to.equal( 'c' );
+					expect( listItems.get( 1 ).children.first.labelStyle ).to.equal( 'd' );
+
+					definitions.remove( 1 );
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first.children.first.label ).to.equal( 'a' );
+					expect( listItems.first.children.first.labelStyle ).to.equal( 'b' );
+				} );
+
+				it( 'should set `isToggleable=true` only if role `menuitemcheckbox` or `menuitemradio` is set', () => {
+					definitions.addMany( [
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'a', role: 'menuitemcheckbox' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'b', role: 'menuitemradio' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'c', role: 'menuitem' } ),
+							label: new View( locale )
+						}
+					] );
+
+					expect( listItems.get( 0 ).children.first.isToggleable ).to.be.true;
+					expect( listItems.get( 1 ).children.first.isToggleable ).to.be.true;
+					expect( listItems.get( 2 ).children.first.isToggleable ).to.be.false;
+				} );
+
+				it( 'should reserve checkbox holder space if there is at least one toggleable item', () => {
+					definitions.addMany( [
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'a', role: 'menuitemcheckbox' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'b', role: 'menuitemradio' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'c', role: 'menuitem' } ),
+							label: new View( locale )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.true;
+					}
+				} );
+
+				it( 'should reserve checkbox holder space on non-toggleable items', () => {
+					definitions.addMany( [
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'a', role: 'menuitem' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'b', role: 'menuitem' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'c', role: 'menuitemradio' } ),
+							label: new View( locale )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.true;
+					}
+				} );
+
+				it( 'should restore checkbox holder space if the only toggleable was removed', () => {
+					definitions.addMany( [
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'a', role: 'menuitem' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'b', role: 'menuitem' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'c', role: 'menuitemradio' } ),
+							label: new View( locale )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.true;
+					}
+
+					definitions.remove( 2 );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.false;
+					}
+				} );
+
+				it( 'should not reserve checkbox holder space if there is at least one toggleable item', () => {
+					definitions.addMany( [
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'a', role: 'menuitem' } ),
+							label: new View( locale )
+						},
+						{
+							type: 'labelledbutton',
+							model: new UIModel( { label: 'b', role: 'menuitem' } ),
+							label: new View( locale )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.false;
+					}
+				} );
+
+				it( 'binds all button properties', () => {
+					const def = {
+						type: 'labelledbutton',
+						model: new UIModel( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } ),
+						label: new View( locale )
+					};
+
+					definitions.add( def );
+
+					const button = listItems.first.children.first;
+
+					expect( button.foo ).to.equal( 'bar' );
+					expect( button.baz ).to.equal( 'qux' );
+
+					button.isToggleable = true;
+					button.isOn = true;
+
+					expect( button.element.getAttribute( 'aria-pressed' ) ).to.be.equal( 'true' );
+
+					button.isOn = false;
+					expect( button.element.getAttribute( 'aria-pressed' ) ).to.be.equal( 'false' );
+
+					button.isOn = true;
+					button.role = 'checkbox';
+					expect( button.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+					expect( button.element.getAttribute( 'aria-pressed' ) ).to.be.null;
+
+					def.model.baz = 'foo?';
+					expect( button.baz ).to.equal( 'foo?' );
+				} );
+
+				it( 'delegates ButtonView#execute to the ListItemView', done => {
+					definitions.add( {
+						type: 'labelledbutton',
+						model: new UIModel( { label: 'a', labelStyle: 'b' } ),
+						label: new View( locale )
+					} );
+
+					const listItem = listItems.first;
+					const button = listItem.children.first;
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( button );
+						expect( evt.path ).to.deep.equal( [ button, listItem, dropdownView ] );
+
+						done();
+					} );
+
+					button.fire( 'execute' );
+				} );
+			} );
+
 			describe( 'with SwitchButtonView', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {

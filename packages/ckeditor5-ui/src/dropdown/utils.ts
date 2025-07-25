@@ -47,6 +47,7 @@ import '../../theme/components/dropdown/listdropdown.css';
 import { ListItemGroupView } from '../list/listitemgroupview.js';
 import { ListItemButtonView } from '../button/listitembuttonview.js';
 import type { DropdownMenuDefinition } from './menu/utils.js';
+import type { ButtonLabelView } from '../button/buttonlabelview.js';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -677,7 +678,7 @@ function bindViewCollectionItemsToDefinitions(
 			groupView.items.delegate( 'execute' ).to( dropdownView );
 
 			return groupView;
-		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
+		} else if ( def.type === 'button' || def.type === 'switchbutton' || def.type === 'labelledbutton' ) {
 			const isToggleable = def.model.role === 'menuitemcheckbox' || def.model.role === 'menuitemradio';
 			const listItemView = new ListItemView( locale );
 
@@ -685,6 +686,11 @@ function bindViewCollectionItemsToDefinitions(
 
 			if ( def.type === 'button' ) {
 				buttonView = new ListItemButtonView( locale );
+				buttonView.set( {
+					isToggleable
+				} );
+			} else if ( def.type === 'labelledbutton' ) {
+				buttonView = new ListItemButtonView( locale, def.label );
 				buttonView.set( {
 					isToggleable
 				} );
@@ -820,7 +826,11 @@ function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
  * A definition of the list item used by the {@link module:ui/dropdown/utils~addListToDropdown}
  * utility.
  */
-export type ListDropdownItemDefinition = ListDropdownSeparatorDefinition | ListDropdownButtonDefinition | ListDropdownGroupDefinition;
+export type ListDropdownItemDefinition =
+	ListDropdownSeparatorDefinition |
+	ListDropdownButtonDefinition |
+	ListDropdownLabelledButtonDefinition |
+	ListDropdownGroupDefinition;
 
 /**
  * A definition of the 'separator' list item.
@@ -842,6 +852,23 @@ export type ListDropdownButtonDefinition = {
 };
 
 /**
+ * A definition of the 'custombutton' list item.
+ */
+export type ListDropdownLabelledButtonDefinition = {
+	type: 'labelledbutton';
+
+	/**
+	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
+	 */
+	model: UIModel;
+
+	/**
+	 * A view that will be used as a button body in the list item.
+	 */
+	label: ButtonLabelView;
+};
+
+/**
  * A definition of the group inside the list. A group can contain one or more list items (buttons).
  */
 export type ListDropdownGroupDefinition = {
@@ -855,5 +882,5 @@ export type ListDropdownGroupDefinition = {
 	/**
 	 * The collection of the child list items inside this group.
 	 */
-	items: Collection<ListDropdownButtonDefinition>;
+	items: Collection<ListDropdownButtonDefinition | ListDropdownLabelledButtonDefinition>;
 };
