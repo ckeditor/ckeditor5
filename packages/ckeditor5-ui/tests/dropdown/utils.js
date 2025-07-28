@@ -724,7 +724,7 @@ describe( 'utils', () => {
 				dropdownView.element.remove();
 			} );
 
-			// https://github.com/cksource/ckeditor5-commercial/issues/6633
+			// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 			it( 'should add the ToolbarView instance of dropdown\'s focus tracker to allow for using toolbar items distributed ' +
 				'across the DOM sub-trees', () => {
 				// Lazy load.
@@ -1482,7 +1482,7 @@ describe( 'utils', () => {
 			expect( dropdownView.menuView.render.calledOnce ).to.be.true;
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 		it( 'should add the menu view to dropdown\'s focus tracker to allow for linking focus trackers and keeping track of the focus ' +
 			'when it goes to sub-menus in other DOM sub-trees',
 		() => {

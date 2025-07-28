@@ -468,7 +468,7 @@ export class ImageUploadEditing extends Plugin {
 				model.enqueueChange( { isUndoable: false }, writer => {
 					for ( const imageElement of imageUploadElements.get( loader.id )! ) {
 						// Handle situation when the image has been removed and then `abort` exception was thrown.
-						// See: https://github.com/cksource/ckeditor5-commercial/issues/6817
+						// See: https://github.com/ckeditor/ckeditor5-commercial/issues/6817
 						if ( imageElement.root.rootName !== '$graveyard' ) {
 							writer.remove( imageElement );
 						}

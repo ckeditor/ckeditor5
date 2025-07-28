@@ -245,7 +245,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 		it( 'should track the ToolbarView instance (not just its element) to allow using complex toolbar items scattered across DOM ' +
 			'sub-trees and keep track of the focus',
 		() => {

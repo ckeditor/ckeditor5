@@ -486,7 +486,7 @@ describe( 'Table feature – integration with markers', () => {
 
 				editor.setData( data );
 
-				// We would expect such positions and data but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+				// We would expect such positions and data but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 				// we are accepting slightly off positions for now:
 				//
 				// checkMarker( range );

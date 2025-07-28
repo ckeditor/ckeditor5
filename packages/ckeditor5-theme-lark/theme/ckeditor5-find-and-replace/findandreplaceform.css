@@ -129,7 +129,7 @@
 	.ck.ck-find-and-replace-form {
 		width: 300px;
 
-		/* Don't let the form overflow from the dialog (https://github.com/cksource/ckeditor5-commercial/issues/5913) */
+		/* Don't let the form overflow from the dialog (https://github.com/ckeditor/ckeditor5-commercial/issues/5913) */
 		max-width: 100%;
 
 		/* Styles specific for inputs area. */
