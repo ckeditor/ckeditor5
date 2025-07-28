@@ -3,8 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Plugin, Command, ClassicEditor, CloudServices, EasyImage, ImageUpload, FindAndReplace, CodeBlock } from 'ckeditor5';
-import { CS_CONFIG, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
+import {
+	Plugin,
+	Command,
+	ClassicEditor,
+	CloudServices,
+	PictureEditing,
+	CKBox,
+	CKBoxImageEdit,
+	ImageUpload,
+	FindAndReplace,
+	CodeBlock
+} from 'ckeditor5';
+
+import { CS_CONFIG, TOKEN_URL, ArticlePluginSet, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 import DARK_MODE_STYLES from './custom.css?raw';
 
@@ -14,6 +26,46 @@ import DARK_MODE_STYLES from './custom.css?raw';
 // - packages/ckeditor5-theme-lark/docs/framework/theme-customization.md
 //
 // Ensure to update the HTML tree when modifying it in this snippet on both pages.
+
+class DarkModeCKBoxIntegration extends Plugin {
+	static get pluginName() {
+		return 'DarkModeCKBoxIntegration';
+	}
+
+	afterInit() {
+		const editor = this.editor;
+
+		// Processing with the integration only when CKBox is available.
+		if ( !editor.plugins.has( 'CKBoxEditing' ) ) {
+			return;
+		}
+
+		// Load CKBox dark theme.
+		this._ckboxLinkElement = document.createElement( 'link' );
+		this._ckboxLinkElement.rel = 'stylesheet';
+		this._ckboxLinkElement.href = 'https://cdn.ckbox.io/ckbox/2.4.0/styles/themes/dark.css';
+
+		document.head.appendChild( this._ckboxLinkElement );
+
+		// Integrate the dark mode toggle command with CKBox.
+		const defaultTheme = editor.config.get( 'ckbox.theme' );
+		const darkModeToggleCommand = editor.commands.get( 'darkModeToggle' );
+
+		this.listenTo( darkModeToggleCommand, 'execute', () => {
+			const { value } = darkModeToggleCommand;
+
+			editor.config.set( 'ckbox.theme', value === 'dark' ? 'dark' : defaultTheme );
+		}, { priority: 'low' } );
+	}
+
+	destroy() {
+		if ( this._ckboxLinkElement ) {
+			this._ckboxLinkElement.remove();
+		}
+
+		return super.destroy();
+	}
+}
 
 class DarkModeToggle extends Plugin {
 	static get pluginName() {
@@ -51,7 +103,7 @@ class DarkModeToggle extends Plugin {
 			this._mediaQueryList.removeEventListener( 'change', this._mediaQueryListener );
 		}
 
-		super.destroy();
+		return super.destroy();
 	}
 
 	_detectColorSchemaChange() {
@@ -115,13 +167,24 @@ class DarkModeToggleCommand extends Command {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet, EasyImage, ImageUpload, CloudServices, FindAndReplace, CodeBlock, DarkModeToggle ],
+		plugins: [
+			ArticlePluginSet,
+			PictureEditing,
+			CKBox,
+			CKBoxImageEdit,
+			ImageUpload,
+			CloudServices,
+			FindAndReplace,
+			CodeBlock,
+			DarkModeToggle,
+			DarkModeCKBoxIntegration
+		],
 		toolbar: {
 			items: [
 				'undo', 'redo', 'findAndReplace',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'codeBlock',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -135,6 +198,11 @@ ClassicEditor
 		},
 		darkMode: {
 			mode: 'dark'
+		},
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			forceDemoLabel: true,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
 		cloudServices: CS_CONFIG
 	} )
