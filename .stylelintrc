@@ -1,7 +1,7 @@
 {
 	"extends": "stylelint-config-ckeditor5",
 	"plugins": [
-		"stylelint-plugin-ckeditor5-rules/lib/license-header"
+		"stylelint-plugin-ckeditor5-rules"
 	],
 	"ignoreFiles": [
 		"**/dist/**",

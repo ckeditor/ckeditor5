@@ -49,10 +49,7 @@ import type { EditorConfig } from './editorconfig.js';
 import '../../theme/core.css';
 
 declare global {
-	// eslint-disable-next-line no-var
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
-
-	// eslint-disable-next-line no-var
 	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 

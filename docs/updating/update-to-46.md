@@ -273,7 +273,7 @@ During the work on Line Height, we changed the behavior how paragraphs behave in
 	}
 
 
-.ck-content li > p:only-child {
+.ck-content li > p:only-of-type {
 	margin-top: revert;
 	margin-bottom: revert;
 }
