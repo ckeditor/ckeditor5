@@ -545,7 +545,7 @@ The following table presents plugins available in CKEditor 4 and their equivalen
 			<p style="margin-left:0px;"><a href="https://ckeditor.com/cke4/addon/liststyle">liststyle</a></p>
 			</td>
 			<td>
-			<p style="margin-left:0px;"><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-properties">List properties</a></p>
+			<p style="margin-left:0px;"><a href="https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-properties.html">List properties</a></p>
 			</td>
 		</tr>
 		<tr>
