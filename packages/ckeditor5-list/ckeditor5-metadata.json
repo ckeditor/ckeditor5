@@ -272,7 +272,7 @@
 			"name": "List properties",
 			"className": "ListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists created by the list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
-			"docs": "features/lists/lists.html#list-properties",
+			"docs": "features/lists/lists-properties.html",
 			"path": "src/listproperties.js",
 			"requires": [
 				"List"

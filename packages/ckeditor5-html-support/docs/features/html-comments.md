@@ -13,12 +13,6 @@ By default, the editor filters out all HTML comments on initialization. The {@li
 
 {@snippet getting-started/unlock-feature}
 
-<info-box warning>
-	The HTML comments feature is **experimental and not yet production-ready**.
-
-	The support for HTML comments is at the basic level so far &ndash; see the [known issues](#known-issues) section below.
-</info-box>
-
 ## Demo
 
 The editor below is configured to keep HTML comments in the document content. You can view the source of the document using the {@link features/source-editing-enhanced Enhanced source code editing} feature. Toggle the Enhanced source code editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source.svg Source editing} to see there is an HTML comment in the document source. Try uncommenting the paragraph below the picture. Once you leave the source editing mode, you will see this paragraph in the editable area.
@@ -53,7 +47,7 @@ HTML comment feature does not require any configuration.
 
 ## Known issues
 
-The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
+The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases (see [#10118](https://github.com/ckeditor/ckeditor5/issues/10118)).
 
 We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
