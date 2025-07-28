@@ -159,20 +159,20 @@ We’ll divide our abbreviation plugin into three parts - `Abbreviation`, `Abbre
 
 Additionally, you will be adding new files for our command and the dialog box view. In order not to mix up these files with your project's `app.js` and `webpack.config.js` files, create this directory structure:
 
-```
+```plain
 ├── app.js
 ├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+│   ├── bundle.js
+│   └── bundle.js.map
 ├── index.html
 ├── node_modules
 ├── package.json
 ├── abbreviation
-│   ├── abbreviation.js
-│   ├── abbreviationediting.js
-│   └── abbreviationui.js
+│   ├── abbreviation.js
+│   ├── abbreviationediting.js
+│   └── abbreviationui.js
 │
-│   ... the rest of plugin files goes here as well
+│   ... the rest of plugin files goes here as well
 │
 └── webpack.config.js
 ```

@@ -68,7 +68,6 @@ import {
 import {
 	CaseChange,
 	TableOfContents,
-	ExportPdf,
 	ExportWord,
 	FormatPainter,
 	ImportWord,
@@ -108,7 +107,7 @@ ClassicEditor
 			Autoformat, BlockQuote, Bold, Heading, CaseChange, Image, ImageCaption, FormatPainter,
 			ImageStyle, ImageToolbar, Indent, Italic, Link, List, MediaEmbed,
 			Paragraph, Table, TableToolbar, Alignment, AutoImage, AutoLink,
-			CKBox, CKBoxImageEdit, CloudServices, Code, CodeBlock, Essentials, ExportPdf,
+			CKBox, CKBoxImageEdit, CloudServices, Code, CodeBlock, Essentials,
 			ExportWord, ImportWord, FindAndReplace, Font, Highlight, HorizontalLine,
 			HtmlEmbed, ImageInsert, ImageResize, ImageUpload, IndentBlock, GeneralHtmlSupport,
 			LinkImage, ListProperties, TodoList, Mention, PageBreak, PasteFromOffice,
@@ -211,25 +210,6 @@ ClassicEditor
 					classes: [ 'fancy-code', 'fancy-code-bright' ]
 				}
 			]
-		},
-		exportPdf: {
-			stylesheets: [
-				'../../assets/pagination-fonts.css',
-				'../../assets/ckeditor5/ckeditor5.css',
-				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
-				'../../assets/pagination.css'
-			],
-			fileName: 'export-pdf-demo.pdf',
-			appID: 'cke5-docs',
-			converterOptions: {
-				format: 'Tabloid',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '24mm',
-				margin_left: '24mm',
-				page_orientation: 'portrait'
-			},
-			tokenUrl: false
 		},
 		exportWord: {
 			stylesheets: [

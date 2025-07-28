@@ -56,9 +56,9 @@ We put them in the `/abbreviation` directory. We will be adding more files there
 ├── index.html
 ├── package.json
 ├── abbreviation
-│   ├── abbreviation.js
-│   ├── abbreviationediting.js
-│   └── abbreviationui.js
+│   ├── abbreviation.js
+│   ├── abbreviationediting.js
+│   └── abbreviationui.js
 ```
 
 Take a look at the 3 components, which have already been defined and imported into `main.js`.

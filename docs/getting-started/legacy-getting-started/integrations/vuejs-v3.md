@@ -186,14 +186,14 @@ This guide assumes that you have created a zip archive with the editor built usi
 
 Unpack it into you application main directory. The directory with the editor's build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
 
-```
+```plain
 ├── ckeditor5
-│   ├── build
-│   ├── sample
-│   ├── src
-│   ├── ...
-│   ├── package.json
-│   └── webpack.config.js
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
 ├── node_modules
 ├── public
 ├── src
