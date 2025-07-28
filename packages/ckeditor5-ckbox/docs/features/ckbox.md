@@ -39,21 +39,15 @@ Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/
 
 {@snippet features/ckbox}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
 
 You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
 
 ## Installation
-
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 To use this feature in your application, you must first load the CKBox library and then enable CKBox integration in your rich-text editor instance.
 

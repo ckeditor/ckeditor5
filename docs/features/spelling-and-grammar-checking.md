@@ -21,9 +21,9 @@ Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icon
 
 {@snippet features/wproofreader}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 The WProofreader badge in the bottom-right corner shows you the total number of mistakes detected. Hover an underlined word to display the WProofreader suggestions for any of the spelling and grammar mistakes found. The suggestion card allows the user to use the feature on the go. If you want to see an overview of all mistakes found, click the "Proofread in dialog" option in the toolbar dropdown. It will invoke a detached floating dialog, which is easy to navigate and perfect for dedicated proofreading sessions.
 
@@ -74,12 +74,6 @@ The WProofreader UI is designed and oriented toward comfort and ease of use. The
 The spell and grammar check is compliant with Web Content Accessibility Guidelines (WCAG) 2.1 and Section 508 accessibility standards.
 
 ## Installation
-
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 WProofreader is delivered as a CKEditor&nbsp;5 plugin, so you can combine it into an editor preset just like other features. To add this feature to your rich-text editor, install the [`@webspellchecker/wproofreader-ckeditor5`](https://www.npmjs.com/package/@webspellchecker/wproofreader-ckeditor5) package:
 

@@ -21,9 +21,9 @@ Output:
 
 <ck:code-block id="snippet-markdown-output" language="markdown" />
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Additional feature information
 
@@ -32,12 +32,6 @@ Output:
 Please remember that Markdown syntax is really simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 ## Installation
-
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~MarkdownGfmDataProcessor}:
 

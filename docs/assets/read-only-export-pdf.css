@@ -10,7 +10,7 @@
 body, html {
 	font-weight: 400;
 	line-height: 1.6;
-	font-family: "Source Sans Pro",system-ui,Roboto,"Helvetica Neue","Helvetica",Arial,sans-serif;
+	font-family: system-ui,Roboto,"Helvetica Neue","Helvetica",Arial,sans-serif;
 	font-size: 15px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
