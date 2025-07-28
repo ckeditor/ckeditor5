@@ -1,12 +1,15 @@
 ---
+category: features
 title: Restricted editing
 menu-title: Restricted editing
 meta-title: Restricted editing | CKEditor 5 Documentation
 meta-description: Enable restricted editing in CKEditor 5 to limit content changes to specific regions, ensuring control and document integrity.
-category: features
+badges: [ premium ]
 ---
 
 The restricted editing feature introduces two modes: the standard editing mode and the restricted editing mode. Users working in the restricted editing mode cannot change the content, except for parts marked as editable.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

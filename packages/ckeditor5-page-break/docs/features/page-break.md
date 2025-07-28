@@ -3,11 +3,14 @@ category: features
 menu-title: Page break
 meta-title: Page break | CKEditor 5 Documentation
 meta-description: Insert page breaks in CKEditor 5 to control content flow and ensure proper pagination in printed or exported documents.
+badges: [ premium ]
 ---
 
 # Page break
 
 The page break feature lets you insert page breaks into your content. This gives you more control over the final structure of a document that is printed or [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html) or [Word](https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-word.html).
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 
