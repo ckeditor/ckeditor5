@@ -678,19 +678,14 @@ function bindViewCollectionItemsToDefinitions(
 			groupView.items.delegate( 'execute' ).to( dropdownView );
 
 			return groupView;
-		} else if ( def.type === 'button' || def.type === 'switchbutton' || def.type === 'labelledbutton' ) {
+		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
 			const isToggleable = def.model.role === 'menuitemcheckbox' || def.model.role === 'menuitemradio';
 			const listItemView = new ListItemView( locale );
 
 			let buttonView: ButtonView;
 
 			if ( def.type === 'button' ) {
-				buttonView = new ListItemButtonView( locale );
-				buttonView.set( {
-					isToggleable
-				} );
-			} else if ( def.type === 'labelledbutton' ) {
-				buttonView = new ListItemButtonView( locale, def.label );
+				buttonView = new ListItemButtonView( locale, def.labelView );
 				buttonView.set( {
 					isToggleable
 				} );
@@ -829,7 +824,6 @@ function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
 export type ListDropdownItemDefinition =
 	ListDropdownSeparatorDefinition |
 	ListDropdownButtonDefinition |
-	ListDropdownLabelledButtonDefinition |
 	ListDropdownGroupDefinition;
 
 /**
@@ -849,23 +843,11 @@ export type ListDropdownButtonDefinition = {
 	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
 	 */
 	model: UIModel;
-};
-
-/**
- * A definition of the 'custombutton' list item.
- */
-export type ListDropdownLabelledButtonDefinition = {
-	type: 'labelledbutton';
-
-	/**
-	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
-	 */
-	model: UIModel;
 
 	/**
 	 * A view that will be used as a button body in the list item.
 	 */
-	label: ButtonLabelView;
+	labelView?: ButtonLabelView;
 };
 
 /**
@@ -882,5 +864,5 @@ export type ListDropdownGroupDefinition = {
 	/**
 	 * The collection of the child list items inside this group.
 	 */
-	items: Collection<ListDropdownButtonDefinition | ListDropdownLabelledButtonDefinition>;
+	items: Collection<ListDropdownButtonDefinition>;
 };
