@@ -105,7 +105,6 @@ export {
 	type ListDropdownItemDefinition,
 	type ListDropdownSeparatorDefinition,
 	type ListDropdownButtonDefinition,
-	type ListDropdownLabelledButtonDefinition,
 	type ListDropdownGroupDefinition,
 	createDropdown,
 	addMenuToDropdown,
