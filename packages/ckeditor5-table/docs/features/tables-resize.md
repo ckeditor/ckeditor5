@@ -1,16 +1,19 @@
 ---
+category: tables
 menu-title: Table column resizing
 meta-title: Table column resizing | CKEditor 5 Documentation
 meta-description: Resize table columns and rows in CKEditor 5 to adjust the layout and improve data presentation with flexible, user-friendly controls.
-category: tables
 order: 30
 modified_at: 2022-05-19
+badges: [ premium ]
 ---
 # Table column resize
 
 {@snippet features/build-table-source empty}
 
 The {@link module:table/tablecolumnresize~TableColumnResize} plugin lets you resize tables and individual table columns. It gives you complete control over column width.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

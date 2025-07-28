@@ -4,11 +4,14 @@ menu-title: Base64 upload adapter
 meta-title: Base64 upload adapter | CKEditor 5 Documentation
 meta-description: Upload images as Base64 in CKEditor 5 to embed them directly in the content, omitting a server or external storage.
 order: 50
+badges: [ premium ]
 ---
 
 # Base64 image upload adapter
 
 The Base64 image upload adapter converts inserted images into [Base64-encoded strings](https://en.wikipedia.org/wiki/Base64) in the {@link getting-started/setup/getting-and-setting-data editor output}. The images are stored with other content in the database without any server-side processing.
+
+{@snippet getting-started/unlock-feature}
 
 <info-box warning>
     Remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
