@@ -59,9 +59,9 @@ Additionally, you will split the code of commands, buttons and other "self-conta
 ├── node_modules
 ├── package.json
 ├── simplebox
-│   ├── simplebox.js
-│   ├── simpleboxediting.js
-│   └── simpleboxui.js
+│   ├── simplebox.js
+│   ├── simpleboxediting.js
+│   └── simpleboxui.js
 └─ ...
 ```
 
