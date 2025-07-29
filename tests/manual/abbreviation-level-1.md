@@ -24,7 +24,7 @@ Start by installing all the necessary dependencies:
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} class.
 * The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-core \
 	@ckeditor/ckeditor5-ui
 ```
@@ -84,18 +84,18 @@ We’ll divide our abbreviation plugin into three components - `Abbreviation`, `
 
 You could keep them all in one file, since this part of the tutorial won't have too much code. If you're planning to go through all parts of the tutorial, it's best to separate the components. We suggest creating this directory structure:
 
-```
+```plain
 ├── app.js
 ├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+│   ├── bundle.js
+│   └── bundle.js.map
 ├── index.html
 ├── node_modules
 ├── package.json
 ├── abbreviation
-│   ├── abbreviation.js
-│   ├── abbreviationediting.js
-│   └── abbreviationui.js
+│   ├── abbreviation.js
+│   ├── abbreviationediting.js
+│   └── abbreviationui.js
 │
 └── webpack.config.js
 ```
