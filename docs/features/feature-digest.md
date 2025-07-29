@@ -425,7 +425,7 @@ Lists allow the creation and management of various list types, including to-do l
 			The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#list-start-index}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#list-start-index}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -439,7 +439,7 @@ Lists allow the creation and management of various list types, including to-do l
 			The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#list-styles}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#list-styles}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -495,7 +495,7 @@ Lists allow the creation and management of various list types, including to-do l
 			The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#reversed-list}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#reversed-list}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
