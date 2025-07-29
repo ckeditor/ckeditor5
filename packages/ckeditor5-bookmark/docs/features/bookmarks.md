@@ -21,9 +21,9 @@ To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/cke
 
 {@snippet features/bookmark}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Handling the anchor markup
 
@@ -44,12 +44,6 @@ Bookmarks integrate with {@link features/link links}, providing a smooth linking
 {@img assets/img/bookmarks-panel.png 600 The bookmarks panel displayed during link creation}
 
 ## Installation
-
-<info-box warning>
-	**New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
