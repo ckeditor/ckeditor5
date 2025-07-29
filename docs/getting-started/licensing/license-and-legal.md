@@ -19,6 +19,29 @@ If you are running an open-source project with an OSS license incompatible with 
 
 **Note:** the CKEditor&nbsp;5 Free Plan is licensed under the GPL 2+ license.
 
+The following features are available in the compliant open-source projects but are not commercially licensed:
+
+* Page break
+* Remove format
+* Special characters
+* Layout tables
+* Column resize
+* Image Resize
+* Simple Upload Adapter
+* Base64 adapter
+* HTML comment element
+* HTML embed
+* Minimap
+* Restricted editing
+* Paste From Office
+* Word count
+* Find and replace
+* Bookmarks
+* Full page HTML
+* Table and cell properties
+* List properties
+* Multi-root editor
+
 ## Commercial license
 
 The commercial license unlocks many benefits:

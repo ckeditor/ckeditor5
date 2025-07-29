@@ -59,7 +59,7 @@ ClassicEditor
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add `ListProperties` to your plugin list and toolbar configuration:
 
-To enable selected sub-features of the list properties, add their configuration to your editor. Set `true` for each feature you want to enable:
+To enable selected sub-features of the {@link features/lists-properties list properties}, add their configuration to your editor. Set `true` for each feature you want to enable:
 
 <code-switcher>
 ```js
