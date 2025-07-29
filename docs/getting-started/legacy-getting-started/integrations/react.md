@@ -254,12 +254,12 @@ Because of that, we recommend placing the directory next to the `src/` and `node
 
 ```plain
 ├── ckeditor5
-│   ├── build
-│   ├── sample
-│   ├── src
-│   ├── ...
-│   ├── package.json
-│   └── webpack.config.js
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
 ├── node_modules
 ├── public
 ├── src
