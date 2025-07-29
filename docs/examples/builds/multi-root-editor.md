@@ -6,11 +6,14 @@ order: 60
 toc: false
 contributeUrl: false
 classes: main__content--no-toc
+badges: [ premium ]
 ---
 
 # Multi-root editor
 
 The multi-root editor type is an editor type that features multiple, separate editable areas.
+
+{@snippet getting-started/unlock-feature}
 
 The main difference between using a multi-root editor and using multiple separate editors (like in the {@link examples/builds/inline-editor inline editor demo}) is the fact that in a multi-root editor all editable areas belong to the same editor instance share the same configuration, toolbar and the undo stack, and produce one document.
 

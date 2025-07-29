@@ -1,7 +1,7 @@
 ---
-menu-title: List propretiess
-meta-title: List propretiess | CKEditor 5 Documentation
-meta-description: Change the various properties of the ordered and unordered lists in CKEditor 5, such as marker styles, order and starting number.
+menu-title: List properties
+meta-title: List properties | CKEditor 5 Documentation
+meta-description: Change the various properties of the ordered and unordered lists in CKEditor 5, such as marker styles, ordering and starting number.
 category: features-lists
 order: 40
 badges: [ premium ]
@@ -9,7 +9,9 @@ badges: [ premium ]
 
 # List properties
 
-Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
+Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor feature-rich editor example}.
+
+{@snippet getting-started/unlock-feature}
 
 ## List styles
 
