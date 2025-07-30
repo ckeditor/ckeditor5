@@ -17,9 +17,9 @@ The demo below lets you drag contacts from the list to the editor. The contacts 
 
 Photos: [Wikipedia.org](http://en.wikipedia.org).
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 The source code of the above snippet is available here: [`drag-drop.js`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.js), [`drag-drop.html`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-clipboard/docs/_snippets/features/drag-drop.html). You can find the configuration of the editor used in the demo here: [`build-drag-drop-source.js`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-clipboard/docs/_snippets/features/build-drag-drop-source.js). The code for the custom plugin responsible for handling the h-cards is available here: [`hcard.js`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-clipboard/docs/_snippets/features/hcard.js).
 
@@ -50,12 +50,6 @@ In the balloon block editor, you can also drag content blocks using the drag han
 {@snippet features/block-balloon-drag-drop}
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

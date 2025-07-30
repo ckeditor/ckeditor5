@@ -66,11 +66,11 @@ To keep some order in the project, you will put [CKEditor classes](#ckeditor-cla
 │	└── umbrellas.jpg
 ├── src
 │	├── ckeditor
-│	│   ├── insertproductpreviewcommand.js
-│	│   └── productpreviewediting.js
+│	│   ├── insertproductpreviewcommand.js
+│	│   └── productpreviewediting.js
 │	├── react
-│	│   ├── productlist.jsx
-│	│   └── productpreview.jsx
+│	│   ├── productlist.jsx
+│	│   └── productpreview.jsx
 │	├── app.jsx
 │	├── main.jsx
 │	└── styles.css

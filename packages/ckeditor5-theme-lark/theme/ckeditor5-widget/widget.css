@@ -197,8 +197,8 @@
 	}
 }
 
-.ck.ck-editor__editable > .ck-widget.ck-widget_with-selection-handle:first-child,
-.ck.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
+.ck.ck-editor__editable:not(.ck-pagination-view) > .ck-widget.ck-widget_with-selection-handle:first-child,
+.ck.ck-editor__editable:not(.ck-pagination-view) blockquote > .ck-widget.ck-widget_with-selection-handle:first-child {
 	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
 	In fact, anything with overflow: hidden.
 	https://github.com/ckeditor/ckeditor5-block-quote/issues/28

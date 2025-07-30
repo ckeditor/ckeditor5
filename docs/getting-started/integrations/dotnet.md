@@ -1,14 +1,14 @@
 ---
 category: self-hosted
-meta-title: Using CKEditor 5 with .NETfrom ZIP archive | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with .NET using a ZIP archive.
+meta-title: Using the CKEditor 5 WYSIWYG editor with .NET from ZIP archive | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 rich-text editor with .NET using a ZIP archive. Follow step-by-step instructions for fast installation and setup.
 order: 90
 menu-title: .NET
 ---
 
 # Integrating CKEditor&nbsp;5 with .NET from ZIP
 
-As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
+As a pure JavaScript/TypeScript application, the CKEditor&nbsp;5 HTML editor will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 
 {@snippet getting-started/use-builder}
 

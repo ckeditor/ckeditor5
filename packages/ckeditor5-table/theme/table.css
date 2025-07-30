@@ -104,6 +104,7 @@
 		 */
 		&:not(.layout-table):has(> table) {
 			display: block;
+			width: fit-content;
 		}
 
 		/**

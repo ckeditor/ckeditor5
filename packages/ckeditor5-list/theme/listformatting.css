@@ -23,7 +23,7 @@
 	 * Ensures a consistent experience with the first paragraph.
 	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
 	 */
-	& > p:only-child {
+	& > p:only-of-type {
 		margin-top: 0;
 		margin-bottom: 0;
 	}

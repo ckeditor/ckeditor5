@@ -11,7 +11,9 @@ export {
 	attachTourBalloon,
 	findToolbarItem,
 	getViewportTopOffsetConfig,
-	createTabs
+	setViewportTopOffsetDynamically,
+	createTabs,
+	querySnippetCSSUrl
 } from './shared-helpers.js';
 
 export { BalloonBlockEditor } from './build-balloon-block.js';

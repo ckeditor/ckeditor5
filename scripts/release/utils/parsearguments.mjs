@@ -4,7 +4,7 @@
  */
 
 import minimist from 'minimist';
-import os from 'os';
+import { cpus, freemem } from 'os';
 import replaceKebabCaseWithCamelCase from '../../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
@@ -21,7 +21,8 @@ export default function parseArguments( cliArguments ) {
 			'verbose',
 			'compile-only',
 			'ci',
-			'external'
+			'external',
+			'dry-run'
 		],
 
 		number: [
@@ -30,7 +31,7 @@ export default function parseArguments( cliArguments ) {
 
 		string: [
 			'branch',
-			'from',
+			'date',
 			'npm-tag',
 			'packages'
 		],
@@ -40,14 +41,24 @@ export default function parseArguments( cliArguments ) {
 			nightly: false,
 			'nightly-alpha': false,
 			'nightly-next': false,
-			concurrency: os.cpus().length / 2,
+			// Set concurrency to guarantee at least 1 CPU core and 1 GB of free RAM per task.
+			// No less than 1, no more than 8.
+			concurrency: Math.max(
+				1,
+				Math.min(
+					cpus().length,
+					Math.floor( freemem() / ( 1024 ** 3 ) ),
+					8
+				)
+			),
 			'compile-only': false,
 			packages: null,
 			branch: 'release',
 			'npm-tag': 'staging',
 			verbose: false,
 			ci: false,
-			external: true
+			external: true,
+			'dry-run': false
 		}
 	};
 
@@ -61,7 +72,8 @@ export default function parseArguments( cliArguments ) {
 		'npm-tag',
 		'compile-only',
 		'nightly-alpha',
-		'nightly-next'
+		'nightly-next',
+		'dry-run'
 	] );
 
 	if ( options.nightly ) {
@@ -97,19 +109,21 @@ export default function parseArguments( cliArguments ) {
  *
  * @property {Boolean} external
  *
- * @property {Boolean} [compileOnly=false]
+ * @property {Boolean} dryRun=false
+ *
+ * @property {Boolean} compileOnly=false
  *
  * @property {Number} concurrency
  *
- * @property {String} [from]
+ * @property {String} branch='release'
  *
- * @property {String} [branch='release']
+ * @property {String} npmTag='staging'|'nightly'|'alpha'|'internal'
  *
- * @property {String} [npmTag='staging'|'nightly']
+ * @property {Array.<String>|null} packages=null
  *
- * @property {Array.<String>|null} packages
+ * @property {Boolean} verbose=false
  *
- * @property {Boolean} [verbose=false]
+ * @property {Boolean} ci=false
  *
- * @property {Boolean} [ci=false]
+ * @property {String} [date]
  */

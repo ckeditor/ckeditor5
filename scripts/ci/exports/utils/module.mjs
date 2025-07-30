@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
@@ -14,9 +12,10 @@ import { Import } from './import.mjs';
 import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
+import { createExportResolutionError } from './errorutils.mjs';
 
 export class Module {
-	static load( fileName ) {
+	static load( fileName, errorCollector ) {
 		const data = fs.readFileSync( fileName, 'utf8' );
 
 		const ast = parser.parse( data, {
@@ -28,16 +27,17 @@ export class Module {
 
 		return new Module( fileName, ast, {
 			publicApiTag: data.includes( ' * @publicApi' )
-		} );
+		}, errorCollector );
 	}
 
-	constructor( fileName, ast, { publicApiTag } ) {
+	constructor( fileName, ast, { publicApiTag }, errorCollector ) {
 		this.fileName = fileName.replace( /\.d\.ts$/, '.ts' );
 		this.isPublicApi = !fileName.includes( '/external/' ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
 		this.exports = [];
 		this.imports = [];
 		this.declarations = [];
 		this.augmentations = [];
+		this.errorCollector = errorCollector;
 
 		// Collecting all generic type parameters in the module as a shortcut to ignore them later.
 		// If we don't do this, we will have to check every time if the reference is a type parameter.
@@ -381,10 +381,6 @@ export class Module {
 					modules.find( module => module.fileName === importFrom ) :
 					new ExternalModule( item.importFrom );
 
-				if ( !otherModule ) {
-					throw new Error( 'No module found: ' + importFrom );
-				}
-
 				return item.resolveImport( otherModule );
 			} else {
 				return [ item ];
@@ -467,7 +463,16 @@ export class Module {
 				this._findReference( exportItem.localName );
 
 			if ( !references || !references.length ) {
-				throw new Error( 'declaration not found for export' );
+				const context = {
+					fileName: this.fileName,
+					exportName: exportItem.name,
+					isExternalModule: exportItem.importFrom instanceof ExternalModule,
+					exportKind: exportItem.exportKind
+				};
+
+				const exportResolutionError = createExportResolutionError( context );
+
+				this.errorCollector.addError( exportResolutionError );
 			}
 
 			exportItem.references = references;
@@ -494,8 +499,13 @@ export class Module {
 	}
 
 	_findImportReference( importFrom, referenceName ) {
+		// Patch: Handle undefined importFrom gracefully to prevent crashes.
+		if ( !importFrom ) {
+			return [];
+		}
+
 		if ( importFrom instanceof ExternalModule ) {
-			return;
+			return [];
 		}
 
 		// For `export * as ... from ...`;
@@ -506,7 +516,16 @@ export class Module {
 		const reference = importFrom.exports.find( exportItem => exportItem.name === referenceName );
 
 		if ( !reference ) {
-			throw new Error( 'No importFrom found for import ' + importFrom.fileName );
+			const context = {
+				fileName: this.fileName,
+				exportName: referenceName,
+				isExternalModule: false,
+				exportKind: importFrom.exportKind
+			};
+
+			const importReferenceError = createExportResolutionError( context );
+
+			this.errorCollector.addError( importReferenceError );
 		}
 
 		return [ reference ];

@@ -4,8 +4,6 @@ menu-title: Content minimap
 meta-title: Content minimap | CKEditor 5 Documentation
 meta-description: Add a minimap to CKEditor 5 for quick document navigation, enhancing the editing experience with a compact overview of content structure.
 category: features
-classes: main__content--no-toc
-toc: false
 contributeUrl: false
 modified_at: 2021-07-12
 ---
@@ -22,17 +20,11 @@ Scroll the content, and the minimap in the sidebar will show your current locati
 
 {@snippet features/minimap}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

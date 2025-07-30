@@ -24,7 +24,8 @@ import {
 	PageBreak,
 	TableCellProperties,
 	TableProperties,
-	Minimap
+	Minimap,
+	_MinimapIframeView
 } from 'ckeditor5';
 import {
 	CS_CONFIG,
@@ -114,6 +115,7 @@ const config = {
 	}
 };
 
+patchMinimapView();
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
@@ -132,3 +134,33 @@ DecoupledEditor
 			}
 		} );
 	} );
+
+/**
+ * The CKEditor minimap renders a preview in an iframe, copying styles from external CSS files.
+ * If fonts are defined in CSS using relative paths (e.g., `url('../fonts/MyFont.woff2')`),
+ * the iframe incorrectly interprets these paths because they are relative to the CSS file, not the HTML document.
+ * This results in missing fonts in the minimap preview.
+ *
+ * This patch rewrites font URLs in CSS styles so that they are resolved correctly relative to the CSS file location,
+ * ensuring fonts load properly in the minimap.
+ *
+ * See more: https://github.com/ckeditor/ckeditor5/issues/18896
+ */
+function patchMinimapView() {
+	const originalRender = _MinimapIframeView.prototype.render;
+
+	_MinimapIframeView.prototype.render = function( ...args ) {
+		this._options.pageStyles = this._options.pageStyles.map( style => {
+			if ( typeof style !== 'string' ) {
+				return style;
+			}
+
+			const assetsCSSElement = document.querySelector( `link[href$="assets/${ window.umberto.version }/gloria/css/styles.css"]` );
+			const realAssetsPrefix = assetsCSSElement.href.replace( /\/css\/styles\.css$/, '' );
+
+			return style.replaceAll( 'url("../fonts/', `url("${ realAssetsPrefix }/fonts/` );
+		} );
+
+		return originalRender.call( this, ...args );
+	};
+}

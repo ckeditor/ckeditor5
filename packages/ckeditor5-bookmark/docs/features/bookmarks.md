@@ -14,13 +14,13 @@ The bookmarks feature allows for adding and managing the bookmarks anchors attac
 
 Use the bookmark toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/bookmark.svg Add bookmark} in the editor below to see the feature in action. Or use the "Insert" command from the menu bar to add a bookmark. Add a unique name to identify the bookmark (for example, `Rights`). You can change the bookmark's name or remove it by clicking the bookmark icon inside the content.
 
-To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Add link} and put the bookmark name as target. In the example below it could be `#Rights`. The link insertion panel will display all bookmarks available in the edited content (see the [Integration with the link feature](#integration-with-the-link-feature) section below). 
+To use the bookmark as an anchor in the content, add a link {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Add link} and put the bookmark name as target. In the example below it could be `#Rights`. The link insertion panel will display all bookmarks available in the edited content (see the [Integration with the link feature](#integration-with-the-link-feature) section below).
 
 {@snippet features/bookmark}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Handling the anchor markup
 
@@ -41,12 +41,6 @@ Bookmarks integrate with {@link features/link links}, providing a smooth linking
 {@img assets/img/bookmarks-panel.png 600 The bookmarks panel displayed during link creation}
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

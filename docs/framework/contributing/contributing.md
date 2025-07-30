@@ -83,7 +83,7 @@ Assuming that you would like to propose some changes, these are the steps you sh
 	$ git push my-fork i/GITHUB-ISSUE-NUMBER
 	```
 
-1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions. Make sure to include a merge commit message text matches the {@link framework/contributing/git-commit-message-convention convention}
+1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions.
 1. **Let us know about your pull request!** The best way is to comment under the original issue.
 
 Some additional things you should keep in mind:
