@@ -46,6 +46,7 @@ export { default as IconContentUnlock } from '../theme/icons/content-unlock.svg'
 export { default as IconContext } from '../theme/icons/context.svg';
 export { default as IconCopy } from '../theme/icons/copy.svg';
 export { default as IconDocument } from '../theme/icons/document.svg';
+export { default as IconDocumentOutline } from '../theme/icons/document-outline.svg';
 export { default as IconDocumentWithLoupe } from '../theme/icons/document-with-loupe.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
