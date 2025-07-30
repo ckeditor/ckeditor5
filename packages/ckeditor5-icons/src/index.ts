@@ -171,6 +171,7 @@ export { default as IconTemplate } from '../theme/icons/template.svg';
 export { default as IconTextAlternative } from '../theme/icons/text-alternative.svg';
 export { default as IconText } from '../theme/icons/text.svg';
 export { default as IconThreeHorizontalDots } from '../theme/icons/three-horizontal-dots.svg';
+export { default as IconThreeStars } from '../theme/icons/three-stars.svg';
 export { default as IconThreeVerticalDots } from '../theme/icons/three-vertical-dots.svg';
 export { default as IconThumbUp } from '../theme/icons/thumb-up.svg';
 export { default as IconThumbDown } from '../theme/icons/thumb-down.svg';
