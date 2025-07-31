@@ -18,12 +18,12 @@ import type { ViewUpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engin
 export function removeInvalidTableWidth( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {
 		if ( child.is( 'element', 'table' ) ) {
-			// Remove invalid width style (Google Sheets: width:0px)
+			// Remove invalid width style (Google Sheets: width:0px).
 			if ( child.getStyle( 'width' ) === '0px' ) {
 				writer.removeStyle( 'width', child );
 			}
 
-			// Remove invalid width attribute (Word: width="0")
+			// Remove invalid width attribute (Word: width="0").
 			if ( child.getAttribute( 'width' ) === '0' ) {
 				writer.removeAttribute( 'width', child );
 			}
