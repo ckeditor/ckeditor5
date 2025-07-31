@@ -10,7 +10,7 @@ import { builds } from '@ckeditor/ckeditor5-dev-utils';
 export default builds.getDllPluginWebpackConfig( webpack, {
 	themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) ),
 	packagePath: import.meta.dirname,
-	manifestPath: fileURLToPath( import.meta.resolve( 'ckeditor5/build/ckeditor5-dll.manifest.json' ) ),
+	manifestPath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5/packages/ckeditor5/build/ckeditor5-dll.manifest.json' ) ),
 	isDevelopmentMode: process.argv.includes( '--mode=development' ),
-	tsconfigPath: fileURLToPath( import.meta.resolve( 'ckeditor5/tsconfig.dll.json' ) )
+	tsconfigPath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5/tsconfig.dll.json' ) )
 } );
