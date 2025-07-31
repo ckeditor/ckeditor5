@@ -39,19 +39,21 @@ describe( 'PasteFromOffice - filters', () => {
 
 		it( 'should remove width="0" attribute from Word table', () => {
 			const inputData =
-				'<table width="0">' +
+				'<div align="center"><table width="0">' +
 					'<tbody>' +
 						'<tr>' +
 							'<td>123</td>' +
 						'</tr>' +
 					'</tbody>' +
-				'</table>';
+				'</table></div>';
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
 			removeInvalidTableWidth( documentFragment, writer );
 
-			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal( '<table><tbody><tr><td>123</td></tr></tbody></table>' );
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<div align="center"><table><tbody><tr><td>123</td></tr></tbody></table></div>'
+			);
 		} );
 
 		it( 'should remove both style and attribute when width=0', () => {

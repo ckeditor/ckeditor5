@@ -16,7 +16,7 @@ import type { ViewUpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engin
  * @internal
  */
 export function removeInvalidTableWidth( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
-	for ( const child of documentFragment.getChildren() ) {
+	for ( const child of writer.createRangeIn( documentFragment ).getItems() ) {
 		if ( child.is( 'element', 'table' ) ) {
 			// Remove invalid width style (Google Sheets: width:0px).
 			if ( child.getStyle( 'width' ) === '0px' ) {
