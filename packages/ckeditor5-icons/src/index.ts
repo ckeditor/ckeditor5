@@ -171,6 +171,8 @@ export { default as IconTemplateGeneric } from '../theme/icons/template-generic.
 export { default as IconTemplate } from '../theme/icons/template.svg';
 export { default as IconTextAlternative } from '../theme/icons/text-alternative.svg';
 export { default as IconText } from '../theme/icons/text.svg';
+export { default as IconThreeHorizontalDots } from '../theme/icons/three-horizontal-dots.svg';
+export { default as IconThreeStars } from '../theme/icons/three-stars.svg';
 export { default as IconThreeVerticalDots } from '../theme/icons/three-vertical-dots.svg';
 export { default as IconThumbUp } from '../theme/icons/thumb-up.svg';
 export { default as IconThumbDown } from '../theme/icons/thumb-down.svg';
@@ -185,5 +187,6 @@ export { default as IconUploadcareImageEdit } from '../theme/icons/uploadcare-im
 export { default as IconUploadcareImageUpload } from '../theme/icons/uploadcare-image-upload.svg';
 export { default as IconUploadcareLink } from '../theme/icons/uploadcare-link.svg';
 export { default as IconUser } from '../theme/icons/user.svg';
+export { default as IconPin } from '../theme/icons/pin.svg';
 export { default as IconWarning } from '../theme/icons/warning.svg';
 export { default as IconWeb } from '../theme/icons/web.svg';
