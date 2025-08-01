@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_INDEX } from '../constants.mjs';
 
-const tsconfig = upath.resolve( CKEDITOR5_ROOT_PATH, 'tsconfig.dist.ckeditor5.json' );
+const tsconfig = upath.resolve( CKEDITOR5_MAIN_PACKAGE_PATH, 'tsconfig.dist.json' );
 const banner = upath.resolve( CKEDITOR5_ROOT_PATH, 'scripts/nim/banner.mjs' );
 
 export function dist( path ) {
