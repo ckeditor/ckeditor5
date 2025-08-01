@@ -15,7 +15,7 @@ import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { SplitButtonView } from '../../../../src/ui.js';
+import { SplitButtonView } from '../../../ckeditor5/src/ui.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ImageStyleUI', () => {

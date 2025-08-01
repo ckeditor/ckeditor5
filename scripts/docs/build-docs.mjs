@@ -10,7 +10,7 @@ import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
 
 const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
@@ -64,7 +64,7 @@ async function buildDocs() {
 
 	if ( !options.skipSnippets ) {
 		const assetsPaths = await glob( '*/', {
-			cwd: upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' ),
+			cwd: upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'build', 'docs-assets' ),
 			absolute: true
 		} );
 

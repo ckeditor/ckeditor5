@@ -16,7 +16,7 @@ import fs from 'fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
@@ -77,7 +77,7 @@ const persistToWorkspace = fileName => ( {
 } );
 
 ( async () => {
-	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_ROOT_PATH, 'src' ) ) )
+	const frameworkPackages = ( await fs.readdir( upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'src' ) ) )
 		.filter( filename => !filename.startsWith( 'index' ) )
 		.map( filename => 'ckeditor5-' + filename.replace( /\.(js|ts)$/, '' ) );
 
