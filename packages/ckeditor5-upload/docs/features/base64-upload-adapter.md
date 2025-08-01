@@ -16,9 +16,9 @@ The Base64 image upload adapter converts inserted images into [Base64-encoded st
 <info-box warning>
     Remember that while `Base64` upload is an easy solution, it is also highly inefficient. The image file is kept as data in the database, generating a much heavier data load and higher transfer. `Base64` images are never cached by the browser so loading and saving such data will always be slower.
 
-This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions. The same applies to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
+	This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions. The same applies to {@link features/comments comments}. Content with `Base64` images may also exceed the allowed file size when your document is {@link features/export-pdf exported to PDF} or {@link features/export-word to Word}.
 
-Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor&nbsp;5.
+	Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor&nbsp;5.
 </info-box>
 
 ## Demo
@@ -27,11 +27,11 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 {@snippet features/base64-upload}
 
-<ck:code-block id="base64-upload-console" language="html" />
-
 <snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
+
+<ck:code-block id="base64-upload-console" language="html" />
 
 ## Installation
 
