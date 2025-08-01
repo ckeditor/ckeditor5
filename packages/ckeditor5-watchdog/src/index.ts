@@ -27,7 +27,7 @@ export type {
 	ActionEntryEditorSnapshot,
 	AfterRecordActionCallback,
 	BeforeRecordActionCallback,
-	RecordFilterCallback
+	RecordActionFilterCallback
 } from './actionsrecorderconfig.js';
 
 export type {

@@ -20,7 +20,7 @@ import type {
 
 import type {
 	ActionEntry, ActionEntryEditorSnapshot,
-	BeforeRecordActionCallback, RecordFilterCallback,
+	BeforeRecordActionCallback, RecordActionFilterCallback,
 	AfterRecordActionCallback
 } from './actionsrecorderconfig.js';
 
@@ -58,7 +58,7 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Filter function to determine which records should be stored.
 	 */
-	private _recordFilter?: RecordFilterCallback;
+	private _recordFilter?: RecordActionFilterCallback;
 
 	/**
 	 * @inheritDoc

@@ -88,7 +88,7 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onFilter?: RecordFilterCallback;
+	onFilter?: RecordActionFilterCallback;
 
 	/**
 	 * Callback function that will be called after an action completes (either successfully or with an error).
@@ -130,7 +130,7 @@ export type BeforeRecordActionCallback = ( record: ActionEntry, prevRecords: Arr
  * @param record The action entry to be filtered.
  * @param prevRecords The array of previous action entries.
  */
-export type RecordFilterCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => boolean;
+export type RecordActionFilterCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => boolean;
 
 /**
  * Callback function type for the `onAfterAction` option in the ActionsRecorderConfig.
