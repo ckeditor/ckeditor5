@@ -20,7 +20,8 @@ import type {
 
 import type {
 	ActionEntry, ActionEntryEditorSnapshot,
-	RecordActionCallback, RecordFilterCallback
+	BeforeRecordActionCallback, RecordFilterCallback,
+	AfterRecordActionCallback
 } from './actionsrecorderconfig.js';
 
 /**
@@ -44,14 +45,15 @@ export class ActionsRecorder extends Plugin {
 	private _maxEntries: number;
 
 	/**
-	 * Set of observer callbacks that get notified when new records are added.
+	 * Observer callbacks.
 	 */
-	private _observers: Set<RecordActionCallback> = new Set();
+	private _beforeActionObservers: Set<BeforeRecordActionCallback> = new Set();
+	private _afterActionObservers: Set<AfterRecordActionCallback> = new Set();
 
 	/**
 	 * Filter function to determine which records should be stored.
 	 */
-	private _filter?: RecordFilterCallback;
+	private _recordFilter?: RecordFilterCallback;
 
 	/**
 	 * @inheritDoc
@@ -79,11 +81,15 @@ export class ActionsRecorder extends Plugin {
 		const config = editor.config.get( 'actionsRecorder' )!;
 
 		this._maxEntries = config.maxEntries!;
-		this._filter = config.onFilter;
+		this._recordFilter = config.onFilter;
 
-		// Register initial callback from config if provided
-		if ( config.onRecord ) {
-			this._observers.add( config.onRecord );
+		// Register initial callbacks from config if provided.
+		if ( config.onBeforeAction ) {
+			this._beforeActionObservers.add( config.onBeforeAction );
+		}
+
+		if ( config.onAfterAction ) {
+			this._afterActionObservers.add( config.onAfterAction );
 		}
 
 		if ( !config.isEnabled ) {
@@ -114,24 +120,27 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
-	 * Registers an observer callback that will be called whenever a new action record is created.
+	 * Registers a before action observer callback.
 	 *
-	 * @param callback - The callback function to register.
+	 * @param callback The callback function to register.
 	 * @returns A function that can be called to unregister the observer.
 	 */
-	public observeRecords( callback: ( record: ActionEntry ) => void ): () => void {
-		this._observers.add( callback );
+	public observeBeforeActions( callback: BeforeRecordActionCallback ): () => void {
+		this._beforeActionObservers.add( callback );
 
-		return this.unobserveRecords.bind( this, callback );
+		return () => this._beforeActionObservers.delete( callback );
 	}
 
 	/**
-	 * Unregisters an observer callback.
+	 * Registers an after action observer callback.
 	 *
-	 * @param callback - The callback function to unregister.
+	 * @param callback The callback function to register.
+	 * @returns A function that can be called to unregister the observer.
 	 */
-	public unobserveRecords( callback: ( record: ActionEntry ) => void ): void {
-		this._observers.delete( callback );
+	public observeAfterActions( callback: AfterRecordActionCallback ): () => void {
+		this._afterActionObservers.add( callback );
+
+		return () => this._afterActionObservers.delete( callback );
 	}
 
 	/**
@@ -151,11 +160,12 @@ export class ActionsRecorder extends Plugin {
 		};
 
 		// Apply filter if configured, only add to entries if filter passes.
-		if ( !this._filter || this._filter( callFrame, this._entries ) ) {
-			this._entries.push( callFrame );
+		if ( !this._recordFilter || this._recordFilter( callFrame, this._entries ) ) {
+			// Notify before observers about the new record.
+			this._notifyBeforeActionObservers( callFrame );
 
-			// Notify observers about the new record.
-			this._notifyObservers( callFrame );
+			// Add the call frame to the entries.
+			this._entries.push( callFrame );
 
 			// Enforce max entries limit.
 			if ( this._entries.length > this._maxEntries ) {
@@ -193,6 +203,9 @@ export class ActionsRecorder extends Plugin {
 		}
 
 		topFrame.after = this._buildStateSnapshot();
+
+		// Notify after observers about the completed action
+		this._notifyAfterActionObservers( topFrame, result, error );
 	}
 
 	/**
@@ -415,20 +428,40 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
-	 * Notifies all registered observers about a new action record.
-	 *
-	 * @param record - The action record to notify observers about.
+	 * Notifies before action observers.
 	 */
-	private _notifyObservers( record: ActionEntry ): void {
-		for ( const observer of this._observers ) {
+	private _notifyBeforeActionObservers( record: ActionEntry ): void {
+		for ( const callback of this._beforeActionObservers ) {
 			try {
-				observer( record, this._entries );
-			} catch ( error ) {
+				callback( record, this._entries );
+			} catch ( observerError ) {
 				// Silently catch observer errors to prevent them from affecting the recording
-				console.error( 'ActionsRecorder observer error:', error );
+				console.error( 'ActionsRecorder before observer error:', observerError );
 			}
 		}
 	}
+
+	/**
+	 * Notifies after action observers.
+	 */
+	private _notifyAfterActionObservers( record: ActionEntry, result?: any, error?: any ): void {
+		for ( const callback of this._afterActionObservers ) {
+			try {
+				callback( record, result, error );
+			} catch ( observerError ) {
+				// Silently catch observer errors to prevent them from affecting the recording
+				console.error( 'ActionsRecorder after observer error:', observerError );
+			}
+		}
+	}
+}
+
+/**
+ * An object that can contain `before` and `after` action callbacks.
+ */
+export interface ActionObserver {
+	before?: BeforeRecordActionCallback;
+	after?: AfterRecordActionCallback;
 }
 
 /**

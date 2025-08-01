@@ -20,7 +20,7 @@ describe( 'ActionsRecorder', () => {
 		global.document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ ActionsRecorder, Paragraph, Heading, Bold ],
+			plugins: [ Paragraph, Heading, Bold, ActionsRecorder ],
 			actionsRecorder: {
 				isEnabled: true,
 				maxEntries: 100
@@ -51,6 +51,20 @@ describe( 'ActionsRecorder', () => {
 			expect( editor.config.get( 'actionsRecorder.maxEntries' ) ).to.equal( 100 );
 		} );
 
+		it( 'should tap already registered commands during initialization', () => {
+			// The paragraph command should already be registered and tapped
+			// since it's included in the plugins array before ActionsRecorder
+			plugin.flushRecords();
+
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+			const paragraphRecord = records.find( record => record.event === 'commands.paragraph:execute' );
+
+			expect( paragraphRecord ).to.exist;
+			expect( paragraphRecord.event ).to.equal( 'commands.paragraph:execute' );
+		} );
+
 		it( 'should not record actions when disabled', async () => {
 			await editor.destroy();
 			element.remove();
@@ -72,8 +86,8 @@ describe( 'ActionsRecorder', () => {
 			expect( plugin.getRecords() ).to.have.length( 0 );
 		} );
 
-		it( 'should register onRecord callback from config', async () => {
-			const onRecordSpy = sinon.spy();
+		it( 'should register onBeforeAction callback from config', async () => {
+			const onBeforeActionSpy = sinon.spy();
 
 			await editor.destroy();
 			element.remove();
@@ -84,7 +98,7 @@ describe( 'ActionsRecorder', () => {
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ ActionsRecorder, Paragraph ],
 				actionsRecorder: {
-					onRecord: onRecordSpy
+					onBeforeAction: onBeforeActionSpy
 				}
 			} );
 
@@ -92,7 +106,30 @@ describe( 'ActionsRecorder', () => {
 
 			editor.execute( 'paragraph' );
 
-			expect( onRecordSpy ).to.have.been.called;
+			expect( onBeforeActionSpy ).to.have.been.called;
+		} );
+
+		it( 'should register onAfterAction callback from config', async () => {
+			const onAfterActionSpy = sinon.spy();
+
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					onAfterAction: onAfterActionSpy
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( onAfterActionSpy ).to.have.been.called;
 		} );
 	} );
 
@@ -285,51 +322,216 @@ describe( 'ActionsRecorder', () => {
 			plugin.flushRecords();
 		} );
 
-		it( 'should register and call observers', () => {
-			const observerSpy = sinon.spy();
+		describe( 'observeBeforeActions', () => {
+			it( 'should register and call before action observers', () => {
+				const observerSpy = sinon.spy();
 
-			plugin.observeRecords( observerSpy );
-			editor.execute( 'paragraph' );
+				plugin.observeBeforeActions( observerSpy );
+				editor.execute( 'paragraph' );
 
-			expect( observerSpy ).to.have.been.calledOnce;
-			expect( observerSpy.firstCall.args[ 0 ] ).to.have.property( 'event', 'commands.paragraph:execute' );
-			expect( observerSpy.firstCall.args[ 1 ] ).to.be.an( 'array' );
+				expect( observerSpy ).to.have.been.calledOnce;
+				expect( observerSpy.firstCall.args[ 0 ] ).to.have.property( 'event', 'commands.paragraph:execute' );
+				expect( observerSpy.firstCall.args[ 1 ] ).to.be.an( 'array' );
+			} );
+
+			it( 'should unregister observers via returned function', () => {
+				const observerSpy = sinon.spy();
+
+				const unregister = plugin.observeBeforeActions( observerSpy );
+				unregister();
+
+				editor.execute( 'paragraph' );
+
+				expect( observerSpy ).to.not.have.been.called;
+			} );
+
+			it( 'should handle observer errors gracefully', () => {
+				const consoleStub = sinon.stub( console, 'error' );
+
+				const observerWithError = () => {
+					throw new Error( 'Observer error' );
+				};
+				const workingObserver = sinon.spy();
+
+				plugin.observeBeforeActions( observerWithError );
+				plugin.observeBeforeActions( workingObserver );
+
+				editor.execute( 'paragraph' );
+
+				expect( workingObserver ).to.have.been.called;
+				expect( consoleStub ).to.have.been.calledWithMatch( 'ActionsRecorder before observer error' );
+
+				consoleStub.restore();
+			} );
+
+			it( 'should register multiple before observers and call them all', () => {
+				const observer1 = sinon.spy();
+				const observer2 = sinon.spy();
+
+				plugin.observeBeforeActions( observer1 );
+				plugin.observeBeforeActions( observer2 );
+
+				editor.execute( 'paragraph' );
+
+				expect( observer1 ).to.have.been.calledOnce;
+				expect( observer2 ).to.have.been.calledOnce;
+			} );
+
+			it( 'should pass previous records to before observers', () => {
+				const argsStack = [];
+				const beforeObserver = sinon.spy( ( record, records ) => {
+					// Enforce copy of records as they are modified after broadcasting.
+					argsStack.push( [ ...records ] );
+				} );
+
+				plugin.observeBeforeActions( beforeObserver );
+				plugin.flushRecords();
+
+				// Register custom command
+				class FooCommand extends Command {
+					isEnabled = true;
+					execute() {
+						return 'foo';
+					}
+				}
+
+				editor.commands.add( 'foo', new FooCommand( editor ) );
+				editor.execute( 'foo' );
+
+				expect( beforeObserver ).to.have.been.calledOnce;
+				expect( argsStack[ 0 ] ).to.have.length( 0 );
+
+				editor.execute( 'foo' );
+
+				expect( beforeObserver ).to.have.been.calledTwice;
+				expect( argsStack[ 1 ] ).to.have.length( 1 );
+			} );
+
+			it( 'should not call unregistered observers', () => {
+				const observer1 = sinon.spy();
+				const observer2 = sinon.spy();
+
+				plugin.observeBeforeActions( observer1 );
+				const unregister2 = plugin.observeBeforeActions( observer2 );
+
+				// Unregister observer2
+				unregister2();
+
+				editor.execute( 'paragraph' );
+
+				expect( observer1 ).to.have.been.calledOnce;
+				expect( observer2 ).to.not.have.been.called;
+			} );
+
+			it( 'should handle before observer that modifies the records array', () => {
+				const beforeObserver = ( record, records ) => {
+					// Try to modify the records array (should not affect internal state)
+					records.push( { fake: 'record' } );
+				};
+
+				plugin.observeBeforeActions( beforeObserver );
+
+				// Register custom command
+				class FooCommand extends Command {
+					isEnabled = true;
+					execute() {
+						return 'foo';
+					}
+				}
+
+				editor.commands.add( 'foo', new FooCommand( editor ) );
+
+				const initialLength = plugin.getRecords().length;
+
+				editor.execute( 'foo' );
+
+				// Should add execute record and then one custom record.
+				expect( plugin.getRecords().length ).to.equal( initialLength + 2 );
+			} );
 		} );
 
-		it( 'should unregister observers', () => {
-			const observerSpy = sinon.spy();
+		describe( 'observeAfterActions', () => {
+			it( 'should register and call after action observers', () => {
+				const observerSpy = sinon.spy();
 
-			const unregister = plugin.observeRecords( observerSpy );
-			unregister();
+				plugin.observeAfterActions( observerSpy );
+				editor.execute( 'paragraph' );
 
-			editor.execute( 'paragraph' );
+				expect( observerSpy ).to.have.been.calledOnce;
+				expect( observerSpy.firstCall.args[ 0 ] ).to.have.property( 'event', 'commands.paragraph:execute' );
+			} );
 
-			expect( observerSpy ).to.not.have.been.called;
-		} );
+			it( 'should unregister observers via returned function', () => {
+				const observerSpy = sinon.spy();
 
-		it( 'should unregister observers via unobserveRecords method', () => {
-			const observerSpy = sinon.spy();
+				const unregister = plugin.observeAfterActions( observerSpy );
+				unregister();
 
-			plugin.observeRecords( observerSpy );
-			plugin.unobserveRecords( observerSpy );
+				editor.execute( 'paragraph' );
 
-			editor.execute( 'paragraph' );
+				expect( observerSpy ).to.not.have.been.called;
+			} );
 
-			expect( observerSpy ).to.not.have.been.called;
-		} );
+			it( 'should register multiple after observers and call them all', () => {
+				const observer1 = sinon.spy();
+				const observer2 = sinon.spy();
 
-		it( 'should handle observer errors gracefully', () => {
-			const observerWithError = () => {
-				throw new Error( 'Observer error' );
-			};
-			const workingObserver = sinon.spy();
+				plugin.observeAfterActions( observer1 );
+				plugin.observeAfterActions( observer2 );
 
-			plugin.observeRecords( observerWithError );
-			plugin.observeRecords( workingObserver );
+				editor.execute( 'paragraph' );
 
-			editor.execute( 'paragraph' );
+				expect( observer1 ).to.have.been.calledOnce;
+				expect( observer2 ).to.have.been.calledOnce;
+			} );
 
-			expect( workingObserver ).to.have.been.called;
+			it( 'should pass result to after observers on successful command execution', () => {
+				class FooCommand extends Command {
+					isEnabled = true;
+
+					execute() {
+						return { success: true };
+					}
+				}
+
+				editor.commands.add( 'foo', new FooCommand( editor ) );
+
+				const afterObserver = sinon.spy();
+				plugin.observeAfterActions( afterObserver );
+
+				editor.execute( 'foo' );
+
+				expect( afterObserver ).to.have.been.calledOnce;
+				expect( afterObserver.firstCall.args[ 1 ] ).to.deep.equal( { success: true } );
+				expect( afterObserver.firstCall.args[ 2 ] ).to.be.undefined;
+			} );
+
+			it( 'should pass error to after observers on failed command execution', () => {
+				class FooCommand extends Command {
+					isEnabled = true;
+
+					execute() {
+						throw new Error( 'Test error' );
+					}
+				}
+
+				editor.commands.add( 'foo', new FooCommand( editor ) );
+
+				const afterObserver = sinon.spy();
+
+				plugin.observeAfterActions( afterObserver );
+
+				try {
+					editor.execute( 'foo' );
+				// eslint-disable-next-line no-unused-vars
+				} catch ( error ) {
+					// Expected error
+				}
+
+				expect( afterObserver ).to.have.been.calledOnce;
+				expect( afterObserver.firstCall.args[ 1 ] ).to.be.undefined;
+				expect( afterObserver.firstCall.args[ 2 ] ).to.be.instanceOf( Error );
+			} );
 		} );
 	} );
 
