@@ -26,25 +26,6 @@
 export interface ActionsRecorderConfig {
 
 	/**
-	 * Whether the actions recorder is enabled.
-	 *
-	 * ```ts
-	 *	ClassicEditor
-	 *		.create( editorElement, {
-	 *			plugins: [ ActionsRecorder, ... ],
-	 *			actionsRecorder: {
-	 *				isEnabled: true
-	 *			}
-	 *		} )
-	 *		.then( ... )
-	 *		.catch( ... );
-	 * ```
-	 *
-	 * @default true
-	 */
-	isEnabled?: boolean;
-
-	/**
 	 * The maximum number of action entries to keep in memory.
 	 * When this limit is reached, older entries will be removed.
 	 *
@@ -88,6 +69,8 @@ export interface ActionsRecorderConfig {
 	/**
 	 * Filter function that determines whether a record should be added to the list.
 	 * This is called before the action executes and before the record is stored.
+	 * It allows to reduce memory usage by filtering out unnecessary records.
+	 *
 	 * If this function returns `false`, the record will not be stored in the entries array.
 	 *
 	 * ```ts

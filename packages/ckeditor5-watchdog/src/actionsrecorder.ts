@@ -92,10 +92,6 @@ export class ActionsRecorder extends Plugin {
 			this._afterActionObservers.add( config.onAfterAction );
 		}
 
-		if ( !config.isEnabled ) {
-			return;
-		}
-
 		this._tapCommands();
 		this._tapOperationApply();
 		this._tapModelMethods();

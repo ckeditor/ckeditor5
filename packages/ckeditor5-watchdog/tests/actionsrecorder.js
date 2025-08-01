@@ -47,7 +47,6 @@ describe( 'ActionsRecorder', () => {
 
 	describe( 'initialization', () => {
 		it( 'should define default config values', () => {
-			expect( editor.config.get( 'actionsRecorder.isEnabled' ) ).to.be.true;
 			expect( editor.config.get( 'actionsRecorder.maxEntries' ) ).to.equal( 100 );
 		} );
 
@@ -63,27 +62,6 @@ describe( 'ActionsRecorder', () => {
 
 			expect( paragraphRecord ).to.exist;
 			expect( paragraphRecord.event ).to.equal( 'commands.paragraph:execute' );
-		} );
-
-		it( 'should not record actions when disabled', async () => {
-			await editor.destroy();
-			element.remove();
-
-			element = global.document.createElement( 'div' );
-			global.document.body.appendChild( element );
-
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ ActionsRecorder, Paragraph ],
-				actionsRecorder: {
-					isEnabled: false
-				}
-			} );
-
-			plugin = editor.plugins.get( 'ActionsRecorder' );
-
-			editor.execute( 'paragraph' );
-
-			expect( plugin.getRecords() ).to.have.length( 0 );
 		} );
 
 		it( 'should register onBeforeAction callback from config', async () => {
