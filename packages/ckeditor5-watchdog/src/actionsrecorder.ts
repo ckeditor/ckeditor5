@@ -26,12 +26,12 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Array storing all recorded action entries with their context and state snapshots.
 	 */
-	private _entries: Array<any> = [];
+	private _entries: Array<ActionEntry> = [];
 
 	/**
 	 * Stack tracking nested action frames to maintain call hierarchy.
 	 */
-	private _frameStack: Array<any> = [];
+	private _frameStack: Array<ActionEntry> = [];
 
 	/**
 	 * @inheritDoc
@@ -68,8 +68,8 @@ export class ActionsRecorder extends Plugin {
 	 * @param params - Optional parameters associated with the event.
 	 * @returns The created call frame object.
 	 */
-	private _enterFrame( event: string, params?: Array<unknown> ) {
-		const callFrame = {
+	private _enterFrame( event: string, params?: Array<unknown> ): ActionEntry {
+		const callFrame: ActionEntry = {
 			timeStamp: new Date().toISOString(),
 			...this._frameStack.length && { parentFrame: this._frameStack.at( -1 ) },
 			event,
@@ -90,7 +90,7 @@ export class ActionsRecorder extends Plugin {
 	 * @param result - Optional result value from the action.
 	 * @param error - Optional error that occurred during the action.
 	 */
-	private _leaveFrame( callFrame: any, result?: any, error?: any ) {
+	private _leaveFrame( callFrame: ActionEntry, result?: any, error?: any ): void {
 		const topFrame = this._frameStack.pop();
 
 		if ( topFrame !== callFrame ) {
@@ -98,14 +98,14 @@ export class ActionsRecorder extends Plugin {
 		}
 
 		if ( result !== undefined ) {
-			topFrame.result = serializeValue( result );
+			topFrame!.result = serializeValue( result );
 		}
 
 		if ( error ) {
-			topFrame.error = error;
+			topFrame!.error = error;
 		}
 
-		topFrame.after = this._buildStateSnapshot();
+		topFrame!.after = this._buildStateSnapshot();
 	}
 
 	/**
@@ -114,12 +114,14 @@ export class ActionsRecorder extends Plugin {
 	 *
 	 * @returns An object containing the current editor state snapshot.
 	 */
-	private _buildStateSnapshot() {
+	private _buildStateSnapshot(): EditorStateSnapshot {
+		const { model, isReadOnly, editing } = this.editor;
+
 		return {
-			documentVersion: this.editor.model.document.version,
-			editorReadOnly: this.editor.isReadOnly,
-			editorFocused: this.editor.editing.view.document.isFocused,
-			modelSelection: serializeModelSelection( this.editor.model.document.selection )
+			documentVersion: model.document.version,
+			editorReadOnly: isReadOnly,
+			editorFocused: editing.view.document.isFocused,
+			modelSelection: serializeModelSelection( model.document.selection )
 		};
 	}
 
@@ -327,6 +329,30 @@ export class ActionsRecorder extends Plugin {
 }
 
 /**
+ * Represents the state snapshot of the editor at a specific point in time.
+ */
+interface EditorStateSnapshot {
+	documentVersion: number;
+	editorReadOnly: boolean;
+	editorFocused: boolean;
+	modelSelection: any;
+}
+
+/**
+ * Represents a recorded action entry with context and state information.
+ */
+interface ActionEntry {
+	timeStamp: string;
+	parentFrame?: ActionEntry;
+	event: string;
+	params?: Array<any>;
+	before: EditorStateSnapshot;
+	after?: EditorStateSnapshot;
+	result?: any;
+	error?: any;
+}
+
+/**
  * Creates a wrapper around a method to record its calls, results, and errors.
  *
  * @param object - The object containing the method to tap.
@@ -451,13 +477,6 @@ function serializeValue( value: any ): any {
 		constructor: value.constructor?.name || 'unknown',
 		string: String( value )
 	};
-}
-
-/**
- * Checks if a value is type-checkable, meaning it has an `is` method.
- */
-function isTypeCheckable( value: any ): value is ViewTypeCheckable & ModelTypeCheckable {
-	return value && typeof value.is === 'function';
 }
 
 /**
@@ -591,4 +610,11 @@ function serializeModelMarker( marker: Marker ) {
 		name: marker.name,
 		range: marker.getRange().toJSON()
 	};
+}
+
+/**
+ * Checks if a value is type-checkable, meaning it has an `is` method.
+ */
+function isTypeCheckable( value: any ): value is ViewTypeCheckable & ModelTypeCheckable {
+	return value && typeof value.is === 'function';
 }
