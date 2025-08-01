@@ -39,6 +39,11 @@ export class ActionsRecorder extends Plugin {
 	private _maxEntries: number;
 
 	/**
+	 * Set of observer callbacks that get notified when new records are added.
+	 */
+	private _observers: Set<( record: ActionEntry ) => void> = new Set();
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -64,6 +69,11 @@ export class ActionsRecorder extends Plugin {
 		const config = editor.config.get( 'actionsRecorder' )!;
 
 		this._maxEntries = config.maxEntries!;
+
+		// Register initial callback from config if provided
+		if ( config.onRecord ) {
+			this._observers.add( config.onRecord );
+		}
 
 		if ( !config.isEnabled ) {
 			return;
@@ -93,6 +103,27 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
+	 * Registers an observer callback that will be called whenever a new action record is created.
+	 *
+	 * @param callback - The callback function to register.
+	 * @returns A function that can be called to unregister the observer.
+	 */
+	public observeRecords( callback: ( record: ActionEntry ) => void ): () => void {
+		this._observers.add( callback );
+
+		return this.unobserveRecords.bind( this, callback );
+	}
+
+	/**
+	 * Unregisters an observer callback.
+	 *
+	 * @param callback - The callback function to unregister.
+	 */
+	public unobserveRecords( callback: ( record: ActionEntry ) => void ): void {
+		this._observers.delete( callback );
+	}
+
+	/**
 	 * Creates a new action frame and adds it to the recording stack.
 	 *
 	 * @param event - The name/type of the event being recorded.
@@ -110,6 +141,9 @@ export class ActionsRecorder extends Plugin {
 
 		this._entries.push( callFrame );
 		this._frameStack.push( callFrame );
+
+		// Notify observers about the new record
+		this._notifyObservers( callFrame );
 
 		// Enforce max entries limit.
 		if ( this._entries.length > this._maxEntries ) {
@@ -155,7 +189,7 @@ export class ActionsRecorder extends Plugin {
 	 *
 	 * @returns An object containing the current editor state snapshot.
 	 */
-	private _buildStateSnapshot(): EditorStateSnapshot {
+	private _buildStateSnapshot(): ActionEntryEditorSnapshot {
 		const { model, isReadOnly, editing } = this.editor;
 
 		return {
@@ -367,12 +401,28 @@ export class ActionsRecorder extends Plugin {
 			}
 		}, context );
 	}
+
+	/**
+	 * Notifies all registered observers about a new action record.
+	 *
+	 * @param record - The action record to notify observers about.
+	 */
+	private _notifyObservers( record: ActionEntry ): void {
+		for ( const observer of this._observers ) {
+			try {
+				observer( record );
+			} catch ( error ) {
+				// Silently catch observer errors to prevent them from affecting the recording
+				console.error( 'ActionsRecorder observer error:', error );
+			}
+		}
+	}
 }
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.
  */
-interface EditorStateSnapshot {
+export interface ActionEntryEditorSnapshot {
 	documentVersion: number;
 	editorReadOnly: boolean;
 	editorFocused: boolean;
@@ -382,13 +432,13 @@ interface EditorStateSnapshot {
 /**
  * Represents a recorded action entry with context and state information.
  */
-interface ActionEntry {
+export interface ActionEntry {
 	timeStamp: string;
 	parentFrame?: ActionEntry;
 	event: string;
 	params?: Array<any>;
-	before: EditorStateSnapshot;
-	after?: EditorStateSnapshot;
+	before: ActionEntryEditorSnapshot;
+	after?: ActionEntryEditorSnapshot;
 	result?: any;
 	error?: any;
 }
