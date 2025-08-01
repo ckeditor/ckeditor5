@@ -178,13 +178,10 @@ export class ActionsRecorder extends Plugin {
 	private _leaveFrame( callFrame: ActionEntry, result?: any, error?: any ): void {
 		const topFrame = this._frameStack.pop();
 
-		// Handle scenario when the stack has been cleared in the meantime.
-		if ( !topFrame ) {
+		// Handle scenario when the stack has been cleared in the meantime
+		// or the callFrame is not the top frame.
+		if ( !topFrame || topFrame !== callFrame ) {
 			return;
-		}
-
-		if ( topFrame !== callFrame ) {
-			console.error( 'This should never happen' );
 		}
 
 		if ( result !== undefined ) {

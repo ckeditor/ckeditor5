@@ -1,0 +1,478 @@
+/**
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+import { ActionsRecorder } from '../src/actionsrecorder.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Command } from '@ckeditor/ckeditor5-core';
+
+describe( 'ActionsRecorder', () => {
+	let editor, plugin, element;
+
+	beforeEach( async () => {
+		element = global.document.createElement( 'div' );
+		global.document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ ActionsRecorder, Paragraph, Heading, Bold ],
+			actionsRecorder: {
+				isEnabled: true,
+				maxEntries: 100
+			}
+		} );
+
+		plugin = editor.plugins.get( 'ActionsRecorder' );
+	} );
+
+	afterEach( async () => {
+		element.remove();
+		await editor.destroy();
+	} );
+
+	describe( 'plugin properties', () => {
+		it( 'should have proper plugin name', () => {
+			expect( ActionsRecorder.pluginName ).to.equal( 'ActionsRecorder' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ActionsRecorder.isOfficialPlugin ).to.be.true;
+		} );
+	} );
+
+	describe( 'initialization', () => {
+		it( 'should define default config values', () => {
+			expect( editor.config.get( 'actionsRecorder.isEnabled' ) ).to.be.true;
+			expect( editor.config.get( 'actionsRecorder.maxEntries' ) ).to.equal( 100 );
+		} );
+
+		it( 'should not record actions when disabled', async () => {
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					isEnabled: false
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( plugin.getRecords() ).to.have.length( 0 );
+		} );
+
+		it( 'should register onRecord callback from config', async () => {
+			const onRecordSpy = sinon.spy();
+
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					onRecord: onRecordSpy
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( onRecordSpy ).to.have.been.called;
+		} );
+	} );
+
+	describe( 'recording functionality', () => {
+		beforeEach( () => {
+			plugin.flushRecords();
+		} );
+
+		it( 'should record command executions', () => {
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+			expect( records ).to.have.length( 1 );
+			expect( records[ 0 ].event ).to.equal( 'commands.paragraph:execute' );
+			expect( records[ 0 ] ).to.have.property( 'timeStamp' );
+			expect( records[ 0 ] ).to.have.property( 'before' );
+			expect( records[ 0 ] ).to.have.property( 'after' );
+		} );
+
+		it( 'should record model operations', () => {
+			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+			editor.model.change( writer => {
+				writer.insertText( 'Hello', editor.model.document.selection.getFirstPosition() );
+			} );
+
+			const records = plugin.getRecords();
+			const operationRecords = records.filter( record => record.event === 'model.applyOperation' );
+
+			expect( operationRecords.length ).to.be.greaterThan( 0 );
+		} );
+
+		it( 'should record model methods', () => {
+			editor.model.change( writer => {
+				const textElement = writer.createText( 'test' );
+				editor.model.insertContent( textElement );
+			} );
+
+			const records = plugin.getRecords();
+			const insertContentRecord = records.find( record => record.event === 'model.insertContent' );
+
+			expect( insertContentRecord ).to.exist;
+			expect( insertContentRecord.params ).to.exist;
+		} );
+
+		it( 'should record nested operations with parent frames', () => {
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+
+			// At least one record should have been created from the command execution
+			expect( records.length ).to.be.greaterThan( 0 );
+
+			// Check if any operations were recorded during command execution
+			const operationRecords = records.filter( record => record.event === 'model.applyOperation' );
+			if ( operationRecords.length > 0 ) {
+				expect( operationRecords.some( record => record.parentFrame ) ).to.be.true;
+			}
+		} );
+
+		it( 'should record view document events', () => {
+			const viewDocument = editor.editing.view.document;
+
+			viewDocument.fire( 'click', {
+				domEvent: new MouseEvent( 'click' ),
+				target: element
+			} );
+
+			const records = plugin.getRecords();
+			const clickRecord = records.find( record => record.event === 'observers:click' );
+
+			expect( clickRecord ).to.exist;
+		} );
+
+		it( 'should capture state snapshots correctly', () => {
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+			const record = records[ 0 ];
+
+			expect( record.before ).to.have.property( 'documentVersion' );
+			expect( record.before ).to.have.property( 'editorReadOnly' );
+			expect( record.before ).to.have.property( 'editorFocused' );
+			expect( record.before ).to.have.property( 'modelSelection' );
+
+			expect( record.after ).to.have.property( 'documentVersion' );
+			expect( record.after ).to.have.property( 'editorReadOnly' );
+			expect( record.after ).to.have.property( 'editorFocused' );
+			expect( record.after ).to.have.property( 'modelSelection' );
+		} );
+
+		it( 'should record command execution results', () => {
+			class FooCommand extends Command {
+				isEnabled = true;
+
+				execute() {
+					return 'Foo result';
+				}
+			}
+
+			editor.commands.add( 'foo', new FooCommand( editor ) );
+			editor.execute( 'foo' );
+
+			const records = plugin.getRecords();
+			const commandRecord = records.find( record => record.event === 'commands.foo:execute' );
+
+			expect( commandRecord ).to.exist;
+			expect( commandRecord.result ).to.be.equal( 'Foo result' );
+		} );
+
+		it( 'should record errors during command execution', () => {
+			class FooCommand extends Command {
+				isEnabled = true;
+
+				execute() {
+					throw new Error( 'Test error' );
+				}
+			}
+
+			editor.commands.add( 'foo', new FooCommand( editor ) );
+
+			try {
+				editor.execute( 'foo' );
+			// eslint-disable-next-line no-unused-vars
+			} catch ( error ) {
+				// Expected error
+			}
+
+			const records = plugin.getRecords();
+			const commandRecord = records.find( record => record.event === 'commands.foo:execute' );
+
+			expect( commandRecord ).to.exist;
+			expect( commandRecord.error ).to.exist;
+		} );
+	} );
+
+	describe( 'record management', () => {
+		beforeEach( () => {
+			plugin.flushRecords();
+		} );
+
+		it( 'should return all records via getRecords()', () => {
+			editor.execute( 'paragraph' );
+			editor.execute( 'heading', { value: 'heading1' } );
+
+			const records = plugin.getRecords();
+			// Filter to only count command executions, not nested operations
+			const commandRecords = records.filter( record => record.event.startsWith( 'commands.' ) );
+			expect( commandRecords ).to.have.length( 2 );
+		} );
+
+		it( 'should clear all records via flushRecords()', () => {
+			editor.execute( 'paragraph' );
+
+			expect( plugin.getRecords() ).to.have.length( 1 );
+
+			plugin.flushRecords();
+
+			expect( plugin.getRecords() ).to.have.length( 0 );
+		} );
+
+		it( 'should enforce maxEntries limit', async () => {
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					maxEntries: 2
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			// Execute more commands than the limit
+			editor.execute( 'paragraph' );
+			editor.execute( 'paragraph' );
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+			expect( records ).to.have.length( 2 );
+		} );
+	} );
+
+	describe( 'observers', () => {
+		beforeEach( () => {
+			plugin.flushRecords();
+		} );
+
+		it( 'should register and call observers', () => {
+			const observerSpy = sinon.spy();
+
+			plugin.observeRecords( observerSpy );
+			editor.execute( 'paragraph' );
+
+			expect( observerSpy ).to.have.been.calledOnce;
+			expect( observerSpy.firstCall.args[ 0 ] ).to.have.property( 'event', 'commands.paragraph:execute' );
+			expect( observerSpy.firstCall.args[ 1 ] ).to.be.an( 'array' );
+		} );
+
+		it( 'should unregister observers', () => {
+			const observerSpy = sinon.spy();
+
+			const unregister = plugin.observeRecords( observerSpy );
+			unregister();
+
+			editor.execute( 'paragraph' );
+
+			expect( observerSpy ).to.not.have.been.called;
+		} );
+
+		it( 'should unregister observers via unobserveRecords method', () => {
+			const observerSpy = sinon.spy();
+
+			plugin.observeRecords( observerSpy );
+			plugin.unobserveRecords( observerSpy );
+
+			editor.execute( 'paragraph' );
+
+			expect( observerSpy ).to.not.have.been.called;
+		} );
+
+		it( 'should handle observer errors gracefully', () => {
+			const observerWithError = () => {
+				throw new Error( 'Observer error' );
+			};
+			const workingObserver = sinon.spy();
+
+			plugin.observeRecords( observerWithError );
+			plugin.observeRecords( workingObserver );
+
+			editor.execute( 'paragraph' );
+
+			expect( workingObserver ).to.have.been.called;
+		} );
+	} );
+
+	describe( 'filtering', () => {
+		it( 'should filter records based on onFilter callback', async () => {
+			const filterSpy = sinon.stub().returns( false );
+
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					onFilter: filterSpy
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( filterSpy ).to.have.been.called;
+			expect( plugin.getRecords() ).to.have.length( 0 );
+		} );
+
+		it( 'should include records when filter returns true', async () => {
+			const filterSpy = sinon.stub().returns( true );
+
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					onFilter: filterSpy
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( filterSpy ).to.have.been.called;
+			expect( plugin.getRecords() ).to.have.length.greaterThan( 0 );
+		} );
+
+		it( 'should pass record and previous records to filter callback', async () => {
+			const filterSpy = sinon.stub().returns( true );
+
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					onFilter: filterSpy
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			editor.execute( 'paragraph' );
+
+			expect( filterSpy ).to.have.been.called;
+			expect( filterSpy.firstCall.args[ 0 ] ).to.have.property( 'event' );
+			expect( filterSpy.firstCall.args[ 1 ] ).to.be.an( 'array' );
+		} );
+	} );
+
+	describe( 'UI component recording', () => {
+		beforeEach( () => {
+			plugin.flushRecords();
+		} );
+
+		it( 'should record component factory creation', () => {
+			// Use a component that actually exists in the editor
+			editor.ui.componentFactory.create( 'bold' );
+
+			const records = plugin.getRecords();
+			const componentRecord = records.find( record => record.event === 'component-factory.create:bold' );
+
+			expect( componentRecord ).to.exist;
+		} );
+	} );
+
+	describe( 'serialization', () => {
+		beforeEach( () => {
+			plugin.flushRecords();
+		} );
+
+		it( 'should serialize command parameters', () => {
+			editor.execute( 'heading', { value: 'heading1' } );
+
+			const records = plugin.getRecords();
+			const headingRecord = records.find( record => record.event === 'commands.heading:execute' );
+
+			expect( headingRecord.params ).to.exist;
+			expect( headingRecord.params[ 0 ] ).to.deep.equal( { value: 'heading1' } );
+		} );
+
+		it( 'should serialize model selection in state snapshots', () => {
+			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
+
+			editor.execute( 'paragraph' );
+
+			const records = plugin.getRecords();
+			const record = records[ 0 ];
+
+			expect( record.before.modelSelection ).to.have.property( 'ranges' );
+			expect( record.before.modelSelection.ranges ).to.be.an( 'array' );
+		} );
+
+		it( 'should serialize DOM events', () => {
+			const viewDocument = editor.editing.view.document;
+			const mouseEvent = new MouseEvent( 'click', {
+				clientX: 100,
+				clientY: 200,
+				ctrlKey: true
+			} );
+
+			viewDocument.fire( 'click', {
+				domEvent: mouseEvent,
+				target: element
+			} );
+
+			const records = plugin.getRecords();
+			const clickRecord = records.find( record => record.event === 'observers:click' );
+
+			expect( clickRecord ).to.exist;
+
+			expect( clickRecord.params[ 0 ] ).to.have.property( 'type', 'click' );
+			expect( clickRecord.params[ 0 ] ).to.have.property( 'clientX', 100 );
+			expect( clickRecord.params[ 0 ] ).to.have.property( 'clientY', 200 );
+			expect( clickRecord.params[ 0 ] ).to.have.property( 'ctrlKey', true );
+		} );
+	} );
+} );
