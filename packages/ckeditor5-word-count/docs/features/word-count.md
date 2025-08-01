@@ -20,11 +20,11 @@ Add or remove some content and see how the counter below the editor changes in r
 
 {@snippet features/word-count}
 
-<div id="demo-word-count" class="word-count"></div>
-
 <snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
+
+<div id="demo-word-count" class="word-count"></div>
 
 The example above was created by using the following HTML page structure:
 
