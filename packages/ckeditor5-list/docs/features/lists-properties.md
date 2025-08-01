@@ -9,13 +9,13 @@ badges: [ premium ]
 
 # List properties
 
-Besides the basic functionality of creating ordered and unordered lists, CKEditor&nbsp;5 offers formatting tools that let you control the lists. You can enable features such as more styles for list markers, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor feature-rich editor example}.
+Besides the basic functionality of creating ordered and unordered lists, CKEditor 5 offers formatting tools that let you control the lists. You can enable features such as customizing list markers with additional styles, setting the start index, or reversing the list order separately or all at once. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor feature-rich editor example}.
 
 {@snippet getting-started/unlock-feature}
 
 ## List styles
 
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
+The list style feature introduces more styles for the list item markers. When {@link module:list/listconfig~ListPropertiesConfig#styles enabled}, it adds three styles for unordered lists and six styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown. It opens when you click the arrow next to the appropriate list button in the toolbar.
 
 ### Demo
 
