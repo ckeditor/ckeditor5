@@ -607,7 +607,7 @@ function serializeDomEvent( event: Event ): any {
 		currentTarget: serializeDOMTarget( event.currentTarget )
 	};
 
-	// Add mouse event properties
+	// Add mouse event properties.
 	if ( event instanceof MouseEvent ) {
 		serialized = {
 			...serialized,
@@ -622,7 +622,7 @@ function serializeDomEvent( event: Event ): any {
 		};
 	}
 
-	// Add keyboard event properties
+	// Add keyboard event properties.
 	if ( event instanceof KeyboardEvent ) {
 		serialized = {
 			...serialized,
@@ -637,7 +637,17 @@ function serializeDomEvent( event: Event ): any {
 		};
 	}
 
-	// Add input event properties
+	// Add input event properties.
+	if ( event instanceof InputEvent ) {
+		serialized = {
+			...serialized,
+			data: event.data,
+			inputType: event.inputType,
+			isComposing: event.isComposing
+		};
+	}
+
+	// Add composition event properties.
 	if ( event instanceof InputEvent ) {
 		serialized = {
 			...serialized,
