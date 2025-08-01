@@ -78,6 +78,21 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
+	 * Returns all recorded action entries.
+	 */
+	public getRecords(): Array<ActionEntry> {
+		return this._entries;
+	}
+
+	/**
+	 * Flushes all recorded entries and clears the frame stack.
+	 */
+	public flushRecords(): void {
+		this._entries = [];
+		this._frameStack = [];
+	}
+
+	/**
 	 * Creates a new action frame and adds it to the recording stack.
 	 *
 	 * @param event - The name/type of the event being recorded.
@@ -114,19 +129,24 @@ export class ActionsRecorder extends Plugin {
 	private _leaveFrame( callFrame: ActionEntry, result?: any, error?: any ): void {
 		const topFrame = this._frameStack.pop();
 
+		// Handle scenario when the stack has been cleared in the meantime.
+		if ( !topFrame ) {
+			return;
+		}
+
 		if ( topFrame !== callFrame ) {
 			console.error( 'This should never happen' );
 		}
 
 		if ( result !== undefined ) {
-			topFrame!.result = serializeValue( result );
+			topFrame.result = serializeValue( result );
 		}
 
 		if ( error ) {
-			topFrame!.error = error;
+			topFrame.error = error;
 		}
 
-		topFrame!.after = this._buildStateSnapshot();
+		topFrame.after = this._buildStateSnapshot();
 	}
 
 	/**
