@@ -19,8 +19,8 @@ Start by creating a template of the document in the standard editing mode. Selec
 
 Then switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
-<info-box info>
-	Tip: Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
+<info-box tip>
+	Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
 </info-box>
 
 **Mode:**
