@@ -461,14 +461,6 @@ export class ActionsRecorder extends Plugin {
 }
 
 /**
- * An object that can contain `before` and `after` action callbacks.
- */
-export interface ActionObserver {
-	before?: BeforeRecordActionCallback;
-	after?: AfterRecordActionCallback;
-}
-
-/**
  * Creates a wrapper around a method to record its calls, results, and errors.
  *
  * @param object - The object containing the method to tap.
