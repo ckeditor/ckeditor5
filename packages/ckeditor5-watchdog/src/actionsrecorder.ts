@@ -34,6 +34,11 @@ export class ActionsRecorder extends Plugin {
 	private _frameStack: Array<ActionEntry> = [];
 
 	/**
+	 * Maximum number of action entries to keep in memory.
+	 */
+	private _maxEntries: number;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -52,6 +57,17 @@ export class ActionsRecorder extends Plugin {
 	 */
 	public constructor( editor: Editor ) {
 		super( editor );
+
+		editor.config.define( 'actionsRecorder.isEnabled', true );
+		editor.config.define( 'actionsRecorder.maxEntries', 1000 );
+
+		const config = editor.config.get( 'actionsRecorder' )!;
+
+		this._maxEntries = config.maxEntries!;
+
+		if ( !config.isEnabled ) {
+			return;
+		}
 
 		this._tapCommands();
 		this._tapOperationApply();
@@ -79,6 +95,11 @@ export class ActionsRecorder extends Plugin {
 
 		this._entries.push( callFrame );
 		this._frameStack.push( callFrame );
+
+		// Enforce max entries limit.
+		if ( this._entries.length > this._maxEntries ) {
+			this._entries.shift();
+		}
 
 		return callFrame;
 	}
