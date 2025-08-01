@@ -556,11 +556,11 @@ function serializeValue( value: any ): any {
 		switch ( true ) {
 			case value.is( 'model:documentSelection' ):
 			case value.is( 'model:selection' ):
-				return serializeModelSelection( value );
+				return serializeModelSelection( value as unknown as any );
 
 			default:
 				return {
-					name: ( value as any ).name || value.constructor?.name || 'unknown'
+					name: value.constructor?.name || 'unknown'
 				};
 		}
 	}
