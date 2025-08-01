@@ -30,6 +30,11 @@ import type {
  */
 export class ActionsRecorder extends Plugin {
 	/**
+	 * Unique identifier for each recorded action entry.
+	 */
+	private _id: number = 0;
+
+	/**
 	 * Array storing all recorded action entries with their context and state snapshots.
 	 */
 	private _entries: Array<ActionEntry> = [];
@@ -111,6 +116,7 @@ export class ActionsRecorder extends Plugin {
 	 * Flushes all recorded entries and clears the frame stack.
 	 */
 	public flushRecords(): void {
+		this._id = 0;
 		this._entries = [];
 		this._frameStack = [];
 	}
@@ -147,7 +153,9 @@ export class ActionsRecorder extends Plugin {
 	 * @returns The created call frame object.
 	 */
 	private _enterFrame( event: string, params?: Array<unknown> ): ActionEntry {
+		const wrappedId = this._id + 1 >= Number.MAX_SAFE_INTEGER ? 0 : this._id + 1;
 		const callFrame: ActionEntry = {
+			id: wrappedId,
 			timeStamp: new Date().toISOString(),
 			...this._frameStack.length && { parentFrame: this._frameStack.at( -1 ) },
 			event,

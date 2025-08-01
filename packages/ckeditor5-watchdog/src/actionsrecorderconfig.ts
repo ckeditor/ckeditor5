@@ -155,6 +155,7 @@ export interface ActionEntryEditorSnapshot {
  * Represents a recorded action entry with context and state information.
  */
 export interface ActionEntry {
+	id: number;
 	timeStamp: string;
 	parentFrame?: ActionEntry;
 	event: string;
