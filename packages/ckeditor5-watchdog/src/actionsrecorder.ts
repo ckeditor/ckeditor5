@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* istanbul ignore file -- @preserve */
+
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
 import {
 	Plugin,
