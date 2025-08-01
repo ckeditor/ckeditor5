@@ -18,7 +18,10 @@ import type {
 	ModelTypeCheckable
 } from '@ckeditor/ckeditor5-engine';
 
-import type { ActionEntry, ActionEntryEditorSnapshot, RecordActionCallback } from './actionsrecorderconfig.js';
+import type {
+	ActionEntry, ActionEntryEditorSnapshot,
+	RecordActionCallback, RecordFilterCallback
+} from './actionsrecorderconfig.js';
 
 /**
  * A plugin that records user actions and editor state changes for debugging purposes.
@@ -46,6 +49,11 @@ export class ActionsRecorder extends Plugin {
 	private _observers: Set<RecordActionCallback> = new Set();
 
 	/**
+	 * Filter function to determine which records should be stored.
+	 */
+	private _filter?: RecordFilterCallback;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -71,6 +79,7 @@ export class ActionsRecorder extends Plugin {
 		const config = editor.config.get( 'actionsRecorder' )!;
 
 		this._maxEntries = config.maxEntries!;
+		this._filter = config.onFilter;
 
 		// Register initial callback from config if provided
 		if ( config.onRecord ) {
@@ -144,13 +153,17 @@ export class ActionsRecorder extends Plugin {
 		// Notify observers about the new record
 		this._notifyObservers( callFrame );
 
-		this._entries.push( callFrame );
-		this._frameStack.push( callFrame );
+		// Apply filter if configured, only add to entries if filter passes
+		if ( !this._filter || this._filter( callFrame ) ) {
+			this._entries.push( callFrame );
 
-		// Enforce max entries limit.
-		if ( this._entries.length > this._maxEntries ) {
-			this._entries.shift();
+			// Enforce max entries limit.
+			if ( this._entries.length > this._maxEntries ) {
+				this._entries.shift();
+			}
 		}
+
+		this._frameStack.push( callFrame );
 
 		return callFrame;
 	}

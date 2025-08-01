@@ -83,6 +83,27 @@ export interface ActionsRecorderConfig {
 	 * ```
 	 */
 	onRecord?: RecordActionCallback;
+
+	/**
+	 * Filter function that determines whether a record should be added to the list.
+	 * If this function returns `false`, the record will not be stored in the entries array.
+	 *
+	 * ```ts
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ ActionsRecorder, ... ],
+	 *			actionsRecorder: {
+	 *				onFilter: ( record ) => {
+	 *					// Only record command executions
+	 *					return record.event.startsWith( 'commands.' );
+	 *				}
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 */
+	onFilter?: RecordFilterCallback;
 }
 
 /**
@@ -92,6 +113,13 @@ export interface ActionsRecorderConfig {
  * @param prevRecords The array of previous action entries.
  */
 export type RecordActionCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => void;
+
+/**
+ * Callback function type for the `filter` option in the ActionsRecorderConfig.
+ *
+ * @param record The action entry to be filtered.
+ */
+export type RecordFilterCallback = ( record: ActionEntry ) => boolean;
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.
