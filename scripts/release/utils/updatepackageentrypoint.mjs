@@ -24,7 +24,17 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	pkgJson.main = main;
 	pkgJson.types = types;
 
-	pkgJson.exports = {
+	pkgJson.exports = pkgJson.name === 'ckeditor5' ? {
+		'.': {
+			'types': './src/index.d.ts',
+			'import': './dist/ckeditor5.js'
+		},
+		'./*': './dist/*',
+		'./browser/*': null,
+		'./build/*': './build/*',
+		'./src/*': './src/*',
+		'./package.json': './package.json'
+	} : {
 		'.': {
 			types: './' + types,
 			import: './' + main,
