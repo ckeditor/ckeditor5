@@ -20,12 +20,12 @@ export {
 export { EditorWatchdog, type EditorWatchdogCreatorFunction, type EditorWatchdogRestartEvent } from './editorwatchdog.js';
 export { Watchdog, type WatchdogConfig } from './watchdog.js';
 
-export type { ActionsRecorderConfig } from './actionsrecorderconfig.js';
-export {
-	ActionsRecorder,
-	type ActionEntry,
-	type ActionEntryEditorSnapshot
-} from './actionsrecorder.js';
+export { ActionsRecorder } from './actionsrecorder.js';
+export type {
+	ActionsRecorderConfig,
+	ActionEntry,
+	ActionEntryEditorSnapshot
+} from './actionsrecorderconfig.js';
 
 export type {
 	WatchdogEventMap,

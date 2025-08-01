@@ -5,17 +5,23 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ActionsRecorder } from '@ckeditor/ckeditor5-watchdog';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, ActionsRecorder ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
+		},
+		actionsRecorder: {
+			onRecord: actionEntry => {
+				console.log( 'Action recorded:', actionEntry );
+			}
 		}
 	} )
 	.then( editor => {

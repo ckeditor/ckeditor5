@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { ActionEntry } from './actionsrecorder.js';
-
 /**
  * @module watchdog/actionsrecorderconfig
  */
@@ -84,5 +82,37 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onRecord?: ( record: ActionEntry ) => void;
+	onRecord?: RecordActionCallback;
+}
+
+/**
+ * Callback function type for the `onRecord` option in the ActionsRecorderConfig.
+ *
+ * @param record The newly created action entry.
+ * @param prevRecords The array of previous action entries.
+ */
+export type RecordActionCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => void;
+
+/**
+ * Represents the state snapshot of the editor at a specific point in time.
+ */
+export interface ActionEntryEditorSnapshot {
+	documentVersion: number;
+	editorReadOnly: boolean;
+	editorFocused: boolean;
+	modelSelection: any;
+}
+
+/**
+ * Represents a recorded action entry with context and state information.
+ */
+export interface ActionEntry {
+	timeStamp: string;
+	parentFrame?: ActionEntry;
+	event: string;
+	params?: Array<any>;
+	before: ActionEntryEditorSnapshot;
+	after?: ActionEntryEditorSnapshot;
+	result?: any;
+	error?: any;
 }

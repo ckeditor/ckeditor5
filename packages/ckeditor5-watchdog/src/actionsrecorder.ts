@@ -18,6 +18,8 @@ import type {
 	ModelTypeCheckable
 } from '@ckeditor/ckeditor5-engine';
 
+import type { ActionEntry, ActionEntryEditorSnapshot, RecordActionCallback } from './actionsrecorderconfig.js';
+
 /**
  * A plugin that records user actions and editor state changes for debugging purposes.
  * It tracks commands execution, model operations, UI interactions, and document events.
@@ -41,7 +43,7 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Set of observer callbacks that get notified when new records are added.
 	 */
-	private _observers: Set<( record: ActionEntry ) => void> = new Set();
+	private _observers: Set<RecordActionCallback> = new Set();
 
 	/**
 	 * @inheritDoc
@@ -139,11 +141,11 @@ export class ActionsRecorder extends Plugin {
 			before: this._buildStateSnapshot()
 		};
 
-		this._entries.push( callFrame );
-		this._frameStack.push( callFrame );
-
 		// Notify observers about the new record
 		this._notifyObservers( callFrame );
+
+		this._entries.push( callFrame );
+		this._frameStack.push( callFrame );
 
 		// Enforce max entries limit.
 		if ( this._entries.length > this._maxEntries ) {
@@ -410,37 +412,13 @@ export class ActionsRecorder extends Plugin {
 	private _notifyObservers( record: ActionEntry ): void {
 		for ( const observer of this._observers ) {
 			try {
-				observer( record );
+				observer( record, this._entries );
 			} catch ( error ) {
 				// Silently catch observer errors to prevent them from affecting the recording
 				console.error( 'ActionsRecorder observer error:', error );
 			}
 		}
 	}
-}
-
-/**
- * Represents the state snapshot of the editor at a specific point in time.
- */
-export interface ActionEntryEditorSnapshot {
-	documentVersion: number;
-	editorReadOnly: boolean;
-	editorFocused: boolean;
-	modelSelection: any;
-}
-
-/**
- * Represents a recorded action entry with context and state information.
- */
-export interface ActionEntry {
-	timeStamp: string;
-	parentFrame?: ActionEntry;
-	event: string;
-	params?: Array<any>;
-	before: ActionEntryEditorSnapshot;
-	after?: ActionEntryEditorSnapshot;
-	result?: any;
-	error?: any;
 }
 
 /**
