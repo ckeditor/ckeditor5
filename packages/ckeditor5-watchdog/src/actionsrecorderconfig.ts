@@ -119,7 +119,7 @@ export type RecordActionCallback = ( record: ActionEntry, prevRecords: Array<Act
  *
  * @param record The action entry to be filtered.
  */
-export type RecordFilterCallback = ( record: ActionEntry ) => boolean;
+export type RecordFilterCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => boolean;
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.

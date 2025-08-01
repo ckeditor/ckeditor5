@@ -150,12 +150,12 @@ export class ActionsRecorder extends Plugin {
 			before: this._buildStateSnapshot()
 		};
 
-		// Notify observers about the new record
-		this._notifyObservers( callFrame );
-
-		// Apply filter if configured, only add to entries if filter passes
-		if ( !this._filter || this._filter( callFrame ) ) {
+		// Apply filter if configured, only add to entries if filter passes.
+		if ( !this._filter || this._filter( callFrame, this._entries ) ) {
 			this._entries.push( callFrame );
+
+			// Notify observers about the new record.
+			this._notifyObservers( callFrame );
 
 			// Enforce max entries limit.
 			if ( this._entries.length > this._maxEntries ) {
