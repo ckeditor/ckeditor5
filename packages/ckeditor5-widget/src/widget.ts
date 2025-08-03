@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
-	MouseObserver,
+	PointerObserver,
 	ModelTreeWalker,
 	type ViewDocumentDomEventData,
 	type DowncastSelectionEvent,
@@ -18,7 +18,7 @@ import {
 	type ModelElement,
 	type ModelNode,
 	type ViewDocumentArrowKeyEvent,
-	type ViewDocumentMouseDownEvent,
+	type ViewDocumentPointerDownEvent,
 	type ViewElement,
 	type ModelSchema,
 	type ModelPosition,
@@ -172,8 +172,8 @@ export class Widget extends Plugin {
 		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
-		view.addObserver( MouseObserver );
-		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		view.addObserver( PointerObserver );
+		this.listenTo<ViewDocumentPointerDownEvent>( viewDocument, 'pointerdown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
@@ -283,7 +283,11 @@ export class Widget extends Plugin {
 	/**
 	 * Handles {@link module:engine/view/document~ViewDocument#event:mousedown mousedown} events on widget elements.
 	 */
-	private _onMousedown( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData<MouseEvent> ) {
+	private _onMousedown( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData<PointerEvent> ) {
+		if ( !domEventData.domEvent.isPrimary ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -325,9 +329,10 @@ export class Widget extends Plugin {
 			}
 		}
 
-		// On Android selection would jump to the first table cell, on other devices
+		// On Android and iOS selection would jump to the first table cell, on other devices
 		// we can't block it (and don't need to) because of drag and drop support.
-		if ( env.isAndroid ) {
+		// In iOS drag and drop works anyway on a long press.
+		if ( env.isAndroid || env.isiOS ) {
 			domEventData.preventDefault();
 		}
 

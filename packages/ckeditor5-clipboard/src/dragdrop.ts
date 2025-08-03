@@ -11,16 +11,16 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	ModelLiveRange,
-	MouseObserver,
+	PointerObserver,
 	type ViewDataTransfer,
 	type ModelElement,
 	type Model,
 	type ModelRange,
 	type ModelPosition,
-	type ViewDocumentMouseDownEvent,
-	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ViewDocumentDomEventData
+	type ViewDocumentDomEventData,
+	type ViewDocumentPointerDownEvent,
+	type ViewDocumentPointerUpEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -220,7 +220,7 @@ export class DragDrop extends Plugin {
 		this._draggableElement = null;
 
 		view.addObserver( ClipboardObserver );
-		view.addObserver( MouseObserver );
+		view.addObserver( PointerObserver );
 
 		this._setupDragging();
 		this._setupContentInsertionIntegration();
@@ -482,7 +482,7 @@ export class DragDrop extends Plugin {
 
 		// Add the 'draggable' attribute to the widget while pressing the selection handle.
 		// This is required for widgets to be draggable. In Chrome it will enable dragging text nodes.
-		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( evt, data ) => {
+		this.listenTo<ViewDocumentPointerDownEvent>( viewDocument, 'pointerdown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
 			if ( env.isAndroid || !data ) {
@@ -521,7 +521,7 @@ export class DragDrop extends Plugin {
 		} );
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
-		this.listenTo<ViewDocumentMouseUpEvent>( viewDocument, 'mouseup', () => {
+		this.listenTo<ViewDocumentPointerUpEvent>( viewDocument, 'pointerup', () => {
 			if ( !env.isAndroid ) {
 				this._clearDraggableAttributesDelayed();
 			}
