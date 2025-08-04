@@ -4,11 +4,14 @@ menu-title: Simple upload adapter
 meta-title: Simple upload adapter | CKEditor 5 Documentation
 meta-description: Upload images to your server in CKEditor 5 using the Simple Upload Adapter for easy, direct image handling with minimal configuration.
 order: 60
+badges: [ premium ]
 ---
 
 # Simple upload adapter
 
 The simple upload adapter lets you upload images to your server using the [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) API with a minimal [editor configuration](#configuration). See the [Server-side configuration](#server-side-configuration) section to learn about the requirements for your server-side application.
+
+{@snippet getting-started/unlock-feature}
 
 ## Installation
 

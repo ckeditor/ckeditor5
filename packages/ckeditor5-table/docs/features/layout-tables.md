@@ -1,10 +1,11 @@
 ---
+category: tables
 menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
 meta-description: Add support for different table types to distinguish between content tables and layout tables and allow to create table-based layouts.
-category: tables
 order: 50
 modified_at: 2025-04-07
+badges: [ premium ]
 ---
 
 # Layout tables
@@ -12,6 +13,8 @@ modified_at: 2025-04-07
 {@snippet features/build-table-source empty}
 
 Layout tables are used to structure web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content. You can switch between {@link features/tables content tables} and layout tables by using the table toggling feature.
+
+{@snippet getting-started/unlock-feature}
 
 ## Table types comparison
 

@@ -24,11 +24,11 @@ Unneeded styles on block elements, such as tables and images, and General HTML S
 
 #### List markers styling
 
-Working with styled [lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#list-styles) becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties such as font size adjustments, text color changes, and font weight modifications (bold, italic).
+Working with styled [lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-properties.html#list-styles) becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties such as font size adjustments, text color changes, and font weight modifications (bold, italic).
 
 This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports [Multi-level lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/multi-level-lists.html).
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor 's new version (for the better in our opinion). But if this is not something you expect, you can [opt out](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#disabling-marker-formatting).
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor 's new version (for the better in our opinion). But if this is not something you expect, you can [opt out](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists-properties.html#disabling-marker-formatting).
 
 #### Markdown processor dependency refresh
 
