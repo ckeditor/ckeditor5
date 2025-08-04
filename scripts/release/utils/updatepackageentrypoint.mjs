@@ -11,12 +11,29 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	const { default: fs } = await import( 'fs-extra' );
 	const { default: path } = await import( 'upath' );
 
-	if ( !( await isTypeScriptPackage( packagePath ) ) ) {
+	const packageJsonPath = path.join( packagePath, 'package.json' );
+	const pkgJson = await fs.readJson( packageJsonPath );
+
+	if ( pkgJson.name === 'ckeditor5' ) {
+		pkgJson.exports = {
+			'.': {
+				'types': './src/index.d.ts',
+				'import': './dist/ckeditor5.js'
+			},
+			'./*': './dist/*',
+			'./browser/*': null,
+			'./build/*': './build/*',
+			'./src/*': './src/*',
+			'./package.json': './package.json'
+		};
+
+		return fs.writeJson( packageJsonPath, pkgJson );
+	}
+
+	if ( !isTypeScriptPackage( packagePath, pkgJson ) ) {
 		return;
 	}
 
-	const packageJsonPath = path.join( packagePath, 'package.json' );
-	const pkgJson = await fs.readJson( packageJsonPath );
 	const main = pkgJson.main.replace( /\.ts$/, '.js' );
 	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
 	const files = pkgJson.files || [];
@@ -24,17 +41,7 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	pkgJson.main = main;
 	pkgJson.types = types;
 
-	pkgJson.exports = pkgJson.name === 'ckeditor5' ? {
-		'.': {
-			'types': './src/index.d.ts',
-			'import': './dist/ckeditor5.js'
-		},
-		'./*': './dist/*',
-		'./browser/*': null,
-		'./build/*': './build/*',
-		'./src/*': './src/*',
-		'./package.json': './package.json'
-	} : {
+	pkgJson.exports = {
 		'.': {
 			types: './' + types,
 			import: './' + main,
@@ -82,14 +89,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	 * @param {String} packagePath
 	 * @returns {Promise.<Boolean>}
 	 */
-	async function isTypeScriptPackage( packagePath ) {
-		const packageJsonPath = path.join( packagePath, 'package.json' );
-		const packageJson = await fs.readJson( packageJsonPath );
-
+	function isTypeScriptPackage( packagePath, pkgJson ) {
 		// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
 		// the package is written in TS.
-		if ( packageJson.main ) {
-			return packageJson.main.includes( '.ts' );
+		if ( pkgJson.main ) {
+			return pkgJson.main.includes( '.ts' );
 		}
 
 		// Otherwise, let's check if the package contains a `tsconfig.json` file.
