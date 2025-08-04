@@ -282,7 +282,7 @@ describe( 'ToolbarView', () => {
 			view.destroy();
 		} );
 
-		// https://github.com/cksource/ckeditor5-commercial/issues/6633
+		// https://github.com/ckeditor/ckeditor5-commercial/issues/6633
 		it( 'registers #items in #focusTracker as View instances (not just DOM elements) to alow for complex Views scattered across ' +
 			'multiple DOM sub-trees',
 		() => {
