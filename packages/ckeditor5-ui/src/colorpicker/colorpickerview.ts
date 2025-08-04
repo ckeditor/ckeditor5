@@ -204,8 +204,8 @@ export class ColorPickerView extends View {
 		// In FF, after selecting the color via slider, it instantly moves back to the previous color.
 		// In all iOS browsers and desktop Safari, once the saturation slider is moved for the first time,
 		// editor collapses the selection and doesn't apply the color change.
-		// See: https://github.com/cksource/ckeditor5-internal/issues/3245, https://github.com/ckeditor/ckeditor5/issues/14119,
-		// https://github.com/cksource/ckeditor5-internal/issues/3268.
+		// See: https://github.com/ckeditor/ckeditor5-internal/issues/3245, https://github.com/ckeditor/ckeditor5/issues/14119,
+		// https://github.com/ckeditor/ckeditor5-internal/issues/3268.
 		/* istanbul ignore next -- @preserve */
 		if ( !this._config.hideInput && ( env.isGecko || env.isiOS || env.isSafari || env.isBlink ) ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
