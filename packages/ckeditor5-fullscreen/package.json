@@ -84,5 +84,8 @@
     "dll:build": "webpack",
     "build": "tsc -p ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  },
+  "depcheckIgnore": [
+    "@ckeditor/ckeditor5"
+  ]
 }

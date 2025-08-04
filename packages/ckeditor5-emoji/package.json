@@ -66,5 +66,8 @@
     "*.css",
     "build/**/*.js",
     "dist/translations/*.umd.js"
+  ],
+  "depcheckIgnore": [
+    "@ckeditor/ckeditor5"
   ]
 }

@@ -68,7 +68,7 @@ export async function generateCKEditor5PackageBuild( packagePath, overrides = {}
 	const pkg = await fs.readJson( upath.join( packagePath, 'package.json' ) );
 
 	return build( {
-		input: CKEDITOR5_INDEX,
+		input: 'src/index.ts',
 		output: upath.resolve( packagePath, 'dist/index.js' ),
 		tsconfig: 'tsconfig.dist.json',
 		banner,

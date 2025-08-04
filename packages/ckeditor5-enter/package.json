@@ -49,5 +49,8 @@
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
-  }
+  },
+  "depcheckIgnore": [
+    "@ckeditor/ckeditor5"
+  ]
 }
