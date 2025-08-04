@@ -16,7 +16,7 @@ import { confirm } from '@inquirer/prompts';
 
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
-import buildMainCKEditor5PackageDll from './utils/buildmainckeditor5packagedll.mjs';
+import buildTsAndDllForCKEditor5Root from './utils/buildtsanddllforckeditor5root.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
 import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
@@ -156,6 +156,12 @@ const tasks = new Listr( [
 		task: ( ctx, task ) => {
 			return task.newListr( [
 				{
+					title: 'Preparing the "ckeditor5" package files.',
+					task: () => {
+						return buildTsAndDllForCKEditor5Root();
+					}
+				},
+				{
 					title: 'Compiling TypeScript in `ckeditor5-*` packages.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
@@ -196,13 +202,6 @@ const tasks = new Listr( [
 							taskToExecute: updatePackageEntryPoint,
 							concurrency: cliArguments.concurrency
 						} );
-					}
-				},
-				{
-					// This build is needed before other builds as they rely on the `ckeditor5-dll.manifest.json`.
-					title: 'Preparing the main "ckeditor5" package DLL build.',
-					task: () => {
-						return buildMainCKEditor5PackageDll();
 					}
 				},
 				{
