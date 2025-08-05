@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-dev-docs": "^50.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^50.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^50.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?ck/18890",
+    "@ckeditor/ckeditor5-dev-tests": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?ck/18890-epic",
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-react": "^9.5.0",
