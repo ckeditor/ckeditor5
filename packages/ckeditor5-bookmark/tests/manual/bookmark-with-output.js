@@ -55,7 +55,7 @@ ClassicEditor
 			iframe.contentWindow.document.open();
 			iframe.contentWindow.document.write( editor.getData() );
 			iframe.contentWindow.document.close();
-		}, 100 );
+		}, 500 );
 	} )
 	.catch( err => {
 		console.error( err.stack );
