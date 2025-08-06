@@ -74,6 +74,12 @@ If you plan to use it withing CKEditor&nbsp;5, refer to the {@link features/ckbo
 
 {@img assets/img/ckbox-sample.png 770 CKBox management modal.}
 
+## Cloud region and on-premises options
+
+Cloud Services are available both as a cloud solution (SaaS) and as a self-hosted (on-premises) version. You can learn more about the different approaches in the dedicated  [SaaS vs. On-premises](https://ckeditor.com/docs/cs/latest/guides/saas-vs-on-premises.html) guide in the Cloud Services documentation.
+
+The cloud solution offers two regions to host your services. You can choose the [EU, US, or both cloud regions](https://ckeditor.com/docs/cs/latest/guides/saas-vs-on-premises.html#cloud-region) when working with a cloud-hosted SaaS setup.
+
 ## Next steps
 
 * If you already use collaboration features without Real-time Collaboration you can refer to our dedicated guide about [migration of data between asynchronous and RTC editors](https://ckeditor.com/docs/cs/latest/guides/collaboration/migrating-to-rtc.html).

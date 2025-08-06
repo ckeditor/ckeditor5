@@ -18,17 +18,17 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 
 <style>
 /* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
-.docsearch-txt {
+.doc.b-table {
 	table-layout: fixed;
 }
 
-.docsearch-txt tr th:nth-child( 1 ),
-.docsearch-txt tr td:nth-child( 1 ) {
+.doc.b-table tr th:nth-child( 1 ),
+.doc.b-table tr td:nth-child( 1 ) {
 	width: 280px;
 }
 </style>
 
-<table class="docsearch-txt">
+<table>
 	<thead>
 		<tr>
 			<th>CKEditor 4</th>
@@ -61,11 +61,12 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<td>
 				<p>These settings are no longer needed as CKEditor&nbsp;5 automatically grows with content by default.</p>
 				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>. This means that you can control the height (and similar options) of the editing area with CSS. For example, you can set the <code>minHeight</code> and <code>maxHeight</code> options with the following code:</p>
-				<pre><code class="language-css">.ck.ck-content:not(.ck-comment__input *) {
+				<div class="c-code-block c-code-block--css" id="gen-code-block-f3caj" data-copyable="data-copyable" data-highlight-on-mount="true" data-status="loading">
+				<pre class="c-code-block__pre doc"><code class="css doc">.ck.ck-content:not(.ck-comment__input *) {
 	/* Note: You can use min-height and max-height instead here. */
 	height: 300px;
 	overflow-y: auto;
-}</code>
+}</code></pre></div>
 			</td>
 		</tr>
 		<tr>
@@ -254,9 +255,10 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 				<p>Note: An official integration of the spell and grammar checking functionality for CKEditor&nbsp;5 is provided by a partner solution, {@link features/spelling-and-grammar-checking WProofreader}.</p>
 				<p>A dedicated configuration option to disable the native browser spell checker is unavailable. However, in case of inline, balloon, and balloon block editors it can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
 				<p>Additionally, for all types of editors, including the classic and decoupled ones, you can also call:</p>
-				<pre><code>editor.editing.view.change( writer => {
+				<div class="c-code-block c-code-block--css" id="gen-code-block-f3cah" data-copyable="data-copyable" data-highlight-on-mount="true" data-status="loading">
+				<pre class="c-code-block__pre doc"><code class="js doc">editor.editing.view.change( writer => {
 	writer.setAttribute( 'spellcheck', 'false', editor.editing.view.document.getRoot() );
-} );</code></pre>
+} );</code></pre></div>
 			</td>
 		</tr>
 		<tr>
@@ -407,9 +409,10 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<td>
 				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>. This means that you can control the height (and similar options) of the editing area with CSS. For example, you can set the height with <code>.ck-editor__editable_inline { height:400px; }</code>.</p>
 				<p>To set the height dynamically (from JavaScript), use the view writer:</p>
-				<pre><code>editor.editing.view.change( writer => {
+				<div class="c-code-block c-code-block--css" id="gen-code-block-f3cag" data-copyable="data-copyable" data-highlight-on-mount="true" data-status="loading">
+				<pre class="c-code-block__pre doc"><code class="js doc">editor.editing.view.change( writer => {
     writer.setStyle( 'height', '400px', editor.editing.view.document.getRoot() );
-} );</code></pre>
+} );</code></pre></div>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -713,9 +716,10 @@ Note: In CKEditor&nbsp;5, the number of options was reduced on purpose. Configur
 			<td>
 				<p>{@link examples/builds/classic-editor Classic editor} in CKEditor&nbsp;5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>. This means that you can control the width (and similar options) of the editing area with CSS. For instance, to set the width of any of the editor types, use <code>.ck-editor__editable_inline { width:400px; }</code>.</p>
 				<p>To set the width dynamically (from JavaScript), use the view writer:</p>
-				<pre><code>editor.editing.view.change( writer => {
+				<div class="c-code-block c-code-block--css" id="gen-code-block-f3caf" data-copyable="data-copyable" data-highlight-on-mount="true" data-status="loading">
+				<pre class="c-code-block__pre doc"><code class="js doc">editor.editing.view.change( writer => {
     writer.setStyle( 'width', '400px', editor.editing.view.document.getRoot() );
-} );</code></pre>
+} );</code></pre></div>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor&nbsp;5 (Classic editor)</a>.</p>
 			</td>
 		</tr>

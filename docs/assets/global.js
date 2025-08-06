@@ -45,12 +45,18 @@ function createClipboardInputNotification() {
 	const title = 'Hello!';
 	const message = `
 
-	<p>We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.</p>
-	<p>Please bear in mind that the editor demo to which you try to paste does not have all the features enabled.
-		Due to that, unsupported formatting is being stripped.</p>
-	<p>Check out the <a href="/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from Office</a> or
-	<a href="/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
-	demos for the best experience.</p>`;
+	<p class="doc b-paragraph">
+		We detected that you tried to paste content from <strong>Microsoft Word</strong> or <strong>Google Docs</strong>.
+	</p>
+	<p class="doc b-paragraph">
+		Please bear in mind that the editor demo to which you try to paste does not have all the features enabled.
+		Due to that, unsupported formatting is being stripped.
+	</p>
+	<p class="doc b-paragraph">
+		Check out the <a class="doc b-link" href="/docs/ckeditor5/latest/features/pasting/paste-from-office.html">Paste from Office</a> or
+		<a class="doc b-link" href="/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste from Google Docs</a> demos
+		for the best experience.
+	</p>`;
 
 	createNotification( title, message );
 }
@@ -71,7 +77,7 @@ function getViewportTopOffsetConfig() {
 }
 
 /**
-* Creates a notification and appends it to the `.main__content` element.
+* Creates a notification and appends it to the `.l-layout__container` element.
 *
 * @param {String} title A title of the notification.
 * @param {String} message A message to display in the notification.
@@ -80,8 +86,8 @@ function getViewportTopOffsetConfig() {
 */
 function createNotification( title, message ) {
 	const notificationTemplate = `
-		<h3 class="main__notification-title">${ title }</h3>
-		<div class="main__notification-body">
+		<h3 class="notification__title">${ title }</h3>
+		<div class="notification__body">
 			${ message }
 		</div>
 	`;
@@ -89,18 +95,18 @@ function createNotification( title, message ) {
 	const notification = document.createElement( 'div' );
 	const close = document.createElement( 'button' );
 
-	close.classList.add( 'main__notification-close' );
+	close.classList.add( 'notification__close' );
 	close.innerText = '✕';
 	close.setAttribute( 'aria-label', 'Close the notification' );
 
-	notification.classList.add( 'main__notification', 'notice' );
+	notification.classList.add( 'notification', 'notice' );
 	notification.innerHTML = notificationTemplate;
 	// ATM we support only top-right position.
 	notification.style.top = getViewportTopOffsetConfig() + 10 + 'px';
 	notification.style.right = '10px';
 	notification.appendChild( close );
 
-	const activeNotifications = document.querySelectorAll( '.main__notification' );
+	const activeNotifications = document.querySelectorAll( '.notification' );
 
 	// Translate the position of multiple notifications (just in case).
 	if ( activeNotifications.length > 0 ) {
@@ -110,8 +116,8 @@ function createNotification( title, message ) {
 		notification.style.right = parseInt( notification.style.right ) + moveOffset + 'px';
 	}
 
-	// Append notification to the `.main__content` element.
-	const main = document.querySelector( '.main__content' );
+	// Append notification to the `.l-layout__container` element.
+	const main = document.querySelector( '.l-layout__container' );
 	main.appendChild( notification );
 
 	close.addEventListener( 'click', () => {
@@ -147,7 +153,7 @@ function createNotification( title, message ) {
 		element.setAttribute( 'srcset', srcset );
 	}
 
-	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
+	[ ...document.querySelectorAll( '.live-snippet .ck-content img' ) ]
 		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
 		.forEach( img => {
 			// Update `<img src="...">`.

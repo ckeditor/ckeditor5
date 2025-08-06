@@ -59,7 +59,11 @@ ReadOnlyEditor
 		},
 		exportWord: {
 			fileName: 'export-word-demo.docx',
-			tokenUrl: false
+			tokenUrl: false,
+			stylesheets: [
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+			]
 		}
 	} )
 	.then( editor => {
@@ -85,10 +89,3 @@ ReadOnlyEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-// Demo styles.
-const link = document.createElement( 'link' );
-link.rel = 'stylesheet';
-link.href = '../assets/read-only-export-pdf.css';
-
-document.head.appendChild( link );

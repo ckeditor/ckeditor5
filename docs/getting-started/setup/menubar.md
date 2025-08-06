@@ -5,8 +5,6 @@ meta-title: Menu bar | CKEditor 5 Documentation
 meta-description: Handling and fully utilizing the CKEditor 5 menu bar to boost productivity and easy access to features.
 modified_at: 2024-05-13
 order: 50
-classes: main__content--no-toc
-toc: false
 ---
 
 # Menu bar
@@ -49,8 +47,8 @@ ClassicEditor
 When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the {@link module:ui/editorui/editoruiview~EditorUIView#menuBarView `editor.ui.view.menuBarView.element`} property.
 
 ```html
-	<div id="menuBarContainer"></div>
-	<div id="editor"><p>Document content.</p></div>
+<div id="menuBarContainer"></div>
+<div id="editor"><p>Document content.</p></div>
 ```
 
 ```js

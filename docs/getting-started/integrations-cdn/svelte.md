@@ -1,7 +1,7 @@
 ---
 menu-title: Svelte
-meta-title: Using CKEditor 5 with Svelte from CDN | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with Svelte using CDN
+meta-title: Using the CKEditor 5 WYSIWYG editor with Svelte from CDN | CKEditor 5 Documentation
+meta-description: Integrate the CKEditor 5 rich-text editor with Svelte using CDN. Follow step-by-step instructions for fast installation and setup.
 category: cloud
 order: 110
 modified_at: 2025-04-24
@@ -9,7 +9,7 @@ modified_at: 2025-04-24
 
 # Integrating CKEditor&nbsp;5 with Svelte from CDN
 
-[Svelte](https://svelte.dev/) is a modern JavaScript compiler that builds highly optimized, reactive web applications. Unlike traditional frameworks, Svelte shifts most of the work from runtime to build time, resulting in highly efficient applications. CKEditor&nbsp;5 can be easily integrated with Svelte applications, providing powerful rich text editing capabilities to your projects.
+[Svelte](https://svelte.dev/) is a modern JavaScript compiler that builds highly optimized, reactive web applications. Unlike traditional frameworks, Svelte shifts most of the work from runtime to build time, resulting in highly efficient applications. CKEditor&nbsp;5 rich-text editor can be easily integrated with Svelte applications, providing powerful rich text editing capabilities to your projects.
 
 {@snippet getting-started/use-builder}
 
@@ -171,7 +171,7 @@ npm run dev
 
 ### Component structure
 
-The Svelte integration follows these key steps:
+The Svelte HTML editor integration follows these key steps:
 
 1. **Static loading**: CKEditor 5 scripts and styles are loaded from CDN in the HTML file
 2. **Editor initialization**: The editor is created with the specified configuration when the component mounts

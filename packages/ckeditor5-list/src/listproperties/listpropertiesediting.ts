@@ -127,8 +127,12 @@ export class ListPropertiesEditing extends Plugin {
 		// Verify if the list view element (ul or ol) requires refreshing.
 		listEditing.on<ListEditingCheckAttributesEvent>(
 			'checkAttributes:list',
-			( evt, { viewElement, modelAttributes } ) => {
+			( evt, { viewElement, modelAttributes, modelReferenceElement } ) => {
 				for ( const strategy of strategies ) {
+					if ( !strategy.appliesToListItem( modelReferenceElement ) ) {
+						continue;
+					}
+
 					if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
 						evt.return = true;
 						evt.stop();

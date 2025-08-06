@@ -6,12 +6,12 @@ order: 20
 modified_at: 2022-02-22
 ---
 
-{@snippet installation/advanced/dll-builds}
+{@snippet installation/advanced/dll-builds empty}
 
 # (Legacy) CKEditor 5 DLL builds
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.
+	We changed installation methods and this legacy guide is kept for users' convenience. If you want to learn more about these changes, please refer to the {@link updating/nim-migration/dll-builds Migrating from DLL builds} guide.
 </info-box>
 
 The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.

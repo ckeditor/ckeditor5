@@ -112,7 +112,8 @@ export class ListFormatting extends Plugin {
 					if (
 						entry.attributeKey == 'listItemId' ||
 						entry.attributeKey == 'listType' ||
-						this._isInlineOrSelectionFormatting( entry.attributeKey )
+						this._isInlineOrSelectionFormatting( entry.attributeKey ) ||
+						Object.values( this._loadedFormatting ).includes( entry.attributeKey )
 					) {
 						if ( isListItemBlock( entry.range.start.nodeAfter ) ) {
 							modifiedListItems.add( entry.range.start.nodeAfter );
@@ -241,6 +242,9 @@ function getSingleListItemConsistentFormat( model: Model, listItem: ModelElement
 					attributesToCheck.delete( attributeKey );
 					valuesMap[ attributeKey ] = undefined;
 				}
+			} else if ( !( attributeKey in valuesMap ) ) {
+				// Store it so a format would be removed when all items in the given list item does not allow that formatting.
+				valuesMap[ attributeKey ] = undefined;
 			}
 		}
 

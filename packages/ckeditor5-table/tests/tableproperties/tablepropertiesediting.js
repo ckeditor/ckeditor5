@@ -899,6 +899,24 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
 				} );
 
+				it( 'should upcast background-color from table within <figure> with `.table` class', () => {
+					editor.setData(
+						'<figure class="table"><table style="background-color:#f00"><tr><td>foo</td></tr></table></figure>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should upcast background-color from table without <figure> without `.table` class', () => {
+					editor.setData(
+						'<figure><table style="background-color:#f00"><tr><td>foo</td></tr></table></figure>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+				} );
+
 				it( 'should upcast from background shorthand', () => {
 					editor.setData( '<table style="background:#f00 center center"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
@@ -1023,6 +1041,27 @@ describe( 'table properties', () => {
 
 					assertTableStyle( editor, 'background-color:#ba7;' );
 				} );
+			} );
+
+			it( 'data symmetry - should upcast downcasted tableBackgroundColor', () => {
+				editor.setData( '<table style="background-color:#f00"><tr><td>foo</td></tr></table>' );
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( '#f00' );
+
+				model.change( writer => writer.setAttribute( 'tableBackgroundColor', '#ba7', table ) );
+
+				expect( editor.getData() ).to.equalMarkup(
+					'<figure class="table">' +
+						'<table style="background-color:#ba7;">' +
+							'<tbody>' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
 			} );
 		} );
 

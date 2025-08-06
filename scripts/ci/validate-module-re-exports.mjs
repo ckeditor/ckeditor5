@@ -9,11 +9,14 @@ import { publicTree } from './exports/policy/public-tree.mjs';
 import { isCommandClass } from './exports/policy/is-command.mjs';
 import { isPluginClass } from './exports/policy/is-plugin.mjs';
 import { isEvent } from './exports/policy/is-event.mjs';
+import { validateCommandExports } from './exports/policy/validate-command-exports.mjs';
+import { validatePluginExports } from './exports/policy/validate-plugin-exports.mjs';
 import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
+import { validateNaming } from './exports/policy/naming.mjs';
 
-const INCORRECT_EXPORTS_MESSAGE = '❌  Some modules have incorrect exports in the index.ts file. See the table above to see the details.\n';
+const INCORRECT_EXPORTS_MESSAGE = '❌ Detected incorrect exports in some modules or index.ts files.\n';
 
 main().catch( err => {
 	if ( err.message.includes( INCORRECT_EXPORTS_MESSAGE ) ) {
@@ -37,23 +40,49 @@ async function main() {
 
 	const exportsToFix = getExportsToFix( library );
 	const declarationsWithMissingExports = getDeclarationsWithMissingExports( library );
-	const dataToLogUnwrapped = [ ...declarationsWithMissingExports, ...exportsToFix ];
+	const commandExportErrors = validateCommandExports( library );
+	const pluginExportErrors = validatePluginExports( library );
+	const dataToLogUnwrapped = [
+		...declarationsWithMissingExports,
+		...exportsToFix,
+		...commandExportErrors,
+		...pluginExportErrors
+	];
 
 	// Do not log exceptions that are expected as errors.
 	const data = removeExpectedExceptions( dataToLogUnwrapped );
 
+	const hasErrors = printErrorsToTheConsole( data, library );
+
+	// Throw error after all possible errors have been printed.
+	if ( hasErrors ) {
+		throw new Error( INCORRECT_EXPORTS_MESSAGE );
+	}
+
+	console.log( chalk.green( '\n✅ All packages exports are valid.\n' ) );
+}
+
+function printErrorsToTheConsole( data, library ) {
+	let hasErrors = false;
+
+	// Check for validation errors in index.ts files.
 	if ( data.length !== 0 ) {
+		hasErrors = true;
 		logData( data );
 
 		console.log( chalk.yellow(
 			'\n⚠️ If you want to exclude an export and mark it as valid, add it ' +
 			'to the `removeExpectedExceptions()` function in `validate-module-re-exports.mjs`.\n'
 		) );
-
-		throw new Error( INCORRECT_EXPORTS_MESSAGE );
 	}
 
-	console.log( chalk.green( '\n✅  ALl packages use correct export names in `index.ts` file.\n' ) );
+	// Check for any errors collected during module loading.
+	if ( library.errorCollector.hasErrors() ) {
+		hasErrors = true;
+		library.errorCollector.printReport();
+	}
+
+	return hasErrors;
 }
 
 function getExportsToFix( library ) {
@@ -111,6 +140,12 @@ function getFixingAction( pkg, module, exportItem ) {
 		return 'Add @internal and re-export with `_` suffix';
 	}
 
+	const namingCheck = validateNaming( { pkg, module, item: exportItem } );
+
+	if ( !namingCheck.ok ) {
+		return `Rename: ${ namingCheck.warning }`;
+	}
+
 	return null;
 }
 
@@ -126,10 +161,18 @@ function getDeclarations( { pkg, module } ) {
 	return module.declarations.map( declaration => ( { pkg, module, declaration } ) );
 }
 
+function memberExistInRecord( record, packageName, memberName ) {
+	return record.Package === packageName && record[ 'Local name' ] === memberName;
+}
+
 function removeExpectedExceptions( data ) {
 	return data
 		// TODO: Remove after WProofReader has been adjusted.
-		.filter( record => !( record.Package === '@ckeditor/ckeditor5-ui' && record[ 'Local name' ] === 'UIModel' ) )
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-ui', 'UIModel' ) )
 		// TODO: Remove after MathType has been adjusted.
-		.filter( record => !( record.Package === '@ckeditor/ckeditor5-engine' && record[ 'Local name' ] === 'ViewUpcastWriter' ) );
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-engine', 'ViewUpcastWriter' ) )
+		// TODO Remove after it is moved to the clipboard package.
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-image', 'isHtmlInDataTransfer' ) )
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-find-and-replace', 'FindReplaceCommandBase' ) )
+		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-utils', 'globalVar' ) );
 }

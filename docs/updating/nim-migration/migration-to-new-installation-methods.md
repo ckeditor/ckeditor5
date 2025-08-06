@@ -9,7 +9,7 @@ modified_at: 2024-06-25
 
 # Migrating to new installation methods
 
-In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found in the table of contents on the left <span class="navigation-hint_mobile">or under the **main menu button in the upper-left corner** on mobile </span>and at the end of this document.
+In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found in the table of contents on the left <span class="l-hide-desktop">or under the **main menu button in the upper-left corner** on mobile </span>and at the end of this document.
 
 Let's start by comparing the new installation methods to the old ones to better understand what has changed.
 
@@ -314,13 +314,13 @@ However, we understand that migrating to a new setup, even if easy, requires pla
 
 ### Deprecation of the predefined builds
 
-Our provided predefined editor builds, such as `ckeditor5-build-classic`, will be supported until **the end of Q1 (March), 2025**.
+Our provided predefined editor builds, such as `ckeditor5-build-classic`, were supported until **the end of Q1 (March), 2025**.
 
-What we will sunset on this date:
+What we sunset on this date:
 
-1. The documentation for the predefined builds and superbuild will be removed.
-2. No more new versions of predefined builds packages will be published to npm.
-5. We will update our environment to target ES2022 (or newer), thus dropping the support for webpack 4.
+1. The documentation for the predefined builds and superbuild was removed.
+2. No more new versions of predefined builds packages are published to npm.
+5. We updated our environment to target ES2022, thus dropping the support for webpack 4.
 
 ### Deprecation of the custom builds
 
