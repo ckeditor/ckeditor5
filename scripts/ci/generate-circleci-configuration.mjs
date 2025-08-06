@@ -42,7 +42,7 @@ const bootstrapCommands = () => ( [
 	'checkout_command',
 	'halt_if_short_flow',
 	'bootstrap_repository_command',
-	'prepare_environment_command'
+	'browser-tools/install_chrome'
 ] );
 
 const prepareCodeCoverageDirectories = () => ( {
@@ -120,7 +120,9 @@ const persistToWorkspace = fileName => ( {
 	} );
 
 	config.jobs.cke5_tests_framework = {
-		machine: true,
+		docker: [
+			{ image: 'cimg/node:22.12.0-browsers' }
+		],
 		steps: [
 			...bootstrapCommands(),
 			prepareCodeCoverageDirectories(),
@@ -136,7 +138,9 @@ const persistToWorkspace = fileName => ( {
 	// Adding batches to the root `jobs`.
 	featureTestBatches.forEach( ( batch, batchIndex ) => {
 		config.jobs[ featureTestBatchNames[ batchIndex ] ] = {
-			machine: true,
+			docker: [
+				{ image: 'cimg/node:22.12.0-browsers' }
+			],
 			steps: [
 				...bootstrapCommands(),
 				'install_newest_emoji',

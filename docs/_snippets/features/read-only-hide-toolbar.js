@@ -37,6 +37,33 @@ ReadOnlyEditor
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+		},
+		exportPdf: {
+			stylesheets: [
+				'../assets/fonts.css',
+				'../assets/ckeditor5/ckeditor5.css',
+				'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
+				'../assets/read-only-export-pdf.css'
+			],
+			fileName: 'export-pdf-demo.pdf',
+			appID: 'cke5-docs',
+			converterOptions: {
+				format: 'A4',
+				margin_top: '15mm',
+				margin_bottom: '15mm',
+				margin_right: '15mm',
+				margin_left: '15mm',
+				page_orientation: 'portrait'
+			},
+			tokenUrl: false
+		},
+		exportWord: {
+			fileName: 'export-word-demo.docx',
+			tokenUrl: false,
+			stylesheets: [
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+			]
 		}
 	} )
 	.then( editor => {

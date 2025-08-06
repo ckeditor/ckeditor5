@@ -66,6 +66,18 @@ describe( 'RemoveFormatCommand', () => {
 						}
 					}
 				);
+
+				model.schema.register( 'mockTable', {
+					inheritAllFrom: '$blockObject'
+				} );
+
+				model.schema.register( 'mockCell', {
+					allowContentOf: '$container',
+					allowIn: 'mockTable',
+					allowAttributes: 'someBlockFormatting',
+					isLimit: true,
+					isSelectable: true
+				} );
 			} );
 	} );
 
@@ -191,6 +203,96 @@ describe( 'RemoveFormatCommand', () => {
 			'state with custom block formatting': {
 				input: '<p fooA="bar">f[oo</p><p fooB="baz">b]ar</p>',
 				assert: () => expectModelToBeEqual( '<p fooA="BAR">f[oo</p><p fooB="BAZ">b]ar</p>' )
+			},
+
+			'removes formatting from a nested table (selection within paragraph in cell)': {
+				input:
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange">B[a<$text bold="true">r</$text> B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
+				assert: () => expectModelToBeEqual(
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'<mockCell someBlockFormatting="yellow">' +
+									'<p>B[ar B]az</p>' +
+								'</mockCell>' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
+				)
+			},
+
+			'removes formatting from a nested table (whole nested cell selected)': {
+				input:
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell someBlockFormatting="yellow">' +
+									'<p someBlockFormatting="orange"><$text bold="true">Bar</$text> Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>',
+				assert: () => expectModelToBeEqual(
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="red">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<mockTable>' +
+								'[<mockCell>' +
+									'<p>Bar Baz</p>' +
+								'</mockCell>]' +
+							'</mockTable>' +
+						'</mockCell>' +
+					'</mockTable>'
+				)
+			},
+
+			'removes formatting from a table content (whole content selected)': {
+				input:
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p someBlockFormatting="bar">abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell someBlockFormatting="blue">' +
+							'<p someBlockFormatting="abc">Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p someBlockFormatting="123"><$text bold="red">Bar</$text> Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p someBlockFormatting="foo">abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>',
+				assert: () => expectModelToBeEqual(
+					'<p someBlockFormatting="foo">start</p>' +
+					'<p>abc[def</p>' +
+					'<mockTable>' +
+						'<mockCell>' +
+							'<p>Foo</p>' +
+						'</mockCell>' +
+						'<mockCell>' +
+							'<p>Bar Baz</p>' +
+						'</mockCell>' +
+					'</mockTable>' +
+					'<p>abc]def</p>' +
+					'<p someBlockFormatting="bar">end</p>'
+				)
 			}
 		};
 

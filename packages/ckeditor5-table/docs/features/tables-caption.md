@@ -9,7 +9,7 @@ modified_at: 2022-05-19
 
 # Table caption
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 The {@link module:table/tablecaption~TableCaption} plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
 
@@ -19,17 +19,11 @@ In the demo below, click the table caption to edit it. Once you click the captio
 
 {@snippet features/table-caption}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

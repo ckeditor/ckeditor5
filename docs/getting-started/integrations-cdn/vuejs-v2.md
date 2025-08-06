@@ -8,12 +8,6 @@ order: 60
 
 # Integrating CKEditor&nbsp;5 with Vue.js 2.x from CDN
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue2.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 <info-box warning>
 	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3 Rich text editor component for Vue.js 3+} guide.
 </info-box>
@@ -73,7 +67,7 @@ new Vue( App ).$mount( '#app' );
 
 Use the `<ckeditor>` component inside the template tag. The below example shows how to use the component with open-source and premium plugins. To make it work, you need to provide a proper license key.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" v-model="editorData" :config="editorConfig" />
 </template>
@@ -111,7 +105,7 @@ export default {
 
 This directive specifies the editor to be used by the component. It must directly reference the editor constructor to be used in the template.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" />
 </template>
@@ -136,7 +130,7 @@ This directive specifies the editor to be used by the component. It must directl
 
 By default, the editor component creates a `<div>` container which is used as an element passed to the editor (for example, {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
 
-```html
+```vue
 <ckeditor :editor="editor" tag-name="textarea" />
 ```
 
@@ -148,7 +142,7 @@ A [standard directive](https://vuejs.org/v2/api/#v-model) for form inputs in Vue
 * Automatically updates the state of the application as the editor content changes (for example, as the user types).
 * Can be used to set the editor content when necessary.
 
-```html
+```vue
 <template>
 	<div>
 		<ckeditor :editor="editor" v-model="editorData" />
@@ -187,7 +181,7 @@ If you only want to execute an action when the editor data changes, use the [`in
 
 Allows a one–way data binding that sets the content of the editor. Unlike [`v-model`](#v-model), the value will not be updated when the content of the editor changes.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :value="editorData" />
 </template>
@@ -213,7 +207,7 @@ To execute an action when the editor data changes, use the [`input`](#input) eve
 
 Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :config="editorConfig" />
 </template>
@@ -241,7 +235,7 @@ This directive controls the {@link module:core/editor/editor~Editor#isReadOnly `
 
 It sets the initial read–only state of the editor and changes it during its lifecycle.
 
-```html
+```vue
 <template>
 	<ckeditor :editor="editor" :disabled="editorDisabled" />
 </template>
@@ -268,7 +262,7 @@ It sets the initial read–only state of the editor and changes it during its li
 
 Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @ready="onEditorReady" />
 ```
 
@@ -276,7 +270,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @focus="onEditorFocus" />
 ```
 
@@ -284,7 +278,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `
 
 Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
-```html
+```vue
 <ckeditor :editor="editor" @blur="onEditorBlur" />
 ```
 
@@ -292,7 +286,7 @@ Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `b
 
 Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
 
-```html
+```vue
 <ckeditor :editor="editor" @input="onEditorInput" />
 ```
 
@@ -302,7 +296,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 
 **Note:** Because the destruction of the editor is promise–driven, this event can be fired before the actual promise resolves.
 
-```html
+```vue
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
 

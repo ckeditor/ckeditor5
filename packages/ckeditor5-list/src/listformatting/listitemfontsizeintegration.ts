@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ViewElement } from 'ckeditor5/src/engine.js';
+import { env } from 'ckeditor5/src/utils.js';
 import { _normalizeFontSizeOptions } from '@ckeditor/ckeditor5-font';
 
 import { ListEditing } from '../list/listediting.js';
@@ -62,7 +63,7 @@ export class ListItemFontSizeIntegration extends Plugin {
 			scope: 'item',
 			attributeName: 'listItemFontSize',
 
-			setAttributeOnDowncast( writer, value: string, viewElement ) {
+			setAttributeOnDowncast( writer, value: string, viewElement, options ) {
 				if ( value ) {
 					const fontSizeOption = normalizedFontSizeOptions.find( option => option.model == value );
 
@@ -73,6 +74,11 @@ export class ListItemFontSizeIntegration extends Plugin {
 						}
 						else if ( fontSizeOption.view.classes ) {
 							writer.addClass( `ck-list-marker-font-size-${ value }`, viewElement );
+
+							// See: https://github.com/ckeditor/ckeditor5/issues/18790.
+							if ( env.isSafari && !( options && options.dataPipeline ) ) {
+								writer.setStyle( '--ck-content-list-marker-dummy-font-size', '0', viewElement );
+							}
 						}
 					} else {
 						writer.addClass( 'ck-list-marker-font-size', viewElement );

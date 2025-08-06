@@ -40,7 +40,6 @@ declare module '@ckeditor/ckeditor5-core' {
 }
 
 declare global {
-	// eslint-disable-next-line no-var
 	var CKBox: {
 		mount( wrapper: Element, options: Record<string, unknown> ): void;
 		mountImageEditor( wrapper: Element, options: Record<string, unknown> ): void;

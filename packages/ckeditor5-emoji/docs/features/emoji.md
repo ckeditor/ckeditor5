@@ -22,17 +22,11 @@ The selected emoji category and skin tone are remembered by the feature, so next
 
 {@snippet features/emoji}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
@@ -164,7 +158,7 @@ If you want to standardize the appearance of emoji accross operating systems, pl
 		--ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
 	}
 	```
-	
+
 3. Update the {@link module:core/editor/editorconfig~EditorConfig editor configuration} by adding the {@link module:emoji/emojiconfig~EmojiConfig#useCustomFont `emoji.useCustomFont`} option.
 
 	```js

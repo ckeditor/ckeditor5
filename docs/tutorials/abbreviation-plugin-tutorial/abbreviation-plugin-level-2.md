@@ -101,7 +101,7 @@ export default class FormView extends View {
 
 Now, we add the <kbd>Submit</kbd> and <kbd>Cancel</kbd> buttons to our form. You can start by importing `ButtonView` from our UI library together with the icons, which we will use for labels.
 
-We will use the `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/theme/icons). After importing the icons, we will use them for creating the buttons.
+We will use the `check` and `cancel` icons from the core package's [icons library](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-icons). After importing the icons, we will use them for creating the buttons.
 
 Let's write a `_createButton` function, which will take three arguments &ndash; `label`, `icon` and `className`. We then set the button attributes, using the properties we passed into the function before, and adding a tooltip option.
 
@@ -271,8 +271,8 @@ import {
 	LabeledFieldView,
 	createLabeledInputText,
 	ButtonView,
-	icons,
-	submitHandler	// ADDED
+	IconCheck,
+	submitHandler,	// ADDED
 } from 'ckeditor5';
 
 export default class FormView extends View {

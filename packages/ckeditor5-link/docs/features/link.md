@@ -14,9 +14,9 @@ Use the link toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/link.sv
 
 {@snippet features/link}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Typing around links
 
@@ -31,12 +31,6 @@ CKEditor&nbsp;5 allows typing at the inner and outer link boundaries to make edi
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
@@ -143,7 +137,7 @@ There are two types of link decorators you can use:
 
 ### Demo
 
-In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-icons/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
+In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-icons/theme/icons/settings.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)).
 
 {@snippet features/linkdecorators}
 

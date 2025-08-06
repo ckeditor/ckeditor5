@@ -21,9 +21,9 @@ export { EditorWatchdog, type EditorWatchdogCreatorFunction, type EditorWatchdog
 export { Watchdog, type WatchdogConfig } from './watchdog.js';
 
 export type {
-	EventMap,
-	EventArgs,
-	EventCallback,
+	WatchdogEventMap,
+	WatchdogEventArgs,
+	WatchdogEventCallback,
 	WatchdogErrorEvent,
 	WatchdogErrorEventData,
 	WatchdogStateChangeEvent,

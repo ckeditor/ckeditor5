@@ -14,9 +14,9 @@ See the demo of the placeholder feature:
 
 {@snippet features/placeholder}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
 
@@ -123,6 +123,8 @@ editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
 ```
 
 {@snippet features/update-placeholder}
+
+<ck:button id="update-placeholder-button" variant='secondary'>Update placeholder</ck:button>
 
 ## Contribute
 

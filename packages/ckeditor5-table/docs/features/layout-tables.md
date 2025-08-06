@@ -9,7 +9,7 @@ modified_at: 2025-04-07
 
 # Layout tables
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 Layout tables are used to structure web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content. You can switch between {@link features/tables content tables} and layout tables by using the table toggling feature.
 
@@ -64,9 +64,9 @@ Check the editor below to see the layout tables plugin in action. Use the layout
 
 {@snippet features/table-layout}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Table toggling
 
@@ -87,12 +87,6 @@ Switching between table types preserves the content while adjusting the table's 
 </info-box>
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 

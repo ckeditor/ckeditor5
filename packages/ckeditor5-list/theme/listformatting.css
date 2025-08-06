@@ -10,6 +10,24 @@
 }
 
 .ck-content li {
+	/* Opinionated list content styling: prevents content shift
+	 * when a list becomes multi-block (Enter + Backspace scenario).
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:first-of-type {
+		margin-top: 0;
+	}
+
+	/* Prevents margins from appearing when a bogus paragraph
+	 * receives line height or text alignment.
+	 * Ensures a consistent experience with the first paragraph.
+	 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+	 */
+	& > p:only-of-type {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
 	&.ck-list-marker-bold::marker {
 		font-weight: bold;
 	}

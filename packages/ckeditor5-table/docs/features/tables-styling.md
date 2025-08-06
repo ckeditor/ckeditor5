@@ -9,7 +9,7 @@ modified_at: 2022-05-19
 
 # Table and cell styling tools
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
@@ -21,17 +21,11 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 
 {@snippet features/table-styling}
 
-<info-box info>
+<snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 ## Installation
-
-<info-box info>
-	⚠️ **New import paths**
-
-	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
-</info-box>
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
