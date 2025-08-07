@@ -598,7 +598,7 @@ class TableSlot {
 	}
 }
 
-export type { TableSlot };
+export { TableSlot };
 
 /**
  * This `TableSlot`'s getter (property) was removed in CKEditor 5 v20.0.0.
