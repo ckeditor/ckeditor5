@@ -21,9 +21,11 @@ import type {
 } from '@ckeditor/ckeditor5-engine';
 
 import type {
-	ActionEntry, ActionEntryEditorSnapshot,
-	BeforeRecordActionCallback, RecordActionFilterCallback,
-	AfterRecordActionCallback
+	ActionsRecorderEntry,
+	ActionsRecorderEntryEditorSnapshot,
+	ActionsRecorderBeforeCallback,
+	ActionsRecorderFilterCallback,
+	ActionsRecorderAfterCallback
 } from './actionsrecorderconfig.js';
 
 /**
@@ -32,19 +34,14 @@ import type {
  */
 export class ActionsRecorder extends Plugin {
 	/**
-	 * Unique identifier for each recorded action entry.
-	 */
-	private _id: number = 0;
-
-	/**
 	 * Array storing all recorded action entries with their context and state snapshots.
 	 */
-	private _entries: Array<ActionEntry> = [];
+	private _entries: Array<ActionsRecorderEntry> = [];
 
 	/**
 	 * Stack tracking nested action frames to maintain call hierarchy.
 	 */
-	private _frameStack: Array<ActionEntry> = [];
+	private _frameStack: Array<ActionsRecorderEntry> = [];
 
 	/**
 	 * Maximum number of action entries to keep in memory.
@@ -52,15 +49,19 @@ export class ActionsRecorder extends Plugin {
 	private _maxEntries: number;
 
 	/**
-	 * Observer callbacks.
+	 * Observer "before" callbacks.
 	 */
-	private _beforeActionObservers: Set<BeforeRecordActionCallback> = new Set();
-	private _afterActionObservers: Set<AfterRecordActionCallback> = new Set();
+	private _beforeActionObservers: Set<ActionsRecorderBeforeCallback> = new Set();
+
+	/**
+	 * Observer "after" callbacks.
+	 */
+	private _afterActionObservers: Set<ActionsRecorderAfterCallback> = new Set();
 
 	/**
 	 * Filter function to determine which records should be stored.
 	 */
-	private _recordFilter?: RecordActionFilterCallback;
+	private _recordFilter?: ActionsRecorderFilterCallback;
 
 	/**
 	 * @inheritDoc
@@ -110,7 +111,7 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Returns all recorded action entries.
 	 */
-	public getRecords(): Array<ActionEntry> {
+	public getRecords(): Array<ActionsRecorderEntry> {
 		return this._entries;
 	}
 
@@ -118,7 +119,6 @@ export class ActionsRecorder extends Plugin {
 	 * Flushes all recorded entries and clears the frame stack.
 	 */
 	public flushRecords(): void {
-		this._id = 0;
 		this._entries = [];
 		this._frameStack = [];
 	}
@@ -129,7 +129,7 @@ export class ActionsRecorder extends Plugin {
 	 * @param callback The callback function to register.
 	 * @returns A function that can be called to unregister the observer.
 	 */
-	public observeBeforeActions( callback: BeforeRecordActionCallback ): () => void {
+	public observeBeforeActions( callback: ActionsRecorderBeforeCallback ): () => void {
 		this._beforeActionObservers.add( callback );
 
 		return () => this._beforeActionObservers.delete( callback );
@@ -141,7 +141,7 @@ export class ActionsRecorder extends Plugin {
 	 * @param callback The callback function to register.
 	 * @returns A function that can be called to unregister the observer.
 	 */
-	public observeAfterActions( callback: AfterRecordActionCallback ): () => void {
+	public observeAfterActions( callback: ActionsRecorderAfterCallback ): () => void {
 		this._afterActionObservers.add( callback );
 
 		return () => this._afterActionObservers.delete( callback );
@@ -150,14 +150,12 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Creates a new action frame and adds it to the recording stack.
 	 *
-	 * @param event - The name/type of the event being recorded.
-	 * @param params - Optional parameters associated with the event.
+	 * @param event The name/type of the event being recorded.
+	 * @param params Optional parameters associated with the event.
 	 * @returns The created call frame object.
 	 */
-	private _enterFrame( event: string, params?: Array<unknown> ): ActionEntry {
-		const wrappedId = this._id + 1 >= Number.MAX_SAFE_INTEGER ? 0 : this._id + 1;
-		const callFrame: ActionEntry = {
-			id: wrappedId,
+	private _enterFrame( event: string, params?: Array<unknown> ): ActionsRecorderEntry {
+		const callFrame: ActionsRecorderEntry = {
 			timeStamp: new Date().toISOString(),
 			...this._frameStack.length && { parentFrame: this._frameStack.at( -1 ) },
 			event,
@@ -187,11 +185,11 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Closes an action frame and records its final state and results.
 	 *
-	 * @param callFrame - The call frame to close.
-	 * @param result - Optional result value from the action.
-	 * @param error - Optional error that occurred during the action.
+	 * @param callFrame The call frame to close.
+	 * @param result Optional result value from the action.
+	 * @param error Optional error that occurred during the action.
 	 */
-	private _leaveFrame( callFrame: ActionEntry, result?: any, error?: any ): void {
+	private _leaveFrame( callFrame: ActionsRecorderEntry, result?: any, error?: any ): void {
 		const topFrame = this._frameStack.pop();
 
 		// Handle scenario when the stack has been cleared in the meantime
@@ -210,7 +208,7 @@ export class ActionsRecorder extends Plugin {
 
 		topFrame.after = this._buildStateSnapshot();
 
-		// Notify after observers about the completed action
+		// Notify after observers about the completed action.
 		this._notifyAfterActionObservers( topFrame, result, error );
 	}
 
@@ -220,7 +218,7 @@ export class ActionsRecorder extends Plugin {
 	 *
 	 * @returns An object containing the current editor state snapshot.
 	 */
-	private _buildStateSnapshot(): ActionEntryEditorSnapshot {
+	private _buildStateSnapshot(): ActionsRecorderEntryEditorSnapshot {
 		const { model, isReadOnly, editing } = this.editor;
 
 		return {
@@ -258,6 +256,7 @@ export class ActionsRecorder extends Plugin {
 	private _tapOperationApply() {
 		tapObjectMethod( this.editor.model, 'applyOperation', {
 			before: ( callContext, [ operation ] ) => {
+				// Ignore operations applied to document fragments.
 				if ( operation.baseVersion === null ) {
 					return false;
 				}
@@ -293,7 +292,7 @@ export class ActionsRecorder extends Plugin {
 				error: ( callContext, error ) => {
 					this._leaveFrame( callContext.callFrame, undefined, error );
 				}
-			}, { source: 'model' } );
+			} );
 		}
 	}
 
@@ -312,8 +311,8 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Sets up recording for a specific command execution.
 	 *
-	 * @param commandName - The name of the command to record.
-	 * @param command - The command instance to tap into.
+	 * @param commandName The name of the command to record.
+	 * @param command The command instance to tap into.
 	 */
 	private _tapCommand( commandName: string, command: Command ) {
 		tapObjectMethod( command, 'execute', {
@@ -407,9 +406,9 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Sets up recording for specific events fired by an emitter object.
 	 *
-	 * @param emitter - The object that fires events to be recorded.
-	 * @param eventNames - Array of event names to record.
-	 * @param context - Additional context to include with recorded events.
+	 * @param emitter The object that fires events to be recorded.
+	 * @param eventNames Array of event names to record.
+	 * @param context Additional context to include with recorded events.
 	 */
 	private _tapFireMethod( emitter: any, eventNames: Array<string>, context: Record<string, any> = {} ) {
 		tapObjectMethod( emitter, 'fire', {
@@ -436,12 +435,12 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Notifies before action observers.
 	 */
-	private _notifyBeforeActionObservers( record: ActionEntry ): void {
+	private _notifyBeforeActionObservers( record: ActionsRecorderEntry ): void {
 		for ( const callback of this._beforeActionObservers ) {
 			try {
 				callback( record, this._entries );
 			} catch ( observerError ) {
-				// Silently catch observer errors to prevent them from affecting the recording
+				// Silently catch observer errors to prevent them from affecting the recording.
 				console.error( 'ActionsRecorder before observer error:', observerError );
 			}
 		}
@@ -450,12 +449,12 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Notifies after action observers.
 	 */
-	private _notifyAfterActionObservers( record: ActionEntry, result?: any, error?: any ): void {
+	private _notifyAfterActionObservers( record: ActionsRecorderEntry, result?: any, error?: any ): void {
 		for ( const callback of this._afterActionObservers ) {
 			try {
 				callback( record, result, error );
 			} catch ( observerError ) {
-				// Silently catch observer errors to prevent them from affecting the recording
+				// Silently catch observer errors to prevent them from affecting the recording.
 				console.error( 'ActionsRecorder after observer error:', observerError );
 			}
 		}
@@ -465,10 +464,10 @@ export class ActionsRecorder extends Plugin {
 /**
  * Creates a wrapper around a method to record its calls, results, and errors.
  *
- * @param object - The object containing the method to tap.
- * @param methodName - The name of the method to tap.
- * @param tap - The tap configuration with before/after/error hooks.
- * @param context - Additional context to include with the method calls.
+ * @param object The object containing the method to tap.
+ * @param methodName The name of the method to tap.
+ * @param tap The tap configuration with before/after/error hooks.
+ * @param context Additional context to include with the method calls.
  */
 function tapObjectMethod(
 	object: any,
@@ -516,8 +515,8 @@ interface MethodTap extends Record<string, any> {
 	/**
 	 * Hook called before the original method execution.
 	 *
-	 * @param context - The call context object for storing state between hooks.
-	 * @param args - The arguments passed to the original method.
+	 * @param context The call context object for storing state between hooks.
+	 * @param args The arguments passed to the original method.
 	 * @returns True if the method call should be recorded, false to ignore it.
 	 */
 	before?: ( context: Record<string, any>, args: Array<any> ) => boolean;
@@ -525,16 +524,16 @@ interface MethodTap extends Record<string, any> {
 	/**
 	 * Hook called after successful method execution.
 	 *
-	 * @param context - The call context object with state from the before hook.
-	 * @param result - The result returned by the original method.
+	 * @param context The call context object with state from the before hook.
+	 * @param result The result returned by the original method.
 	 */
 	after?: ( context: Record<string, any>, result: any ) => void;
 
 	/**
 	 * Hook called when the method execution throws an error.
 	 *
-	 * @param context - The call context object with state from the before hook.
-	 * @param error - The error thrown by the original method.
+	 * @param context The call context object with state from the before hook.
+	 * @param error The error thrown by the original method.
 	 */
 	error?: ( context: Record<string, any>, error: any ) => void;
 }
@@ -581,7 +580,7 @@ function serializeValue( value: any ): any {
 		return Object.fromEntries( entries );
 	}
 
-	// Handle other unknown types by returning their type and string representation
+	// Handle other unknown types by returning their type and string representation.
 	return {
 		type: typeof value,
 		constructor: value.constructor?.name || 'unknown',

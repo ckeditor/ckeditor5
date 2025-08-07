@@ -23,11 +23,11 @@ export { Watchdog, type WatchdogConfig } from './watchdog.js';
 export { ActionsRecorder } from './actionsrecorder.js';
 export type {
 	ActionsRecorderConfig,
-	ActionEntry,
-	ActionEntryEditorSnapshot,
-	AfterRecordActionCallback,
-	BeforeRecordActionCallback,
-	RecordActionFilterCallback
+	ActionsRecorderEntry,
+	ActionsRecorderEntryEditorSnapshot,
+	ActionsRecorderAfterCallback,
+	ActionsRecorderBeforeCallback,
+	ActionsRecorderFilterCallback
 } from './actionsrecorderconfig.js';
 
 export type {

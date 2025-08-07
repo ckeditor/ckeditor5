@@ -10,8 +10,6 @@
 /**
  * The configuration of the ActionsRecorder plugin.
  *
- * Read more about {@glink features/watchdog#configuration configuring the ActionsRecorder feature}.
- *
  * ```ts
  *	ClassicEditor
  *		.create( editorElement, {
@@ -64,7 +62,7 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onBeforeAction?: BeforeRecordActionCallback;
+	onBeforeAction?: ActionsRecorderBeforeCallback;
 
 	/**
 	 * Filter function that determines whether a record should be added to the list.
@@ -79,7 +77,7 @@ export interface ActionsRecorderConfig {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
 	 *				onFilter: ( record ) => {
-	 *					// Only record command executions
+	 *					// Only record command executions.
 	 *					return record.event.startsWith( 'commands.' );
 	 *				}
 	 *			}
@@ -88,7 +86,7 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onFilter?: RecordActionFilterCallback;
+	onFilter?: ActionsRecorderFilterCallback;
 
 	/**
 	 * Callback function that will be called after an action completes (either successfully or with an error).
@@ -112,7 +110,7 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onAfterAction?: AfterRecordActionCallback;
+	onAfterAction?: ActionsRecorderAfterCallback;
 }
 
 /**
@@ -121,7 +119,7 @@ export interface ActionsRecorderConfig {
  * @param record The action entry that is about to start.
  * @param prevRecords The array of previous action entries.
  */
-export type BeforeRecordActionCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => void;
+export type ActionsRecorderBeforeCallback = ( record: ActionsRecorderEntry, prevRecords: Array<ActionsRecorderEntry> ) => void;
 
 /**
  * Callback function type for the `onFilter` option in the ActionsRecorderConfig.
@@ -130,7 +128,7 @@ export type BeforeRecordActionCallback = ( record: ActionEntry, prevRecords: Arr
  * @param record The action entry to be filtered.
  * @param prevRecords The array of previous action entries.
  */
-export type RecordActionFilterCallback = ( record: ActionEntry, prevRecords: Array<ActionEntry> ) => boolean;
+export type ActionsRecorderFilterCallback = ( record: ActionsRecorderEntry, prevRecords: Array<ActionsRecorderEntry> ) => boolean;
 
 /**
  * Callback function type for the `onAfterAction` option in the ActionsRecorderConfig.
@@ -139,12 +137,12 @@ export type RecordActionFilterCallback = ( record: ActionEntry, prevRecords: Arr
  * @param result The result of the action (if successful).
  * @param error The error that occurred (if failed).
  */
-export type AfterRecordActionCallback = ( record: ActionEntry, result?: any, error?: any ) => void;
+export type ActionsRecorderAfterCallback = ( record: ActionsRecorderEntry, result?: any, error?: any ) => void;
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.
  */
-export interface ActionEntryEditorSnapshot {
+export interface ActionsRecorderEntryEditorSnapshot {
 	documentVersion: number;
 	editorReadOnly: boolean;
 	editorFocused: boolean;
@@ -154,14 +152,13 @@ export interface ActionEntryEditorSnapshot {
 /**
  * Represents a recorded action entry with context and state information.
  */
-export interface ActionEntry {
-	id: number;
+export interface ActionsRecorderEntry {
 	timeStamp: string;
-	parentFrame?: ActionEntry;
+	parentFrame?: ActionsRecorderEntry;
 	event: string;
 	params?: Array<any>;
-	before: ActionEntryEditorSnapshot;
-	after?: ActionEntryEditorSnapshot;
+	before: ActionsRecorderEntryEditorSnapshot;
+	after?: ActionsRecorderEntryEditorSnapshot;
 	result?: any;
 	error?: any;
 }
