@@ -48,9 +48,7 @@ ClassicEditor
 		iframe.srcdoc = `<!doctype html>${ editor.getData() }`;
 
 		editor.model.document.on( 'change', () => {
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write( editor.getData() );
-			iframe.contentWindow.document.close();
+			iframe.srcdoc = `<!doctype html>${ editor.getData() }`;
 		} );
 	} )
 	.catch( err => {
