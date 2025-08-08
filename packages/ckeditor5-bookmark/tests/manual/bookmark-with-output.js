@@ -45,17 +45,11 @@ ClassicEditor
 
 		const iframe = document.querySelector( '#iframe' );
 
-		editor.model.document.on( 'change', () => {
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write( editor.getData() );
-			iframe.contentWindow.document.close();
-		} );
+		iframe.srcdoc = `<!doctype html>${ editor.getData() }`;
 
-		setTimeout( () => {
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write( editor.getData() );
-			iframe.contentWindow.document.close();
-		}, 500 );
+		editor.model.document.on( 'change', () => {
+			iframe.srcdoc = `<!doctype html>${ editor.getData() }`;
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
