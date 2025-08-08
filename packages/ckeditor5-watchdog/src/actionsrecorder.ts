@@ -377,6 +377,8 @@ export class ActionsRecorder extends Plugin {
 			'click',
 			'mousedown',
 			'mouseup',
+			'pointerdown',
+			'pointerup',
 			'focus',
 			'blur',
 
@@ -600,12 +602,7 @@ function serializeValue( value: any ): any {
 function serializeDomEvent( event: Event ): any {
 	let serialized: Record<string, any> = {
 		type: event.type,
-		timeStamp: event.timeStamp,
-		bubbles: event.bubbles,
-		cancelable: event.cancelable,
-		defaultPrevented: event.defaultPrevented,
-		target: serializeDOMTarget( event.target ),
-		currentTarget: serializeDOMTarget( event.currentTarget )
+		target: serializeDOMTarget( event.target )
 	};
 
 	// Add mouse event properties.
@@ -614,8 +611,6 @@ function serializeDomEvent( event: Event ): any {
 			...serialized,
 			button: event.button,
 			buttons: event.buttons,
-			clientX: event.clientX,
-			clientY: event.clientY,
 			ctrlKey: event.ctrlKey,
 			shiftKey: event.shiftKey,
 			altKey: event.altKey,
@@ -648,13 +643,11 @@ function serializeDomEvent( event: Event ): any {
 		};
 	}
 
-	// Add composition event properties.
-	if ( event instanceof InputEvent ) {
+	// Add pointer event properties.
+	if ( event instanceof PointerEvent ) {
 		serialized = {
 			...serialized,
-			data: event.data,
-			inputType: event.inputType,
-			isComposing: event.isComposing
+			isPrimary: event.isPrimary
 		};
 	}
 
