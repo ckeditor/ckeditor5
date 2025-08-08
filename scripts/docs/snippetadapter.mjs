@@ -208,9 +208,11 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
+		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
+		'<link rel="preload" href="https://cdn.ckbox.io/ckbox/latest/ckbox.js" as="script">',
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		'<script defer src="%BASE_PATH%/assets/global.js"></script>',
-		'<script defer src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
+		'<script src="%BASE_PATH%/assets/global.js"></script>',
+		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 
@@ -228,7 +230,22 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => `<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>`
+				() => `
+					<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>
+					<script>
+						(function() {
+							const el = document.currentScript.previousElementSibling;
+
+							el.dispatchEvent( new CustomEvent( 'ck:snippet-transform', {
+								bubbles: true,
+								detail: { snippet: el }
+							} ) );
+						})();
+					</script>
+				`
+					.split( '\n' )
+					.map( line => line.trim() )
+					.join( '\n' )
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
