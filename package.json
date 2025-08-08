@@ -96,7 +96,7 @@
     "@ckeditor/ckeditor5-dev-docs": "^50.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^50.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^50.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^50.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4083",
     "@ckeditor/ckeditor5-dev-translations": "^50.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
@@ -166,7 +166,7 @@
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
     "typescript-eslint": "^8.33.0",
-    "umberto": "^8.0.2",
+    "umberto": "cksource/umberto#internal/4083",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0"
