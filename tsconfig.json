@@ -17,7 +17,9 @@
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "types": ["node"]
   },
   "include": [
     "./typings/"

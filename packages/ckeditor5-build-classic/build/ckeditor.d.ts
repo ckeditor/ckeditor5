@@ -44,5 +44,11 @@ export default class ClassicEditor extends ClassicEditorBase {
                 attributes: string[];
             }[];
         };
+        codeBlock: {
+            languages: {
+                language: string;
+                label: string;
+            }[];
+        };
     };
 }

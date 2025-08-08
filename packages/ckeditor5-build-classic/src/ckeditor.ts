@@ -62,6 +62,7 @@ import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 
 export default class ClassicEditor extends ClassicEditorBase {
 	public static override builtinPlugins = [
@@ -129,7 +130,8 @@ export default class ClassicEditor extends ClassicEditorBase {
 		TodoList,
 		SourceEditing,
 		Undo,
-		GeneralHtmlSupport
+		GeneralHtmlSupport,
+		CodeBlock
 	];
 
 	public static override defaultConfig = {
@@ -165,6 +167,7 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'|',
 				'mediaEmbed',
 				'|',
+				'codeBlock',
 				'htmlEmbed',
 				'sourceEditing'
 			],
@@ -221,6 +224,12 @@ export default class ClassicEditor extends ClassicEditorBase {
 					name: /.*/,
 					attributes: [ 'id' ]
 				}
+			]
+		},
+		codeBlock: {
+			languages: [
+				{ language: 'css', label: 'CSS' },
+				{ language: 'html', label: 'HTML' }
 			]
 		}
 	};

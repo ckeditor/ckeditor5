@@ -41,6 +41,8 @@
     "@ckeditor/ckeditor5-font": "39.0.0",
     "@ckeditor/ckeditor5-heading": "39.0.0",
     "@ckeditor/ckeditor5-html-embed": "39.0.0",
+    "@ckeditor/ckeditor5-html-support": "39.0.0",
+    "@ckeditor/ckeditor5-code-block": "39.0.0",
     "@ckeditor/ckeditor5-image": "39.0.0",
     "@ckeditor/ckeditor5-indent": "39.0.0",
     "@ckeditor/ckeditor5-link": "39.0.0",
