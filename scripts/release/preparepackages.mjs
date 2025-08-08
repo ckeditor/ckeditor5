@@ -33,7 +33,7 @@ import {
 	RELEASE_ZIP_DIRECTORY,
 	RELEASE_NPM_DIRECTORY
 } from './utils/constants.mjs';
-import { CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
+import { CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 const [ latestVersion, versionChangelog ] = await getReleaseDescription( cliArguments );
@@ -191,6 +191,16 @@ const tasks = new Listr( [
 							packagesDirectory: PACKAGES_DIRECTORY,
 							packagesToCopy: cliArguments.packages
 						} );
+					}
+				},
+				{
+					title: 'Copying the changelog to the release directory.',
+					task: () => {
+						return fs.copy(
+							upath.join( CKEDITOR5_ROOT_PATH, 'CHANGELOG.md' ),
+							upath.join( CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY, 'ckeditor5', 'CHANGELOG.md' ),
+							{ overwrite: true }
+						);
 					}
 				},
 				{
