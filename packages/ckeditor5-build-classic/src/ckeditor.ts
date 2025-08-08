@@ -167,8 +167,8 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'|',
 				'mediaEmbed',
 				'|',
-				'codeBlock',
 				'htmlEmbed',
+				'codeBlock',
 				'sourceEditing'
 			],
 			shouldNotGroupWhenFull: true
@@ -228,8 +228,20 @@ export default class ClassicEditor extends ClassicEditorBase {
 		},
 		codeBlock: {
 			languages: [
+				{ language: 'plaintext', label: 'Plain text' },
+				{ language: 'c', label: 'C' },
+				{ language: 'cs', label: 'C#' },
+				{ language: 'cpp', label: 'C++' },
 				{ language: 'css', label: 'CSS' },
-				{ language: 'html', label: 'HTML' }
+				{ language: 'go', label: 'Go' },
+				{ language: 'html', label: 'HTML' },
+				{ language: 'java', label: 'Java' },
+				{ language: 'javascript', label: 'JavaScript' },
+				{ language: '.net', label: '.NET' },
+				{ language: 'php', label: 'PHP' },
+				{ language: 'python', label: 'Python' },
+				{ language: 'ruby', label: 'Ruby' },
+				{ language: 'typescript', label: 'TypeScript' }
 			]
 		}
 	};
