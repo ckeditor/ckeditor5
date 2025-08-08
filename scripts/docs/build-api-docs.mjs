@@ -47,7 +47,10 @@ async function buildApiDocs() {
 
 			// Ignore augmentation files.
 			'packages/ckeditor5-*/src/augmentation.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/augmentation.ts'
+			'external/ckeditor5-commercial/packages/ckeditor5-*/src/augmentation.ts',
+
+			// Ignore the main ckeditor5 package.
+			'packages/ckeditor5/**/*'
 		]
 	} );
 

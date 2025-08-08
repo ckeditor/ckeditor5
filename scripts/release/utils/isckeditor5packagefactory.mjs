@@ -14,7 +14,6 @@ import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
  */
 export default async function isCKEditor5PackageFactory() {
 	const allPathsToPackageJson = await glob( [
-		'package.json',
 		'packages/*/package.json',
 		'external/ckeditor5-commercial/packages/*/package.json'
 	], {
