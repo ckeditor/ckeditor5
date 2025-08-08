@@ -22,7 +22,7 @@
     "typescript": "5.0.4"
   },
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5",
+    "ckeditor5-root",
     "typescript"
   ],
   "author": "CKSource (http://cksource.com/)",

@@ -151,7 +151,7 @@
     "webpack-cli": "^6.0.1"
   },
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5",
+    "ckeditor5-root",
     "@ckeditor/ckeditor5-ai",
     "@ckeditor/ckeditor5-case-change",
     "@ckeditor/ckeditor5-comments",

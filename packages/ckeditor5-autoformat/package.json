@@ -56,7 +56,7 @@
     "CHANGELOG.md"
   ],
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5",
+    "ckeditor5-root",
     "eslint-plugin-ckeditor5-rules"
   ],
   "scripts": {

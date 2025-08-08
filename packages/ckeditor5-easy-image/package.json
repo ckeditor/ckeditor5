@@ -55,6 +55,6 @@
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   },
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5"
+    "ckeditor5-root"
   ]
 }

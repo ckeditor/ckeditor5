@@ -83,7 +83,7 @@
     "CHANGELOG.md"
   ],
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5",
+    "ckeditor5-root",
     "hast"
   ],
   "scripts": {

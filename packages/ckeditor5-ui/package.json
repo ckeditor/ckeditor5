@@ -61,7 +61,7 @@
     "webpack-cli": "^6.0.1"
   },
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5",
+    "ckeditor5-root",
     "sinon"
   ],
   "author": "CKSource (http://cksource.com/)",

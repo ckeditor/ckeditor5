@@ -68,6 +68,6 @@
     "dist/translations/*.umd.js"
   ],
   "depcheckIgnore": [
-    "@ckeditor/ckeditor5"
+    "ckeditor5-root"
   ]
 }
