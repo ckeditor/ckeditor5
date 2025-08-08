@@ -74,7 +74,7 @@
     "table": "^6.8.1",
     "typescript": "5.0.4",
     "typescript-eslint": "^8.33.0",
-    "umberto": "^8.0.1",
+    "umberto": "^8.0.2",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0"
