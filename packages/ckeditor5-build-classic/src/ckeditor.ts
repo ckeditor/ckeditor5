@@ -230,14 +230,13 @@ export default class ClassicEditor extends ClassicEditorBase {
 			languages: [
 				{ language: 'plaintext', label: 'Plain text' },
 				{ language: 'c', label: 'C' },
-				{ language: 'cs', label: 'C#' },
+				{ language: 'csharp', label: 'C#' }, // works in Highlight.js
 				{ language: 'cpp', label: 'C++' },
 				{ language: 'css', label: 'CSS' },
 				{ language: 'go', label: 'Go' },
 				{ language: 'html', label: 'HTML' },
 				{ language: 'java', label: 'Java' },
 				{ language: 'javascript', label: 'JavaScript' },
-				{ language: '.net', label: '.NET' },
 				{ language: 'php', label: 'PHP' },
 				{ language: 'python', label: 'Python' },
 				{ language: 'ruby', label: 'Ruby' },
