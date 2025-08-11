@@ -129,7 +129,7 @@ function createNotification( title, message ) {
 
 // Replaces all relative paths inside a single live-snippet container with absolute URLs
 // (images and picture sources) to avoid a broken UX when copying images between editors.
-// The transformation is scoped to the provided root node (a .live-snippet element).
+// The transformation is scoped to the provided root node (a `.live-snippet` element).
 function transformSnippetImages( root ) {
 	if ( !( root instanceof Element ) ) {
 		return;
