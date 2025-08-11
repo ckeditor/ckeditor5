@@ -178,7 +178,6 @@
 		"features/lists/lists-installation.html#to-do-lists-installation": "features/lists/todo-lists.html#installation",
 		"features/lists/document-lists.html#list-merging": "features/lists/lists-editing.html#merging-adjacent-lists",
 		"features/lists/lists.html#list-indentation": "features/lists/lists-editing.html#indenting-lists",
-		"features/lists/lists.html#list-properties": "features/lists/lists-properties.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/overview.html": "features/index.html",
 		"features/pasting/drag-drop.html": "features/drag-drop.html",
