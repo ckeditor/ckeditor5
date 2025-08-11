@@ -8,6 +8,7 @@
 import { globSync } from 'glob';
 import chalk from 'chalk';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import upath from 'upath';
 
 // This script ensures that the "manual/" test directories are only located in the root
 // of the "tests" directories. Previously, they have been nested deeper, which prevents
@@ -19,7 +20,8 @@ const globPatterns = [
 	'tests/*/**/manual/**/*.@(js|ts|html|md)'
 ];
 
-const manualDirectoriesNotInTestsRoot = globPatterns.flatMap( pattern => globSync( pattern, { cwd: CKEDITOR5_ROOT_PATH } ) );
+const manualDirectoriesNotInTestsRoot = globPatterns
+	.flatMap( pattern => globSync( pattern, { cwd: CKEDITOR5_ROOT_PATH } ).map( upath.normalize ) );
 
 if ( manualDirectoriesNotInTestsRoot.length ) {
 	console.log( chalk.red( 'The "manual/" directory should be stored directly in the "tests/" directory.' ) );
