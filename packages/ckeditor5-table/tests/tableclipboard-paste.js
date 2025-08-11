@@ -4097,7 +4097,7 @@ describe( 'table clipboard', () => {
 				[ [ wrapWithHTMLMarker( 'FooBarr', 'comment', { name: 'paste' } ) ] ]
 			);
 
-			// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+			// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 			// we are accepting slightly off positions for now:
 			//
 			// checkMarker( 'comment:paste:uniq', {
@@ -4127,7 +4127,7 @@ describe( 'table clipboard', () => {
 				]
 			);
 
-			// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+			// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 			// we are accepting slightly off positions for now:
 			//
 			// checkMarker( 'comment:paste:uniq', {
@@ -4168,7 +4168,7 @@ describe( 'table clipboard', () => {
 				]
 			);
 
-			// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+			// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 			// we are accepting slightly off positions for now:
 			//
 			// checkMarker( 'comment:paste:uniq', {
@@ -4206,7 +4206,7 @@ describe( 'table clipboard', () => {
 				[ [ outerMarker ] ]
 			);
 
-			// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+			// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 			// we are accepting slightly off positions for now:
 			//
 			// checkMarker( 'comment:paste:uniq', {
@@ -4262,7 +4262,7 @@ describe( 'table clipboard', () => {
 
 			viewDocument.fire( 'paste', data );
 
-			// We would expect such data but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+			// We would expect such data but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 			// we are accepting slightly off data for now:
 			//
 			// expect( data.dataTransfer.getData( 'text/html' ) ).to.equal(
@@ -4358,7 +4358,7 @@ describe( 'table clipboard', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+				// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 				// we are accepting slightly off positions for now:
 				//
 				// checkMarker( 'comment:thread:0', {
@@ -4433,7 +4433,7 @@ describe( 'table clipboard', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+				// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 				// we are accepting slightly off positions for now:
 				//
 				// checkMarker( 'comment:thread:2', {
@@ -4500,7 +4500,7 @@ describe( 'table clipboard', () => {
 
 				viewDocument.fire( 'paste', data );
 
-				// We would expect such positions but due to a bug https://github.com/cksource/ckeditor5-commercial/issues/5287
+				// We would expect such positions but due to a bug https://github.com/ckeditor/ckeditor5-commercial/issues/5287
 				// we are accepting slightly off positions for now:
 				//
 				// checkMarker( 'comment:start:6', {
