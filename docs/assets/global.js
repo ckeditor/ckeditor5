@@ -127,49 +127,54 @@ function createNotification( title, message ) {
 	return notification;
 }
 
-// Replaces all relative paths inside the content container with absolute URLs
-// to avoid a broken user experience when copying images between editors.
-// It parses all `<img>` elements and `<source>` elements if they belong to the `<picture>` node.
-( () => {
-	function isRelativeUrl( url ) {
-		return !/^[a-zA-Z][a-zA-Z\d+\-.]*?:/.test( url );
+// Replaces all relative paths inside a single live-snippet container with absolute URLs
+// (images and picture sources) to avoid a broken UX when copying images between editors.
+// The transformation is scoped to the provided root node (a `.live-snippet` element).
+function transformSnippetImages( root ) {
+	if ( !( root instanceof Element ) ) {
+		return;
 	}
 
-	function updateSrcSetAttribute( element, baseURI ) {
+	const isRelativeUrl = url => !/^[a-zA-Z][a-zA-Z\d+\-.]*?:/.test( url );
+
+	const updateSrcSetAttribute = ( element, baseURI ) => {
 		const srcset = element.srcset.split( ',' )
 			.map( item => {
 				const [ relativeUrl, ratio ] = item.trim().split( ' ' );
 
-				if ( !isRelativeUrl( relativeUrl ) ) {
+				if ( !relativeUrl || !isRelativeUrl( relativeUrl ) ) {
 					return item;
 				}
 
 				const absoluteUrl = new window.URL( relativeUrl, baseURI ).toString();
-
 				return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
 			} )
 			.join( ', ' );
 
 		element.setAttribute( 'srcset', srcset );
-	}
+	};
 
-	[ ...document.querySelectorAll( '.live-snippet .ck-content img' ) ]
-		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
-		.forEach( img => {
-			// Update `<img src="...">`.
+	[ ...root.querySelectorAll( 'img' ) ].forEach( img => {
+		// Update <img src="..."> if it's relative.
+		const srcAttr = img.getAttribute( 'src' );
+		if ( srcAttr && isRelativeUrl( srcAttr ) ) {
 			img.setAttribute( 'src', img.src );
+		}
 
-			// Update `<img srcset="...">`.
-			if ( img.srcset ) {
-				updateSrcSetAttribute( img, img.baseURI );
-			}
+		// Update <img srcset="..."> (only relative items are rewritten).
+		if ( img.srcset ) {
+			updateSrcSetAttribute( img, img.baseURI );
+		}
 
-			// Update `<source>` elements if grouped in the `<picture>` element.
-			if ( img.parentElement instanceof window.HTMLPictureElement ) {
-				[ ...img.parentElement.querySelectorAll( 'source' ) ]
-					.forEach( source => {
-						updateSrcSetAttribute( source, img.baseURI );
-					} );
-			}
-		} );
-} )();
+		// Update <source> elements if grouped in the <picture> element.
+		if ( img.parentElement instanceof window.HTMLPictureElement ) {
+			[ ...img.parentElement.querySelectorAll( 'source' ) ].forEach( source => {
+				updateSrcSetAttribute( source, img.baseURI );
+			} );
+		}
+	} );
+}
+
+document.addEventListener( 'ck:snippet-transform', event => {
+	transformSnippetImages( event.detail.snippet );
+} );
