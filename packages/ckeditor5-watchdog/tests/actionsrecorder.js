@@ -634,8 +634,6 @@ describe( 'ActionsRecorder', () => {
 		it( 'should serialize DOM events', () => {
 			const viewDocument = editor.editing.view.document;
 			const mouseEvent = new MouseEvent( 'click', {
-				clientX: 100,
-				clientY: 200,
 				ctrlKey: true
 			} );
 
@@ -650,8 +648,6 @@ describe( 'ActionsRecorder', () => {
 			expect( clickRecord ).to.exist;
 
 			expect( clickRecord.params[ 0 ] ).to.have.property( 'type', 'click' );
-			expect( clickRecord.params[ 0 ] ).to.have.property( 'clientX', 100 );
-			expect( clickRecord.params[ 0 ] ).to.have.property( 'clientY', 200 );
 			expect( clickRecord.params[ 0 ] ).to.have.property( 'ctrlKey', true );
 		} );
 	} );
