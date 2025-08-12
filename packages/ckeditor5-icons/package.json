@@ -35,8 +35,5 @@
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json && node ../../scripts/update-icons-typings.mjs",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
-  },
-  "depcheckIgnore": [
-    "ckeditor5-root"
-  ]
+  }
 }

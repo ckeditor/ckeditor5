@@ -40,8 +40,5 @@
   "main": "./theme/theme.css",
   "scripts": {
     "build:dist": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/nim/banner.mjs"
-  },
-  "depcheckIgnore": [
-    "ckeditor5-root"
-  ]
+  }
 }
