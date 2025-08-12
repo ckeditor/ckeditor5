@@ -10,8 +10,8 @@ import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../../../constan
 // Prepare absolute paths to TypeScript files to be used in the declaration generation process.
 export function getFilePaths() {
 	const typeScriptFilesGlobPaths = [
-		upath.join( CKEDITOR5_ROOT_PATH, 'packages/ckeditor5-*/src/**/*.ts' ),
-		upath.join( CKEDITOR5_COMMERCIAL_PATH, 'packages/ckeditor5-*/src/**/*.ts' )
+		upath.join( CKEDITOR5_ROOT_PATH, 'packages/*/src/**/*.ts' ),
+		upath.join( CKEDITOR5_COMMERCIAL_PATH, 'packages/*/src/**/*.ts' )
 
 		// The below might be included but it is not needed as it's partly an external package
 		// and possible missing re-exports would need to be re-exported by some other package.
@@ -21,6 +21,7 @@ export function getFilePaths() {
 	return globSync( typeScriptFilesGlobPaths )
 		.map( upath.normalize )
 		.filter( file => file.includes( 'ckeditor-cloud-services-collaboration' ) || !file.endsWith( '.d.ts' ) )
+		.filter( file => !file.includes( 'ckeditor5' ) )
 		.filter( file => !file.includes( 'ckeditor5-build' ) )
 		.filter( file => !file.includes( 'ckeditor5-icons/' ) )
 		.filter( file => !file.includes( 'ckeditor5-operations-compressor/' ) )
