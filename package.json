@@ -99,7 +99,7 @@
     "@ckeditor/ckeditor5-dev-tests": "^50.0.0",
     "@ckeditor/ckeditor5-dev-translations": "^50.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
+    "@ckeditor/ckeditor5-dev-web-crawler": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-web-crawler?downgrade-puppeteer",
     "@ckeditor/ckeditor5-document-outline": "46.0.1",
     "@ckeditor/ckeditor5-email": "46.0.1",
     "@ckeditor/ckeditor5-export-inline-styles": "46.0.1",
