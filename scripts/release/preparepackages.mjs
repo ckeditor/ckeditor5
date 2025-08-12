@@ -194,13 +194,20 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Copying the changelog to the release directory.',
-					task: () => {
-						return fs.copy(
-							upath.join( CKEDITOR5_ROOT_PATH, 'CHANGELOG.md' ),
-							upath.join( CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY, 'ckeditor5', 'CHANGELOG.md' ),
-							{ overwrite: true }
-						);
+					title: 'Copying CHANGELOG.md and README.md to the release directory.',
+					task: async () => {
+						const filenamesToCopy = [
+							'CHANGELOG.md',
+							'README.md'
+						];
+
+						for ( const filename of filenamesToCopy ) {
+							await fs.copy(
+								upath.join( CKEDITOR5_ROOT_PATH, filename ),
+								upath.join( CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY, 'ckeditor5', filename ),
+								{ overwrite: true }
+							);
+						}
 					}
 				},
 				{
