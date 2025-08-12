@@ -169,7 +169,8 @@
     "umberto": "^8.0.3",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
-    "webpack": "^5.94.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^6.0.1"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -190,6 +191,8 @@
     "test": "yarn ckeditor5-dev-tests-run-automated",
     "manual": "yarn ckeditor5-dev-tests-run-manual",
     "manual:verify": "node ./scripts/web-crawler/index.mjs --manual",
+    "clean": "npx rimraf --glob package-lock.json yarn.lock ./**/node_modules",
+    "reinstall": "yarn run clean && yarn install",
     "docs": "node scripts/docs/build-docs.mjs",
     "docs:api": "node scripts/docs/build-api-docs.mjs",
     "docs:ckeditor5": "node scripts/docs/build-ckeditor-packages.mjs",
@@ -227,6 +230,12 @@
     ],
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
+    ]
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "."
     ]
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
