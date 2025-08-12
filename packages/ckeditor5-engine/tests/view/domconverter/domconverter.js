@@ -573,9 +573,12 @@ describe( 'ViewDomConverter', () => {
 							'bar' +
 							'</iframe>' +
 							'</div>',
+						// The Chrome browser in version 139 changed escaping `<` and `>` in attributes.
+						// See: https://github.com/ckeditor/ckeditor5-commercial/issues/8122
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<iframe class="foo-class" style="border:1px solid blue" data-foo="bar" srcdoc="<script>baz</script>">' +
+							'<iframe class="foo-class" style="border:1px solid blue" data-foo="bar" ' +
+								'srcdoc="&lt;script&gt;baz&lt;/script&gt;">' +
 							'bar' +
 							'</iframe>' +
 							'</div>'
@@ -693,13 +696,15 @@ describe( 'ViewDomConverter', () => {
 							'bar' +
 							'</iframe>' +
 							'</div>',
+						// The Chrome browser in version 139 changed escaping `<` and `>` in attributes.
+						// See: https://github.com/ckeditor/ckeditor5-commercial/issues/8122
 						expected: '<div data-foo="bar">' +
 							'foo' +
 							'<iframe ' +
 								'class="foo-class" ' +
 								'style="border:1px solid blue" ' +
 								'data-foo="bar" ' +
-								'data-ck-unsafe-attribute-srcdoc="<script>baz</script>">bar' +
+								'data-ck-unsafe-attribute-srcdoc="&lt;script&gt;baz&lt;/script&gt;">bar' +
 							'</iframe>' +
 							'</div>'
 					},
