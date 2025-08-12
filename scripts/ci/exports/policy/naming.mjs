@@ -154,7 +154,8 @@ export function validateNaming( { pkg, module, item } ) {
 				'track-changes': [ 'TrackChange', 'Suggestion' ],
 				'html-support': [ 'HtmlSupport', 'Ghs', 'Html' ],
 				'media-embed': [ 'Media' ],
-				'paste-from-office': [ 'Office' ]
+				'paste-from-office': [ 'Office' ],
+				'list-multi-level': [ 'MultiLevelList', 'ListMultiLevel' ]
 			};
 
 			const packageName = pkg.packageName.match( /^@ckeditor\/ckeditor5-(.*)$/ )?.[ 1 ];
