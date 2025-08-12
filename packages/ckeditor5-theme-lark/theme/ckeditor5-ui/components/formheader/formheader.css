@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-
 :root {
 	--ck-form-header-height: 3.384em;
 }
@@ -16,13 +14,7 @@
 	border-bottom: 1px solid var(--ck-color-base-border);
 
 	& > .ck-icon {
-		@mixin ck-dir ltr {
-			margin-right: var(--ck-spacing-medium);
-		}
-
-		@mixin ck-dir rtl {
-			margin-left: var(--ck-spacing-medium);
-		}
+		margin-inline-end: var(--ck-spacing-medium);
 	}
 
 	& .ck-form__header__label {
