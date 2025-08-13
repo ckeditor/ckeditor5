@@ -17,7 +17,6 @@ import { confirm } from '@inquirer/prompts';
 import updateVersionReferences from './utils/updateversionreferences.mjs';
 import buildPackageUsingRollupCallback from './utils/buildpackageusingrollupcallback.mjs';
 import buildTsAndDllForCKEditor5Root from './utils/buildtsanddllforckeditor5root.mjs';
-import getCKEditor5PackageJson from './utils/getckeditor5packagejson.mjs';
 import parseArguments from './utils/parsearguments.mjs';
 import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
 import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
@@ -34,6 +33,7 @@ import {
 	RELEASE_ZIP_DIRECTORY,
 	RELEASE_NPM_DIRECTORY
 } from './utils/constants.mjs';
+import { CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
 const [ latestVersion, versionChangelog ] = await getReleaseDescription( cliArguments );
@@ -189,9 +189,25 @@ const tasks = new Listr( [
 						return releaseTools.prepareRepository( {
 							outputDirectory: RELEASE_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
-							rootPackageJson: getCKEditor5PackageJson(),
 							packagesToCopy: cliArguments.packages
 						} );
+					}
+				},
+				{
+					title: 'Copying CHANGELOG.md and README.md to the release directory.',
+					task: async () => {
+						const filenamesToCopy = [
+							'CHANGELOG.md',
+							'README.md'
+						];
+
+						for ( const filename of filenamesToCopy ) {
+							await fs.copy(
+								upath.join( CKEDITOR5_ROOT_PATH, filename ),
+								upath.join( CKEDITOR5_ROOT_PATH, RELEASE_DIRECTORY, 'ckeditor5', filename ),
+								{ overwrite: true }
+							);
+						}
 					}
 				},
 				{
@@ -240,16 +256,19 @@ const tasks = new Listr( [
 				{
 					title: 'Preparing CDN files.',
 					task: async () => {
-						// Complete the DLL build by adding the root, `ckeditor5` package.
+						const browserPath = upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'dist', 'browser' );
+						const translationsPath = upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'dist', 'translations' );
+
+						// Complete the DLL build by adding the main, `ckeditor5` package.
 						await fs.copy( `${ RELEASE_NPM_DIRECTORY }/ckeditor5/build`, `./${ RELEASE_CDN_DIRECTORY }/dll/ckeditor5-dll/` );
 
 						// CKEditor 5 CDN.
-						await fs.copy( './dist/browser', `./${ RELEASE_CDN_DIRECTORY }/` );
-						await fs.copy( './dist/translations', `./${ RELEASE_CDN_DIRECTORY }/translations/` );
+						await fs.copy( browserPath, `./${ RELEASE_CDN_DIRECTORY }/` );
+						await fs.copy( translationsPath, `./${ RELEASE_CDN_DIRECTORY }/translations/` );
 
 						// CKEditor 5 ZIP.
-						await fs.copy( './dist/browser', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
-						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
+						await fs.copy( browserPath, `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
+						await fs.copy( translationsPath, `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
 						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 						await fs.copy( './LICENSE.md', `./${ RELEASE_ZIP_DIRECTORY }/LICENSE.md` );
 						await fs.copy( './COPYING.GPL', `./${ RELEASE_ZIP_DIRECTORY }/COPYING.GPL` );

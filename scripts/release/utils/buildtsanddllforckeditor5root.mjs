@@ -4,9 +4,16 @@
  */
 
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
+import { CKEDITOR5_MAIN_PACKAGE_PATH } from '../../constants.mjs';
 
 export default async function buildTsAndDllForCKEditor5Root() {
-	await tools.shExec( 'yarn run build', { async: true, verbosity: 'silent' } );
-	await tools.shExec( 'yarn run build:dist', { async: true, verbosity: 'silent' } );
-	await tools.shExec( 'yarn run dll:build --skip-packages-dll', { async: true, verbosity: 'silent' } );
+	const options = {
+		async: true,
+		verbosity: 'silent',
+		cwd: CKEDITOR5_MAIN_PACKAGE_PATH
+	};
+
+	await tools.shExec( 'yarn run build', options );
+	await tools.shExec( 'yarn run build:dist', options );
+	await tools.shExec( 'yarn run dll:build', options );
 }
