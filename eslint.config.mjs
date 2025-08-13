@@ -10,10 +10,10 @@ import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 import ts from 'typescript-eslint';
 import eslintPluginImport from 'eslint-plugin-import';
-import rootPkgJson from './package.json' with { type: 'json' };
+import ckeditor5PkgJson from './packages/ckeditor5/package.json' with { type: 'json' };
 import { CKEDITOR5_PACKAGES_PATH } from './scripts/constants.mjs';
 
-const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
+const disallowedImports = Object.keys( ckeditor5PkgJson.devDependencies ).filter( pkgName => {
 	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
@@ -37,7 +37,7 @@ export default defineConfig( [
 
 			// The CKEditor 5 core DLL build is created from JavaScript files.
 			// ESLint should not process compiled TypeScript.
-			'src/*.js',
+			'packages/ckeditor5/src/*.js',
 			'**/*.d.ts',
 
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
@@ -171,6 +171,7 @@ export default defineConfig( [
 
 		ignores: [
 			'./tests/**',
+			'./packages/ckeditor5/**',
 			'./packages/ckeditor5-adapter-ckfinder/**',
 			'./packages/ckeditor5-alignment/**',
 			'./packages/ckeditor5-autoformat/**',
@@ -279,10 +280,7 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/validate-changelog-entry': [ 'error', {
-				allowedScopes: [
-					...projectPackages,
-					'ckeditor5'
-				],
+				allowedScopes: projectPackages,
 				repositoryType: 'mono'
 			} ]
 		}

@@ -10,6 +10,7 @@ import { isCommandClass } from './exports/policy/is-command.mjs';
 import { isPluginClass } from './exports/policy/is-plugin.mjs';
 import { isEvent } from './exports/policy/is-event.mjs';
 import { validateCommandExports } from './exports/policy/validate-command-exports.mjs';
+import { validatePluginExports } from './exports/policy/validate-plugin-exports.mjs';
 import { Export } from './exports/utils/export.mjs';
 import { logData, mapper } from './exports/utils/logger.mjs';
 import chalk from 'chalk';
@@ -40,7 +41,13 @@ async function main() {
 	const exportsToFix = getExportsToFix( library );
 	const declarationsWithMissingExports = getDeclarationsWithMissingExports( library );
 	const commandExportErrors = validateCommandExports( library );
-	const dataToLogUnwrapped = [ ...declarationsWithMissingExports, ...exportsToFix, ...commandExportErrors ];
+	const pluginExportErrors = validatePluginExports( library );
+	const dataToLogUnwrapped = [
+		...declarationsWithMissingExports,
+		...exportsToFix,
+		...commandExportErrors,
+		...pluginExportErrors
+	];
 
 	// Do not log exceptions that are expected as errors.
 	const data = removeExpectedExceptions( dataToLogUnwrapped );

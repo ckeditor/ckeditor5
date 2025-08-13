@@ -1216,7 +1216,9 @@ describe( 'DataController', () => {
 
 			_setModelData( model, '<container><caption>foo<softBreak></softBreak><$text bold="true">baz</$text></caption></container>' );
 
-			expect( data.get() ).to.equal( '<div data-caption="foo<br><strong>baz</strong>">&nbsp;</div>' );
+			// The Chrome browser in version 139 changed escaping `<` and `>` in attributes.
+			// See: https://github.com/ckeditor/ckeditor5-commercial/issues/8122
+			expect( data.get() ).to.equal( '<div data-caption="foo&lt;br&gt;&lt;strong&gt;baz&lt;/strong&gt;">&nbsp;</div>' );
 		} );
 	} );
 } );

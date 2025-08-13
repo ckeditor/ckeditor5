@@ -20,7 +20,7 @@ const versionExceptions = {
 	 * CodeMirror packages are modular and depend on each other. We must use the same versions
 	 * as they have in their dependencies to avoid issues with versions mismatch.
 	 *
-	 * See: https://github.com/cksource/ckeditor5-commercial/issues/6939.
+	 * See: https://github.com/ckeditor/ckeditor5-commercial/issues/6939.
 	 */
 	'@codemirror/autocomplete': '^',
 	'@codemirror/lang-html': '^',
