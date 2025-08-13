@@ -29,7 +29,7 @@ Below are the most important changes that require your attention when upgrading 
 
 ### The `ListStyle` plugin is now deprecated
 
-Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Refer to the {@link features/lists##list-properties-2 list feature installation guide} for details on how to handle the upgrade.
+Due to the introduction of the new {@link features/lists-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Refer to the {@link features/lists#list-properties list feature installation guide} for details on how to handle the upgrade.
 
 ### Revision history
 
