@@ -10,6 +10,7 @@
 export { default as IconAccessibility } from '../theme/icons/accessibility.svg';
 export { default as IconAddComment } from '../theme/icons/add-comment.svg';
 export { default as IconAI } from '../theme/icons/ai.svg';
+export { default as IconAIChat } from '../theme/icons/ai-chat.svg';
 export { default as IconAlignBottom } from '../theme/icons/align-bottom.svg';
 export { default as IconAlignCenter } from '../theme/icons/align-center.svg';
 export { default as IconAlignJustify } from '../theme/icons/align-justify.svg';
