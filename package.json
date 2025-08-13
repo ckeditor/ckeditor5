@@ -96,7 +96,7 @@
     "@ckeditor/ckeditor5-dev-docs": "^51.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^51.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^51.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^51.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4083-2",
     "@ckeditor/ckeditor5-dev-web-crawler": "^51.0.0",
     "@ckeditor/ckeditor5-document-outline": "46.0.1",
     "@ckeditor/ckeditor5-email": "46.0.1",
