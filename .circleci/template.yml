@@ -252,7 +252,7 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Check if packages are ready to be released
-          command: npm run release:prepare-packages -- --compile-only --verbose
+          command: pnpm run release:prepare-packages --compile-only --verbose
       - run:
           name: Lint generated packages
           command: pnpm run release:lint-packages

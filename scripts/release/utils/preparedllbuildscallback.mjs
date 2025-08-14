@@ -21,7 +21,7 @@ export default async function prepareDllBuildsCallback( packagePath, { RELEASE_C
 		return Promise.resolve();
 	}
 
-	await tools.shExec( 'yarn run dll:build', {
+	await tools.shExec( 'pnpm run dll:build', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true
