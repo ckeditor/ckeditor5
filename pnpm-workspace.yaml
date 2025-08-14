@@ -1,0 +1,8 @@
+packages:
+  - /*
+  - packages/*
+
+shellEmulator: true
+shamefullyHoist: true
+preferFrozenLockfile: true
+linkWorkspacePackages: true

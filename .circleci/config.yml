@@ -49,7 +49,7 @@ jobs:
       - install_ssh_keys_command
       - run:
           name: Install dependencies
-          command: yarn install
+          command: pnpm install
       - run:
           name: Generate a new configuration to check all packages in the repository
           command: node scripts/ci/generate-circleci-configuration.mjs

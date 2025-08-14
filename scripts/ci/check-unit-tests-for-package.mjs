@@ -49,7 +49,8 @@ function runTests( { packageName, checkCoverage, attempts = 3 } ) {
 	const shortName = packageName.replace( /^ckeditor5?-/, '' );
 
 	const testCommand = [
-		'yarn',
+		'pnpm',
+		'run',
 		'test',
 		'--reporter=dots',
 		'--production',

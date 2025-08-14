@@ -34,13 +34,13 @@ You can start by forking (or copying) an existing build like in the {@link getti
 ```bash
 git clone -b stable git@github.com:<your-username>/ckeditor5.git
 cd ckeditor5/packages/ckeditor5-build-classic
-yarn install
+pnpm install
 ```
 
 Now it is time to add the missing editor package and install it:
 
 ```bash
-yarn add -D @ckeditor/ckeditor5-editor-inline
+pnpm add -D @ckeditor/ckeditor5-editor-inline
 ```
 
 Once all the dependencies are installed, you will need to modify the `src/ckeditor.ts` file, which currently only exports a single class. The first step is to move all plugins and configuration to variables so they can be reused by both editors:
@@ -115,7 +115,7 @@ module.exports = {
 Once you changed the `src/ckeditor.ts` and `webpack.config.js` files, it is time to rebuild the build:
 
 ```bash
-yarn build
+pnpm build
 ```
 
 Finally, when webpack finishes compiling your super build, you can change the `samples/index.html` file to test both editors:
