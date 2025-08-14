@@ -29,12 +29,12 @@ export default function getChangelogOptions( cliArguments ) {
 				npmUrl: 'https://www.npmjs.com/package/@ckeditor/' + name
 			};
 		},
-
+		linkFilter,
 		externalRepositories: [
 			{
 				cwd: CKEDITOR5_COMMERCIAL_PATH,
 				packagesDirectory: PACKAGES_DIRECTORY,
-				shouldSkipLinks: true
+				linkFilter
 			}
 		]
 	};
@@ -48,4 +48,13 @@ export default function getChangelogOptions( cliArguments ) {
 	}
 
 	return changelogOptions;
+}
+
+function linkFilter( resourceUrl ) {
+	const disallowedRepositories = [
+		'https://github.com/ckeditor/ckeditor5-commercial/',
+		'https://github.com/ckeditor/ckeditor5-internal/'
+	];
+
+	return disallowedRepositories.every( repository => !resourceUrl.startsWith( repository ) );
 }
