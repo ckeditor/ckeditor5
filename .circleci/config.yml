@@ -47,9 +47,25 @@ jobs:
     steps:
       - checkout
       - install_ssh_keys_command
+      - restore_cache:
+          name: Restore pnpm cache
+          keys:
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Install pnpm package manager
+          command: |
+            sudo npm install --global corepack@latest
+            corepack enable --install-directory="/home/circleci/bin"
+            corepack prepare pnpm@latest-10 --activate
+            pnpm config set store-dir .pnpm-store
       - run:
           name: Install dependencies
           command: pnpm install
+      - save_cache:
+          name: Save pnpm cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - .pnpm-store
       - run:
           name: Generate a new configuration to check all packages in the repository
           command: node scripts/ci/generate-circleci-configuration.mjs

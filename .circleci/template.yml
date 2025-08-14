@@ -54,9 +54,25 @@ commands:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
+      - restore_cache:
+          name: Restore pnpm cache
+          keys:
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Install pnpm package manager
+          command: |
+            sudo npm install --global corepack@latest
+            corepack enable --install-directory="/home/circleci/bin"
+            corepack prepare pnpm@latest-10 --activate
+            pnpm config set store-dir .pnpm-store
       - run:
           name: Install dependencies
           command: pnpm install
+      - save_cache:
+          name: Save pnpm cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - .pnpm-store
       - prepare_environment_variables_commands
 
   checkout_command:
