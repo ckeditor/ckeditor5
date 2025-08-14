@@ -33,8 +33,8 @@ const versionExceptions = {
 const pkgJsonPatterns = [
 	'package.json',
 	'packages/*/package.json',
-	'external/ckeditor5-commercial/packages/*/package.json',
-	'external/ckeditor5-commercial/package.json'
+	'../../packages/*/package.json',
+	'../../package.json'
 ];
 
 const options = {

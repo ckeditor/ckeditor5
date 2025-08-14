@@ -15,8 +15,8 @@
 	"extraStyles": "assets/styles.css",
 	"packagesDir": [
 		"packages/*",
-		"external/ckeditor5-commercial/",
-		"external/ckeditor5-commercial/packages/*"
+		"../../",
+		"../../packages/*"
 	],
 	"sitemap": {
 		"hostname": "https://ckeditor5.github.io/docs/nightly/",
