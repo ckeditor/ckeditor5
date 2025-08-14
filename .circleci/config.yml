@@ -35,6 +35,18 @@ commands:
       - add_ssh_keys:
           fingerprints:
             - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
+  
+  checkout_command:
+    description: "Clone the CKEditor 5 repository with limited depth and branches"
+    steps:
+      - run:
+          name: Add GitHub to known_hosts
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run:
+          name: Checkout code (single branch)
+          command: git clone --single-branch --depth 1 --branch "$CIRCLE_BRANCH" "$CIRCLE_REPOSITORY_URL" .
 
 jobs:
   generate_configuration:
@@ -45,7 +57,7 @@ jobs:
       isNightly:
         type: boolean
     steps:
-      - checkout
+      - checkout_command
       - install_ssh_keys_command
       - restore_cache:
           name: Restore pnpm cache
