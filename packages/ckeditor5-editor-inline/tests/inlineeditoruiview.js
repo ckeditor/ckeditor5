@@ -4,21 +4,13 @@
  */
 
 import { InlineEditorUIView } from '../src/inlineeditoruiview.js';
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
-import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
-import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import { toUnit } from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
+import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { ToolbarView, BalloonPanelView, InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
+import { Locale, Rect, toUnit, global, ResizeObserver } from '@ckeditor/ckeditor5-utils';
 
 const toPx = toUnit( 'px' );
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'InlineEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;

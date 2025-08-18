@@ -5,8 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import { ModelElement, ViewElement } from '@ckeditor/ckeditor5-engine';
 
 import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
 import { ImageCaptionUtils } from '../../src/imagecaption/imagecaptionutils.js';

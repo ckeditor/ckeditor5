@@ -5,15 +5,10 @@
 
 import { DeleteObserver } from '../src/deleteobserver.js';
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { EditingView, ViewDocumentDomEventData, createViewRoot, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { env, getCode } from '@ckeditor/ckeditor5-utils';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';
-import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'Delete', () => {
 	describe( 'DeleteObserver', () => {

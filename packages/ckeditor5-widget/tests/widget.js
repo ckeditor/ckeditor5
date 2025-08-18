@@ -4,24 +4,24 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Widget } from '../src/widget.js';
 import { WidgetTypeAround } from '../src/widgettypearound/widgettypearound.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { MouseObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver.js';
+import { Typing, Delete } from '@ckeditor/ckeditor5-typing';
+import {
+	MouseObserver,
+	ViewDocumentDomEventData,
+	_setModelData,
+	_getModelData,
+	_getViewData,
+	EditingView,
+	ViewRootEditableElement,
+	ViewEditableElement
+} from '@ckeditor/ckeditor5-engine';
 import { toWidget } from '../src/utils.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
+import { getCode, keyCodes, toArray, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewRootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
-import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;

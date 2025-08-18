@@ -3,36 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import { TableColumnResize } from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { TableProperties, TableCellProperties, TableColumnResize } from '@ckeditor/ckeditor5-table';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { Superscript } from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
-import { Subscript } from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
-import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
-import { FontSize } from '@ckeditor/ckeditor5-font/src/fontsize.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { WordCount } from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
-import { TodoList } from '@ckeditor/ckeditor5-list/src/todolist.js';
-import { SpecialCharacters } from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
-import { SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import { Mention } from '@ckeditor/ckeditor5-mention/src/mention.js';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
-import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
-import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { Underline, Code, Strikethrough, Superscript, Subscript } from '@ckeditor/ckeditor5-basic-styles';
+import { FontColor, FontBackgroundColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { WordCount } from '@ckeditor/ckeditor5-word-count';
+import { TodoList } from '@ckeditor/ckeditor5-list';
+import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { Mention } from '@ckeditor/ckeditor5-mention';
+import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

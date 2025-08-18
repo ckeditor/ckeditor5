@@ -4,15 +4,14 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
+import { _getModelData, _setModelData, INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
 
 import { EmptyBlock } from '../src/emptyblock.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';

@@ -6,13 +6,13 @@
 import { CodeBlockEditing } from '../src/codeblockediting.js';
 import { IndentCodeBlockCommand } from '../src/indentcodeblockcommand.js';
 
-import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'IndentCodeBlockCommand', () => {

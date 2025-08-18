@@ -4,12 +4,10 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
+import { _getModelData, _getViewData, INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';

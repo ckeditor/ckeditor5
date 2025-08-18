@@ -12,7 +12,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-u
 import {
 	_clear as clearTranslations,
 	add as addTranslations
-} from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+} from '@ckeditor/ckeditor5-utils';
 
 describe( 'RemoveFormatUI', () => {
 	let editor, element, button;

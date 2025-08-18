@@ -19,11 +19,10 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBS
 import { _parseView, _getViewData } from '../../../src/dev-utils/view.js';
 import { _setModelData } from '../../../src/dev-utils/model.js';
 
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement, global } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

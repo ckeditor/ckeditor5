@@ -11,17 +11,17 @@ import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Drag and Drop Block Toolbar', () => {
 	let editorElement, editor, model, view, viewDocument, root, mapper, domConverter, dragDropBlockToolbar,

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';

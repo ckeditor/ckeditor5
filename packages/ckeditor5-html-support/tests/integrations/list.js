@@ -6,15 +6,14 @@
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ListEditing, stubUid } from '@ckeditor/ckeditor5-list';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ListElementSupport } from '../../src/integrations/list.js';
 
 describe( 'ListElementSupport', () => {

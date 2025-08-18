@@ -7,11 +7,10 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Heading } from '../src/heading.js';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingUI } from '../src/headingui.js';
-import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { DropdownView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'HeadingUI', () => {
 	let editor, editorElement;

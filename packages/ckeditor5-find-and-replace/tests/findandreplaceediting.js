@@ -5,13 +5,12 @@
 
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/index.js';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { _getViewData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
 import { FindAndReplace } from '../src/findandreplace.js';
 

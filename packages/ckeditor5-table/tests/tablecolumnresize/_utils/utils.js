@@ -4,8 +4,8 @@
  */
 
 import { global } from 'ckeditor5/src/utils.js';
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import { Point } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+import { Rect } from '@ckeditor/ckeditor5-utils';
+import { Point } from '@ckeditor/ckeditor5-widget';
 import { TableColumnResizeEditing } from '../../../src/tablecolumnresize/tablecolumnresizeediting.js';
 import { getTableColumnsWidths } from '../../../src/tablecolumnresize/utils.js';
 

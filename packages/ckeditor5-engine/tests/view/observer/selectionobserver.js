@@ -15,8 +15,7 @@ import { MutationObserver } from '../../../src/view/observer/mutationobserver.js
 import { createViewRoot } from '../_utils/createroot.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { priorities } from '@ckeditor/ckeditor5-utils';
+import { env, priorities } from '@ckeditor/ckeditor5-utils';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;

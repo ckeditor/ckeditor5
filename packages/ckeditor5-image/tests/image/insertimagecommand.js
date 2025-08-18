@@ -4,8 +4,8 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { InsertImageCommand } from '../../src/image/insertimagecommand.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';

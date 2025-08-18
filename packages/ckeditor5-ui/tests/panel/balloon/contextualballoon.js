@@ -8,10 +8,10 @@ import { ContextualBalloon } from '../../../src/panel/balloon/contextualballoon.
 import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js';
 import { View } from '../../../src/view.js';
 
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

@@ -4,22 +4,21 @@
  */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
-import { LegacyTodoList } from '@ckeditor/ckeditor5-list/src/legacytodolist.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import {
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Rect } from '@ckeditor/ckeditor5-utils';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link';
+import { LegacyTodoList } from '@ckeditor/ckeditor5-list';
+import { Widget,
 	focusEditor,
 	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
-} from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
+} from '@ckeditor/ckeditor5-widget';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils.js';
 
 import { Image } from '../../src/image.js';

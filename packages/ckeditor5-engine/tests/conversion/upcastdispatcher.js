@@ -19,7 +19,7 @@ import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelWriter } from '../../src/model/writer.js';
 
-import { first } from '@ckeditor/ckeditor5-utils/src/first.js';
+import { first } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
