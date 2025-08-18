@@ -62,5 +62,3 @@ export {
 	getEditorUsageData as _getEditorUsageData,
 	type EditorUsageData as _EditorUsageData
 } from './editor/utils/editorusagedata.js';
-
-import './augmentation.js';
