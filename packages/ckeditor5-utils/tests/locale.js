@@ -6,13 +6,13 @@
 import { Locale } from '../src/locale.js';
 import {
 	add as addTranslations,
-	_clearTranslations
+	_clear as clearTranslations
 } from '../src/translation-service.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 
 describe( 'Locale', () => {
 	afterEach( () => {
-		_clearTranslations();
+		clearTranslations();
 		sinon.restore();
 	} );
 
