@@ -9,7 +9,7 @@ import { CodeBlockUI } from '../src/codeblockui.js';
 import { IconCodeBlock } from 'ckeditor5/src/icons.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
+import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 
 describe( 'CodeBlockUI', () => {
 	let editor, command, element, languagesListView;
@@ -25,7 +25,7 @@ describe( 'CodeBlockUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

@@ -13,7 +13,6 @@ import {
 	ViewUIElement,
 	Model,
 	_setModelData,
-	Mapper,
 	ModelElement,
 	ModelText
 } from '@ckeditor/ckeditor5-engine';
@@ -31,6 +30,9 @@ import {
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import { Mapper } from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;

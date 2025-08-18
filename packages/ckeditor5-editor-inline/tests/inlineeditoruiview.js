@@ -4,9 +4,10 @@
  */
 
 import { InlineEditorUIView } from '../src/inlineeditoruiview.js';
-import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { ToolbarView, BalloonPanelView, InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale, Rect, toUnit, global, ResizeObserver } from '@ckeditor/ckeditor5-utils';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 const toPx = toUnit( 'px' );
 

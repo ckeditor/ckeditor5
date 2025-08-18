@@ -20,7 +20,7 @@ import {
 	Locale,
 	wait,
 	add as addTranslations,
-	_clear as clearTranslations
+	_clearTranslations
 } from '@ckeditor/ckeditor5-utils';
 import { ListSeparatorView } from '../../src/list/listseparatorview.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -53,7 +53,7 @@ describe( 'MenuBarView', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

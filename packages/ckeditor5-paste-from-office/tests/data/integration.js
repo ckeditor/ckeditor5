@@ -9,7 +9,7 @@ import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Bold, Underline, Italic, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { List, ListProperties, stubUid } from '@ckeditor/ckeditor5-list';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Image } from '@ckeditor/ckeditor5-image';
 import { Table, TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
 import { FontBackgroundColor, FontColor } from '@ckeditor/ckeditor5-font';
@@ -20,6 +20,7 @@ import { PasteFromOffice } from '../../src/pastefromoffice.js';
 import { generateTests } from '../_utils/utils.js';
 import * as fixtures from '../_utils/fixtures.js';
 
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];

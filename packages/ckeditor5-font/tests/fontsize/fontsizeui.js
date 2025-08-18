@@ -9,7 +9,7 @@ import { FontSizeUI } from '../../src/fontsize/fontsizeui.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
+import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 import { normalizeOptions } from '../../src/fontsize/utils.js';
 
 describe( 'FontSizeUI', () => {
@@ -38,7 +38,7 @@ describe( 'FontSizeUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

@@ -8,7 +8,7 @@ import { Heading } from '../src/heading.js';
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingUI } from '../src/headingui.js';
 import { DropdownView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
+import { add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
@@ -36,7 +36,7 @@ describe( 'HeadingUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

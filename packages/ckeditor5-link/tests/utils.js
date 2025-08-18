@@ -10,12 +10,14 @@ import {
 	ViewAttributeElement,
 	ViewContainerElement,
 	ViewText,
-	ModelSchema,
 	ModelElement,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+
+// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
+import { ModelSchema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 
 import {
 	createLinkElement,

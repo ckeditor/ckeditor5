@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
 import { InlineEditableUIView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

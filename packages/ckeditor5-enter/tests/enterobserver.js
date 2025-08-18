@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { EnterObserver } from '../src/enterobserver.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { fireBeforeInputDomEvent } from '@ckeditor/ckeditor5-typing/tests/_utils/utils.js';
 import { getCode, env } from '@ckeditor/ckeditor5-utils';

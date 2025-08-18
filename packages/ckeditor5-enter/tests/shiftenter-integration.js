@@ -9,7 +9,7 @@ import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { Delete } from '@ckeditor/ckeditor5-typing';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { ShiftEnter } from '../src/shiftenter.js';
-import { INLINE_FILLER, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { _VIEW_INLINE_FILLER, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ShiftEnter integration', () => {
 	let editor, model, div;
@@ -55,7 +55,7 @@ describe( 'ShiftEnter integration', () => {
 		editor.execute( 'shiftEnter' );
 
 		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
-			`<p><br>${ INLINE_FILLER }<br data-cke-filler="true"></p>`
+			`<p><br>${ _VIEW_INLINE_FILLER }<br data-cke-filler="true"></p>`
 		);
 	} );
 

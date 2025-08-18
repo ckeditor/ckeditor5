@@ -4,7 +4,8 @@
  */
 
 import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
-import { Observer, EditingView, createViewRoot, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
+import { Observer, EditingView, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 describe( 'ImageLoadObserver', () => {
 	let view, viewDocument, observer, domRoot, viewRoot;

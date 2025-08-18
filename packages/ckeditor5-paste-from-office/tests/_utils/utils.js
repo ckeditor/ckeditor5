@@ -14,7 +14,7 @@ import {
 	StylesProcessor
 } from '@ckeditor/ckeditor5-engine';
 
-import { normalizeClipboardData } from '@ckeditor/ckeditor5-clipboard';
+import { _normalizeClipboardData } from '@ckeditor/ckeditor5-clipboard';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
@@ -174,7 +174,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip, only )
 			testRunner( name, () => {
 				// Simulate data from Clipboard event
 				const clipboardPlugin = editor.plugins.get( 'ClipboardPipeline' );
-				const content = htmlDataProcessor.toView( normalizeClipboardData( fixtures.input[ name ] ) );
+				const content = htmlDataProcessor.toView( _normalizeClipboardData( fixtures.input[ name ] ) );
 				const dataTransfer = createDataTransfer( {
 					'text/html': fixtures.input[ name ],
 					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]

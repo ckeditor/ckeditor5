@@ -20,7 +20,7 @@ import { HighlightEditing } from '@ckeditor/ckeditor5-highlight';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
-import { focusEditor, WidgetResize } from '@ckeditor/ckeditor5-widget';
+import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { modelTable } from '../_utils/utils.js';
 import {
 	getComputedStyle,
@@ -47,6 +47,7 @@ import {
 	getColumnGroupElement
 } from '../../src/tablecolumnresize/utils.js';
 import { TableWidthsCommand } from '../../src/tablecolumnresize/tablewidthscommand.js';
+import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';

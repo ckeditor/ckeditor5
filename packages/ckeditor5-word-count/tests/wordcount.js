@@ -10,7 +10,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData, ModelPosition } from '@ckeditor/ckeditor5-engine';
-import { add as addTranslations, _clear as clearTranslations, env } from '@ckeditor/ckeditor5-utils';
+import { add as addTranslations, _clearTranslations, env } from '@ckeditor/ckeditor5-utils';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
@@ -566,7 +566,7 @@ describe( 'WordCount', () => {
 		} );
 
 		after( () => {
-			clearTranslations();
+			_clearTranslations();
 		} );
 
 		it( 'applies proper language translations', () => {

@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
+import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TableEditing } from '../src/tableediting.js';
@@ -24,7 +24,7 @@ describe( 'TableUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

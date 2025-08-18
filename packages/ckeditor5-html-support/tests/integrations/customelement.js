@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { _getModelData, _getViewData, INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _getViewData, _VIEW_INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
@@ -137,7 +137,7 @@ describe( 'CustomElementSupport', () => {
 			.deep.equal( Array.from( new Set( editor.editing.view.domConverter.unsafeElements ).values() ) );
 
 		expect( editor.editing.view.getDomRoot().innerHTML ).equal(
-			INLINE_FILLER +
+			_VIEW_INLINE_FILLER +
 			'<span data-ck-unsafe-element="custom-foo-element"></span>' +
 			'<span data-ck-unsafe-element="custom-foo-element"></span>'
 		);

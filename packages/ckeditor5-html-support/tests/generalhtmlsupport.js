@@ -13,9 +13,10 @@ import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties } from '@ckeditor/ckeditor5-table';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { List, ListProperties, stubUid } from '@ckeditor/ckeditor5-list';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'GeneralHtmlSupport', () => {
 	let editor, element, dataSchema, generalHtmlSupport;

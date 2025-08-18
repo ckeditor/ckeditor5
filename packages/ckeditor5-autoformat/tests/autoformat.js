@@ -6,7 +6,7 @@
 import { Autoformat } from '../src/autoformat.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing, TodoListEditing, stubUid } from '@ckeditor/ckeditor5-list';
+import { ListEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
 import { HeadingEditing, HeadingCommand } from '@ckeditor/ckeditor5-heading';
 import { BoldEditing, StrikethroughEditing, CodeEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
@@ -20,6 +20,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'Autoformat', () => {
 	let editor, model, doc;

@@ -4,9 +4,10 @@
  */
 
 import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
-import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { StickyPanelView, ToolbarView, MenuBarView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

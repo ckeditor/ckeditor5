@@ -11,7 +11,7 @@ import { View } from '../../../src/view.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
+import { add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -35,7 +35,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

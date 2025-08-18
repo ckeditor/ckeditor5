@@ -17,7 +17,7 @@ import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
-import { focusEditor } from '@ckeditor/ckeditor5-widget';
+import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 
 describe( 'ImageResizeEditing', () => {

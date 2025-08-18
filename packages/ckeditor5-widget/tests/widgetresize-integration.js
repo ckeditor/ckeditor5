@@ -7,7 +7,8 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Image, ImageResize, waitForAllImagesLoaded } from '@ckeditor/ckeditor5-image';
+import { Image, ImageResize } from '@ckeditor/ckeditor5-image';
+import { waitForAllImagesLoaded } from '@ckeditor/ckeditor5-image/tests/imageresize/_utils/utils.js';
 
 describe( 'WidgetResize - integration', () => {
 	let editor, model, view, viewDocument, editorElement;

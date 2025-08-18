@@ -11,7 +11,7 @@ import {
 	keyCodes,
 	global,
 	add as addTranslations,
-	_clear as clearTranslations,
+	_clearTranslations,
 	Rect,
 	Locale,
 	ResizeObserver
@@ -48,7 +48,7 @@ describe( 'ToolbarView', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 
 		// Clean up after the ResizeObserver stub in beforeEach(). Even though the global.window.ResizeObserver
 		// stub is restored, the ResizeObserver class (CKE5 module) keeps the reference to the single native

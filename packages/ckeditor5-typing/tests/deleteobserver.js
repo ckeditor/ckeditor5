@@ -5,7 +5,8 @@
 
 import { DeleteObserver } from '../src/deleteobserver.js';
 
-import { EditingView, ViewDocumentDomEventData, createViewRoot, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
+import { EditingView, ViewDocumentDomEventData, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env, getCode } from '@ckeditor/ckeditor5-utils';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';

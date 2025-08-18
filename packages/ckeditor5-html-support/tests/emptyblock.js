@@ -11,7 +11,7 @@ import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
-import { _getModelData, _setModelData, INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _setModelData, _VIEW_INLINE_FILLER } from '@ckeditor/ckeditor5-engine';
 
 import { EmptyBlock } from '../src/emptyblock.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
@@ -339,7 +339,7 @@ describe( 'EmptyBlock', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
 			expect( domRoot.innerHTML ).to.equal(
-				'<p>' + INLINE_FILLER + '</p>' +
+				'<p>' + _VIEW_INLINE_FILLER + '</p>' +
                 '<p>foo</p>'
 			);
 		} );

@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
+import { add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Heading } from '../src/heading.js';
 import { getLocalizedOptions } from '../src/utils.js';
@@ -27,7 +27,7 @@ describe( 'utils', () => {
 		} );
 
 		after( () => {
-			clearTranslations();
+			_clearTranslations();
 		} );
 
 		beforeEach( () => {

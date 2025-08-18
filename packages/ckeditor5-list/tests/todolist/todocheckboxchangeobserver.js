@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingView, DomEventObserver, createViewRoot, _setViewData } from '@ckeditor/ckeditor5-engine';
+import { EditingView, DomEventObserver, _setViewData } from '@ckeditor/ckeditor5-engine';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import { TodoCheckboxChangeObserver } from '../../src/todolist/todocheckboxchangeobserver.js';
 

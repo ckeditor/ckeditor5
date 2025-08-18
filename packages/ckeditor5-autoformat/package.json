@@ -55,9 +55,6 @@
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "depcheckIgnore": [
-    "eslint-plugin-ckeditor5-rules"
-  ],
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.json",

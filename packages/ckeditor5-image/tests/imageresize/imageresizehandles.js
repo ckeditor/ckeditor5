@@ -12,13 +12,14 @@ import { Table } from '@ckeditor/ckeditor5-table';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { LinkImageEditing } from '@ckeditor/ckeditor5-link';
 import { LegacyTodoList } from '@ckeditor/ckeditor5-list';
-import { Widget,
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import {
 	focusEditor,
 	resizerMouseSimulator,
 	getWidgetDomParts,
 	getHandleCenterPoint
-} from '@ckeditor/ckeditor5-widget';
-import { _setModelData } from '@ckeditor/ckeditor5-engine';
+} from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { IMAGE_SRC_FIXTURE, waitForAllImagesLoaded } from './_utils/utils.js';
 
 import { Image } from '../../src/image.js';

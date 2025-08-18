@@ -7,10 +7,11 @@ import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ListEditing, stubUid } from '@ckeditor/ckeditor5-list';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';

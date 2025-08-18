@@ -18,7 +18,7 @@ import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 import { ClipboardPipeline, DragDrop } from '@ckeditor/ckeditor5-clipboard';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getCode, _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
+import { getCode, _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 
 describe( 'CodeBlockEditing', () => {
 	let editor, element, model, view, viewDoc, root;
@@ -34,7 +34,7 @@ describe( 'CodeBlockEditing', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

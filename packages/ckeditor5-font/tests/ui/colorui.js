@@ -6,7 +6,7 @@
 import { TestColorPlugin } from '../_utils/testcolorplugin.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ColorGridView } from '@ckeditor/ckeditor5-ui';
-import { global, add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils';
+import { global, add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
@@ -59,7 +59,7 @@ describe( 'FontColorUIBase', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	let editor, element, model, testColorPlugin, command;

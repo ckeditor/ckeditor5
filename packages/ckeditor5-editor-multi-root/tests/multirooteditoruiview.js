@@ -4,9 +4,10 @@
  */
 
 import { MultiRootEditorUIView } from '../src/multirooteditoruiview.js';
-import { EditingView, createViewRoot } from '@ckeditor/ckeditor5-engine';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { ToolbarView, MenuBarView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

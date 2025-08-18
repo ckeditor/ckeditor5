@@ -10,7 +10,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import {
-	_clear as clearTranslations,
+	_clearTranslations,
 	add as addTranslations
 } from '@ckeditor/ckeditor5-utils';
 
@@ -30,7 +30,7 @@ describe( 'RemoveFormatUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {
