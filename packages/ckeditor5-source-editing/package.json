@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-code-block": "46.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^51.0.0",
     "@ckeditor/ckeditor5-editor-classic": "46.0.1",
     "@ckeditor/ckeditor5-engine": "46.0.1",
     "@ckeditor/ckeditor5-essentials": "46.0.1",
