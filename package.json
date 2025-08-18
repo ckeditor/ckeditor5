@@ -134,7 +134,7 @@
     "eslint": "^9.26.0",
     "eslint-config-ckeditor5": "^12.1.0",
     "eslint-formatter-stylish": "^8.40.0",
-    "eslint-plugin-ckeditor5-rules": "https://gitpkg.vercel.app/ckeditor/ckeditor5-linters-config/packages/eslint-plugin-ckeditor5-rules?ck/18860",
+    "eslint-plugin-ckeditor5-rules": "^12.1.0",
     "eslint-plugin-import": "^2.31.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.0.0",
