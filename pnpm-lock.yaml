@@ -7,190 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@ckeditor/ckeditor5-adapter-ckfinder':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-adapter-ckfinder
-      '@ckeditor/ckeditor5-alignment':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-alignment
-      '@ckeditor/ckeditor5-autoformat':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-autoformat
-      '@ckeditor/ckeditor5-autosave':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-autosave
-      '@ckeditor/ckeditor5-basic-styles':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-basic-styles
-      '@ckeditor/ckeditor5-block-quote':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-block-quote
-      '@ckeditor/ckeditor5-bookmark':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-bookmark
-      '@ckeditor/ckeditor5-ckbox':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-ckbox
-      '@ckeditor/ckeditor5-ckfinder':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-ckfinder
-      '@ckeditor/ckeditor5-clipboard':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-clipboard
-      '@ckeditor/ckeditor5-cloud-services':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-cloud-services
-      '@ckeditor/ckeditor5-code-block':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-code-block
-      '@ckeditor/ckeditor5-core':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-core
-      '@ckeditor/ckeditor5-easy-image':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-easy-image
-      '@ckeditor/ckeditor5-editor-balloon':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-editor-balloon
-      '@ckeditor/ckeditor5-editor-classic':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-editor-classic
-      '@ckeditor/ckeditor5-editor-decoupled':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-editor-decoupled
-      '@ckeditor/ckeditor5-editor-inline':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-editor-inline
-      '@ckeditor/ckeditor5-editor-multi-root':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-editor-multi-root
-      '@ckeditor/ckeditor5-emoji':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-emoji
-      '@ckeditor/ckeditor5-engine':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-engine
-      '@ckeditor/ckeditor5-enter':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-enter
-      '@ckeditor/ckeditor5-essentials':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-essentials
-      '@ckeditor/ckeditor5-find-and-replace':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-find-and-replace
-      '@ckeditor/ckeditor5-font':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-font
-      '@ckeditor/ckeditor5-fullscreen':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-fullscreen
-      '@ckeditor/ckeditor5-heading':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-heading
-      '@ckeditor/ckeditor5-highlight':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-highlight
-      '@ckeditor/ckeditor5-horizontal-line':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-horizontal-line
-      '@ckeditor/ckeditor5-html-embed':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-html-embed
-      '@ckeditor/ckeditor5-html-support':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-html-support
-      '@ckeditor/ckeditor5-icons':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-icons
-      '@ckeditor/ckeditor5-image':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-image
-      '@ckeditor/ckeditor5-indent':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-indent
-      '@ckeditor/ckeditor5-language':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-language
-      '@ckeditor/ckeditor5-link':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-link
-      '@ckeditor/ckeditor5-list':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-list
-      '@ckeditor/ckeditor5-markdown-gfm':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-markdown-gfm
-      '@ckeditor/ckeditor5-media-embed':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-media-embed
-      '@ckeditor/ckeditor5-mention':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-mention
-      '@ckeditor/ckeditor5-minimap':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-minimap
-      '@ckeditor/ckeditor5-page-break':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-page-break
-      '@ckeditor/ckeditor5-paragraph':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-paragraph
-      '@ckeditor/ckeditor5-paste-from-office':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-paste-from-office
-      '@ckeditor/ckeditor5-remove-format':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-remove-format
-      '@ckeditor/ckeditor5-restricted-editing':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-restricted-editing
-      '@ckeditor/ckeditor5-select-all':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-select-all
-      '@ckeditor/ckeditor5-show-blocks':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-show-blocks
-      '@ckeditor/ckeditor5-source-editing':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-source-editing
-      '@ckeditor/ckeditor5-special-characters':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-special-characters
-      '@ckeditor/ckeditor5-style':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-style
-      '@ckeditor/ckeditor5-table':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-table
-      '@ckeditor/ckeditor5-theme-lark':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-theme-lark
-      '@ckeditor/ckeditor5-typing':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-typing
-      '@ckeditor/ckeditor5-ui':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-ui
-      '@ckeditor/ckeditor5-undo':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-undo
-      '@ckeditor/ckeditor5-upload':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-upload
-      '@ckeditor/ckeditor5-utils':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-utils
-      '@ckeditor/ckeditor5-watchdog':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-watchdog
-      '@ckeditor/ckeditor5-widget':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-widget
-      '@ckeditor/ckeditor5-word-count':
-        specifier: 46.0.1
-        version: link:packages/ckeditor5-word-count
     devDependencies:
       '@babel/parser':
         specifier: ^7.23.3
@@ -220,8 +36,8 @@ importers:
         specifier: ^51.0.0
         version: 51.0.0(@swc/core@1.13.3)(esbuild@0.25.9)(typescript@5.0.4)(webpack@5.101.1)
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4086-migrate-to-pnpm
-        version: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4086-migrate-to-pnpm(@swc/core@1.13.3)(@types/node@24.2.1)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        specifier: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128
+        version: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128(@swc/core@1.13.3)(@types/node@24.2.1)(esbuild@0.25.9)(webpack-cli@6.0.1)
       '@ckeditor/ckeditor5-dev-web-crawler':
         specifier: ^51.0.0
         version: 51.0.0(typescript@5.0.4)
@@ -5391,8 +5207,8 @@ packages:
     engines: {node: '>=22.0.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4086-migrate-to-pnpm':
-    resolution: {tarball: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4086-migrate-to-pnpm}
+  '@ckeditor/ckeditor5-dev-tests@https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128':
+    resolution: {tarball: https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128}
     version: 51.0.0
     engines: {node: '>=22.0.0', npm: '>=5.7.1'}
     hasBin: true
@@ -14135,7 +13951,7 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?internal/4086-migrate-to-pnpm(@swc/core@1.13.3)(@types/node@24.2.1)(esbuild@0.25.9)(webpack-cli@6.0.1)':
+  '@ckeditor/ckeditor5-dev-tests@https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128(@swc/core@1.13.3)(@types/node@24.2.1)(esbuild@0.25.9)(webpack-cli@6.0.1)':
     dependencies:
       '@babel/core': 7.28.3
       '@ckeditor/ckeditor5-dev-translations': 51.0.0(@swc/core@1.13.3)(esbuild@0.25.9)(typescript@5.0.4)(webpack@5.101.1)
