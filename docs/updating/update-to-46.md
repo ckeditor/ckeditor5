@@ -14,6 +14,28 @@ modified_at: 2025-07-04
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v46.0.2
+
+Released on 19 August, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.2))
+
+This hotfix release resolves an issue where archived comment threads could incorrectly appear in the sidebar, ensuring they remain properly contained in the comments archive.
+
+## Update to CKEditor&nbsp;5 v46.0.1
+
+Released on 11 August, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.1))
+
+#### Complete documentation redesign is here
+
+We have prepared a new theme for our documentation to enhance its quality. The new look improves readability and addresses several accessibility issues for a better experience. The redesigned navigation bar gives more useful access to various sections of the documentation, making it easier to reference guides for all our products. Improved table of contents makes browsing and finding guides easier, paired with updated search functionality. Check out the new experience yourself!
+
+#### The pagination plugin just got better
+
+This release introduces a significant pagination update, along with numerous fixes. Page breaks are now calculated taking into account the content styles, bookmark markers, and with better tolerance calculation. Pagination now also finds the correct breakpoint for large tables of contents and images taller than the page.
+
+#### Table handling with pagination and export to PDF
+
+The pagination and export to PDF features now better support tables containing one or more paragraphs. Cell margins are now correctly applied in exported tables, which improves the precision of pagination rendering.
+
 ## Update to CKEditor&nbsp;5 v46.0.0
 
 Released on 9 July, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0))
