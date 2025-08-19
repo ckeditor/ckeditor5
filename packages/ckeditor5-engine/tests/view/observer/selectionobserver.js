@@ -556,7 +556,7 @@ describe( 'SelectionObserver', () => {
 		const { domConverter } = selectionObserver;
 
 		const forceRenderSpy = sinon.stub( view, 'forceRender' ).callsFake( () => {} );
-		const stub = testUtils.sinon.stub( domConverter, 'domSelectionToView' ).callsFake( ( ...args ) => {
+		const stub = sinon.stub( domConverter, 'domSelectionToView' ).callsFake( ( ...args ) => {
 			const selection = stub.wrappedMethod.call( domConverter, ...args );
 			const getRangesStub = sinon.stub( selection, 'getRanges' ).callsFake( () => {
 				const ranges = [ ...getRangesStub.wrappedMethod.call( selection ) ];
