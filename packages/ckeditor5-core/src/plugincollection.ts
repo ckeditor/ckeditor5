@@ -9,7 +9,6 @@
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 import type { LoadedPlugins, PluginClassConstructor, PluginConstructor, PluginInterface } from './plugin.js';
-import type { PendingActions } from './pendingactions.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
@@ -656,5 +655,4 @@ export type PluginEntry<TContext> = [ PluginConstructor<TContext>, PluginInterfa
  */
 export interface PluginsMap {
 	[ name: string ]: PluginInterface;
-	[ PendingActions.pluginName ]: PendingActions;
 }
