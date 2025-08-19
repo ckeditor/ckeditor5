@@ -551,6 +551,39 @@ describe( 'SelectionObserver', () => {
 		sel.collapse( domText, 3 );
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/pull/18958
+	it( 'should not crash even if domConverter returns view range with items detached from root', done => {
+		const { domConverter } = selectionObserver;
+
+		const forceRenderSpy = sinon.stub( view, 'forceRender' ).callsFake( () => {} );
+		const stub = testUtils.sinon.stub( domConverter, 'domSelectionToView' ).callsFake( ( ...args ) => {
+			const selection = stub.wrappedMethod.call( domConverter, ...args );
+			const getRangesStub = sinon.stub( selection, 'getRanges' ).callsFake( () => {
+				const ranges = [ ...getRangesStub.wrappedMethod.call( selection ) ];
+
+				// Let's assume that domConverter returned ranges that are detached from the root.
+				// For example - when it's not fully synchronized with the DOM during some async events.
+				// It should not happen if mapper is used correctly, not during applying changes to the DOM.
+				ranges.forEach( range => {
+					sinon.stub( range.start, 'root' ).get( () => null );
+					sinon.stub( range.end, 'root' ).get( () => null );
+				} );
+
+				return ranges;
+			} );
+
+			return selection;
+		} );
+
+		changeDomSelection();
+		domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+
+		setTimeout( () => {
+			expect( forceRenderSpy ).to.be.called;
+			done();
+		}, 70 );
+	} );
+
 	describe( 'stopListening()', () => {
 		it( 'should not fire selectionChange after stopped observing a DOM element', () => {
 			const spy = sinon.spy();
