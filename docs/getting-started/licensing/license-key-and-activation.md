@@ -43,9 +43,8 @@ Trial allows testing both self-hosted and cloud distributions. When the trial fi
 
 ### Using the GPL key
 
-CKEditor&nbsp;5 (without the premium features listed above) can be used in an open-source, GPL-compliant setup with:
+CKEditor&nbsp;5 can be used in an open-source, GPL-compliant setup with:
 
-* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a unique license key and free editor loads.
 * legacy GPL accounts in our Customer Portal. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 * without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
