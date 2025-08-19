@@ -138,12 +138,5 @@
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
-  },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "^22.18.0",
-      "onFail": "download"
-    }
   }
 }
