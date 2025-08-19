@@ -334,7 +334,7 @@ export class SelectionObserver extends Observer {
 			return;
 		}
 
-		if ( isOrphanedSelectionRange( newViewSelection ) ) {
+		if ( !isSelectionWithinRootElements( newViewSelection ) ) {
 			// Occasionally, such as when removing markers during a focus change, the selection may end up inside a view element
 			// whose parent has already been detached from the DOM. In most cases this is harmless, but if the selectionchange
 			// event fires before the view is fully synchronized with the DOM converter, some elements in the selection may become orphans.
@@ -379,28 +379,17 @@ export class SelectionObserver extends Observer {
 }
 
 /**
- * Checks if given selection first or last range item has a detached parent.
- * It often means that the selection starts or ends outside of the editing root.
+ * Checks if all roots of the selection's range boundaries are root elements.
+ * Returns true if the selection is fully contained within root elements (not orphaned).
+ *
+ * @param selection The view selection to check.
+ * @returns True if all range boundaries are within root elements, false otherwise.
  */
-function isOrphanedSelectionRange( selection: ViewSelection ): boolean {
+function isSelectionWithinRootElements( selection: ViewSelection ): boolean {
 	return Array
 		.from( selection.getRanges() )
-		.flatMap( range => [ range.start.parent, range.end.parent ] )
-		.some( element => {
-			while ( element ) {
-				if ( element.is( 'rootElement' ) ) {
-					return false;
-				}
-
-				if ( !element.parent ) {
-					return true;
-				}
-
-				element = element.parent;
-			}
-
-			return false;
-		} );
+		.flatMap( range => [ range.start.root, range.end.root ] )
+		.every( root => root && root.is( 'rootElement' ) );
 }
 
 /**
