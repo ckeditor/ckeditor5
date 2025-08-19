@@ -681,6 +681,30 @@ describe( 'DomConverter', () => {
 				expect( domDiv.innerHTML ).to.equal( '<p>foo&nbsp;</p><p>bar</p><p>xxx&nbsp;</p>' );
 			} );
 
+			it( 'at the beginning of each block attribute element - li', () => {
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, ' foo' ) ),
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, 'bar' ) ),
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, ' xxx' ) )
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv );
+
+				expect( domDiv.innerHTML ).to.equal( '<li>&nbsp;foo</li><li>bar</li><li>&nbsp;xxx</li>' );
+			} );
+
+			it( 'at the end of each block attribute element - li', () => {
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, 'foo ' ) ),
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, 'bar' ) ),
+					new ViewAttributeElement( viewDocument, 'li', null, new ViewText( viewDocument, 'xxx ' ) )
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv );
+
+				expect( domDiv.innerHTML ).to.equal( '<li>foo&nbsp;</li><li>bar</li><li>xxx&nbsp;</li>' );
+			} );
+
 			it( 'when there are multiple spaces next to each other or between attribute elements', () => {
 				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
 					new ViewText( viewDocument, 'x  x   x x ' ),
@@ -902,11 +926,21 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'not in a preformatted block followed by a text', () => {
-				const viewPre = new ViewAttributeElement( viewDocument, 'pre', null, new ViewText( viewDocument, 'foo   ' ) );
+				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, new ViewText( viewDocument, 'foo   ' ) );
 				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [ viewPre, new ViewText( viewDocument, ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv );
 
-				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre> bar' );
+				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre>&nbsp;bar' );
+			} );
+
+			it( 'not in a preformatted inline element followed by a text', () => {
+				converter.preElements.push( 'code' );
+
+				const viewPre = new ViewAttributeElement( viewDocument, 'code', null, new ViewText( viewDocument, 'foo   ' ) );
+				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [ viewPre, new ViewText( viewDocument, ' bar' ) ] );
+				const domDiv = converter.viewToDom( viewDiv );
+
+				expect( domDiv.innerHTML ).to.equal( '<code>foo   </code> bar' );
 			} );
 
 			describe( 'around <br>s', () => {
