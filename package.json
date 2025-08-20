@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-dev-docs": "^51.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^51.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^51.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-tests?770b06d64bd3edfcd439cafff4f805cdc8742128",
+    "@ckeditor/ckeditor5-dev-tests": "ckeditor/ckeditor5-dev#internal/4086-migrate-to-pnpm&path:/packages/ckeditor5-dev-tests",
     "@ckeditor/ckeditor5-dev-web-crawler": "^51.0.0",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#internal/4086-migrate-to-pnpm",
