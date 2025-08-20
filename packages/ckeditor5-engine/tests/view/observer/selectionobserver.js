@@ -551,7 +551,7 @@ describe( 'SelectionObserver', () => {
 		sel.collapse( domText, 3 );
 	} );
 
-	// See: https://github.com/ckeditor/ckeditor5/pull/18958
+	// See: https://github.com/ckeditor/ckeditor5/issues/18744
 	it( 'should not crash even if domConverter returns view range with items detached from root', done => {
 		const { domConverter } = selectionObserver;
 
