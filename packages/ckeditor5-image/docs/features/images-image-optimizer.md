@@ -10,6 +10,8 @@ badges: [ premium ]
 
 Elevate your images with robust editing tools available through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations. In this guide you will discover how to modify and enhance visuals directly in the editor, giving you greater creative control.
 
+{@snippet getting-started/unlock-feature}
+
 ## Image optimizer by Uploadcare
 
 Uploadcare provides not only basic image editing capabilities, but also image properties adjustments and photo filters, further extending CKEditor&nbsp;5 feature set.
