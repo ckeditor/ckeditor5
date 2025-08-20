@@ -4,17 +4,18 @@
  */
 
 import {
+	_setModelData,
+	Mapper,
+	Model,
+	ModelElement,
+	ModelText,
+	ViewDocument,
 	ViewDowncastWriter,
-	ViewText,
+	ViewEditableElement,
 	ViewElement,
 	ViewPosition,
-	ViewEditableElement,
-	ViewDocument,
-	ViewUIElement,
-	Model,
-	_setModelData,
-	ModelElement,
-	ModelText
+	ViewText,
+	ViewUIElement
 } from '@ckeditor/ckeditor5-engine';
 import {
 	toWidget,
@@ -30,9 +31,6 @@ import {
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-// eslint-disable-next-line ckeditor5-rules/allow-imports-only-from-main-package-entry-point
-import { Mapper } from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
