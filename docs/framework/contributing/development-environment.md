@@ -35,13 +35,7 @@ To start developing CKEditor&nbsp;5 you will require:
 
 First, you need to install [pnpm](https://pnpm.io) to use it for dependency management.
 
-It is best to install it globally in your system for easier use later on:
-
-```
-npm install -g pnpm
-```
-
-**Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
+It is best to install it in your system is to [follow the official pnpm installation guide](https://pnpm.io/installation).
 
 Then clone the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5):
 
