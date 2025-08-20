@@ -14,6 +14,9 @@ Elevate your images with robust editing tools available through the premium {@li
 
 Uploadcare provides not only basic image editing capabilities, but also image properties adjustments and photo filters, further extending CKEditor&nbsp;5 feature set.
 
+{@snippet getting-started/unlock-feature}
+
+
 ### Demo
 
 Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to access the Uploadcare editor.
