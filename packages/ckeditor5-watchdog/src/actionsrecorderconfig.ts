@@ -44,27 +44,6 @@ export interface ActionsRecorderConfig {
 	maxEntries?: number;
 
 	/**
-	 * Callback function that will be called before an action starts executing.
-	 * This allows real-time observation of actions as they begin.
-	 *
-	 * ```ts
-	 *	ClassicEditor
-	 *		.create( editorElement, {
-	 *			plugins: [ ActionsRecorder, ... ],
-	 *			actionsRecorder: {
-	 *				onBeforeAction: ( record, prevRecords ) => {
-	 *					console.log( 'Action starting:', record.event );
-	 *					console.log( 'Previous records count:', prevRecords.length );
-	 *				}
-	 *			}
-	 *		} )
-	 *		.then( ... )
-	 *		.catch( ... );
-	 * ```
-	 */
-	onBeforeAction?: ActionsRecorderBeforeCallback;
-
-	/**
 	 * Filter function that determines whether a record should be added to the list.
 	 * This is called before the action executes and before the record is stored.
 	 * It allows to reduce memory usage by filtering out unnecessary records.
@@ -76,9 +55,9 @@ export interface ActionsRecorderConfig {
 	 *		.create( editorElement, {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
-	 *				onFilter: ( record ) => {
+	 *				onFilter: ( entry, prevEntries ) => {
 	 *					// Only record command executions.
-	 *					return record.event.startsWith( 'commands.' );
+	 *					return entry.event.startsWith( 'commands.' );
 	 *				}
 	 *			}
 	 *		} )
@@ -89,20 +68,16 @@ export interface ActionsRecorderConfig {
 	onFilter?: ActionsRecorderFilterCallback;
 
 	/**
-	 * Callback function that will be called after an action completes (either successfully or with an error).
-	 * This allows real-time monitoring of action results and errors.
+	 * Callback function that will be called on caught error.
 	 *
 	 * ```ts
 	 *	ClassicEditor
 	 *		.create( editorElement, {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
-	 *				onAfterAction: ( record, result, error ) => {
-	 *					if ( error ) {
-	 *						console.error( 'Action failed:', record.event, error );
-	 *					} else {
-	 *						console.log( 'Action completed:', record.event, result );
-	 *					}
+	 *				onError: ( error, entries ) => {
+	 *					console.error( 'Error caught:', error );
+	 *					console.log( 'Actions recorded before error:', entries );
 	 *				}
 	 *			}
 	 *		} )
@@ -110,34 +85,25 @@ export interface ActionsRecorderConfig {
 	 *		.catch( ... );
 	 * ```
 	 */
-	onAfterAction?: ActionsRecorderAfterCallback;
+	onError?: ActionsRecorderErrorCallback;
 }
-
-/**
- * Callback function type for the `onBeforeAction` option in the ActionsRecorderConfig.
- *
- * @param record The action entry that is about to start.
- * @param prevRecords The array of previous action entries.
- */
-export type ActionsRecorderBeforeCallback = ( record: ActionsRecorderEntry, prevRecords: Array<ActionsRecorderEntry> ) => void;
 
 /**
  * Callback function type for the `onFilter` option in the ActionsRecorderConfig.
  * Called before the action executes to determine if it should be recorded.
  *
- * @param record The action entry to be filtered.
- * @param prevRecords The array of previous action entries.
+ * @param entry The action entry to be filtered.
+ * @param prevEntries The array of previous action entries.
  */
-export type ActionsRecorderFilterCallback = ( record: ActionsRecorderEntry, prevRecords: Array<ActionsRecorderEntry> ) => boolean;
+export type ActionsRecorderFilterCallback = ( entry: ActionsRecorderEntry, prevEntries: Array<ActionsRecorderEntry> ) => boolean;
 
 /**
- * Callback function type for the `onAfterAction` option in the ActionsRecorderConfig.
+ * Callback function type for the `onError` option in the ActionsRecorderConfig.
  *
- * @param record The completed action entry.
- * @param result The result of the action (if successful).
- * @param error The error that occurred (if failed).
+ * @param error The error that occurred.
+ * @param entries The log of actions before the error was encountered.
  */
-export type ActionsRecorderAfterCallback = ( record: ActionsRecorderEntry, result?: any, error?: any ) => void;
+export type ActionsRecorderErrorCallback = ( error: any, entries: Array<ActionsRecorderEntry> ) => void;
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.

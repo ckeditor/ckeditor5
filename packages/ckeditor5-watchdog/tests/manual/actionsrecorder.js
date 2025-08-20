@@ -7,10 +7,29 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ActionsRecorder } from '@ckeditor/ckeditor5-watchdog';
 
+class TypingError {
+	constructor( editor ) {
+		this.editor = editor;
+	}
+
+	init() {
+		const inputCommand = this.editor.commands.get( 'insertText' );
+
+		inputCommand.on( 'execute', ( evt, data ) => {
+			const commandArgs = data[ 0 ];
+
+			if ( commandArgs.text === '1' ) {
+				// Simulate error.
+				this.editor.foo.bar = 'bom';
+			}
+		} );
+	}
+}
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		plugins: [ ArticlePluginSet, ActionsRecorder ],
+		plugins: [ ArticlePluginSet, ActionsRecorder, TypingError ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
@@ -19,11 +38,19 @@ ClassicEditor
 			tableToolbar: [ 'bold', 'italic' ]
 		},
 		actionsRecorder: {
-			onBeforeAction: actionEntry => {
-				console.log( 'Action before:', actionEntry );
-			},
-			onAfterAction: ( ...args ) => {
-				console.log( 'Action after:', ...args );
+			// maxEntries: Number.POSITIVE_INFINITY,
+
+			// onFilter( entry ) {
+			// 	// Only record command executions.
+			// 	return entry.event.startsWith( 'commands.' );
+			// },
+
+			onError( error, entries ) {
+				console.warn( 'Error detected:', error );
+				console.log( 'Actions recorded before error:', entries );
+
+				// This callback is called in the context of ActionsRecorder plugin instance.
+				this.flushEntries();
 			}
 		}
 	} )

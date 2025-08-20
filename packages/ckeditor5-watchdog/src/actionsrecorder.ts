@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * @module watchdog/actionsrecorder
+ */
+
 /* istanbul ignore file -- @preserve */
 
 // eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
@@ -23,9 +27,8 @@ import type {
 import type {
 	ActionsRecorderEntry,
 	ActionsRecorderEntryEditorSnapshot,
-	ActionsRecorderBeforeCallback,
 	ActionsRecorderFilterCallback,
-	ActionsRecorderAfterCallback
+	ActionsRecorderErrorCallback
 } from './actionsrecorderconfig.js';
 
 /**
@@ -49,19 +52,14 @@ export class ActionsRecorder extends Plugin {
 	private _maxEntries: number;
 
 	/**
-	 * Observer "before" callbacks.
+	 * Error callback.
 	 */
-	private _beforeActionObservers: Set<ActionsRecorderBeforeCallback> = new Set();
+	private _errorCallback?: ActionsRecorderErrorCallback;
 
 	/**
-	 * Observer "after" callbacks.
+	 * Filter function to determine which entries should be stored.
 	 */
-	private _afterActionObservers: Set<ActionsRecorderAfterCallback> = new Set();
-
-	/**
-	 * Filter function to determine which records should be stored.
-	 */
-	private _recordFilter?: ActionsRecorderFilterCallback;
+	private _filterCallback?: ActionsRecorderFilterCallback;
 
 	/**
 	 * @inheritDoc
@@ -83,22 +81,13 @@ export class ActionsRecorder extends Plugin {
 	public constructor( editor: Editor ) {
 		super( editor );
 
-		editor.config.define( 'actionsRecorder.isEnabled', true );
 		editor.config.define( 'actionsRecorder.maxEntries', 1000 );
 
 		const config = editor.config.get( 'actionsRecorder' )!;
 
 		this._maxEntries = config.maxEntries!;
-		this._recordFilter = config.onFilter;
-
-		// Register initial callbacks from config if provided.
-		if ( config.onBeforeAction ) {
-			this._beforeActionObservers.add( config.onBeforeAction );
-		}
-
-		if ( config.onAfterAction ) {
-			this._afterActionObservers.add( config.onAfterAction );
-		}
+		this._filterCallback = config.onFilter;
+		this._errorCallback = config.onError;
 
 		this._tapCommands();
 		this._tapOperationApply();
@@ -111,40 +100,16 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * Returns all recorded action entries.
 	 */
-	public getRecords(): Array<ActionsRecorderEntry> {
+	public getEntries(): Array<ActionsRecorderEntry> {
 		return this._entries;
 	}
 
 	/**
 	 * Flushes all recorded entries and clears the frame stack.
 	 */
-	public flushRecords(): void {
+	public flushEntries(): void {
 		this._entries = [];
 		this._frameStack = [];
-	}
-
-	/**
-	 * Registers a before action observer callback.
-	 *
-	 * @param callback The callback function to register.
-	 * @returns A function that can be called to unregister the observer.
-	 */
-	public observeBeforeActions( callback: ActionsRecorderBeforeCallback ): () => void {
-		this._beforeActionObservers.add( callback );
-
-		return () => this._beforeActionObservers.delete( callback );
-	}
-
-	/**
-	 * Registers an after action observer callback.
-	 *
-	 * @param callback The callback function to register.
-	 * @returns A function that can be called to unregister the observer.
-	 */
-	public observeAfterActions( callback: ActionsRecorderAfterCallback ): () => void {
-		this._afterActionObservers.add( callback );
-
-		return () => this._afterActionObservers.delete( callback );
 	}
 
 	/**
@@ -164,10 +129,7 @@ export class ActionsRecorder extends Plugin {
 		};
 
 		// Apply filter if configured, only add to entries if filter passes.
-		if ( !this._recordFilter || this._recordFilter( callFrame, this._entries ) ) {
-			// Notify before observers about the new record.
-			this._notifyBeforeActionObservers( callFrame );
-
+		if ( !this._filterCallback || this._filterCallback( callFrame, this._entries ) ) {
 			// Add the call frame to the entries.
 			this._entries.push( callFrame );
 
@@ -208,8 +170,9 @@ export class ActionsRecorder extends Plugin {
 
 		topFrame.after = this._buildStateSnapshot();
 
-		// Notify after observers about the completed action.
-		this._notifyAfterActionObservers( topFrame, result, error );
+		if ( error ) {
+			this._callErrorCallback( error );
+		}
 	}
 
 	/**
@@ -435,30 +398,18 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
-	 * Notifies before action observers.
+	 * Triggers error callback.
 	 */
-	private _notifyBeforeActionObservers( record: ActionsRecorderEntry ): void {
-		for ( const callback of this._beforeActionObservers ) {
-			try {
-				callback( record, this._entries );
-			} catch ( observerError ) {
-				// Silently catch observer errors to prevent them from affecting the recording.
-				console.error( 'ActionsRecorder before observer error:', observerError );
-			}
+	private _callErrorCallback( error?: any ): void {
+		if ( !this._errorCallback ) {
+			return;
 		}
-	}
 
-	/**
-	 * Notifies after action observers.
-	 */
-	private _notifyAfterActionObservers( record: ActionsRecorderEntry, result?: any, error?: any ): void {
-		for ( const callback of this._afterActionObservers ) {
-			try {
-				callback( record, result, error );
-			} catch ( observerError ) {
-				// Silently catch observer errors to prevent them from affecting the recording.
-				console.error( 'ActionsRecorder after observer error:', observerError );
-			}
+		try {
+			this._errorCallback( error, this._entries );
+		} catch ( observerError ) {
+			// Silently catch observer errors to prevent them from affecting the recording.
+			console.error( 'ActionsRecorder onError callback error:', observerError );
 		}
 	}
 }

@@ -25,8 +25,7 @@ export type {
 	ActionsRecorderConfig,
 	ActionsRecorderEntry,
 	ActionsRecorderEntryEditorSnapshot,
-	ActionsRecorderAfterCallback,
-	ActionsRecorderBeforeCallback,
+	ActionsRecorderErrorCallback,
 	ActionsRecorderFilterCallback
 } from './actionsrecorderconfig.js';
 
