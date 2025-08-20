@@ -16,7 +16,6 @@ Uploadcare provides not only basic image editing capabilities, but also image pr
 
 {@snippet getting-started/unlock-feature}
 
-
 ### Demo
 
 Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to access the Uploadcare editor.
