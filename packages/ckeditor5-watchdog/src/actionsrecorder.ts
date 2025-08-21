@@ -28,7 +28,8 @@ import type {
 	ActionsRecorderEntry,
 	ActionsRecorderEntryEditorSnapshot,
 	ActionsRecorderFilterCallback,
-	ActionsRecorderErrorCallback
+	ActionsRecorderErrorCallback,
+	ActionsRecorderMaxEntriesCallback
 } from './actionsrecorderconfig.js';
 
 /**
@@ -62,6 +63,11 @@ export class ActionsRecorder extends Plugin {
 	private _filterCallback?: ActionsRecorderFilterCallback;
 
 	/**
+	 * TODO
+	 */
+	private _maxEntriesCallback: ActionsRecorderMaxEntriesCallback;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -88,6 +94,7 @@ export class ActionsRecorder extends Plugin {
 		this._maxEntries = config.maxEntries!;
 		this._filterCallback = config.onFilter;
 		this._errorCallback = config.onError;
+		this._maxEntriesCallback = config.onMaxEntries || this._maxEntriesDefaultHandler;
 
 		this._tapCommands();
 		this._tapOperationApply();
@@ -101,7 +108,8 @@ export class ActionsRecorder extends Plugin {
 	 * Returns all recorded action entries.
 	 */
 	public getEntries(): Array<ActionsRecorderEntry> {
-		return this._entries;
+		// Return a shallow copy instead of reference as this array could be modified.
+		return this._entries.slice();
 	}
 
 	/**
@@ -109,21 +117,20 @@ export class ActionsRecorder extends Plugin {
 	 */
 	public flushEntries(): void {
 		this._entries = [];
-		this._frameStack = [];
 	}
 
 	/**
 	 * Creates a new action frame and adds it to the recording stack.
 	 *
-	 * @param event The name/type of the event being recorded.
+	 * @param action The name/type of the action being recorded.
 	 * @param params Optional parameters associated with the event.
 	 * @returns The created call frame object.
 	 */
-	private _enterFrame( event: string, params?: Array<unknown> ): ActionsRecorderEntry {
+	private _enterFrame( action: string, params?: Array<unknown> ): ActionsRecorderEntry {
 		const callFrame: ActionsRecorderEntry = {
 			timeStamp: new Date().toISOString(),
-			...this._frameStack.length && { parentFrame: this._frameStack.at( -1 ) },
-			event,
+			...this._frameStack.length && { parentEntry: this._frameStack.at( -1 ) },
+			action,
 			params: params?.map( param => serializeValue( param ) ),
 			before: this._buildStateSnapshot()
 		};
@@ -134,8 +141,8 @@ export class ActionsRecorder extends Plugin {
 			this._entries.push( callFrame );
 
 			// Enforce max entries limit.
-			if ( this._entries.length > this._maxEntries ) {
-				this._entries.shift();
+			if ( this._entries.length >= this._maxEntries ) {
+				this._maxEntriesCallback();
 			}
 		}
 
@@ -165,7 +172,7 @@ export class ActionsRecorder extends Plugin {
 		}
 
 		if ( error ) {
-			topFrame.error = error;
+			topFrame.error = serializeValue( error );
 		}
 
 		topFrame.after = this._buildStateSnapshot();
@@ -406,11 +413,19 @@ export class ActionsRecorder extends Plugin {
 		}
 
 		try {
-			this._errorCallback( error, this._entries );
+			// Provide a shallow copy of entries as it might be modified before error handler serializes it.
+			this._errorCallback( error, this.getEntries() );
 		} catch ( observerError ) {
 			// Silently catch observer errors to prevent them from affecting the recording.
 			console.error( 'ActionsRecorder onError callback error:', observerError );
 		}
+	}
+
+	/**
+	 * The default handler for maxEntries... TODO
+	 */
+	private _maxEntriesDefaultHandler() {
+		this._entries.shift();
 	}
 }
 
@@ -504,6 +519,16 @@ function serializeValue( value: any ): any {
 
 	if ( typeof value.toJSON == 'function' ) {
 		return value.toJSON();
+	}
+
+	// TODO ViewText is not handled
+
+	if ( value instanceof Error ) {
+		return {
+			name: value.name,
+			message: value.message,
+			stack: value.stack
+		};
 	}
 
 	if ( isTypeCheckable( value ) ) {

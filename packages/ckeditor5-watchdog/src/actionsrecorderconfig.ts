@@ -7,6 +7,8 @@
  * @module watchdog/actionsrecorderconfig
  */
 
+import type { ActionsRecorder } from './actionsrecorder.js';
+
 /**
  * The configuration of the ActionsRecorder plugin.
  *
@@ -86,6 +88,11 @@ export interface ActionsRecorderConfig {
 	 * ```
 	 */
 	onError?: ActionsRecorderErrorCallback;
+
+	/**
+	 * TODO
+	 */
+	onMaxEntries?: ActionsRecorderMaxEntriesCallback;
 }
 
 /**
@@ -95,7 +102,11 @@ export interface ActionsRecorderConfig {
  * @param entry The action entry to be filtered.
  * @param prevEntries The array of previous action entries.
  */
-export type ActionsRecorderFilterCallback = ( entry: ActionsRecorderEntry, prevEntries: Array<ActionsRecorderEntry> ) => boolean;
+export type ActionsRecorderFilterCallback = (
+	this: ActionsRecorder,
+	entry: ActionsRecorderEntry,
+	prevEntries: Array<ActionsRecorderEntry>
+) => boolean;
 
 /**
  * Callback function type for the `onError` option in the ActionsRecorderConfig.
@@ -103,7 +114,18 @@ export type ActionsRecorderFilterCallback = ( entry: ActionsRecorderEntry, prevE
  * @param error The error that occurred.
  * @param entries The log of actions before the error was encountered.
  */
-export type ActionsRecorderErrorCallback = ( error: any, entries: Array<ActionsRecorderEntry> ) => void;
+export type ActionsRecorderErrorCallback = (
+	this: ActionsRecorder,
+	error: any,
+	entries: Array<ActionsRecorderEntry>
+) => void;
+
+/**
+ * TODO
+ */
+export type ActionsRecorderMaxEntriesCallback = (
+	this: ActionsRecorder
+) => void;
 
 /**
  * Represents the state snapshot of the editor at a specific point in time.
@@ -120,8 +142,8 @@ export interface ActionsRecorderEntryEditorSnapshot {
  */
 export interface ActionsRecorderEntry {
 	timeStamp: string;
-	parentFrame?: ActionsRecorderEntry;
-	event: string;
+	parentEntry?: ActionsRecorderEntry;
+	action: string;
 	params?: Array<any>;
 	before: ActionsRecorderEntryEditorSnapshot;
 	after?: ActionsRecorderEntryEditorSnapshot;
