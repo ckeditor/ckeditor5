@@ -4,9 +4,9 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand.js';
+import { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { HeadingCommand } from '../src/headingcommand.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 const options = [
 	{ model: 'heading1', view: { name: 'h2' }, title: 'H2' },

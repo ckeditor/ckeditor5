@@ -4,10 +4,7 @@
  */
 
 import { ColorInputView } from '../../src/ui/colorinputview.js';
-import { InputTextView } from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
-import { ColorGridView } from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
-import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
+import { InputTextView, ColorGridView, DropdownView, ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { global } from 'ckeditor5/src/utils.js';
 

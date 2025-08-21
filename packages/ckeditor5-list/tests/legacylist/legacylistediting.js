@@ -9,23 +9,20 @@ import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
 import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
 import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
 
-import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelRange, _getModelData, _parseModel, _setModelData, _getViewData, _parseView } from '@ckeditor/ckeditor5-engine';
 
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { TableKeyboard } from '@ckeditor/ckeditor5-table/src/tablekeyboard.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { getCode } from '@ckeditor/ckeditor5-utils';
+import { TableEditing, TableKeyboard } from '@ckeditor/ckeditor5-table';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 

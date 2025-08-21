@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { List } from '@ckeditor/ckeditor5-list';
+import { global } from '@ckeditor/ckeditor5-utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 class FancyWidget extends Plugin {
 	static get requires() {

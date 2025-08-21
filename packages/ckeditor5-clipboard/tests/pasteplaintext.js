@@ -6,9 +6,9 @@
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { getCode } from '@ckeditor/ckeditor5-utils';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { PastePlainText } from '../src/pasteplaintext.js';
 

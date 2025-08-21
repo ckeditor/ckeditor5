@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { FakeSelectionObserver } from '../../../src/view/observer/fakeselectionobserver.js';
 import { EditingView } from '../../../src/view/view.js';
 import { ViewDocumentDomEventData } from '../../../src/view/observer/domeventdata.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { _setViewData, _stringifyView } from '../../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';

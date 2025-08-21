@@ -4,14 +4,13 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine';
 import { DualContentModelElementSupport } from '../../src/integrations/dualcontent.js';
 
 describe( 'DualContentModelElementSupport', () => {

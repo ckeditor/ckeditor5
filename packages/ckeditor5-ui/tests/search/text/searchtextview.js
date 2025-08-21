@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusTracker, KeystrokeHandler, Locale, keyCodes } from '@ckeditor/ckeditor5-utils';
 import {
 	FocusCycler,
 	InputNumberView,
@@ -16,8 +16,6 @@ import {
 	ViewCollection,
 	createLabeledInputNumber
 } from '../../../src/index.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SearchTextView', () => {

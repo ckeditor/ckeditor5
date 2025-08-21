@@ -4,9 +4,9 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import { _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker } from '../src/tablewalker.js';
 import { TableEditing } from '../src/tableediting.js';

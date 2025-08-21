@@ -5,11 +5,10 @@
 
 import { HeadingEditing } from '../src/headingediting.js';
 import { HeadingCommand } from '../src/headingcommand.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ParagraphCommand } from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand.js';
+import { Paragraph, ParagraphCommand } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'HeadingEditing', () => {
 	let editor, model;

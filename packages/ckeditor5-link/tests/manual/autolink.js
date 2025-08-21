@@ -3,17 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
 import { Link } from '../../src/link.js';
 import { AutoLink } from '../../src/autolink.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

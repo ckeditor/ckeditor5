@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
