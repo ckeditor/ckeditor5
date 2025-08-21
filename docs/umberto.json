@@ -563,6 +563,14 @@
 					]
 				},
 				{
+					"name": "AI Chat",
+					"id": "features-ai-chat",
+					"slug": "ai-chat",
+					"badges": [
+						"premium"
+					]
+				},
+				{
 					"name": "Cloud Services",
 					"id": "cloud-services",
 					"slug": "cloud-services",
