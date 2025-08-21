@@ -282,6 +282,7 @@ export { DomEventObserver } from './view/observer/domeventobserver.js';
 export { MouseObserver } from './view/observer/mouseobserver.js';
 export { TabObserver } from './view/observer/tabobserver.js';
 export { TouchObserver } from './view/observer/touchobserver.js';
+export { PointerObserver } from './view/observer/pointerobserver.js';
 export { FakeSelectionObserver } from './view/observer/fakeselectionobserver.js';
 export {
 	KeyObserver,
@@ -364,6 +365,11 @@ export type {
 	ViewDocumentTouchMoveEvent,
 	ViewDocumentTouchStartEvent
 } from './view/observer/touchobserver.js';
+export type {
+	ViewDocumentPointerDownEvent,
+	ViewDocumentPointerMoveEvent,
+	ViewDocumentPointerUpEvent
+} from './view/observer/pointerobserver.js';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver.js';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver.js';
 export type {
