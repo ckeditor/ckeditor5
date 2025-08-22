@@ -29,6 +29,8 @@ export interface ActionsRecorderConfig {
 	 * The maximum number of action entries to keep in memory.
 	 * When this limit is reached, older entries will be removed.
 	 *
+	 * This behavior can be modified by providing {@link #onMaxEntries `onMaxEntries`} callback.
+	 *
 	 * ```ts
 	 *	ClassicEditor
 	 *		.create( editorElement, {
@@ -47,7 +49,7 @@ export interface ActionsRecorderConfig {
 
 	/**
 	 * Filter function that determines whether a record should be added to the list.
-	 * This is called before the action executes and before the record is stored.
+	 * This is called before the action executes and before the entry is stored.
 	 * It allows to reduce memory usage by filtering out unnecessary records.
 	 *
 	 * If this function returns `false`, the record will not be stored in the entries array.
@@ -57,7 +59,7 @@ export interface ActionsRecorderConfig {
 	 *		.create( editorElement, {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
-	 *				onFilter: ( entry, prevEntries ) => {
+	 *				onFilter( entry, prevEntries ) {
 	 *					// Only record command executions.
 	 *					return entry.event.startsWith( 'commands.' );
 	 *				}
@@ -70,16 +72,18 @@ export interface ActionsRecorderConfig {
 	onFilter?: ActionsRecorderFilterCallback;
 
 	/**
-	 * Callback function that will be called on caught error.
+	 * Callback function called on caught error.
 	 *
 	 * ```ts
 	 *	ClassicEditor
 	 *		.create( editorElement, {
 	 *			plugins: [ ActionsRecorder, ... ],
 	 *			actionsRecorder: {
-	 *				onError: ( error, entries ) => {
-	 *					console.error( 'Error caught:', error );
-	 *					console.log( 'Actions recorded before error:', entries );
+	 *				onError( error, entries ) {
+	 *					console.error( 'ActionsRecorder - Error detected:', error );
+	 *					console.warn( 'Actions recorded before error:', entries );
+	 *
+	 * 					this.flushEntries();
 	 *				}
 	 *			}
 	 *		} )
@@ -90,13 +94,34 @@ export interface ActionsRecorderConfig {
 	onError?: ActionsRecorderErrorCallback;
 
 	/**
-	 * TODO
+	 * Callback function called when recorded entries count reaches {@link #maxEntries `maxEntries`}.
+	 *
+	 * ```ts
+	 * 	ClassicEditor
+	 * 		.create( editorElement, {
+	 * 			plugins: [ ActionsRecorder, ... ],
+	 * 			actionsRecorder: {
+	 * 				onMaxEntries() {
+	 * 					const entries = this.getEntries();
+	 *
+	 * 					this.flushEntries();
+	 *
+	 * 					console.log( 'ActionsRecorder - Batch of entries:', entries );
+	 * 				}
+	 * 			}
+	 * 		} )
+	 * 		.then( ... )
+	 * 		.catch( ... );
+	 * ```
+	 *
+	 * By default, when this callback is not provided, the list of entries is shifted so it does not include more than
+	 * {@link #maxEntries `maxEntries`}.
 	 */
 	onMaxEntries?: ActionsRecorderMaxEntriesCallback;
 }
 
 /**
- * Callback function type for the `onFilter` option in the ActionsRecorderConfig.
+ * Callback function type for the {@link ~ActionsRecorderConfig#onFilter `onFilter`} option.
  * Called before the action executes to determine if it should be recorded.
  *
  * @param entry The action entry to be filtered.
@@ -109,7 +134,7 @@ export type ActionsRecorderFilterCallback = (
 ) => boolean;
 
 /**
- * Callback function type for the `onError` option in the ActionsRecorderConfig.
+ * Callback function type for the {@link ~ActionsRecorderConfig#onError `onError`} option.
  *
  * @param error The error that occurred.
  * @param entries The log of actions before the error was encountered.
@@ -121,7 +146,7 @@ export type ActionsRecorderErrorCallback = (
 ) => void;
 
 /**
- * TODO
+ * Callback function type for the {@link ~ActionsRecorderConfig#onMaxEntries `onMaxEntries`} option.
  */
 export type ActionsRecorderMaxEntriesCallback = (
 	this: ActionsRecorder

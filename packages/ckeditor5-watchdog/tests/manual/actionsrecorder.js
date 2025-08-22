@@ -46,8 +46,8 @@ ClassicEditor
 			// },
 
 			onError( error, entries ) {
-				console.warn( 'Error detected:', error );
-				console.log( 'Actions recorded before error:', entries );
+				console.error( 'ActionsRecorder - Error detected:', error );
+				console.warn( 'Actions recorded before error:', entries );
 
 				// This callback is called in the context of ActionsRecorder plugin instance.
 				this.flushEntries();

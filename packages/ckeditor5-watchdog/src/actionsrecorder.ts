@@ -48,6 +48,11 @@ export class ActionsRecorder extends Plugin {
 	private _frameStack: Array<ActionsRecorderEntry> = [];
 
 	/**
+	 * Set of already reported errors used to notify only once for each error (not on every try-catch nested block).
+	 */
+	private _errors = new Set<Error>();
+
+	/**
 	 * Maximum number of action entries to keep in memory.
 	 */
 	private _maxEntries: number;
@@ -63,7 +68,7 @@ export class ActionsRecorder extends Plugin {
 	private _filterCallback?: ActionsRecorderFilterCallback;
 
 	/**
-	 * TODO
+	 * Callback triggered every time count of recorded entries reaches maxEntries.
 	 */
 	private _maxEntriesCallback: ActionsRecorderMaxEntriesCallback;
 
@@ -179,6 +184,10 @@ export class ActionsRecorder extends Plugin {
 
 		if ( error ) {
 			this._callErrorCallback( error );
+		}
+
+		if ( this._frameStack.length == 0 ) {
+			this._errors.clear();
 		}
 	}
 
@@ -408,9 +417,11 @@ export class ActionsRecorder extends Plugin {
 	 * Triggers error callback.
 	 */
 	private _callErrorCallback( error?: any ): void {
-		if ( !this._errorCallback ) {
+		if ( !this._errorCallback || this._errors.has( error ) ) {
 			return;
 		}
+
+		this._errors.add( error );
 
 		try {
 			// Provide a shallow copy of entries as it might be modified before error handler serializes it.
@@ -422,7 +433,7 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
-	 * The default handler for maxEntries... TODO
+	 * The default handler for maxEntries callback.
 	 */
 	private _maxEntriesDefaultHandler() {
 		this._entries.shift();
