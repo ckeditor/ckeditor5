@@ -28,7 +28,7 @@ async function buildDocs() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 
 	if ( !options.skipApi ) {
-		await spawnAsync( 'yarn', [
+		await spawnAsync( 'pnpm', [
 			'run',
 			'docs:api',
 			options.strict && '--strict',
@@ -37,7 +37,7 @@ async function buildDocs() {
 	}
 
 	if ( shouldBuildCKEditorAssets( options ) ) {
-		await spawnAsync( 'yarn', [
+		await spawnAsync( 'pnpm', [
 			'run',
 			'docs:ckeditor5',
 			options.skipCommercial && '--skip-commercial',
