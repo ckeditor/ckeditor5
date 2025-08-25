@@ -156,9 +156,25 @@ export type ActionsRecorderMaxEntriesCallback = (
  * Represents the state snapshot of the editor at a specific point in time.
  */
 export interface ActionsRecorderEntryEditorSnapshot {
+
+	/**
+	 * The document version. See {@link module:engine/model/document~ModelDocument#version}.
+	 */
 	documentVersion: number;
+
+	/**
+	 * Whether the editor is in the read-only mode. See {@link module:core/editor/editor~Editor#isReadOnly}.
+	 */
 	editorReadOnly: boolean;
+
+	/**
+	 * True if document is focused. See {@link module:engine/view/document~ViewDocument#isFocused}.
+	 */
 	editorFocused: boolean;
+
+	/**
+	 * The current model selection. See {@link module:engine/model/document~ModelDocument#selection}.
+	 */
 	modelSelection: any;
 }
 
@@ -166,12 +182,57 @@ export interface ActionsRecorderEntryEditorSnapshot {
  * Represents a recorded action entry with context and state information.
  */
 export interface ActionsRecorderEntry {
+
+	/**
+	 * Entry timestamp in ISO date time format.
+	 */
 	timeStamp: string;
+
+	/**
+	 * For nested actions this is a reference to parent action (nesting of try-catch blocks).
+	 *
+	 * For example when user clicks a button in a toolbar it could generate such nested tree:
+	 * * `component.bold:execute`
+	 * 	* `commands.bold:execute`
+	 * 		* `model.applyOperation`
+	 */
 	parentEntry?: ActionsRecorderEntry;
+
+	/**
+	 * The name of the action.
+	 *
+	 * For example:
+	 * * `component.bold:execute` Main action for toolbar button `bold` was executed.
+	 * * `commands.bold:execute` The `bold` command was executed.
+	 * * `model.applyOperation` The low-level operation was applied to the model.
+	 * * `observers:paste` The `paste` DOM event was dispatched in the editing root.
+	 * * `model.insertContent` The `model#insertContent()` was called.
+	 * * `model-selection:change:range` The model selection range was changed.
+	 */
 	action: string;
-	params?: Array<any>;
+
+	/**
+	 * The editor state before the action was executed.
+	 */
 	before: ActionsRecorderEntryEditorSnapshot;
+
+	/**
+	 * The editor state after the action was executed.
+	 */
 	after?: ActionsRecorderEntryEditorSnapshot;
+
+	/**
+	 * Params provided for the executed action. Those depend on the actual action.
+	 */
+	params?: Array<any>;
+
+	/**
+	 * The result returned by the executed action. Those depend on the actual action.
+	 */
 	result?: any;
+
+	/**
+	 * The error if the action throw any.
+	 */
 	error?: any;
 }

@@ -33,8 +33,72 @@ import type {
 } from './actionsrecorderconfig.js';
 
 /**
- * A plugin that records user actions and editor state changes for debugging purposes.
- * It tracks commands execution, model operations, UI interactions, and document events.
+ * A plugin that records user actions and editor state changes for debugging purposes. It tracks commands execution, model operations,
+ * UI interactions, and document events. It just collects data locally, and does not send it anywhere, integrator is responsible
+ * for gathering data from this plugin for further processing.
+ *
+ * By default, plugin stores latest 1000 action entries. Integrator can register an `onError` callback to collect those entries
+ * along with the caught exception, augment those data with application data such as page-id or session-id, depending on the application,
+ * and send it to data collecting endpoint for later analysis.
+ *
+ * Example:
+ *
+ * ```ts
+ * 	ClassicEditor
+ * 		.create( editorElement, {
+ * 			plugins: [ ActionsRecorder, ... ],
+ * 			actionsRecorder: {
+ * 				maxEntries: 1000, // This is the default value and could be adjusted.
+ *
+ * 				onError( error, entries ) {
+ * 					console.error( 'ActionsRecorder - Error detected:', error );
+ * 					console.warn( 'Actions recorded before error:', entries );
+ *
+ * 					this.flushEntries();
+ *
+ * 					// Integrator should send and store the entries. The error is already in the last entry in serializable form.
+ * 				}
+ * 			}
+ * 		} )
+ * 		.then( ... )
+ * 		.catch( ... );
+ * ```
+ *
+ * Alternatively integrator could continuously collect actions in batches and send them to theirs endpoint for later analysis:
+ *
+ * ```ts
+ * 	ClassicEditor
+ * 		.create( editorElement, {
+ * 			plugins: [ ActionsRecorder, ... ],
+ * 			actionsRecorder: {
+ * 				maxEntries: 50, // This is the batch size.
+ *
+ * 				onMaxEntries() {
+ * 					const entries = this.getEntries();
+ *
+ * 					this.flushEntries();
+ *
+ * 					console.log( 'ActionsRecorder - Batch of entries:', entries );
+ *
+ * 					// Integrator should send and store the entries.
+ * 				},
+ *
+ * 				onError( error, entries ) {
+ * 					console.error( 'ActionsRecorder - Error detected:', error );
+ * 					console.warn( 'Actions recorded before error:', entries );
+ *
+ * 					this.flushEntries();
+ *
+ * 					// Integrator should send and store the entries. The error is already in the last entry in serializable form.
+ * 				}
+ * 			}
+ * 		} )
+ * 		.then( ... )
+ * 		.catch( ... );
+ * ```
+ *
+ * See {@link module:watchdog/actionsrecorderconfig~ActionsRecorderConfig plugin configuration} for more details.
+ *
  */
 export class ActionsRecorder extends Plugin {
 	/**
@@ -118,7 +182,7 @@ export class ActionsRecorder extends Plugin {
 	}
 
 	/**
-	 * Flushes all recorded entries and clears the frame stack.
+	 * Flushes all recorded entries.
 	 */
 	public flushEntries(): void {
 		this._entries = [];
