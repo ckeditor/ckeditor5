@@ -6,8 +6,7 @@
 import { ListWalker } from '../../../src/list/utils/listwalker.js';
 import { modelList } from '../_utils/utils.js';
 
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Model, _parseModel } from '@ckeditor/ckeditor5-engine';
 
 describe( 'List - utils - ListWalker', () => {
 	let model, schema;

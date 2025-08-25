@@ -4,7 +4,7 @@
  */
 
 import { Token } from '../../src/token/token.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Token', () => {

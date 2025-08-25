@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { AutoImage } from '../../src/autoimage.js';
 import { ImageResize } from '../../src/imageresize.js';
 import { ImageUpload } from '../../src/imageupload.js';

@@ -4,22 +4,21 @@
  */
 
 import { BlockQuote } from '../src/blockquote.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { LegacyList } from '@ckeditor/ckeditor5-list/src/legacylist.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { LegacyList } from '@ckeditor/ckeditor5-list';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Table } from '@ckeditor/ckeditor5-table';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_parseModel,
 	_getModelData,
 	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;

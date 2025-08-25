@@ -194,11 +194,12 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Copying CHANGELOG.md and README.md to the release directory.',
+					title: 'Copying `ckeditor5` files to the release directory.',
 					task: async () => {
 						const filenamesToCopy = [
 							'CHANGELOG.md',
-							'README.md'
+							'README.md',
+							'COPYING.GPL'
 						];
 
 						for ( const filename of filenamesToCopy ) {
@@ -270,7 +271,7 @@ const tasks = new Listr( [
 						await fs.copy( browserPath, `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/` );
 						await fs.copy( translationsPath, `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
 						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
-						await fs.copy( './LICENSE.md', `./${ RELEASE_ZIP_DIRECTORY }/LICENSE.md` );
+						await fs.copy( `./${ PACKAGES_DIRECTORY }/ckeditor5/LICENSE.md`, `./${ RELEASE_ZIP_DIRECTORY }/LICENSE.md` );
 						await fs.copy( './COPYING.GPL', `./${ RELEASE_ZIP_DIRECTORY }/COPYING.GPL` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );

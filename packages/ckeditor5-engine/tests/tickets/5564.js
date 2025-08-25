@@ -4,8 +4,8 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
 import { _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 

@@ -5,17 +5,16 @@
 
 import { BalloonEditor } from '../src/ballooneditor.js';
 import { BalloonEditorUI } from '../src/ballooneditorui.js';
-import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import { EditorUI, BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 import { BalloonEditorUIView } from '../src/ballooneditoruiview.js';
-import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { isElement } from 'es-toolkit/compat';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

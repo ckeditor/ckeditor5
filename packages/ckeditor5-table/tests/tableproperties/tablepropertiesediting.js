@@ -4,7 +4,7 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageResizeEditing } from '@ckeditor/ckeditor5-image';
 
 import { TableEditing } from '../../src/tableediting.js';
@@ -19,7 +19,7 @@ import { TableWidthCommand } from '../../src/tableproperties/commands/tablewidth
 import { TableHeightCommand } from '../../src/tableproperties/commands/tableheightcommand.js';
 import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table properties', () => {

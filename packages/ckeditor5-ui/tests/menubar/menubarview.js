@@ -18,12 +18,10 @@ import {
 import { MenuBarBehaviors, normalizeMenuBarConfig } from '../../src/menubar/utils.js';
 import {
 	Locale,
-	wait
-} from '@ckeditor/ckeditor5-utils';
-import {
+	wait,
 	add as addTranslations,
-	_clear as clearTranslations
-} from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+	_clearTranslations
+} from '@ckeditor/ckeditor5-utils';
 import { ListSeparatorView } from '../../src/list/listseparatorview.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
@@ -55,7 +53,7 @@ describe( 'MenuBarView', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 BalloonEditor
