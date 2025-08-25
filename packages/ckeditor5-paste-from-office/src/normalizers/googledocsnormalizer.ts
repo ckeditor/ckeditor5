@@ -12,6 +12,7 @@ import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 import { removeBoldWrapper } from '../filters/removeboldwrapper.js';
 import { transformBlockBrsToParagraphs } from '../filters/br.js';
 import { unwrapParagraphInListItem } from '../filters/list.js';
+import { replaceTabsWithinPreWithSpaces } from '../filters/replacetabswithinprewithspaces.js';
 import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
@@ -50,6 +51,7 @@ export class GoogleDocsNormalizer implements PasteFromOfficeNormalizer {
 		removeBoldWrapper( documentFragment, writer );
 		unwrapParagraphInListItem( documentFragment, writer );
 		transformBlockBrsToParagraphs( documentFragment, writer );
+		replaceTabsWithinPreWithSpaces( documentFragment, writer, 8 );
 
 		data.content = documentFragment;
 	}
