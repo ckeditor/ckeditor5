@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { ReplaceImageSourceCommand } from '../src/image/replaceimagesourcecommand.js';
 import { ImageBlockEditing } from '../src/image/imageblockediting.js';
@@ -16,8 +16,7 @@ import { PictureEditing } from '../src/pictureediting.js';
 import { ImageUtils } from '../src/imageutils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ImageSizeAttributes', () => {
 	let editor, model, view;

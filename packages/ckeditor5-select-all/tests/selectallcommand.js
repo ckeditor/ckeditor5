@@ -5,11 +5,10 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { SelectAllEditing } from '../src/selectallediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageBlockEditing, ImageCaptionEditing } from '@ckeditor/ckeditor5-image';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'SelectAllCommand', () => {
 	let editor, model, command;

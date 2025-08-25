@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {

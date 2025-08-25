@@ -6,9 +6,8 @@
 import { Editor } from '../../src/editor/editor.js';
 import { VirtualTestEditor } from '../../tests/_utils/virtualtesteditor.js';
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { testUtils } from '../../tests/_utils/utils.js';
 

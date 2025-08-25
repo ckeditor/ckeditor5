@@ -5,23 +5,16 @@
 
 import { IconBookmarkMedium, IconBookmarkSmall, IconLink } from 'ckeditor5/src/icons.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { indexOf } from '@ckeditor/ckeditor5-utils/src/dom/indexof.js';
-import { isRange } from '@ckeditor/ckeditor5-utils/src/dom/isrange.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { ClickObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver.js';
-import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { indexOf, isRange, keyCodes, env } from '@ckeditor/ckeditor5-utils';
+import { _getModelData, _setModelData, _getViewData, ClickObserver } from '@ckeditor/ckeditor5-engine';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { ContextualBalloon, ButtonView, View, MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 
 import { LinkEditing } from '../src/linkediting.js';
@@ -30,7 +23,6 @@ import { LinkFormView } from '../src/ui/linkformview.js';
 import { LinkPreviewButtonView } from '../src/ui/linkpreviewbuttonview.js';
 import { LinkPropertiesView } from '../src/ui/linkpropertiesview.js';
 import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
-import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LinkUI', () => {
 	let editor, model, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;

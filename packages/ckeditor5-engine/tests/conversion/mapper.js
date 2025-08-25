@@ -20,7 +20,7 @@ import { ViewRange } from '../../src/view/range.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { ViewAttributeElement } from '../../src/index.js';
 
 describe( 'Mapper', () => {

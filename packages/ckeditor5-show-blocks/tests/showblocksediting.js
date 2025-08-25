@@ -5,9 +5,9 @@
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Heading } from '@ckeditor/ckeditor5-heading';
 
 import { ShowBlocksEditing } from '../src/showblocksediting.js';
 import { ShowBlocksCommand } from '../src/showblockscommand.js';

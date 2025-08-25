@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Typing } from '../../src/typing.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

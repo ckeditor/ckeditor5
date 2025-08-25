@@ -7,10 +7,9 @@ import { IconPageBreak } from 'ckeditor5/src/icons.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { PageBreakEditing } from '../src/pagebreakediting.js';
 import { PageBreakUI } from '../src/pagebreakui.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'PageBreakUI', () => {
 	let editor, editorElement, button;

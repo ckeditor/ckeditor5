@@ -4,39 +4,32 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 
-import { HighlightEditing } from '@ckeditor/ckeditor5-highlight/src/highlightediting.js';
+import { HighlightEditing } from '@ckeditor/ckeditor5-highlight';
 
-import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed/src/htmlembedediting.js';
+import { HtmlEmbedEditing } from '@ckeditor/ckeditor5-html-embed';
 
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing } from '@ckeditor/ckeditor5-image';
 
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { IndentBlock, IndentEditing } from '@ckeditor/ckeditor5-indent';
 
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { LinkEditing, LinkImageEditing } from '@ckeditor/ckeditor5-link';
 
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { LegacyListPropertiesEditing } from '@ckeditor/ckeditor5-list/src/legacylistproperties/legacylistpropertiesediting.js';
-import { LegacyTodoListEditing } from '@ckeditor/ckeditor5-list/src/legacytodolist/legacytodolistediting.js';
+import { LegacyListEditing, LegacyListPropertiesEditing, LegacyTodoListEditing } from '@ckeditor/ckeditor5-list';
 
-import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed';
 
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { TableCaption } from '@ckeditor/ckeditor5-table/src/tablecaption.js';
+import { TableEditing, TableCaption } from '@ckeditor/ckeditor5-table';
 
 import { HtmlComment } from '../src/htmlcomment.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';

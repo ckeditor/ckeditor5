@@ -4,9 +4,9 @@
  */
 
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -3,16 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { ShiftEnter } from '../src/shiftenter.js';
-import { INLINE_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler.js';
-
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _VIEW_INLINE_FILLER, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ShiftEnter integration', () => {
 	let editor, model, div;
@@ -58,7 +55,7 @@ describe( 'ShiftEnter integration', () => {
 		editor.execute( 'shiftEnter' );
 
 		expect( editor.ui.view.editable.element.innerHTML ).to.equal(
-			`<p><br>${ INLINE_FILLER }<br data-cke-filler="true"></p>`
+			`<p><br>${ _VIEW_INLINE_FILLER }<br data-cke-filler="true"></p>`
 		);
 	} );
 

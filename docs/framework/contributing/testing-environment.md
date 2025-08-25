@@ -207,7 +207,7 @@ Read more about the crawler in the {@link framework/contributing/development-env
 
 ## Rules for using the `--files` option
 
-The `--files` (alias `-f`) option is used by both the manual and automated tests, and it accepts the following types of patterns:
+The `--files` (alias `-f`) option is used by both the manual and automated tests. Running tests for the root of the mono-repository is no longer supported. Each set of tests should be assigned to a package, and placed in `tests` directory. It accepts the following types of patterns:
 
 <table>
 	<tr>
@@ -215,12 +215,12 @@ The `--files` (alias `-f`) option is used by both the manual and automated tests
 		<th width="75%">Result</th>
 	</tr>
 	<tr>
-		<td><code>ckeditor5</code></td>
-		<td>Run all tests of the root <a href="https://github.com/ckeditor/ckeditor5/tree/master/tests"><code>ckeditor5</code></a> package.</td>
+		<td><code>ckeditor5-core</code></td>
+		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package by specifying the full package name.</td>
 	</tr>
-	<tr>
+    <tr>
 		<td><code>core</code></td>
-		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package.</td>
+		<td>Run all tests of the <a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests"><code>ckeditor5-core</code></a> package by specifying a short package name.</td>
 	</tr>
 	<tr>
 		<td><code>editor-*</code></td>

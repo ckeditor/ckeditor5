@@ -8,7 +8,7 @@ import { ViewDocument } from '../../../src/view/document.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DOMConverter raw content matcher', () => {
 	let converter, viewDocument;
