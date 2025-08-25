@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { ImageResize } from '../../src/imageresize.js';
 import { ImageUpload } from '../../src/imageupload.js';
 

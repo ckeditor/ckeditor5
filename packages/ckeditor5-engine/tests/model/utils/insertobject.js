@@ -9,7 +9,7 @@ import { ModelElement } from '../../../src/model/element.js';
 import { ModelText } from '../../../src/model/text.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

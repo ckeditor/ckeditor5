@@ -4,9 +4,14 @@
  */
 
 import { HtmlPageDataProcessor } from '../src/htmlpagedataprocessor.js';
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { StylesProcessor, ViewDocument, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
-import { _stringifyView, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import {
+	HtmlDataProcessor,
+	StylesProcessor,
+	ViewDocument,
+	ViewDocumentFragment,
+	_stringifyView,
+	_parseView
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'HtmlPageDataProcessor', () => {
 	let dataProcessor, viewDocument;

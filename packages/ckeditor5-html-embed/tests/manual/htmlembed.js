@@ -5,11 +5,11 @@
 
 import sanitizeHtml from 'sanitize-html';
 import { clone } from 'es-toolkit/compat';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Code } from '@ckeditor/ckeditor5-basic-styles';
 import { HtmlEmbed } from '../../src/htmlembed.js';
 
 const previewsModeButton = document.getElementById( 'raw-html-previews-enabled' );

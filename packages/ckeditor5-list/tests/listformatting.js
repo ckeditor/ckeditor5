@@ -4,12 +4,12 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 import { RemoveFormatEditing } from '@ckeditor/ckeditor5-remove-format';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { stubUid } from './list/_utils/uid.js';

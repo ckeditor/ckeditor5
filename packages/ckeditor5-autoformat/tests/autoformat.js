@@ -5,29 +5,22 @@
 
 import { Autoformat } from '../src/autoformat.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import { TodoListEditing } from '@ckeditor/ckeditor5-list/src/todolist/todolistediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { StrikethroughEditing } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
-import { CodeEditing } from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
-import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ListEditing, TodoListEditing } from '@ckeditor/ckeditor5-list';
+import { HeadingEditing, HeadingCommand } from '@ckeditor/ckeditor5-heading';
+import { BoldEditing, StrikethroughEditing, CodeEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
+import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
-
-import { HeadingCommand } from '@ckeditor/ckeditor5-heading/src/headingcommand.js';
 
 describe( 'Autoformat', () => {
 	let editor, model, doc;

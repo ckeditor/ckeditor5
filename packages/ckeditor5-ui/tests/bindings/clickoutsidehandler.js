@@ -5,7 +5,7 @@
 
 import { clickOutsideHandler } from '../../src/bindings/clickoutsidehandler.js';
 
-import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
+import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

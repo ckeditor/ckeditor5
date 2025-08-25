@@ -5,12 +5,12 @@
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';

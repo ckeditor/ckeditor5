@@ -4,12 +4,12 @@
  */
 
 import { FontBackgroundColorEditing } from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	_getModelData,
 	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'FontBackgroundColorEditing', () => {
 	let editor, doc;

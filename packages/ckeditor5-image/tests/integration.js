@@ -4,13 +4,12 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { BalloonToolbar, View } from '@ckeditor/ckeditor5-ui';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { Image } from '../src/image.js';
 import { ImageToolbar } from '../src/imagetoolbar.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ImageTextAlternative } from '../src/imagetextalternative.js';
 

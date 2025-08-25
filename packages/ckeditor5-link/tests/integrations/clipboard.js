@@ -6,11 +6,10 @@
 import { LinkEditing } from '../../src/linkediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { _getModelData, _parseView } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Link integration: clipboard paste', () => {
 	let editor, model;

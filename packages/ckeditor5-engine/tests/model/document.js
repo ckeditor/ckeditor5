@@ -8,8 +8,7 @@ import { ModelDocument } from '../../src/model/document.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
 import { ModelText } from '../../src/model/text.js';
 import { Batch } from '../../src/model/batch.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Collection, count } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Document', () => {

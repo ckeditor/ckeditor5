@@ -8,16 +8,15 @@ import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { IndentEditing, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import {
 	_getModelData,
 	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'Indent MultiCommand integrations', () => {
 	const blocksChangedByCommands = [];

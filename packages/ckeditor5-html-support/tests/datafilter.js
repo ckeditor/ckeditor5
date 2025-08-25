@@ -4,20 +4,26 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { FontColorEditing } from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { FontColorEditing } from '@ckeditor/ckeditor5-font';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { DataFilter } from '../src/datafilter.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import {
+	_getModelData,
+	_setModelData,
+	_getViewData,
+	addBackgroundStylesRules,
+	addBorderStylesRules,
+	addMarginStylesRules,
+	addPaddingStylesRules
+} from '@ckeditor/ckeditor5-engine';
 import { getModelDataWithAttributes } from './_utils/utils.js';
-import { addBackgroundStylesRules, addBorderStylesRules, addMarginStylesRules, addPaddingStylesRules } from '@ckeditor/ckeditor5-engine';
-import { getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { getLabel } from '@ckeditor/ckeditor5-widget';
 
 import { GeneralHtmlSupport } from '../src/generalhtmlsupport.js';
 

@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { Enter } from '../src/enter.js';
 import { EnterCommand } from '../src/entercommand.js';
 import { EnterObserver } from '../src/enterobserver.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Enter feature', () => {
 	let element, editor, viewDocument;

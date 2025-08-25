@@ -4,10 +4,9 @@
  */
 
 import { EmojiGridView } from '../../src/ui/emojigridview.js';
-import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EmojiGridView', () => {
 	let view, locale, emojiCategories;

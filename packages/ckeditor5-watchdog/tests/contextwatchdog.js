@@ -5,8 +5,8 @@
 
 import { ContextWatchdog } from '../src/contextwatchdog.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Context } from '@ckeditor/ckeditor5-core';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ContextWatchdog', () => {
 	let element1, element2;

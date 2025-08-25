@@ -7,11 +7,11 @@ import { IconFontFamily } from 'ckeditor5/src/icons.js';
 import { FontFamilyEditing } from '../../src/fontfamily/fontfamilyediting.js';
 import { FontFamilyUI } from '../../src/fontfamily/fontfamilyui.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
@@ -31,7 +31,7 @@ describe( 'FontFamilyUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

@@ -4,10 +4,10 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { modelTable } from '../_utils/utils.js';
 import { TableEditing } from '../../src/tableediting.js';

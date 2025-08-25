@@ -5,7 +5,7 @@
 
 import { EmojiCategoriesView } from '../../src/ui/emojicategoriesview.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 
 describe( 'EmojiCategoriesView', () => {
 	let locale, emojiCategoriesView, emojiCategories;

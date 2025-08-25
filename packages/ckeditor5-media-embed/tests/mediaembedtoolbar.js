@@ -4,15 +4,14 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { MediaEmbed } from '../src/mediaembed.js';
 import { MediaEmbedToolbar } from '../src/mediaembedtoolbar.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { View, ButtonView } from '@ckeditor/ckeditor5-ui';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

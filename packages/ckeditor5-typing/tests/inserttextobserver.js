@@ -6,11 +6,10 @@
 import { InsertTextObserver } from '../src/inserttextobserver.js';
 import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView, _setViewData } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;

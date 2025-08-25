@@ -6,12 +6,11 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ItalicEditing } from '../../src/italic/italicediting.js';
 import { ItalicUI } from '../../src/italic/italicui.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'ItalicUI', () => {
 	let editor, italicView, editorElement;

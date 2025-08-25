@@ -6,10 +6,9 @@
 import { EditorUI } from '../../src/editorui/editorui.js';
 import { View } from '../../src/view.js';
 import { BalloonPanelView } from '../../src/panel/balloon/balloonpanelview.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

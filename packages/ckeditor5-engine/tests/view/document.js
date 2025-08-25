@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement, count } from '@ckeditor/ckeditor5-utils';
 import { ViewDocument } from '../../src/view/document.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { createViewRoot } from './_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

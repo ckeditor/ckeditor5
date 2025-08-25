@@ -4,7 +4,7 @@
  */
 
 import { Typing } from '@ckeditor/ckeditor5-typing';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';

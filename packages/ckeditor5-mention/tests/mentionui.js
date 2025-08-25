@@ -4,16 +4,12 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { keyCodes, global, EventInfo, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui';
 
 import { MentionUI, createRegExp } from '../src/mentionui.js';
 import { MentionEditing } from '../src/mentionediting.js';

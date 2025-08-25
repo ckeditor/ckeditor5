@@ -4,7 +4,7 @@
  */
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView } from '../../../src/button/buttonview.js';
 import { SplitButtonView } from '../../../src/dropdown/button/splitbuttonview.js';
 

@@ -11,7 +11,7 @@ import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { ModelSelection } from '../../src/model/selection.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { _parseModel, _setModelData } from '../../src/dev-utils/model.js';
 import { ModelSchema } from '../../src/model/schema.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';

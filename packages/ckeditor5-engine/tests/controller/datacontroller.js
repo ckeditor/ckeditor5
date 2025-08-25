@@ -16,7 +16,7 @@ import { ViewDocument } from '../../src/view/document.js';
 import { _getModelData, _setModelData, _stringifyModel, _parseModel } from '../../src/dev-utils/model.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 
 import { UpcastHelpers } from '../../src/conversion/upcasthelpers.js';
 import { DowncastHelpers } from '../../src/conversion/downcasthelpers.js';

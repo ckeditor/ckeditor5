@@ -230,14 +230,17 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { ClassicEditor, Style } from 'ckeditor5';
+import { ClassicEditor, Style, GeneralHtmlSupport } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Style, /* ... */ ],
+		plugins: [ Style, GeneralHtmlSupport, /* ... */ ],
 		toolbar: [ 'style', /* ... */ ],
 		style: {
+			// Configuration.
+		},
+		htmlSupport: {
 			// Configuration.
 		}
 	} )
@@ -245,6 +248,10 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+<info-box important>
+	The style feature requires the {@link features/general-html-support General HTML Support} feature to work properly.
+</info-box>
 
 ## Configuration
 

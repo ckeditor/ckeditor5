@@ -4,12 +4,10 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
-import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { UIModel, SplitButtonView, ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { Image } from '../../src/image.js';
 import { ImageInsertViaUrlUI } from '../../src/imageinsert/imageinsertviaurlui.js';

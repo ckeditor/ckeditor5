@@ -4,15 +4,14 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { MarkdownGfmDataProcessor } from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import { ListPropertiesEditing } from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { MarkdownGfmDataProcessor } from '@ckeditor/ckeditor5-markdown-gfm';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image';
+import { ListEditing, ListPropertiesEditing } from '@ckeditor/ckeditor5-list';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { CodeBlockUI } from '../src/codeblockui.js';
 import { CodeBlockEditing } from '../src/codeblockediting.js';

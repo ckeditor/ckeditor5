@@ -6,9 +6,7 @@
 import { LinkFormView } from '../../src/ui/linkformview.js';
 import { LinkButtonView } from '../../src/ui/linkbuttonview.js';
 import { ListView, View, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { keyCodes, KeystrokeHandler, FocusTracker } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'LinkFormView', () => {

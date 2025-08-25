@@ -5,22 +5,19 @@
 
 import { ListEditing } from '../../../src/list/listediting.js';
 
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_getModelData,
-	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+	_setModelData,
+	ViewDocumentDomEventData, BubblingEventInfo } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
-import { BubblingEventInfo } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo.js';
 
 describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () => {
 	const blocksChangedByCommands = [];

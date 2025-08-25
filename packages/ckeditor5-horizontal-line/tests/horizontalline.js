@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { HorizontalLine } from '../src/horizontalline.js';
 import { HorizontalLineEditing } from '../src/horizontallineediting.js';

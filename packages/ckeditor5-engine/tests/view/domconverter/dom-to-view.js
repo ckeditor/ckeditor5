@@ -15,9 +15,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import { _parseView, _stringifyView } from '../../../src/dev-utils/view.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { count, createElement, env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;

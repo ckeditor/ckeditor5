@@ -4,9 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { global } from '@ckeditor/ckeditor5-utils';
+import { ViewElement, ViewText } from '@ckeditor/ckeditor5-engine';
 
 import { Mention } from '../src/mention.js';
 import { MentionEditing } from '../src/mentionediting.js';

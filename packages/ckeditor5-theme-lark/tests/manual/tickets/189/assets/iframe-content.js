@@ -5,7 +5,7 @@
 
 /* globals $ */
 
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 // Display an info when this file is ran as a standalone test.

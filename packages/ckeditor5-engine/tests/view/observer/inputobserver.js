@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global, env } from '@ckeditor/ckeditor5-utils';
 
 import { InputObserver } from '../../../src/view/observer/inputobserver.js';
 import { ViewDataTransfer } from '../../../src/view/datatransfer.js';
@@ -13,7 +13,6 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 import { createViewRoot } from '../_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'InputObserver', () => {
 	let domEditable, view, viewRoot, viewDocument, observer, evtData, beforeInputSpy;

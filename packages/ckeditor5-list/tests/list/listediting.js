@@ -5,21 +5,20 @@
 
 import { ListEditing } from '../../src/list/listediting.js';
 
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _parseModel, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';

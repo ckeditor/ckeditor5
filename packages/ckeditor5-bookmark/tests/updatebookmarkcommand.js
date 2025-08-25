@@ -11,7 +11,7 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Link } from '@ckeditor/ckeditor5-link';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { BookmarkEditing } from '../src/bookmarkediting.js';
 import { UpdateBookmarkCommand } from '../src/updatebookmarkcommand.js';

@@ -7,7 +7,7 @@ import { IconMedia } from 'ckeditor5/src/icons.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { MediaEmbed } from '../src/mediaembed.js';
 import { MediaEmbedUI } from '../src/mediaembedui.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, DialogViewPosition, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'MediaEmbedUI', () => {

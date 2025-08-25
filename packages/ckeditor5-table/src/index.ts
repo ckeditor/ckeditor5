@@ -81,6 +81,7 @@ export type {
 	TableColorConfig,
 	TableCellPropertiesOptions,
 	TableLayoutConfig,
+	TableCaptionConfig,
 	TableType
 } from './tableconfig.js';
 

@@ -4,18 +4,10 @@
  */
 
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
-import { FontSize } from '@ckeditor/ckeditor5-font/src/fontsize.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageInsert } from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { Subscript } from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
-import { Superscript } from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
-import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Code, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
+import { Image, ImageInsert } from '@ckeditor/ckeditor5-image';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

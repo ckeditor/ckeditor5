@@ -10,19 +10,14 @@ import { TableSelection } from '../src/tableselection.js';
 import { modelTable } from './_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageBlockEditing, Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { MediaEmbedEditing, MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { getCode, global, env } from '@ckeditor/ckeditor5-utils';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'TableKeyboard', () => {
 	let editor, model, modelRoot, tableSelection, tableKeyboard, selection, editorElement;

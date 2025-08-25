@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { EmitterMixin, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { Model } from '../../src/model/model.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelElement } from '../../src/model/element.js';
@@ -15,7 +15,6 @@ import { Batch } from '../../src/model/batch.js';
 import { NoOperation } from '../../src/model/operation/nooperation.js';
 import { _getModelData, _setModelData, _stringifyModel } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Model', () => {
 	let model, schema, changes;

@@ -6,12 +6,9 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ModelDocumentFragment, ModelPosition, ModelRange, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { Clipboard } from '../src/clipboard.js';
 import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';

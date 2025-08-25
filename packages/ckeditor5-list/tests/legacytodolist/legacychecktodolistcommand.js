@@ -7,8 +7,8 @@ import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolisted
 import { LegacyCheckTodoListCommand } from '../../src/legacytodolist/legacychecktodolistcommand.js';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'LegacyCheckTodoListCommand', () => {
 	let editor, model, command;

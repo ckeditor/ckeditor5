@@ -80,12 +80,12 @@ export type {
 	UpcastMarkerFromAttributeCreatorFunction
 } from './conversion/upcasthelpers.js';
 
-export type {
+export {
 	Mapper,
-	MapperModelToViewPositionEvent,
-	MapperViewToModelPositionEvent,
-	MapperModelToViewPositionEventData,
-	MapperViewToModelPositionEventData
+	type MapperModelToViewPositionEvent,
+	type MapperViewToModelPositionEvent,
+	type MapperModelToViewPositionEventData,
+	type MapperViewToModelPositionEventData
 } from './conversion/mapper.js';
 export type { ModelConsumable } from './conversion/modelconsumable.js';
 export type { Consumables, ViewConsumable } from './conversion/viewconsumable.js';
@@ -172,8 +172,8 @@ export { ModelNode, type ModelNodeAttributes } from './model/node.js';
 export { ModelNodeList } from './model/nodelist.js';
 export { ModelRootElement } from './model/rootelement.js';
 export {
+	ModelSchema,
 	ModelSchemaContext,
-	type ModelSchema,
 	type ModelSchemaCheckChildEvent,
 	type ModelSchemaCheckAttributeEvent,
 	type ModelSchemaAttributeCheckCallback,

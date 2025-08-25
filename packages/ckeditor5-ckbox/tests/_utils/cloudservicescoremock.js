@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore.js';
+import { CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 
 // CKBox requires the `CloudServicesCore` plugin as a soft-requirement.

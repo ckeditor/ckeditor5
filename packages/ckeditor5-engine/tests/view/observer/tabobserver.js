@@ -7,7 +7,7 @@ import { TabObserver } from '../../../src/view/observer/tabobserver.js';
 import { EditingView } from '../../../src/view/view.js';
 import { createViewRoot } from '../../../tests/view/_utils/createroot.js';
 
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getCode } from '@ckeditor/ckeditor5-utils';
 
 describe( 'TabObserver', () => {
 	let view, viewDocument;

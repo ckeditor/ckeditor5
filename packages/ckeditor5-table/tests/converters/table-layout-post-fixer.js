@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from './../_utils/utils.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'Table layout post-fixer', () => {
 	let editor, model, root;

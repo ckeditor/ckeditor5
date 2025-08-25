@@ -5,15 +5,13 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { _getModelData, _setModelData, Batch } from '@ckeditor/ckeditor5-engine';
 
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { Table } from '../../src/table.js';
 import { TableLayout } from '../../src/tablelayout.js';

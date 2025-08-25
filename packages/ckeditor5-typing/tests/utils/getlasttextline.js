@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Model, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { getLastTextLine } from '../../src/utils/getlasttextline.js';
 
 describe( 'utils', () => {

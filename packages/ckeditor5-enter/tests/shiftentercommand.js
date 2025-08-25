@@ -4,8 +4,7 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { InsertOperation } from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { InsertOperation, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ShiftEnter } from '../src/shiftenter.js';
 
 describe( 'ShiftEnterCommand', () => {

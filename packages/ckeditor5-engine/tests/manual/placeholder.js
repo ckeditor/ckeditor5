@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { enableViewPlaceholder } from '../../src/view/placeholder.js';
 
 ClassicEditor

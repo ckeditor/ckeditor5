@@ -6,7 +6,7 @@
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { EditorUIView } from '../../src/editorui/editoruiview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EditorUIView', () => {
 	let view, locale;

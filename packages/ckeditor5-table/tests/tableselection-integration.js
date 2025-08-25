@@ -5,22 +5,19 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Delete, Input } from '@ckeditor/ckeditor5-typing';
+import { Clipboard, ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 
 import { TableEditing } from '../src/tableediting.js';
 import { TableSelection } from '../src/tableselection.js';
 import { TableClipboard } from '../src/tableclipboard.js';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 import { assertSelectedCells, modelTable } from './_utils/utils.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'TableSelection - integration', () => {
 	let editor, model, tableSelection, modelRoot, element, viewDocument;

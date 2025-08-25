@@ -4,12 +4,11 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { modelTable, viewTable } from '../_utils/utils.js';
 
 import { TableEditing } from '../../src/tableediting.js';

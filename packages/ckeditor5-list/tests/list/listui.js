@@ -10,11 +10,10 @@ import { List } from '../../src/list.js';
 import { ListProperties } from '../../src/listproperties.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListUI', () => {
 	let editorElement, editor, model;

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';

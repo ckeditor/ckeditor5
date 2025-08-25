@@ -5,24 +5,18 @@
 
 import { ClipboardPipeline } from '../src/clipboardpipeline.js';
 import { ClipboardObserver } from '../src/clipboardobserver.js';
-import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDataTransfer, ViewDocumentFragment, ModelDocumentFragment, ViewText,
+	_stringifyView,
+	_parseView,
+	_stringifyModel,
+	_setModelData,
+	_getModelData
+} from '@ckeditor/ckeditor5-engine';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
-import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import {
-	_stringifyView,
-	_parseView
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import {
-	_stringifyModel,
-	_setModelData,
-	_getModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'ClipboardPipeline feature', () => {
 	let editor, view, viewDocument, clipboardPlugin, scrollSpy;

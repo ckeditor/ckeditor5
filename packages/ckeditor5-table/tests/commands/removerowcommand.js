@@ -4,14 +4,13 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 import { RemoveRowCommand } from '../../src/commands/removerowcommand.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { modelTable, viewTable } from '../_utils/utils.js';
 import { TableEditing } from '../../src/tableediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'RemoveRowCommand', () => {
 	let editor, model, command;

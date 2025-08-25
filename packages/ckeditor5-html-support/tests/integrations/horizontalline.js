@@ -4,8 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';

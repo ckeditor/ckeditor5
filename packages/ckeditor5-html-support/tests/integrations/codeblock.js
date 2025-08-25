@@ -4,8 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { CodeBlockElementSupport } from '../../src/integrations/codeblock.js';

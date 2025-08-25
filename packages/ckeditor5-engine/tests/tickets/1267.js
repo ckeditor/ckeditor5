@@ -4,8 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';

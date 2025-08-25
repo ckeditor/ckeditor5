@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import {
 	_parseModel,
 	_setModelData,
 	_getModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { modelList, stringifyList } from '../list/_utils/utils.js';
 import { List } from '../../src/list.js';

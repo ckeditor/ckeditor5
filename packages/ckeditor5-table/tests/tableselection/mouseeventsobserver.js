@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine';
 import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
 
 describe( 'table selection', () => {

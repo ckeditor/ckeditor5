@@ -4,13 +4,8 @@
  */
 
 import { Editor } from '../../src/editor/editor.js';
-import { EditingController } from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
+import { EditingController, HtmlDataProcessor, ModelRootElement, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
-
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { testUtils } from '../../tests/_utils/utils.js';
 

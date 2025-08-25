@@ -5,10 +5,7 @@
 
 import { transformBookmarks } from '../../src/filters/bookmark.js';
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import { HtmlDataProcessor, ViewUpcastWriter, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
 describe( 'PasteFromOffice - filters - bookmark', () => {
 	let writer, viewDocument;

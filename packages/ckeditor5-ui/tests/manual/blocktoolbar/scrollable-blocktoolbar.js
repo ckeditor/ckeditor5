@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading/src/headingbuttonsui.js';
+import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { BlockToolbar } from '../../../src/toolbar/block/blocktoolbar.js';
 
 createBlockButtonEditor( '#editor-scrollable-parent' ).then( editor => {

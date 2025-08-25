@@ -7,9 +7,7 @@ import { ColorGridView } from './../../src/colorgrid/colorgridview.js';
 import { ColorTileView } from '../../src/colorgrid/colortileview.js';
 
 import { ViewCollection } from '../../src/viewcollection.js';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

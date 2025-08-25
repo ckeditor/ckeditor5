@@ -7,16 +7,15 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 
 import { Title } from '../src/title.js';
 import { Heading } from '../src/heading.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
-import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { _setModelData, _getModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'Title', () => {
 	let element, editor, model;

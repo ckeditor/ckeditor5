@@ -5,18 +5,15 @@
 
 import { modelElementToPlainText } from '../src/utils.js';
 
-import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
+import { ModelElement, ModelText, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
 describe( 'utils', () => {
 	describe( 'modelElementToPlainText()', () => {

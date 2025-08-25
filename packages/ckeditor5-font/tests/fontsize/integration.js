@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { FontSize } from '../../src/fontsize.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'FontSize - integration', () => {
 	let editor, model, element;

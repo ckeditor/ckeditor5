@@ -13,12 +13,8 @@ import {
 	isListView
 } from '../../../src/list/utils/view.js';
 
-import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewUpcastWriter, ViewDowncastWriter, StylesProcessor, ViewDocument, _parseView } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'List - utils - view', () => {
 	let viewUpcastWriter, viewDowncastWriter;

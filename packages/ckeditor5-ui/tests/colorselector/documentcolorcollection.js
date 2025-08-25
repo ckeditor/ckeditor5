@@ -4,7 +4,7 @@
  */
 
 import { DocumentColorCollection } from '../../src/colorselector/documentcolorcollection.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 describe( 'DocumentColorCollection', () => {
 	let documentColorCollection;

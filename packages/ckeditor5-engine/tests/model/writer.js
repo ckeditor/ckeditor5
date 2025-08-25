@@ -14,7 +14,7 @@ import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 
 import { getNodesAndText } from '../../tests/model/_utils/utils.js';
 import { ModelDocumentSelection } from '../../src/model/documentselection.js';

@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { View, EditorUI } from '@ckeditor/ckeditor5-ui';
 
 import { InlineEditorUI } from '../src/inlineeditorui.js';
-import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 import { InlineEditorUIView } from '../src/inlineeditoruiview.js';
 import { InlineEditor } from '../src/inlineeditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;

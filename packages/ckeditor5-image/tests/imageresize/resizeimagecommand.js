@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ResizeImageCommand } from '../../src/imageresize/resizeimagecommand.js';
 import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
 import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';

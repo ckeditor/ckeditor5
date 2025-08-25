@@ -8,24 +8,17 @@ import { CodeBlockCommand } from '../src/codeblockcommand.js';
 import { IndentCodeBlockCommand } from '../src/indentcodeblockcommand.js';
 import { OutdentCodeBlockCommand } from '../src/outdentcodeblockcommand.js';
 
-import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { CodeEditing } from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { DragDrop } from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import { BoldEditing, CodeEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { ViewDocumentDomEventData, _getModelData, _setModelData, _stringifyModel, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
+import { ClipboardPipeline, DragDrop } from '@ckeditor/ckeditor5-clipboard';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { getCode, _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 
 describe( 'CodeBlockEditing', () => {
 	let editor, element, model, view, viewDoc, root;
@@ -41,7 +34,7 @@ describe( 'CodeBlockEditing', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

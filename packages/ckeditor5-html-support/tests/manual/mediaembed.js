@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import { MediaEmbedToolbar } from '@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar.js';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { MediaEmbed, MediaEmbedToolbar } from '@ckeditor/ckeditor5-media-embed';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 

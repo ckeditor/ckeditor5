@@ -4,20 +4,16 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
-import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { UIModel, DropdownView, ButtonView, SplitButtonView, MenuBarMenuListItemButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Image } from '../../src/image.js';
 import { ImageInsertUI } from '../../src/imageinsert/imageinsertui.js';
 import { ImageInsertFormView } from '../../src/imageinsert/ui/imageinsertformview.js';
-import { MenuBarMenuListItemButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageInsertUI', () => {
 	let editor, editorElement, insertImageUI;

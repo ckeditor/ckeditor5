@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { Input } from '@ckeditor/ckeditor5-typing';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { ViewDocumentDomEventData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { LinkEditing } from '../src/linkediting.js';
 import { AutoLink } from '../src/autolink.js';
 

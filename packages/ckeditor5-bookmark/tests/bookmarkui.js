@@ -13,8 +13,7 @@ import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, Bal
 import { IconBookmark, IconPencil, IconRemove, IconBookmarkSmall, IconBookmarkMedium } from '@ckeditor/ckeditor5-icons';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { BookmarkFormView } from '../src/ui/bookmarkformview.js';

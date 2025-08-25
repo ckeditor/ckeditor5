@@ -5,8 +5,8 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Autosave } from '../src/autosave.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { PendingActions } from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { PendingActions } from '@ckeditor/ckeditor5-core';
 
 describe( 'Autosave', () => {
 	let editor, element, autosave;

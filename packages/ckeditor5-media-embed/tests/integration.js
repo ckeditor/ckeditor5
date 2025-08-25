@@ -4,11 +4,10 @@
  */
 
 import { MediaEmbed } from '../src/mediaembed.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { enableViewPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder.js';
+import { _getViewData, enableViewPlaceholder } from '@ckeditor/ckeditor5-engine';
 
 describe( 'MediaEmbed integration', () => {
 	let element, clock;

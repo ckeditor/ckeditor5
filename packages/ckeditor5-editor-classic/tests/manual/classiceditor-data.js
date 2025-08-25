@@ -4,13 +4,12 @@
  */
 
 import { ClassicEditor } from '../../src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 window.editors = [];
 let counter = 1;

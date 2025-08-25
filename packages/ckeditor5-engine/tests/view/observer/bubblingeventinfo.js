@@ -5,7 +5,7 @@
 
 import { BubblingEventInfo } from '../../../src/view/observer/bubblingeventinfo.js';
 
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BubblingEventInfo', () => {
 	it( 'should be created properly', () => {

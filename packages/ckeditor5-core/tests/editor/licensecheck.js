@@ -3,9 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError, global } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { global } from '@ckeditor/ckeditor5-utils';
 import { Editor } from '../../src/editor/editor.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { generateLicenseKey } from '../_utils/generatelicensekey.js';

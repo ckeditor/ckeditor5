@@ -4,14 +4,12 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableCaption } from '@ckeditor/ckeditor5-table/src/tablecaption.js';
-import { TableColumnResize } from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Table, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { priorities } from 'ckeditor5/src/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';

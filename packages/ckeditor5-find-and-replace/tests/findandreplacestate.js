@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 
 import { FindAndReplace } from '../src/findandreplace.js';
 import { FindAndReplaceState } from '../src/findandreplacestate.js';

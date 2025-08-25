@@ -6,14 +6,12 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Typing } from '../src/typing.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Enter } from '@ckeditor/ckeditor5-enter';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Typing – Input integration', () => {
 	let editor, model, doc, viewDocument, boldView, italicView, editorElement;

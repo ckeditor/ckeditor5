@@ -5,15 +5,18 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _parseView, _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import {
+	ViewDowncastWriter,
+	ViewUpcastWriter,
+	ViewDocument,
+	StylesProcessor,
+	_setModelData,
+	_parseView,
+	_stringifyView
+} from '@ckeditor/ckeditor5-engine';
 
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { Image } from '../../src/image.js';
 import { ImageEditing } from '../../src/image/imageediting.js';

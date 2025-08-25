@@ -3,14 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import {
+import { Model, ModelDocumentFragment,
 	_getModelData,
 	_parseModel,
-	_stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+	_stringifyModel,
+	_getViewData } from '@ckeditor/ckeditor5-engine';
 import { ListWalker } from '../../../src/list/utils/listwalker.js';
 
 /**

@@ -4,8 +4,7 @@
  */
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { FocusTracker, global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { FocusTracker, global, keyCodes, Locale, Collection } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { UIModel } from '../../src/model.js';

@@ -7,16 +7,11 @@ import { Editor } from '../../src/editor/editor.js';
 import { ClassicTestEditor } from '../../tests/_utils/classictesteditor.js';
 
 import { Plugin } from '../../src/plugin.js';
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HtmlDataProcessor, ModelRootElement, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
-import { BoxedEditorUIView } from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview.js';
-import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import { EditorUI, BoxedEditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
 
-import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '../_utils/cleanup.js';

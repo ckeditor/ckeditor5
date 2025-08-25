@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';

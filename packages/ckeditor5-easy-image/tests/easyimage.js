@@ -8,15 +8,14 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { EasyImage } from '../src/easyimage.js';
 import { CloudServicesUploadAdapter } from '../src/cloudservicesuploadadapter.js';
 import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 import { UploadGatewayMock } from './_utils/uploadgatewaymock.js';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { CloudServices, CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import { CloudServicesCore } from '@ckeditor/ckeditor5-cloud-services/src/cloudservicescore.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

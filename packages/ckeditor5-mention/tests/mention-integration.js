@@ -3,20 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { ViewDocumentDomEventData, _parseView, _getViewData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _parseView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { MentionEditing } from '../src/mentionediting.js';
 import { Mention } from '../src/mention.js';

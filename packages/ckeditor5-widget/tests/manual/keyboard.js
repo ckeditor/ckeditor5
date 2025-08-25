@@ -5,8 +5,8 @@
 
 import { Widget } from '../../src/widget.js';
 import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '../../src/utils.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 function BlockWidget( editor ) {

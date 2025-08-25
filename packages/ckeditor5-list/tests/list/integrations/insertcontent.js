@@ -7,17 +7,16 @@ import { ListEditing } from '../../../src/list/listediting.js';
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { WidgetTypeAround } from '@ckeditor/ckeditor5-widget/src/widgettypearound/widgettypearound.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Image } from '@ckeditor/ckeditor5-image';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Widget, WidgetTypeAround } from '@ckeditor/ckeditor5-widget';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
@@ -25,7 +24,7 @@ import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
 	_getModelData,
 	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'Inserting widgets in document lists', () => {
 	let element;

@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewRootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
+import { EditingView, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 import { InlineEditableUIView } from '../../../src/editableui/inline/inlineeditableuiview.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 describe( 'InlineEditableUIView', () => {
 	let view, editingView, editingViewRoot, locale;

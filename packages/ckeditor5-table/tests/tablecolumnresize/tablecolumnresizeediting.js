@@ -12,13 +12,13 @@ import { TableProperties } from '../../src/tableproperties.js';
 import { PlainTableOutput } from '../../src/plaintableoutput.js';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { HighlightEditing } from '@ckeditor/ckeditor5-highlight/src/highlightediting.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { HighlightEditing } from '@ckeditor/ckeditor5-highlight';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { modelTable } from '../_utils/utils.js';
@@ -47,11 +47,11 @@ import {
 	getColumnGroupElement
 } from '../../src/tablecolumnresize/utils.js';
 import { TableWidthsCommand } from '../../src/tablecolumnresize/tablewidthscommand.js';
-import { WidgetResize } from '@ckeditor/ckeditor5-widget/src/widgetresize.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { WidgetResize } from '@ckeditor/ckeditor5-widget';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;

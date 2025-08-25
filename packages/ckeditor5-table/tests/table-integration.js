@@ -3,20 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_getModelData,
-	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+	_setModelData,
+	_parseView } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../src/tableediting.js';
 import { modelTable, viewTable } from './_utils/utils.js';

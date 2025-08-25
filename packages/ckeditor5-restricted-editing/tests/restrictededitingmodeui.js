@@ -6,7 +6,7 @@
 import { IconContentLock } from 'ckeditor5/src/icons.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { RestrictedEditingModeEditing } from './../src/restrictededitingmodeediting.js';
 import { RestrictedEditingModeUI } from './../src/restrictededitingmodeui.js';

@@ -5,9 +5,9 @@
 
 import { ListEditing } from '../../../src/list/listediting.js';
 
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { EmptyBlock } from '@ckeditor/ckeditor5-html-support/src/emptyblock.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { EmptyBlock } from '@ckeditor/ckeditor5-html-support';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';

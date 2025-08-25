@@ -6,12 +6,11 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { StrikethroughEditing } from '../../src/strikethrough/strikethroughediting.js';
 import { StrikethroughUI } from '../../src/strikethrough/strikethroughui.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'StrikethroughUI', () => {
 	let editor, strikeView, editorElement;

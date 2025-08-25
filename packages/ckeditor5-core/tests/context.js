@@ -7,10 +7,8 @@ import { Context } from '../src/context.js';
 import { ContextPlugin } from '../src/contextplugin.js';
 import { Plugin } from '../src/plugin.js';
 import { ClassicTestEditor } from './_utils/classictesteditor.js';
-import { Config } from '@ckeditor/ckeditor5-utils/src/config.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Config, Locale, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { VirtualTestEditor } from './_utils/virtualtesteditor.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'Context', () => {
 	describe( 'config', () => {

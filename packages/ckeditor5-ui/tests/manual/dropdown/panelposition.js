@@ -4,7 +4,7 @@
  */
 
 import { UIModel } from '../../../src/model.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '../../_utils/utils.js';
 import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
 

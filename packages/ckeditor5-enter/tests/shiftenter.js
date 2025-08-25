@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { ShiftEnter } from '../src/shiftenter.js';
 import { ShiftEnterCommand } from '../src/shiftentercommand.js';
 import { EnterObserver } from '../src/enterobserver.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ShiftEnter feature', () => {
 	let element, editor, viewDocument;

@@ -3,22 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import { Subscript } from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
-import { Superscript } from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic, Strikethrough, Underline, Subscript, Superscript, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 

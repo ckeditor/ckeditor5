@@ -4,12 +4,12 @@
  */
 
 import { RemoveFormatCommand } from '../src/removeformatcommand.js';
-import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import {
 	_getModelData,
 	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+} from '@ckeditor/ckeditor5-engine';
 
 describe( 'RemoveFormatCommand', () => {
 	let editor, model, command;

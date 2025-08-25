@@ -6,7 +6,7 @@
 import { HtmlEmbed } from '../src/htmlembed.js';
 import { HtmlEmbedUI } from '../src/htmlembedui.js';
 import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'HtmlEmbed', () => {
 	it( 'should require HtmlEmbedEditing, HtmlEmbedUI and Widget', () => {

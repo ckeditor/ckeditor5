@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { PasteFromOffice } from '../../src/pastefromoffice.js';
 
 import { generateTests } from '../_utils/utils.js';

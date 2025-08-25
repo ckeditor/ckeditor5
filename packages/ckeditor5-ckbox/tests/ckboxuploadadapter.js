@@ -4,16 +4,13 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
-import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { FileRepository } from '@ckeditor/ckeditor5-upload/src/filerepository.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { FileRepository } from '@ckeditor/ckeditor5-upload';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { CKBoxEditing } from '../src/ckboxediting.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 
@@ -23,7 +20,7 @@ import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/token
 
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine';
 import { CKBoxUtils } from '../src/ckboxutils.js';
 
 const BASE64_SAMPLE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';

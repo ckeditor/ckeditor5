@@ -6,12 +6,9 @@
 import { range } from 'es-toolkit/compat';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Image, ImageCaption, ImageBlockEditing, ImageInlineEditing } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';

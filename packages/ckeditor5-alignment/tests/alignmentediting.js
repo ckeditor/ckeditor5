@@ -4,12 +4,12 @@
  */
 
 import { AlignmentEditing } from '../src/alignmentediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { AlignmentCommand } from '../src/alignmentcommand.js';
 

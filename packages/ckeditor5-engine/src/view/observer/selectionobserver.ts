@@ -13,10 +13,10 @@ import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'es-toolkit/compat';
 
-import { type EditingView } from '../view.js';
-import { type ViewDocumentSelection } from '../documentselection.js';
-import { type ViewDomConverter } from '../domconverter.js';
-import { type ViewSelection } from '../selection.js';
+import type { EditingView } from '../view.js';
+import type { ViewDocumentSelection } from '../documentselection.js';
+import type { ViewDomConverter } from '../domconverter.js';
+import type { ViewSelection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -334,7 +334,14 @@ export class SelectionObserver extends Observer {
 			return;
 		}
 
-		if ( this.selection.isSimilar( newViewSelection ) ) {
+		if ( !isSelectionWithinRootElements( newViewSelection ) ) {
+			// Occasionally, such as when removing markers during a focus change, the selection may end up inside a view element
+			// whose parent has already been detached from the DOM. In most cases this is harmless, but if the selectionchange
+			// event fires before the view is fully synchronized with the DOM converter, some elements in the selection may become orphans.
+			// This can result in the view being out of sync with the actual DOM structure.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18744
+			this.view.forceRender();
+		} else if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
 			this.view.forceRender();
@@ -369,6 +376,20 @@ export class SelectionObserver extends Observer {
 	private _clearInfiniteLoop(): void {
 		this._loopbackCounter = 0;
 	}
+}
+
+/**
+ * Checks if all roots of the selection's range boundaries are root elements.
+ * Returns true if the selection is fully contained within root elements (not orphaned).
+ *
+ * @param selection The view selection to check.
+ * @returns True if all range boundaries are within root elements, false otherwise.
+ */
+function isSelectionWithinRootElements( selection: ViewSelection ): boolean {
+	return Array
+		.from( selection.getRanges() )
+		.flatMap( range => [ range.start.root, range.end.root ] )
+		.every( root => root && root.is( 'rootElement' ) );
 }
 
 /**

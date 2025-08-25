@@ -10,12 +10,8 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import {
 	_getModelData,
 	_setModelData,
-	_stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
+	_stringifyModel,
+	_getViewData, ModelDocumentFragment, ModelText } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Paragraph feature', () => {
 	let model, editor, doc, root;

@@ -8,7 +8,7 @@ import { ImageInsertUI } from '../src/imageinsert/imageinsertui.js';
 import { ImageInsertViaUrl } from '../src/imageinsertviaurl.js';
 import { ImageInsertViaUrlUI } from '../src/imageinsert/imageinsertviaurlui.js';
 
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ImageInsertViaUrl', () => {
 	let editorElement, editor;

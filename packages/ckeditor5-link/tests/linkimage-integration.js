@@ -3,17 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Link } from '../src/link.js';
 import { LinkImage } from '../src/linkimage.js';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'LinkImage integration', () => {
 	let editorElement, editor, model;

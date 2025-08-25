@@ -5,15 +5,13 @@
 
 import { Image } from '../../src/image.js';
 import { ImageCaption } from '../../src/imagecaption.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ViewDocumentDomEventData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { Enter, ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ImageCaption integration', () => {
 	let editorElement, editor, model, view, viewDocument;

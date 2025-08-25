@@ -7,11 +7,10 @@ import { ListCommand } from '../../src/list/listcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
-import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Editor } from '@ckeditor/ckeditor5-core';
+import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListCommand', () => {
 	let editor, command, model, doc, root, changedBlocks;

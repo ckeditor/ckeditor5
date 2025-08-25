@@ -3,20 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { ModelElement, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { getCode, env } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { TodoListEditing } from '../../src/todolist/todolistediting.js';

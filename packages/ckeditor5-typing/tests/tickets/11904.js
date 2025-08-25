@@ -6,12 +6,10 @@
 import { DeleteObserver } from '../../src/deleteobserver.js';
 import { InsertTextObserver } from '../../src/inserttextobserver.js';
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { EditingView, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { env, getCode } from '@ckeditor/ckeditor5-utils';
 import { fireBeforeInputDomEvent } from '../_utils/utils.js';
 
 describe( 'Bug ckeditor5-typing#11904', () => {

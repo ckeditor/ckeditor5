@@ -5,7 +5,7 @@
 
 import { config } from '../../_utils/performance-config.js';
 import { makeData } from '../../_data/data-sets/mixed.js';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 const initialData = makeData();
 const finalConfig = { initialData, ...config };

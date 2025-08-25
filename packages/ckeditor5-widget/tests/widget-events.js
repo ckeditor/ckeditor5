@@ -3,11 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { KeyObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/keyobserver.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { KeyObserver, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { toWidget } from '../src/utils.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

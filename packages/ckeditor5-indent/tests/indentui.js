@@ -6,7 +6,7 @@
 import { IconIndent, IconOutdent } from 'ckeditor5/src/icons.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 import { IndentEditing } from '../src/indentediting.js';
 import { IndentUI } from '../src/indentui.js';

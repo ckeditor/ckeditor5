@@ -5,19 +5,16 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { ViewDocumentDomEventData, _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { insertAt } from '@ckeditor/ckeditor5-utils';
+import { insertAt, env } from '@ckeditor/ckeditor5-utils';
 
 import { Input } from '../src/input.js';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();

@@ -9,7 +9,7 @@ import { ImageUpload } from '../src/imageupload.js';
 import { ImageInsertUI } from '../src/imageinsert/imageinsertui.js';
 import { ImageInsertViaUrl } from '../src/imageinsertviaurl.js';
 
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ImageInsert', () => {
 	let editorElement, editor;
