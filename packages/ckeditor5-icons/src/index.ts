@@ -107,6 +107,7 @@ export { default as IconMarker } from '../theme/icons/marker.svg';
 export { default as IconMaximize } from '../theme/icons/maximize.svg';
 export { default as IconMediaPlaceholder } from '../theme/icons/media-placeholder.svg';
 export { default as IconMedia } from '../theme/icons/media.svg';
+export { default as IconMinimize } from '../theme/icons/minimize.svg';
 export { default as IconMultiLevelList } from '../theme/icons/multi-level-list.svg';
 export { default as IconNextArrow } from '../theme/icons/next-arrow.svg';
 export { default as IconNotification } from '../theme/icons/notification.svg';
