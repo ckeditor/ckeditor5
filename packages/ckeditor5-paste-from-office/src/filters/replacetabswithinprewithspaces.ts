@@ -30,7 +30,7 @@ export function replaceTabsWithinPreWithSpaces(
 	tabWidth: number
 ): void {
 	// Collect all text nodes with tabs that are inside pre-wrap elements.
-	const textNodesToReplace: Array<ViewText> = [];
+	const textNodesToReplace: Set<ViewText> = new Set();
 
 	for ( const child of writer.createRangeIn( documentFragment ).getItems() ) {
 		if ( !child.is( 'view:$textProxy' ) || !child.data.includes( '\t' ) ) {
@@ -39,12 +39,7 @@ export function replaceTabsWithinPreWithSpaces(
 
 		// Check if any parent has `white-space: pre-wrap`.
 		if ( hasPreWrapParent( child.parent ) ) {
-			const textNode = child.textNode;
-
-			// Add to list only if not already added.
-			if ( !textNodesToReplace.includes( textNode ) ) {
-				textNodesToReplace.push( textNode );
-			}
+			textNodesToReplace.add( child.textNode );
 		}
 	}
 
@@ -79,22 +74,12 @@ function hasPreWrapParent( element: ViewDocumentFragment | ViewElement | null ):
  * Replaces all tabs with spaces in the given text node.
  */
 function replaceTabsInTextNode( textNode: ViewText, writer: ViewUpcastWriter, tabWidth: number ): void {
-	const parentElement = textNode.parent;
-	if ( !parentElement ) {
-		return;
-	}
+	const { parent, data } = textNode;
 
-	const originalData = textNode.data;
-	const replacedData = originalData.replace( /\t/g, ' '.repeat( tabWidth ) );
-
-	// If no tabs found, nothing to do.
-	if ( originalData === replacedData ) {
-		return;
-	}
-
-	const index = parentElement.getChildIndex( textNode );
+	const replacedData = data.replaceAll( '\t', ' '.repeat( tabWidth ) );
+	const index = parent!.getChildIndex( textNode );
 
 	// Remove old node and insert new one with replaced tabs.
 	writer.remove( textNode );
-	writer.insertChild( index, writer.createText( replacedData ), parentElement );
+	writer.insertChild( index, writer.createText( replacedData ), parent! );
 }
