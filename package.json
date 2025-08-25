@@ -96,7 +96,7 @@
   },
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
-    "postinstall": "node ./scripts/postinstall.mjs",
+    "postinstall": "husky",
     "lint": "eslint --format ./scripts/eslint-formatter.cjs",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "ckeditor5-dev-tests-run-automated",
