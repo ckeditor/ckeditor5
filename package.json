@@ -102,7 +102,6 @@
     "test": "ckeditor5-dev-tests-run-automated",
     "manual": "ckeditor5-dev-tests-run-manual",
     "manual:verify": "node ./scripts/web-crawler/index.mjs --manual",
-    "reinstall": "pnpx rimraf --glob \"**/node_modules\" && pnpm install",
     "docs": "node scripts/docs/build-docs.mjs",
     "docs:api": "node scripts/docs/build-api-docs.mjs",
     "docs:ckeditor5": "node scripts/docs/build-ckeditor-packages.mjs",
