@@ -15,6 +15,7 @@
 
 	& > .ck-icon {
 		margin-inline-end: var(--ck-spacing-medium);
+		flex-shrink: 0;
 	}
 
 	& .ck-form__header__label {
@@ -36,5 +37,9 @@
 
 	& > .ck-button-back {
 		margin-inline-end: var(--ck-spacing-small);
+	}
+
+	& > .ck.ck-button {
+		flex-shrink: 0;
 	}
 }
