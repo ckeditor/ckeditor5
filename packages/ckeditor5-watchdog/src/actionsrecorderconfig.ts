@@ -61,7 +61,7 @@ export interface ActionsRecorderConfig {
 	 *			actionsRecorder: {
 	 *				onFilter( entry, prevEntries ) {
 	 *					// Only record command executions.
-	 *					return entry.event.startsWith( 'commands.' );
+	 *					return entry.action.startsWith( 'commands.' );
 	 *				}
 	 *			}
 	 *		} )

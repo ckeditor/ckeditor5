@@ -42,7 +42,7 @@ ClassicEditor
 
 			// onFilter( entry ) {
 			// 	// Only record command executions.
-			// 	return entry.event.startsWith( 'commands.' );
+			// 	return entry.action.startsWith( 'commands.' );
 			// },
 
 			onError( error, entries ) {

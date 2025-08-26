@@ -627,6 +627,10 @@ export function serializeValue( value: any, visited = new WeakSet() ): any {
 		return serializeDomEvent( value.domEvent );
 	}
 
+	if ( value instanceof File || value instanceof Blob || value instanceof FormData || value instanceof DataTransfer ) {
+		return String( value );
+	}
+
 	if ( visited.has( value ) ) {
 		return;
 	}
@@ -651,6 +655,14 @@ export function serializeValue( value: any, visited = new WeakSet() ): any {
 
 		if ( serializedValue !== undefined ) {
 			result[ key ] = serializedValue;
+		}
+	}
+
+	if ( Symbol.iterator in value ) {
+		const items = Array.from( value[ Symbol.iterator ]() ).map( item => serializeValue( item, visited ) );
+
+		if ( items.length ) {
+			result._items = items;
 		}
 	}
 
