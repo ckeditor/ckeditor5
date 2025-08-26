@@ -129,10 +129,66 @@ See an {@link examples/builds/multi-root-editor example of the multi-root editor
 	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
-Use the following import to put classic editor on your page:
+<info-box important>
+	The multi-root editor requires a more advanced configuration of the roots.
+</info-box>
 
-<code-switcher>
+Add all roots you need in the editor to the `.create` command. For example:
+
 ```js
-import { MultiRootEditor } from 'ckeditor5';
+const {
+	MultiRootEditor,
+	Essentials,
+	Bold,
+	Italic,
+	Font,
+	Paragraph
+} = CKEDITOR;
+
+MultiRootEditor
+	.create(
+		// Define roots / editable areas:
+		{
+			header: document.querySelector( '#header' ),
+			content: document.querySelector( '#content' ),
+			leftSide: document.querySelector( '#left-side' ),
+			rightSide: document.querySelector( '#right-side' )
+		},
+		{
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+		toolbar: [
+			'undo', 'redo', '|', 'bold', 'italic', '|',
+			'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+		]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
-</code-switcher>
+
+Then, use these roots to place editor windows in the document.
+
+```html
+<div class="editor">
+	<div id="header">
+		Header content.
+	</div>
+</div>
+<div class="editor">
+	<div id="content">
+		Main content.
+	</div>
+</div>
+<div class="boxes">
+	<div class="box box-left editor">
+		<div id="left-side">
+			Left side content.
+		</div>
+	</div>
+	<div class="box box-right editor">
+		<div id="right-side">
+			Right side content.
+		</div>
+	</div>
+</div>
+```

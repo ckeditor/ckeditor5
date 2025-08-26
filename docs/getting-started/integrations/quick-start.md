@@ -68,6 +68,10 @@ The first argument in the `create()` function is a DOM element for the editor pl
 
 That is all the code you need to see a bare-bone editor running in your web browser.
 
+<info-box important>
+	The multi-root editor requires a {@link getting-started/setup/editor-types#multi-root-editor more advanced configuration} of the roots.
+</info-box>
+
 ## Installing CKEditor&nbsp;5 from a ZIP file
 
 If you do not want to build your project using npm and cannot rely on the CDN delivery, you can download ready-to-run files with CKEditor&nbsp;5 and all its plugins.
