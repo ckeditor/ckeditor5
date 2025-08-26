@@ -15,8 +15,6 @@ import {
 	compareArrays
 } from '@ckeditor/ckeditor5-utils';
 
-import { clone } from 'es-toolkit/compat';
-
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
@@ -269,15 +267,18 @@ export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeChe
 	}
 
 	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
+	 * Converts `ViewNode` to plain object and returns it.
 	 *
-	 * @returns Clone of this object with the parent property removed.
+	 * @returns `ViewNode` converted to plain object.
 	 */
 	public toJSON(): unknown {
-		const json: any = clone( this );
+		const json: any = {
+			path: this.getPath()
+		};
 
-		// Due to circular references we need to remove parent reference.
-		delete json.parent;
+		if ( this.parent ) {
+			json.root = this.root.toJSON();
+		}
 
 		return json;
 	}

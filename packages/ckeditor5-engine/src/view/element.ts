@@ -506,6 +506,31 @@ export class ViewElement extends ViewNode {
 	}
 
 	/**
+	 * Converts `ViewElement` to plain object and returns it.
+	 *
+	 * @returns `ViewElement` converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.name = this.name;
+
+		if ( this._attrs.size ) {
+			json.attributes = Object.fromEntries( this.getAttributes() );
+		}
+
+		if ( this._children.length > 0 ) {
+			json.children = [];
+
+			for ( const node of this._children ) {
+				json.children.push( node.toJSON() );
+			}
+		}
+
+		return json;
+	}
+
+	/**
 	 * Clones provided element.
 	 *
 	 * @internal

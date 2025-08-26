@@ -506,17 +506,19 @@ export class ActionsRecorder extends Plugin {
 /**
  * Creates a wrapper around a method to record its calls, results, and errors.
  *
+ * @internal
+ *
  * @param object The object containing the method to tap.
  * @param methodName The name of the method to tap.
  * @param tap The tap configuration with before/after/error hooks.
  * @param context Additional context to include with the method calls.
  */
-function tapObjectMethod(
+export function tapObjectMethod(
 	object: any,
 	methodName: string,
 	tap: MethodTap,
 	context: Record<string, any> = {}
-) {
+): void {
 	const originalMethod = object[ methodName ];
 
 	if ( originalMethod[ Symbol.for( 'Tapped method' ) ] ) {
@@ -583,11 +585,13 @@ interface MethodTap extends Record<string, any> {
 /**
  * Serializes a value into a JSON-serializable format.
  *
+ * @internal
+ *
  * @param value The value to serialize.
  * @param visited Set of already serialized objects to avoid circular references.
  * @returns A JSON-serializable representation of the value.
  */
-function serializeValue( value: any, visited = new WeakSet() ): any {
+export function serializeValue( value: any, visited = new WeakSet() ): any {
 	if ( !value || [ 'boolean', 'number', 'string' ].includes( typeof value ) ) {
 		return value;
 	}
@@ -596,7 +600,7 @@ function serializeValue( value: any, visited = new WeakSet() ): any {
 		const jsonData = value.toJSON();
 
 		// Make sure that toJSON returns plain object, otherwise it could be just a clone with circular references.
-		if ( isPlainObject( jsonData ) ) {
+		if ( isPlainObject( jsonData ) || Array.isArray( jsonData ) || [ 'string', 'number', 'boolean' ].includes( typeof jsonData ) ) {
 			return serializeValue( jsonData, visited );
 		}
 	}
