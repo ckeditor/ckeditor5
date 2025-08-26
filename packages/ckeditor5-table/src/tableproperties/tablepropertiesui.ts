@@ -40,12 +40,20 @@ import type { Batch } from 'ckeditor5/src/engine.js';
 import type { EventInfo, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
 import { type TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
+import { type TableBorderTopStyleCommand } from './commands/tablebordertopstylecommand.js';
+import { type TableBorderRightStyleCommand } from './commands/tableborderrightstylecommand.js';
+import { type TableBorderBottomStyleCommand } from './commands/tableborderbottomstylecommand.js';
+import { type TableBorderLeftStyleCommand } from './commands/tableborderleftstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
 // Map of view properties and related commands.
 const propertyToCommandMap = {
 	borderStyle: 'tableBorderStyle',
+	borderTopStyle: 'tableBorderTopStyle',
+	borderRightStyle: 'tableBorderRightStyle',
+	borderBottomStyle: 'tableBorderBottomStyle',
+	borderLeftStyle: 'tableBorderLeftStyle',
 	borderColor: 'tableBorderColor',
 	borderWidth: 'tableBorderWidth',
 	backgroundColor: 'tableBackgroundColor',
@@ -259,7 +267,27 @@ export class TablePropertiesUI extends Plugin {
 		// visible in the editing as soon as the user types or changes fields' values.
 		view.on<ObservableChangeEvent<string>>(
 			'change:borderStyle',
-			this._getPropertyChangeCallback( 'tableBorderStyle' )
+			this._getBorderStyleChangeCallback( 'tableBorderStyle', view )
+		);
+
+		view.on<ObservableChangeEvent<string>>(
+			'change:borderTopStyle',
+			this._getPropertyChangeCallback( 'tableBorderTopStyle' )
+		);
+
+		view.on<ObservableChangeEvent<string>>(
+			'change:borderRightStyle',
+			this._getPropertyChangeCallback( 'tableBorderRightStyle' )
+		);
+
+		view.on<ObservableChangeEvent<string>>(
+			'change:borderBottomStyle',
+			this._getPropertyChangeCallback( 'tableBorderBottomStyle' )
+		);
+
+		view.on<ObservableChangeEvent<string>>(
+			'change:borderLeftStyle',
+			this._getPropertyChangeCallback( 'tableBorderLeftStyle' )
 		);
 
 		view.on<ObservableChangeEvent<string>>( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
@@ -316,6 +344,10 @@ export class TablePropertiesUI extends Plugin {
 	private _fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
 		const borderStyleCommand: TableBorderStyleCommand = commands.get( 'tableBorderStyle' )!;
+		const borderTopStyleCommand: TableBorderTopStyleCommand = commands.get( 'tableBorderTopStyle' )!;
+		const borderRightStyleCommand: TableBorderRightStyleCommand = commands.get( 'tableBorderRightStyle' )!;
+		const borderBottomStyleCommand: TableBorderBottomStyleCommand = commands.get( 'tableBorderBottomStyle' )!;
+		const borderLeftStyleCommand: TableBorderLeftStyleCommand = commands.get( 'tableBorderLeftStyle' )!;
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
@@ -330,6 +362,11 @@ export class TablePropertiesUI extends Plugin {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
 				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
 					return;
+				}
+
+				if ( borderTopStyleCommand.value && borderRightStyleCommand.value && borderBottomStyleCommand.value &&
+					borderLeftStyleCommand.value ) {
+					this.view!.set( 'border', 'separate' );
 				}
 
 				this.view!.set( property, value );
@@ -436,11 +473,40 @@ export class TablePropertiesUI extends Plugin {
 	 *
 	 * @param commandName The command that will be executed.
 	 */
-	private _getPropertyChangeCallback( commandName: 'tableBorderStyle' | 'tableAlignment' ) {
+	private _getPropertyChangeCallback(
+		commandName: 'tableBorderStyle' | 'tableAlignment' | 'tableBorderTopStyle' | 'tableBorderRightStyle' |
+		'tableBorderBottomStyle' | 'tableBorderLeftStyle'
+	) {
 		return ( evt: EventInfo, propertyName: string, newValue: string ) => {
 			// Do not execute the command on initial call (opening the table properties view).
 			if ( !this._isReady ) {
 				return;
+			}
+
+			this.editor.execute( commandName, {
+				value: newValue,
+				batch: this._undoStepBatch
+			} );
+		};
+	}
+
+	/**
+	 * Creates a callback that when executed upon {@link #view view's} property change
+	 * executes a related editor command with the new property value.
+	 *
+	 * If new value will be set to the default value, the command will not be executed.
+	 *
+	 * @param commandName The command that will be executed.
+	 */
+	private _getBorderStyleChangeCallback( commandName: 'tableBorderStyle', view: TablePropertiesView ) {
+		return ( evt: EventInfo, propertyName: string, newValue: string ) => {
+			// Do not execute the command on initial call (opening the table properties view).
+			if ( !this._isReady ) {
+				return;
+			}
+
+			if ( newValue !== 'none' ) {
+				view.border = 'all';
 			}
 
 			this.editor.execute( commandName, {
