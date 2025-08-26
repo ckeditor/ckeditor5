@@ -43,6 +43,14 @@ Classic editor is what most users traditionally learned to associate with a rich
 
 See an {@link examples/builds/classic-editor example of the classic editor} in action.
 
+Use the following import to put classic editor on your page:
+
+<code-switcher>
+```js
+import { ClassicEditor } from 'ckeditor5';
+```
+</code-switcher>
+
 ## Inline editor
 
 The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
@@ -50,6 +58,14 @@ The inline editor comes with a floating toolbar that becomes visible when the ed
 {@img assets/img/editor-type-inline.png 800 Inline editor type.}
 
 See an {@link examples/builds/inline-editor example of the inline editor} in action.
+
+Use the following import to put inline editor on your page:
+
+<code-switcher>
+```js
+import { InlineEditor } from 'ckeditor5';
+```
+</code-switcher>
 
 ## Balloon editor and balloon block editor
 
@@ -65,6 +81,22 @@ Balloon block is essentially the balloon editor with an extra block toolbar, whi
 
 See an {@link examples/builds/balloon-block-editor example of the balloon block editor} in action.
 
+Use one of the following imports to put balloon or balloon block editor on your page:
+
+<code-switcher>
+```js
+import { BalloonEditor } from 'ckeditor5';
+```
+</code-switcher>
+
+or
+
+<code-switcher>
+```js
+import { BalloonBlockEditor } from 'ckeditor5';
+```
+</code-switcher>
+
 ## Decoupled editor (document)
 
 The Decoupled editor is named for its unique structure, where the toolbar and editing area are separate elements. This design allows for greater flexibility and customization, making it suitable for a wide range of applications beyond just classic WYSIWYG editing.
@@ -77,6 +109,14 @@ By separating the toolbar from the editing area, you can integrate the editor in
 
 See an {@link examples/builds/document-editor example of the document editor} in action.
 
+Use the following import to put classic editor on your page:
+
+<code-switcher>
+```js
+import { DocumentEditor } from 'ckeditor5';
+```
+</code-switcher>
+
 ## Multi-root editor
 
 The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
@@ -88,3 +128,11 @@ See an {@link examples/builds/multi-root-editor example of the multi-root editor
 <info-box>
 	At this time, the multi-root editor is not yet available via the [Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
+
+Use the following import to put classic editor on your page:
+
+<code-switcher>
+```js
+import { MultiRootEditor } from 'ckeditor5';
+```
+</code-switcher>
