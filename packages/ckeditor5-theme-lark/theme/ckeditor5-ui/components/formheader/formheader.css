@@ -12,6 +12,8 @@
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
+	/* To prevent shrinking when placed in flexbox. */
+	flex-shrink: 0;
 
 	& > .ck-icon {
 		margin-inline-end: var(--ck-spacing-medium);
