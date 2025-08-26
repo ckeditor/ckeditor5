@@ -17,9 +17,6 @@ import {
 } from '@ckeditor/ckeditor5-core';
 
 import type {
-	ModelDocumentSelection,
-	ModelSelection,
-	Marker,
 	ViewTypeCheckable,
 	ModelTypeCheckable
 } from '@ckeditor/ckeditor5-engine';
@@ -31,6 +28,8 @@ import type {
 	ActionsRecorderErrorCallback,
 	ActionsRecorderMaxEntriesCallback
 } from './actionsrecorderconfig.js';
+
+import { isPlainObject } from 'es-toolkit/compat';
 
 /**
  * A plugin that records user actions and editor state changes for debugging purposes. It tracks commands execution, model operations,
@@ -268,7 +267,7 @@ export class ActionsRecorder extends Plugin {
 			documentVersion: model.document.version,
 			editorReadOnly: isReadOnly,
 			editorFocused: editing.view.document.isFocused,
-			modelSelection: serializeModelSelection( model.document.selection )
+			modelSelection: serializeValue( model.document.selection )
 		};
 	}
 
@@ -585,18 +584,22 @@ interface MethodTap extends Record<string, any> {
  * Serializes a value into a JSON-serializable format.
  *
  * @param value The value to serialize.
+ * @param visited Set of already serialized objects to avoid circular references.
  * @returns A JSON-serializable representation of the value.
  */
-function serializeValue( value: any ): any {
+function serializeValue( value: any, visited = new WeakSet() ): any {
 	if ( !value || [ 'boolean', 'number', 'string' ].includes( typeof value ) ) {
 		return value;
 	}
 
 	if ( typeof value.toJSON == 'function' ) {
-		return value.toJSON();
-	}
+		const jsonData = value.toJSON();
 
-	// TODO ViewText is not handled
+		// Make sure that toJSON returns plain object, otherwise it could be just a clone with circular references.
+		if ( isPlainObject( jsonData ) ) {
+			return serializeValue( jsonData, visited );
+		}
+	}
 
 	if ( value instanceof Error ) {
 		return {
@@ -606,39 +609,48 @@ function serializeValue( value: any ): any {
 		};
 	}
 
-	if ( isTypeCheckable( value ) ) {
-		switch ( true ) {
-			case value.is( 'model:documentSelection' ):
-			case value.is( 'model:selection' ):
-				return serializeModelSelection( value as unknown as any );
+	// Most TypeCheckable should implement toJSON method so this is a fallback for other TypeCheckable objects.
+	if ( isTypeCheckable( value ) || typeof value != 'object' ) {
+		return {
+			type: typeof value,
+			constructor: value.constructor?.name || 'unknown',
+			string: String( value )
+		};
+	}
 
-			default:
-				return {
-					name: value.constructor?.name || 'unknown'
-				};
+	// DOM event.
+	if ( value.domEvent ) {
+		return serializeDomEvent( value.domEvent );
+	}
+
+	if ( visited.has( value ) ) {
+		return;
+	}
+
+	visited.add( value );
+
+	// Arrays.
+	if ( Array.isArray( value ) ) {
+		return value.length ? value.map( item => serializeValue( item, visited ) ) : undefined;
+	}
+
+	// Other objects (plain or instances of classes).
+	const result: Record<string, any> = {};
+
+	for ( const [ key, val ] of Object.entries( value ) ) {
+		// Ignore private fields and decorated methods.
+		if ( key.startsWith( '_' ) || typeof val == 'function' ) {
+			continue;
+		}
+
+		const serializedValue = serializeValue( val, visited );
+
+		if ( serializedValue !== undefined ) {
+			result[ key ] = serializedValue;
 		}
 	}
 
-	if ( typeof value == 'object' ) {
-		if ( Array.isArray( value ) ) {
-			return value.map( serializeValue );
-		}
-
-		if ( value.domEvent ) {
-			return serializeDomEvent( value.domEvent );
-		}
-
-		const entries = Object.entries( value ).map( ( [ key, value ] ) => [ key, serializeValue( value ) ] );
-
-		return Object.fromEntries( entries );
-	}
-
-	// Handle other unknown types by returning their type and string representation.
-	return {
-		type: typeof value,
-		constructor: value.constructor?.name || 'unknown',
-		string: String( value )
-	};
+	return Object.keys( result ).length ? result : undefined;
 }
 
 /**
@@ -731,48 +743,6 @@ function serializeDomEvent( event: Event ): any {
 	}
 
 	return serialized;
-}
-
-/**
- * Serializes a model selection into a plain object representation.
- *
- * Converts the selection's ranges, attributes, and markers (if present) into a JSON-serializable format.
- * For document selections, also includes any associated markers.
- *
- * @param selection The model selection to serialize, either a document selection or regular model selection.
- * @returns A serialized object containing ranges, attributes (if any), and markers (if any for document selections).
- */
-function serializeModelSelection( selection: ModelDocumentSelection | ModelSelection ) {
-	const serializedRanges = Array.from( selection.getRanges() ).map( range => range.toJSON() );
-	const serializedAttributes = Object.fromEntries( selection.getAttributes() );
-	const serializedMarkers = selection.is( 'documentSelection' ) && (
-		Array.from( selection.markers || [] ).map( marker => serializeModelMarker( marker ) )
-	);
-
-	return {
-		ranges: serializedRanges,
-
-		...( Object.keys( serializedAttributes ).length && {
-			attributes: serializedAttributes
-		} ),
-
-		...( serializedMarkers && serializedMarkers.length && {
-			markers: serializedMarkers
-		} )
-	};
-}
-
-/**
- * Serializes a model marker into a plain object representation.
- *
- * @param marker The model marker to serialize.
- * @returns A serialized object containing the marker's name and range.
- */
-function serializeModelMarker( marker: Marker ) {
-	return {
-		name: marker.name,
-		range: marker.getRange().toJSON()
-	};
 }
 
 /**
