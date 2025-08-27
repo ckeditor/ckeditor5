@@ -100,6 +100,7 @@ export class ViewText extends ViewNode {
 	public override toJSON(): unknown {
 		const json: any = super.toJSON();
 
+		json.type = 'Text';
 		json.data = this.data;
 
 		return json;

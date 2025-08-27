@@ -439,9 +439,7 @@ export class ActionsRecorder extends Plugin {
 			'copy',
 			'cut',
 			'dragstart',
-			'drop',
-			'imageLoaded',
-			'todoCheckboxChange'
+			'drop'
 		];
 
 		this._tapFireMethod( this.editor.editing.view.document, events, { eventSource: 'observers' } );
@@ -622,11 +620,6 @@ export function serializeValue( value: any, visited = new WeakSet() ): any {
 		};
 	}
 
-	// DOM event.
-	if ( value.domEvent ) {
-		return serializeDomEvent( value.domEvent );
-	}
-
 	if ( value instanceof File || value instanceof Blob || value instanceof FormData || value instanceof DataTransfer ) {
 		return String( value );
 	}
@@ -642,12 +635,30 @@ export function serializeValue( value: any, visited = new WeakSet() ): any {
 		return value.length ? value.map( item => serializeValue( item, visited ) ) : undefined;
 	}
 
-	// Other objects (plain or instances of classes).
+	// Other objects (plain, instances of classes, or events).
 	const result: Record<string, any> = {};
+	const ignoreFields: Array<string> = [];
 
+	// DOM event additional fields.
+	if ( value.domEvent ) {
+		ignoreFields.push( 'domEvent', 'domTarget', 'view', 'document' );
+
+		result.domEvent = serializeDomEvent( value.domEvent );
+		result.target = serializeValue( value.target );
+
+		if ( value.dataTransfer ) {
+			result.dataTransfer = {
+				types: value.dataTransfer.types,
+				htmlData: value.dataTransfer.getData( 'text/html' ),
+				files: serializeValue( value.dataTransfer.files )
+			};
+		}
+	}
+
+	// Other object types.
 	for ( const [ key, val ] of Object.entries( value ) ) {
-		// Ignore private fields and decorated methods.
-		if ( key.startsWith( '_' ) || typeof val == 'function' ) {
+		// Ignore private fields, DOM events serialized above, and decorated methods.
+		if ( key.startsWith( '_' ) || ignoreFields.includes( key ) || typeof val == 'function' ) {
 			continue;
 		}
 

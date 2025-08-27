@@ -514,6 +514,7 @@ export class ViewElement extends ViewNode {
 		const json: any = super.toJSON();
 
 		json.name = this.name;
+		json.type = 'Element';
 
 		if ( this._attrs.size ) {
 			json.attributes = Object.fromEntries( this.getAttributes() );

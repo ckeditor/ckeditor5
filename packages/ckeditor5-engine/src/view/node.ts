@@ -273,7 +273,8 @@ export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeChe
 	 */
 	public toJSON(): unknown {
 		const json: any = {
-			path: this.getPath()
+			path: this.getPath(),
+			type: 'Node'
 		};
 
 		if ( this.parent ) {
