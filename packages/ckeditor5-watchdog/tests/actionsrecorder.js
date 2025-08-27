@@ -58,10 +58,10 @@ describe( 'ActionsRecorder', () => {
 			editor.execute( 'paragraph' );
 
 			const records = plugin.getEntries();
-			const paragraphRecord = records.find( record => record.event === 'commands.paragraph:execute' );
+			const paragraphRecord = records.find( record => record.action === 'commands.paragraph:execute' );
 
 			expect( paragraphRecord ).to.exist;
-			expect( paragraphRecord.event ).to.equal( 'commands.paragraph:execute' );
+			expect( paragraphRecord.action ).to.equal( 'commands.paragraph:execute' );
 		} );
 
 		it( 'should register onError callback from config', async () => {
@@ -106,7 +106,7 @@ describe( 'ActionsRecorder', () => {
 
 			const records = plugin.getEntries();
 			expect( records ).to.have.length( 1 );
-			expect( records[ 0 ].event ).to.equal( 'commands.paragraph:execute' );
+			expect( records[ 0 ].action ).to.equal( 'commands.paragraph:execute' );
 			expect( records[ 0 ] ).to.have.property( 'timeStamp' );
 			expect( records[ 0 ] ).to.have.property( 'before' );
 			expect( records[ 0 ] ).to.have.property( 'after' );
@@ -120,7 +120,7 @@ describe( 'ActionsRecorder', () => {
 			} );
 
 			const records = plugin.getEntries();
-			const operationRecords = records.filter( record => record.event === 'model.applyOperation' );
+			const operationRecords = records.filter( record => record.action === 'model.applyOperation' );
 
 			expect( operationRecords.length ).to.be.greaterThan( 0 );
 		} );
@@ -132,7 +132,7 @@ describe( 'ActionsRecorder', () => {
 			} );
 
 			const records = plugin.getEntries();
-			const insertContentRecord = records.find( record => record.event === 'model.insertContent' );
+			const insertContentRecord = records.find( record => record.action === 'model.insertContent' );
 
 			expect( insertContentRecord ).to.exist;
 			expect( insertContentRecord.params ).to.exist;
@@ -147,7 +147,7 @@ describe( 'ActionsRecorder', () => {
 			expect( records.length ).to.be.greaterThan( 0 );
 
 			// Check if any operations were recorded during command execution
-			const operationRecords = records.filter( record => record.event === 'model.applyOperation' );
+			const operationRecords = records.filter( record => record.action === 'model.applyOperation' );
 			if ( operationRecords.length > 0 ) {
 				expect( operationRecords.some( record => record.parentFrame ) ).to.be.true;
 			}
@@ -162,7 +162,7 @@ describe( 'ActionsRecorder', () => {
 			} );
 
 			const records = plugin.getEntries();
-			const clickRecord = records.find( record => record.event === 'observers:click' );
+			const clickRecord = records.find( record => record.action === 'observers:click' );
 
 			expect( clickRecord ).to.exist;
 		} );
@@ -197,7 +197,7 @@ describe( 'ActionsRecorder', () => {
 			editor.execute( 'foo' );
 
 			const records = plugin.getEntries();
-			const commandRecord = records.find( record => record.event === 'commands.foo:execute' );
+			const commandRecord = records.find( record => record.action === 'commands.foo:execute' );
 
 			expect( commandRecord ).to.exist;
 			expect( commandRecord.result ).to.be.equal( 'Foo result' );
@@ -222,7 +222,7 @@ describe( 'ActionsRecorder', () => {
 			}
 
 			const records = plugin.getEntries();
-			const commandRecord = records.find( record => record.event === 'commands.foo:execute' );
+			const commandRecord = records.find( record => record.action === 'commands.foo:execute' );
 
 			expect( commandRecord ).to.exist;
 			expect( commandRecord.error ).to.exist;
@@ -240,7 +240,7 @@ describe( 'ActionsRecorder', () => {
 
 			const records = plugin.getEntries();
 			// Filter to only count command executions, not nested operations
-			const commandRecords = records.filter( record => record.event.startsWith( 'commands.' ) );
+			const commandRecords = records.filter( record => record.action.startsWith( 'commands.' ) );
 			expect( commandRecords ).to.have.length( 2 );
 		} );
 
@@ -264,13 +264,16 @@ describe( 'ActionsRecorder', () => {
 			editor = await ClassicTestEditor.create( element, {
 				plugins: [ ActionsRecorder, Paragraph ],
 				actionsRecorder: {
-					maxEntries: 2
+					maxEntries: 3
 				}
 			} );
 
 			plugin = editor.plugins.get( 'ActionsRecorder' );
 
 			// Execute more commands than the limit
+			editor.execute( 'paragraph' );
+			editor.execute( 'paragraph' );
+			editor.execute( 'paragraph' );
 			editor.execute( 'paragraph' );
 			editor.execute( 'paragraph' );
 			editor.execute( 'paragraph' );
@@ -350,7 +353,7 @@ describe( 'ActionsRecorder', () => {
 			editor.execute( 'paragraph' );
 
 			expect( filterSpy ).to.have.been.called;
-			expect( filterSpy.firstCall.args[ 0 ] ).to.have.property( 'event' );
+			expect( filterSpy.firstCall.args[ 0 ] ).to.have.property( 'action' );
 			expect( filterSpy.firstCall.args[ 1 ] ).to.be.an( 'array' );
 		} );
 	} );
@@ -365,7 +368,7 @@ describe( 'ActionsRecorder', () => {
 			editor.ui.componentFactory.create( 'bold' );
 
 			const records = plugin.getEntries();
-			const componentRecord = records.find( record => record.event === 'component-factory.create:bold' );
+			const componentRecord = records.find( record => record.action === 'component-factory.create:bold' );
 
 			expect( componentRecord ).to.exist;
 		} );
@@ -380,7 +383,7 @@ describe( 'ActionsRecorder', () => {
 			editor.execute( 'heading', { value: 'heading1' } );
 
 			const records = plugin.getEntries();
-			const headingRecord = records.find( record => record.event === 'commands.heading:execute' );
+			const headingRecord = records.find( record => record.action === 'commands.heading:execute' );
 
 			expect( headingRecord.params ).to.exist;
 			expect( headingRecord.params[ 0 ] ).to.deep.equal( { value: 'heading1' } );
@@ -410,12 +413,12 @@ describe( 'ActionsRecorder', () => {
 			} );
 
 			const records = plugin.getEntries();
-			const clickRecord = records.find( record => record.event === 'observers:click' );
+			const clickRecord = records.find( record => record.action === 'observers:click' );
 
 			expect( clickRecord ).to.exist;
 
-			expect( clickRecord.params[ 0 ] ).to.have.property( 'type', 'click' );
-			expect( clickRecord.params[ 0 ] ).to.have.property( 'ctrlKey', true );
+			expect( clickRecord.params[ 0 ].domEvent ).to.have.property( 'type', 'click' );
+			expect( clickRecord.params[ 0 ].domEvent ).to.have.property( 'ctrlKey', true );
 		} );
 	} );
 } );
