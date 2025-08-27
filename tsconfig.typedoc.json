@@ -15,18 +15,12 @@
       "@ckeditor/*": [
         "packages/*",
         "../../packages/*"
-      ],
-      "@ckeditor/ckeditor-cloud-services-collaboration": [
-        "external/ckeditor-cloud-services-collaboration"
-      ],
-      "@ckeditor/ckeditor-cloud-services-collaboration/*": [
-        "external/ckeditor-cloud-services-collaboration/*"
       ]
     }
   },
   "include": [
     "./packages/*/src/**/*.ts",
-    "./../../packages/*/src/**/*.ts",
+    "../../packages/*/src/**/*.ts",
     "./typings/"
   ],
   "exclude": [
