@@ -30,7 +30,7 @@ import {
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -237,6 +237,21 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper tabindex', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
+		it( 'should not add tabindex if editable is readonly', () => {
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+		} );
+
+		it( 'should toggle tabindex attribute after isReadOnly change', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+
+			element.isReadOnly = false;
 			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
