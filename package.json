@@ -131,7 +131,7 @@
     "coveralls": "^3.1.0",
     "date-fns": "^4.0.0",
     "esbuild": "^0.25.0",
-    "eslint": "^9.26.0",
+    "eslint": "^9.34.0",
     "eslint-config-ckeditor5": "^12.1.0",
     "eslint-formatter-stylish": "^8.40.0",
     "eslint-plugin-ckeditor5-rules": "^12.1.0",
@@ -181,7 +181,7 @@
   "scripts": {
     "nice": "ckeditor5-dev-changelog-create-entry",
     "postinstall": "node ./scripts/postinstall.mjs",
-    "lint": "eslint --format ./scripts/eslint-formatter.cjs",
+    "lint": "eslint --format ./scripts/eslint-formatter.cjs --concurrency=4",
     "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testautomated.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/testmanual.js",
