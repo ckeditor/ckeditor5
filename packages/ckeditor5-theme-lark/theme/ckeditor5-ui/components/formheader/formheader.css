@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
-
 :root {
 	--ck-form-header-height: 3.384em;
 }
@@ -14,15 +12,12 @@
 	height: var(--ck-form-header-height);
 	line-height: var(--ck-form-header-height);
 	border-bottom: 1px solid var(--ck-color-base-border);
+	/* To prevent shrinking when placed in flexbox. */
+	flex-shrink: 0;
 
 	& > .ck-icon {
-		@mixin ck-dir ltr {
-			margin-right: var(--ck-spacing-medium);
-		}
-
-		@mixin ck-dir rtl {
-			margin-left: var(--ck-spacing-medium);
-		}
+		margin-inline-end: var(--ck-spacing-medium);
+		flex-shrink: 0;
 	}
 
 	& .ck-form__header__label {
@@ -44,5 +39,9 @@
 
 	& > .ck-button-back {
 		margin-inline-end: var(--ck-spacing-small);
+	}
+
+	& > .ck.ck-button {
+		flex-shrink: 0;
 	}
 }
