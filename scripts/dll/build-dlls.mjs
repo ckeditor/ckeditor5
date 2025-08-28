@@ -36,7 +36,7 @@ getPackageNames( ROOT_DIRECTORY )
 		console.log( prefix + `Building ${ fullPackageName }...` );
 
 		const status = execute( {
-			command: [ 'yarn', 'run', 'dll:build' ],
+			command: [ 'pnpm', 'run', 'dll:build' ],
 			cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
 		} );
 

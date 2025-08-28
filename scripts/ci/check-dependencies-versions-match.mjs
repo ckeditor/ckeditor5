@@ -6,7 +6,12 @@
  */
 
 import { checkVersionMatch } from '@ckeditor/ckeditor5-dev-dependency-checker';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import {
+	CKEDITOR5_ROOT_PATH,
+	CKEDITOR5_COMMERCIAL_PATH,
+	CKEDITOR5_PACKAGES_PATH,
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
+} from '../constants.mjs';
 import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
 
 const shouldFix = process.argv[ 2 ] === '--fix';
@@ -32,9 +37,9 @@ const versionExceptions = {
 
 const pkgJsonPatterns = [
 	'package.json',
-	'packages/*/package.json',
-	'../../packages/*/package.json',
-	'../../package.json'
+	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH + '/*/package.json',
+	CKEDITOR5_COMMERCIAL_PATH + '/package.json'
 ];
 
 const options = {
