@@ -7,6 +7,8 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -408,6 +410,44 @@ describe( 'Node', () => {
 			expect( parsed ).to.deep.equal( {
 				data: 'a',
 				path: [ 0 ],
+				type: 'Text'
+			} );
+		} );
+
+		it( 'should provide root name if node is attached', () => {
+			const text = new ViewText( document, 'foo' );
+			const paragraph = new ViewElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( text );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				data: 'foo',
+				path: [ 0, 0 ],
+				root: 'main',
+				type: 'Text'
+			} );
+		} );
+
+		it( 'should provide path to node', () => {
+			const text = new ViewText( document, 'foo' );
+			const strong = new ViewAttributeElement( document, 'strong', null, new ViewText( document, 'bar' ) );
+			const paragraph = new ViewContainerElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			paragraph._appendChild( strong );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( strong.getChild( 0 ) );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				data: 'bar',
+				path: [ 0, 1, 0 ],
+				root: 'main',
 				type: 'Text'
 			} );
 		} );

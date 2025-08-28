@@ -2234,4 +2234,141 @@ describe( 'DocumentSelection', () => {
 			doc.selection._setTo( new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 5 ) ) );
 		}, /document-selection-wrong-position/, model );
 	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should serialize ranges', () => {
+			selection._setTo( range );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 2 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 2, 2 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should serialize backward selection', () => {
+			selection._setTo( range, { backward: true } );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isBackward: true,
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 2 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 2, 2 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should serialize selection attributes', () => {
+			selection._setTo( range );
+
+			selection._setAttribute( 'foo', '3' );
+			selection._setAttribute( 'bar', 7 );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				attributes: {
+					foo: '3',
+					bar: 7
+				},
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 2 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 2, 2 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should serialize selection markers', () => {
+			selection.observeMarkers( 'marker' );
+
+			model.change( writer => {
+				writer.addMarker( 'marker:1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			selection._setTo( range );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				markers: [
+					{
+						name: 'marker:1',
+						affectsData: false,
+						usingOperations: false,
+						range: {
+							start: {
+								path: [ 0, 0 ],
+								root: 'main',
+								stickiness: 'toNext'
+							},
+							end: {
+								path: [ 2, 2 ],
+								root: 'main',
+								stickiness: 'toPrevious'
+							}
+						}
+					}
+				],
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 2 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 2, 2 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+	} );
 } );
