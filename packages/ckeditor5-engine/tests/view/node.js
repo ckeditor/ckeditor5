@@ -406,8 +406,9 @@ describe( 'Node', () => {
 			const parsed = JSON.parse( json );
 
 			expect( parsed ).to.deep.equal( {
-				_textData: 'a',
-				document: 'view.Document()'
+				data: 'a',
+				path: [ 0 ],
+				type: 'Text'
 			} );
 		} );
 	} );

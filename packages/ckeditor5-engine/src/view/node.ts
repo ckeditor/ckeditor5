@@ -277,7 +277,7 @@ export abstract class ViewNode extends /* #__PURE__ */ EmitterMixin( ViewTypeChe
 			type: 'Node'
 		};
 
-		if ( this.parent ) {
+		if ( this !== this.root as any && this.root.is( 'rootElement' ) ) {
 			json.root = this.root.toJSON();
 		}
 
