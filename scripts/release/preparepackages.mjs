@@ -331,6 +331,7 @@ const tasks = new Listr( [
 				version: latestVersion,
 				files: [
 					'package.json',
+					'pnpm-lock.yaml',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
 					...ctx.updatedFiles
 				]
