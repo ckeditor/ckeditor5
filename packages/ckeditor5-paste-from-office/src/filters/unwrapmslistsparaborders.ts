@@ -44,8 +44,7 @@ type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
  *
  * This function will unwrap Microsoft Word's `mso-element: para-border-div` elements and move them to the parent element if:
  *
- * 	1. There is at least one child element with matching border alt styles.
- * 	2. There are no other non-empty children with border styles that do not match the alt border style.
+ * 	1. There is at least one non-empty child element with matching border alt styles.
  * 	3. There is at least one list-like item.
  *
  * The border will be assigned to non-empty elements.
