@@ -704,7 +704,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src="img.png"></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="false" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
+						'contenteditable="false" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
 				'</figure>]'
 			);
 		} );
