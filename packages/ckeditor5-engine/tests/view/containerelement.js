@@ -8,6 +8,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewAttributeElement, ViewRootEditableElement, ViewText } from '../../src/index.js';
 
 describe( 'ContainerElement', () => {
 	let document;
@@ -108,6 +109,50 @@ describe( 'ContainerElement', () => {
 			it( 'empty element must be the <br> element', () => {
 				expect( _parseView( '<container:p>Foo<empty:img></empty:img></container:p>' ).getFillerOffset() )
 					.to.equals( null );
+			} );
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path, child nodes', () => {
+			const text = new ViewText( document, 'foo' );
+			const strong = new ViewAttributeElement( document, 'strong', null, new ViewText( document, 'bar' ) );
+			const paragraph = new ViewContainerElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			paragraph._appendChild( strong );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( paragraph );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'p',
+				path: [ 0 ],
+				root: 'main',
+				type: 'ContainerElement',
+				children: [
+					{
+						data: 'foo',
+						path: [ 0, 0 ],
+						root: 'main',
+						type: 'Text'
+					},
+					{
+						name: 'strong',
+						path: [ 0, 1 ],
+						root: 'main',
+						type: 'AttributeElement',
+						children: [
+							{
+								data: 'bar',
+								path: [ 0, 1, 0 ],
+								root: 'main',
+								type: 'Text'
+							}
+						]
+					}
+				]
 			} );
 		} );
 	} );

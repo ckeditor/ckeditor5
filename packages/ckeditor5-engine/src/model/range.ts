@@ -567,7 +567,7 @@ export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTree
 	/**
 	 * Converts `Range` to plain object and returns it.
 	 *
-	 * @returns `Node` converted to plain object.
+	 * @returns `Range` converted to plain object.
 	 */
 	public toJSON(): unknown {
 		return {

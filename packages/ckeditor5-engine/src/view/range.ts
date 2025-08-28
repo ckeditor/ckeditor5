@@ -437,6 +437,18 @@ export class ViewRange extends ViewTypeCheckable implements Iterable<ViewTreeWal
 	}
 
 	/**
+	 * Converts `ViewRange` instance to plain object and returns it.
+	 *
+	 * @returns `ViewRange` instance converted to plain object.
+	 */
+	public toJSON(): unknown {
+		return {
+			start: this.start.toJSON(),
+			end: this.end.toJSON()
+		};
+	}
+
+	/**
 	 * Creates a range from the given parents and offsets.
 	 *
 	 * @internal

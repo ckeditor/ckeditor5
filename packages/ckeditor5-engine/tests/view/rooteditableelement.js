@@ -8,6 +8,7 @@ import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
+import { ViewText } from '../../src/index.js';
 
 describe( 'RootEditableElement', () => {
 	let document;
@@ -112,5 +113,20 @@ describe( 'RootEditableElement', () => {
 
 		expect( newRoot.document ).to.equal( root.document );
 		expect( newRoot.rootName ).to.equal( root.rootName );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide root name only', () => {
+			const text = new ViewText( document, 'foo' );
+			const editable = new ViewContainerElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			editable._appendChild( text );
+			root._appendChild( editable );
+
+			const json = JSON.stringify( root );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.equal( 'main' );
+		} );
 	} );
 } );
