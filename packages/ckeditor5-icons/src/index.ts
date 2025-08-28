@@ -22,7 +22,6 @@ export { default as IconAIReview } from '../theme/icons/ai-review.svg';
 export { default as IconAITranslate } from '../theme/icons/ai-translate.svg';
 export { default as IconAIChat } from '../theme/icons/ai-chat.svg';
 export { default as IconAIHistory } from '../theme/icons/ai-history.svg';
-export { default as IconAIReview } from '../theme/icons/ai-review.svg';
 export { default as IconAlignBottom } from '../theme/icons/align-bottom.svg';
 export { default as IconAlignCenter } from '../theme/icons/align-center.svg';
 export { default as IconAlignJustify } from '../theme/icons/align-justify.svg';
