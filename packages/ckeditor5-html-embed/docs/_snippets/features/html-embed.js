@@ -3,7 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { HtmlEmbed, CodeBlock, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
+import {
+	HtmlEmbed,
+	CodeBlock,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	HorizontalLine,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage
+} from 'ckeditor5';
 import {
 	TOKEN_URL,
 	CS_CONFIG,
@@ -17,6 +28,7 @@ ClassicEditor.builtinPlugins.push(
 	HtmlEmbed,
 	CodeBlock,
 	PictureEditing,
+	HorizontalLine,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
@@ -28,7 +40,7 @@ ClassicEditor.builtinPlugins.push(
 const initialData =
 `
 <h2>CKEditor 5 HTML Embed feature</h2>
-<p>The feature may be used to embed advanced textual content, both static and generated that boosts discoverability, cross-language support and accessibility. For example:</p>
+<p>The feature may be used to embed advanced textual content, both static and generated, that boosts discoverability, cross-language support, and accessibility. For example:</p>
 <div class="raw-html-embed">
 <p>
 	Explore our latest achievements in the <abbr title="Large Language Model">LLM</abbr> research! 
@@ -40,6 +52,7 @@ const initialData =
   document.getElementById("today").textContent = today.toLocaleDateString();
 </script>
 </div>
+<hr>
 <div role="separator" class="b-separator"></div>
 <p>It may also serve dynamic, external content. For example:</p>
 <div class="raw-html-embed">
@@ -48,6 +61,7 @@ const initialData =
 	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
 	</script>
 </div>
+<hr>
 <div role="separator" class="b-separator"></div>
 <p>Or it can be used to produce generated content that is complicated under the surface, but quite simple for the end user. For example:</p>
 <div class="raw-html-embed">
