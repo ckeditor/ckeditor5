@@ -43,7 +43,7 @@ const initialData =
 <p>The feature may be used to embed advanced textual content, both static and generated, that boosts discoverability, cross-language support, and accessibility. For example:</p>
 <div class="raw-html-embed">
 <p>
-	Explore our latest achievements in the <abbr title="Large Language Model">LLM</abbr> research! 
+	Explore our latest achievements in the <abbr title="Large Language Model">LLM</abbr> research!<br>
 	Where? At the <ruby>ＡＩ研究施設<rt>えーあいけんきゅうしせつ</rt></ruby>, AI Reesearch Facility.<br>
 	When? Today, <span id="today"></span>, at 2 PM.
 </p>
@@ -65,11 +65,11 @@ const initialData =
 <div role="separator" class="b-separator"></div>
 <p>Or it can be used to produce generated content that is complicated under the surface, but quite simple for the end user. For example:</p>
 <div class="raw-html-embed">
-	<script>
-		const element = document.createElement( 'div' );
-		element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
-		document.body.appendChild( element );
-	</script>
+<script>
+	const element = document.createElement( 'div' );
+	element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
+	document.body.appendChild( element );
+</script>
 </div>
 `;
 
