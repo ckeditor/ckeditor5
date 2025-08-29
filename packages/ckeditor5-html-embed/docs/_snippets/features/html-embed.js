@@ -27,28 +27,29 @@ ClassicEditor.builtinPlugins.push(
 /* eslint-disable @stylistic/max-len */
 const initialData =
 `
-<h2>CKEditor 5 classic editor build</h2>
-<div class="raw-html-embed"><p>Example of raw HTML</p></div>
-
-<p>The classic editor type for CKEditor 5. See a <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>classic editor example demo</strong></a>.</p>
-
-<figure class="image"><img src="https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png" alt="CKEditor 5 classic editor type screenshot"></figure>
-
-<h2>Documentation</h2>
-<p>See:</p>
-<ul>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/cloud/quick-start.html">Installation</a> for how to install this package and what it contains.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-lifecycle.html">Editor lifecycle</a> for how to create an editor and interact with it.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/configuration.html">Configuration</a> for how to configure the editor.</li>
-</ul>
-
-<h2>Quick start</h2>
-<p>First, install the build from npm:</p>
-<pre><code class="language-plaintext">npm&nbsp;install&nbsp;ckeditor5</code></pre>
-
-<h2>License</h2>
-<p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
-
+<h2>CKEditor 5 HTML Embed feature</h2>
+<p>The feature may be used to embed advanced textual content, both static and generated that boosts discoverability, cross-language support and accessibility. For example:</p>
+<div class="raw-html-embed">
+<p>
+	Explore our latest achievements in the <abbr title="Large Language Model">LLM</abbr> research! 
+	Where? At the <ruby>ＡＩ研究施設<rt>えーあいけんきゅうしせつ</rt></ruby>, AI Reesearch Facility.<br>
+	When? Today, <span id="today"></span>, at 2 PM.
+</p>
+<script>
+  const today = new Date();
+  document.getElementById("today").textContent = today.toLocaleDateString();
+</script>
+</div>
+<div role="separator" class="b-separator"></div>
+<p>It may also serve dynamic, external content. For example:</p>
+<div class="raw-html-embed">
+	<a class="weatherwidget-io" href="https://forecast7.com/en/40d71n74d01/new-york/" data-label_1="NEW YORK" data-label_2="WEATHER" data-theme="original" >NEW YORK WEATHER</a>
+	<script>
+	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+	</script>
+</div>
+<div role="separator" class="b-separator"></div>
+<p>Or it can be used to produce generated content that is complicated under the surface, but quite simple for the end user. For example:</p>
 <div class="raw-html-embed">
 	<script>
 		const element = document.createElement( 'div' );
