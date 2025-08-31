@@ -227,7 +227,7 @@ export interface ActionsRecorderEntry {
 	params?: Array<any>;
 
 	/**
-	 * The result returned by the executed action. Those depend on the actual action.
+	 * The result returned by the executed action. It depends on the actual action.
 	 */
 	result?: any;
 
