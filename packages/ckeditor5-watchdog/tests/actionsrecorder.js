@@ -281,6 +281,57 @@ describe( 'ActionsRecorder', () => {
 			const records = plugin.getEntries();
 			expect( records ).to.have.length( 2 );
 		} );
+
+		it( 'should call onMaxEntries callback', async () => {
+			await editor.destroy();
+			element.remove();
+
+			element = global.document.createElement( 'div' );
+			global.document.body.appendChild( element );
+
+			let entries;
+
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ ActionsRecorder, Paragraph ],
+				actionsRecorder: {
+					maxEntries: 3,
+					onMaxEntries() {
+						entries = this.getEntries();
+
+						this.flushEntries();
+					}
+				}
+			} );
+
+			plugin = editor.plugins.get( 'ActionsRecorder' );
+
+			// Execute more commands than the limit
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+			editor.execute( 'insertParagraph', { position: editor.model.document.selection.getFirstPosition() } );
+
+			expect( entries ).to.have.length( 4 );
+
+			// Last entry should be complete.
+			expect( entries.at( -1 ).action ).to.equal( 'model.applyOperation' );
+			expect( entries.at( -1 ).before.documentVersion ).to.equal( 7 );
+			expect( entries.at( -1 ).after.documentVersion ).to.equal( 8 );
+			expect( entries.at( -1 ).parentEntry ).to.equal( entries.at( -2 ) );
+
+			// Parent frames check.
+			expect( entries.at( -2 ).action ).to.equal( 'model.insertContent' );
+			expect( entries.at( -2 ).before.documentVersion ).to.equal( 7 );
+			expect( entries.at( -2 ).after.documentVersion ).to.equal( 8 );
+			expect( entries.at( -2 ).parentEntry ).to.equal( entries.at( -3 ) );
+
+			expect( entries.at( -3 ).action ).to.equal( 'commands.insertParagraph:execute' );
+			expect( entries.at( -3 ).before.documentVersion ).to.equal( 7 );
+			expect( entries.at( -3 ).after.documentVersion ).to.equal( 8 );
+			expect( entries.at( -3 ).parentEntry ).to.be.undefined;
+		} );
 	} );
 
 	describe( 'filtering', () => {

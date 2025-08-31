@@ -207,11 +207,6 @@ export class ActionsRecorder extends Plugin {
 		if ( !this._filterCallback || this._filterCallback( callFrame, this._entries ) ) {
 			// Add the call frame to the entries.
 			this._entries.push( callFrame );
-
-			// Enforce max entries limit.
-			if ( this._entries.length >= this._maxEntries ) {
-				this._maxEntriesCallback();
-			}
 		}
 
 		this._frameStack.push( callFrame );
@@ -251,6 +246,11 @@ export class ActionsRecorder extends Plugin {
 
 		if ( this._frameStack.length == 0 ) {
 			this._errors.clear();
+		}
+
+		// Enforce max entries limit after leaving the frame so that complete entry is provided.
+		if ( this._entries.length >= this._maxEntries ) {
+			this._maxEntriesCallback();
 		}
 	}
 
