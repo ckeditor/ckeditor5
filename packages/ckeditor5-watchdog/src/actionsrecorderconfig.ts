@@ -232,7 +232,7 @@ export interface ActionsRecorderEntry {
 	result?: any;
 
 	/**
-	 * The error if the action throw any.
+	 * The error if the action throws one.
 	 */
 	error?: any;
 }
