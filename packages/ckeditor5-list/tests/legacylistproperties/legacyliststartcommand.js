@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
 
 describe( 'LegacyListStartCommand', () => {

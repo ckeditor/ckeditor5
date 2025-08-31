@@ -4,9 +4,9 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { assertTableStyle, modelTable } from '../../_utils/utils.js';
 import { TablePropertiesEditing } from '../../../src/tableproperties/tablepropertiesediting.js';

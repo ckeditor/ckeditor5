@@ -36,7 +36,7 @@ Then, you need to attach the script with the JavaScript code.
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 ```
 
-The included script exposes the global variable named `CKEDITOR`. You can use object destructuring shown below to access the editor class and plugins.
+Import the selected {@link getting-started/setup/editor-types editor type} and plugins. The included script exposes the global variable named `CKEDITOR`. You can use object destructuring shown below to access the editor class and plugins.
 
 ```js
 const {
@@ -112,6 +112,10 @@ A simple HTML page with the CKEditor may look like the one below.
     </body>
 </html>
 ```
+
+<info-box important>
+	The multi-root editor requires a {@link getting-started/setup/editor-types#multi-root-editor more advanced configuration} of the roots.
+</info-box>
 
 ## Installing premium features from CDN
 

@@ -11,7 +11,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewPosition } from '../../src/view/position.js';
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from './_utils/createroot.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

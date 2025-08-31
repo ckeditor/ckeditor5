@@ -3,13 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { Collection } from '@ckeditor/ckeditor5-utils';
+import { _getViewData, _stringifyModel } from '@ckeditor/ckeditor5-engine';
 
 import { FindAndReplace } from '../src/findandreplace.js';
 import { FindAndReplaceUI } from '../src/findandreplaceui.js';

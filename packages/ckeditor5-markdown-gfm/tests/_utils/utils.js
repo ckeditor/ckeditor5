@@ -4,9 +4,7 @@
  */
 
 import { MarkdownGfmDataProcessor } from '../../src/gfmdataprocessor.js';
-import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
+import { _stringifyView, ViewDocument, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Tests MarkdownGfmDataProcessor.

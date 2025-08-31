@@ -9,16 +9,12 @@ import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
 import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
-import FooterPlugin from './webpack-footer-plugin.mjs';
-import { addTypeScriptLoader } from '../docs/utils.mjs';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import FooterPlugin from '../../scripts/dll/webpack-footer-plugin.mjs';
+import { addTypeScriptLoader } from '../../scripts/docs/utils.mjs';
+import { CKEDITOR5_MAIN_PACKAGE_PATH } from '../../scripts/constants.mjs';
 
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 const { CI } = process.env;
-
-if ( CKEDITOR5_ROOT_PATH !== path.toUnix( process.cwd() ) ) {
-	throw new Error( 'This script should be called from the package root directory.' );
-}
 
 /**
  * Attaches exported modules to the global (`window`) scope.
@@ -83,7 +79,7 @@ const webpackConfig = {
 		moduleIds: 'named'
 	},
 	output: {
-		path: path.join( CKEDITOR5_ROOT_PATH, 'build' ),
+		path: path.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'build' ),
 		filename: 'ckeditor5-dll.js',
 		library: [ 'CKEditor5', 'dll' ],
 		libraryTarget: 'window'
@@ -102,7 +98,7 @@ const webpackConfig = {
 		new webpack.DllPlugin( {
 			name: 'CKEditor5.dll',
 			context: 'src',
-			path: path.join( CKEDITOR5_ROOT_PATH, 'build', 'ckeditor5-dll.manifest.json' ),
+			path: path.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true
 		} ),
@@ -153,4 +149,3 @@ if ( CI ) {
 }
 
 export default webpackConfig;
-

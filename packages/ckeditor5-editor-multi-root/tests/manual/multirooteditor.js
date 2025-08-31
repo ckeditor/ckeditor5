@@ -4,17 +4,14 @@
  */
 
 import { MultiRootEditor } from '../../src/multirooteditor.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { AutoImage } from '@ckeditor/ckeditor5-image/src/autoimage.js';
-import { ImageInsert } from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Image, AutoImage, ImageInsert } from '@ckeditor/ckeditor5-image';
+import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import { CKFinder } from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder';
 
 const editorData = {
 	intro: document.querySelector( '#editor-intro' ),

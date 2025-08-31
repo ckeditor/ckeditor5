@@ -15,8 +15,7 @@ import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Collection, count } from '@ckeditor/ckeditor5-utils';
 import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

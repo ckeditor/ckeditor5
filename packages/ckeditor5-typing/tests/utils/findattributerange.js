@@ -4,10 +4,7 @@
  */
 
 import { findAttributeRange, findAttributeRangeBound } from '../../src/utils/findattributerange.js';
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ModelPosition } from '@ckeditor/ckeditor5-engine';
+import { Model, ModelRange, _setModelData, ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 describe( 'findAttributeRange', () => {
 	let model, document, root;

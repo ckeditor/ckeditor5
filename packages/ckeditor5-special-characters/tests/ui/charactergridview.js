@@ -4,10 +4,9 @@
  */
 
 import { CharacterGridView } from '../../src/ui/charactergridview.js';
-import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'CharacterGridView', () => {
 	let view;

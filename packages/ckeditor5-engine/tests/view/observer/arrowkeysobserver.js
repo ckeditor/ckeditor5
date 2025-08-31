@@ -6,10 +6,10 @@
 import { ArrowKeysObserver } from '../../../src/view/observer/arrowkeysobserver.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ArrowKeysObserver', () => {
 	let editor, view, viewDocument, observer;

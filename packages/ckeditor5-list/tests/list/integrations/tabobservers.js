@@ -7,20 +7,19 @@ import { ListEditing } from '../../../src/list/listediting.js';
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
 	_getModelData,
-	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+	_setModelData,
+	ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListEditing integrations: tab key', () => {
 	const blocksChangedByCommands = [];
