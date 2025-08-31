@@ -37,8 +37,9 @@ import { isPlainObject } from 'es-toolkit/compat';
  * for gathering data from this plugin for further processing.
  *
  * By default, plugin stores latest 1000 action entries. Integrator can register an `onError` callback to collect those entries
- * along with the caught exception, augment those data with application data such as page-id or session-id, depending on the application,
- * and send it to data collecting endpoint for later analysis.
+ * in case of exception. Integrator should augment this data with application specific data such as page-id or session-id,
+ * depending on the application. Augmented data should be processed by the integrator, for example integrator should send it
+ * to some data collecting endpoint for later analysis.
  *
  * Example:
  *
