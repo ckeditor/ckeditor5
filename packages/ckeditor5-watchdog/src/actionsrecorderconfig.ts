@@ -222,7 +222,7 @@ export interface ActionsRecorderEntry {
 	after?: ActionsRecorderEntryEditorSnapshot;
 
 	/**
-	 * Params provided for the executed action. Those depend on the actual action.
+	 * Params provided for the executed action. They depend on the actual action.
 	 */
 	params?: Array<any>;
 
