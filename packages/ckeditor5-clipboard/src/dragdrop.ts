@@ -683,26 +683,27 @@ export class DragDrop extends Plugin {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
-		const domRect = new Rect( domEditable );
-
-		// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
-		if ( domEditable.contains( domTarget ) ) {
-			return;
-		}
-
-		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
 		const preview = createElement( global.document, 'div' );
 
-		preview.className = 'ck ck-content';
-		preview.style.width = computedStyle.width;
-		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
+		preview.className = 'ck ck-content ck-clipboard-preview';
 
-		/**
-		 * Set white background in drag and drop preview if iOS.
-		 * Check: https://github.com/ckeditor/ckeditor5/issues/15085
-		 */
-		if ( env.isiOS ) {
-			preview.style.backgroundColor = 'white';
+		const domRect = new Rect( domEditable );
+		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
+		const domEditablePaddingRight = parseFloat( computedStyle.paddingRight );
+		const editableWidth = parseFloat( computedStyle.width ) - domEditablePaddingLeft - domEditablePaddingRight;
+
+		// Dragging by the drag handle outside editable element.
+		if ( !domEditable.contains( domTarget ) ) {
+			const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
+
+			preview.style.width = `${ editableWidth + offsetLeft }px`;
+			preview.style.paddingLeft = `${ offsetLeft }px`;
+		} else if ( env.isSafari || env.isiOS ) {
+			// Custom preview for Safari.
+			preview.style.maxWidth = `${ editableWidth }px`;
+		} else {
+			// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
+			return;
 		}
 
 		view.domConverter.setContentOf( preview, dataTransfer.getData( 'text/html' ) );
