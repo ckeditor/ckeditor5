@@ -42,7 +42,11 @@ const bootstrapCommands = () => ( [
 	'checkout_command',
 	'halt_if_short_flow',
 	'bootstrap_repository_command',
-	'browser-tools/install_chrome'
+	{
+		'browser-tools/install_chrome': {
+			chrome_version: '138.0.7204.49'
+		}
+	}
 ] );
 
 const prepareCodeCoverageDirectories = () => ( {
