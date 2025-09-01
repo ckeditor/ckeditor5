@@ -45,6 +45,7 @@ export { default as IconCaseChange } from '../theme/icons/case-change.svg';
 export { default as IconCheck } from '../theme/icons/check.svg';
 export { default as IconChevronDown } from '../theme/icons/chevron-down.svg';
 export { default as IconChevronUp } from '../theme/icons/chevron-up.svg';
+export { default as IconChevronRight } from '../theme/icons/chevron-right.svg';
 export { default as IconCkboxImageEdit } from '../theme/icons/ckbox-image-edit.svg';
 export { default as IconClose } from '../theme/icons/close.svg';
 export { default as IconCodeBlock } from '../theme/icons/code-block.svg';
