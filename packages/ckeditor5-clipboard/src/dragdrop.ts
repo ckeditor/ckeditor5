@@ -694,13 +694,20 @@ export class DragDrop extends Plugin {
 
 		// Dragging by the drag handle outside editable element.
 		if ( !domEditable.contains( domTarget ) ) {
-			const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
+			if ( !env.isiOS ) {
+				const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
 
-			preview.style.width = `${ editableWidth + offsetLeft }px`;
-			preview.style.paddingLeft = `${ offsetLeft }px`;
-		} else if ( env.isSafari || env.isiOS ) {
-			// Custom preview for Safari.
+				preview.style.width = `${ editableWidth + offsetLeft }px`;
+				preview.style.paddingLeft = `${ offsetLeft }px`;
+			} else {
+				// Without a padding as on iOS preview have a background and padding would be visible.
+				preview.style.width = `${ editableWidth }px`;
+				preview.style.backgroundColor = 'var(--ck-color-base-background)';
+			}
+		} else if ( env.isiOS ) {
+			// Custom preview for iOS.
 			preview.style.maxWidth = `${ editableWidth }px`;
+			preview.style.backgroundColor = 'var(--ck-color-base-background)';
 		} else {
 			// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
 			return;

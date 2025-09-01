@@ -37,7 +37,3 @@
 	z-index: var(--ck-z-default);
 	pointer-events: none;
 }
-
-.ck.ck-clipboard-preview {
-	background-color: var(--ck-color-base-background);
-}
