@@ -140,7 +140,7 @@ Adjust allowed tags/attributes (for example: permit `iframe` only from trusted d
 
 #### CSP
 
-In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts. Check out the dedicated {@link getting-started/setup/csp Content Security Policy} setup guide.
+In addition to sanitizing content, you can utilize the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP, the browser recognizes allowed sources and methods of executing JavaScript code. It also allows including other resources such as style sheets, images, and fonts. Check out the dedicated {@link getting-started/setup/csp Content Security Policy} setup guide.
 
 ## Related features
 
