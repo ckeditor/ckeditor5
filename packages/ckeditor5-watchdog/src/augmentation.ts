@@ -4,6 +4,7 @@
  */
 
 import type { EditorData } from './editorwatchdog.js';
+import type { ActionsRecorderConfig } from './actionsrecorderconfig.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
@@ -14,5 +15,10 @@ declare module '@ckeditor/ckeditor5-core' {
 		 * @internal
 		 */
 		_watchdogInitialData?: EditorData;
+
+		/**
+		 * The configuration for the actions recorder plugin.
+		 */
+		actionsRecorder?: ActionsRecorderConfig;
 	}
 }

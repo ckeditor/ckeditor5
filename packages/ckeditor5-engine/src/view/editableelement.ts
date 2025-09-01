@@ -92,6 +92,21 @@ export class ViewEditableElement extends /* #__PURE__ */ ObservableMixin( ViewCo
 	public destroy(): void {
 		this.stopListening();
 	}
+
+	/**
+	 * Converts `ViewEditableElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewEditableElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'EditableElement';
+		json.isReadOnly = this.isReadOnly;
+		json.isFocused = this.isFocused;
+
+		return json;
+	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.

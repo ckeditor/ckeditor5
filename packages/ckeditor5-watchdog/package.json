@@ -19,8 +19,10 @@
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "46.0.2",
     "@ckeditor/ckeditor5-clipboard": "46.0.2",
     "@ckeditor/ckeditor5-editor-classic": "46.0.2",
+    "@ckeditor/ckeditor5-heading": "46.0.2",
     "@ckeditor/ckeditor5-paragraph": "46.0.2",
     "typescript": "5.0.4"
   },

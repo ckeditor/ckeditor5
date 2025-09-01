@@ -1118,4 +1118,102 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.getSelectedElement() ).to.be.null;
 		} );
 	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide ranges', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should provide isBackward flag', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			documentSelection._selection._lastRangeBackward = true;
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isBackward: true,
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should provide isFake flag', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			documentSelection._selection._isFake = true;
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isFake: true,
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
+		} );
+	} );
 } );

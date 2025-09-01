@@ -578,6 +578,27 @@ export class ViewSelection extends /* #__PURE__ */ EmitterMixin( ViewTypeCheckab
 	}
 
 	/**
+	 * Converts `ViewSelection` instance to plain object and returns it.
+	 *
+	 * @returns `ViewSelection` instance converted to plain object.
+	 */
+	public toJSON(): unknown {
+		const json: any = {
+			ranges: Array.from( this.getRanges() ).map( range => range.toJSON() )
+		};
+
+		if ( this.isBackward ) {
+			json.isBackward = true;
+		}
+
+		if ( this.isFake ) {
+			json.isFake = true;
+		}
+
+		return json;
+	}
+
+	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
 	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
 	 * Accepts a flag describing in which way the selection is made.
