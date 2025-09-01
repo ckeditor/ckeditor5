@@ -117,7 +117,7 @@ You can instruct some advanced users to never paste HTML code from untrusted sou
 
 #### Sanitizer
 
-<info-box important >
+<info-box important>
 	Scripts may not run in the `<script>` tags in previews, but inline JS in attributes will. Always sanitize or limit allowed sources to stay safe!
 </info-box>
 
@@ -127,7 +127,7 @@ Some popular JavaScript libraries that you can use include [`sanitize-html`](htt
 
 The default settings of these libraries usually strip all potentially malicious content including `<iframe>`, `<video>`, or similar elements and JavaScript code coming from trusted sources. You may need to adjust their settings to match your needs.
 
-When `showPreviews = true`, use libraries like `DOMPurify` or `sanitize-html` to prevent XSS Attacks. A sample code may look similar to this:
+When `showPreviews = true`, use libraries like `DOMPurify` or `sanitize-html` to prevent XSS Attacks. Sample code may look similar to this:
 
 ```js
 sanitizeHtml: inputHtml => {
@@ -140,7 +140,7 @@ Adjust allowed tags/attributes (for example: permit `iframe` only from trusted d
 
 #### CSP
 
-In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts.
+In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts. Check out the dedicated {@link getting-started/setup/csp Content Security Policy} setup guide.
 
 ## Related features
 
