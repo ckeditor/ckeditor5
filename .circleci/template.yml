@@ -338,6 +338,7 @@ workflows:
             branches:
               only:
                 - release
+                - release-v*
       - notify_ci_failure:
           filters:
             branches:
