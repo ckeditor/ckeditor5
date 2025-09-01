@@ -67,7 +67,7 @@ const initialData =
 <div class="raw-html-embed">
 <script>
 	const element = document.createElement( 'div' );
-	element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
+	element.innerHTML = '<p>CKEditor 5 classic type</p>';
 	document.body.appendChild( element );
 </script>
 </div>
