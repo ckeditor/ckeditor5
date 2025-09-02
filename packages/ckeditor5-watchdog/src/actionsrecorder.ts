@@ -9,11 +9,9 @@
 
 /* istanbul ignore file -- @preserve */
 
-// eslint-disable-next-line ckeditor5-rules/no-cross-package-imports
-import {
-	Plugin,
-	type Command,
-	type Editor
+import type {
+	Command,
+	Editor
 } from '@ckeditor/ckeditor5-core';
 
 import type {
@@ -35,6 +33,8 @@ import { isPlainObject } from 'es-toolkit/compat';
  * A plugin that records user actions and editor state changes for debugging purposes. It tracks commands execution, model operations,
  * UI interactions, and document events. It just collects data locally, and does not send it anywhere, integrator is responsible
  * for gathering data from this plugin for further processing.
+ *
+ * **Important! `ActionsRecorder` is an experimental feature, and may become deprecated.**
  *
  * By default, plugin stores latest 1000 action entries. Integrator can register an `onError` callback to collect those entries
  * in case of exception. Integrator should augment this data with application specific data such as page-id or session-id,
@@ -100,7 +100,12 @@ import { isPlainObject } from 'es-toolkit/compat';
  * See {@link module:watchdog/actionsrecorderconfig~ActionsRecorderConfig plugin configuration} for more details.
  *
  */
-export class ActionsRecorder extends Plugin {
+export class ActionsRecorder {
+	/**
+	 * The editor instance.
+	 */
+	public readonly editor: Editor;
+
 	/**
 	 * Array storing all recorded action entries with their context and state snapshots.
 	 */
@@ -146,7 +151,7 @@ export class ActionsRecorder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static override get isOfficialPlugin(): true {
+	public static get isOfficialPlugin(): true {
 		return true;
 	}
 
@@ -154,7 +159,7 @@ export class ActionsRecorder extends Plugin {
 	 * @inheritDoc
 	 */
 	public constructor( editor: Editor ) {
-		super( editor );
+		this.editor = editor;
 
 		editor.config.define( 'actionsRecorder.maxEntries', 1000 );
 
