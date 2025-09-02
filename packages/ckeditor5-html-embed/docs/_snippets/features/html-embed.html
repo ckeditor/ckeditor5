@@ -1,4 +1,84 @@
-<div class="ck ck-content" id="snippet-html-embed"></div>
+<div class="ck ck-content" id="snippet-html-embed">
+	<h2>CKEditor 5 HTML Embed feature</h2>
+	<p>The feature may be used to embed advanced textual content, both static and generated, that boosts discoverability, cross-language support, and accessibility. See examples below.</p>
+	<hr>
+	<h3>Advanced HTML markup</h3>
+	<p><i>It allows authors to use advanced HTML markup within the content.</i></p>
+	<div class="raw-html-embed"><div style=" background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); ">
+	<p style=" margin: 0 0 12px 0; font-weight: 600; color: #1e293b; font-size: 16px; "> 🧠 Latest LLM Research Achievements</p>
+	<p style="margin: 0 0 16px 0; color: #475569;"> Explore our latest achievements in the <abbr title="Large Language Model" style=" border-bottom: 1px dotted #64748b; text-decoration: none; ">LLM</abbr> research!</p>
+	<p style="margin: 0 0 8px 0; color: #475569;"><strong>📍 Where:</strong> At the <ruby>ＡＩ研究施設<rt>えーあいけんきゅうしせつ</rt></ruby>, AI Research Facility.</p>
+	<p style="margin: 0; color: #475569;"><strong>🕐 When:</strong> Today, <span id="today" style=" background: #dbeafe; padding: 2px 6px; border-radius: 4px; font-weight: 600; "></span>, at 2 PM.</p>
+	</div>
+	<script> const today = new Date(); document.getElementById("today").textContent = today.toLocaleDateString(); </script></div>
+	<hr>
+	<h3>External content</h3>
+	<p><i>It may also serve dynamic, external content.</i></p>
+	<div class="raw-html-embed"> <a class="weatherwidget-io" href="https://forecast7.com/en/40d71n74d01/new-york/" data-label_1="NEW YORK" data-label_2="WEATHER" data-theme="original">NEW YORK WEATHER</a><script> !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js'); </script> </div>
+	<hr>
+	<h3>Scripted content</h3>
+	<p><i>It can be used to produce generated content that is complicated under the surface but simple for the end user.</i></p>
+	<div class="raw-html-embed"><div id="generated-content"></div>
+	<script>
+	  // Data structure for CKEditor features
+	  const editorFeatures = [
+		{ feature: 'Rich Text Editing', classic: '✓', document: '✓', balloon: '✓', inline: '✓' },
+		{ feature: 'Image Upload', classic: '✓', document: '✓', balloon: '✓', inline: '✓' },
+		{ feature: 'Table Support', classic: '✓', document: '✓', balloon: '✓', inline: '✓' },
+		{ feature: 'Real Time Collaboration', classic: '✓', document: '✓', balloon: '✓', inline: '✓' },
+		{ feature: 'Comments', classic: '✓', document: '✓', balloon: '✓', inline: '✓' },
+		{ feature: 'Full Screen Mode', classic: '✓', document: '✓', balloon: '✗', inline: '✗' }
+	  ];
+	  
+	  // Generate table HTML from data
+	  function generateTable(data) {
+		let tableHTML = `
+		  <table style="
+			width: 100%;
+			border-collapse: collapse;
+			background: white;
+			border-radius: 6px;
+			overflow: hidden;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+		  ">
+			<thead>
+			  <tr style="background: #f1f5f9;">
+				<th style="padding: 12px; text-align: left; font-weight: 600; color: #334155;">Feature</th>
+				<th style="padding: 12px; text-align: center; font-weight: 600; color: #334155;">Classic</th>
+				<th style="padding: 12px; text-align: center; font-weight: 600; color: #334155;">Document</th>
+				<th style="padding: 12px; text-align: center; font-weight: 600; color: #334155;">Balloon</th>
+				<th style="padding: 12px; text-align: center; font-weight: 600; color: #334155;">Inline</th>
+			  </tr>
+			</thead>
+			<tbody>
+		`;
+		
+		data.forEach((row, index) => {
+		  const bgColor = index % 2 === 0 ? '#ffffff' : '#f8fafc';
+		  tableHTML += `
+			<tr style="background: ${bgColor};">
+			  <td style="padding: 12px; border-top: 1px solid #e2e8f0; color: #475569;">${row.feature}</td>
+			  <td style="padding: 12px; border-top: 1px solid #e2e8f0; text-align: center; color: ${row.classic === '✓' ? '#059669' : '#dc2626'};">${row.classic}</td>
+			  <td style="padding: 12px; border-top: 1px solid #e2e8f0; text-align: center; color: ${row.document === '✓' ? '#059669' : '#dc2626'};">${row.document}</td>
+			  <td style="padding: 12px; border-top: 1px solid #e2e8f0; text-align: center; color: ${row.balloon === '✓' ? '#059669' : '#dc2626'};">${row.balloon}</td>
+			  <td style="padding: 12px; border-top: 1px solid #e2e8f0; text-align: center; color: ${row.inline === '✓' ? '#059669' : '#dc2626'};">${row.inline}</td>
+			</tr>
+		  `;
+		});
+		
+		tableHTML += `
+			</tbody>
+		  </table>
+		`;
+		
+		return tableHTML;
+	  }
+	  
+	  // Generate and insert the content
+	  const container = document.getElementById('generated-content');
+	  container.innerHTML = generateTable(editorFeatures);
+	</script></div>
+</div>
 
 <style>
 	@layer snippets {
