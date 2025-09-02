@@ -149,6 +149,7 @@
     "js-yaml": "^4.1.0",
     "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
+    "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
     "mkdirp": "^3.0.0",
     "nyc": "^17.1.0",
