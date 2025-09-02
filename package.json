@@ -149,6 +149,7 @@
     "js-yaml": "^4.1.0",
     "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
+    "local-web-server": "^5.4.0",
     "minimist": "^1.2.8",
     "mkdirp": "^3.0.0",
     "nyc": "^17.1.0",
@@ -169,8 +170,7 @@
     "umberto": "^8.0.1",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
-    "webpack": "^5.94.0",
-    "ws": "^8.18.3"
+    "webpack": "^5.94.0"
   },
   "engines": {
     "node": ">=22.0.0"
