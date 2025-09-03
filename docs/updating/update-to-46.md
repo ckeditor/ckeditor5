@@ -23,7 +23,7 @@ A Cross-Site Scripting (XSS) vulnerability has been discovered in the CKEditor&n
 This vulnerability affects **only** installations where the editor configuration meets one of the following criteria:
 
 * The [HTML embed plugin](https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html) is enabled
-* A custom plugin introducing an editable element which implements view [RawElement](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-ViewRawElement.html) is enabled
+* A custom plugin introducing an editable element that implements the view [RawElement](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-ViewRawElement.html) is enabled
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-x9gp-vjh6-3wv6) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 
