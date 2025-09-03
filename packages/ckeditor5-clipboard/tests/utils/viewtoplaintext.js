@@ -148,4 +148,23 @@ describe( 'viewToPlainText()', () => {
 
 		expect( text ).to.equal( 'Foo\nBar' );
 	} );
+
+	it( 'should not execute img#onerror js handler while conversion a view RawElement', async () => {
+		const writer = new ViewDowncastWriter( viewDocument );
+		const rawElement = writer.createRawElement( 'div', { 'data-foo': 'bar' }, function( domElement ) {
+			domElement.innerHTML = '<img src=x onerror=window.__testOnErrorExecuted=true>';
+		} );
+
+		window.__testOnErrorExecuted = false;
+		viewToPlainText( converter, rawElement );
+
+		await timeout( 50 );
+
+		expect( window.__testOnErrorExecuted ).to.be.false;
+		delete window.__testOnErrorExecuted;
+	} );
 } );
+
+function timeout( ms ) {
+	return new Promise( resolve => setTimeout( resolve, ms ) );
+}
