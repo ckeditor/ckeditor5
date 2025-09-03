@@ -25,7 +25,7 @@ This vulnerability affects **only** installations where the editor configuration
 * The [HTML embed plugin](https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html) is enabled
 * A custom plugin introducing an editable element that implements the view [RawElement](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-ViewRawElement.html) is enabled
 
-You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-x9gp-vjh6-3wv6) and [contact us](https://ckeditor.com/contact/) if you have more questions.
+For more details, please refer to the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-x9gp-vjh6-3wv6) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 
 
 ## Update to CKEditor&nbsp;5 v46.0.2
