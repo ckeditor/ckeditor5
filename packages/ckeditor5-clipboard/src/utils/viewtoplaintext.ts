@@ -54,7 +54,8 @@ export default function viewToPlainText(
 
 	// If item is a raw element, the only way to get its content is to render it and read the text directly from DOM.
 	if ( viewItem.is( 'rawElement' ) ) {
-		const tempElement = document.createElement( 'div' );
+		const doc = document.implementation.createHTMLDocument( '' );
+		const tempElement = doc.createElement( 'div' );
 
 		viewItem.render( tempElement, converter );
 
