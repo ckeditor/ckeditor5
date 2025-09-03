@@ -329,7 +329,7 @@ workflows:
             branches:
               only:
                 - release
-                - release-v*
+                - /^release-v.*$/
       - notify_ci_failure:
           filters:
             branches:
@@ -337,7 +337,7 @@ workflows:
                 - master
                 - stable
                 - release
-                - release-v*
+                - /^release-v.*$/
 
   nightly:
     when: << pipeline.parameters.isNightly >>
