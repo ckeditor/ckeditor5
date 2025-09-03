@@ -7,7 +7,7 @@
  * @module undo/redocommand
  */
 
-import { UndoRedoBaseCommand } from './basecommand.js';
+import { UndoRedoBaseCommand, type UndoRedoBaseCommandRevertEvent } from './basecommand.js';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -40,6 +40,11 @@ export class RedoCommand extends UndoRedoBaseCommand {
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, operations );
 			this._undo( item.batch, redoingBatch );
 		} );
+
+		// Firing `revert` event after the change block to make sure that it includes all changes from post-fixers
+		// and make sure that the selection is "stabilized" (the selection range is saved after undo is executed and then
+		// restored on redo, so it is important that the selection range is saved after post-fixers are done).
+		this.fire<UndoRedoBaseCommandRevertEvent>( 'revert', item.batch, redoingBatch );
 
 		this.refresh();
 	}
