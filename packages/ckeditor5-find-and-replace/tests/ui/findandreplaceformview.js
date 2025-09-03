@@ -3,22 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
-import { LabeledFieldView } from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import { FocusCycler } from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import { CollapsibleView } from '@ckeditor/ckeditor5-ui/src/collapsible/collapsibleview.js';
-import { SwitchButtonView } from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview.js';
+import { View, LabeledFieldView, ButtonView, ViewCollection, FocusCycler, CollapsibleView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { KeystrokeHandler, FocusTracker, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 
 import { FindAndReplace } from '../../src/findandreplace.js';
 import { FindAndReplaceFormView } from '../../src/ui/findandreplaceformview.js';

@@ -5,9 +5,7 @@
 
 import { ClipboardObserver } from '../src/clipboardobserver.js';
 
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
-import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { EditingView, ViewDataTransfer, ViewDowncastWriter } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

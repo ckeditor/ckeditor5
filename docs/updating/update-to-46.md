@@ -14,6 +14,42 @@ modified_at: 2025-07-04
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v46.0.3
+
+Released on 3 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.3))
+
+A Cross-Site Scripting (XSS) vulnerability has been discovered in the CKEditor&nbsp;5 clipboard package (`CVE-2025-58064`). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution, if the attacker managed to insert malicious content into the editor, which might happen with a specific editor configuration.
+
+This vulnerability affects **only** installations where the editor configuration meets one of the following criteria:
+
+* The [HTML embed plugin](https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html) is enabled
+* A custom plugin introducing an editable element that implements the view [RawElement](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-ViewRawElement.html) is enabled
+
+For more details, please refer to the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-x9gp-vjh6-3wv6) and [contact us](https://ckeditor.com/contact/) if you have more questions.
+
+
+## Update to CKEditor&nbsp;5 v46.0.2
+
+Released on 19 August, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.2))
+
+This hotfix release resolves an issue where archived comment threads could incorrectly appear in the sidebar, ensuring they remain properly contained in the comments archive.
+
+## Update to CKEditor&nbsp;5 v46.0.1
+
+Released on 11 August, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.1))
+
+#### Complete documentation redesign is here
+
+We have prepared a new theme for our documentation to enhance its quality. The new look improves readability and addresses several accessibility issues for a better experience. The redesigned navigation bar gives more useful access to various sections of the documentation, making it easier to reference guides for all our products. Improved table of contents makes browsing and finding guides easier, paired with updated search functionality. Check out the new experience yourself!
+
+#### The pagination plugin just got better
+
+This release introduces a significant pagination update, along with numerous fixes. Page breaks are now calculated taking into account the content styles, bookmark markers, and with better tolerance calculation. Pagination now also finds the correct breakpoint for large tables of contents and images taller than the page.
+
+#### Table handling with pagination and export to PDF
+
+The pagination and export to PDF features now better support tables containing one or more paragraphs. Cell margins are now correctly applied in exported tables, which improves the precision of pagination rendering.
+
 ## Update to CKEditor&nbsp;5 v46.0.0
 
 Released on 9 July, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0))

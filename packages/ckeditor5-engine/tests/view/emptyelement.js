@@ -9,6 +9,7 @@ import { ViewDocument } from '../../src/view/document.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewRootEditableElement } from '../../src/index.js';
 
 describe( 'ViewEmptyElement', () => {
 	let element, emptyElement, document;
@@ -102,6 +103,26 @@ describe( 'ViewEmptyElement', () => {
 	describe( 'getFillerOffset', () => {
 		it( 'should return null', () => {
 			expect( emptyElement.getFillerOffset() ).to.be.null;
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path', () => {
+			const emptyElement = new ViewEmptyElement( document, 'span' );
+			const paragraph = new ViewElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( emptyElement );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( emptyElement );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'span',
+				path: [ 0, 0 ],
+				root: 'main',
+				type: 'EmptyElement'
+			} );
 		} );
 	} );
 } );

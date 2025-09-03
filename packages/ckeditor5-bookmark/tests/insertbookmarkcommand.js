@@ -12,7 +12,7 @@ import { ImageInline, ImageBlock } from '@ckeditor/ckeditor5-image';
 import { Table } from '@ckeditor/ckeditor5-table';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { BookmarkEditing } from '../src/bookmarkediting.js';
 import { InsertBookmarkCommand } from '../src/insertbookmarkcommand.js';

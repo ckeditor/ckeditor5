@@ -4,20 +4,21 @@
  */
 
 import { PasteFromOffice } from '../src/pastefromoffice.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import {
+	HtmlDataProcessor,
+	StylesProcessor,
+	ViewDocument,
+	ViewDocumentFragment,
+	_setModelData,
+	ViewDomConverter
+} from '@ckeditor/ckeditor5-engine';
 import { createDataTransfer } from './_utils/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
-import { CodeBlockUI } from '@ckeditor/ckeditor5-code-block/src/codeblockui.js';
-import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block/src/codeblockediting.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { CodeBlockUI, CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { priorities } from '@ckeditor/ckeditor5-utils';
-import { ViewDomConverter } from '@ckeditor/ckeditor5-engine';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );

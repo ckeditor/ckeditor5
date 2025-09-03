@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { PictureEditing } from '@ckeditor/ckeditor5-image';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 ClassicEditor

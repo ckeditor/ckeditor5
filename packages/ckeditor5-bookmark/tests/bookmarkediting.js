@@ -20,13 +20,11 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { ModelElement } from '@ckeditor/ckeditor5-engine';
-import {
+import { ModelElement,
 	_setModelData,
 	_getModelData,
-	_stringifyModel
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+	_stringifyModel,
+	_getViewData } from '@ckeditor/ckeditor5-engine';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
 describe( 'BookmarkEditing', () => {

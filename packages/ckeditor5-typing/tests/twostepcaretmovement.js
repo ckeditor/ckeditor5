@@ -4,16 +4,10 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { DomEmitterMixin, EventInfo, keyCodes, toArray, priorities } from '@ckeditor/ckeditor5-utils';
+import { ViewDocumentDomEventData, ModelPosition, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
-import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
-import { priorities } from '@ckeditor/ckeditor5-utils/src/priorities.js';
 
 import { Input } from '../src/input.js';
 import { Delete } from '../src/delete.js';

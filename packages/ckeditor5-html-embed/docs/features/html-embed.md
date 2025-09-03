@@ -19,11 +19,13 @@ Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/h
 
 {@snippet features/html-embed}
 
-<ck:iframe id="preview-data-container"></ck:iframe>
-
 <snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
+
+### Demo content preview
+
+<ck:iframe id="preview-data-container"></ck:iframe>
 
 ## Additional feature information
 
@@ -101,7 +103,8 @@ ClassicEditor
 
 Currently, the [feature does not execute `<script>` tags](https://github.com/ckeditor/ckeditor5/issues/8326) so the content that requires executing JavaScript to generate a preview will not show in the editor. However, other JavaScript code, for example, used in `on*` observers and `src="javascript:..."` attributes will be executed. You still need to enable the sanitizer.
 
-Read more about the security aspect in the next section.
+Displaying raw HTML previews can execute malicious JS (for example via `onclick` or `javascript:`) in your site’s context. Read more about the security aspect in the next section.
+
 
 ### Security
 
@@ -119,15 +122,30 @@ You can instruct some advanced users to never paste HTML code from untrusted sou
 
 #### Sanitizer
 
+<info-box important>
+	Scripts may not run in the `<script>` tags in previews, but inline JS in attributes will. Always sanitize or limit allowed sources to stay safe!
+</info-box>
+
 The {@link module:html-embed/htmlembedconfig~HtmlEmbedConfig#sanitizeHtml `config.htmlEmbed.sanitizeHtml`} option allows plugging an external sanitizer.
 
 Some popular JavaScript libraries that you can use include [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) and [`DOMPurify`](https://www.npmjs.com/package/dompurify).
 
 The default settings of these libraries usually strip all potentially malicious content including `<iframe>`, `<video>`, or similar elements and JavaScript code coming from trusted sources. You may need to adjust their settings to match your needs.
 
+When `showPreviews = true`, use libraries like `DOMPurify` or `sanitize-html` to prevent XSS Attacks. Sample code may look similar to this:
+
+```js
+sanitizeHtml: inputHtml => {
+  const safe = DOMPurify.sanitize(inputHtml, {...});
+  return { html: safe, hasChanged: safe !== inputHtml };
+}
+```
+
+Adjust allowed tags/attributes (for example: permit `iframe` only from trusted domains) to balance functionality and safety. Consider pairing this with CSP for stronger security. Check the [Content previews](#content-previews) and [Security](#security) sections of this guide for more details.
+
 #### CSP
 
-In addition to using a sanitizer, you can use the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP you can let the browser know the allowed sources and means to execute JavaScript code and include other resources such as style sheets, images, and fonts.
+In addition to sanitizing content, you can utilize the built-in browser mechanism called [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP). By using CSP, the browser recognizes allowed sources and methods of executing JavaScript code. It also allows including other resources such as style sheets, images, and fonts. Check out the dedicated {@link getting-started/setup/csp Content Security Policy} setup guide.
 
 ## Related features
 

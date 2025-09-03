@@ -4,16 +4,15 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 import { Typing } from '../src/typing.js';
 import { TextTransformation } from '../src/texttransformation.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { _setModelData, _getModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;

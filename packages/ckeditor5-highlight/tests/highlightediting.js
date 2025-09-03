@@ -6,10 +6,10 @@
 import { HighlightEditing } from './../src/highlightediting.js';
 import { HighlightCommand } from './../src/highlightcommand.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'HighlightEditing', () => {
 	let editor, model;

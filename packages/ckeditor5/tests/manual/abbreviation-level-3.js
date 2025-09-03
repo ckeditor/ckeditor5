@@ -3,23 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { findAttributeRange } from '@ckeditor/ckeditor5-typing/src/utils/findattributerange.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { findAttributeRange } from '@ckeditor/ckeditor5-typing';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { Plugin, Command } from '@ckeditor/ckeditor5-core';
 import { toMap } from '@ckeditor/ckeditor5-utils';
 
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
+import { ButtonView, ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 import { FormView } from '../_utils/abbreviationView-level-3.js';
 
 class AbbreviationUI extends Plugin {

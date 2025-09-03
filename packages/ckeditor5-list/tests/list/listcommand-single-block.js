@@ -4,7 +4,7 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListCommand } from '../../src/list/listcommand.js';
 import { ListEditing } from '../../src/list/listediting.js';
 
@@ -12,7 +12,7 @@ import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListCommand (multiBlock=false)', () => {
 	let editor, command, model, root, changedBlocks;

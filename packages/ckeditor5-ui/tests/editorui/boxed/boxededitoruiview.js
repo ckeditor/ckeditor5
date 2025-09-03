@@ -4,7 +4,7 @@
  */
 
 import { BoxedEditorUIView } from '../../../src/editorui/boxed/boxededitoruiview.js';
-import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ViewCollection } from '../../../src/viewcollection.js';
 
 describe( 'BoxedEditorUIView', () => {
