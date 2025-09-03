@@ -3,6 +3,7 @@ category: features
 menu-title: Word and character count
 meta-title: Word and character count | CKEditor 5 Documentation
 meta-description: Track word and character count in CKEditor 5 with the Word Count feature to monitor content length and meet writing requirements.
+badges: [ premium ]
 ---
 
 {@snippet features/build-word-count-source empty}
@@ -11,17 +12,19 @@ meta-description: Track word and character count in CKEditor 5 with the Word Cou
 
 The word count feature lets you track the number of words and characters in the editor. This helps you control the volume of your content and check the progress of your work.
 
+{@snippet getting-started/unlock-feature}
+
 ## Demo
 
 Add or remove some content and see how the counter below the editor changes in real time.
 
 {@snippet features/word-count}
 
-<div id="demo-word-count" class="word-count"></div>
-
 <snippet-footer>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
+
+<div id="demo-word-count" class="word-count"></div>
 
 The example above was created by using the following HTML page structure:
 

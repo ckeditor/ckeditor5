@@ -5,6 +5,7 @@ meta-description: Style tables in CKEditor 5 with custom classes, alignment, and
 category: tables
 order: 20
 modified_at: 2022-05-19
+badges: [ premium ]
 ---
 
 # Table and cell styling tools
@@ -12,6 +13,8 @@ modified_at: 2022-05-19
 {@snippet features/build-table-source empty}
 
 CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

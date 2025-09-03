@@ -17,7 +17,28 @@ The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of G
 
 If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
 
-**Note:** the CKEditor&nbsp;5 Free Plan is licensed under the GPL 2+ license.
+The following features are available in the compliant open-source projects, but their availability varies in commercial plans:
+
+* Page break
+* Remove format
+* Special characters
+* Layout tables
+* Column resize
+* Image Resize
+* Simple Upload Adapter
+* Base64 adapter
+* HTML comment element
+* HTML embed
+* Minimap
+* Restricted editing
+* Paste From Office
+* Word count
+* Find and replace
+* Bookmarks
+* Full page HTML
+* Table and cell properties
+* List properties
+* Multi-root editor
 
 ## Commercial license
 

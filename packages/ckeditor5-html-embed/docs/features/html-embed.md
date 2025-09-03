@@ -4,11 +4,14 @@ order: 40
 menu-title: HTML embed
 meta-title: HTML embed | CKEditor 5 Documentation
 meta-description: Embed custom HTML in CKEditor 5 to insert interactive or third-party content, enhancing flexibility and functionality in your documents.
+badges: [ premium ]
 ---
 
 # HTML embed
 
 The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

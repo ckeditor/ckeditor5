@@ -5,11 +5,14 @@ meta-title: Resizing images | CKEditor 5 Documentation
 meta-description: All about various ways of resizing images to fit the content better.
 order: 50
 modified_at: 2021-06-17
+badges: [ premium ]
 ---
 
 # Resizing images
 
 The image resize feature lets you change the width of images in your content. It is implemented by the {@link module:image/imageresize~ImageResize} plugin.
+
+{@snippet getting-started/unlock-feature}
 
 ## Methods to resize images
 
