@@ -16,7 +16,7 @@ modified_at: 2025-07-04
 
 ## Update to CKEditor&nbsp;5 v46.0.3
 
-Released on 3 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.2))
+Released on 3 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.3))
 
 A Cross-Site Scripting (XSS) vulnerability has been discovered in the CKEditor&nbsp;5 clipboard package (`CVE-2025-58064`). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution, if the attacker managed to insert malicious content into the editor, which might happen with a specific editor configuration.
 
