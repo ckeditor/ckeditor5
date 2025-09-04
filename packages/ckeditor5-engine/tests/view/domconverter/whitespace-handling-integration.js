@@ -4,10 +4,10 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { createElement } from '@ckeditor/ckeditor5-utils';
 
 import { _getModelData } from '../../../src/dev-utils/model.js';
 import { getViewFillerOffset } from '../../../src/index.js';

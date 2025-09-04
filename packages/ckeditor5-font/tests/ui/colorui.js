@@ -4,14 +4,13 @@
  */
 
 import { TestColorPlugin } from '../_utils/testcolorplugin.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ColorGridView } from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ColorGridView } from '@ckeditor/ckeditor5-ui';
+import { global, add as addTranslations, _clearTranslations } from '@ckeditor/ckeditor5-utils';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'FontColorUIBase', () => {
 	const testColorConfig = {
@@ -60,7 +59,7 @@ describe( 'FontColorUIBase', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	let editor, element, model, testColorPlugin, command;

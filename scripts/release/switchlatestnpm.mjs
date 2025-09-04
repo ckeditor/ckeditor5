@@ -16,7 +16,6 @@ import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 const rootPkgJson = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
 const GLOB_PATTERNS = [
-	'package.json',
 	'packages/*/package.json',
 	'external/ckeditor5-commercial/packages/*/package.json'
 ];

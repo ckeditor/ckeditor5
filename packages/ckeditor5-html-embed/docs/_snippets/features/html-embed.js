@@ -3,7 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { HtmlEmbed, CodeBlock, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
+import {
+	HtmlEmbed,
+	CodeBlock,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	HorizontalLine,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage
+} from 'ckeditor5';
 import {
 	TOKEN_URL,
 	CS_CONFIG,
@@ -17,6 +28,7 @@ ClassicEditor.builtinPlugins.push(
 	HtmlEmbed,
 	CodeBlock,
 	PictureEditing,
+	HorizontalLine,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
@@ -25,46 +37,9 @@ ClassicEditor.builtinPlugins.push(
 	CKBoxImageEdit );
 
 /* eslint-disable @stylistic/max-len */
-const initialData =
-`
-<h2>CKEditor 5 classic editor build</h2>
-<div class="raw-html-embed">
-	<p><a href="https://www.npmjs.com/package/ckeditor5"><img alt="npm version" src="https://badge.fury.io/js/ckeditor5.svg" /></a>&nbsp;<a href="https://coveralls.io/github/ckeditor/ckeditor5?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master" /></a>&nbsp;<a href="https://app.travis-ci.com/github/ckeditor/ckeditor5"><img alt="Build Status" src="https://travis-ci.org/ckeditor/ckeditor5.svg?branch=master" /></a>&nbsp;<img alt="Dependency Status" src="https://img.shields.io/librariesio/release/npm/ckeditor5.svg" /></p>
-
-	<p><a href="http://eepurl.com/c3zRPr"><img alt="Join newsletter" src="https://img.shields.io/badge/join-newsletter-00cc99.svg" /></a>&nbsp;<a href="https://twitter.com/ckeditor"><img alt="Follow twitter" src="https://img.shields.io/badge/follow-twitter-00cc99.svg" /></a></p>
-</div>
-
-<p>The classic editor type for CKEditor 5. See a <a href="https://ckeditor.com/docs/ckeditor5/latest/examples/builds/classic-editor.html"><strong>classic editor example demo</strong></a>.</p>
-
-<figure class="image"><img src="https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png" alt="CKEditor 5 classic editor type screenshot"></figure>
-
-<h2>Documentation</h2>
-<p>See:</p>
-<ul>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/installation/cloud/quick-start.html">Installation</a> for how to install this package and what it contains.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/editor-lifecycle.html">Editor lifecycle</a> for how to create an editor and interact with it.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/configuration.html">Configuration</a> for how to configure the editor.</li>
-</ul>
-
-<h2>Quick start</h2>
-<p>First, install the build from npm:</p>
-<pre><code class="language-plaintext">npm&nbsp;install&nbsp;ckeditor5</code></pre>
-
-<h2>License</h2>
-<p>Licensed under the terms of <a href="http://www.gnu.org/licenses/gpl.html" rel="nofollow">GNU General Public License Version 2 or later</a>. For full details about the license, please check the <code>LICENSE.md</code> file or <a href="https://ckeditor.com/legal/ckeditor-oss-license" rel="nofollow">https://ckeditor.com/legal/ckeditor-oss-license</a>.</p>
-
-<div class="raw-html-embed">
-	<script>
-		const element = document.createElement( 'div' );
-		element.innerHTML = '<p>CKEditor 5 classic editor build</p>';
-		document.body.appendChild( element );
-	</script>
-</div>
-`;
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-html-embed' ), {
-		initialData,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',

@@ -5,7 +5,7 @@
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 
 import { RestrictedEditingMode } from './../src/restrictededitingmode.js';
 import { RestrictedEditingModeUI } from './../src/restrictededitingmodeui.js';

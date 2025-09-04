@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Table } from '../../../src/table.js';
 import { TableCellProperties } from '../../../src/tablecellproperties.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { global, Collection } from '@ckeditor/ckeditor5-utils';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { View, ButtonView, LabeledFieldView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
-import { LabeledFieldView } from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 import { ColorInputView } from '../../../src/ui/colorinputview.js';
-import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
 
 import {
 	getBorderStyleDefinitions,
@@ -27,7 +24,6 @@ import {
 	fillToolbar,
 	getLabeledColorInputCreator
 } from '../../../src/utils/ui/table-properties.js';
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'table utils', () => {

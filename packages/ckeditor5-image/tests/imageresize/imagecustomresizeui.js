@@ -4,10 +4,10 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
 import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';

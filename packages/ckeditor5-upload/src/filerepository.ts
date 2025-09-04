@@ -575,7 +575,7 @@ class FileLoader extends /* #__PURE__ */ ObservableMixin() {
 	}
 }
 
-export type { FileLoader };
+export { FileLoader };
 
 /**
  * Upload adapter interface used by the {@link module:upload/filerepository~FileRepository file repository}

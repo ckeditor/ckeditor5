@@ -93,6 +93,20 @@ export class ViewText extends ViewNode {
 	}
 
 	/**
+	 * Converts `ViewText` instance to plain object and returns it.
+	 *
+	 * @returns `ViewText` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'Text';
+		json.data = this.data;
+
+		return json;
+	}
+
+	/**
 	 * Clones this node.
 	 *
 	 * @internal
