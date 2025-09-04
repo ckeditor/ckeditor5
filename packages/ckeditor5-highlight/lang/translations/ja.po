@@ -29,7 +29,7 @@ msgstr "青のマーカー"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "赤のマーカー"
+msgstr "赤のペン"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
