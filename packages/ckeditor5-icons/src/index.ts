@@ -71,6 +71,8 @@ export { default as IconEraser } from '../theme/icons/eraser.svg';
 export { default as IconError } from '../theme/icons/error.svg';
 export { default as IconExportPdf } from '../theme/icons/export-pdf.svg';
 export { default as IconExportWord } from '../theme/icons/export-word.svg';
+export { default as IconEye } from '../theme/icons/eye.svg';
+export { default as IconEyeCrossedOut } from '../theme/icons/eye-crossed-out.svg';
 export { default as IconFacebook } from '../theme/icons/facebook.svg';
 export { default as IconFileUpload } from '../theme/icons/file-upload.svg';
 export { default as IconFindReplace } from '../theme/icons/find-replace.svg';
