@@ -35,7 +35,7 @@ await releaseTools.reassignNpmTags( {
 	version: rootPkgJson.version
 } );
 
-if ( semver.major( latestPublishedVersion ) !== semver.major( rootPkgJson.version ) ) {
+if ( semver.compare( latestPublishedVersion, rootPkgJson.version ) > 0 ) {
 	console.log( `Restoring the \`@latest\` npm tag for v${ latestPublishedVersion }.` );
 
 	await releaseTools.reassignNpmTags( {
@@ -44,5 +44,7 @@ if ( semver.major( latestPublishedVersion ) !== semver.major( rootPkgJson.versio
 		version: latestPublishedVersion
 	} );
 } else {
-	console.log( 'The latest published packages and the current release follow the same major version.' );
+	console.log(
+		'The `@latest` version is higher than the current processed release. The `@latest` npm tag is applied correctly.'
+	);
 }
