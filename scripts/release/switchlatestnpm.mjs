@@ -44,6 +44,6 @@ if ( semver.compare( latestPublishedVersion, rootPkgJson.version ) > 0 ) {
 	} );
 } else {
 	console.log(
-		'The latest published packages are not higher version than the current release. The `@latest` npm tag is applied correctly.'
+		'The `@latest` version is higher than the current processed release. The `@latest` npm tag is applied correctly.'
 	);
 }
