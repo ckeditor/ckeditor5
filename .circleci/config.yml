@@ -65,11 +65,7 @@ jobs:
             - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: Install pnpm package manager
-          command: |
-            sudo npm install --global corepack@latest
-            corepack enable --install-directory="/home/circleci/bin"
-            corepack prepare pnpm@latest-10 --activate
-            pnpm config set store-dir .pnpm-store
+          command: npm install -g pnpm@latest-10
       - run:
           name: Install dependencies
           command: pnpm install --frozen-lockfile
