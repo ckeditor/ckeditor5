@@ -18,4 +18,3 @@ shamefullyHoist: true
 preferFrozenLockfile: true
 linkWorkspacePackages: true
 ignoreWorkspaceCycles: true
-verifyDepsBeforeRun: install
