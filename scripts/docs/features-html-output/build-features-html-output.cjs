@@ -6,12 +6,12 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
+const { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } = require( '../../constants.mjs' );
 
 // When executing the script from the `{@exec...}` expression, relative paths used in the script will not work as this script can be
 // executed in the documentation builder context. Let current work directory point to CKEditor 5 repository.
 // After building the HTML output, CWD will be restored.
 const CURRENT_WORK_DIRECTORY = process.cwd();
-const CKEDITOR5_ROOT = path.join( __dirname, '..', '..', '..' );
 
 const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-party-packages';
 
@@ -51,7 +51,7 @@ const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-
  * @returns {String} Generated HTML markup.
  */
 module.exports = function createHtmlOutputMarkup() {
-	process.chdir( CKEDITOR5_ROOT );
+	process.chdir( CKEDITOR5_ROOT_PATH );
 
 	const parsedFiles = parseFiles()
 		.map( packageMetadata => {
@@ -126,7 +126,7 @@ module.exports = function createHtmlOutputMarkup() {
 function parseFiles() {
 	const globPattern = createGlobPattern();
 
-	return glob.sync( globPattern )
+	return glob.sync( globPattern, { absolute: true } )
 		.map( readFile )
 		.map( file => {
 			try {
@@ -148,15 +148,18 @@ function parseFiles() {
  * @returns {String}
  */
 function createGlobPattern() {
-	const thirdPartyPackagesConfig = JSON.parse( fs.readFileSync( `${ THIRD_PARTY_PACKAGES_LOCAL_DIR }/paths.json`, 'utf-8' ) );
+	const resolvedThirdPartyConfigs = JSON
+		.parse( fs.readFileSync( `${ THIRD_PARTY_PACKAGES_LOCAL_DIR }/paths.json`, 'utf-8' ) )
+		.map( config => {
+			const dir = path.dirname( require.resolve( config.path + '/package.json' ) );
+
+			return fs.existsSync( `${ dir }/ckeditor5-metadata.json` ) ? dir : config.fallbackPath;
+		} );
 
 	const paths = [
 		'packages/*',
-		'external/*/packages/*',
-		...thirdPartyPackagesConfig.map( packageConfig => fs.existsSync( `${ packageConfig.path }/ckeditor5-metadata.json` ) ?
-			packageConfig.path :
-			packageConfig.fallbackPath
-		)
+		`${ path.relative( CURRENT_WORK_DIRECTORY, CKEDITOR5_COMMERCIAL_PATH ) }/packages/*`,
+		...resolvedThirdPartyConfigs
 	];
 
 	return `{${ paths.join( ',' ) }}/ckeditor5-metadata.json`;
@@ -186,7 +189,7 @@ function parseFile( file ) {
 
 	const packageName = path.basename( path.dirname( file.path ) );
 
-	const isExternalPackage = file.path.startsWith( 'external/' );
+	const isExternalPackage = isOutsideRoot( file.path );
 
 	const isThirdPartyPackage = !file.path.startsWith( 'packages/' ) && !isExternalPackage;
 
@@ -452,6 +455,16 @@ function toArray( data ) {
  */
 function wrapBy( { prefix = '', suffix = '' } = {} ) {
 	return item => `${ prefix }${ item }${ suffix }`;
+}
+
+/**
+ * Checks if the given absolute path is outside the root of the CKEditor 5 repository.
+ *
+ * @param {String} path
+ * @returns Boolean
+ */
+function isOutsideRoot( path ) {
+	return !path.startsWith( CKEDITOR5_ROOT_PATH );
 }
 
 /**

@@ -1,0 +1,20 @@
+packages:
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@ckeditor/ckeditor5-dev-tests'
+  - '@ckeditor/ckeditor5-mermaid'
+  - '@ocular-d/vale-bin'
+  - '@parcel/watcher'
+  - '@swc/core'
+  - core-js
+  - esbuild
+  - hexo-util
+  - puppeteer
+  - sharp
+
+shellEmulator: true
+shamefullyHoist: true
+preferFrozenLockfile: true
+linkWorkspacePackages: true
+ignoreWorkspaceCycles: true
