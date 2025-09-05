@@ -5,6 +5,7 @@
 version: 2.1
 
 orbs:
+  node: circleci/node@7.1.1
   browser-tools: circleci/browser-tools@2.1.2
 
 # List of parameters must be synchronized between configuration files.
@@ -54,21 +55,10 @@ commands:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
-      - restore_cache:
-          name: Restore pnpm cache
-          keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-      - run:
-          name: Install pnpm package manager
-          command: npm install -g pnpm@latest-10
-      - run:
-          name: Install dependencies
-          command: pnpm install --frozen-lockfile
-      - save_cache:
-          name: Save pnpm cache
-          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - .pnpm-store
+      - node/install-pnpm:
+          version: 10
+      - node/install-packages:
+          pkg-manager: pnpm
       - prepare_environment_variables_commands
 
   checkout_command:

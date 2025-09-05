@@ -26,6 +26,7 @@ parameters:
     default: false
 
 orbs:
+  node: circleci/node@7.1.1
   continuation: circleci/continuation@0.1.2
 
 commands:
@@ -59,21 +60,10 @@ jobs:
     steps:
       - checkout_command
       - install_ssh_keys_command
-      - restore_cache:
-          name: Restore pnpm cache
-          keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-      - run:
-          name: Install pnpm package manager
-          command: npm install -g pnpm@latest-10
-      - run:
-          name: Install dependencies
-          command: pnpm install --frozen-lockfile
-      - save_cache:
-          name: Save pnpm cache
-          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - .pnpm-store
+      - node/install-pnpm:
+          version: 10
+      - node/install-packages:
+          pkg-manager: pnpm
       - run:
           name: Generate a new configuration to check all packages in the repository
           command: node scripts/ci/generate-circleci-configuration.mjs
