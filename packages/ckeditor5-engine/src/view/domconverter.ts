@@ -1147,7 +1147,7 @@ export class ViewDomConverter {
 			scrollPositions.push( [ scrollLeft, scrollTop ] );
 		} );
 
-		domEditable.focus();
+		domEditable.focus( { preventScroll: true } );
 
 		// Restore scrollLeft and scrollTop values starting from domEditable up to
 		// document#documentElement.

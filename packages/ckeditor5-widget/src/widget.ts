@@ -10,6 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
+	PointerObserver,
 	MouseObserver,
 	ModelTreeWalker,
 	type ViewDocumentDomEventData,
@@ -18,6 +19,7 @@ import {
 	type ModelElement,
 	type ModelNode,
 	type ViewDocumentArrowKeyEvent,
+	type ViewDocumentPointerDownEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
 	type ModelSchema,
@@ -173,7 +175,9 @@ export class Widget extends Plugin {
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		view.addObserver( MouseObserver );
+		view.addObserver( PointerObserver );
 		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		this.listenTo<ViewDocumentPointerDownEvent>( viewDocument, 'pointerdown', ( ...args ) => this._onPointerdown( ...args ) );
 
 		// There are two keydown listeners working on different priorities. This allows other
 		// features such as WidgetTypeAround or TableKeyboard to attach their listeners in between
@@ -284,10 +288,7 @@ export class Widget extends Plugin {
 	 * Handles {@link module:engine/view/document~ViewDocument#event:mousedown mousedown} events on widget elements.
 	 */
 	private _onMousedown( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData<MouseEvent> ) {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const viewDocument = view.document;
-		let element: ViewElement | null = domEventData.target;
+		const element: ViewElement | null = domEventData.target;
 
 		// Some of DOM elements have no view element representation so it may be null.
 		if ( !element ) {
@@ -299,7 +300,24 @@ export class Widget extends Plugin {
 			if ( this._selectBlockContent( element ) ) {
 				domEventData.preventDefault();
 			}
+		}
+	}
 
+	/**
+	 * Handles {@link module:engine/view/document~ViewDocument#event:pointerdown pointerdown} events on widget elements.
+	 */
+	private _onPointerdown( eventInfo: EventInfo, domEventData: ViewDocumentDomEventData<PointerEvent> ) {
+		if ( !domEventData.domEvent.isPrimary ) {
+			return;
+		}
+
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		let element: ViewElement | null = domEventData.target;
+
+		// Some of DOM elements have no view element representation so it may be null.
+		if ( !element ) {
 			return;
 		}
 
@@ -325,9 +343,10 @@ export class Widget extends Plugin {
 			}
 		}
 
-		// On Android selection would jump to the first table cell, on other devices
+		// On Android and iOS selection would jump to the first table cell, on other devices
 		// we can't block it (and don't need to) because of drag and drop support.
-		if ( env.isAndroid ) {
+		// In iOS drag and drop works anyway on a long press.
+		if ( env.isAndroid || env.isiOS ) {
 			domEventData.preventDefault();
 		}
 

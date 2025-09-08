@@ -155,6 +155,7 @@ export function validateNaming( { pkg, module, item } ) {
 				'html-support': [ 'HtmlSupport', 'Ghs', 'Html' ],
 				'media-embed': [ 'Media' ],
 				'paste-from-office': [ 'Office' ],
+				'watchdog': [ 'ActionsRecorder', 'Watchdog' ],
 				'list-multi-level': [ 'MultiLevelList', 'ListMultiLevel' ]
 			};
 

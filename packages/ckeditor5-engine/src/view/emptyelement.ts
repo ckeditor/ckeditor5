@@ -46,6 +46,19 @@ export class ViewEmptyElement extends ViewElement {
 	}
 
 	/**
+	 * Converts `ViewEmptyElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewEmptyElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'EmptyElement';
+
+		return json;
+	}
+
+	/**
 	 * Overrides {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent
 	 * adding any child nodes to ViewEmptyElement.

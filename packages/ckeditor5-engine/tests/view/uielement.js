@@ -8,6 +8,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewRootEditableElement } from '../../src/index.js';
 
 describe( 'ViewUIElement', () => {
 	let uiElement, doc;
@@ -158,6 +159,26 @@ describe( 'ViewUIElement', () => {
 			const rendered = uiElement.render( document );
 			expect( rendered.tagName.toLowerCase() ).to.equal( 'span' );
 			expect( rendered.textContent ).to.equal( 'foo bar' );
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path', () => {
+			const uiElement = new ViewUIElement( doc, 'span' );
+			const paragraph = new ViewElement( doc, 'p', null );
+			const root = new ViewRootEditableElement( doc, 'div' );
+			paragraph._appendChild( uiElement );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( uiElement );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'span',
+				path: [ 0, 0 ],
+				root: 'main',
+				type: 'UIElement'
+			} );
 		} );
 	} );
 } );

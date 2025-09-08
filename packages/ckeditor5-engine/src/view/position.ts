@@ -284,6 +284,18 @@ export class ViewPosition extends ViewTypeCheckable {
 	}
 
 	/**
+	 * Converts `ViewPosition` instance to plain object and returns it.
+	 *
+	 * @returns `ViewPosition` instance converted to plain object.
+	 */
+	public toJSON(): unknown {
+		return {
+			parent: this.parent.toJSON(),
+			offset: this.offset
+		};
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/view/position~ViewPosition position},

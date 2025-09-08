@@ -560,30 +560,38 @@ class EditorWatchdogInitPlugin {
 		const parsedCommentThreads: Array<any> = JSON.parse( this._data.commentThreads );
 		const parsedSuggestions: Array<any> = JSON.parse( this._data.suggestions );
 
-		parsedCommentThreads.forEach( commentThreadData => {
-			const channelId = this.editor.config.get( 'collaboration.channelId' )!;
+		if ( this.editor!.plugins.has( 'CommentsRepository' ) ) {
 			const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as any;
 
-			if ( commentsRepository.hasCommentThread( commentThreadData.threadId ) ) {
-				const commentThread = commentsRepository.getCommentThread( commentThreadData.threadId )!;
-
-				commentThread.remove();
+			// First, remove the existing comments that were created by integration plugins during initialization.
+			// These comments may be outdated, and new instances will be created in the next step based on the saved data.
+			for ( const commentThread of commentsRepository.getCommentThreads() ) {
+				// Use the internal API since it removes the comment thread directly and does not trigger events
+				// that could cause side effects, such as removing markers.
+				commentsRepository._removeCommentThread( { threadId: commentThread.id } );
 			}
 
-			commentsRepository.addCommentThread( { channelId, ...commentThreadData } );
-		} );
+			parsedCommentThreads.forEach( commentThreadData => {
+				const channelId = this.editor.config.get( 'collaboration.channelId' )!;
+				const commentsRepository = this.editor!.plugins.get( 'CommentsRepository' ) as any;
 
-		parsedSuggestions.forEach( suggestionData => {
+				commentsRepository.addCommentThread( { channelId, ...commentThreadData } );
+			} );
+		}
+
+		if ( this.editor!.plugins.has( 'TrackChangesEditing' ) ) {
 			const trackChangesEditing = this.editor!.plugins.get( 'TrackChangesEditing' ) as any;
 
-			if ( trackChangesEditing.hasSuggestion( suggestionData.id ) ) {
-				const suggestion = trackChangesEditing.getSuggestion( suggestionData.id );
-
-				suggestion.attributes = suggestionData.attributes;
-			} else {
-				trackChangesEditing.addSuggestionData( suggestionData );
+			// First, remove the existing suggestions that were created by integration plugins during initialization.
+			// These suggestions may be outdated, and new instances will be created in the next step based on the saved data.
+			for ( const suggestion of trackChangesEditing.getSuggestions() ) {
+				trackChangesEditing._removeSuggestion( suggestion );
 			}
-		} );
+
+			parsedSuggestions.forEach( suggestionData => {
+				trackChangesEditing.addSuggestionData( suggestionData );
+			} );
+		}
 	}
 }
 

@@ -7,6 +7,7 @@
 
 import { execSync } from 'child_process';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import { npm } from '@ckeditor/ckeditor5-dev-utils';
 import semver from 'semver';
 
 // `@staging` and `@latest` share usually the same versions.
@@ -28,21 +29,19 @@ if ( changelogVersion === latestPublishedVersion ) {
 	process.exit( 1 );
 }
 
-if ( semver.lt( changelogVersion, latestPublishedVersion ) ) {
-	console.log( `The proposed changelog (${ changelogVersion }) version is lower than the published one (${ latestPublishedVersion }).` );
+if ( !( await isVersionAvailable( changelogVersion ) ) ) {
+	console.log( `The proposed changelog (${ changelogVersion }) version is already published.` );
 	process.exit( 1 );
 }
 
 console.log( 'CKEditor 5 is ready to release.' );
 
-/**
- * Returns an npm tag based on the specified release version.
- *
- * @param {String} version
- * @returns {String}
- */
 function getVersionTag( version ) {
 	const [ versionTag ] = semver.prerelease( version ) || [ 'latest' ];
 
 	return versionTag;
+}
+
+async function isVersionAvailable( version ) {
+	return npm.checkVersionAvailability( version, 'ckeditor5' );
 }

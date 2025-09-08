@@ -33,7 +33,7 @@ class CommentsRepository extends Plugin {
 		return {
 			...thread,
 			remove: () => {
-				this._threads.filter( thread => thread.threadId === id );
+				this._threads = this._threads.filter( thread => thread.threadId !== id );
 			},
 			setAttribute: ( key, value ) => {
 				const idx = this._threads.findIndex( thread => thread.threadId === id );
@@ -57,10 +57,14 @@ class CommentsRepository extends Plugin {
 		if ( this.hasCommentThread( id ) ) {
 			const idx = this._threads.findIndex( thread => thread.threadId === id );
 
-			this._threads[ idx ] = data;
+			this._threads[ idx ] = { ...data, id };
 		} else {
-			this._threads.push( data );
+			this._threads.push( { ...data, id } );
 		}
+	}
+
+	_removeCommentThread( { threadId } ) {
+		this._threads = this._threads.filter( thread => thread.threadId !== threadId );
 	}
 }
 
@@ -118,6 +122,10 @@ class TrackChangesEditing extends Plugin {
 		return suggestion;
 	}
 
+	getSuggestions() {
+		return this._suggestions;
+	}
+
 	hasSuggestion( id ) {
 		return !!this.getSuggestion( id );
 	}
@@ -132,6 +140,10 @@ class TrackChangesEditing extends Plugin {
 		} else {
 			this._suggestions.push( data );
 		}
+	}
+
+	_removeSuggestion( { id } ) {
+		this._suggestions = this._suggestions.filter( suggestion => suggestion.id !== id );
 	}
 }
 
@@ -515,6 +527,49 @@ describe( 'EditorWatchdog', () => {
 			} );
 		} );
 
+		it( 'should remove comment data created by another plugins when they no longer exist', async () => {
+			// Plugin that creates comment thread on init.
+			class InitPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				init() {
+					const commentsRepository = this.editor.plugins.get( 'CommentsRepository' );
+
+					commentsRepository.addCommentThread( { threadId: 't1', target: () => null } );
+				}
+			}
+
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, CommentsRepository, Clipboard, InitPlugin ],
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			const commentThread = watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' );
+			commentThread.remove();
+
+			watchdog._save();
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			// Should not keep the comment since it has been removed before crash.
+			expect( watchdog.editor.plugins.get( 'CommentsRepository' ).getCommentThread( 't1' ) ).to.be.null;
+		} );
+
 		it( 'should support suggestion data created by another plugins', async () => {
 			// Plugin that creates suggestion on init.
 			class InitPlugin {
@@ -568,6 +623,56 @@ describe( 'EditorWatchdog', () => {
 			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ).attributes ).to.deep.equal( {
 				test: 'value'
 			} );
+		} );
+
+		it( 'should remove suggestion data created by another plugins when they no longer exist', async () => {
+			// Plugin that creates suggestion on init.
+			class InitPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				init() {
+					const trackChangesEditing = this.editor.plugins.get( 'TrackChangesEditing' );
+
+					trackChangesEditing.addSuggestionData( {
+						id: '1',
+						type: 'insertion:subType',
+						authorId: 'u1',
+						data: null,
+						createdAt: new Date(),
+						attributes: {}
+					} );
+				}
+			}
+
+			await watchdog.create( '<p>Foo bar</p>', {
+				plugins: [ Paragraph, Clipboard, TrackChanges, InitPlugin ],
+				comments: {
+					editorConfig: {}
+				}
+			} );
+
+			const originalErrorHandler = window.onerror;
+			const windowErrorSpy = sinon.spy();
+			window.onerror = windowErrorSpy;
+
+			const suggestion = watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' );
+			watchdog.editor.plugins.get( 'TrackChangesEditing' )._removeSuggestion( suggestion );
+
+			watchdog._save();
+
+			await new Promise( res => {
+				setTimeout( () => throwCKEditorError( 'foo', watchdog.editor ) );
+
+				watchdog.on( 'restart', () => {
+					window.onerror = originalErrorHandler;
+					res();
+				} );
+			} );
+
+			// Should not keep the suggestion since it has been removed before crash.
+			expect( watchdog.editor.plugins.get( 'TrackChangesEditing' ).getSuggestion( '1' ) ).to.be.null;
 		} );
 	} );
 
