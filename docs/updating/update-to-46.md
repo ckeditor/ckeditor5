@@ -16,7 +16,7 @@ modified_at: 2025-09-08
 
 ## Update to CKEditor&nbsp;5 v46.1.0
 
-Released on 9 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.1.0))
+Released on 10 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.1.0))
 
 A minor stability update with focused fixes and UX improvements.
 
