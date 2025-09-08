@@ -172,7 +172,7 @@ Then choose CKEditor&nbsp;5 component:
 
 {@img assets/img/sharepoint-integration_04.png Screenshot of SharePoint application.}
 
-You should now be able to use the ricz-text editor with SharePoint:
+You should now be able to use the rich-text editor with SharePoint:
 
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 
