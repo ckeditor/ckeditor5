@@ -15,7 +15,7 @@ This guide will walk you through the process of integrating CKEditor&nbsp;5 with
 
 ## Setting up a jQuery page
 
-To begin integrating CKEditor&nbsp;5 with jQuery, you first need to create an HTML page that includes jQuery from the CDN. Start by creating a basic HTML structure and include jQuery using a CDN link. The jQuery library should be loaded before any custom scripts that depend on it. This ensures that it is available when your custom code executes. Once jQuery is loaded, you can start using its methods and selectors in your JavaScript code.
+To begin integrating CKEditor&nbsp;5 with jQuery, you first need to create an HTML page that includes jQuery from the CDN. Start by creating a basic HTML structure and include jQuery using a CDN link. The jQuery library should be loaded before any custom scripts that depend on it. This ensures that it is available when your custom code executes. Once it is loaded, you can start using its methods and selectors in your JavaScript code.
 
 Here is a complete HTML page setup with jQuery integrated from CDN:
 
@@ -104,7 +104,7 @@ Here is the complete integration code combining jQuery and CKEditor&nbsp;5:
 					]
 				} )
 				.then( editor => {
-					// Editor initialized successfully
+					// Editor initialized successfully.
 					console.log( 'CKEditor&nbsp;5 initialized with jQuery!' );
 				} )
 				.catch( error => {
@@ -136,7 +136,7 @@ Here is the premium features script tag:
 <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Now, update your jQuery integration code to include premium features. You can import premium plugins from the `CKEDITOR_PREMIUM_FEATURES` object and add them to your editor configuration. For example, you can add the Format Painter feature which allows users to copy formatting from one text selection and apply it to another.
+Update your jQuery integration code to include premium features. You can import premium plugins from the `CKEDITOR_PREMIUM_FEATURES` object and add them to your editor configuration. For example, you can add the Format Painter feature which allows users to copy formatting from one text selection and apply it to another.
 
 Here is the complete integration with premium features:
 

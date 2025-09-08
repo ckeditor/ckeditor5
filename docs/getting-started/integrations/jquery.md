@@ -27,7 +27,7 @@ Install CKEditor&nbsp;5 using npm by running the following command in your proje
 npm install ckeditor5
 ```
 
-You also need to install jQuery if you have not done it already:
+You also need to install jQuery if you have not done so already:
 
 ```bash
 npm install jquery
@@ -64,7 +64,7 @@ $( document ).ready( () => {
 			]
 		} )
 		.then( editor => {
-			// Editor initialized successfully
+			// Editor initialized successfully.
 			console.log( 'CKEditor&nbsp;5 initialized with jQuery!' );
 		} )
 		.catch( error => {
@@ -97,12 +97,6 @@ npm install ckeditor5-premium-features
 
 Now, you can import all the modules from both the `ckeditor5` and `ckeditor5-premium-features` packages. Additionally, you have to import CSS styles separately.
 
-<info-box>
-	If you use a self-hosted editor from npm, obtain a license for {@link getting-started/licensing/license-key-and-activation premium features}.
-
-	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and all of its features.
-</info-box>
-
 ```javascript
 import $ from 'jquery';
 
@@ -132,6 +126,12 @@ $( document ).ready( () => {
 		} );
 } );
 ```
+
+### Obtaining a premium features license key
+
+To activate CKEditor&nbsp;5 premium features, you will need a commercial license. The easiest way to get one is to sign up for the [CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
+
+You can also [contact us](https://ckeditor.com/contact/?sales=true#contact-form) to receive an offer tailored to your needs. To obtain an activation key, please follow the {@link getting-started/licensing/license-key-and-activation License key and activation} guide.
 
 ## Next steps
 
