@@ -4,10 +4,9 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { SelectAllEditing } from '../src/selectallediting.js';
 import { SelectAllUI } from '../src/selectallui.js';
-import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SelectAllUI', () => {

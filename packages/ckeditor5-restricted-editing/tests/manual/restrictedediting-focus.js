@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { Table } from '@ckeditor/ckeditor5-table';
 
 import { StandardEditingMode } from '../../src/standardeditingmode.js';
 import { RestrictedEditingMode } from '../../src/restrictededitingmode.js';

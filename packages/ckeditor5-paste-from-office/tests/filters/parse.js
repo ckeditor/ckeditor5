@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
+import { ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 
 import { parsePasteOfficeHtml } from '../../src/filters/parse.js';
 

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Image } from '../src/image.js';
 import { ImageUpload } from '../src/imageupload.js';
 import { ImageUploadEditing } from '../src/imageupload/imageuploadediting.js';

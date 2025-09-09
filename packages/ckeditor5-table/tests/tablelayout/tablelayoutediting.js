@@ -4,11 +4,10 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
 import { Table } from '../../src/table.js';

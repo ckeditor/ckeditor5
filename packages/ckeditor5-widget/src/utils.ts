@@ -295,7 +295,13 @@ export function toWidgetEditable(
 		writer.setAttribute( 'role', 'textbox', editable );
 	}
 
-	writer.setAttribute( 'tabindex', '-1', editable );
+	// Setting tabindex=-1 on contenteditable=false makes it focusable. It propagates focus to the editable
+	// element and makes it possible to highlight nested editables as focused. It's not what we want
+	// for read-only editables though.
+	// See more: https://github.com/ckeditor/ckeditor5/issues/18965
+	if ( !editable.isReadOnly ) {
+		writer.setAttribute( 'tabindex', '-1', editable );
+	}
 
 	if ( options.label ) {
 		writer.setAttribute( 'aria-label', options.label, editable );
@@ -305,8 +311,14 @@ export function toWidgetEditable(
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
 
 	// Bind the contenteditable property to element#isReadOnly.
-	editable.on<ObservableChangeEvent<boolean>>( 'change:isReadOnly', ( evt, property, is ) => {
-		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
+	editable.on<ObservableChangeEvent<boolean>>( 'change:isReadOnly', ( evt, property, isReadonly ) => {
+		writer.setAttribute( 'contenteditable', isReadonly ? 'false' : 'true', editable );
+
+		if ( isReadonly ) {
+			writer.removeAttribute( 'tabindex', editable );
+		} else {
+			writer.setAttribute( 'tabindex', '-1', editable );
+		}
 	} );
 
 	editable.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, property, is ) => {

@@ -4,8 +4,8 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../../src/tableediting.js';
 import { TableCaptionEditing } from '../../../src/tablecaption/tablecaptionediting.js';

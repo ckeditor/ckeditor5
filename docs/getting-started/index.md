@@ -35,11 +35,10 @@ Do you want to use a framework? Native integrations with the most popular librar
 * Integrate CKEditor&nbsp;5 with **Salesforce** using {@link getting-started/integrations-cdn/salesforce CDN} or {@link getting-started/integrations/salesforce npm}.
 * Integrate CKEditor&nbsp;5 with **Svelte** using {@link getting-started/integrations-cdn/svelte CDN} or {@link getting-started/integrations/svelte npm}.
 * Integrate CKEditor&nbsp;5 with **Spring-boot** using {@link getting-started/integrations-cdn/spring-boot CDN} or {@link getting-started/integrations/spring-boot npm}.
+* Integrate CKEditor&nbsp;5 with **jQuery** using {@link getting-started/integrations-cdn/jquery CDN} or {@link getting-started/integrations/jquery npm}.
 * Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/sharepoint **Sharepoint SPFx**}.
 * Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/drupal-real-time-collaboration **Drupal**}.
 * Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/css **CSS frameworks**}.
-
-<!-- However, integration steps for some more frameworks are also documented. Refer to their documentation on the left to learn how to use them. -->
 
 ### Support for other frameworks
 

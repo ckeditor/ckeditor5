@@ -4,18 +4,16 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
-import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line';
+import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-image';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Input } from '@ckeditor/ckeditor5-typing';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData, ModelRange } from '@ckeditor/ckeditor5-engine';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
-import { ModelRange } from '@ckeditor/ckeditor5-engine';
 import { TableEditing } from '../src/tableediting.js';
 import { TableCellPropertiesEditing } from '../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../src/tablecellwidth/tablecellwidthediting.js';

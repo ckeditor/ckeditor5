@@ -4,15 +4,14 @@
  */
 
 import { Paragraph } from '../src/paragraph.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	_getModelData,
-	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+	_setModelData,
+	_parseView } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Paragraph feature – integration', () => {
 	describe( 'with clipboard', () => {

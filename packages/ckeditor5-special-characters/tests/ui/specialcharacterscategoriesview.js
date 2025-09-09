@@ -5,8 +5,7 @@
 
 import { SpecialCharactersCategoriesView } from '../../src/ui/specialcharacterscategoriesview.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
-import { LabeledFieldView } from '@ckeditor/ckeditor5-ui';
+import { View, LabeledFieldView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'SpecialCharactersCategoriesView', () => {
 	let view, locale;

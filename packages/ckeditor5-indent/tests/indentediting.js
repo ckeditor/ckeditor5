@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MultiCommand } from '@ckeditor/ckeditor5-core/src/multicommand.js';
+import { MultiCommand } from '@ckeditor/ckeditor5-core';
 
 import { IndentEditing } from '../src/indentediting.js';
 

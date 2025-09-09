@@ -10,10 +10,10 @@ import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 import ts from 'typescript-eslint';
 import eslintPluginImport from 'eslint-plugin-import';
-import rootPkgJson from './package.json' with { type: 'json' };
+import ckeditor5PkgJson from './packages/ckeditor5/package.json' with { type: 'json' };
 import { CKEDITOR5_PACKAGES_PATH } from './scripts/constants.mjs';
 
-const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
+const disallowedImports = Object.keys( ckeditor5PkgJson.devDependencies ).filter( pkgName => {
 	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
@@ -37,7 +37,7 @@ export default defineConfig( [
 
 			// The CKEditor 5 core DLL build is created from JavaScript files.
 			// ESLint should not process compiled TypeScript.
-			'src/*.js',
+			'packages/ckeditor5/src/*.js',
 			'**/*.d.ts',
 
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
@@ -155,91 +155,10 @@ export default defineConfig( [
 		},
 
 		rules: {
+			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': 'error',
 			'ckeditor5-rules/ckeditor-imports': 'off',
 			'ckeditor5-rules/no-cross-package-imports': 'off',
 			'mocha/no-pending-tests': 'off'
-		}
-	},
-	{
-		/**
-		 * This block is here temporarily to prevent non-migrated packages from printing errors.
-		 * Migrated packages should be removed from the list. Once the list is empty,
-		 * the rule should be moved to the block above, and this block should be removed.
-		 */
-
-		files: [ '**/tests/**/*.@(js|cjs|mjs|ts)' ],
-
-		ignores: [
-			'./tests/**',
-			'./packages/ckeditor5-adapter-ckfinder/**',
-			'./packages/ckeditor5-alignment/**',
-			'./packages/ckeditor5-autoformat/**',
-			'./packages/ckeditor5-autosave/**',
-			'./packages/ckeditor5-basic-styles/**',
-			'./packages/ckeditor5-block-quote/**',
-			'./packages/ckeditor5-bookmark/**',
-			'./packages/ckeditor5-ckbox/**',
-			'./packages/ckeditor5-ckfinder/**',
-			'./packages/ckeditor5-clipboard/**',
-			'./packages/ckeditor5-cloud-services/**',
-			'./packages/ckeditor5-code-block/**',
-			'./packages/ckeditor5-core/**',
-			'./packages/ckeditor5-easy-image/**',
-			'./packages/ckeditor5-editor-balloon/**',
-			'./packages/ckeditor5-editor-classic/**',
-			'./packages/ckeditor5-editor-decoupled/**',
-			'./packages/ckeditor5-editor-inline/**',
-			'./packages/ckeditor5-editor-multi-root/**',
-			'./packages/ckeditor5-emoji/**',
-			'./packages/ckeditor5-engine/**',
-			'./packages/ckeditor5-enter/**',
-			'./packages/ckeditor5-essentials/**',
-			'./packages/ckeditor5-find-and-replace/**',
-			'./packages/ckeditor5-font/**',
-			'./packages/ckeditor5-fullscreen/**',
-			'./packages/ckeditor5-heading/**',
-			'./packages/ckeditor5-highlight/**',
-			'./packages/ckeditor5-horizontal-line/**',
-			'./packages/ckeditor5-html-embed/**',
-			'./packages/ckeditor5-html-support/**',
-			'./packages/ckeditor5-icons/**',
-			'./packages/ckeditor5-image/**',
-			'./packages/ckeditor5-indent/**',
-			'./packages/ckeditor5-language/**',
-			'./packages/ckeditor5-link/**',
-			'./packages/ckeditor5-list/**',
-			'./packages/ckeditor5-markdown-gfm/**',
-			'./packages/ckeditor5-media-embed/**',
-			'./packages/ckeditor5-mention/**',
-			'./packages/ckeditor5-minimap/**',
-			'./packages/ckeditor5-page-break/**',
-			'./packages/ckeditor5-paragraph/**',
-			'./packages/ckeditor5-paste-from-office/**',
-			'./packages/ckeditor5-remove-format/**',
-			'./packages/ckeditor5-restricted-editing/**',
-			'./packages/ckeditor5-select-all/**',
-			'./packages/ckeditor5-show-blocks/**',
-			'./packages/ckeditor5-source-editing/**',
-			'./packages/ckeditor5-special-characters/**',
-			'./packages/ckeditor5-style/**',
-			'./packages/ckeditor5-table/**',
-			'./packages/ckeditor5-theme-lark/**',
-			'./packages/ckeditor5-typing/**',
-			'./packages/ckeditor5-ui/**',
-			'./packages/ckeditor5-undo/**',
-			'./packages/ckeditor5-upload/**',
-			'./packages/ckeditor5-utils/**',
-			'./packages/ckeditor5-watchdog/**',
-			'./packages/ckeditor5-widget/**',
-			'./packages/ckeditor5-word-count/**'
-		],
-
-		plugins: {
-			'ckeditor5-rules': ckeditor5Rules
-		},
-
-		rules: {
-			'ckeditor5-rules/allow-imports-only-from-main-package-entry-point': 'error'
 		}
 	},
 	{
@@ -279,10 +198,7 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/validate-changelog-entry': [ 'error', {
-				allowedScopes: [
-					...projectPackages,
-					'ckeditor5'
-				],
+				allowedScopes: projectPackages,
 				repositoryType: 'mono'
 			} ]
 		}
