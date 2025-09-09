@@ -200,7 +200,7 @@ FullscreenEditor
 				'|',
 				'undo', 'redo',
 				'|',
-				'findAndReplace', 'selectAll', 'wproofreader',
+				'findAndReplace', 'selectAll',
 				'|',
 				'heading',
 				'|',
@@ -369,11 +369,6 @@ FullscreenEditor
 					classes: [ 'fancy-code', 'fancy-code-bright' ]
 				}
 			]
-		},
-		wproofreader: {
-			serviceId: '1:Eebp63-lWHbt2-ASpHy4-AYUpy2-fo3mk4-sKrza1-NsuXy4-I1XZC2-0u2F54-aqYWd1-l3Qf14-umd',
-			lang: 'auto',
-			srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js'
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,

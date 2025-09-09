@@ -3,20 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { stubUid } from '../list/_utils/uid.js';
 import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 import { modelList, setupTestHelpers } from '../list/_utils/utils.js';

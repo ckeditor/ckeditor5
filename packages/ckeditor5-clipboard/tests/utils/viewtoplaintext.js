@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewDomConverter, StylesProcessor, ViewDocument, ViewDowncastWriter } from '@ckeditor/ckeditor5-engine';
+import { ViewDomConverter, StylesProcessor, ViewDocument, ViewDowncastWriter, _parseView } from '@ckeditor/ckeditor5-engine';
 import { viewToPlainText } from '../../src/utils/viewtoplaintext.js';
-
-import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 describe( 'viewToPlainText()', () => {
 	let converter, viewDocument;
@@ -148,4 +146,23 @@ describe( 'viewToPlainText()', () => {
 
 		expect( text ).to.equal( 'Foo\nBar' );
 	} );
+
+	it( 'should not execute img#onerror js handler while conversion a view RawElement', async () => {
+		const writer = new ViewDowncastWriter( viewDocument );
+		const rawElement = writer.createRawElement( 'div', { 'data-foo': 'bar' }, function( domElement ) {
+			domElement.innerHTML = '<img src=x onerror=window.__testOnErrorExecuted=true>';
+		} );
+
+		window.__testOnErrorExecuted = false;
+		viewToPlainText( converter, rawElement );
+
+		await timeout( 50 );
+
+		expect( window.__testOnErrorExecuted ).to.be.false;
+		delete window.__testOnErrorExecuted;
+	} );
 } );
+
+function timeout( ms ) {
+	return new Promise( resolve => setTimeout( resolve, ms ) );
+}

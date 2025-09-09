@@ -3,35 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { ListProperties } from '@ckeditor/ckeditor5-list/src/listproperties.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { ImageStyle } from '@ckeditor/ckeditor5-image/src/imagestyle.js';
-import { ImageToolbar } from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
-import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { Strikethrough, Code, Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { TableProperties, TableCellProperties, Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Markdown } from '../../../src/markdown.js';
 import { PasteFromMarkdownExperimental } from '../../../src/pastefrommarkdownexperimental.js';
-import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
+import { FontFamily } from '@ckeditor/ckeditor5-font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { BubblingEventInfo } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo.js';
+import { ViewDocumentDomEventData, BubblingEventInfo, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { EventInfo, global, getCode, env, insertAt } from '@ckeditor/ckeditor5-utils';
 
 import { Widget } from '../../src/widget.js';
 import { WidgetTypeAround } from '../../src/widgettypearound/widgettypearound.js';
@@ -16,10 +14,6 @@ import { TYPE_AROUND_SELECTION_ATTRIBUTE } from '../../src/widgettypearound/util
 import { toWidget } from '../../src/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;

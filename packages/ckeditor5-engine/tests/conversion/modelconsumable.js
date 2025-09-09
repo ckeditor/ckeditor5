@@ -8,7 +8,7 @@ import { ModelElement } from '../../src/model/element.js';
 import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { ModelText } from '../../src/model/text.js';
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;

@@ -3,18 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { ImageBlock } from '@ckeditor/ckeditor5-image/src/imageblock.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { ImageBlock, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { Style } from '../src/style.js';
 

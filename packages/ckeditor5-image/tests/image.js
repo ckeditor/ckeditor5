@@ -4,14 +4,13 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Image } from '../src/image.js';
 import { ImageEditing } from '../src/image/imageediting.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 import { ImageTextAlternative } from '../src/imagetextalternative.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Image', () => {

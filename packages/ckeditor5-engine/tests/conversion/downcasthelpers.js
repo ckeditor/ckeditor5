@@ -39,7 +39,7 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
 
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
 
 describe( 'DowncastHelpers', () => {
 	let model, modelRoot, viewRoot, downcastHelpers, controller, modelRootStart;

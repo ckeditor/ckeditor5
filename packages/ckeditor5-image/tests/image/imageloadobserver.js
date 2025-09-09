@@ -4,11 +4,8 @@
  */
 
 import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
-import { Observer } from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { Observer, EditingView, _setViewData, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'ImageLoadObserver', () => {
 	let view, viewDocument, observer, domRoot, viewRoot;

@@ -53,6 +53,19 @@ export class ViewContainerElement extends ViewElement {
 
 		this.getFillerOffset = getViewFillerOffset;
 	}
+
+	/**
+	 * Converts `ViewContainerElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewContainerElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'ContainerElement';
+
+		return json;
+	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.

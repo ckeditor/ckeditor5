@@ -4,9 +4,9 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'FindNextCommand', () => {
 	let editor, model, command;
