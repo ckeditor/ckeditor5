@@ -47,7 +47,7 @@
     "README.md"
   ],
   "scripts": {
-    "predll:build": "npm run build",
+    "predll:build": "pnpm run build",
     "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"

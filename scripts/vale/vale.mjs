@@ -214,7 +214,7 @@ function runVale( args, files ) {
 
 		valeArgs.push( ...files );
 
-		const vale = spawn( 'yarn', valeArgs, spawnOptions );
+		const vale = spawn( 'pnpm', valeArgs, spawnOptions );
 
 		let text = '';
 
