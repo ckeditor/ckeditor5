@@ -218,7 +218,7 @@ jobs:
       - run:
           name: Trigger CKEditor 5 release job
           environment:
-            CKE5_GITHUB_RELEASE_BRANCH: release
+            CKE5_GITHUB_RELEASE_BRANCH: << pipeline.git.branch >>
           command: pnpm ckeditor5-dev-ci-trigger-circle-build
 
   cke5_trigger_uber_ci:
@@ -345,6 +345,7 @@ workflows:
             branches:
               only:
                 - release
+                - /^release-v.*$/
       - notify_ci_failure:
           filters:
             branches:
@@ -352,6 +353,7 @@ workflows:
                 - master
                 - stable
                 - release
+                - /^release-v.*$/
 
   nightly:
     when: << pipeline.parameters.isNightly >>

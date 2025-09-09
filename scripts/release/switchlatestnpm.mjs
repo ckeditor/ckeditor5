@@ -5,10 +5,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import upath from 'upath';
-import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import { execSync } from 'child_process';
 import fs from 'fs-extra';
+import upath from 'upath';
+import semver from 'semver';
 import { globSync } from 'glob';
+import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+
 import {
 	CKEDITOR5_ROOT_PATH,
 	CKEDITOR5_PACKAGES_PATH,
@@ -18,17 +21,32 @@ import {
 const rootPkgJson = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
 const GLOB_PATTERNS = [
-	'package.json',
 	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
 	CKEDITOR5_COMMERCIAL_PACKAGES_PATH + '/*/package.json'
 ];
 
-Promise.resolve()
-	// CKEditor 5 packages.
-	.then( () => releaseTools.reassignNpmTags( {
-		npmOwner: 'ckeditor',
-		version: rootPkgJson.version,
-		packages: globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
-			.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name )
-	} ) );
+const npmOwner = 'ckeditor';
+const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
+	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
+const latestPublishedVersion = execSync( 'npm view ckeditor5@latest version', { encoding: 'utf-8' } ).trim();
+
+console.log( `Assigning the \`@latest\` npm tag for v${ rootPkgJson.version }.` );
+
+await releaseTools.reassignNpmTags( {
+	npmOwner,
+	packages,
+	version: rootPkgJson.version
+} );
+
+if ( semver.major( latestPublishedVersion ) !== semver.major( rootPkgJson.version ) ) {
+	console.log( `Restoring the \`@latest\` npm tag for v${ latestPublishedVersion }.` );
+
+	await releaseTools.reassignNpmTags( {
+		npmOwner,
+		packages,
+		version: latestPublishedVersion
+	} );
+} else {
+	console.log( 'The latest published packages and the current release follow the same major version.' );
+}

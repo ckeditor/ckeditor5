@@ -84,7 +84,6 @@ import {
 	RealTimeCollaborativeEditing,
 	RealTimeCollaborativeComments
 } from 'ckeditor5-premium-features';
-import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 export class FullscreenEditor extends DecoupledEditor {
 	static builtinPlugins = [
@@ -100,7 +99,7 @@ export class FullscreenEditor extends DecoupledEditor {
 		SpecialCharactersEssentials, Style, Strikethrough, Subscript, Superscript,
 		TableCaption, TableCellProperties, TableColumnResize,
 		TableProperties, TableOfContents, Template, TextTransformation,
-		Underline, WProofreader, DocumentOutline,
+		Underline, DocumentOutline,
 		PresenceList, Comments, TrackChanges, TrackChangesPreview, RevisionHistory, RealTimeCollaborativeComments,
 		RealTimeCollaborativeEditing, RealTimeCollaborativeTrackChanges, RealTimeCollaborativeRevisionHistory
 	];

@@ -240,6 +240,21 @@ describe( 'widget utils', () => {
 			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
+		it( 'should not add tabindex if editable is readonly', () => {
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+		} );
+
+		it( 'should toggle tabindex attribute after isReadOnly change', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+
+			element.isReadOnly = false;
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
 		it( 'should add role attribute by default for backward compatibility', () => {
 			const element = new ViewEditableElement( viewDocument, 'div' );
 			toWidgetEditable( element, writer );

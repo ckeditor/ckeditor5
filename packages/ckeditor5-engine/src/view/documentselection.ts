@@ -302,6 +302,15 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( ViewTyp
 	}
 
 	/**
+	 * Converts `ViewDocumentSelection` instance to plain object and returns it.
+	 *
+	 * @returns `ViewDocumentSelection` instance converted to plain object.
+	 */
+	public toJSON(): unknown {
+		return this._selection.toJSON();
+	}
+
+	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/view/selection~ViewSelectable selectable}.
 	 *

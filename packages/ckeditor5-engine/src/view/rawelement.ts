@@ -62,6 +62,19 @@ export class ViewRawElement extends ViewElement {
 	}
 
 	/**
+	 * Converts `ViewRawElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewRawElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'RawElement';
+
+		return json;
+	}
+
+	/**
 	 * Overrides the {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} to prevent
 	 * adding any child nodes to a raw element.

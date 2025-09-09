@@ -99,6 +99,15 @@ describe( 'ViewDomConverter', () => {
 			expect( focusSpy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should use preventScroll option', () => {
+			const focusSpy = testUtils.sinon.spy( domEditable, 'focus' );
+
+			converter.focus( viewEditable );
+
+			expect( focusSpy.calledOnce ).to.be.true;
+			expect( focusSpy.firstCall.args[ 0 ] ).deep.equal( { preventScroll: true } );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-engine/issues/951
 		// https://github.com/ckeditor/ckeditor5-engine/issues/957
 		it( 'should actively prevent scrolling', () => {
