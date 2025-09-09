@@ -56,7 +56,7 @@ By default, the plugin produces the `<figcaption>` HTML element to store the cap
 ```js
 table: {
 	tableCaption: {
-	useCaptionElement: true
+		useCaptionElement: true
 		}
 	}
 ```
