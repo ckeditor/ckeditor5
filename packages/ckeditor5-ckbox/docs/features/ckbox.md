@@ -24,6 +24,7 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 im
 * Provides [basic editing capabilities](https://ckeditor.com/docs/ckbox/latest/features/images/editing/editing.html), like crop, resize, rotate, and flip right from the {@link features/images-overview#image-contextual-toolbar image contextual toolbar} for images served by CKBox. Also provides trash can that makes reclaiming deleted images possible.
 * Provides responsive images handling.
 * Supports workspaces that allow separating assets for different users.
+* The CKBox On-premises version offers various storage options, from local filesystem, through MySQL and Postgres databases, to AWS S3 and Azure Blob Storage solutions. The SaaS version is using a blazing-fast CDN powered by AWS S3.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
