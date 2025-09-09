@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Image } from '../../../src/image.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
-import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { global } from '@ckeditor/ckeditor5-utils';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { View, ContextualBalloon, BalloonPanelView } from '@ckeditor/ckeditor5-ui';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { repositionContextualBalloon, getBalloonPositionData } from '../../../src/image/ui/utils.js';
 import { ImageCaption } from '../../../src/imagecaption.js';
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ObservableMixin } from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
+import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

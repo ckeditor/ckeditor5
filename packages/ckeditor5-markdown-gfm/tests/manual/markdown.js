@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { TodoList } from '@ckeditor/ckeditor5-list/src/todolist.js';
-import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import { Strikethrough, Code } from '@ckeditor/ckeditor5-basic-styles';
+import { TodoList } from '@ckeditor/ckeditor5-list';
+import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { Markdown } from '../../src/markdown.js';
 
 ClassicEditor

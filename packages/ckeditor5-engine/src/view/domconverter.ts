@@ -1147,7 +1147,7 @@ export class ViewDomConverter {
 			scrollPositions.push( [ scrollLeft, scrollTop ] );
 		} );
 
-		domEditable.focus();
+		domEditable.focus( { preventScroll: true } );
 
 		// Restore scrollLeft and scrollTop values starting from domEditable up to
 		// document#documentElement.
@@ -1790,7 +1790,9 @@ export class ViewDomConverter {
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			else if ( item.is( 'containerElement' ) ) {
+			// The ol, ul, and li elements are rendered as an attribute element so we should check list of known block elements.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18960.
+			else if ( item.is( 'containerElement' ) || this._isBlockViewElement( item ) ) {
 				return null;
 			}
 		}

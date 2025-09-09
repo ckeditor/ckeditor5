@@ -7,6 +7,7 @@ import { ViewNode } from '../../src/view/node.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewContainerElement, ViewRootEditableElement } from '../../src/index.js';
 
 describe( 'Text', () => {
 	let document;
@@ -107,6 +108,26 @@ describe( 'Text', () => {
 
 			foo._data += bar.data;
 			expect( foo.data ).to.equal( 'foobar' );
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path, text data', () => {
+			const text = new ViewText( document, 'foo' );
+			const paragraph = new ViewContainerElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( text );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				data: 'foo',
+				path: [ 0, 0 ],
+				root: 'main',
+				type: 'Text'
+			} );
 		} );
 	} );
 } );

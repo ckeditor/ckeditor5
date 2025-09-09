@@ -4,14 +4,13 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import { ImageUploadEditing } from '@ckeditor/ckeditor5-image';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { Notification } from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ImageBlockEditing, ImageUploadEditing } from '@ckeditor/ckeditor5-image';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { Notification } from '@ckeditor/ckeditor5-ui';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { CKFinderCommand } from '../src/ckfindercommand.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';

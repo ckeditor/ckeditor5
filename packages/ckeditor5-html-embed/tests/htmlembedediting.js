@@ -7,9 +7,9 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HtmlEmbedCommand } from '../src/htmlembedcommand.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { isWidget } from '@ckeditor/ckeditor5-widget';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HtmlEmbedEditing', () => {

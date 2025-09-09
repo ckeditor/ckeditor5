@@ -4,8 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 describe( 'bug #13803', () => {

@@ -10,7 +10,7 @@ import { ViewDocument } from '../../src/view/document.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewPosition } from '../../src/view/position.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from './_utils/createroot.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -1116,6 +1116,104 @@ describe( 'ViewDocumentSelection', () => {
 			const { selection: documentSelection } = _parseView( 'foo <b>{bar}</b> baz' );
 
 			expect( documentSelection.getSelectedElement() ).to.be.null;
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide ranges', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should provide isBackward flag', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			documentSelection._selection._lastRangeBackward = true;
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isBackward: true,
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should provide isFake flag', () => {
+			const { selection: documentSelection } = _parseView( 'f{oo <b>ba}r</b> baz' );
+
+			documentSelection._selection._isFake = true;
+
+			const json = JSON.stringify( documentSelection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isFake: true,
+				ranges: [
+					{
+						start: {
+							offset: 1,
+							parent: {
+								data: 'foo ',
+								path: [ 0 ],
+								type: 'Text'
+							}
+						},
+						end: {
+							offset: 2,
+							parent: {
+								data: 'bar',
+								path: [ 1, 0 ],
+								type: 'Text'
+							}
+						}
+					}
+				]
+			} );
 		} );
 	} );
 } );

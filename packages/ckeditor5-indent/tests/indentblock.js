@@ -5,10 +5,10 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
 
 import { IndentEditing } from '../src/indentediting.js';
 import { IndentBlock } from '../src/indentblock.js';

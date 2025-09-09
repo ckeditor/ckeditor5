@@ -24,9 +24,8 @@ import {
 import { modelList } from '../_utils/utils.js';
 import { stubUid } from '../_utils/uid.js';
 
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Model, _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'List - utils - model', () => {
 	let model, schema;

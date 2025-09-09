@@ -5,20 +5,17 @@
 
 import { WordCount } from '../src/wordcount.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { _setModelData, ModelPosition } from '@ckeditor/ckeditor5-engine';
+import { add as addTranslations, _clearTranslations, env } from '@ckeditor/ckeditor5-utils';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
+import { ImageCaptionEditing, ImageBlockEditing } from '@ckeditor/ckeditor5-image';
 
 // Delay related to word-count throttling.
 const DELAY = 300;
@@ -569,7 +566,7 @@ describe( 'WordCount', () => {
 		} );
 
 		after( () => {
-			clearTranslations();
+			_clearTranslations();
 		} );
 
 		it( 'applies proper language translations', () => {

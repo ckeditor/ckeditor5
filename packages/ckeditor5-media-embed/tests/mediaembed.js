@@ -8,8 +8,8 @@ import { MediaEmbed } from '../src/mediaembed.js';
 import { MediaEmbedEditing } from '../src/mediaembedediting.js';
 import { MediaEmbedUI } from '../src/mediaembedui.js';
 import { AutoMediaEmbed } from '../src/automediaembed.js';
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Widget } from '@ckeditor/ckeditor5-widget';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'MediaEmbed', () => {
 	let editorElement, editor;
