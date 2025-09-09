@@ -705,8 +705,12 @@ export class DragDrop extends Plugin {
 				preview.style.backgroundColor = 'var(--ck-color-base-background)';
 			}
 		} else if ( env.isiOS ) {
-			// Custom preview for iOS.
+			// Custom preview for iOS. Note that it must have some dimensions for iOS to start dragging element.
 			preview.style.maxWidth = `${ editableWidth }px`;
+			preview.style.padding = '10px';
+			preview.style.minWidth = '200px';
+			preview.style.minHeight = '20px';
+			preview.style.boxSizing = 'border-box';
 			preview.style.backgroundColor = 'var(--ck-color-base-background)';
 		} else {
 			// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
