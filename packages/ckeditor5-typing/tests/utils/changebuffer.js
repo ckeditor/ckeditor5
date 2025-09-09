@@ -4,8 +4,7 @@
  */
 
 import { TypingChangeBuffer } from '../../src/utils/changebuffer.js';
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import { Model, Batch } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;

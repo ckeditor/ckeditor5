@@ -165,6 +165,8 @@ export { default as IconSelectAll } from '../theme/icons/select-all.svg';
 export { default as IconSelection } from '../theme/icons/selection.svg';
 export { default as IconSettings } from '../theme/icons/settings.svg';
 export { default as IconShowBlocks } from '../theme/icons/show-blocks.svg';
+export { default as IconShowChangesOff } from '../theme/icons/show-changes-off.svg';
+export { default as IconShowChangesOn } from '../theme/icons/show-changes-on.svg';
 export { default as IconSource } from '../theme/icons/source.svg';
 export { default as IconSpecialCharacters } from '../theme/icons/special-characters.svg';
 export { default as IconStop } from '../theme/icons/stop.svg';

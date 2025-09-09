@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewText } from '../../src/view/text.js';
@@ -13,7 +13,7 @@ import { addBorderStylesRules } from '../../src/view/styles/border.js';
 import { addMarginStylesRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { ViewTokenList } from '../../src/view/tokenlist.js';
-import { StylesMap } from '@ckeditor/ckeditor5-engine';
+import { StylesMap, ViewRootEditableElement } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Element', () => {
 	let document;
@@ -1617,6 +1617,39 @@ describe( 'Element', () => {
 			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
 
 			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path, child nodes, and attributes', () => {
+			const text = new ViewText( document, 'foo' );
+			const paragraph = new ViewElement( document, 'p', { class: 'abc  asd', style: 'color:red', align: 'right' } );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( paragraph );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'p',
+				path: [ 0 ],
+				root: 'main',
+				type: 'Element',
+				attributes: {
+					align: 'right',
+					class: 'abc asd',
+					style: 'color:red;'
+				},
+				children: [
+					{
+						data: 'foo',
+						path: [ 0, 0 ],
+						root: 'main',
+						type: 'Text'
+					}
+				]
+			} );
 		} );
 	} );
 } );

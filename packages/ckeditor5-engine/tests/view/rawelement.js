@@ -8,6 +8,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewRootEditableElement } from '../../src/index.js';
 
 describe( 'RawElement', () => {
 	let rawElement, doc;
@@ -114,6 +115,26 @@ describe( 'RawElement', () => {
 	describe( 'getFillerOffset()', () => {
 		it( 'should return null', () => {
 			expect( rawElement.getFillerOffset() ).to.null;
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path', () => {
+			const rawElement = new ViewRawElement( doc, 'span' );
+			const paragraph = new ViewElement( doc, 'p', null );
+			const root = new ViewRootEditableElement( doc, 'div' );
+			paragraph._appendChild( rawElement );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( rawElement );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'span',
+				path: [ 0, 0 ],
+				root: 'main',
+				type: 'RawElement'
+			} );
 		} );
 	} );
 } );

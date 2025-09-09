@@ -5,10 +5,8 @@
 
 import { ViewCollection } from '../../src/viewcollection.js';
 import { ListView } from '../../src/list/listview.js';
-import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { KeystrokeHandler, FocusTracker, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { FocusCycler } from '../../src/focuscycler.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { View } from '../../src/view.js';
 import { ListItemGroupView, ListItemView } from '../../src/index.js';
 import { ListSeparatorView } from '../../src/list/listseparatorview.js';

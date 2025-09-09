@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { EditorUI } from '../../../src/editorui/editorui.js';
 import { BlockToolbar } from '../../../src/toolbar/block/blocktoolbar.js';
@@ -13,25 +13,18 @@ import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js
 import { BlockButtonView } from '../../../src/toolbar/block/blockbuttonview.js';
 import { ButtonView } from '../../../src/button/buttonview.js';
 
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { HeadingButtonsUI } from '@ckeditor/ckeditor5-heading/src/headingbuttonsui.js';
+import { Heading, HeadingButtonsUI } from '@ckeditor/ckeditor5-heading';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
-import { DragDropBlockToolbar } from '@ckeditor/ckeditor5-clipboard/src/dragdropblocktoolbar.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { global, ResizeObserver, keyCodes, Rect, env } from '@ckeditor/ckeditor5-utils';
+import { DragDropBlockToolbar } from '@ckeditor/ckeditor5-clipboard';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { IconPilcrow, IconDragIndicator } from '@ckeditor/ckeditor5-icons';
-
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;

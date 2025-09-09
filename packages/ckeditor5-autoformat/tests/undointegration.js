@@ -5,23 +5,19 @@
 
 import { Autoformat } from '../src/autoformat.js';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { CodeEditing } from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
-import { StrikethroughEditing } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
-import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { BoldEditing, CodeEditing, StrikethroughEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Delete } from '@ckeditor/ckeditor5-typing';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+import { _setModelData, _getModelData, ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Autoformat undo integration', () => {

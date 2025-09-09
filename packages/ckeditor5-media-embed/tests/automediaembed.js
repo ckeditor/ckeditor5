@@ -6,17 +6,15 @@
 import { MediaEmbed } from '../src/mediaembed.js';
 import { AutoMediaEmbed } from '../src/automediaembed.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { global } from '@ckeditor/ckeditor5-utils';
+import { ViewDocumentDomEventData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'AutoMediaEmbed - integration', () => {
 	let editorElement, editor;

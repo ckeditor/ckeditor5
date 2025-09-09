@@ -22,15 +22,11 @@ import { ViewPosition } from '../../../src/view/position.js';
 import { ViewSelection } from '../../../src/view/selection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { count, global, createElement, env, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { createViewRoot } from '../_utils/createroot.js';
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { stubGeometry, assertScrollPosition } from '@ckeditor/ckeditor5-utils/tests/_utils/scroll.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 9;

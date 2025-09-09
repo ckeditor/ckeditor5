@@ -12,7 +12,8 @@
 }
 
 /* Content styles */
-.ck-content .table > figcaption {
+.ck-content .table > figcaption,
+.ck-content figure.table > table > caption {
 	display: table-caption;
 	caption-side: top;
 	word-break: normal;
@@ -32,7 +33,8 @@
 }
 
 /* Editing styles */
-.ck.ck-editor__editable .table > figcaption {
+.ck.ck-editor__editable .table > figcaption,
+.ck.ck-editor__editable figure.table > table > caption {
 	@mixin ck-media-default-colors {
 		&.table__caption_highlighted {
 			animation: ck-table-caption-highlight .6s ease-out;

@@ -3,17 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { HtmlDataProcessor, _stringifyView, ViewDocument, ViewUpcastWriter, StylesProcessor } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
 	transformListItemLikeElementsIntoLists,
 	unwrapParagraphInListItem
 } from '../../src/filters/list.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters', () => {
 	testUtils.createSinonSandbox();
