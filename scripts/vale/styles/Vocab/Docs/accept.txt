@@ -67,6 +67,7 @@ Iframely
 inlined
 ipsum
 Ivanov
+jQuery
 JSDoc
 Junon
 Kazemier

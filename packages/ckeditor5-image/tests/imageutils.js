@@ -4,14 +4,10 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils.js';
+import { ViewDowncastWriter, ViewDocument, ModelElement, StylesProcessor, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { ImageBlockEditing } from '../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../src/image/imageinlineediting.js';

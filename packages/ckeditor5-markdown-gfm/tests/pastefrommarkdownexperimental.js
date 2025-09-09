@@ -4,14 +4,12 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 import { PasteFromMarkdownExperimental } from '../src/pastefrommarkdownexperimental.js';
 
 describe( 'PasteFromMarkdownExperimental', () => {

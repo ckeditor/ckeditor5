@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Editor } from '@ckeditor/ckeditor5-core';
+import { Model, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { LegacyIndentCommand } from '../../src/legacylist/legacyindentcommand.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'LegacyIndentCommand', () => {
 	let editor, model, doc, root;

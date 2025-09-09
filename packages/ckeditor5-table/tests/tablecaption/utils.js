@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { EditingView, ViewElement, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
 import { TableEditing } from '../../src/tableediting.js';

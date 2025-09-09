@@ -10,7 +10,7 @@ import { HighlightUI } from '../src/highlightui.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
+import { _clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils';
 import { ListSeparatorView, MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HighlightUI', () => {
@@ -42,7 +42,7 @@ describe( 'HighlightUI', () => {
 	} );
 
 	after( () => {
-		clearTranslations();
+		_clearTranslations();
 	} );
 
 	beforeEach( () => {

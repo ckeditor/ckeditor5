@@ -3,25 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Image } from '../../src/image.js';
-import { FileDialogButtonView } from '@ckeditor/ckeditor5-ui/src/button/filedialogbuttonview.js';
-import { FileRepository } from '@ckeditor/ckeditor5-upload/src/filerepository.js';
+import {
+	FileDialogButtonView,
+	Notification,
+	ButtonView,
+	UIModel,
+	MenuBarMenuListItemButtonView,
+	MenuBarMenuListItemFileDialogButtonView
+} from '@ckeditor/ckeditor5-ui';
+import { FileRepository } from '@ckeditor/ckeditor5-upload';
 import { ImageUploadUI } from '../../src/imageupload/imageuploadui.js';
 import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Notification } from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { UIModel } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository, button;

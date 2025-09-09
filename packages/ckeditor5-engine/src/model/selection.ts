@@ -710,6 +710,29 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 	}
 
 	/**
+	 * Converts `Selection` to plain object and returns it.
+	 *
+	 * @returns `Selection` converted to plain object.
+	 */
+	public toJSON(): unknown {
+		const json: any = {
+			ranges: Array.from( this.getRanges() ).map( range => range.toJSON() )
+		};
+
+		const attributes = Object.fromEntries( this.getAttributes() );
+
+		if ( Object.keys( attributes ).length ) {
+			json.attributes = attributes;
+		}
+
+		if ( this.isBackward ) {
+			json.isBackward = true;
+		}
+
+		return json;
+	}
+
+	/**
 	 * Adds given range to internal {@link #_ranges ranges array}. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 */

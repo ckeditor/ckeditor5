@@ -7,19 +7,16 @@ import { MultiRootEditor } from '../src/multirooteditor.js';
 import { MultiRootEditorUI } from '../src/multirooteditorui.js';
 import { MultiRootEditorUIView } from '../src/multirooteditoruiview.js';
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
 
-import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
-import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
-import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Context, Plugin } from '@ckeditor/ckeditor5-core';
+import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

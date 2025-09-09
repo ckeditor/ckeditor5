@@ -3,12 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import { ViewPosition } from '@ckeditor/ckeditor5-engine/src/view/position.js';
-import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import {
+	_setModelData,
+	Mapper,
+	Model,
+	ModelElement,
+	ModelText,
+	ViewDocument,
+	ViewDowncastWriter,
+	ViewEditableElement,
+	ViewElement,
+	ViewPosition,
+	ViewText,
+	ViewUIElement
+} from '@ckeditor/ckeditor5-engine';
 import {
 	toWidget,
 	isWidget,
@@ -22,13 +30,7 @@ import {
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
-import { ViewUIElement } from '@ckeditor/ckeditor5-engine/src/view/uielement.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Mapper } from '@ckeditor/ckeditor5-engine/src/conversion/mapper.js';
-import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -235,6 +237,21 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper tabindex', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
+		it( 'should not add tabindex if editable is readonly', () => {
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+		} );
+
+		it( 'should toggle tabindex attribute after isReadOnly change', () => {
+			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+
+			element.isReadOnly = true;
+			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+
+			element.isReadOnly = false;
 			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 

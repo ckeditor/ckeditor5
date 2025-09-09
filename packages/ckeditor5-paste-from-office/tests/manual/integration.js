@@ -3,29 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
-import { ListProperties } from '@ckeditor/ckeditor5-list/src/listproperties.js';
-import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import { TableColumnResize } from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
-import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ListProperties } from '@ckeditor/ckeditor5-list';
+import { Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { Table, TableToolbar, TableProperties, TableCellProperties, TableColumnResize } from '@ckeditor/ckeditor5-table';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { ImageUpload } from '@ckeditor/ckeditor5-image';
+import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import { PasteFromOffice } from '../../src/pastefromoffice.js';
 
-import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

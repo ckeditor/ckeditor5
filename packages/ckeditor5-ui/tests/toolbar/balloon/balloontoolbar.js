@@ -10,24 +10,15 @@ import { ContextualBalloon } from '../../../src/panel/balloon/contextualballoon.
 import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js';
 import { ToolbarView } from '../../../src/toolbar/toolbarview.js';
 import { ButtonView } from '../../../src/button/buttonview.js';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { FocusTracker, global, ResizeObserver, env, Rect, toUnit } from '@ckeditor/ckeditor5-utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import { toUnit } from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
+import { _setModelData, _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 const toPx = toUnit( 'px' );
 
