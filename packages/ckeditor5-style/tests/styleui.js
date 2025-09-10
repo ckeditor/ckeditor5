@@ -6,10 +6,10 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { DropdownView } from '@ckeditor/ckeditor5-ui';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import { Style } from '../src/style.js';
 import { StyleUI } from '../src/styleui.js';

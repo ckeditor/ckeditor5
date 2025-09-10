@@ -56,7 +56,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable.
+Import the selected {@link getting-started/setup/editor-types editor type} and plugins. Pass the imported plugins inside the configuration to the {@link module:editor-classic/classiceditor~ClassicEditor#create `create()`} method and add toolbar items where applicable.
 
 The first argument in the `create()` function is a DOM element for the editor placement, so you need to add it to your HTML page.
 
@@ -67,6 +67,10 @@ The first argument in the `create()` function is a DOM element for the editor pl
 ```
 
 That is all the code you need to see a bare-bone editor running in your web browser.
+
+<info-box important>
+	The multi-root editor requires a {@link getting-started/setup/editor-types#multi-root-editor more advanced configuration} of the roots.
+</info-box>
 
 ## Installing CKEditor&nbsp;5 from a ZIP file
 

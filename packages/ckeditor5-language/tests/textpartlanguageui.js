@@ -4,14 +4,13 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { DropdownView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TextPartLanguageEditing } from '../src/textpartlanguageediting.js';
 import { TextPartLanguageUI } from '../src/textpartlanguageui.js';
-import { MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'TextPartLanguageUI', () => {
 	let editor, editorElement, command;

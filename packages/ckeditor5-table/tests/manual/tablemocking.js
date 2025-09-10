@@ -5,8 +5,8 @@
 
 import { createTableAsciiArt, modelTable, prepareModelTableInput, prettyFormatModelTableInput } from '../_utils/utils.js';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { diffString } from 'json-diff';
 import { debounce } from 'es-toolkit/compat';

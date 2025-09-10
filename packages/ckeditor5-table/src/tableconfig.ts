@@ -221,6 +221,17 @@ export interface TableConfig {
 	 * ```
 	 */
 	tableLayout?: TableLayoutConfig;
+
+	/**
+	 * Configuration of the table caption feature.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCaption: ... // Table caption feature config.
+	 * };
+	 * ```
+	 */
+	tableCaption?: TableCaptionConfig;
 }
 
 /**
@@ -410,6 +421,52 @@ export interface TableLayoutConfig {
 	 * ```
 	 */
 	preferredExternalTableType: TableType;
+}
+
+/**
+ * The configuration of the table caption feature.
+ */
+export interface TableCaptionConfig {
+
+	/**
+	 * Sets the preferred HTML structure for table captions.
+	 *
+	 * When this option is `false` (the default) the structure is like this:
+	 *
+	 * ```html
+	 * <figure class="table">
+	 * 	<table>
+	 * 		<tbody> ... </tbody>
+	 * 	</table>
+	 * 	<figcaption> ... </figcaption>
+	 * </figure>
+	 * ```
+	 *
+	 * When this option is `true` the structure is like this:
+	 *
+	 * ```html
+	 * <figure class="table">
+	 * 	<table>
+	 * 		<tbody> ... </tbody>
+	 * 		<caption> ... </caption>
+	 * 	</table>
+	 * </figure>
+	 * ```
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		table: {
+	 * 			tableCaption: {
+	 * 				useCaptionElement: true
+	 * 			}
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	useCaptionElement?: boolean;
 }
 
 /**

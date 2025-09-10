@@ -9,7 +9,7 @@ import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
-import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'Node', () => {

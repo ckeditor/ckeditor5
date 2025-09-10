@@ -3,12 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import {
+	HtmlDataProcessor,
+	ViewUpcastWriter,
+	ViewDocument,
+	StylesProcessor,
+	addBorderStylesRules,
+	addPaddingStylesRules
+} from '@ckeditor/ckeditor5-engine';
 import { transformTables } from '../../src/filters/table.js';
-import { ViewUpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { addBorderStylesRules, addPaddingStylesRules } from '@ckeditor/ckeditor5-engine';
 
 describe( 'PasteFromOffice - filters - transformTables', () => {
 	let writer, viewDocument, htmlDataProcessor;

@@ -4,14 +4,14 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ListEditing } from '../../src/list/listediting.js';
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { stubUid } from './_utils/uid.js';
 import { modelList } from './_utils/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ListIndentCommand (multiBlock=false)', () => {
 	let editor, model, root;

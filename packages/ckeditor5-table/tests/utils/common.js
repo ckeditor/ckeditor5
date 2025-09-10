@@ -4,14 +4,13 @@
  */
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { _setModelData, ModelSelection } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
 
 import { getSelectionAffectedTable, isHeadingColumnCell } from '../../src/utils/common.js';
-import { ModelSelection } from '@ckeditor/ckeditor5-engine/src/model/selection.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot, tableUtils;

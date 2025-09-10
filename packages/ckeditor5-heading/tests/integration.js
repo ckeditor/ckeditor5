@@ -4,15 +4,14 @@
  */
 
 import { Heading } from '../src/heading.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { Undo } from '@ckeditor/ckeditor5-undo';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Heading integration', () => {
 	let editor, model, doc, element;

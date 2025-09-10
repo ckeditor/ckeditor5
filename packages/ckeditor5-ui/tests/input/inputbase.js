@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils';
 import { InputBase } from '../../src/input/inputbase.js';
 import { InputView } from '../../src/input/inputview.js';
 
