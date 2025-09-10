@@ -1043,16 +1043,7 @@ describe( 'DialogView', () => {
 
 			sinon.assert.calledOnce( positionFunctionSpy );
 
-			const [ domRootRect, dialogRect ] = positionFunctionSpy.firstCall.args;
-
-			expect( domRootRect ).to.deep.equal( {
-				width: 200,
-				height: 200,
-				left: 10,
-				right: 210,
-				top: 10,
-				bottom: 210
-			} );
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
 
 			expect( dialogRect ).to.deep.equal( {
 				width: 100,
@@ -1061,6 +1052,15 @@ describe( 'DialogView', () => {
 				right: 100,
 				top: 0,
 				bottom: 50
+			} );
+
+			expect( domRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
 			} );
 
 			sinon.assert.calledOnceWithExactly( moveToSpy, 123, 456 );
@@ -1078,9 +1078,7 @@ describe( 'DialogView', () => {
 
 			sinon.assert.calledOnce( positionFunctionSpy );
 
-			const [ domRootRect, dialogRect ] = positionFunctionSpy.firstCall.args;
-
-			expect( domRootRect ).to.be.undefined;
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
 
 			expect( dialogRect ).to.deep.equal( {
 				width: 100,
@@ -1090,6 +1088,8 @@ describe( 'DialogView', () => {
 				top: 0,
 				bottom: 50
 			} );
+
+			expect( domRootRect ).to.be.undefined;
 
 			sinon.assert.calledOnceWithExactly( moveToSpy, 789, 101 );
 		} );
