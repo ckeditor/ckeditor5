@@ -4,13 +4,15 @@ title: Content minimap
 menu-title: Content minimap
 meta-title: Content minimap | CKEditor 5 Documentation
 meta-description: Add a minimap to CKEditor 5 for quick document navigation, enhancing the editing experience with a compact overview of content structure.
+contributeUrl: false
 modified_at: 2021-07-12
-badges: [ premium ]
 ---
 
 The content minimap feature shows a miniature overview of your content. It helps you navigate a document that is too long to fit on the screen.
 
-{@snippet getting-started/unlock-feature}
+<info-box warning>
+	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments, and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
+</info-box>
 
 ## Demo
 

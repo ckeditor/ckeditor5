@@ -27,9 +27,7 @@ The following features are available in the compliant open-source projects, but 
 * Image Resize
 * Simple Upload Adapter
 * Base64 adapter
-* HTML comment element
 * HTML embed
-* Minimap
 * Restricted editing
 * Paste From Office
 * Word count
