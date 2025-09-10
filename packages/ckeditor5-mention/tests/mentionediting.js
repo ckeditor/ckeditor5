@@ -5,10 +5,9 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _stringifyView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { _getModelData, _stringifyView, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { MentionEditing, _toMentionAttribute } from '../src/mentionediting.js';
 import { MentionCommand } from '../src/mentioncommand.js';

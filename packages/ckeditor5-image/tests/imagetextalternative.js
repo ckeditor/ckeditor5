@@ -8,7 +8,7 @@ import { Image } from '../src/image.js';
 import { ImageTextAlternative } from '../src/imagetextalternative.js';
 import { ImageTextAlternativeEditing } from '../src/imagetextalternative/imagetextalternativeediting.js';
 import { ImageTextAlternativeUI } from '../src/imagetextalternative/imagetextalternativeui.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ImageTextAlternative', () => {
 	let editor, plugin, editorElement;

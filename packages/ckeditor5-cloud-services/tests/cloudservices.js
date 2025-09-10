@@ -5,10 +5,10 @@
 
 import { CloudServices } from '../src/cloudservices.js';
 import { CloudServicesCore } from '../src/cloudservicescore.js';
-import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
+import { Context } from '@ckeditor/ckeditor5-core';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { TokenMock } from './_utils/tokenmock.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // CloudServices requires the `CloudServicesCore` plugin as a hard-requirement.
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin

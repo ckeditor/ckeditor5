@@ -9,6 +9,7 @@ import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewRootEditableElement, ViewText } from '../../src/index.js';
 
 describe( 'ViewEditableElement', () => {
 	describe( 'is', () => {
@@ -164,6 +165,37 @@ describe( 'ViewEditableElement', () => {
 			const newElement = element._clone();
 
 			expect( newElement.document ).to.equal( docMock );
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path, child nodes, and additional flags', () => {
+			const document = new ViewDocument( new StylesProcessor() );
+			const text = new ViewText( document, 'foo' );
+			const editable = new ViewEditableElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			editable._appendChild( text );
+			root._appendChild( editable );
+
+			const json = JSON.stringify( editable );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'p',
+				path: [ 0 ],
+				root: 'main',
+				type: 'EditableElement',
+				isFocused: false,
+				isReadOnly: false,
+				children: [
+					{
+						data: 'foo',
+						path: [ 0, 0 ],
+						root: 'main',
+						type: 'Text'
+					}
+				]
+			} );
 		} );
 	} );
 } );

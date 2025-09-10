@@ -24,9 +24,8 @@ import { _parseView, _stringifyView, _setViewData, _getViewData } from '../../sr
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement, env } from '@ckeditor/ckeditor5-utils';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

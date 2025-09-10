@@ -4,8 +4,8 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { HeadingElementSupport } from '../../src/integrations/heading.js';
