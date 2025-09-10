@@ -10,6 +10,7 @@ import { ViewText } from '../../src/view/text.js';
 import { ViewTextProxy } from '../../src/view/textproxy.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewContainerElement } from '../../src/index.js';
 
 describe( 'DocumentFragment', () => {
 	let document;
@@ -376,5 +377,44 @@ describe( 'DocumentFragment', () => {
 		const fragment = new ViewDocumentFragment( document );
 
 		expect( fragment.name ).to.be.undefined;
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide array of child nodes', () => {
+			const fragment = new ViewDocumentFragment( document, [
+				new ViewContainerElement( document, 'p', null, new ViewText( document, 'foo' ) ),
+				new ViewContainerElement( document, 'h2', null, new ViewText( document, 'bar' ) )
+			] );
+
+			const json = JSON.stringify( fragment );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( [
+				{
+					name: 'p',
+					path: [ 0 ],
+					type: 'ContainerElement',
+					children: [
+						{
+							data: 'foo',
+							path: [ 0, 0 ],
+							type: 'Text'
+						}
+					]
+				},
+				{
+					name: 'h2',
+					path: [ 1 ],
+					type: 'ContainerElement',
+					children: [
+						{
+							data: 'bar',
+							path: [ 1, 0 ],
+							type: 'Text'
+						}
+					]
+				}
+			] );
+		} );
 	} );
 } );

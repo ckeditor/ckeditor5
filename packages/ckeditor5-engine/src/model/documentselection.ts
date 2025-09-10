@@ -365,6 +365,15 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	}
 
 	/**
+	 * Converts `DocumentSelection` to plain object and returns it.
+	 *
+	 * @returns `DocumentSelection` converted to plain object.
+	 */
+	public toJSON(): unknown {
+		return this._selection.toJSON();
+	}
+
+	/**
 	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelectionFocus} method.
 	 *
@@ -827,6 +836,21 @@ class LiveSelection extends ModelSelection {
 		if ( liveRange ) {
 			this._ranges.push( liveRange );
 		}
+	}
+
+	/**
+	 * Converts `LiveSelection` to plain object and returns it.
+	 *
+	 * @returns `LiveSelection` converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		if ( this.markers.length ) {
+			json.markers = this.markers.map( marker => marker.toJSON() );
+		}
+
+		return json;
 	}
 
 	private _validateSelectionRanges( ranges: Iterable<ModelRange> ) {

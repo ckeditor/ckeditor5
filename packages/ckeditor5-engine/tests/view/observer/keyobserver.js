@@ -5,7 +5,7 @@
 
 import { KeyObserver } from '../../../src/view/observer/keyobserver.js';
 import { EditingView } from '../../../src/view/view.js';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { getCode } from '@ckeditor/ckeditor5-utils';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'KeyObserver', () => {

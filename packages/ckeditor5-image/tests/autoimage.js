@@ -4,16 +4,14 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
-import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { Typing } from '@ckeditor/ckeditor5-typing';
+import { Undo } from '@ckeditor/ckeditor5-undo';
+import { global } from '@ckeditor/ckeditor5-utils';
+import { ViewDocumentDomEventData, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { Image } from '../src/image.js';
 import { ImageUtils } from '../src/imageutils.js';

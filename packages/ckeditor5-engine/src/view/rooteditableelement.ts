@@ -50,6 +50,15 @@ export class ViewRootEditableElement extends ViewEditableElement {
 	}
 
 	/**
+	 * Converts `ViewRootEditableElement` instance to string and returns it.
+	 *
+	 * @returns `ViewRootEditableElement` instance converted to string.
+	 */
+	public override toJSON(): unknown {
+		return this.rootName;
+	}
+
+	/**
 	 * Overrides old element name and sets new one.
 	 * This is needed because view roots are created before they are attached to the DOM.
 	 * The name of the root element is temporary at this stage. It has to be changed when the

@@ -3,25 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import { FontSize } from '@ckeditor/ckeditor5-font/src/fontsize.js';
-import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
-import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
+import { ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
+import { IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen/src/fullscreen.js';
-import { ImageResize } from '@ckeditor/ckeditor5-image/src/imageresize.js';
-import { TableProperties } from '@ckeditor/ckeditor5-table/src/tableproperties.js';
-import { TableCellProperties } from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
-import { Subscript } from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
-import { Superscript } from '@ckeditor/ckeditor5-basic-styles/src/superscript.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { Fullscreen } from '@ckeditor/ckeditor5-fullscreen';
+import { TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
+import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 
 import { Minimap } from '../../src/minimap.js';
 import { shortData, mediumData, longData } from '../fixtures.js';

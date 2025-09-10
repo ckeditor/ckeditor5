@@ -11,16 +11,16 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	ModelLiveRange,
-	MouseObserver,
+	PointerObserver,
 	type ViewDataTransfer,
 	type ModelElement,
 	type Model,
 	type ModelRange,
 	type ModelPosition,
-	type ViewDocumentMouseDownEvent,
-	type ViewDocumentMouseUpEvent,
 	type ViewElement,
-	type ViewDocumentDomEventData
+	type ViewDocumentDomEventData,
+	type ViewDocumentPointerDownEvent,
+	type ViewDocumentPointerUpEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -220,7 +220,7 @@ export class DragDrop extends Plugin {
 		this._draggableElement = null;
 
 		view.addObserver( ClipboardObserver );
-		view.addObserver( MouseObserver );
+		view.addObserver( PointerObserver );
 
 		this._setupDragging();
 		this._setupContentInsertionIntegration();
@@ -482,7 +482,7 @@ export class DragDrop extends Plugin {
 
 		// Add the 'draggable' attribute to the widget while pressing the selection handle.
 		// This is required for widgets to be draggable. In Chrome it will enable dragging text nodes.
-		this.listenTo<ViewDocumentMouseDownEvent>( viewDocument, 'mousedown', ( evt, data ) => {
+		this.listenTo<ViewDocumentPointerDownEvent>( viewDocument, 'pointerdown', ( evt, data ) => {
 			// The lack of data can be caused by editor tests firing fake mouse events. This should not occur
 			// in real-life scenarios but this greatly simplifies editor tests that would otherwise fail a lot.
 			if ( env.isAndroid || !data ) {
@@ -521,7 +521,7 @@ export class DragDrop extends Plugin {
 		} );
 
 		// Remove the draggable attribute in case no dragging started (only mousedown + mouseup).
-		this.listenTo<ViewDocumentMouseUpEvent>( viewDocument, 'mouseup', () => {
+		this.listenTo<ViewDocumentPointerUpEvent>( viewDocument, 'pointerup', () => {
 			if ( !env.isAndroid ) {
 				this._clearDraggableAttributesDelayed();
 			}
@@ -683,26 +683,38 @@ export class DragDrop extends Plugin {
 			this._previewContainer.removeChild( this._previewContainer.firstElementChild );
 		}
 
-		const domRect = new Rect( domEditable );
-
-		// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
-		if ( domEditable.contains( domTarget ) ) {
-			return;
-		}
-
-		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
 		const preview = createElement( global.document, 'div' );
 
-		preview.className = 'ck ck-content';
-		preview.style.width = computedStyle.width;
-		preview.style.paddingLeft = `${ domRect.left - clientX + domEditablePaddingLeft }px`;
+		preview.className = 'ck ck-content ck-clipboard-preview';
 
-		/**
-		 * Set white background in drag and drop preview if iOS.
-		 * Check: https://github.com/ckeditor/ckeditor5/issues/15085
-		 */
-		if ( env.isiOS ) {
-			preview.style.backgroundColor = 'white';
+		const domRect = new Rect( domEditable );
+		const domEditablePaddingLeft = parseFloat( computedStyle.paddingLeft );
+		const domEditablePaddingRight = parseFloat( computedStyle.paddingRight );
+		const editableWidth = parseFloat( computedStyle.width ) - domEditablePaddingLeft - domEditablePaddingRight;
+
+		// Dragging by the drag handle outside editable element.
+		if ( !domEditable.contains( domTarget ) ) {
+			if ( !env.isiOS ) {
+				const offsetLeft = domRect.left - clientX + domEditablePaddingLeft;
+
+				preview.style.width = `${ editableWidth + offsetLeft }px`;
+				preview.style.paddingLeft = `${ offsetLeft }px`;
+			} else {
+				// Without a padding as on iOS preview have a background and padding would be visible.
+				preview.style.width = `${ editableWidth }px`;
+				preview.style.backgroundColor = 'var(--ck-color-base-background)';
+			}
+		} else if ( env.isiOS ) {
+			// Custom preview for iOS. Note that it must have some dimensions for iOS to start dragging element.
+			preview.style.maxWidth = `${ editableWidth }px`;
+			preview.style.padding = '10px';
+			preview.style.minWidth = '200px';
+			preview.style.minHeight = '20px';
+			preview.style.boxSizing = 'border-box';
+			preview.style.backgroundColor = 'var(--ck-color-base-background)';
+		} else {
+			// If domTarget is inside the editable root, browsers will display the preview correctly by themselves.
+			return;
 		}
 
 		view.domConverter.setContentOf( preview, dataTransfer.getData( 'text/html' ) );

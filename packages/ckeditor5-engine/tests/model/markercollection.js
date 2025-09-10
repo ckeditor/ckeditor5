@@ -489,4 +489,126 @@ describe( 'Marker', () => {
 			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should return JSON (affectsData=false, usingOperations=false)', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const marker = model.markers._set( 'foo', range );
+
+			const json = JSON.stringify( marker );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'foo',
+				affectsData: false,
+				usingOperations: false,
+				range: {
+					start: {
+						path: [ 1 ],
+						root: 'main',
+						stickiness: 'toNext'
+					},
+					end: {
+						path: [ 2 ],
+						root: 'main',
+						stickiness: 'toPrevious'
+					}
+				}
+			} );
+		} );
+
+		it( 'should return JSON (affectsData=true, usingOperations=false)', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const marker = model.markers._set( 'foo', range, false, true );
+
+			const json = JSON.stringify( marker );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'foo',
+				affectsData: true,
+				usingOperations: false,
+				range: {
+					start: {
+						path: [ 1 ],
+						root: 'main',
+						stickiness: 'toNext'
+					},
+					end: {
+						path: [ 2 ],
+						root: 'main',
+						stickiness: 'toPrevious'
+					}
+				}
+			} );
+		} );
+
+		it( 'should return JSON (affectsData=true, usingOperations=true)', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const marker = model.markers._set( 'foo', range, true, true );
+
+			const json = JSON.stringify( marker );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'foo',
+				affectsData: true,
+				usingOperations: true,
+				range: {
+					start: {
+						path: [ 1 ],
+						root: 'main',
+						stickiness: 'toNext'
+					},
+					end: {
+						path: [ 2 ],
+						root: 'main',
+						stickiness: 'toPrevious'
+					}
+				}
+			} );
+		} );
+
+		it( 'should return JSON (affectsData=false, usingOperations=true)', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const marker = model.markers._set( 'foo', range, true, false );
+
+			const json = JSON.stringify( marker );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'foo',
+				affectsData: false,
+				usingOperations: true,
+				range: {
+					start: {
+						path: [ 1 ],
+						root: 'main',
+						stickiness: 'toNext'
+					},
+					end: {
+						path: [ 2 ],
+						root: 'main',
+						stickiness: 'toPrevious'
+					}
+				}
+			} );
+		} );
+
+		it( 'should return JSON for destroyed marker', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
+			const marker = model.markers._set( 'foo', range );
+
+			model.markers._remove( 'foo' );
+
+			const json = JSON.stringify( marker );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'foo',
+				affectsData: false,
+				usingOperations: false
+			} );
+		} );
+	} );
 } );

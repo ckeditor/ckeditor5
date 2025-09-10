@@ -4,15 +4,15 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
+import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { LinkImage } from '../src/linkimage.js';
 import { LinkImageUI } from '../src/linkimageui.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { Image } from '@ckeditor/ckeditor5-image';
 
 describe( 'LinkImageUI', () => {
 	let editor, viewDocument, editorElement;

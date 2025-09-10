@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 import { Mapper } from '../../src/conversion/mapper.js';

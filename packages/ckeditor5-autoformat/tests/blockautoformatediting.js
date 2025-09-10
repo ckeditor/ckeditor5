@@ -5,12 +5,12 @@
 
 import { Autoformat } from '../src/autoformat.js';
 import { blockAutoformatEditing } from '../src/blockautoformatediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 
 describe( 'blockAutoformatEditing', () => {
 	let editor, model, doc, plugin;

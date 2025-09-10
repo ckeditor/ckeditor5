@@ -15,8 +15,7 @@ import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'GeneralHtmlSupport', () => {

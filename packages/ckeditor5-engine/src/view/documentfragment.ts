@@ -126,6 +126,22 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( ViewType
 	}
 
 	/**
+	 * Converts `ViewDocumentFragment` instance to plain object and returns it.
+	 * Takes care of converting all of this document fragment's children.
+	 *
+	 * @returns `ViewDocumentFragment` instance converted to plain object.
+	 */
+	public toJSON(): unknown {
+		const json = [];
+
+		for ( const node of this._children ) {
+			json.push( node.toJSON() );
+		}
+
+		return json;
+	}
+
+	/**
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment#_insertChild Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *

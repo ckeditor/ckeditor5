@@ -16,7 +16,6 @@ import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 const rootPkgJson = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
 const GLOB_PATTERNS = [
-	'package.json',
 	'packages/*/package.json',
 	'external/ckeditor5-commercial/packages/*/package.json'
 ];
@@ -35,7 +34,7 @@ await releaseTools.reassignNpmTags( {
 	version: rootPkgJson.version
 } );
 
-if ( semver.major( latestPublishedVersion ) !== semver.major( rootPkgJson.version ) ) {
+if ( semver.compare( latestPublishedVersion, rootPkgJson.version ) > 0 ) {
 	console.log( `Restoring the \`@latest\` npm tag for v${ latestPublishedVersion }.` );
 
 	await releaseTools.reassignNpmTags( {
@@ -44,5 +43,7 @@ if ( semver.major( latestPublishedVersion ) !== semver.major( rootPkgJson.versio
 		version: latestPublishedVersion
 	} );
 } else {
-	console.log( 'The latest published packages and the current release follow the same major version.' );
+	console.log(
+		'The `@latest` version is higher than the current processed release. The `@latest` npm tag is applied correctly.'
+	);
 }

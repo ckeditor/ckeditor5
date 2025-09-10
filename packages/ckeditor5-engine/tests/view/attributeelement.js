@@ -9,6 +9,7 @@ import { ViewDocument } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
+import { ViewContainerElement, ViewRootEditableElement, ViewText } from '../../src/index.js';
 
 describe( 'ViewAttributeElement', () => {
 	let document;
@@ -220,6 +221,36 @@ describe( 'ViewAttributeElement', () => {
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should provide node type, root name, path, child nodes', () => {
+			const text = new ViewText( document, 'foo' );
+			const strong = new ViewAttributeElement( document, 'strong', null, new ViewText( document, 'bar' ) );
+			const paragraph = new ViewContainerElement( document, 'p', null );
+			const root = new ViewRootEditableElement( document, 'div' );
+			paragraph._appendChild( text );
+			paragraph._appendChild( strong );
+			root._appendChild( paragraph );
+
+			const json = JSON.stringify( strong );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				name: 'strong',
+				path: [ 0, 1 ],
+				root: 'main',
+				type: 'AttributeElement',
+				children: [
+					{
+						data: 'bar',
+						path: [ 0, 1, 0 ],
+						root: 'main',
+						type: 'Text'
+					}
+				]
+			} );
 		} );
 	} );
 } );

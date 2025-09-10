@@ -5,9 +5,9 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Table } from '../src/table.js';
 import { PlainTableOutput } from '../src/plaintableoutput.js';
 import { modelTable } from './_utils/utils.js';

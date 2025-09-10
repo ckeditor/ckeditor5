@@ -5,7 +5,7 @@
 
 import { WidgetResize } from '../../../src/widgetresize.js';
 
-import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {

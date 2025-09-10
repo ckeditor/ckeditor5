@@ -5,9 +5,9 @@
 
 import { FontCommand } from '../src/fontcommand.js';
 
-import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;

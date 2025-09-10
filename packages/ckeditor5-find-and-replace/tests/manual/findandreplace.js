@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { FindAndReplace } from '../../src/findandreplace.js';
 
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { FontColor } from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { FontColor } from '@ckeditor/ckeditor5-font';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 createEditor( '#editor-dropdown', {
 	uiType: 'dropdown'

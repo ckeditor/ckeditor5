@@ -5,8 +5,8 @@
 
 import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
+import { Typing } from '@ckeditor/ckeditor5-typing';
 import { SpecialCharacters } from '../src/specialcharacters.js';
 import { SpecialCharactersMathematical } from '../src/specialcharactersmathematical.js';
 import { SpecialCharactersArrows } from '../src/specialcharactersarrows.js';

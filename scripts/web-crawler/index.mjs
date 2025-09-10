@@ -61,7 +61,7 @@ function parseArguments( args ) {
 	}
 
 	const defaultOptionsForDocs = minimist( [
-		'-u', 'http://fake.ckeditor.com:8080/ckeditor5/latest/',
+		'-u', 'https://fake.ckeditor.com:8080/ckeditor5/latest/',
 		'-e', '/ckfinder/',
 		'-e', '/api/',
 		'-e', '/assets/',
@@ -100,6 +100,7 @@ function parseArguments( args ) {
 		exclusions: options.exclusions ? toArray( options.exclusions ).filter( exclusion => exclusion.length > 0 ) : [],
 		timeout: options.timeout ? Number( options.timeout ) : DEFAULT_TIMEOUT,
 		concurrency: options.concurrency ? Number( options.concurrency ) : 1,
-		silent: options.silent
+		silent: options.silent,
+		ignoreHTTPSErrors: true
 	};
 }

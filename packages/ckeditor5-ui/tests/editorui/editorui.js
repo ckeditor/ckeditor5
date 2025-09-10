@@ -13,10 +13,8 @@ import { EvaluationBadge } from '../../src/editorui/evaluationbadge.js';
 import { AriaLiveAnnouncer } from '../../src/arialiveannouncer.js';
 import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src/index.js';
 
-import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import { FocusTracker, keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import { Editor } from '@ckeditor/ckeditor5-core';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor, ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
