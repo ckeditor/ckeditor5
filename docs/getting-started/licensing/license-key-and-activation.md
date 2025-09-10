@@ -19,6 +19,10 @@ This article explains how to obtain a commercial license for CKEditor&nbsp;5 and
 
 ## Obtaining a license
 
+### Free commercial plan
+
+CKEditor&nbsp;5 offers a [free commercial plan](https://portal.ckeditor.com/checkout?plan=free) with cloud distribution via CDN. This plan includes up to 1,000 editor loads per month and provides access to a limited set of features. It's designed for small-scale projects that need commercial licensing but don't require the full range of premium features or self-hosted deployment.
+
 ### Purchasing a commercial license
 
 If you wish to purchase a commercial CKEditor&nbsp;5 license there are two options to do that.
