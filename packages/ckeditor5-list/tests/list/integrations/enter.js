@@ -5,23 +5,22 @@
 
 import { ListEditing } from '../../../src/list/listediting.js';
 
-import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	_getModelData,
-	_setModelData
-} from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
+	_setModelData,
+	ViewDocumentDomEventData } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';

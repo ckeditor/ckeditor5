@@ -149,6 +149,19 @@ export class ViewAttributeElement extends ViewElement {
 	}
 
 	/**
+	 * Converts `ViewAttributeElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewAttributeElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'AttributeElement';
+
+		return json;
+	}
+
+	/**
 	 * Clones provided element with priority.
 	 *
 	 * @internal

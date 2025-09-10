@@ -7,16 +7,13 @@ import { ClassicEditor } from '../src/classiceditor.js';
 import { ClassicEditorUI } from '../src/classiceditorui.js';
 import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 
-import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { HtmlDataProcessor, ModelRootElement } from '@ckeditor/ckeditor5-engine';
 
-import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
-import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
-import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Context, Plugin } from '@ckeditor/ckeditor5-core';
+import { EditorWatchdog, ContextWatchdog } from '@ckeditor/ckeditor5-watchdog';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 

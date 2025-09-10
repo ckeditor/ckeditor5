@@ -4,15 +4,14 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
-import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link';
 
-import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
 import { ImageInlineEditing } from '../src/image/imageinlineediting.js';

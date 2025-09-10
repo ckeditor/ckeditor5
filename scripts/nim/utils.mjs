@@ -6,17 +6,18 @@
 import upath from 'upath';
 import fs from 'fs-extra';
 import { build } from '@ckeditor/ckeditor5-dev-build-tools';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH, CKEDITOR5_INDEX } from '../constants.mjs';
 
-const tsconfig = upath.resolve( CKEDITOR5_ROOT_PATH, 'tsconfig.dist.ckeditor5.json' );
+const tsconfig = upath.resolve( CKEDITOR5_MAIN_PACKAGE_PATH, 'tsconfig.dist.json' );
 const banner = upath.resolve( CKEDITOR5_ROOT_PATH, 'scripts/nim/banner.mjs' );
 
 export function dist( path ) {
-	return upath.join( CKEDITOR5_ROOT_PATH, 'dist', path );
+	return upath.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'dist', path );
 }
 
 export function initializeCKEditor5NpmBuild( overrides = {} ) {
 	return build( {
+		input: CKEDITOR5_INDEX,
 		output: dist( 'ckeditor5.js' ),
 		tsconfig,
 		banner,
@@ -29,13 +30,14 @@ export function initializeCKEditor5NpmBuild( overrides = {} ) {
 		 * We don't want to repeat this in other steps.
 		 */
 		clean: true,
-		translations: 'packages/**/*.po',
+		translations: upath.join( CKEDITOR5_ROOT_PATH, 'packages', '**', '*.po' ),
 		...overrides
 	} );
 }
 
 export function generateCKEditor5NpmBuild( overrides = {} ) {
 	return build( {
+		input: CKEDITOR5_INDEX,
 		output: dist( 'tmp/ckeditor5.js' ),
 		tsconfig,
 		banner,
@@ -49,6 +51,7 @@ export function generateCKEditor5NpmBuild( overrides = {} ) {
 
 export function generateCKEditor5BrowserBuild( overrides = {} ) {
 	return build( {
+		input: CKEDITOR5_INDEX,
 		output: dist( 'browser/ckeditor5.js' ),
 		tsconfig,
 		banner,

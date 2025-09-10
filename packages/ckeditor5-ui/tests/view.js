@@ -7,7 +7,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { View } from '../src/view.js';
 import { Template } from '../src/template.js';
 
-import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils';
 import { ViewCollection } from '../src/viewcollection.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';

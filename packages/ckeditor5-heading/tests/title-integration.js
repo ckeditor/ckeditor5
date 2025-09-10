@@ -5,14 +5,14 @@
 
 import { Title } from '../src/title.js';
 import { Heading } from '../src/heading.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
-import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';
+import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 describe( 'Title integration with feature', () => {
 	let editor, model, doc, element;

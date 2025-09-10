@@ -6,7 +6,7 @@
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ParagraphCommand } from '../src/paragraphcommand.js';
 
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'ParagraphCommand', () => {
 	let editor, model, document, command, root, schema;

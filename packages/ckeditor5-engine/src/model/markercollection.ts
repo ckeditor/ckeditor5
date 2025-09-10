@@ -473,6 +473,20 @@ class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	}
 
 	/**
+	 * Converts `Marker` to plain object and returns it.
+	 *
+	 * @returns `Marker` converted to plain object.
+	 */
+	public toJSON(): unknown {
+		return {
+			name: this.name,
+			range: this._liveRange?.toJSON(),
+			usingOperations: this._managedUsingOperations,
+			affectsData: this._affectsData
+		};
+	}
+
+	/**
 	 * Binds new live range to the marker and detach the old one if is attached.
 	 *
 	 * @internal

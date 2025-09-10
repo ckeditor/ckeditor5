@@ -7,13 +7,14 @@
  * @module table/tablecaption/tablecaptionediting
  */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ModelElement, enableViewPlaceholder } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 
 import { injectTableCaptionPostFixer } from '../converters/table-caption-post-fixer.js';
 import { ToggleTableCaptionCommand } from './toggletablecaptioncommand.js';
 import { isTable, matchTableCaptionViewElement } from './utils.js';
+import type { TableEditing } from '../tableediting.js';
 
 /**
  * The table caption editing plugin.
@@ -25,7 +26,7 @@ export class TableCaptionEditing extends Plugin {
 	 *
 	 * To learn more about this system, see {@link #_saveCaption}.
 	 */
-	private _savedCaptionsMap: WeakMap<ModelElement, unknown>;
+	private _savedCaptionsMap = new WeakMap<ModelElement, unknown>();
 
 	/**
 	 * @inheritDoc
@@ -44,20 +45,12 @@ export class TableCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._savedCaptionsMap = new WeakMap();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const view = editor.editing.view;
 		const t = editor.t;
+		const useCaptionElement = editor.config.get( 'table.tableCaption.useCaptionElement' );
 
 		if ( !schema.isRegistered( 'caption' ) ) {
 			schema.register( 'caption', {
@@ -73,6 +66,15 @@ export class TableCaptionEditing extends Plugin {
 
 		editor.commands.add( 'toggleTableCaption', new ToggleTableCaptionCommand( this.editor ) );
 
+		if ( useCaptionElement ) {
+			const tableEditing: TableEditing = editor.plugins.get( 'TableEditing' );
+
+			tableEditing.registerAdditionalSlot( {
+				filter: element => element.is( 'element', 'caption' ),
+				positionOffset: 'end'
+			} );
+		}
+
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: matchTableCaptionViewElement,
@@ -87,7 +89,7 @@ export class TableCaptionEditing extends Plugin {
 					return null;
 				}
 
-				return writer.createContainerElement( 'figcaption' );
+				return writer.createContainerElement( useCaptionElement ? 'caption' : 'figcaption' );
 			}
 		} );
 
@@ -99,18 +101,18 @@ export class TableCaptionEditing extends Plugin {
 					return null;
 				}
 
-				const figcaptionElement = writer.createEditableElement( 'figcaption' );
-				writer.setCustomProperty( 'tableCaption', true, figcaptionElement );
+				const captionElement = writer.createEditableElement( useCaptionElement ? 'caption' : 'figcaption' );
+				writer.setCustomProperty( 'tableCaption', true, captionElement );
 
-				figcaptionElement.placeholder = t( 'Enter table caption' );
+				captionElement.placeholder = t( 'Enter table caption' );
 
 				enableViewPlaceholder( {
 					view,
-					element: figcaptionElement,
+					element: captionElement,
 					keepOnFocus: true
 				} );
 
-				return toWidgetEditable( figcaptionElement, writer );
+				return toWidgetEditable( captionElement, writer );
 			}
 		} );
 

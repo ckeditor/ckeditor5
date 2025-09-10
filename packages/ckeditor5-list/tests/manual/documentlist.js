@@ -3,38 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import { AutoImage } from '@ckeditor/ckeditor5-image/src/autoimage.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
-import { HtmlComment } from '@ckeditor/ckeditor5-html-support/src/htmlcomment.js';
-import { ImageResize } from '@ckeditor/ckeditor5-image/src/imageresize.js';
-import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import { TableCaption } from '@ckeditor/ckeditor5-table/src/tablecaption.js';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { ImageStyle } from '@ckeditor/ckeditor5-image/src/imagestyle.js';
-import { ImageToolbar } from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
-import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import { AutoImage, ImageResize, ImageUpload, Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { HtmlComment } from '@ckeditor/ckeditor5-html-support';
+import { LinkImage, Link } from '@ckeditor/ckeditor5-link';
+import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { TableCaption, Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

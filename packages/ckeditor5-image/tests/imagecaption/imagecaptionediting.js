@@ -4,17 +4,16 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ToggleImageCaptionCommand } from '../../src/imagecaption/toggleimagecaptioncommand.js';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ImageCaptionEditing', () => {
@@ -705,7 +704,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src="img.png"></img>' +
 					'<figcaption aria-label="Caption for the image" ' +
 						'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
-						'contenteditable="false" data-placeholder="Enter image caption" role="textbox" tabindex="-1"></figcaption>' +
+						'contenteditable="false" data-placeholder="Enter image caption" role="textbox"></figcaption>' +
 				'</figure>]'
 			);
 		} );

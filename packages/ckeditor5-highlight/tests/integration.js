@@ -4,17 +4,16 @@
  */
 
 import { Highlight } from '../src/highlight.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
-import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
-import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import { List } from '@ckeditor/ckeditor5-list/src/list.js';
-import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
-import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
+import { List } from '@ckeditor/ckeditor5-list';
+import { Enter } from '@ckeditor/ckeditor5-enter';
+import { Delete } from '@ckeditor/ckeditor5-typing';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Highlight', () => {
 	let editor, model, element;

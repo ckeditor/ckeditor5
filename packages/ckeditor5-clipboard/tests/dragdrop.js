@@ -12,20 +12,17 @@ import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
-import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository.js';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Widget, WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Table } from '@ckeditor/ckeditor5-table';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
-import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
-import { Rect } from '@ckeditor/ckeditor5-utils';
+import { env, Rect } from '@ckeditor/ckeditor5-utils';
 
-import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { _getViewData, _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData, _getViewData, _stringifyView } from '@ckeditor/ckeditor5-engine';
 
 import { CustomTitle } from './utils/customtitleplugin.js';
 
@@ -539,10 +536,12 @@ describe( 'Drag and Drop', () => {
 			const eventData = {
 				domTarget: domNode,
 				target: viewElement,
-				domEvent: {}
+				domEvent: {
+					isPrimary: true
+				}
 			};
 
-			viewDocument.fire( 'mousedown', {
+			viewDocument.fire( 'pointerdown', {
 				...eventData
 			} );
 
@@ -782,8 +781,11 @@ describe( 'Drag and Drop', () => {
 				const eventData = prepareEventData( model.createPositionAt( root.getChild( 0 ), 3 ) );
 				eventData.domTarget = view.getDomRoot();
 				eventData.target = domConverter.mapDomToView( view.getDomRoot() );
+				eventData.domEvent = {
+					isPrimary: true
+				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -812,10 +814,13 @@ describe( 'Drag and Drop', () => {
 				const eventData = prepareEventData( model.createPositionAt( modelElement.getChild( 0 ), 3 ) );
 				eventData.target = mapper.toViewElement( modelElement );
 				eventData.domTarget = domConverter.mapViewToDom( eventData.target );
+				eventData.domEvent = {
+					isPrimary: true
+				};
 
 				expect( eventData.target.is( 'editableElement', 'td' ) ).to.be.true;
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -869,10 +874,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: selectionHandleElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -934,10 +941,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: selectionHandleElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -980,10 +989,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: widgetViewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1034,10 +1045,12 @@ describe( 'Drag and Drop', () => {
 				const viewNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 				const domNode = domConverter.findCorrespondingDomText( viewNode );
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					domTarget: domNode.parentNode,
 					target: viewNode.parent,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				} );
 
 				viewDocument.fire( 'dragstart', {
@@ -1094,10 +1107,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: viewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1150,10 +1165,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: editableDomNode,
 					target: editableElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1186,10 +1203,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: targetDomNode,
 					target: targetElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1226,10 +1245,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: viewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1394,10 +1415,12 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: viewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
@@ -1436,7 +1459,7 @@ describe( 'Drag and Drop', () => {
 				);
 			} );
 
-			it( 'should remove "draggable" attribute from widget element if mouseup before dragging start (selection handle)', () => {
+			it( 'should remove "draggable" attribute from widget element if pointerup before dragging start (selection handle)', () => {
 				_setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
 					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
@@ -1452,22 +1475,24 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: selectionHandleElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
-				viewDocument.fire( 'mouseup' );
+				viewDocument.fire( 'pointerup' );
 				clock.tick( 50 );
 
 				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
 			} );
 
-			it( 'should remove "draggable" attribute from widget element if mouseup before dragging start (widget)', () => {
+			it( 'should remove "draggable" attribute from widget element if pointerup before dragging start (widget)', () => {
 				_setModelData( model,
 					'<paragraph>[]foobar</paragraph>' +
 					'<horizontalLine></horizontalLine>'
@@ -1483,16 +1508,18 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: viewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
-				viewDocument.fire( 'mouseup' );
+				viewDocument.fire( 'pointerup' );
 				clock.tick( 50 );
 
 				expect( widgetViewElement.hasAttribute( 'draggable' ) ).to.be.false;
@@ -1531,16 +1558,18 @@ describe( 'Drag and Drop', () => {
 				const eventData = {
 					domTarget: domNode,
 					target: viewElement,
-					domEvent: {}
+					domEvent: {
+						isPrimary: true
+					}
 				};
 
-				viewDocument.fire( 'mousedown', {
+				viewDocument.fire( 'pointerdown', {
 					...eventData
 				} );
 
 				expect( editableElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
 
-				viewDocument.fire( 'mouseup' );
+				viewDocument.fire( 'pointerup' );
 				clock.tick( 50 );
 
 				expect( editableElement.hasAttribute( 'draggable' ) ).to.be.false;
@@ -1601,13 +1630,56 @@ describe( 'Drag and Drop', () => {
 					style: {
 						'padding-left': `${ domRect.left - clientX + paddingLeft }px`
 					},
-					className: 'ck ck-content',
+					className: 'ck ck-content ck-clipboard-preview',
 					firstChild: sinon.match( {
 						tagName: 'P',
 						innerHTML: 'Foo.'
 					} )
 				} ), 0, 0 );
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should show preview with custom implementation on iOS', () => {
+				const originalEnviOs = env.isiOS;
+
+				env.isiOS = true;
+				_setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				const spy = sinon.spy( dataTransfer, 'setDragImage' );
+
+				const modelElement = root.getNodeByPath( [ 0 ] );
+				const viewElement = mapper.toViewElement( modelElement );
+				const domElement = domConverter.mapViewToDom( viewElement );
+
+				viewDocument.fire( 'dragstart', {
+					dataTransfer,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					domEvent: getMockedMousePosition( domElement ),
+					domTarget: domElement
+				} );
+
+				sinon.assert.calledOnce( spy );
+
+				sinon.assert.calledWith( spy, sinon.match( {
+					style: {
+						'padding': '10px',
+						'min-width': '200px',
+						'min-height': '20px',
+						'box-sizing': 'border-box',
+						'max-width': sinon.match( /px$/ ),
+						'background-color': 'var(--ck-color-base-background)'
+					},
+					className: 'ck ck-content ck-clipboard-preview',
+					firstChild: sinon.match( {
+						tagName: 'P',
+						innerHTML: 'Foo.'
+					} )
+				} ), 0, 0 );
+
+				env.isiOS = originalEnviOs;
 			} );
 
 			it( 'should show preview with browser implementation if drag element inside the editing root', () => {
@@ -2512,7 +2584,7 @@ describe( 'Drag and Drop', () => {
 	function fireDragStart( dataTransferMock, preventDefault = () => {}, domTarget ) {
 		const eventData = prepareEventData( model.document.selection.getLastPosition(), domTarget );
 
-		viewDocument.fire( 'mousedown', {
+		viewDocument.fire( 'pointerdown', {
 			...eventData,
 			preventDefault
 		} );

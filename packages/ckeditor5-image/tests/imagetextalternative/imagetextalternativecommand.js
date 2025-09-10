@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ImageTextAlternativeCommand } from '../../src/imagetextalternative/imagetextalternativecommand.js';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { ImageTextAlternativeEditing } from '../../src/imagetextalternative/imagetextalternativeediting.js';
 
 describe( 'ImageTextAlternativeCommand', () => {

@@ -5,7 +5,7 @@
 
 import { IconView } from '../../src/icon/iconview.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 describe( 'IconView', () => {
 	let view;
