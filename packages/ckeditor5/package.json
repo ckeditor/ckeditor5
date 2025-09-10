@@ -116,8 +116,8 @@
     "@ckeditor/ckeditor5-word-count": "46.0.3"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-translations": "^51.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^51.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^52.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^52.0.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
