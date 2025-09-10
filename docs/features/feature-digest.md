@@ -47,7 +47,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='html-comments'>
-			HTML comment <ck:badge variant='premium' />
+			HTML comment
 		</ck:card-title>
 		<ck:card-description>
 			By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.
@@ -1109,7 +1109,7 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='content-minimap'>
-			Content minimap <ck:badge variant='premium' />
+			Content minimap
 		</ck:card-title>
 		<ck:card-description>
 			Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.

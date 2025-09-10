@@ -1,17 +1,20 @@
 ---
 category: features-html
 order: 30
+modified_at: 2021-10-25
 meta-title: HTML comments element | CKEditor 5 Documentation
 meta-description: Add and manage HTML comments in CKEditor 5 to include non-visible notes or instructions within your content for developers or editors.
-modified_at: 2021-10-25
-badges: [ premium ]
 ---
 
 # HTML comment element
 
 By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature lets developers keep HTML comments in the document without displaying them to the user.
 
-{@snippet getting-started/unlock-feature}
+<info-box warning>
+	The HTML comments feature is **experimental and not yet production-ready**.
+
+	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues) section below.
+</info-box>
 
 ## Demo
 
