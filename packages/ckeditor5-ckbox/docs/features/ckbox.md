@@ -28,7 +28,7 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 im
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
-To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
+To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html). You can read more about the storage options in the dedicated [CKBox Deployment](https://ckeditor.com/docs/cs/latest/onpremises/ckbox-onpremises/deployment.html) guide.
 
 ## Demo
 
