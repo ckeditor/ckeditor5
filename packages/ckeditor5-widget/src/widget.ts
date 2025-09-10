@@ -28,7 +28,8 @@ import {
 	type ViewDocumentTabEvent,
 	type ViewDocumentKeyDownEvent,
 	type ViewNode,
-	type ViewRange
+	type ViewRange,
+	type ViewTreeWalkerDirection
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -231,13 +232,12 @@ export class Widget extends Plugin {
 			}
 		}, { context: isWidget, priority: 'low' } );
 
-		// Handle Shift+Tab key while caret inside a widget editable.
+		// Handle Tab/Shift+Tab key while caret inside a widget editable.
 		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
-			if ( !data.shiftKey ) {
-				return;
-			}
-
-			if ( this._selectAncestorWidget() ) {
+			if (
+				this._selectNextNestedEditable( data.shiftKey ? 'backward' : 'forward' ) ||
+				this._selectAncestorWidget()
+			) {
 				data.preventDefault();
 				evt.stop();
 			}
@@ -591,28 +591,69 @@ export class Widget extends Plugin {
 	 * Moves the document selection into the first nested editable.
 	 */
 	private _selectFirstNestedEditable(): boolean {
-		const editor = this.editor;
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
-			if ( item.is( 'editableElement' ) ) {
-				const modelElement = editor.editing.mapper.toModelElement( item );
+		return this._selectFirstNestedEditableInRange( viewDocument.selection.getFirstRange()! );
+	}
 
-				/* istanbul ignore next -- @preserve */
-				if ( !modelElement ) {
-					continue;
-				}
+	/**
+	 * TODO
+	 */
+	private _selectNextNestedEditable( direction: ViewTreeWalkerDirection = 'forward' ): boolean {
+		const view = this.editor.editing.view;
 
-				const position = editor.model.createPositionAt( modelElement, 0 );
-				const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+		const editableElement = this._findSelectionAncestor( element => element.is( 'editableElement' ) );
 
-				editor.model.change( writer => {
-					writer.setSelection( newRange );
-				} );
+		if ( !editableElement ) {
+			return false;
+		}
 
-				return true;
+		const widgetElement = editableElement.findAncestor( isWidget );
+
+		if ( !widgetElement ) {
+			return false;
+		}
+
+		const viewRange = direction == 'forward' ?
+			view.createRange(
+				view.createPositionAfter( editableElement ),
+				view.createPositionAt( widgetElement, 'end' )
+			) :
+			view.createRange(
+				view.createPositionAt( widgetElement, 0 ),
+				view.createPositionBefore( editableElement )
+			);
+
+		return this._selectFirstNestedEditableInRange( viewRange, direction );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _selectFirstNestedEditableInRange( viewRange: ViewRange, direction: ViewTreeWalkerDirection = 'forward' ): boolean {
+		const editor = this.editor;
+
+		for ( const item of viewRange.getItems( { direction } ) ) {
+			if ( !item.is( 'editableElement' ) ) {
+				continue;
 			}
+
+			const modelElement = editor.editing.mapper.toModelElement( item );
+
+			/* istanbul ignore next -- @preserve */
+			if ( !modelElement ) {
+				continue;
+			}
+
+			const position = editor.model.createPositionAt( modelElement, 0 );
+			const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+
+			editor.model.change( writer => {
+				writer.setSelection( newRange );
+			} );
+
+			return true;
 		}
 
 		return false;
@@ -624,15 +665,7 @@ export class Widget extends Plugin {
 	private _selectAncestorWidget(): boolean {
 		const editor = this.editor;
 		const mapper = editor.editing.mapper;
-		const selection = editor.editing.view.document.selection;
-
-		const positionParent = selection.getFirstPosition()!.parent;
-
-		const positionParentElement = positionParent.is( '$text' ) ?
-			positionParent.parent as ViewElement :
-			positionParent as ViewElement;
-
-		const viewElement = positionParentElement.findAncestor( isWidget );
+		const viewElement = this._findSelectionAncestor( isWidget );
 
 		if ( !viewElement ) {
 			return false;
@@ -650,6 +683,25 @@ export class Widget extends Plugin {
 		} );
 
 		return true;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _findSelectionAncestor( pattern: ( ( element: ViewElement ) => boolean ) ): ViewElement | null {
+		const selection = this.editor.editing.view.document.selection;
+
+		const positionParent = selection.getFirstPosition()!.parent;
+
+		const positionParentElement = positionParent.is( '$text' ) ?
+			positionParent.parent as ViewElement :
+			positionParent as ViewElement;
+
+		if ( pattern( positionParentElement ) ) {
+			return positionParentElement;
+		}
+
+		return positionParentElement.findAncestor( pattern );
 	}
 }
 
