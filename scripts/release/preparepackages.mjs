@@ -142,7 +142,7 @@ const tasks = new Listr( [
 				},
 				{
 					title: 'Updating `pnpm-lock.yaml` file.',
-					task: () => tools.shExec( 'pnpm install', { async: true, verbosity: 'silent' } )
+					task: () => tools.shExec( 'pnpm install --lockfile-only', { async: true, verbosity: 'silent' } )
 				}
 			], taskOptions );
 		},
