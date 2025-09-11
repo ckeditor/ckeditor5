@@ -45,16 +45,16 @@ The commercial license unlocks many benefits:
 * No GPL restrictions
 * Self-hosted CKEditor&nbsp;5
 * Additionally paid Premium features such as:
-	* Asynchronous and Real-Time Collaboration
-	* Import from Word
-	* Export to Word
-	* Export to PDF
-	* Multi-level Lists
+	* {@link features/collaboration Asynchronous and Real-Time Collaboration}
+	* {@link features/import-word Import from Word}
+	* {@link features/export-word Export to Word}
+	* {@link features/export-pdf Export to PDF}
+	* {@link features/multi-level-lists Multi-level Lists}
 	* Advanced Productivity
 	* Advanced Page Management
-	* AI Assistant
-	* CKBox for file storage and management
-* White-labeling
+	* {@link features/ai-assistant-overview AI Assistant}
+	* {@link features/ckbox CKBox for file storage and management}
+* {@link getting-started/licensing/managing-ckeditor-logo White-labeling}
 * Technical support
 
 [Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
