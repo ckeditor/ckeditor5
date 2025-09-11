@@ -5,6 +5,7 @@
 version: 2.1
 
 orbs:
+  node: circleci/node@7.1.1
   browser-tools: circleci/browser-tools@2.1.2
 
 # List of parameters must be synchronized between configuration files.
@@ -54,9 +55,10 @@ commands:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
-      - run:
-          name: Install dependencies
-          command: yarn install
+      - node/install-pnpm:
+          version: "10"
+      - node/install-packages:
+          pkg-manager: pnpm
       - prepare_environment_variables_commands
 
   checkout_command:
@@ -107,12 +109,17 @@ jobs:
     steps:
       - checkout_command
       - halt_if_short_flow
-      - bootstrap_repository_command
       - browser-tools/install_chrome
+      - run:
+          name: Set Puppeteer environment variables
+          command: |
+            echo 'export PUPPETEER_EXECUTABLE_PATH=$(command -v google-chrome || command -v google-chrome-stable)' >> $BASH_ENV
+            echo 'export PUPPETEER_SKIP_DOWNLOAD=true' >> $BASH_ENV
+      - bootstrap_repository_command
       - install_newest_emoji
       - run:
           name: Prepare DLL builds in CKEditor 5
-          command: yarn run dll:build
+          command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
           command: bash scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
@@ -127,7 +134,7 @@ jobs:
       - run:
           when: always
           name: Validate versions of CKEditor 5 dependencies
-          command: yarn run check-dependencies:versions-match
+          command: pnpm run check-dependencies:versions-match
       - run:
           when: always
           name: Validate "ckeditor5-metadata.json" files
@@ -135,7 +142,7 @@ jobs:
       - run:
           when: always
           name: Check if all SVG files are optimized
-          command: yarn run clean-up-svg-icons --verify-only
+          command: pnpm run clean-up-svg-icons --verify-only
       - run:
           when: always
           name: Validate manual test directories
@@ -143,23 +150,23 @@ jobs:
       - run:
           when: always
           name: Execute ESLint
-          command: yarn run lint
+          command: pnpm run lint
       - run:
           when: always
           name: Execute Stylelint
-          command: yarn run stylelint
+          command: pnpm run stylelint
       - run:
           when: always
           name: Check if all CSS files from the "ckeditor5-theme-lark" are imported in "index.css" file
-          command: yarn run check-theme-lark-imports
+          command: pnpm run check-theme-lark-imports
       - run:
           when: always
           name: Check if all packages are exported in the "ckeditor5" package
-          command: yarn run check-exports
+          command: pnpm run check-exports
       - run:
           when: always
           name: Check if all package members are exported correctly from the index.ts file
-          command: yarn run validate-module-re-exports
+          command: pnpm run validate-module-re-exports
 
   cke5_coverage:
     docker:
@@ -212,7 +219,7 @@ jobs:
           name: Trigger CKEditor 5 release job
           environment:
             CKE5_GITHUB_RELEASE_BRANCH: << pipeline.git.branch >>
-          command: yarn ckeditor5-dev-ci-trigger-circle-build
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build
 
   cke5_trigger_uber_ci:
     docker:
@@ -224,7 +231,7 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Trigger the Uber CI
-          command: yarn ckeditor5-dev-ci-trigger-circle-build
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build
 
   release_prepare:
     docker:
@@ -236,13 +243,13 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Check if packages are ready to be released
-          command: npm run release:prepare-packages -- --compile-only --verbose
+          command: pnpm run release:prepare-packages --compile-only --verbose
       - run:
           name: Lint generated packages
-          command: yarn run release:lint-packages
+          command: pnpm run release:lint-packages
       - run:
           name: Check dependencies
-          command: yarn run check-dependencies
+          command: pnpm run check-dependencies
 
   notify_ci_failure:
     docker:
@@ -261,7 +268,7 @@ jobs:
             CKE5_SLACK_NOTIFY_HIDE_AUTHOR: << parameters.hideAuthor >>
             CKE5_PIPELINE_NUMBER: << pipeline.number >>
           name: Waiting for other jobs to finish and sending notification on failure
-          command: yarn ckeditor5-dev-ci-circle-workflow-notifier
+          command: pnpm ckeditor5-dev-ci-circle-workflow-notifier
           no_output_timeout: 2h
 
   stale_bot:
@@ -273,7 +280,7 @@ jobs:
       - bootstrap_repository_command
       - run:
           name: Run stale bot
-          command: yarn ckeditor5-dev-stale-bot --config-path .circleci/.stale-bot.mjs
+          command: pnpm ckeditor5-dev-stale-bot --config-path .circleci/.stale-bot.mjs
 
 workflows:
   version: 2

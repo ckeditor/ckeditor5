@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-bookmark": "46.1.0",
     "@ckeditor/ckeditor5-cloud-services": "46.1.0",
     "@ckeditor/ckeditor5-code-block": "46.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^51.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^53.1.0",
     "@ckeditor/ckeditor5-editor-balloon": "46.1.0",
     "@ckeditor/ckeditor5-editor-inline": "46.1.0",
     "@ckeditor/ckeditor5-editor-multi-root": "46.1.0",
@@ -82,7 +82,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

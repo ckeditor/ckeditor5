@@ -354,7 +354,7 @@ Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scr
 And use it with:
 
 ```bash
-yarn run build
+pnpm run build
 ```
 
 npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install `webpack-cli` globally.
