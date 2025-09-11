@@ -22,7 +22,7 @@ The following features are available for the GPL-compliant projects, but their a
 * {@link features/page-break Page break}
 * {@link features/remove-format Remove format}
 * {@link features/special-characters Special characters}
-* {@ features/layout-tables Layout tables}
+* {@link features/layout-tables Layout tables}
 * {@link features/tables-resize Column resize}
 * {@link features/images-resizing Image Resize}
 * {@link features/simple-upload-adapter Simple Upload Adapter}
