@@ -47,7 +47,7 @@
     "README.md"
   ],
   "scripts": {
-    "predll:build": "npm run build",
+    "predll:build": "pnpm run build",
     "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
@@ -116,8 +116,8 @@
     "@ckeditor/ckeditor5-word-count": "46.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-translations": "^53.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^53.0.0",
+    "@ckeditor/ckeditor5-dev-translations": "^53.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^53.1.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",

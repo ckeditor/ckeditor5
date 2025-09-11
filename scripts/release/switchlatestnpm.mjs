@@ -11,12 +11,17 @@ import semver from 'semver';
 import { globSync } from 'glob';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import {
+	CKEDITOR5_ROOT_PATH,
+	CKEDITOR5_PACKAGES_PATH,
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
+} from '../constants.mjs';
+
 const rootPkgJson = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
 const GLOB_PATTERNS = [
-	'packages/*/package.json',
-	'external/ckeditor5-commercial/packages/*/package.json'
+	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH + '/*/package.json'
 ];
 
 const npmOwner = 'ckeditor';
