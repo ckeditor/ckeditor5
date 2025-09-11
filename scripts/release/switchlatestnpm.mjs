@@ -5,7 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import upath from 'upath';
 import semver from 'semver';
@@ -29,7 +28,7 @@ const npmOwner = 'ckeditor';
 const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
 	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
-const latestPublishedVersion = execSync( 'npm view ckeditor5@latest version', { encoding: 'utf-8' } ).trim();
+const latestPublishedVersion = await releaseTools.getVersionForTag( 'ckeditor5', 'latest' );
 
 console.log( `Assigning the \`@latest\` npm tag for v${ rootPkgJson.version }.` );
 
