@@ -12,7 +12,7 @@ import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
 import { DialogView, type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { ModelDocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
-import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';
+import type { KeystrokeHandlerOptions, Rect } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
@@ -467,9 +467,13 @@ export interface DialogDefinition {
 	 * Available dialog positions. By default `DialogViewPosition.EDITOR_CENTER` is used for {@link #isModal non-modals}
 	 * and `DialogViewPosition.SCREEN_CENTER` for modals.
 	 *
+	 * If set to a function, it will be called with the DOM root Rect and the dialog Rect as arguments.
+	 * It should return the coordinates of the dialog's position.
+	 *
 	 * {@link module:ui/dialog/dialogview#DialogViewPosition Learn more} about available positions.
 	 */
-	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
+	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null |
+		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } );
 
 	/**
 	 * A callback called when the dialog shows up with a `low` priority. It allows for setting up the dialog's {@link #content}.
