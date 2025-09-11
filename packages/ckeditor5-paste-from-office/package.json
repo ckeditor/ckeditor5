@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-bookmark": "46.1.0",
     "@ckeditor/ckeditor5-cloud-services": "46.1.0",
     "@ckeditor/ckeditor5-code-block": "46.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^51.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^53.0.0",
     "@ckeditor/ckeditor5-easy-image": "46.1.0",
     "@ckeditor/ckeditor5-editor-classic": "46.1.0",
     "@ckeditor/ckeditor5-enter": "46.1.0",
