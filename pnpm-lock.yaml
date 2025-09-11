@@ -45,8 +45,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       '@ckeditor/ckeditor5-mermaid':
-        specifier: ckeditor/ckeditor5-mermaid#internal/4086-migrate-to-pnpm
-        version: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/ddcd66018c3fefa07857f02f7d29d33ea2ed43b3(ckeditor5@packages+ckeditor5)
+        specifier: ckeditor/ckeditor5-mermaid#v0.0.5
+        version: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/e0d76824e14cee8fd8b89acddbca8ddb7655d5f9(ckeditor5@packages+ckeditor5)
       '@ckeditor/ckeditor5-react':
         specifier: ^9.5.0
         version: 9.5.0(ckeditor5@packages+ckeditor5)(react@18.3.1)
@@ -5239,8 +5239,8 @@ packages:
     peerDependencies:
       ckeditor5: '>=42.0.0 || ^0.0.0-nightly'
 
-  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/ddcd66018c3fefa07857f02f7d29d33ea2ed43b3':
-    resolution: {tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/ddcd66018c3fefa07857f02f7d29d33ea2ed43b3}
+  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/e0d76824e14cee8fd8b89acddbca8ddb7655d5f9':
+    resolution: {tarball: https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/e0d76824e14cee8fd8b89acddbca8ddb7655d5f9}
     version: 0.0.4
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0'}
     peerDependencies:
@@ -14025,7 +14025,7 @@ snapshots:
     dependencies:
       ckeditor5: link:packages/ckeditor5
 
-  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/ddcd66018c3fefa07857f02f7d29d33ea2ed43b3(ckeditor5@packages+ckeditor5)':
+  '@ckeditor/ckeditor5-mermaid@https://codeload.github.com/ckeditor/ckeditor5-mermaid/tar.gz/e0d76824e14cee8fd8b89acddbca8ddb7655d5f9(ckeditor5@packages+ckeditor5)':
     dependencies:
       ckeditor5: link:packages/ckeditor5
       lodash-es: 4.17.21
