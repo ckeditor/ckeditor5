@@ -19,24 +19,24 @@ If you are running an open-source project with an OSS license incompatible with 
 
 The following features are available in the GPL compliant projects, but their availability varies in the commercial plans:
 
-* Page break
-* Remove format
-* Special characters
-* Layout tables
-* Column resize
-* Image Resize
-* Simple Upload Adapter
-* Base64 adapter
-* HTML embed
-* Restricted editing
-* Paste From Office
-* Word count
-* Find and replace
-* Bookmarks
-* Full page HTML
-* Table and cell properties
-* List properties
-* Multi-root editor
+* {@link features/page-break Page break}
+* {@link features/remove-format Remove format}
+* {@link features/special-characters Special characters}
+* {@ features/layout-tables Layout tables}
+* {@link features/tables-resize Column resize}
+* {@link features/images-resizing Image Resize}
+* {@link features/simple-upload-adapter Simple Upload Adapter}
+* {@link features/base64-upload-adapter Base64 adapter}
+* {@link features/html-embed HTML embed}
+* {@link features/restricted-editing Restricted editing}
+* {@link features/paste-from-office Paste From Office}
+* {@link features/word-count Word count}
+* {@link features/find-and-replace Find and replace}
+* {@link features/bookmarks Bookmarks}
+* {@link features/full-page-html Full page HTML}
+* {@link features/tables-styling Table and cell properties}
+* {@link features/lists-properties List properties}
+* {@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
 
 ## Commercial license
 
