@@ -32,7 +32,7 @@
     "@ckeditor/ckeditor5-theme-lark": "46.1.0",
     "es-toolkit": "1.39.5",
     "sanitize-html": "^2.13.0",
-    "typescript": "5.0.4",
+    "typescript": "5.3.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
