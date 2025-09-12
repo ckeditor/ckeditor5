@@ -4224,6 +4224,20 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '<span class="comment">foo</span>' );
 		} );
 
+		it( 'config.view is not polluted', () => {
+			const myView = { classes: 'comment' };
+
+			downcastHelpers.markerToHighlight( { model: 'comment', view: myView } );
+
+			model.change( writer => {
+				writer.insertText( 'foo', modelRoot, 0 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
+			} );
+
+			expect( myView ).to.deep.equal( { classes: 'comment' } );
+		} );
+
 		it( 'can be overwritten using converterPriority', () => {
 			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
 			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
