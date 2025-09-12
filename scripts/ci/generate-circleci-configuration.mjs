@@ -103,6 +103,12 @@ const persistToWorkspace = fileName => ( {
 		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) )
 	);
 
+	const rootConfig = yaml.load(
+		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) )
+	);
+
+	config.parameters = rootConfig.parameters;
+
 	const featureTestBatches = featurePackages.reduce( ( output, packageName, packageIndex ) => {
 		let currentBatch = FEATURE_BATCH_SIZES.findIndex( ( batchSize, batchIndex, allBatches ) => {
 			return packageIndex < allBatches.slice( 0, batchIndex + 1 ).reduce( ( a, b ) => a + b );
