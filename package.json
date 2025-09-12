@@ -74,7 +74,7 @@
     "stylelint-config-ckeditor5": "^12.1.0",
     "svgo": "^3.3.2",
     "table": "^6.8.1",
-    "typescript": "5.0.4",
+    "typescript": "5.3.3",
     "typescript-eslint": "^8.33.0",
     "umberto": "^8.0.3",
     "upath": "^2.0.0",
