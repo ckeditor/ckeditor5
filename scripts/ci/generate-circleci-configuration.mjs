@@ -52,11 +52,7 @@ const bootstrapCommands = () => ( [
 	'checkout_command',
 	'halt_if_short_flow',
 	'bootstrap_repository_command',
-	{
-		'browser-tools/install_chrome': {
-			chrome_version: options[ 'chrome-version' ]
-		}
-	}
+	'browser-tools/install_chrome'
 ] );
 
 const prepareCodeCoverageDirectories = () => ( {
@@ -233,6 +229,9 @@ const persistToWorkspace = fileName => ( {
 			} );
 	}
 
+	config.jobs = substituteChromeVersion( options[ 'chrome-version' ], config.jobs );
+	config.commands = substituteChromeVersion( options[ 'chrome-version' ], config.commands );
+
 	await fs.writeFile(
 		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
 		yaml.dump( config, { lineWidth: -1 } )
@@ -295,6 +294,32 @@ function replacePlaceholderBatchNameInArray( array, featureTestBatchNames ) {
 	}
 
 	array.splice( placeholderIndex, 1, ...featureTestBatchNames );
+}
+
+function substituteChromeVersion( version, items ) {
+	const stepChrome = 'browser-tools/install_chrome';
+
+	return Object.fromEntries(
+		Object.entries( items ).map( ( [ key, { steps, ...rest } ] ) => {
+			return [
+				key,
+				{
+					...rest,
+					steps: steps.map( step => {
+						if ( step !== stepChrome ) {
+							return step;
+						}
+
+						return {
+							'browser-tools/install_chrome': {
+								chrome_version: version
+							}
+						};
+					} )
+				}
+			];
+		} )
+	);
 }
 
 /**
