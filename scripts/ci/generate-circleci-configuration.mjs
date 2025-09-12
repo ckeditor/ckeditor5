@@ -312,7 +312,8 @@ function substituteChromeVersion( version, items ) {
 
 						return {
 							'browser-tools/install_chrome': {
-								chrome_version: version
+								chrome_version: version,
+								timeout: '5m'
 							}
 						};
 					} )
