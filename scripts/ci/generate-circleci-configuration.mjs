@@ -17,6 +17,7 @@ import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
+import { parseArgs } from 'util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
@@ -38,11 +39,24 @@ const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
 
+const { values: options } = parseArgs( {
+	options: {
+		'chrome-version': {
+			type: 'string',
+			default: 'latest'
+		}
+	}
+} );
+
 const bootstrapCommands = () => ( [
 	'checkout_command',
 	'halt_if_short_flow',
 	'bootstrap_repository_command',
-	'browser-tools/install_chrome'
+	{
+		'browser-tools/install_chrome': {
+			chrome_version: options[ 'chrome-version' ]
+		}
+	}
 ] );
 
 const prepareCodeCoverageDirectories = () => ( {
