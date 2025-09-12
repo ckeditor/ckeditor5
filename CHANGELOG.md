@@ -3,7 +3,27 @@ Changelog
 
 ## [46.1.1](https://github.com/ckeditor/ckeditor5/compare/v46.1.0...v46.1.1) (September 15, 2025)
 
-TBA.
+We are happy to announce the release of CKEditor 5 v46.1.1.
+
+### Release highlights
+
+This is an internal release focused on improving our development infrastructure and the release process. These changes have no impact on integrators but represent significant improvements to our development workflow.
+
+#### Development environment modernization
+
+We have migrated our package management from Yarn Classic to pnpm, delivering substantial benefits:
+
+* Faster installations through efficient linking mechanisms,
+* Improved dependency management with stricter resolution and better peer dependency handling,
+* Better disk efficiency by eliminating duplicate packages across projects.
+
+We have also introduced dependency locking mechanisms that provide greater stability and predictability in our build process, ensuring consistent environments across development setups and CI/CD pipelines.
+
+#### What this means for you
+
+As an integrator, you will not notice any changes in functionality or API. This release maintains full backward compatibility while laying the foundation for more efficient development cycles and faster future releases.
+
+If you fork the repository and develop using source code, you will need to update your development setup according to our [development environment guide](https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/development-environment.html).
 
 ### Released packages
 
