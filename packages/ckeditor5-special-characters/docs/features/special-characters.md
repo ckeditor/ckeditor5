@@ -3,11 +3,14 @@ category: features
 menu-title: Special characters
 meta-title: Special characters | CKEditor 5 Documentation
 meta-description: Easily insert special characters in CKEditor 5 to add symbols, accented letters, and other non-standard characters to your content.
+badges: [ premium ]
 ---
 
 # Special characters
 
-The special characters feature lets you insert **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**). The feature also supports **emojis**.
+The special characters feature lets you insert **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**).
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

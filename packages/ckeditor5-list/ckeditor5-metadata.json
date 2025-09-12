@@ -74,7 +74,7 @@
 			"name": "Legacy list properties",
 			"className": "LegacyListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
-			"docs": "features/lists/lists.html#list-styles",
+			"docs": "features/lists/lists-properties.html#list-styles",
 			"path": "src/legacylistproperties.js",
 			"requires": [
 				"LegacyList"
@@ -127,7 +127,7 @@
 			"name": "List formatting",
 			"className": "ListFormatting",
 			"description": "Enables integration with formatting plugins to style the list marker. Supports font color, font size, font family, bold, and italic formatting.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting.js",
 			"requires": [
 				"ListItemBoldIntegration",
@@ -141,7 +141,7 @@
 			"name": "List item bold integration",
 			"className": "ListItemBoldIntegration",
 			"description": "Integrates bold formatting with list items to style list markers with bold formatting when the content is consistently bold.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting/listitemboldintegration.js",
 			"requires": [
 				"ListEditing"
@@ -157,7 +157,7 @@
 			"name": "List item italic integration",
 			"className": "ListItemItalicIntegration",
 			"description": "Integrates italic formatting with list items to style list markers with italic formatting when the content is consistently italic.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting/listitemitalicintegration.js",
 			"requires": [
 				"ListEditing"
@@ -173,7 +173,7 @@
 			"name": "List item font size integration",
 			"className": "ListItemFontSizeIntegration",
 			"description": "Integrates font size formatting with list items to style list markers with specific font sizes when the content has consistent font sizing.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting/listitemfontsizeintegration.js",
 			"requires": [
 				"ListEditing"
@@ -196,7 +196,7 @@
 			"name": "List item font color integration",
 			"className": "ListItemFontColorIntegration",
 			"description": "Integrates font color formatting with list items to style list markers with specific colors when the content has consistent font coloring.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting/listitemfontcolorintegration.js",
 			"requires": [
 				"ListEditing"
@@ -213,7 +213,7 @@
 			"name": "List item font family integration",
 			"className": "ListItemFontFamilyIntegration",
 			"description": "Integrates font family formatting with list items to style list markers with specific font families when the content has consistent font family formatting.",
-			"docs": "features/lists/lists.html#list-item-marker-formatting",
+			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting/listitemfontfamilyintegration.js",
 			"requires": [
 				"ListEditing"
@@ -272,7 +272,7 @@
 			"name": "List properties",
 			"className": "ListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists created by the list plugin. You can choose various types of numerals and letters or visual markers to use with these lists. Also enables setting the start index (initial marker value) and list reversal (from ascending to descending) for numbered lists.",
-			"docs": "features/lists/lists.html#list-properties",
+			"docs": "features/lists/lists-properties.html",
 			"path": "src/listproperties.js",
 			"requires": [
 				"List"
