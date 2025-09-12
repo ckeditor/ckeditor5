@@ -75,7 +75,7 @@ This can be done by updating the `package.json` file with the latest editor vers
 Finally, you reinstall the packages and rebuild the editor. Note that sometimes it might be required to remove the `package-lock.json` or `yarn.lock` files.
 
 ```sh
-rm -rf node_modules && yarn install && yarn run build
+rm -rf node_modules && npm install && npm run build
 ```
 
 This is it! Your editor is updated and now you can focus on adjusting your custom solutions (if needed). If you use real-time collaboration, you should check the next section.

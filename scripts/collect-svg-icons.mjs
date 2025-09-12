@@ -57,7 +57,7 @@ function normalizePath( _path ) {
 
 function getDataFromPath( svgFilePath ) {
 	const normalizedPath = normalizePath( svgFilePath );
-	const repositoryName = normalizedPath.startsWith( 'external/' ) ? normalizedPath.match( /external\/([^/]+)/ )[ 1 ] : 'ckeditor5';
+	const repositoryName = 'ckeditor5';
 	const [ , packageName, iconName ] = normalizedPath.match( /packages\/([^/]+)\S+\/([^/]+)\.svg/ );
 	const originalPath = normalizePath( path.resolve( svgFilePath ) );
 	const newFilename = `${ packageName }__${ iconName }.png`;

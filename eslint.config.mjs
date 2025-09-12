@@ -29,7 +29,6 @@ export default defineConfig( [
 			'build/**',
 			'coverage/**',
 			'dist/**',
-			'external/**',
 			'packages/*/build/**',
 			'packages/*/dist/**',
 			'packages/*/src/lib/**',

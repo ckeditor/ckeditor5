@@ -5,7 +5,11 @@
 
 import fs from 'fs-extra';
 import { glob } from 'glob';
-import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
+import {
+	CKEDITOR5_ROOT_PATH,
+	CKEDITOR5_PACKAGES_PATH,
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
+} from '../../constants.mjs';
 
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.
@@ -14,8 +18,8 @@ import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
  */
 export default async function isCKEditor5PackageFactory() {
 	const allPathsToPackageJson = await glob( [
-		'packages/*/package.json',
-		'external/ckeditor5-commercial/packages/*/package.json'
+		CKEDITOR5_PACKAGES_PATH + '/*/package.json',
+		CKEDITOR5_COMMERCIAL_PACKAGES_PATH + '/*/package.json'
 	], {
 		cwd: CKEDITOR5_ROOT_PATH,
 		nodir: true,

@@ -31,23 +31,23 @@ async function buildApiDocs() {
 		sourceFiles: [
 			// CKEditor 5 sources.
 			'packages/ckeditor5-*/src/**/*.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/**/*.ts'
+			'../../packages/ckeditor5-*/src/**/*.ts'
 		],
 		ignoreFiles: [
 			// Ignore libraries or generated files.
 			'packages/ckeditor5-*/src/lib/**/*.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/lib/**/*.ts',
+			'../../packages/ckeditor5-*/src/lib/**/*.ts',
 
 			// Ignore not a direct sources.
-			'external/ckeditor5-commercial/packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
+			'../../packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
 
 			// Ignore all declarations.
 			'packages/ckeditor5-*/src/**/*.d.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/**/*.d.ts',
+			'../../packages/ckeditor5-*/src/**/*.d.ts',
 
 			// Ignore augmentation files.
 			'packages/ckeditor5-*/src/augmentation.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/augmentation.ts',
+			'../../packages/ckeditor5-*/src/augmentation.ts',
 
 			// Ignore the main ckeditor5 package.
 			'packages/ckeditor5/**/*'

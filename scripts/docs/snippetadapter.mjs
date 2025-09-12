@@ -87,7 +87,8 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			 * (e.g. in https://github.com/cksource/docs/). To ensure that all dependencies can be resolved,
 			 * we need to add the local `node_modules` directory to the list of node paths.
 			 */
-			upath.join( CKEDITOR5_ROOT_PATH, 'node_modules' )
+			upath.join( CKEDITOR5_ROOT_PATH, 'node_modules' ),
+			upath.join( CKEDITOR5_COMMERCIAL_PATH, 'node_modules' )
 		],
 		bundle: true,
 		minify: true,

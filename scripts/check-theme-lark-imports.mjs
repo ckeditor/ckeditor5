@@ -8,7 +8,7 @@
 // See: https://github.com/ckeditor/ckeditor5/issues/16010.
 //
 // Usage:
-// 	yarn run check-theme-lark-imports
+// 	pnpm run check-theme-lark-imports
 
 import chalk from 'chalk';
 import upath from 'upath';

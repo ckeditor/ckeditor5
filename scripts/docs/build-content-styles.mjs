@@ -6,7 +6,7 @@
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 import path from 'path';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import webpack from 'webpack';
 import { styles, loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { getLastFromChangelog } from '@ckeditor/ckeditor5-dev-release-tools';
