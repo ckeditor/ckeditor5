@@ -14,6 +14,7 @@ import { removeMSAttributes } from '../filters/removemsattributes.js';
 import { transformTables } from '../filters/table.js';
 import { removeInvalidTableWidth } from '../filters/removeinvalidtablewidth.js';
 import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
+import { unwrapMSListsParaBorders } from '../filters/unwrapmslistsparaborders.js';
 import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
 
 const msWordMatch1 = /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/i;
@@ -51,6 +52,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 		const writer = new ViewUpcastWriter( this.document );
 		const { body: documentFragment, stylesString } = data._parsedData;
 
+		unwrapMSListsParaBorders( documentFragment, writer );
 		transformBookmarks( documentFragment, writer );
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
