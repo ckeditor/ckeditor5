@@ -6,16 +6,10 @@ version: 2.1
 
 orbs:
   node: circleci/node@7.1.1
-  browser-tools: circleci/browser-tools@2.1.2
+  browser-tools: circleci/browser-tools@2.3.1
 
-# List of parameters must be synchronized between configuration files.
+# List of parameters are automatically inherited from `config.yml`.
 parameters:
-  isNightly:
-    type: boolean
-    default: false
-  isStaleBot:
-    type: boolean
-    default: false
 
 commands:
   install_newest_emoji:
