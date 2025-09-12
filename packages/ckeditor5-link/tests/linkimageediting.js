@@ -532,6 +532,64 @@ describe( 'LinkImageEditing', () => {
 						return editor.destroy();
 					} );
 			} );
+
+			// See: https://github.com/ckeditor/ckeditor5/issues/19024.
+			it( 'should convert a link with manual decorator and the caption element', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, ImageCaptionEditing ],
+					link: {
+						decorators: {
+							isExternal: {
+								mode: 'manual',
+								label: 'Open in a new tab',
+								attributes: {
+									target: '_blank',
+									rel: 'noopener noreferrer'
+								}
+							}
+						}
+					}
+				} );
+
+				_setModelData( editor.model,
+					'<imageBlock linkHref="http://ckeditor.com" linkIsExternal="true" src="/assets/sample.png" alt="alt text">' +
+					'</imageBlock>'
+				);
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</a>' +
+						'<figcaption aria-label="Caption for image: alt text" ' +
+							'class="ck-editor__editable ck-editor__nested-editable ck-placeholder" ' +
+							'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">' +
+						'</figcaption>' +
+					'</figure>'
+				);
+
+				editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="http://ckeditor.com" rel="noopener noreferrer" target="_blank">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				await editor.destroy();
+			} );
 		} );
 	} );
 
