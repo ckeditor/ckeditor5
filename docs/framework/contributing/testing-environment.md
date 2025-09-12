@@ -22,7 +22,7 @@ Each CKEditor&nbsp;5 package has its own tests suite (see for example the [engin
 
 ## Running automated tests
 
-To run the automated tests, use the `yarn run test [<args>...]` command.
+To run the automated tests, use the `pnpm run test [<args>...]` command.
 
 It accepts the following arguments that must be passed after the `--` option:
 
@@ -40,19 +40,19 @@ It accepts the following arguments that must be passed after the `--` option:
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core/tests) package:
 
 ```
-yarn run test -c --files=core
+pnpm run test -c --files=core
 ```
 
 Run and watch with the code coverage check the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-engine/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-typing/tests):
 
 ```
-yarn run test -cw --files=engine/view/,typing
+pnpm run test -cw --files=engine/view/,typing
 ```
 
 Run and watch the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-basic-styles/tests) package:
 
 ```
-yarn run test -w --files=basic-styles/bold*
+pnpm run test -w --files=basic-styles/bold*
 ```
 
 ### Custom Chai assertions
@@ -102,13 +102,13 @@ expect( selection ).to.not.have.attribute( 'linkHref' );
 
 ## Running manual tests
 
-To start the manual tests server, use the `yarn run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
+To start the manual tests server, use the `pnpm run manual` task. After calling this command, you may be asked if you want to re-create the DLL builds. You do not have to re-create the DLL builds each time you run the manual tests. Do it only if you want to check your changes in those tests that require the DLL builds.
 
 <info-box hint>
 	You can read more about the DLL builds in a {@link getting-started/advanced/dll-builds dedicated guide}.
 </info-box>
 
-The `yarn run manual` task accepts the following options:
+The `pnpm run manual` task accepts the following options:
 
 * `--files` &ndash; Specifies test files to run. See the [Rules for using the `--files` option](#rules-for-using-the-files-option) section.
 * `--language="pl"` &ndash; The main language built into all test editors, passed to the [CKEditor&nbsp;5 translations plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-translations). Check out the {@link getting-started/setup/ui-language UI language guide} to learn more. If unspecified, `'en'` is passed to the test runner.
@@ -197,10 +197,10 @@ ClassicEditor
 
 To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
 
-To check manual tests, start the server (`yarn manual --files=XYZ`), and then run the crawler:
+To check manual tests, start the server (`pnpm manual --files=XYZ`), and then run the crawler:
 
 ```
-yarn run manual:verify
+pnpm run manual:verify
 ```
 
 Read more about the crawler in the {@link framework/contributing/development-environment#verifying-documentation Verifying documentation} guide.

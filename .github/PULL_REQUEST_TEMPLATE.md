@@ -2,7 +2,7 @@
 
 This repository uses Markdown files to define changelog entries. If the changes in this pull request are **user-facing**, please create a changelog entry by running the following command:
 
-    yarn run nice
+    pnpm run nice
 
 This will generate an `*.md` file in the `.changelog/` directory for your description. You can create as many as you need.
 

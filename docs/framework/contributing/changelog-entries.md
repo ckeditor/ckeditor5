@@ -18,7 +18,7 @@ Create a new Markdown file in the `.changelog/` directory to add a changelog ent
     The easiest and preferred way to create a changelog entry is by running:
 
     ```bash
-    yarn run nice
+    pnpm run nice
     ```
 
     `nice` stands for **N**ew **I**ndividual **C**hangelog **E**ntry.
