@@ -27,7 +27,7 @@ import {
  * 		<h1 style="mso-list:l2 level1 lfo1; mso-border-bottom-alt:solid #A7A9AC 2.25pt; ...">Title</h1>
  * 	</div>
  *
- * In the scenario above, the <div> element should be removed and the alternative border bottom style can be applied to the last element.
+ * In the scenario above, the <div> element should be unwrapped and the border can be moved to it's last element.
  * It results in the following HTML structure:
  *
  * 	<h1 style="mso-list:l2 level1 lfo1; border-bottom:solid #A7A9AC 2.25pt; ...">Title</h1>
