@@ -15,10 +15,6 @@ import {
 	type ViewUpcastWriter
 } from 'ckeditor5/src/engine.js';
 
-const MS_PARA_BORDER_DIRECTIONS = [ 'top', 'bottom', 'left', 'right' ] as const;
-
-type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
-
 /**
  * When a user sets border top or border bottom on list items, Microsoft Word wraps
  * whole list items (which may be H1 elements) with <div> elements. It's problematic
@@ -31,23 +27,12 @@ type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
  * 		<h1 style="mso-list:l2 level1 lfo1; mso-border-bottom-alt:solid #A7A9AC 2.25pt; ...">Title</h1>
  * 	</div>
  *
- * Items within such wrappers obtain `mso-border-${ direction }-alt` styles that are directly linked
- * to the wrapper border styles. This is a fallback mechanism used by Microsoft Word.
- *
- * In the scenario above, the <div> element should be removed and the alternative border bottom style can be applied to the <h1> element.
+ * In the scenario above, the <div> element should be removed and the alternative border bottom style can be applied to the last element.
  * It results in the following HTML structure:
  *
  * 	<h1 style="mso-list:l2 level1 lfo1; border-bottom:solid #A7A9AC 2.25pt; ...">Title</h1>
  *
- * The problem is that Microsoft Word sometimes adds additional elements with `mso-border-${ direction }-alt`
- * that are empty (or contain only &nbsp;). In that case, we should skip moving the border style to the actual element.
- *
- * This function will unwrap Microsoft Word's `mso-element: para-border-div` elements and move them to the parent element if:
- *
- * 	1. There is at least one non-empty child element with matching border alt styles.
- * 	3. There is at least one list-like item.
- *
- * The border will be assigned to non-empty elements.
+ * For elements with border top, the same logic applies, but the border is applied to the first child of the wrapper element.
  *
  * @internal
  */
@@ -60,66 +45,62 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 
 	const unwrapElements = new Set<ViewElement>();
 
-	for ( const { item } of walker ) {
+	for ( const { item } of range ) {
 		if ( !isParaBorderWrapperElement( item ) || !hasAnyListLikeElement( item, writer ) ) {
 			continue;
 		}
 
-		// Wrapper elements do not use MSO alternative borders. However, it may
-		// have normal borders along with alternative borders. In that case, we
-		// need to check both border styles.
-		const wrapperBorders = pickElementBorders( item );
-		const wrapperAltBorders = pickElementBorders( item, true );
-
-		// Check which elements have borders that match the wrapper alternative borders.
-		// Assume that wrapper borders refer directly to children with matching alt borders.
-		const childrenWithMatchingAltBorders = [ ...item.getChildren() ].filter( child => {
-			// Microsoft Word seems to place alternative borders on every child element.
-			// Even empty ones. We need to check only non-empty children to avoid setting
-			// border on blank elements (as Word does).
-			if ( !child.is( 'element' ) || isViewItemTextEmpty( child ) ) {
-				return false;
-			}
-
-			const childAltBorders = pickElementBorders( child, true );
-
-			// Depending on the Word version, sometimes wrapper obtain alternative borders
-			// along with normal borders. These borders might have a little different border-widths.
-			// In that case, we check if at least one border type matches.
-			return (
-				compareElementBorders( wrapperBorders, childAltBorders ) ||
-				compareElementBorders( wrapperAltBorders, childAltBorders )
-			);
-		} ) as Array<ViewElement>;
-
-		// Looks like we can inherit all parent border styles to children and mark them as ready to insert after parent.
-		if ( childrenWithMatchingAltBorders.length ) {
-			// Move all wrapper borders to child element and remove old fallback styles.
-			for ( const child of childrenWithMatchingAltBorders ) {
-				writer.removeStyle( 'border', child );
-
-				for ( const [ direction, style ] of wrapperBorders ) {
-					writer.setStyle( `border-${ direction }`, style, child );
-					writer.removeStyle( `mso-border-${ direction }-alt`, child );
-				}
-			}
-
-			unwrapElements.add( item );
-		}
-
 		// Avoid processing children of the current item as they will be processed by the walker.
+		unwrapElements.add( item );
 		walker.jumpTo( writer.createPositionAfter( item ) );
 	}
 
-	// Unwrap all collected elements after first iteration to avoid malfunction of the tree walker.
 	for ( const wrapper of unwrapElements ) {
-		const { parent } = wrapper;
+		const wrapperBorders = pickElementBorders( wrapper );
+		const children = [ ...wrapper.getChildren() ] as Array<ViewElement>;
 
-		if ( parent ) {
-			writer.insertChild( wrapper.index!, wrapper.getChildren(), parent );
-			writer.remove( wrapper );
+		// Cleanup alternative border styles from children.
+		for ( const child of children ) {
+			writer.removeStyle( 'mso-border-bottom-alt', child );
+			writer.removeStyle( 'mso-border-top-alt', child );
 		}
+
+		// If there is border bottom, move selection to the last element.
+		if ( wrapperBorders.bottom ) {
+			const lastChild = children.at( -1 );
+
+			if ( lastChild ) {
+				if ( lastChild.getStyle( 'border' ) === 'none' ) {
+					writer.removeStyle( 'border', lastChild );
+				}
+
+				writer.setStyle( 'border-bottom', wrapperBorders.bottom, lastChild );
+			}
+		}
+
+		// If there is border top, move selection to the first element.
+		if ( wrapperBorders.top ) {
+			const firstChild = children[ 0 ];
+
+			if ( firstChild ) {
+				if ( firstChild.getStyle( 'border' ) === 'none' ) {
+					writer.removeStyle( 'border', firstChild );
+				}
+
+				writer.setStyle( 'border-top', wrapperBorders.top, firstChild );
+			}
+		}
+
+		writer.insertChild( wrapper.index!, children, wrapper.parent! );
+		writer.remove( wrapper );
 	}
+}
+
+/**
+ * Para borders seem to be identified by `mso-element: para-border-div` style.
+ */
+function isParaBorderWrapperElement( wrapper: ViewItem ): wrapper is ViewElement {
+	return wrapper.is( 'element' ) && wrapper.getStyle( 'mso-element' ) === 'para-border-div';
 }
 
 /**
@@ -136,67 +117,28 @@ function hasAnyListLikeElement( element: ViewElement, writer: ViewUpcastWriter )
 }
 
 /**
- * Para borders seem to be identified by `mso-element: para-border-div` style.
- */
-function isParaBorderWrapperElement( wrapper: ViewItem ): wrapper is ViewElement {
-	return wrapper.is( 'element' ) && wrapper.getStyle( 'mso-element' ) === 'para-border-div';
-}
-
-/**
  * Picks all border styles from the element. The alternative ones are used by Microsoft Word as compatibility
  * fallbacks which we can use to unwrap the element.
  */
-function pickElementBorders( wrapper: ViewElement, alternative?: boolean ): ElementBordersMap {
-	return MS_PARA_BORDER_DIRECTIONS.reduce<ElementBordersMap>(
+const MS_PARA_BORDER_DIRECTIONS = [ 'top', 'bottom' ] as const;
+
+function pickElementBorders( wrapper: ViewElement ): ElementBorders {
+	return MS_PARA_BORDER_DIRECTIONS.reduce<ElementBorders>(
 		( borders, direction ) => {
-			const key = alternative ? `mso-border-${ direction }-alt` : `border-${ direction }`;
+			const key = `border-${ direction }`;
 
 			if ( wrapper.hasStyle( key ) && wrapper.getStyle( key ) !== 'none' ) {
-				borders.set( direction, wrapper.getStyle( key )! );
+				borders[ direction ] = wrapper.getStyle( key )!;
 			}
 
 			return borders;
 		},
-		new Map()
+		Object.create( null )
 	);
 }
 
-/**
- * Compares two border maps.
- */
-function compareElementBorders( a: ElementBordersMap, b: ElementBordersMap ): boolean {
-	if ( a.size !== b.size ) {
-		return false;
-	}
+type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
 
-	for ( const [ direction, styleA ] of a.entries() ) {
-		const styleB = b.get( direction );
-
-		if ( styleB !== styleA ) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-type ElementBordersMap = Map<MSParaBorderDirections, string>;
-
-/**
- * Lookups if item has no text.
- */
-function isViewItemTextEmpty( viewItem: ViewItem ) {
-	if ( viewItem.is( '$text' ) ) {
-		return !viewItem.data || viewItem.data.trim() === '';
-	}
-
-	if ( viewItem.is( 'element' ) ) {
-		for ( const child of viewItem.getChildren() ) {
-			if ( !isViewItemTextEmpty( child ) ) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
+type ElementBorders = {
+	[ direction in MSParaBorderDirections ]?: string
+};
