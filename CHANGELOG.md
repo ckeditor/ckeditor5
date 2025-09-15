@@ -128,7 +128,6 @@ Other releases:
 * [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/46.1.1): v46.1.0 => v46.1.1
 * [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/46.1.1): v46.1.0 => v46.1.1
 * [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/46.1.1): v46.1.0 => v46.1.1
-* [ckeditor5-root](https://www.npmjs.com/package/ckeditor5-root/v/46.1.1): v46.1.0 => v46.1.1
 </details>
 
 
@@ -284,7 +283,6 @@ Other releases:
 * [ckeditor5](https://www.npmjs.com/package/ckeditor5/v/46.1.0): v46.0.3 => v46.1.0
 * [ckeditor5-collaboration](https://www.npmjs.com/package/ckeditor5-collaboration/v/46.1.0): v46.0.3 => v46.1.0
 * [ckeditor5-premium-features](https://www.npmjs.com/package/ckeditor5-premium-features/v/46.1.0): v46.0.3 => v46.1.0
-* [ckeditor5-root](https://www.npmjs.com/package/ckeditor5-root/v/46.1.0): v46.0.3 => v46.1.0
 </details>
 
 
