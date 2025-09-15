@@ -61,6 +61,7 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 		const children = [ ...wrapper.getChildren() ] as Array<ViewElement>;
 
 		// Cleanup alternative border styles from children.
+		// They no longer make sense after removal of the wrapper and moving borders.
 		for ( const child of children ) {
 			writer.removeStyle( 'mso-border-bottom-alt', child );
 			writer.removeStyle( 'mso-border-top-alt', child );
