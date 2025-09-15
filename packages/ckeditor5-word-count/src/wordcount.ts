@@ -155,6 +155,13 @@ export class WordCount extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 
@@ -306,6 +313,12 @@ export class WordCount extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( WordCount, 'licenseFeatureCode', {
+	get() {
+		return 'WC';
+	}
+} );
 
 /**
  * An event fired after {@link ~WordCount#words} and {@link ~WordCount#characters} are updated.

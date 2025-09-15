@@ -44,6 +44,13 @@ export class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -224,3 +231,9 @@ export class ImageResizeEditing extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( ImageResizeEditing, 'licenseFeatureCode', {
+	get() {
+		return 'IR';
+	}
+} );

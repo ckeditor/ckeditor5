@@ -52,6 +52,13 @@ export class FindAndReplaceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
 	}
@@ -296,3 +303,9 @@ export class FindAndReplaceEditing extends Plugin {
 		}
 	};
 }
+
+Object.defineProperty( FindAndReplaceEditing, 'licenseFeatureCode', {
+	get() {
+		return 'FAR';
+	}
+} );
