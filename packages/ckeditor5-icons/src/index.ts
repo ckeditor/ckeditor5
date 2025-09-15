@@ -56,7 +56,6 @@ export { default as IconColorTileCheck } from '../theme/icons/color-tile-check.s
 export { default as IconCommentsArchive } from '../theme/icons/comments-archive.svg';
 export { default as IconContentLock } from '../theme/icons/content-lock.svg';
 export { default as IconContentUnlock } from '../theme/icons/content-unlock.svg';
-export { default as IconContext } from '../theme/icons/context.svg';
 export { default as IconCopy } from '../theme/icons/copy.svg';
 export { default as IconDocument } from '../theme/icons/document.svg';
 export { default as IconDocumentOutline } from '../theme/icons/document-outline.svg';
@@ -147,6 +146,7 @@ export { default as IconPaginationExample } from '../theme/icons/pagination-exam
 export { default as IconPaintRollerCursorDefault } from '../theme/icons/paint-roller-cursor-default.svg';
 export { default as IconPaintRollerCursorText } from '../theme/icons/paint-roller-cursor-text.svg';
 export { default as IconPaintRoller } from '../theme/icons/paint-roller.svg';
+export { default as IconPaperClip } from '../theme/icons/paper-clip.svg';
 export { default as IconParagraph } from '../theme/icons/paragraph.svg';
 export { default as IconPencil } from '../theme/icons/pencil.svg';
 export { default as IconPen } from '../theme/icons/pen.svg';

@@ -139,9 +139,13 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 	/**
 	 * The position of the dialog view.
 	 *
+	 * If set to a function, it will be called with the DOM root Rect and the dialog Rect as arguments.
+	 * It should return the coordinates of the dialog's position.
+	 *
 	 * @observable
 	 */
-	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null;
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null |
+		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } );
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
@@ -490,6 +494,16 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 
 		const defaultOffset = DialogView.defaultOffset;
 		const dialogRect = this._getDialogRect();
+
+		if ( this.position == null ) {
+			return;
+		} else if ( typeof this.position == 'function' ) {
+			const coords = this.position( dialogRect, domRootRect );
+
+			this.moveTo( coords.left, coords.top );
+
+			return;
+		}
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
