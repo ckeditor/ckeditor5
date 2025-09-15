@@ -49,8 +49,6 @@ type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
  *
  * The border will be assigned to non-empty elements.
  *
- * See more: https://github.com/ckeditor/ckeditor5-commercial/issues/8044
- *
  * @internal
  */
 export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
@@ -185,7 +183,7 @@ function compareElementBorders( a: ElementBordersMap, b: ElementBordersMap ): bo
 type ElementBordersMap = Map<MSParaBorderDirections, string>;
 
 /**
- * Lookups if item has no text
+ * Lookups if item has no text.
  */
 function isViewItemTextEmpty( viewItem: ViewItem ) {
 	if ( viewItem.is( '$text' ) ) {
