@@ -348,9 +348,10 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			sinon.assert.calledWith( spy, sinon.match( {
 				style: {
-					backgroundColor: 'white'
+					backgroundColor: 'var(--ck-color-base-background)',
+					width: sinon.match( /^[\d.]+px$/ )
 				},
-				className: 'ck ck-content',
+				className: 'ck ck-content ck-clipboard-preview',
 				firstChild: sinon.match( {
 					tagName: 'P',
 					innerHTML: 'foobar'
@@ -380,9 +381,10 @@ describe( 'Drag and Drop Block Toolbar', () => {
 
 			sinon.assert.calledWith( spy, sinon.match( {
 				style: {
-					backgroundColor: ''
+					backgroundColor: '',
+					width: sinon.match( /^[\d.]+px$/ )
 				},
-				className: 'ck ck-content',
+				className: 'ck ck-content ck-clipboard-preview',
 				firstChild: sinon.match( {
 					tagName: 'P',
 					innerHTML: 'foobar'

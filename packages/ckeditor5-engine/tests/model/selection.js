@@ -1308,4 +1308,106 @@ describe( 'Selection', () => {
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 	} );
+
+	describe( 'toJSON()', () => {
+		it( 'should serialize ranges', () => {
+			selection.setTo( [
+				range1,
+				range2
+			] );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 1 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 4 ],
+							stickiness: 'toPrevious'
+						}
+					}, {
+						start: {
+							root: 'main',
+							path: [ 4 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 5 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should serialize backward selection', () => {
+			selection.setTo( [
+				range1
+			], {
+				backward: true
+			} );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				isBackward: true,
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 1 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 4 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+
+		it( 'should serialize selection attributes', () => {
+			selection.setTo( [
+				range1
+			] );
+
+			selection.setAttribute( 'foo', '3' );
+			selection.setAttribute( 'bar', 7 );
+
+			const json = JSON.stringify( selection );
+			const parsed = JSON.parse( json );
+
+			expect( parsed ).to.deep.equal( {
+				attributes: {
+					foo: '3',
+					bar: 7
+				},
+				ranges: [
+					{
+						start: {
+							root: 'main',
+							path: [ 1 ],
+							stickiness: 'toNext'
+						},
+						end: {
+							root: 'main',
+							path: [ 4 ],
+							stickiness: 'toPrevious'
+						}
+					}
+				]
+			} );
+		} );
+	} );
 } );

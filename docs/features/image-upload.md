@@ -49,6 +49,8 @@ Thanks to the native CKEditor&nbsp;5 integration, CKBox supports drag and drop f
 
 With CKBox, users can upload files and categorize them into different groups. They can also change the way the files are displayed, for example, by setting the image thumbnail size or deciding how many files are shown on one page. Files can be uploaded, deleted, renamed, and tagged. File properties like dimensions, upload date, or size are also easily accessible and can be used to sort the file view alongside a regular search.
 
+The CKBox On-premises version offers various storage options, from local filesystem, through MySQL and Postgres databases, to AWS S3 and Azure Blob Storage solutions. The SaaS version is using a blazing-fast CDN powered by AWS S3.
+
 {@link features/ckbox **Learn how to use CKBox in your project**}.
 
 ### Uploadcare
@@ -59,7 +61,7 @@ It is a modern file uploader with a clean interface, automatic support for respo
 
 Thanks to the native CKEditor&nbsp;5 integration, Uploadcare supports drag-and-drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
-With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
+With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, OneDrive or from local computer. Images can be easily adjusted with built-in image editor. The storage is configuration-less for ease of use. It also offers reliable and fast [AWS S3 storage solution](https://uploadcare.com/docs/aws-s3-storage/).
 
 {@link features/uploadcare **Learn how to use Uploadcare in your project**}.
 

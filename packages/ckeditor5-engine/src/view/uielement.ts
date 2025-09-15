@@ -127,6 +127,19 @@ export class ViewUIElement extends ViewElement {
 
 		return domElement;
 	}
+
+	/**
+	 * Converts `ViewUIElement` instance to plain object and returns it.
+	 *
+	 * @returns `ViewUIElement` instance converted to plain object.
+	 */
+	public override toJSON(): unknown {
+		const json: any = super.toJSON();
+
+		json.type = 'UIElement';
+
+		return json;
+	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.

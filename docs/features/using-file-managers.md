@@ -27,6 +27,7 @@ With CKBox you can:
 * Easily access recently used files.
 * View images in high-resolution full-page preview.
 * Define and reuse alternative text for images.
+* Get your images served quickly through global AWS S3 CDN or via local options, such as filesystem or SQL databases.
 
 **Read the {@link features/ckbox dedicated CKBox feature guide**} to learn about its installation and configuration. The guide also lets you try CKBox in action.
 
@@ -45,7 +46,7 @@ With Uploadcare you can:
 	* External URL.
 * Manage all uploaded images through a dedicated platform.
 * Edit images by changing dimensions, applying filters and adjusting various image parameters.
-* Get your images served quickly through global CDN.
+* Get your images served quickly through global AWS S3 CDN.
 
 **Read the {@link features/uploadcare dedicated Uploadcare feature guide**} to learn about its installation and configuration. The guide also lets you try Uploadcare in action.
 

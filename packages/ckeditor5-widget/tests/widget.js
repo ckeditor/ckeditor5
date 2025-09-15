@@ -11,6 +11,7 @@ import { WidgetTypeAround } from '../src/widgettypearound/widgettypearound.js';
 import { Typing, Delete } from '@ckeditor/ckeditor5-typing';
 import {
 	MouseObserver,
+	PointerObserver,
 	ViewDocumentDomEventData,
 	_setModelData,
 	_getModelData,
@@ -191,16 +192,21 @@ describe( 'Widget', () => {
 		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
 	} );
 
+	it( 'should add PointerObserver', () => {
+		expect( view.getObserver( PointerObserver ) ).to.be.instanceof( PointerObserver );
+	} );
+
 	it( 'should require the WidgetTypeAround and Delete plugins', () => {
 		expect( Widget.requires ).to.have.members( [ WidgetTypeAround, Delete ] );
 	} );
 
-	it( 'should not focus anything when there is no editable ancestor on mousedown', () => {
+	it( 'should not focus anything when there is no editable ancestor on pointerdown', () => {
 		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -211,7 +217,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).not.to.be.called;
 
@@ -228,6 +234,7 @@ describe( 'Widget', () => {
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( nestedView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -238,7 +245,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).not.to.be.called;
 
@@ -252,6 +259,7 @@ describe( 'Widget', () => {
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -269,7 +277,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).not.to.be.called;
 	} );
@@ -280,6 +288,7 @@ describe( 'Widget', () => {
 		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -295,7 +304,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( createPositionAtSpy ).to.be.calledOnce;
 		expect( focusSpy ).to.be.calledOnce;
@@ -307,12 +316,13 @@ describe( 'Widget', () => {
 		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
 		// Lets simulate that the other plugin overrides the target to null.
 		editor.plugins.get( Widget ).listenTo(
-			viewDocument, 'mousedown',
+			viewDocument, 'pointerdown',
 			( eventInfo, domEventData ) => {
 				sinon.stub( domEventData, 'target' ).get( () => null );
 			},
@@ -322,7 +332,7 @@ describe( 'Widget', () => {
 		);
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 		expect( focusSpy ).not.to.be.called;
 	} );
 
@@ -334,6 +344,7 @@ describe( 'Widget', () => {
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target,
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -363,7 +374,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( createRangeStub ).to.be.calledOnce;
 		expect( focusSpy ).not.to.be.called;
@@ -375,6 +386,7 @@ describe( 'Widget', () => {
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -394,7 +406,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).not.to.be.called;
 	} );
@@ -405,6 +417,7 @@ describe( 'Widget', () => {
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -422,7 +435,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).not.to.be.called;
 	} );
@@ -433,6 +446,7 @@ describe( 'Widget', () => {
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -450,7 +464,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).to.be.called;
 	} );
@@ -463,6 +477,7 @@ describe( 'Widget', () => {
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -482,7 +497,7 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).to.be.called;
 	} );
@@ -495,6 +510,7 @@ describe( 'Widget', () => {
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
@@ -514,54 +530,91 @@ describe( 'Widget', () => {
 
 		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( focusSpy ).to.be.called;
 	} );
 
 	it( 'should create selection over clicked widget', () => {
-		_setModelData( model, '[]<widget></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 	} );
 
 	it( 'should create selection over clicked widget (Android)', () => {
 		env.isAndroid = true;
 
-		_setModelData( model, '[]<widget></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
-		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 
 		env.isAndroid = false;
 	} );
 
-	it( 'should create selection when clicked in nested element', () => {
-		_setModelData( model, '[]<widget></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const viewB = viewDiv.getChild( 0 );
+	it( 'should create selection over clicked widget (iOS)', () => {
+		env.isiOS = true;
+
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
-			target: view.domConverter.mapViewToDom( viewB ),
+			target: view.domConverter.mapViewToDom( viewDiv ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
+		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
+
+		env.isiOS = false;
+	} );
+
+	it( 'should create selection when clicked in nested element', () => {
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
+		const viewB = viewDiv.getChild( 0 );
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewB ),
+			isPrimary: true,
+			preventDefault: sinon.spy()
+		} );
+
+		viewDocument.fire( 'pointerdown', domEventDataMock );
+
+		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
+	} );
+
+	it( 'should do nothing when clicked widget with secondary touch', () => {
+		_setModelData( model, '<paragraph>[]</paragraph><widget></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 1 );
+		const domEventDataMock = new ViewDocumentDomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewDiv ),
+			isPrimary: false,
+			preventDefault: sinon.spy()
+		} );
+
+		viewDocument.fire( 'pointerdown', domEventDataMock );
+
+		expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget></widget>' );
+		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
@@ -569,30 +622,32 @@ describe( 'Widget', () => {
 		const viewP = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewP ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 
 		view.focus();
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should not focus editable if already is focused', () => {
-		_setModelData( model, '<widget></widget>' );
-		const widget = viewDocument.getRoot().getChild( 0 );
+		_setModelData( model, '<paragraph></paragraph><widget></widget>' );
+		const widget = viewDocument.getRoot().getChild( 1 );
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( widget ),
+			isPrimary: true,
 			preventDefault: sinon.spy()
 		} );
 		const focusSpy = sinon.spy( view, 'focus' );
 
 		viewDocument.isFocused = true;
-		viewDocument.fire( 'mousedown', domEventDataMock );
+		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		sinon.assert.notCalled( focusSpy );
-		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 	} );
 
 	it( 'should apply fake view selection if model selection is on widget element', () => {
@@ -1096,6 +1151,30 @@ describe( 'Widget', () => {
 				'<widget>[foo]</widget>' +
 				'<paragraph>foo bar</paragraph>'
 			);
+		} );
+
+		it( 'should not crash if event target is null', () => {
+			_setModelData( model, '<editable><widget></widget></editable>' );
+
+			const editableView = viewDocument.getRoot().getChild( 0 );
+			const domEventDataMock = new ViewDocumentDomEventData( view, {
+				target: view.domConverter.mapViewToDom( editableView ),
+				detail: 3,
+				preventDefault: sinon.spy()
+			} );
+
+			// Lets simulate that the other plugin overrides the target to null.
+			editor.plugins.get( Widget ).listenTo(
+				viewDocument, 'mousedown',
+				( eventInfo, domEventData ) => {
+					sinon.stub( domEventData, 'target' ).get( () => null );
+				},
+				{
+					priority: 'high'
+				}
+			);
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
 		} );
 	} );
 
@@ -2295,10 +2374,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
 		} );
@@ -2311,10 +2391,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getViewData( view ) ).to.equal(
 				'[<div class="' +
@@ -2352,10 +2433,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getViewData( view ) ).to.equal(
 				'<div class="ck-widget ck-widget_with-selection-handle" ' +
@@ -2402,10 +2484,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getViewData( view ) ).to.equal(
 				'[<div class="' +
@@ -2437,10 +2520,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getViewData( view ) ).to.equal(
 				'<div class="' +
@@ -2480,10 +2564,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( widgetInEditable ),
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			expect( _getViewData( view ) ).to.equal(
 				'<div class="' +
@@ -2515,10 +2600,11 @@ describe( 'Widget', () => {
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target,
+				isPrimary: true,
 				preventDefault: sinon.spy()
 			} );
 
-			viewDocument.fire( 'mousedown', domEventDataMock );
+			viewDocument.fire( 'pointerdown', domEventDataMock );
 
 			// Get all selection handles for all widgets nested inside the top-most one.
 			const selectionHandles = target.querySelectorAll( ':scope .ck-widget .ck-widget__selection-handle' );
