@@ -48,8 +48,12 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( HtmlEmbedEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( HtmlEmbedEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( HtmlEmbedEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `HE`', () => {
+		expect( HtmlEmbedEditing.licenseFeatureCode ).to.equal( 'HE' );
 	} );
 
 	it( 'should be loaded', () => {

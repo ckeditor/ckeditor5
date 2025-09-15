@@ -56,6 +56,13 @@ export class TableLayoutEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		this._defineSchema();
 		this._defineConverters();
@@ -198,6 +205,12 @@ export class TableLayoutEditing extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( TableLayoutEditing, 'licenseFeatureCode', {
+	get() {
+		return 'TL';
+	}
+} );
 
 /**
  * View table element to model table element conversion helper.
