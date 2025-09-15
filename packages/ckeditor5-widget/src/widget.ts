@@ -222,11 +222,9 @@ export class Widget extends Plugin {
 				return;
 			}
 
-			if ( data.shiftKey ) {
-				return;
-			}
+			const direction = data.shiftKey ? 'backward' : 'forward';
 
-			if ( this._selectFirstNestedEditable() ) {
+			if ( this._selectFirstNestedEditable( direction ) ) {
 				data.preventDefault();
 				evt.stop();
 			}
@@ -234,9 +232,12 @@ export class Widget extends Plugin {
 
 		// Handle Tab/Shift+Tab key while caret inside a widget editable.
 		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
+			const direction = data.shiftKey ? 'backward' : 'forward';
+
 			if (
-				this._selectNextNestedEditable( data.shiftKey ? 'backward' : 'forward' ) ||
-				this._selectAncestorWidget()
+				this._selectNextNestedEditableInWidget( direction ) ||
+				this._selectAncestorWidgetSibling( direction ) ||
+				this._selectNextNestedEditableInRoot( direction )
 			) {
 				data.preventDefault();
 				evt.stop();
@@ -590,17 +591,17 @@ export class Widget extends Plugin {
 	/**
 	 * Moves the document selection into the first nested editable.
 	 */
-	private _selectFirstNestedEditable(): boolean {
+	private _selectFirstNestedEditable( direction: ViewTreeWalkerDirection ): boolean {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		return this._selectFirstNestedEditableInRange( viewDocument.selection.getFirstRange()! );
+		return this._selectFirstNestedEditableInRange( viewDocument.selection.getFirstRange()!, direction );
 	}
 
 	/**
 	 * TODO
 	 */
-	private _selectNextNestedEditable( direction: ViewTreeWalkerDirection = 'forward' ): boolean {
+	private _selectNextNestedEditableInWidget( direction: ViewTreeWalkerDirection ): boolean {
 		const view = this.editor.editing.view;
 
 		const editableElement = this._findSelectionAncestor( element => element.is( 'editableElement' ) );
@@ -631,7 +632,29 @@ export class Widget extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _selectFirstNestedEditableInRange( viewRange: ViewRange, direction: ViewTreeWalkerDirection = 'forward' ): boolean {
+	private _selectNextNestedEditableInRoot( direction: ViewTreeWalkerDirection ): boolean {
+		const view = this.editor.editing.view;
+		const selection = view.document.selection;
+
+		const limitElement = selection.getFirstPosition()!.root as ViewElement;
+
+		const viewRange = direction == 'forward' ?
+			view.createRange(
+				selection.getLastPosition()!,
+				view.createPositionAt( limitElement, 'end' )
+			) :
+			view.createRange(
+				view.createPositionAt( limitElement, 0 ),
+				selection.getFirstPosition()!
+			);
+
+		return this._selectFirstNestedEditableInRange( viewRange, direction );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _selectFirstNestedEditableInRange( viewRange: ViewRange, direction: ViewTreeWalkerDirection ): boolean {
 		const editor = this.editor;
 
 		for ( const item of viewRange.getItems( { direction } ) ) {
@@ -657,6 +680,49 @@ export class Widget extends Plugin {
 		}
 
 		return false;
+	}
+
+	/**
+	 * TODO
+	 */
+	private _selectAncestorWidgetSibling( direction: ViewTreeWalkerDirection ): boolean {
+		const editor = this.editor;
+		const model = editor.model;
+		const mapper = editor.editing.mapper;
+		const viewElement = this._findSelectionAncestor( isWidget );
+
+		if ( !viewElement ) {
+			return false;
+		}
+
+		const modelElement = mapper.toModelElement( viewElement );
+
+		/* istanbul ignore next -- @preserve */
+		if ( !modelElement ) {
+			return false;
+		}
+
+		const modelPosition = direction == 'forward' ?
+			model.createPositionAfter( modelElement ) :
+			model.createPositionBefore( modelElement );
+
+		const modelRange = editor.model.schema.getNearestSelectionRange( modelPosition, direction );
+
+		if ( !modelRange ) {
+			return false;
+		}
+
+		// In text position, just jump there.
+		if ( modelRange.isCollapsed ) {
+			editor.model.change( writer => {
+				writer.setSelection( modelRange );
+			} );
+
+			return true;
+		}
+
+		// There is a widget, search for first nested editable in it.
+		return this._selectFirstNestedEditableInRange( mapper.toViewRange( modelRange ), direction );
 	}
 
 	/**

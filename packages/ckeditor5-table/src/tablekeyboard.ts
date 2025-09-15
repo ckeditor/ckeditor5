@@ -74,13 +74,6 @@ export class TableKeyboard extends Plugin {
 		this.listenTo<ViewDocumentTabEvent>(
 			viewDocument,
 			'tab',
-			( ...args ) => this._handleTabOnSelectedTable( ...args ),
-			{ context: 'figure' }
-		);
-
-		this.listenTo<ViewDocumentTabEvent>(
-			viewDocument,
-			'tab',
 			( ...args ) => this._handleTab( ...args ),
 			{ context: [ 'th', 'td' ] }
 		);
@@ -112,28 +105,6 @@ export class TableKeyboard extends Plugin {
 
 	/**
 	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
-	 * when the table widget is selected.
-	 */
-	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData ) {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-		const selectedElement = selection.getSelectedElement();
-
-		if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
-			return;
-		}
-
-		domEventData.preventDefault();
-		domEventData.stopPropagation();
-		bubblingEventInfo.stop();
-
-		editor.model.change( writer => {
-			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as ModelElement ).getChild( 0 ) as ModelElement ) );
-		} );
-	}
-
-	/**
-	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
 	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
@@ -154,66 +125,18 @@ export class TableKeyboard extends Plugin {
 			return;
 		}
 
-		domEventData.preventDefault();
-		domEventData.stopPropagation();
-		bubblingEventInfo.stop();
-
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
 
 		const currentRowIndex = table.getChildIndex( tableRow )!;
 		const currentCellIndex = tableRow.getChildIndex( tableCell )!;
 
-		const isFirstCellInRow = currentCellIndex === 0;
-
-		if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-			// Set the selection over the whole table if the selection was in the first table cell.
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeOn( table ) );
-			} );
-
-			return;
-		}
-
 		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
 		const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
 		if ( isForward && isLastRow && isLastCellInRow ) {
 			editor.execute( 'insertTableRowBelow' );
-
-			// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-			// or it got overwritten) set the selection over the whole table to mirror the first cell case.
-			if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
-				editor.model.change( writer => {
-					writer.setSelection( writer.createRangeOn( table ) );
-				} );
-
-				return;
-			}
 		}
-
-		let cellToFocus: ModelElement;
-
-		// Move to the first cell in the next row.
-		if ( isForward && isLastCellInRow ) {
-			const nextRow = table.getChild( currentRowIndex + 1 ) as ModelElement;
-
-			cellToFocus = nextRow.getChild( 0 ) as ModelElement;
-		}
-		// Move to the last cell in the previous row.
-		else if ( !isForward && isFirstCellInRow ) {
-			const previousRow = table.getChild( currentRowIndex - 1 ) as ModelElement;
-
-			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as ModelElement;
-		}
-		// Move to the next/previous cell.
-		else {
-			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as ModelElement;
-		}
-
-		editor.model.change( writer => {
-			writer.setSelection( writer.createRangeIn( cellToFocus ) );
-		} );
 	}
 
 	/**
