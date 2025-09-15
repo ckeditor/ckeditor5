@@ -57,7 +57,6 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 	}
 
 	for ( const wrapper of unwrapElements ) {
-		const wrapperBorders = pickElementBorders( wrapper );
 		const children = [ ...wrapper.getChildren() ] as Array<ViewElement>;
 
 		// Cleanup alternative border styles from children.
@@ -67,8 +66,10 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 			writer.removeStyle( 'mso-border-top-alt', child );
 		}
 
-		// If there is border bottom, move selection to the last element.
-		if ( wrapperBorders.bottom ) {
+		// If there is border bottom, move it to the last element.
+		const borderBottom = wrapper.getStyle( 'border-bottom' );
+
+		if ( borderBottom && borderBottom !== 'none' ) {
 			const lastChild = children.at( -1 );
 
 			if ( lastChild ) {
@@ -76,12 +77,14 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 					writer.removeStyle( 'border', lastChild );
 				}
 
-				writer.setStyle( 'border-bottom', wrapperBorders.bottom, lastChild );
+				writer.setStyle( 'border-bottom', borderBottom, lastChild );
 			}
 		}
 
-		// If there is border top, move selection to the first element.
-		if ( wrapperBorders.top ) {
+		// If there is border top, move it to the first element.
+		const borderTop = wrapper.getStyle( 'border-top' );
+
+		if ( borderTop && borderTop !== 'none' ) {
 			const firstChild = children[ 0 ];
 
 			if ( firstChild ) {
@@ -89,7 +92,7 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 					writer.removeStyle( 'border', firstChild );
 				}
 
-				writer.setStyle( 'border-top', wrapperBorders.top, firstChild );
+				writer.setStyle( 'border-top', borderTop, firstChild );
 			}
 		}
 
@@ -117,30 +120,3 @@ function hasAnyListLikeElement( element: ViewElement, writer: ViewUpcastWriter )
 
 	return false;
 }
-
-/**
- * Picks all border styles from the element. The alternative ones are used by Microsoft Word as compatibility
- * fallbacks which we can use to unwrap the element.
- */
-const MS_PARA_BORDER_DIRECTIONS = [ 'top', 'bottom' ] as const;
-
-function pickElementBorders( wrapper: ViewElement ): ElementBorders {
-	return MS_PARA_BORDER_DIRECTIONS.reduce<ElementBorders>(
-		( borders, direction ) => {
-			const key = `border-${ direction }`;
-
-			if ( wrapper.hasStyle( key ) && wrapper.getStyle( key ) !== 'none' ) {
-				borders[ direction ] = wrapper.getStyle( key )!;
-			}
-
-			return borders;
-		},
-		Object.create( null )
-	);
-}
-
-type MSParaBorderDirections = typeof MS_PARA_BORDER_DIRECTIONS[number];
-
-type ElementBorders = {
-	[ direction in MSParaBorderDirections ]?: string
-};
