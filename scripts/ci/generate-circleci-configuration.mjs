@@ -17,6 +17,7 @@ import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
+import { parseArgs } from 'util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
@@ -37,6 +38,15 @@ const FEATURE_BATCH_SIZES = [
 const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
+
+const { values: options } = parseArgs( {
+	options: {
+		'chrome-version': {
+			type: 'string',
+			default: 'latest'
+		}
+	}
+} );
 
 const bootstrapCommands = () => ( [
 	'checkout_command',
@@ -92,6 +102,12 @@ const persistToWorkspace = fileName => ( {
 	const config = yaml.load(
 		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'template.yml' ) )
 	);
+
+	const rootConfig = yaml.load(
+		await fs.readFile( upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config.yml' ) )
+	);
+
+	config.parameters = rootConfig.parameters;
 
 	const featureTestBatches = featurePackages.reduce( ( output, packageName, packageIndex ) => {
 		let currentBatch = FEATURE_BATCH_SIZES.findIndex( ( batchSize, batchIndex, allBatches ) => {
@@ -219,6 +235,9 @@ const persistToWorkspace = fileName => ( {
 			} );
 	}
 
+	config.jobs = substituteChromeVersion( options[ 'chrome-version' ], config.jobs );
+	config.commands = substituteChromeVersion( options[ 'chrome-version' ], config.commands );
+
 	await fs.writeFile(
 		upath.join( CIRCLECI_CONFIGURATION_DIRECTORY, 'config-tests.yml' ),
 		yaml.dump( config, { lineWidth: -1 } )
@@ -281,6 +300,33 @@ function replacePlaceholderBatchNameInArray( array, featureTestBatchNames ) {
 	}
 
 	array.splice( placeholderIndex, 1, ...featureTestBatchNames );
+}
+
+function substituteChromeVersion( version, items ) {
+	const stepChrome = 'browser-tools/install_chrome';
+
+	return Object.fromEntries(
+		Object.entries( items ).map( ( [ key, { steps, ...rest } ] ) => {
+			return [
+				key,
+				{
+					...rest,
+					steps: steps.map( step => {
+						if ( step !== stepChrome ) {
+							return step;
+						}
+
+						return {
+							'browser-tools/install_chrome': {
+								chrome_version: version,
+								timeout: '5m'
+							}
+						};
+					} )
+				}
+			];
+		} )
+	);
 }
 
 /**
