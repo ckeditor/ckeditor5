@@ -50,8 +50,9 @@ export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment
 			continue;
 		}
 
-		// Avoid processing children of the current item as they will be processed by the walker.
 		unwrapElements.add( item );
+
+		// Avoid processing children of the current item as they will be processed by the walker.
 		walker.jumpTo( writer.createPositionAfter( item ) );
 	}
 
