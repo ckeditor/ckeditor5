@@ -22,7 +22,7 @@ This is an internal release focused on improving our development infrastructure 
 
 ### Development environment modernization
 
-We have migrated our package management from Yarn Classic to pnpm, delivering substantial benefits:
+We have migrated our package management from Yarn Classic to pnpm, unlocking significant advantages:
 
 * Faster installations through efficient linking mechanisms,
 * Improved dependency management with stricter resolution and better peer dependency handling,
