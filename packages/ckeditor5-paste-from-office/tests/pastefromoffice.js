@@ -55,8 +55,12 @@ describe( 'PasteFromOffice', () => {
 		expect( PasteFromOffice.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PasteFromOffice.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( PasteFromOffice.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `PFO`', () => {
+		expect( PasteFromOffice.licenseFeatureCode ).to.equal( 'PFO' );
 	} );
 
 	it( 'should load Clipboard plugin', () => {

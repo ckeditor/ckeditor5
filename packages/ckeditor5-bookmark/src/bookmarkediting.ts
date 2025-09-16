@@ -55,6 +55,13 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -203,6 +210,12 @@ export class BookmarkEditing extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( BookmarkEditing, 'licenseFeatureCode', {
+	get() {
+		return 'BKM';
+	}
+} );
 
 /**
  * A helper function to match an `anchor` element which must contain `id` or `name` attribute but without `href` attribute,

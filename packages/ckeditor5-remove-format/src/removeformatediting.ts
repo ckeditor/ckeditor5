@@ -34,9 +34,22 @@ export class RemoveFormatEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 
 		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
 	}
 }
+
+Object.defineProperty( RemoveFormatEditing, 'licenseFeatureCode', {
+	get() {
+		return 'RF';
+	}
+} );
