@@ -20,7 +20,8 @@ bumpYear( {
 			pattern: '!(build|coverage|external|release)/**',
 			options: {
 				ignore: [
-					'**/ckeditor5-*/build/**',
+					'packages/*/build/**',
+					'packages/*/dist/**',
 					'packages/ckeditor5-emoji/src/utils/isemojisupported.ts'
 				]
 			}

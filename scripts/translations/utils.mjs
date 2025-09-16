@@ -7,6 +7,7 @@ import upath from 'upath';
 import minimist from 'minimist';
 import { globSync } from 'glob';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
+import { CKEDITOR5_COMMERCIAL_PACKAGES_PATH } from '../constants.mjs';
 
 /**
  * Parses CLI arguments and prepares configuration for the crawler.
@@ -24,7 +25,7 @@ export function parseArguments( args ) {
 		],
 
 		boolean: [
-			'include-external-directory',
+			'include-commercial',
 			'ignore-unused-core-package-contexts',
 			'validate-only',
 			'skip-license-header'
@@ -35,7 +36,7 @@ export function parseArguments( args ) {
 			packages: [],
 			ignore: [],
 			config: '',
-			'include-external-directory': false,
+			'include-commercial': false,
 			'ignore-unused-core-package-contexts': false,
 			'validate-only': false,
 			'skip-license-header': false
@@ -46,7 +47,7 @@ export function parseArguments( args ) {
 
 	// Convert to camelCase.
 	replaceKebabCaseWithCamelCase( options, [
-		'include-external-directory',
+		'include-commercial',
 		'ignore-unused-core-package-contexts',
 		'validate-only',
 		'skip-license-header'
@@ -74,18 +75,16 @@ export function parseArguments( args ) {
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory, packages } ) {
+export function getCKEditor5SourceFiles( { cwd, includeCommercial, packages } ) {
 	const patterns = [
 		`packages/${ getGlobPatternForRequestedPackages( packages ) }/src/**/*.ts`
 	];
 
-	if ( includeExternalDirectory ) {
-		patterns.push( `external/*/packages/${ getGlobPatternForRequestedPackages( packages ) }/src/**/*.ts` );
+	if ( includeCommercial ) {
+		patterns.push( `${ CKEDITOR5_COMMERCIAL_PACKAGES_PATH }/${ getGlobPatternForRequestedPackages( packages ) }/src/**/*.ts` );
 	}
 
-	const globOptions = { cwd, absolute: true };
-
-	return globSync( patterns, globOptions )
+	return globSync( patterns, { cwd, absolute: true } )
 		.flat()
 		.map( srcPath => upath.normalize( srcPath ) )
 		.filter( srcPath => !srcPath.match( /packages\/[^/]+\/src\/lib\// ) )
@@ -93,21 +92,21 @@ export function getCKEditor5SourceFiles( { cwd, includeExternalDirectory, packag
 }
 
 /**
- * Returns relative paths to CKEditor 5 packages. By default the function does not check the `external/` directory.
+ * Returns relative paths to CKEditor 5 packages. By default the function does not check the commercial directory.
  *
  * @param {TranslationOptions} options
  * @returns {Array.<String>}
  */
-export function getCKEditor5PackagePaths( { cwd, includeExternalDirectory, packages } ) {
+export function getCKEditor5PackagePaths( { cwd, includeCommercial, packages } ) {
 	const patterns = [
 		`packages/${ getGlobPatternForRequestedPackages( packages ) }`
 	];
 
-	if ( includeExternalDirectory ) {
-		patterns.push( `external/*/packages/${ getGlobPatternForRequestedPackages( packages ) }` );
+	if ( includeCommercial ) {
+		patterns.push( `${ CKEDITOR5_COMMERCIAL_PACKAGES_PATH }/${ getGlobPatternForRequestedPackages( packages ) }` );
 	}
 
-	return globSync( patterns, { cwd } )
+	return globSync( patterns, { cwd, absolute: true } )
 		.flat()
 		.map( srcPath => upath.normalize( srcPath ) );
 }
@@ -140,7 +139,7 @@ function getGlobPatternForRequestedPackages( packages ) {
  *
  * @property {Array.<String>} ignore Name of packages that should be skipped while processing then.
  *
- * @property {Boolean} includeExternalDirectory Whether to look for packages located in the `external/` directory.
+ * @property {Boolean} includeCommercial Whether to include the commercial packages.
  *
  * @property {Boolean} ignoreUnusedCorePackageContexts Whether to allow having unused contexts by the `ckeditor5-core` package.
  *
