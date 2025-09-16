@@ -31,6 +31,14 @@ export class FullPage extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'FPH';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -215,12 +223,6 @@ export class FullPage extends Plugin {
 		this._renderStyleElementsInDom( root );
 	}
 }
-
-Object.defineProperty( FullPage, 'licenseFeatureCode', {
-	get() {
-		return 'FPH';
-	}
-} );
 
 /**
  * Normalize the Full page configuration option `allowRenderStylesFromHead`.

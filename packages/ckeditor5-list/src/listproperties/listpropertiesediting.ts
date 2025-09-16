@@ -71,6 +71,14 @@ export class ListPropertiesEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'LP';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -223,12 +231,6 @@ export class ListPropertiesEditing extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( ListPropertiesEditing, 'licenseFeatureCode', {
-	get() {
-		return 'LP';
-	}
-} );
 
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.
