@@ -3,7 +3,7 @@ category: framework-contributing
 meta-title: Development environment | CKEditor 5 Framework Documentation
 meta-description: Learn how to set up a development environment for CKEditor 5, including cloning, building, and running the editor locally.
 order: 20
-modified_at: 2022-09-29
+modified_at: 2025-09-15
 ---
 
 # Development environment
@@ -11,7 +11,7 @@ modified_at: 2022-09-29
 The CKEditor&nbsp;5 codebase is divided into multiple [npm](http://npmjs.com/) packages. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
-* configuration for [Yarn](https://yarnpkg.com/),
+* configuration for [pnpm](https://pnpm.io),
 * translation management tools,
 * documentation generator,
 * and release tools.
@@ -33,15 +33,9 @@ To start developing CKEditor&nbsp;5 you will require:
 
 ## Setting up the CKEditor development environment
 
-First, you need to install [Yarn](https://yarnpkg.com/) to use it for dependency management.
+First, you need to install [pnpm](https://pnpm.io) to use it for dependency management.
 
-It is best to install it globally in your system for easier use later on:
-
-```
-npm install -g yarn
-```
-
-**Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
+It is best to install it in your system is to [follow the official pnpm installation guide](https://pnpm.io/installation).
 
 Then clone the [CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5):
 
@@ -53,7 +47,7 @@ cd ckeditor5
 And install all CKEditor&nbsp;5 packages from the [npm registry](http://npmjs.com/).
 
 ```
-yarn install
+pnpm install
 ```
 
 ## Running tests
@@ -61,13 +55,13 @@ yarn install
 To run tests, you need to use the `test` and `manual` tasks.
 
 ```
-yarn run test --watch --coverage --source-map --files=engine
+pnpm run test --watch --coverage --source-map --files=engine
 ```
 
 or, shorter:
 
 ```
-yarn run test -- -wcs --files=engine
+pnpm run test -- -wcs --files=engine
 ```
 
 This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckeditor5-engine) package's tests.
@@ -77,7 +71,7 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 To create a server for manual tests use the `manual` task:
 
 ```
-yarn run manual
+pnpm run manual
 ```
 
 To help test localized editors, the task accepts two optional configurations: `--language="en"` and `--additionalLanguages="ar,pl,..."`. The former sets the main language used by test editors. By default it is `"en"` and in most scenarios, you do not need to change it. The latter brings more languages to manual tests, which is helpful for example,when working with {@link getting-started/setup/ui-language#righttoleft-rtl-languages-support right–to–left languages in the user interface}.
@@ -86,10 +80,10 @@ You can read more about the {@link framework/contributing/testing-environment Te
 
 ## Building DLLs
 
-Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `yarn run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
+Some manual tests require DLL builds. To learn more about DLL builds, read the {@link getting-started/advanced/dll-builds DLL builds guide}. They do not have to be updated every time, unless you want to check changes in the DLL builds specifically. Running `pnpm run manual` will prompt you to optionally run the build. To build them manually, you need to run the `dll:build` task:
 
 ```
-yarn run dll:build
+pnpm run dll:build
 ```
 
 This task accepts the following arguments:
@@ -102,7 +96,7 @@ This task accepts the following arguments:
 To build the documentation, you need to run the `docs` task:
 
 ```
-yarn run docs
+pnpm run docs
 ```
 
 The documentation will be available in `build/docs/`.
@@ -126,23 +120,23 @@ This task accepts the following arguments:
 * `--verbose` &ndash; Prints out more information.
 
 ```
-yarn run docs --skip-api
+pnpm run docs --skip-api
 ```
 
 After building documentation, you can quickly start an HTTP server to serve them:
 
 ```
-yarn run docs:serve
+pnpm run docs:serve
 ```
 
 ### Verifying documentation
 
 To verify that all pages in our documentation can be opened without any errors, you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
 
-To check pages in the documentation, build it (`yarn run docs`), serve it (`yarn run docs:serve`), and then run the crawler:
+To check pages in the documentation, build it (`pnpm run docs`), serve it (`pnpm run docs:serve`), and then run the crawler:
 
 ```
-yarn run docs:verify
+pnpm run docs:verify
 ```
 
 <info-box>
@@ -162,7 +156,7 @@ The crawler accepts the following arguments:
 For example, to check the documentation without the default exclusions (the API and assets links), using only 2 concurrent pages and terminate the scan as soon as first error is found, run this command:
 
 ```
-yarn run docs:verify -e -c 2 -q
+pnpm run docs:verify -e -c 2 -q
 ```
 
 #### Defining exclusions for web crawler
@@ -232,7 +226,7 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To do that, execute:
 
 ```
-yarn docs:content-styles
+pnpm docs:content-styles
 ```
 
 The style sheet will be saved in the `build/content-styles` folder.

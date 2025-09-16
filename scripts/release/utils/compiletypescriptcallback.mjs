@@ -16,7 +16,7 @@ export default async function compileTypeScriptCallback( packagePath ) {
 		return;
 	}
 
-	return tools.shExec( 'yarn run build', {
+	return tools.shExec( 'pnpm run build', {
 		cwd: packagePath,
 		verbosity: 'error',
 		async: true

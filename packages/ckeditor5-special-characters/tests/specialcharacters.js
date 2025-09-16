@@ -58,8 +58,12 @@ describe( 'SpecialCharacters', () => {
 		expect( SpecialCharacters.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SpecialCharacters.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( SpecialCharacters.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `SCH`', () => {
+		expect( SpecialCharacters.licenseFeatureCode ).to.equal( 'SCH' );
 	} );
 
 	describe( 'toolbar button', () => {

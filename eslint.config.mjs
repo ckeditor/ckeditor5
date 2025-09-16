@@ -29,7 +29,6 @@ export default defineConfig( [
 			'build/**',
 			'coverage/**',
 			'dist/**',
-			'external/**',
 			'packages/*/build/**',
 			'packages/*/dist/**',
 			'packages/*/src/lib/**',
@@ -94,8 +93,7 @@ export default defineConfig( [
 				requiredFlags: [ {
 					name: 'isOfficialPlugin',
 					returnValue: true
-				} ],
-				disallowedFlags: [ 'isPremiumPlugin' ]
+				} ]
 			} ]
 		}
 	},
