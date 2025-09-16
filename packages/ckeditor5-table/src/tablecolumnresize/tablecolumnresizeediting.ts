@@ -142,6 +142,14 @@ export class TableColumnResizeEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'TCR';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -987,9 +995,3 @@ export class TableColumnResizeEditing extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( TableColumnResizeEditing, 'licenseFeatureCode', {
-	get() {
-		return 'TCR';
-	}
-} );

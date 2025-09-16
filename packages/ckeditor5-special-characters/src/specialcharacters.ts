@@ -63,6 +63,14 @@ export class SpecialCharacters extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'SCH';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -320,12 +328,6 @@ export class SpecialCharacters extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( SpecialCharacters, 'licenseFeatureCode', {
-	get() {
-		return 'SCH';
-	}
-} );
 
 export interface SpecialCharacterDefinition {
 

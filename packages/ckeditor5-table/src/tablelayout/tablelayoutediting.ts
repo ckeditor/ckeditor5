@@ -41,6 +41,14 @@ export class TableLayoutEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'TL';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static get requires() {
 		return [ TableColumnResize ] as const;
@@ -205,12 +213,6 @@ export class TableLayoutEditing extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( TableLayoutEditing, 'licenseFeatureCode', {
-	get() {
-		return 'TL';
-	}
-} );
 
 /**
  * View table element to model table element conversion helper.
