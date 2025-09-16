@@ -847,18 +847,21 @@
 				{
 					"name": "Migrations from npm to CDN",
 					"id": "migrations",
+					"folded": true,
 					"slug": "migrations",
 					"order": 10
 				},
 				{
 					"name": "New installation methods",
 					"id": "nim-migration",
+					"folded": true,
 					"slug": "nim-migration",
 					"order": 20
 				},
 				{
 					"name": "CKEditor 4 migration",
 					"id": "ckeditor4-migration",
+					"folded": true,
 					"slug": "ckeditor4",
 					"order": 30
 				},
