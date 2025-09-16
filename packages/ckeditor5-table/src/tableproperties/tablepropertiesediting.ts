@@ -73,6 +73,13 @@ export class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ TableEditing ] as const;
 	}
@@ -140,6 +147,12 @@ export class TablePropertiesEditing extends Plugin {
 		);
 	}
 }
+
+Object.defineProperty( TablePropertiesEditing, 'licenseFeatureCode', {
+	get() {
+		return 'TCP';
+	}
+} );
 
 /**
  * Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBorderWidth'` attributes for table.

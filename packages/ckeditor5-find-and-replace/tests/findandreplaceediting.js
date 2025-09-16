@@ -46,8 +46,12 @@ describe( 'FindAndReplaceEditing', () => {
 		expect( FindAndReplaceEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FindAndReplaceEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( FindAndReplaceEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `FAR`', () => {
+		expect( FindAndReplaceEditing.licenseFeatureCode ).to.equal( 'FAR' );
 	} );
 
 	describe( 'highlight', () => {

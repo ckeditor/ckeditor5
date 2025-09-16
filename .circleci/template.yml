@@ -5,17 +5,10 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@7.1.1
-  browser-tools: circleci/browser-tools@2.1.2
+  browser-tools: circleci/browser-tools@2.3.1
 
-# List of parameters must be synchronized between configuration files.
+# List of parameters are automatically inherited from `config.yml`.
 parameters:
-  isNightly:
-    type: boolean
-    default: false
-  isStaleBot:
-    type: boolean
-    default: false
 
 commands:
   install_newest_emoji:
@@ -55,10 +48,15 @@ commands:
     description: "Bootstrap the CKEditor 5 project"
     steps:
       - install_ssh_keys_command
-      - node/install-pnpm:
-          version: "10"
-      - node/install-packages:
-          pkg-manager: pnpm
+      - run:
+          name: Disable Corepack
+          command: sudo corepack disable
+      - run:
+          name: Install pnpm
+          command: sudo npm i -g pnpm@^10
+      - run:
+          name: Install pnpm
+          command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
   checkout_command:

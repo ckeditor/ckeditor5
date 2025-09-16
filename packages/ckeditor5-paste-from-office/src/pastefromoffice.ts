@@ -49,6 +49,13 @@ export class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ClipboardPipeline ] as const;
 	}
@@ -97,3 +104,9 @@ export class PasteFromOffice extends Plugin {
 		);
 	}
 }
+
+Object.defineProperty( PasteFromOffice, 'licenseFeatureCode', {
+	get() {
+		return 'PFO';
+	}
+} );

@@ -64,16 +64,12 @@ function parseArguments( args ) {
 		'-u', 'https://fake.ckeditor.com:8080/ckeditor5/latest/',
 		'-e', '/ckfinder/',
 		'-e', '/api/',
-		'-e', '/assets/',
-		'-c', DEFAULT_CONCURRENCY,
-		'-t', DEFAULT_TIMEOUT
+		'-e', '/assets/'
 	], config );
 
 	const defaultOptionsForManual = minimist( [
 		'-u', 'http://localhost:8125/',
-		'-d', 1,
-		'-c', DEFAULT_CONCURRENCY,
-		'-t', DEFAULT_TIMEOUT * 2
+		'-d', 1
 	], config );
 
 	const options = {};
@@ -99,7 +95,7 @@ function parseArguments( args ) {
 		depth: options.depth ? Number( options.depth ) : Infinity,
 		exclusions: options.exclusions ? toArray( options.exclusions ).filter( exclusion => exclusion.length > 0 ) : [],
 		timeout: options.timeout ? Number( options.timeout ) : DEFAULT_TIMEOUT,
-		concurrency: options.concurrency ? Number( options.concurrency ) : 1,
+		concurrency: options.concurrency ? Number( options.concurrency ) : Math.min( DEFAULT_CONCURRENCY, 12 ),
 		silent: options.silent,
 		ignoreHTTPSErrors: true
 	};

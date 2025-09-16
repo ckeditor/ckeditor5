@@ -79,6 +79,13 @@ export class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -216,6 +223,12 @@ export class ListPropertiesEditing extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( ListPropertiesEditing, 'licenseFeatureCode', {
+	get() {
+		return 'LP';
+	}
+} );
 
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.

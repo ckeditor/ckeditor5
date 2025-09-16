@@ -36,6 +36,13 @@ export class PageBreakEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -134,6 +141,12 @@ export class PageBreakEditing extends Plugin {
 		editor.commands.add( 'pageBreak', new PageBreakCommand( editor ) );
 	}
 }
+
+Object.defineProperty( PageBreakEditing, 'licenseFeatureCode', {
+	get() {
+		return 'PB';
+	}
+} );
 
 /**
  * Converts a given {@link module:engine/view/element~ViewElement} to a page break widget:

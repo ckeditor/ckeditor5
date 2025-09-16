@@ -54,8 +54,12 @@ describe( 'SimpleUploadAdapter', () => {
 		expect( SimpleUploadAdapter.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SimpleUploadAdapter.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( SimpleUploadAdapter.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `SUA`', () => {
+		expect( SimpleUploadAdapter.licenseFeatureCode ).to.equal( 'SUA' );
 	} );
 
 	describe( 'init()', () => {

@@ -51,8 +51,12 @@ describe( 'TableLayoutEditing', () => {
 		expect( TableLayoutEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableLayoutEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( TableLayoutEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `TL`', () => {
+		expect( TableLayoutEditing.licenseFeatureCode ).to.equal( 'TL' );
 	} );
 
 	it( 'should set proper schema rule to allow <caption> for content tables', () => {

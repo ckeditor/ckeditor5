@@ -19,6 +19,8 @@ import {
 	getDataFromElement,
 	setDataInElement,
 	logWarning,
+	decodeLicenseKey,
+	isFeatureBlockedByLicenseKey,
 	type CollectionAddEvent,
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
@@ -279,6 +281,22 @@ export class MultiRootEditor extends Editor {
 				evt.stop();
 			}
 		}, { priority: 'highest' } );
+
+		verifyLicenseKey( this );
+
+		function verifyLicenseKey( editor: MultiRootEditor ) {
+			const licenseKey = editor.config.get( 'licenseKey' );
+			const decodedPayload = decodeLicenseKey( licenseKey );
+
+			if ( !decodedPayload ) {
+				return;
+			}
+
+			if ( isFeatureBlockedByLicenseKey( decodedPayload, 'MRE' ) ) {
+				editor.enableReadOnlyMode( Symbol( 'invalidLicense' ) );
+				editor._showLicenseError( 'featureNotAllowed', 'Multi-root editor' );
+			}
+		}
 	}
 
 	/**

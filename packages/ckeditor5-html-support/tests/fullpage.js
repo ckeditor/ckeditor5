@@ -30,8 +30,12 @@ describe( 'FullPage', () => {
 		expect( FullPage.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( FullPage.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( FullPage.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `FPH`', () => {
+		expect( FullPage.licenseFeatureCode ).to.equal( 'FPH' );
 	} );
 
 	it( 'should set editor.data.processor', async () => {

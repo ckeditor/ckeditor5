@@ -10,6 +10,8 @@ export default function getChangelogOptions( cliArguments ) {
 	const changelogOptions = {
 		cwd: CKEDITOR5_ROOT_PATH,
 		packagesDirectory: PACKAGES_DIRECTORY,
+		shouldIgnoreRootPackage: true,
+		npmPackageToCheck: 'ckeditor5',
 		transformScope: name => {
 			const noScopedPackages = [
 				'ckeditor5',

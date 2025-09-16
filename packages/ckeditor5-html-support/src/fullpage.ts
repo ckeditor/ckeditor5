@@ -39,6 +39,13 @@ export class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -208,6 +215,12 @@ export class FullPage extends Plugin {
 		this._renderStyleElementsInDom( root );
 	}
 }
+
+Object.defineProperty( FullPage, 'licenseFeatureCode', {
+	get() {
+		return 'FPH';
+	}
+} );
 
 /**
  * Normalize the Full page configuration option `allowRenderStylesFromHead`.

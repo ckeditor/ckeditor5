@@ -150,6 +150,13 @@ export class TableColumnResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -980,3 +987,9 @@ export class TableColumnResizeEditing extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( TableColumnResizeEditing, 'licenseFeatureCode', {
+	get() {
+		return 'TCR';
+	}
+} );

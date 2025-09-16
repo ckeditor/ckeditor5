@@ -47,10 +47,23 @@ export class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		this.editor.plugins.get( FileRepository ).createUploadAdapter = loader => new Adapter( loader );
 	}
 }
+
+Object.defineProperty( Base64UploadAdapter, 'licenseFeatureCode', {
+	get() {
+		return 'B64A';
+	}
+} );
 
 /**
  * The upload adapter that converts images inserted into the editor into Base64 strings.

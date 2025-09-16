@@ -65,8 +65,12 @@ describe( 'BookmarkEditing', () => {
 		expect( BookmarkEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( BookmarkEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( BookmarkEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `BKM`', () => {
+		expect( BookmarkEditing.licenseFeatureCode ).to.equal( 'BKM' );
 	} );
 
 	it( 'should register default bookmark toolbar config', () => {

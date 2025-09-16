@@ -71,6 +71,13 @@ export class SpecialCharacters extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -313,6 +320,12 @@ export class SpecialCharacters extends Plugin {
 		} );
 	}
 }
+
+Object.defineProperty( SpecialCharacters, 'licenseFeatureCode', {
+	get() {
+		return 'SCH';
+	}
+} );
 
 export interface SpecialCharacterDefinition {
 

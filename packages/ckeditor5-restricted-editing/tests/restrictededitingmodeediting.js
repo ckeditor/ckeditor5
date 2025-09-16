@@ -45,8 +45,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 			expect( RestrictedEditingModeEditing.isOfficialPlugin ).to.be.true;
 		} );
 
-		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.false;
+		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.true;
+		} );
+
+		it( 'should have `licenseFeatureCode` static flag set to `RED`', () => {
+			expect( RestrictedEditingModeEditing.licenseFeatureCode ).to.equal( 'RED' );
 		} );
 
 		it( 'should be loaded', () => {

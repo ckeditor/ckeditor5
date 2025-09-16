@@ -82,6 +82,13 @@ export class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -413,6 +420,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 		}
 	}
 }
+
+Object.defineProperty( RestrictedEditingModeEditing, 'licenseFeatureCode', {
+	get() {
+		return 'RED';
+	}
+} );
 
 /**
  * Helper for handling Ctrl+A keydown behaviour.

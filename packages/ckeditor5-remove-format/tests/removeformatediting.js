@@ -26,8 +26,12 @@ describe( 'RemoveFormat', () => {
 		expect( RemoveFormatEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( RemoveFormatEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( RemoveFormatEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `RF`', () => {
+		expect( RemoveFormatEditing.licenseFeatureCode ).to.equal( 'RF' );
 	} );
 
 	it( 'should register removeFormat command', () => {
