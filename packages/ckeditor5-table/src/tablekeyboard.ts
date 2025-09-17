@@ -125,6 +125,9 @@ export class TableKeyboard extends Plugin {
 			return;
 		}
 
+		// For backward compatibility stop this DOM event.
+		domEventData.stopPropagation();
+
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
 

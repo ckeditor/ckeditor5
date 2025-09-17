@@ -29,7 +29,7 @@ import {
 	type ViewDocumentKeyDownEvent,
 	type ViewNode,
 	type ViewRange,
-	type ViewTreeWalkerDirection
+	type ViewPosition
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -39,6 +39,7 @@ import {
 	keyCodes,
 	getLocalizedArrowKeyCodeDirection,
 	getRangeFromMouseEvent,
+	compareArrays,
 	type EventInfo,
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
@@ -214,35 +215,16 @@ export class Widget extends Plugin {
 			}
 		}, { context: '$root' } );
 
-		// Handle Tab key while a widget is selected.
+		// Handle Tab/Shift+Tab key.
 		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
-			// This event could be triggered from inside the widget, but we are interested
-			// only when the widget is selected itself.
-			if ( evt.eventPhase != 'atTarget' ) {
-				return;
-			}
-
-			const direction = data.shiftKey ? 'backward' : 'forward';
-
-			if ( this._selectFirstNestedEditable( direction ) ) {
+			if ( this._selectNextEditable( data.shiftKey ? 'backward' : 'forward' ) ) {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { context: isWidget, priority: 'low' } );
-
-		// Handle Tab/Shift+Tab key while caret inside a widget editable.
-		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
-			const direction = data.shiftKey ? 'backward' : 'forward';
-
-			if (
-				this._selectNextNestedEditableInWidget( direction ) ||
-				this._selectAncestorWidgetSibling( direction ) ||
-				this._selectNextNestedEditableInRoot( direction )
-			) {
-				data.preventDefault();
-				evt.stop();
-			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => isWidget( node ) || node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Handle Esc key while inside a nested editable.
 		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
@@ -589,90 +571,79 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Moves the document selection into the first nested editable.
+	 * Moves the document selection into the next editable.
 	 */
-	private _selectFirstNestedEditable( direction: ViewTreeWalkerDirection ): boolean {
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
+	private _selectNextEditable( direction: 'backward' | 'forward' ): boolean {
+		const editing = this.editor.editing;
+		const view = editing.view;
+		const model = this.editor.model;
+		const viewSelection = view.document.selection;
+		const modelSelection = model.document.selection;
 
-		return this._selectFirstNestedEditableInRange( viewDocument.selection.getFirstRange()!, direction );
-	}
+		const editableElement = viewSelection.editableElement!;
+		const selectedElement = viewSelection.getSelectedElement();
+		const editablePath = editableElement.getPath();
 
-	/**
-	 * TODO
-	 */
-	private _selectNextNestedEditableInWidget( direction: ViewTreeWalkerDirection ): boolean {
-		const view = this.editor.editing.view;
+		// Find start position.
+		let startPosition: ViewPosition;
 
-		const editableElement = this._findSelectionAncestor( element => element.is( 'editableElement' ) );
+		// When widget is selected then find nested editable inside it.
+		if ( selectedElement && isWidget( selectedElement ) ) {
+			startPosition = direction == 'forward' ?
+				view.createPositionBefore( selectedElement ) :
+				view.createPositionAfter( selectedElement );
+		}
+		// Multiple table cells are selected - use focus cell.
+		else if ( modelSelection.rangeCount > 1 ) {
+			const selectionRange = modelSelection.isBackward ?
+				modelSelection.getFirstRange()! :
+				modelSelection.getLastRange()!;
 
-		if ( !editableElement ) {
-			return false;
+			startPosition = editing.mapper.toViewPosition(
+				direction == 'forward' ?
+					selectionRange.end :
+					selectionRange.start
+			);
+		}
+		// Other in text selections.
+		else {
+			// Include nested editable elements inside selection.
+			startPosition = direction == 'forward' ?
+				viewSelection.getFirstPosition()! :
+				viewSelection.getLastPosition()!;
 		}
 
-		const widgetElement = editableElement.findAncestor( isWidget );
-
-		if ( !widgetElement ) {
-			return false;
-		}
-
+		// Look for the next editable.
 		const viewRange = direction == 'forward' ?
-			view.createRange(
-				view.createPositionAfter( editableElement ),
-				view.createPositionAt( widgetElement, 'end' )
-			) :
-			view.createRange(
-				view.createPositionAt( widgetElement, 0 ),
-				view.createPositionBefore( editableElement )
-			);
+			view.createRange( startPosition, view.createPositionAt( startPosition.root as ViewNode, 'end' ) ) :
+			view.createRange( view.createPositionAt( startPosition.root as ViewNode, 0 ), startPosition );
 
-		return this._selectFirstNestedEditableInRange( viewRange, direction );
-	}
+		for ( const { nextPosition } of viewRange.getWalker( { direction } ) ) {
+			const item = nextPosition.parent;
 
-	/**
-	 * TODO
-	 */
-	private _selectNextNestedEditableInRoot( direction: ViewTreeWalkerDirection ): boolean {
-		const view = this.editor.editing.view;
-		const selection = view.document.selection;
-
-		const limitElement = selection.getFirstPosition()!.root as ViewElement;
-
-		const viewRange = direction == 'forward' ?
-			view.createRange(
-				selection.getLastPosition()!,
-				view.createPositionAt( limitElement, 'end' )
-			) :
-			view.createRange(
-				view.createPositionAt( limitElement, 0 ),
-				selection.getFirstPosition()!
-			);
-
-		return this._selectFirstNestedEditableInRange( viewRange, direction );
-	}
-
-	/**
-	 * TODO
-	 */
-	private _selectFirstNestedEditableInRange( viewRange: ViewRange, direction: ViewTreeWalkerDirection ): boolean {
-		const editor = this.editor;
-
-		for ( const item of viewRange.getItems( { direction } ) ) {
-			if ( !item.is( 'editableElement' ) ) {
+			// Use first editable element other that the one we started in.
+			if ( !item.is( 'editableElement' ) || item == editableElement ) {
 				continue;
 			}
 
-			const modelElement = editor.editing.mapper.toModelElement( item );
+			const modelPosition = editing.mapper.toModelPosition( nextPosition );
+			let newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
 
-			/* istanbul ignore next -- @preserve */
-			if ( !modelElement ) {
+			// There is nothing to select so just jump to the next one.
+			if ( !newRange ) {
 				continue;
 			}
 
-			const position = editor.model.createPositionAt( modelElement, 0 );
-			const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+			// Select the content of editable element when iterating over sibling editable elements or going deeper into nested widgets.
+			if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
+				newRange = model.createRangeIn( modelPosition.parent );
+			}
+			// Stepped out of nested editable element and there is a widget so ignore it and look further.
+			else if ( !newRange.isCollapsed ) {
+				continue;
+			}
 
-			editor.model.change( writer => {
+			model.change( writer => {
 				writer.setSelection( newRange );
 			} );
 
@@ -683,55 +654,20 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * TODO
-	 */
-	private _selectAncestorWidgetSibling( direction: ViewTreeWalkerDirection ): boolean {
-		const editor = this.editor;
-		const model = editor.model;
-		const mapper = editor.editing.mapper;
-		const viewElement = this._findSelectionAncestor( isWidget );
-
-		if ( !viewElement ) {
-			return false;
-		}
-
-		const modelElement = mapper.toModelElement( viewElement );
-
-		/* istanbul ignore next -- @preserve */
-		if ( !modelElement ) {
-			return false;
-		}
-
-		const modelPosition = direction == 'forward' ?
-			model.createPositionAfter( modelElement ) :
-			model.createPositionBefore( modelElement );
-
-		const modelRange = editor.model.schema.getNearestSelectionRange( modelPosition, direction );
-
-		if ( !modelRange ) {
-			return false;
-		}
-
-		// In text position, just jump there.
-		if ( modelRange.isCollapsed ) {
-			editor.model.change( writer => {
-				writer.setSelection( modelRange );
-			} );
-
-			return true;
-		}
-
-		// There is a widget, search for first nested editable in it.
-		return this._selectFirstNestedEditableInRange( mapper.toViewRange( modelRange ), direction );
-	}
-
-	/**
 	 * Updates the document selection so that it selects first ancestor widget.
 	 */
 	private _selectAncestorWidget(): boolean {
 		const editor = this.editor;
 		const mapper = editor.editing.mapper;
-		const viewElement = this._findSelectionAncestor( isWidget );
+		const selection = editor.editing.view.document.selection;
+
+		const positionParent = selection.getFirstPosition()!.parent;
+
+		const positionParentElement = positionParent.is( '$text' ) ?
+			positionParent.parent as ViewElement :
+			positionParent as ViewElement;
+
+		const viewElement = positionParentElement.findAncestor( isWidget );
 
 		if ( !viewElement ) {
 			return false;
@@ -749,25 +685,6 @@ export class Widget extends Plugin {
 		} );
 
 		return true;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _findSelectionAncestor( pattern: ( ( element: ViewElement ) => boolean ) ): ViewElement | null {
-		const selection = this.editor.editing.view.document.selection;
-
-		const positionParent = selection.getFirstPosition()!.parent;
-
-		const positionParentElement = positionParent.is( '$text' ) ?
-			positionParent.parent as ViewElement :
-			positionParent as ViewElement;
-
-		if ( pattern( positionParentElement ) ) {
-			return positionParentElement;
-		}
-
-		return positionParentElement.findAncestor( pattern );
 	}
 }
 
