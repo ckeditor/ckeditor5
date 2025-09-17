@@ -9,8 +9,9 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import { UndoCommand, type UndoCommandRevertEvent } from './undocommand.js';
+import { UndoCommand } from './undocommand.js';
 import { RedoCommand } from './redocommand.js';
+import { type UndoRedoBaseCommandRevertEvent } from './basecommand.js';
 
 import type {
 	Batch,
@@ -110,7 +111,7 @@ export class UndoEditing extends Plugin {
 			}
 		}, { priority: 'highest' } );
 
-		this.listenTo<UndoCommandRevertEvent>( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
+		this.listenTo<UndoRedoBaseCommandRevertEvent>( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
 			this._redoCommand.addBatch( undoingBatch );
 		} );
 
