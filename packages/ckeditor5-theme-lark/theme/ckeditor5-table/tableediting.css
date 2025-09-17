@@ -12,7 +12,15 @@
 	/* Dashed outline for table without any border. */
 	& table[style*="border:none"],
 	& table[style*="border-style:none"] {
-		outline: var(--ck-table-content-default-border-color) 1px dashed;
+		border: dashed 1px red !important;
+	}
+
+	/* Dashed outline for cells without any border. */
+	& td[style*="border:none"],
+	& td[style*="border-style:none"],
+	& th[style*="border:none"],
+	& th[style*="border-style:none"] {
+		border: dashed 1px red !important;
 	}
 
 	& td,
