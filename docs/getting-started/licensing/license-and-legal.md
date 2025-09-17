@@ -17,7 +17,26 @@ The open-source distribution of CKEditor&nbsp;5 is licensed under the terms of G
 
 If you are running an open-source project with an OSS license incompatible with GPL please [contact us](https://ckeditor.com/contact/) &ndash; we will be happy to support your project with a [CKEditor&nbsp;5 open-source license that works for you](https://ckeditor.com/wysiwyg-editor-open-source/).
 
-**Note:** the CKEditor&nbsp;5 Free Plan is licensed under the GPL 2+ license.
+The following features are available for the GPL-compliant projects, but their availability varies depending on the commercial licensing plans:
+
+* {@link features/page-break Page break}
+* {@link features/remove-format Remove format}
+* {@link features/special-characters Special characters}
+* {@link features/layout-tables Layout tables}
+* {@link features/tables-resize Column resize}
+* {@link features/images-resizing Image Resize}
+* {@link features/simple-upload-adapter Simple Upload Adapter}
+* {@link features/base64-upload-adapter Base64 adapter}
+* {@link features/html-embed HTML embed}
+* {@link features/restricted-editing Restricted editing}
+* {@link features/paste-from-office Paste From Office}
+* {@link features/word-count Word count}
+* {@link features/find-and-replace Find and replace}
+* {@link features/bookmarks Bookmarks}
+* {@link features/full-page-html Full page HTML}
+* {@link features/tables-styling Table and cell properties}
+* {@link features/lists-properties List properties}
+* {@link getting-started/setup/editor-types#multi-root-editor Multi-root editor}
 
 ## Commercial license
 
@@ -26,16 +45,16 @@ The commercial license unlocks many benefits:
 * No GPL restrictions
 * Self-hosted CKEditor&nbsp;5
 * Additionally paid Premium features such as:
-	* Asynchronous and Real-Time Collaboration
-	* Import from Word
-	* Export to Word
-	* Export to PDF
-	* Multi-level Lists
+	* {@link features/collaboration Asynchronous and Real-Time Collaboration}
+	* {@link features/import-word Import from Word}
+	* {@link features/export-word Export to Word}
+	* {@link features/export-pdf Export to PDF}
+	* {@link features/multi-level-lists Multi-level Lists}
 	* Advanced Productivity
 	* Advanced Page Management
-	* AI Assistant
-	* CKBox for file storage and management
-* White-labeling
+	* {@link features/ai-assistant-overview AI Assistant}
+	* {@link features/ckbox CKBox for file storage and management}
+* {@link getting-started/licensing/managing-ckeditor-logo White-labeling}
 * Technical support
 
 [Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).

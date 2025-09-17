@@ -10,23 +10,17 @@
         "./"
       ],
       "ckeditor5-collaboration": [
-        "external/ckeditor5-commercial/packages/ckeditor5-collaboration"
+        "../../packages/ckeditor5-collaboration"
       ],
       "@ckeditor/*": [
         "packages/*",
-        "external/ckeditor5-commercial/packages/*"
-      ],
-      "@ckeditor/ckeditor-cloud-services-collaboration": [
-        "external/ckeditor-cloud-services-collaboration"
-      ],
-      "@ckeditor/ckeditor-cloud-services-collaboration/*": [
-        "external/ckeditor-cloud-services-collaboration/*"
+        "../../packages/*"
       ]
     }
   },
   "include": [
     "./packages/*/src/**/*.ts",
-    "./external/ckeditor5-commercial/packages/*/src/**/*.ts",
+    "../../packages/*/src/**/*.ts",
     "./typings/"
   ],
   "exclude": [

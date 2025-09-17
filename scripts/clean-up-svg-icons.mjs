@@ -8,7 +8,7 @@
 // Cleans up and optimizes SVG files using the SVGO utility. The configuration file is located in svgo.config.json.
 //
 // Usage:
-// 	yarn run clean-up-svg-icons [<option>...] [<path>...]
+// 	pnpm run clean-up-svg-icons [<option>...] [<path>...]
 //
 // The <path> can be either a direct path to a SVG file, or a path to a directory. Glob patterns in path are supported.
 // Multiple arguments (paths) in one call are supported.
@@ -20,19 +20,19 @@
 //
 // Examples:
 // 	To optimize the entire project, run:
-// 		yarn run clean-up-svg-icons
+// 		pnpm run clean-up-svg-icons
 //
 // 	To optimize single file, run:
-// 		yarn run clean-up-svg-icons <path/to/icon>
+// 		pnpm run clean-up-svg-icons <path/to/icon>
 //
 // 	To optimize single directory, run:
-// 		yarn run clean-up-svg-icons <path/to/directory>
+// 		pnpm run clean-up-svg-icons <path/to/directory>
 //
 // 	To optimize multiple directories, run:
-// 		yarn run clean-up-svg-icons <path/to/directory> <another/path/to/directory>
+// 		pnpm run clean-up-svg-icons <path/to/directory> <another/path/to/directory>
 //
 // 	To check if single file is already optimized, run:
-// 		yarn run clean-up-svg-icons --verify-only <path/to/icon>
+// 		pnpm run clean-up-svg-icons --verify-only <path/to/icon>
 
 import chalk from 'chalk';
 import upath from 'upath';
@@ -74,7 +74,7 @@ globSync( globPattern )
 if ( verifyOnly && statusCode ) {
 	console.log( chalk.red.bold( '\nSome SVG files are not optimized.' ) );
 	console.log( chalk.red(
-		'Execute "yarn run clean-up-svg-icons" to optimize them or add them to exceptions in "scripts/clean-up-svg-icons.js" file.\n'
+		'Execute "pnpm run clean-up-svg-icons" to optimize them or add them to exceptions in "scripts/clean-up-svg-icons.js" file.\n'
 	) );
 
 	process.exit( statusCode );

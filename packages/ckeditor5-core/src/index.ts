@@ -29,7 +29,14 @@ export { EditingKeystrokeHandler, type EditingKeystrokeCallback } from './editin
 
 export type { PartialBy, NonEmptyArray, HexColor } from './typings.js';
 
-export { Editor, type EditorCollectUsageDataEvent, type EditorReadyEvent, type EditorDestroyEvent } from './editor/editor.js';
+export {
+	Editor,
+	type EditorCollectUsageDataEvent,
+	type EditorReadyEvent,
+	type EditorDestroyEvent,
+	type LicenseErrorReason as _LicenseErrorReason
+} from './editor/editor.js';
+
 export type {
 	EditorConfig,
 	LanguageConfig,

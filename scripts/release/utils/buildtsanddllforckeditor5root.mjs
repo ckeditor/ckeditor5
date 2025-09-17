@@ -13,7 +13,7 @@ export default async function buildTsAndDllForCKEditor5Root() {
 		cwd: CKEDITOR5_MAIN_PACKAGE_PATH
 	};
 
-	await tools.shExec( 'yarn run build', options );
-	await tools.shExec( 'yarn run build:dist', options );
-	await tools.shExec( 'yarn run dll:build', options );
+	await tools.shExec( 'pnpm run build', options );
+	await tools.shExec( 'pnpm run build:dist', options );
+	await tools.shExec( 'pnpm run dll:build', options );
 }
