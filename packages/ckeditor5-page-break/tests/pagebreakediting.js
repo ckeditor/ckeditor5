@@ -36,8 +36,12 @@ describe( 'PageBreakEditing', () => {
 		expect( PageBreakEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( PageBreakEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( PageBreakEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `PB`', () => {
+		expect( PageBreakEditing.licenseFeatureCode ).to.equal( 'PB' );
 	} );
 
 	it( 'should be loaded', () => {

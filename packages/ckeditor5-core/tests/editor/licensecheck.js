@@ -6,6 +6,7 @@
 import { CKEditorError, global } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { Editor } from '../../src/editor/editor.js';
+import { Plugin } from '../../src/plugin.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { generateLicenseKey } from '../_utils/generatelicensekey.js';
 import { getEditorUsageData } from '../../src/editor/utils/editorusagedata.js';
@@ -614,6 +615,125 @@ describe( 'Editor - license check', () => {
 			} );
 		} );
 
+		describe( 'plugin check', () => {
+			class FreePlugin extends Plugin {
+				static get pluginName() {
+					return 'FreePlugin';
+				}
+			};
+
+			class LicensedPlugin extends Plugin {
+				static get pluginName() {
+					return 'LicensedPlugin';
+				}
+			};
+
+			Object.defineProperty( LicensedPlugin, 'licenseFeatureCode', {
+				get() {
+					return 'LP';
+				}
+			} );
+
+			class LicensedPluginNoName extends Plugin {};
+
+			Object.defineProperty( LicensedPluginNoName, 'licenseFeatureCode', {
+				get() {
+					return 'LPNN';
+				}
+			} );
+
+			it( 'should not throw if license key is invalid', () => {
+				const licenseKey = 'invalid';
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin, LicensedPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.catch( () => {
+						throw new Error( 'Expected not to throw.' );
+					} );
+			} );
+
+			it( 'should not block if license key is GPL', () => {
+				const licenseKey = 'GPL';
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin, LicensedPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						sinon.assert.notCalled( showErrorStub );
+						expect( editor.isReadOnly ).to.be.false;
+					} );
+			} );
+
+			it( 'should not block if licensed plugin does not have a name', () => {
+				const { licenseKey } = generateLicenseKey();
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin, LicensedPluginNoName ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						sinon.assert.notCalled( showErrorStub );
+						expect( editor.isReadOnly ).to.be.false;
+					} );
+			} );
+
+			it( 'should not block if editor does not load licensed plugin', () => {
+				const { licenseKey } = generateLicenseKey();
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						sinon.assert.notCalled( showErrorStub );
+						expect( editor.isReadOnly ).to.be.false;
+					} );
+			} );
+
+			it( 'should not block if editor loads licensed plugin allowed by license key', () => {
+				const { licenseKey } = generateLicenseKey();
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin, LicensedPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						sinon.assert.notCalled( showErrorStub );
+						expect( editor.isReadOnly ).to.be.false;
+					} );
+			} );
+
+			it( 'should block if editor loads licensed plugin not allowed by license key', () => {
+				const { licenseKey } = generateLicenseKey( {
+					removeFeatures: [ 'LP' ]
+				} );
+
+				const editor = new TestEditor( {
+					licenseKey,
+					plugins: [ FreePlugin, LicensedPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						sinon.assert.calledWithMatch( showErrorStub, 'pluginNotAllowed', 'LicensedPlugin' );
+						expect( editor.isReadOnly ).to.be.true;
+					} );
+			} );
+		} );
+
 		it( 'should block the editor when the license key is not valid (expiration date in the past)', () => {
 			const { licenseKey } = generateLicenseKey( {
 				isExpired: true
@@ -793,7 +913,8 @@ describe( 'Editor - license check', () => {
 			{ reason: 'invalid', error: 'invalid-license-key' },
 			{ reason: 'expired', error: 'license-key-expired' },
 			{ reason: 'domainLimit', error: 'license-key-domain-limit' },
-			{ reason: 'featureNotAllowed', error: 'license-key-plugin-not-allowed', pluginName: 'PluginABC' },
+			{ reason: 'pluginNotAllowed', error: 'license-key-plugin-not-allowed', pluginName: 'PluginABC' },
+			{ reason: 'featureNotAllowed', error: 'license-key-feature-not-allowed', featureName: 'FeatureABC' },
 			{ reason: 'evaluationLimit', error: 'license-key-evaluation-limit' },
 			{ reason: 'trialLimit', error: 'license-key-trial-limit' },
 			{ reason: 'developmentLimit', error: 'license-key-development-limit' },
@@ -802,13 +923,15 @@ describe( 'Editor - license check', () => {
 		];
 
 		for ( const testCase of testCases ) {
-			const { reason, error, pluginName } = testCase;
-			const expectedData = pluginName ? { pluginName } : undefined;
+			const { reason, error, ...name } = testCase;
+
+			const pluginOrFeatureName = name.pluginName || name.featureName;
+			const expectedData = pluginOrFeatureName ? name : undefined;
 
 			it( `should throw \`${ error }\` error`, () => {
 				const editor = new TestEditor( { licenseKey: 'GPL' } );
 
-				editor._showLicenseError( reason, pluginName );
+				editor._showLicenseError( reason, pluginOrFeatureName );
 
 				expectToThrowCKEditorError( () => clock.tick( 1 ), error, undefined, expectedData );
 			} );

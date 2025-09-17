@@ -62,6 +62,13 @@ export class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const options = this.editor.config.get( 'simpleUpload' );
 
@@ -87,6 +94,12 @@ export class SimpleUploadAdapter extends Plugin {
 		};
 	}
 }
+
+Object.defineProperty( SimpleUploadAdapter, 'licenseFeatureCode', {
+	get() {
+		return 'SUA';
+	}
+} );
 
 /**
  * Upload adapter.

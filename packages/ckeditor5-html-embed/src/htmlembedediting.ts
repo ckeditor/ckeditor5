@@ -45,6 +45,13 @@ export class HtmlEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isPremiumPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -398,6 +405,12 @@ export class HtmlEmbedEditing extends Plugin {
 		}
 	}
 }
+
+Object.defineProperty( HtmlEmbedEditing, 'licenseFeatureCode', {
+	get() {
+		return 'HE';
+	}
+} );
 
 /**
  * Returns a UI button view that can be used in conversion.

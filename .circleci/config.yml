@@ -24,9 +24,11 @@ parameters:
   isStaleBot:
     type: boolean
     default: false
+  chromeVersion:
+    type: string
+    default: "140.0.7339.127"
 
 orbs:
-  node: circleci/node@7.1.1
   continuation: circleci/continuation@0.1.2
 
 commands:
@@ -36,7 +38,7 @@ commands:
       - add_ssh_keys:
           fingerprints:
             - "a0:41:a2:56:c8:7d:3f:29:41:d1:87:92:fd:50:2b:6b"
-  
+
   checkout_command:
     description: "Clone the CKEditor 5 repository with limited depth and branches"
     steps:
@@ -60,13 +62,18 @@ jobs:
     steps:
       - checkout_command
       - install_ssh_keys_command
-      - node/install-pnpm:
-          version: "10"
-      - node/install-packages:
-          pkg-manager: pnpm
+      - run:
+          name: Disable Corepack
+          command: sudo corepack disable
+      - run:
+          name: Install pnpm
+          command: sudo npm i -g pnpm@^10
+      - run:
+          name: Install pnpm
+          command: pnpm install --frozen-lockfile
       - run:
           name: Generate a new configuration to check all packages in the repository
-          command: node scripts/ci/generate-circleci-configuration.mjs
+          command: node scripts/ci/generate-circleci-configuration.mjs --chrome-version="<< pipeline.parameters.chromeVersion >>"
       - continuation/continue:
           configuration_path: .circleci/config-tests.yml
 
