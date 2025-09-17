@@ -50,7 +50,7 @@ Some CSP directives have an impact on certain rich-text editor features. Here is
 	* The `self` directive allows to load styles from the site's own domain. Since v42.0.0, the editor {@link getting-started/setup/css distributes its stylesheets}. If you need to load styles from some other domain, add them explicitly: `style-src https://trusted-styles.example.com;`.
 	* The directive `unsafe-inline` is required to make the styles of certain features work properly. For instance, you are going to need it if you want to enable such editor features as {@link features/font font} or {@link features/text-alignment text alignment} or any other feature that uses the inline `style="..."` attributes in the content.
 
-	**Note**: Inline styles are also required when using {@link features/lists#list-item-marker-formatting list item marker formatting}. For example, if you apply font color, size, or family to list markers, the editor uses inline style attributes to render them. Because of this, `unsafe-inline` must be allowed for the styles to display correctly.
+	**Note**: Inline styles are also required when using {@link features/lists-properties#list-item-marker-formatting list item marker formatting}. For example, if you apply font color, size, or family to list markers, the editor uses inline style attributes to render them. Because of this, `unsafe-inline` must be allowed for the styles to display correctly.
 
 * `frame-src *`: Necessary for the {@link features/media-embed media embed} feature to load media with previews (containing `<iframe>`).
 

@@ -1665,7 +1665,10 @@ describe( 'Drag and Drop', () => {
 
 				sinon.assert.calledWith( spy, sinon.match( {
 					style: {
-						'padding-left': '',
+						'padding': '10px',
+						'min-width': '200px',
+						'min-height': '20px',
+						'box-sizing': 'border-box',
 						'max-width': sinon.match( /px$/ ),
 						'background-color': 'var(--ck-color-base-background)'
 					},

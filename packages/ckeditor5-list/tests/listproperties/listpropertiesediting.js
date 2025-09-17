@@ -26,8 +26,12 @@ describe( 'ListPropertiesEditing', () => {
 		expect( ListPropertiesEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ListPropertiesEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( ListPropertiesEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `LP`', () => {
+		expect( ListPropertiesEditing.licenseFeatureCode ).to.equal( 'LP' );
 	} );
 
 	describe( 'config', () => {

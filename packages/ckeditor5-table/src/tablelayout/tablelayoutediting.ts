@@ -41,6 +41,14 @@ export class TableLayoutEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'TL';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static get requires() {
 		return [ TableColumnResize ] as const;
@@ -50,6 +58,13 @@ export class TableLayoutEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isPremiumPlugin(): true {
 		return true;
 	}
 

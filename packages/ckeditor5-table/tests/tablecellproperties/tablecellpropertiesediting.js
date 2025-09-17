@@ -46,8 +46,12 @@ describe( 'table cell properties', () => {
 			expect( TableCellPropertiesEditing.isOfficialPlugin ).to.be.true;
 		} );
 
-		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TableCellPropertiesEditing.isPremiumPlugin ).to.be.false;
+		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+			expect( TableCellPropertiesEditing.isPremiumPlugin ).to.be.true;
+		} );
+
+		it( 'should have `licenseFeatureCode` static flag set to `TCP`', () => {
+			expect( TableCellPropertiesEditing.licenseFeatureCode ).to.equal( 'TCP' );
 		} );
 
 		it( 'should define table.tableCellProperties config', () => {
