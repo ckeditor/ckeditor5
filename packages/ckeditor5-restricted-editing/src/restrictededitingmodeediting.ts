@@ -74,6 +74,14 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'RED';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -420,12 +428,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 		}
 	}
 }
-
-Object.defineProperty( RestrictedEditingModeEditing, 'licenseFeatureCode', {
-	get() {
-		return 'RED';
-	}
-} );
 
 /**
  * Helper for handling Ctrl+A keydown behaviour.

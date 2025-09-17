@@ -41,6 +41,14 @@ export class PasteFromOffice extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'PFO';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -104,9 +112,3 @@ export class PasteFromOffice extends Plugin {
 		);
 	}
 }
-
-Object.defineProperty( PasteFromOffice, 'licenseFeatureCode', {
-	get() {
-		return 'PFO';
-	}
-} );

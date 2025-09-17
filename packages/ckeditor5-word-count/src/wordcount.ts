@@ -147,6 +147,14 @@ export class WordCount extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'WC';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -313,12 +321,6 @@ export class WordCount extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( WordCount, 'licenseFeatureCode', {
-	get() {
-		return 'WC';
-	}
-} );
 
 /**
  * An event fired after {@link ~WordCount#words} and {@link ~WordCount#characters} are updated.

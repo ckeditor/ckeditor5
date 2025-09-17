@@ -65,6 +65,14 @@ export class TablePropertiesEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'TCP';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -147,12 +155,6 @@ export class TablePropertiesEditing extends Plugin {
 		);
 	}
 }
-
-Object.defineProperty( TablePropertiesEditing, 'licenseFeatureCode', {
-	get() {
-		return 'TCP';
-	}
-} );
 
 /**
  * Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBorderWidth'` attributes for table.

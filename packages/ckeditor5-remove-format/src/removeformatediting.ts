@@ -26,6 +26,14 @@ export class RemoveFormatEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'RF';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -47,9 +55,3 @@ export class RemoveFormatEditing extends Plugin {
 		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
 	}
 }
-
-Object.defineProperty( RemoveFormatEditing, 'licenseFeatureCode', {
-	get() {
-		return 'RF';
-	}
-} );

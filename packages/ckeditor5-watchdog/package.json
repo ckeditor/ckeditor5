@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-editor-classic": "46.1.1",
     "@ckeditor/ckeditor5-heading": "46.1.1",
     "@ckeditor/ckeditor5-paragraph": "46.1.1",
-    "typescript": "5.0.4"
+    "typescript": "5.3.3"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

@@ -28,6 +28,14 @@ export class PageBreakEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'PB';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -141,12 +149,6 @@ export class PageBreakEditing extends Plugin {
 		editor.commands.add( 'pageBreak', new PageBreakCommand( editor ) );
 	}
 }
-
-Object.defineProperty( PageBreakEditing, 'licenseFeatureCode', {
-	get() {
-		return 'PB';
-	}
-} );
 
 /**
  * Converts a given {@link module:engine/view/element~ViewElement} to a page break widget:

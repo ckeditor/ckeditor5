@@ -54,6 +54,14 @@ export class SimpleUploadAdapter extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'SUA';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -94,12 +102,6 @@ export class SimpleUploadAdapter extends Plugin {
 		};
 	}
 }
-
-Object.defineProperty( SimpleUploadAdapter, 'licenseFeatureCode', {
-	get() {
-		return 'SUA';
-	}
-} );
 
 /**
  * Upload adapter.

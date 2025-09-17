@@ -37,6 +37,14 @@ export class HtmlEmbedEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'HE';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -405,12 +413,6 @@ export class HtmlEmbedEditing extends Plugin {
 		}
 	}
 }
-
-Object.defineProperty( HtmlEmbedEditing, 'licenseFeatureCode', {
-	get() {
-		return 'HE';
-	}
-} );
 
 /**
  * Returns a UI button view that can be used in conversion.

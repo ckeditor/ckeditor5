@@ -36,6 +36,14 @@ export class ImageResizeEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'IR';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -231,9 +239,3 @@ export class ImageResizeEditing extends Plugin {
 		} );
 	}
 }
-
-Object.defineProperty( ImageResizeEditing, 'licenseFeatureCode', {
-	get() {
-		return 'IR';
-	}
-} );
