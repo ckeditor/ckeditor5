@@ -65,6 +65,14 @@ export class TableCellPropertiesEditing extends Plugin {
 
 	/**
 	 * @inheritDoc
+	 * @internal
+	 */
+	public static get licenseFeatureCode(): string {
+		return 'TCP';
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
@@ -158,12 +166,6 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 	}
 }
-
-Object.defineProperty( TableCellPropertiesEditing, 'licenseFeatureCode', {
-	get() {
-		return 'TCP';
-	}
-} );
 
 /**
  * Enables the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` attributes for table cells.
