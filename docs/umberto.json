@@ -555,11 +555,22 @@
 			"navigationIncludeIndex": true,
 			"categories": [
 				{
-					"name": "AI Assistant",
-					"id": "features-ai-assistant",
-					"slug": "ai-assistant",
+					"name": "CKEditor AI",
+					"id": "ai",
+					"slug": "ai",
 					"badges": [
 						"premium"
+					],
+					"categories":[
+						{
+							"name": "AI Assistant",
+							"id": "ai-assistant",
+							"slug": "ai-assistant",
+							"order": 100,
+							"badges": [
+								"premium"
+							]
+						}
 					]
 				},
 				{
