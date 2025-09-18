@@ -7,12 +7,11 @@
  * @module paste-from-office/filters/unwrapmslistsparaborders
  */
 
-import {
-	ViewTreeWalker,
-	type ViewElement,
-	type ViewDocumentFragment,
-	type ViewItem,
-	type ViewUpcastWriter
+import type {
+	ViewElement,
+	ViewDocumentFragment,
+	ViewItem,
+	ViewUpcastWriter
 } from 'ckeditor5/src/engine.js';
 
 /**
@@ -37,23 +36,14 @@ import {
  * @internal
  */
 export function unwrapMSListsParaBorders( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
-	const range = writer.createRangeIn( documentFragment );
-	const walker = new ViewTreeWalker( {
-		boundaries: range,
-		ignoreElementEnd: true
-	} );
-
 	const unwrapElements = new Set<ViewElement>();
 
-	for ( const { item } of range ) {
+	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
 		if ( !isParaBorderWrapperElement( item ) || !hasAnyListLikeElement( item, writer ) ) {
 			continue;
 		}
 
 		unwrapElements.add( item );
-
-		// Avoid processing children of the current item as they will be processed by the walker.
-		walker.jumpTo( writer.createPositionAfter( item ) );
 	}
 
 	for ( const wrapper of unwrapElements ) {
