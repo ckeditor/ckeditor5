@@ -12,6 +12,7 @@ import {
 	EmitterMixin,
 	EventInfo,
 	toArray,
+	insertToPriorityArray,
 	type ArrayOrItem,
 	type Emitter,
 	type GetEventInfo,
@@ -19,7 +20,8 @@ import {
 	type BaseEvent,
 	type CallbackOptions,
 	type Constructor,
-	type Mixed
+	type Mixed,
+	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
 
 import { BubblingEventInfo, type BubblingEventPhase } from './bubblingeventinfo.js';
@@ -72,7 +74,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 
 				const startRange = ( eventInfo as BubblingEventInfo ).startRange || this.selection.getFirstRange();
 				const selectedElement = startRange ? startRange.getContainedElement() : null;
-				const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
+				const isCustomContext = selectedElement ? getCustomContexts( eventContexts, selectedElement ).length > 0 : false;
 
 				let node: ViewNode | null = selectedElement || getDeeperRangeParent( startRange );
 
@@ -135,11 +137,15 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 			const eventContexts = getBubblingContexts( this );
 
 			for ( const context of contexts ) {
-				let emitter = eventContexts.get( context );
+				let { emitter } = eventContexts.get( context ) || {};
 
 				if ( !emitter ) {
 					emitter = new ( EmitterMixin() )();
-					eventContexts.set( context, emitter! );
+
+					eventContexts.set( context, {
+						emitter,
+						priority: options.priority || 'normal'
+					} );
 				}
 
 				this.listenTo( emitter!, event, callback, options );
@@ -149,7 +155,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 		public _removeEventListener( this: ViewDocument, event: string, callback: Function ): void {
 			const eventContexts = getBubblingContexts( this );
 
-			for ( const emitter of eventContexts.values() ) {
+			for ( const { emitter } of eventContexts.values() ) {
 				this.stopListening( emitter, event, callback );
 			}
 		}
@@ -189,28 +195,44 @@ function fireListenerFor(
 	eventInfo: EventInfo,
 	...eventArgs: Array<unknown>
 ) {
-	const emitter = typeof context == 'string' ? eventContexts.get( context ) : getCustomContext( eventContexts, context );
+	let contextDefinitions;
 
-	if ( !emitter ) {
+	if ( typeof context == 'string' ) {
+		contextDefinitions = eventContexts.has( context ) ? [ eventContexts.get( context )! ] : [];
+	} else {
+		contextDefinitions = getCustomContexts( eventContexts, context );
+	}
+
+	if ( !contextDefinitions.length ) {
 		return false;
 	}
 
-	emitter.fire( eventInfo, ...eventArgs );
+	for ( const { emitter } of contextDefinitions ) {
+		emitter.fire( eventInfo, ...eventArgs );
 
-	return eventInfo.stop.called;
-}
-
-/**
- * Returns an emitter for a specified view node.
- */
-function getCustomContext( eventContexts: BubblingEventContexts, node: ViewNode ): Emitter | null {
-	for ( const [ context, emitter ] of eventContexts ) {
-		if ( typeof context == 'function' && context( node ) ) {
-			return emitter;
+		// Similar to DOM Event#stopImmediatePropagation() this does not fire events
+		// for other contexts on the same node.
+		if ( eventInfo.stop.called ) {
+			return true;
 		}
 	}
 
-	return null;
+	return false;
+}
+
+/**
+ * Returns emitters for a specified view node.
+ */
+function getCustomContexts( eventContexts: BubblingEventContexts, node: ViewNode ): Array<BubblingEventContext> {
+	const result: Array<BubblingEventContext> = [];
+
+	for ( const [ nameOrCallback, context ] of eventContexts ) {
+		if ( typeof nameOrCallback == 'function' && nameOrCallback( node ) ) {
+			insertToPriorityArray( result, context );
+		}
+	}
+
+	return result;
 }
 
 /**
@@ -383,4 +405,9 @@ export interface BubblingCallbackOptions extends CallbackOptions {
 	context?: ArrayOrItem<string | BubblingEventContextFunction>;
 }
 
-type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>;
+type BubblingEventContexts = Map<string | BubblingEventContextFunction, BubblingEventContext>;
+
+type BubblingEventContext = {
+	emitter: Emitter;
+	priority: PriorityString;
+};
