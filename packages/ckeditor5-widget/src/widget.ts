@@ -218,6 +218,7 @@ export class Widget extends Plugin {
 		// Handle Tab/Shift+Tab key.
 		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
 			if ( this._selectNextEditable( data.shiftKey ? 'backward' : 'forward' ) ) {
+				view.scrollToTheSelection();
 				data.preventDefault();
 				evt.stop();
 			}
@@ -581,20 +582,19 @@ export class Widget extends Plugin {
 		const modelSelection = model.document.selection;
 
 		const editableElement = viewSelection.editableElement!;
-		const selectedElement = viewSelection.getSelectedElement();
 		const editablePath = editableElement.getPath();
+
+		let selectedElement = viewSelection.getSelectedElement();
+
+		if ( selectedElement && !isWidget( selectedElement ) ) {
+			selectedElement = null;
+		}
 
 		// Find start position.
 		let startPosition: ViewPosition;
 
-		// When widget is selected then find nested editable inside it.
-		if ( selectedElement && isWidget( selectedElement ) ) {
-			startPosition = direction == 'forward' ?
-				view.createPositionBefore( selectedElement ) :
-				view.createPositionAfter( selectedElement );
-		}
 		// Multiple table cells are selected - use focus cell.
-		else if ( modelSelection.rangeCount > 1 ) {
+		if ( modelSelection.rangeCount > 1 ) {
 			const selectionRange = modelSelection.isBackward ?
 				modelSelection.getFirstRange()! :
 				modelSelection.getLastRange()!;
@@ -604,10 +604,7 @@ export class Widget extends Plugin {
 					selectionRange.end :
 					selectionRange.start
 			);
-		}
-		// Other in text selections.
-		else {
-			// Include nested editable elements inside selection.
+		} else {
 			startPosition = direction == 'forward' ?
 				viewSelection.getFirstPosition()! :
 				viewSelection.getLastPosition()!;
@@ -619,35 +616,53 @@ export class Widget extends Plugin {
 			view.createRange( view.createPositionAt( startPosition.root as ViewNode, 0 ), startPosition );
 
 		for ( const { nextPosition } of viewRange.getWalker( { direction } ) ) {
-			const item = nextPosition.parent;
+			const item = nextPosition.parent as ViewNode;
 
-			// Use first editable element other that the one we started in.
-			if ( !item.is( 'editableElement' ) || item == editableElement ) {
+			// Ignore currently selected editable or widget.
+			if ( item == editableElement || item == selectedElement ) {
 				continue;
 			}
 
-			const modelPosition = editing.mapper.toModelPosition( nextPosition );
-			let newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
+			// Some widget along the way.
+			if ( isWidget( item ) ) {
+				const modelElement = editing.mapper.toModelElement( item as ViewElement )!;
 
-			// There is nothing to select so just jump to the next one.
-			if ( !newRange ) {
-				continue;
+				// Do not select inline widgets.
+				if ( !model.schema.isBlock( modelElement ) ) {
+					continue;
+				}
+
+				// Do not select widget itself when going out of widget or iterating over sibling elements in a widget.
+				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
+					model.change( writer => {
+						writer.setSelection( modelElement, 'on' );
+					} );
+
+					return true;
+				}
 			}
+			// Encountered an editable element.
+			else if ( item.is( 'editableElement' ) ) {
+				const modelPosition = editing.mapper.toModelPosition( nextPosition );
+				let newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
 
-			// Select the content of editable element when iterating over sibling editable elements or going deeper into nested widgets.
-			if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
-				newRange = model.createRangeIn( modelPosition.parent );
+				// There is nothing to select so just jump to the next one.
+				if ( !newRange ) {
+					continue;
+				}
+
+				// Select the content of editable element when iterating over sibling editable elements
+				// or going deeper into nested widgets.
+				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
+					newRange = model.createRangeIn( modelPosition.parent );
+				}
+
+				model.change( writer => {
+					writer.setSelection( newRange );
+				} );
+
+				return true;
 			}
-			// Stepped out of nested editable element and there is a widget so ignore it and look further.
-			else if ( !newRange.isCollapsed ) {
-				continue;
-			}
-
-			model.change( writer => {
-				writer.setSelection( newRange );
-			} );
-
-			return true;
 		}
 
 		return false;
