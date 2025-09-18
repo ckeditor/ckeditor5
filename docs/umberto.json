@@ -567,6 +567,7 @@
 							"id": "ai-assistant",
 							"slug": "ai-assistant",
 							"order": 100,
+							"folded": true,
 							"badges": [
 								"premium"
 							]
