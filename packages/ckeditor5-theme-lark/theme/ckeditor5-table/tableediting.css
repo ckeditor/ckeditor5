@@ -10,8 +10,12 @@
 
 .ck-widget.table {
 	/* Dashed outline for table without any border. */
-	& table[style*="border:none"]:after,
-	& table[style*="border-style:none"]:before {
+	& table[style*="border:none"]:before,
+	& table[style*="border-style:none"]:before,
+	& td[style*="border:none"]:before,
+	& td[style*="border-style:none"]:before,
+	& th[style*="border:none"]:before,
+	& th[style*="border-style:none"]:before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -20,16 +24,8 @@
 		bottom: 0;
 		pointer-events: none;
 		box-sizing: border-box;
-		border: dashed 1px rgba(0, 0, 0, 0.2) !important;
+		border: dashed 1px rgba(0, 0, 0, 0.1) !important;
 	}
-
-	/* Dashed outline for cells without any border. */
-	/* & td[style*="border:none"],
-	& td[style*="border-style:none"],
-	& th[style*="border:none"],
-	& th[style*="border-style:none"] {
-		border: dashed 1px red !important;
-	} */
 
 	& td,
 	& th {
