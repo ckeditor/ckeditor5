@@ -11,10 +11,11 @@ import type {
 	ModelDocumentFragment,
 	ModelDocumentSelection,
 	ModelElement,
-	ViewElement
+	ViewElement,
+	EditingController
 } from 'ckeditor5/src/engine.js';
 
-import { getSelectionAffectedTable } from '../utils/common.js';
+import { global } from 'ckeditor5/src/utils.js';
 
 /**
  * Checks if the provided model element is a `table`.
@@ -49,13 +50,17 @@ export function getCaptionFromTableModelElement( tableModelElement: ModelElement
  * @internal
  */
 export function getCaptionFromModelSelection( selection: ModelDocumentSelection ): ModelElement | null {
-	const tableElement = getSelectionAffectedTable( selection );
+	const captionElement = selection.getFirstPosition()!.findAncestor( 'caption' );
 
-	if ( !tableElement ) {
+	if ( !captionElement ) {
 		return null;
 	}
 
-	return getCaptionFromTableModelElement( tableElement );
+	if ( captionElement.parent!.is( 'element', 'table' ) ) {
+		return captionElement;
+	}
+
+	return null;
 }
 
 /**
@@ -80,4 +85,25 @@ export function matchTableCaptionViewElement( element: ViewElement ): { name: tr
 	}
 
 	return null;
+}
+
+/**
+ * TODO
+ *
+ * @internal
+ */
+export function getCaptionVisualSide( captionElement: ModelElement, editing: EditingController ): string | undefined {
+	const viewCaption = editing.mapper.toViewElement( captionElement );
+
+	if ( !viewCaption ) {
+		return;
+	}
+
+	const domCaption = editing.view.domConverter.mapViewToDom( viewCaption );
+
+	if ( !domCaption ) {
+		return;
+	}
+
+	return global.window.getComputedStyle( domCaption ).captionSide;
 }
