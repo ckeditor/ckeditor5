@@ -30,8 +30,8 @@
 		margin: 0.9em auto;
 	}
 
-	& table.table:not(.layout-table),
-	& figure.table:not(.layout-table) > table {
+	& :where(table).table:where(:not(.layout-table)),
+	& :where( figure ).table:where(:not(.layout-table)) > table {
 		/* The table cells should have slight borders */
 		border-collapse: collapse;
 		border-spacing: 0;
@@ -40,13 +40,12 @@
 		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
 		border: 1px double hsl(0, 0%, 70%);
 
-		& > thead,
-		& > tbody {
+		& > :where(thead, tbody) {
 			/* The linter is disabled here because linter is confused when resolving the `table.table:not(.layout-table)`
 			and `figure.table:not(.layout-table) > table` selectors combined with below selectors.
 			There is no need to split it into two large structures with same code just to make linter happy. */
 			/* stylelint-disable no-descending-specificity */
-			& > tr {
+			& > :where(tr) {
 				& > th {
 					font-weight: bold;
 					background: hsla(0, 0%, 0%, 5%);
