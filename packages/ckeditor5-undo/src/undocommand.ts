@@ -7,7 +7,7 @@
  * @module undo/undocommand
  */
 
-import { UndoRedoBaseCommand } from './basecommand.js';
+import { UndoRedoBaseCommand, type UndoRedoBaseCommandRevertEvent } from './basecommand.js';
 import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -46,18 +46,8 @@ export class UndoCommand extends UndoRedoBaseCommand {
 		// Firing `revert` event after the change block to make sure that it includes all changes from post-fixers
 		// and make sure that the selection is "stabilized" (the selection range is saved after undo is executed and then
 		// restored on redo, so it is important that the selection range is saved after post-fixers are done).
-		this.fire<UndoCommandRevertEvent>( 'revert', item.batch, undoingBatch );
+		this.fire<UndoRedoBaseCommandRevertEvent>( 'revert', item.batch, undoingBatch );
 
 		this.refresh();
 	}
 }
-
-/**
- * Fired when execution of the command reverts some batch.
- *
- * @eventName ~UndoCommand#revert
- */
-export type UndoCommandRevertEvent = {
-	name: 'revert';
-	args: [ batch: Batch, undoingBatch: Batch ];
-};

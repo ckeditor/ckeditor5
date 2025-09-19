@@ -12,5 +12,7 @@
 
 	& h2.ck-form__header__label {
 		flex-grow: 1;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 }
