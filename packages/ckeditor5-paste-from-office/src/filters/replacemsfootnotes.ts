@@ -128,7 +128,7 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 		trimMSReferences( writer, msFootnoteDef );
 
 		// Insert content within the `MsoFootnoteText` element. It's usually a definition text content.
-		for ( const child of Array.from( msFootnoteDef.getChildren() ) ) {
+		for ( const child of msFootnoteDef.getChildren() ) {
 			const clonedChild = child.is( 'element' ) ? writer.clone( child, true ) : child;
 
 			writer.appendChild( clonedChild, defElements.content );
