@@ -583,6 +583,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'insertInline',
  * 				items: [
  * 					'menuBar:link',
+ * 					'menuBar:insertFootnote',
  * 					'menuBar:bookmark',
  * 					'menuBar:comment',
  * 					'menuBar:insertMergeField',
@@ -856,6 +857,7 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'insertInline',
 				items: [
 					'menuBar:link',
+					'menuBar:insertFootnote',
 					'menuBar:bookmark',
 					'menuBar:comment',
 					'menuBar:insertMergeField',
