@@ -581,15 +581,6 @@ export class Widget extends Plugin {
 		const viewSelection = view.document.selection;
 		const modelSelection = model.document.selection;
 
-		const editableElement = viewSelection.editableElement!;
-		const editablePath = editableElement.getPath();
-
-		let selectedElement = viewSelection.getSelectedElement();
-
-		if ( selectedElement && !isWidget( selectedElement ) ) {
-			selectedElement = null;
-		}
-
 		// Find start position.
 		let startPosition: ViewPosition;
 
@@ -608,6 +599,29 @@ export class Widget extends Plugin {
 			startPosition = direction == 'forward' ?
 				viewSelection.getFirstPosition()! :
 				viewSelection.getLastPosition()!;
+		}
+
+		return this._selectNextEditableStartingFromPosition( startPosition, direction );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @internal
+	 */
+	public _selectNextEditableStartingFromPosition( startPosition: ViewPosition, direction: 'backward' | 'forward' ): boolean {
+		const editing = this.editor.editing;
+		const view = editing.view;
+		const model = this.editor.model;
+		const viewSelection = view.document.selection;
+
+		const editableElement = viewSelection.editableElement!;
+		const editablePath = editableElement.getPath();
+
+		let selectedElement = viewSelection.getSelectedElement();
+
+		if ( selectedElement && !isWidget( selectedElement ) ) {
+			selectedElement = null;
 		}
 
 		// Look for the next editable.

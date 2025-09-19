@@ -68,7 +68,9 @@ export function getTableWidgetAncestor( selection: ViewDocumentSelection ): View
 
 /**
  * Checks if a given view element is a table widget.
+ *
+ * @internal
  */
-function isTableWidget( viewElement: ViewElement ): boolean {
-	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
+export function isTableWidget( viewNode: ViewNode ): boolean {
+	return viewNode.is( 'element' ) && !!viewNode.getCustomProperty( 'table' ) && isWidget( viewNode );
 }
