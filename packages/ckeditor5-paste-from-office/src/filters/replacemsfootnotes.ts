@@ -121,7 +121,7 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 		// Replace footnote reference.
 		writer.replace( msFootnoteRef, createFootnoteRefViewElement( writer, footnoteId ) );
 
-		// Replace footnote definition and append it to the definitions list.
+		// Append found matching definition to the definitions list.
 		// Order doesn't matter here, as it'll be fixed in the post-fixer.
 		const defElements = createFootnoteDefViewElement( writer, footnoteId );
 
