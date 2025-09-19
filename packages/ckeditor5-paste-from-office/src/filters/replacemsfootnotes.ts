@@ -18,6 +18,8 @@ import {
 /**
  * Replaces MS Word specific footnotes references and definitions with proper elements.
  *
+ * Things to know about MS Word footnotes:
+ *
  * * Footnote references in Word are marked with `mso-footnote-id` style.
  * * Word does not support nested footnotes, so references within definitions are ignored.
  * * Word appends extra spaces after footnote references within definitions, which are trimmed.
