@@ -1,0 +1,153 @@
+/**
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * @module paste-from-office/filters/replacemsfootnotes
+ */
+
+import type { ViewDocumentFragment, ViewElement, ViewText, ViewUpcastWriter } from 'ckeditor5/src/engine.js';
+
+import {
+	createFootnoteDefViewElement,
+	createFootnoteRefViewElement,
+	createFootnotesListViewElement
+} from './footnote.js';
+
+/**
+ * Replaces MS Word specific footnotes references and definitions with proper elements.
+ *
+ * @param documentFragment element `data.content` obtained from clipboard
+ * @param writer The view writer instance.
+ * @internal
+ */
+export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writer: ViewUpcastWriter ): void {
+	const msFootnotesRefs = new Map<string, ViewElement>();
+	const msFootnotesDefs = new Map<string, ViewElement>();
+	let msFootnotesDefinitionsList: ViewElement | null = null;
+
+	// Phase 1: Collect all footnotes references and definitions. Find the footnotes definitions list element.
+	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
+		if ( !item.is( 'element' ) ) {
+			continue;
+		}
+
+		// If spot a footnotes definitions element, let's store it. It'll be replaced later.
+		// There should be only one such element in the document.
+		if ( item.getStyle( 'mso-element' ) === 'footnote-list' ) {
+			msFootnotesDefinitionsList = item;
+			continue;
+		}
+
+		// If spot a footnote reference or definition, store it in the corresponding map.
+		if ( item.hasStyle( 'mso-footnote-id' ) ) {
+			const msFootnoteDef = item.findAncestor( 'element', el => el.getStyle( 'mso-element' ) === 'footnote' );
+
+			if ( msFootnoteDef ) {
+				// If it's a reference within a definition, ignore it and track only the definition.
+				// MS Word do not support nested footnotes, so it's safe to assume that all references within
+				// a definition point to the same definition.
+				const msFootnoteDefId = msFootnoteDef.getAttribute( 'id' )!;
+
+				msFootnotesDefs.set( msFootnoteDefId, msFootnoteDef );
+			} else {
+				// If it's a reference outside of a definition, track it as a reference.
+				const msFootnoteRefId = item.getStyle( 'mso-footnote-id' )!;
+
+				msFootnotesRefs.set( msFootnoteRefId, item );
+			}
+
+			continue;
+		}
+	}
+
+	// If there are no footnotes references or definitions, or no definitions list, there's nothing to normalize.
+	if ( !msFootnotesRefs.size || !msFootnotesDefinitionsList ) {
+		return;
+	}
+
+	// Phase 2: Replace footnotes definitions list with proper element.
+	const footnotesDefinitionsList = createFootnotesListViewElement( writer );
+
+	writer.replace( msFootnotesDefinitionsList, footnotesDefinitionsList );
+
+	// Phase 3: Replace all footnotes references and add matching definitions to the definitions list.
+	for ( const [ footnoteId, msFootnoteRef ] of msFootnotesRefs ) {
+		const msFootnoteDef = msFootnotesDefs.get( footnoteId );
+
+		if ( !msFootnoteDef ) {
+			continue;
+		}
+
+		// Replace footnote reference.
+		writer.replace( msFootnoteRef, createFootnoteRefViewElement( writer, footnoteId ) );
+
+		// Replace footnote definition and append it to the definitions list.
+		// Order doesn't matter here, as it'll be fixed in the post-fixer.
+		const defElements = createFootnoteDefViewElement( writer, footnoteId );
+
+		trimMSReferences( writer, msFootnoteDef );
+
+		// Insert content within the `MsoFootnoteText` element. It's usually a definition text content.
+		for ( const child of Array.from( msFootnoteDef.getChildren() ) ) {
+			const clonedChild = child.is( 'element' ) ? writer.clone( child, true ) : child;
+
+			writer.appendChild( clonedChild, defElements.content );
+		}
+
+		writer.appendChild( defElements.listItem, footnotesDefinitionsList );
+	}
+}
+
+/**
+ * Trims all MS Office specific references from the given element.
+ * Also removes any spaces that follow the footnote references.
+ *
+ * @param writer The view writer.
+ * @param element The element to trim.
+ * @returns The trimmed element.
+ */
+function trimMSReferences( writer: ViewUpcastWriter, element: ViewElement ): ViewElement {
+	const elementsToRemove: Array<ViewElement> = [];
+	const textNodesToTrim: Array<ViewText> = [];
+
+	for ( const { item } of writer.createRangeIn( element ) ) {
+		if ( item.is( 'element' ) && item.getStyle( 'mso-footnote-id' ) ) {
+			elementsToRemove.unshift( item );
+
+			// MS Word used to add spaces after footnote references within definitions. Let's check if there's a space after
+			// the footnote reference and mark it for trimming.
+			const { nextSibling } = item;
+
+			if ( nextSibling?.is( '$text' ) && nextSibling.data.startsWith( ' ' ) ) {
+				textNodesToTrim.unshift( nextSibling );
+			}
+		}
+	}
+
+	for ( const element of elementsToRemove ) {
+		writer.remove( element );
+	}
+
+	// Remove only the leading space from text nodes following reference within definition, preserve the rest of the text.
+	for ( const textNode of textNodesToTrim ) {
+		const trimmedData = textNode.data.substring( 1 );
+
+		if ( trimmedData.length > 0 ) {
+			// Create a new text node and replace the old one.
+			const parent = textNode.parent!;
+			const index = parent.getChildIndex( textNode );
+			const newTextNode = writer.createText( trimmedData );
+
+			writer.remove( textNode );
+			writer.insertChild( index, newTextNode, parent );
+		} else {
+			// If the text node contained only a space, remove it entirely.
+			writer.remove( textNode );
+		}
+	}
+
+	return element;
+}
+
