@@ -55,7 +55,7 @@ commands:
           name: Install pnpm
           command: sudo npm i -g pnpm@^10
       - run:
-          name: Install pnpm
+          name: Install dependencies
           command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
