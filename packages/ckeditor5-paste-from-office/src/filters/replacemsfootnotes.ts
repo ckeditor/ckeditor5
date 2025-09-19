@@ -186,4 +186,3 @@ function trimMSReferences( writer: ViewUpcastWriter, element: ViewElement ): Vie
 
 	return element;
 }
-
