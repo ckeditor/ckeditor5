@@ -93,12 +93,12 @@ export function insertGoogleDocsFootnotes(
 			const contentChar = item.data[ i ];
 
 			// Skip whitespaces in content (they don't align with template).
-			if ( isWhitespace( contentChar ) ) {
+			if ( isWhitespaceOrSeparator( contentChar ) ) {
 				continue;
 			}
 
 			// Advance template cursor to next meaningful character.
-			templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+			templateCursor = advanceTemplateToNextMeaningfulChar( template, templateCursor );
 
 			// Check if template is exhausted
 			if ( templateCursor >= template.length ) {
@@ -165,7 +165,7 @@ export function insertGoogleDocsFootnotes(
 				templateCursor++;
 
 				// Advance cursor to avoid pointing to the whitespace which will fail template/content alignment.
-				templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+				templateCursor = advanceTemplateToNextMeaningfulChar( template, templateCursor );
 			}
 
 			// Verify template and content alignment. If misaligned, stop processing.
@@ -188,7 +188,7 @@ export function insertGoogleDocsFootnotes(
 	// Both '#' markers at the end need to be converted to footnote references
 	// and inserted at the end of the last text node.
 	if ( lastTextNode ) {
-		templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+		templateCursor = advanceTemplateToNextMeaningfulChar( template, templateCursor );
 
 		while ( templateCursor < template.length && template[ templateCursor ] === '#' ) {
 			footnotePositions.push( {
@@ -198,7 +198,7 @@ export function insertGoogleDocsFootnotes(
 			} );
 
 			templateCursor++; // Skip the '#' marker.
-			templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+			templateCursor = advanceTemplateToNextMeaningfulChar( template, templateCursor );
 		}
 	}
 
@@ -270,7 +270,7 @@ function insertFootnoteReferenceInText(
 	const parent = textNode.parent!;
 	const textNodeIndex = parent.getChildIndex( textNode );
 
-	// Split text node if the footnote should be inserted in the middle
+	// Split text node if the footnote should be inserted in the middle.
 	if ( offset > 0 && offset < textNode.data.length ) {
 		const beforeText = textNode.data.substring( 0, offset );
 		const afterText = textNode.data.substring( offset );
@@ -301,24 +301,34 @@ type FootnotePosition = {
 };
 
 /**
- * Checks whether the given character is a whitespace.
+ * Checks whether the given character is a whitespace or Google Docs separator.
  *
  * @param char Character to check.
- * @returns `true` if the character is a whitespace, `false` otherwise.
+ * @returns `true` if the character is a whitespace or separator, `false` otherwise.
  */
-function isWhitespace( char: string ): boolean {
-	return /\s/.test( char );
+function isWhitespaceOrSeparator( char: string ): boolean {
+	// Check for whitespace characters.
+	if ( /\s/.test( char ) ) {
+		return true;
+	}
+
+	// Check for Unicode control characters used as separators in Google Docs (e.g., \u0010, \u0003, etc.).
+	// They occur frequently in `dsl_spacers` when user pastes tables, images, footnotes, etc.
+	// These characters are not visible and should be treated as whitespace for alignment purposes.
+	const charCode = char.charCodeAt( 0 );
+
+	return charCode <= 0x001F || ( charCode >= 0x007F && charCode <= 0x009F );
 }
 
 /**
- * Advances the template cursor to the next non-whitespace character.
+ * Advances the template cursor to the next meaningful character (non-whitespace, non-separator).
  *
  * @param template The template string to advance in.
  * @param cursor Current cursor position.
- * @returns New cursor position at the next non-whitespace character.
+ * @returns New cursor position at the next meaningful character.
  */
-function advanceToNextNonWhitespace( template: string, cursor: number ): number {
-	while ( cursor < template.length && isWhitespace( template[ cursor ] ) ) {
+function advanceTemplateToNextMeaningfulChar( template: string, cursor: number ): number {
+	while ( cursor < template.length && isWhitespaceOrSeparator( template[ cursor ] ) ) {
 		cursor++;
 	}
 
