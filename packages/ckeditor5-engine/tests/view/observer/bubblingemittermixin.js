@@ -936,13 +936,10 @@ describe( 'BubblingEmitterMixin', () => {
 					'$capture @ lowest',
 
 					'isCustomObject @ highest',
-					'isCustomObject @ high',
-					'isCustomObject @ normal',
-					'isCustomObject @ low',
-					'isCustomObject @ lowest',
-
 					'isOther @ highest',
+					'isCustomObject @ high',
 					'isOther @ high',
+					'isCustomObject @ normal',
 					'isOther @ normal'
 				] );
 
