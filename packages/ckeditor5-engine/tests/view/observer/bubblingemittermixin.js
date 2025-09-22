@@ -912,6 +912,89 @@ describe( 'BubblingEmitterMixin', () => {
 				] );
 			} );
 
+			it( 'should call all matching custom contexts', () => {
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners();
+
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ highest' ), { context: isOther, priority: 'highest' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ high' ), { context: isOther, priority: 'high' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ normal' ), { context: isOther, priority: 'normal' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ low' ), { context: isOther, priority: 'low' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ lowest' ), { context: isOther, priority: 'lowest' } );
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isOther } );
+
+				fireBubblingEvent( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'$capture @ highest',
+					'$capture @ high',
+					'$capture @ normal',
+					'$capture @ low',
+					'$capture @ lowest',
+
+					'isCustomObject @ highest',
+					'isCustomObject @ high',
+					'isCustomObject @ normal',
+					'isCustomObject @ low',
+					'isCustomObject @ lowest',
+
+					'isOther @ highest',
+					'isOther @ high',
+					'isOther @ normal'
+				] );
+
+				function isOther( node ) {
+					return node.is( 'element', 'obj' );
+				}
+			} );
+
+			it( 'should stop bubbling events if stopped on the custom context with higher priority', () => {
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = [];
+
+				setListener( '$capture', 'highest' );
+				setListener( '$capture', 'high' );
+				setListener( '$capture', 'normal' );
+				setListener( '$capture', 'low' );
+				setListener( '$capture', 'lowest' );
+
+				setListener( '$root', 'highest' );
+
+				setListener( isCustomObject, 'normal' );
+				setListener( isOther, 'high' );
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isOther, priority: 'high' } );
+
+				fireBubblingEvent( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'$capture @ highest',
+					'$capture @ high',
+					'$capture @ normal',
+					'$capture @ low',
+					'$capture @ lowest',
+
+					'isOther @ high'
+				] );
+
+				function setListener( context, priority ) {
+					viewDocument.on( 'fakeEvent', () => {
+						const contextName = typeof context == 'string' ? context : context.name;
+
+						events.push( `${ contextName } @ ${ priority }` );
+					}, { context, priority } );
+				}
+
+				function isOther( node ) {
+					return node.is( 'element', 'obj' );
+				}
+			} );
+
 			it( 'should not start bubbling events if stopped on the $capture context', () => {
 				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
