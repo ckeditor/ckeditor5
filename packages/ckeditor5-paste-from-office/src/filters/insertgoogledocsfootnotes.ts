@@ -46,14 +46,42 @@ export function insertGoogleDocsFootnotes(
 	}
 
 	const footnotePositions: Array<FootnotePosition> = [];
-	let data = '';
 	let lastTextNode: ViewText | null = null;
 
-	// Google Docs use some whitespaces within the `dsl_spacers` string to indicate regions where elements start or end.
-	// It applies to tables, lists, etc. However, footnotes references are always marked with `#` character, without any whitespaces.
-	// To keep the processing simple, remove all whitespaces from the `dsl_spacers` string.
-	const template = dropWhitespaces( slice.dsl_spacers );
-	let templateMismatch = false;
+	// The core of this filter is to find the correct positions for footnote references.
+	// Google Docs clipboard data provides a "template" string called `dsl_spacers` that maps the content.
+	// Footnote references are marked with a '#' character in this template.
+	// The text content from the clipboard does not contain these '#' markers (excluding normal text `#` characters).
+	//
+	// This algorithm iterates over the text content character by character (ignoring whitespaces)
+	// and simultaneously over the `dsl_spacers` template (also ignoring whitespaces).
+	// When a '#' is found in the template, it means a footnote reference should be inserted at the
+	// current position in the text content.
+	//
+	// Example:
+	//
+	// Content:  "This is a sample text with a footnote."
+	// Template: "This is a sample text with a footnote#."
+	//
+	// Alignment process:
+	//
+	// Content:  T h i s   i s   a   s a m p l e   t e x t   w i t h   a   f o o t n o t e .
+	//           ^                                                                       ^
+	//           |                                                                       |
+	// Template: T h i s   i s   a   s a m p l e   t e x t   w i t h   a   f o o t n o t e # .
+	//           ^                                                                         ^
+	//
+	// When the template cursor encounters '#', the algorithm records the position in the content.
+	//
+	// Content:  ... f o o t n o t e .
+	//                             ^
+	//                             |---- Footnote position identified here.
+	// Template: ... f o o t n o t e # .
+	//                             ^
+
+	// Process text content character by character, synchronizing with template
+	const template = slice.dsl_spacers;
+	let templateCursor = 0;
 	let footnoteCounter = 0;
 
 	for ( const { item } of writer.createRangeIn( documentFragment ) ) {
@@ -62,65 +90,119 @@ export function insertGoogleDocsFootnotes(
 		}
 
 		for ( let i = 0; i < item.data.length; i++ ) {
-			const char = item.data[ i ];
+			const contentChar = item.data[ i ];
 
-			// Similarly to `dsl_spacers`, ignore whitespaces within the text content.
-			if ( isWhitespace( char ) ) {
+			// Skip whitespaces in content (they don't align with template).
+			if ( isWhitespace( contentChar ) ) {
 				continue;
 			}
 
-			// If it's normal character, but on the same position in the spacers there's footnote spacer, add the spacer first.
-			// This way we keep our data aligned with the spacers structure.
-			if ( char !== '#' && template[ data.length ] === '#' ) {
-				footnotePositions.push( {
-					textNode: item.textNode,
-					offset: Math.max( 0, i - 1 ),
-					footnoteIndex: footnoteCounter++
-				} );
+			// Advance template cursor to next meaningful character.
+			templateCursor = advanceToNextNonWhitespace( template, templateCursor );
 
-				data += '#' + char;
-				continue;
-			}
-
-			data += char;
-			lastTextNode = item.textNode;
-
-			// Something is wrong with the data or the template, they are not aligned. Stop processing.
-			// Let's analyze what we collected so far.
-			if ( char !== template[ data.length - 1 ] ) {
-				templateMismatch = true;
+			// Check if template is exhausted
+			if ( templateCursor >= template.length ) {
 				break;
 			}
-		}
 
-		if ( templateMismatch ) {
-			break;
+			const templateChar = template[ templateCursor ];
+
+			// Found footnote marker in template where content has normal character/
+			if ( templateChar === '#' && contentChar !== '#' ) {
+				// Handle edge case: if character after '#' in template is newline, insert at end of previous text node.
+				// This is necessary when a footnote is at the very end of a block-level element (like a paragraph).
+				// In such cases, the template looks like this:
+				//
+				// Template: "Some text.#\n"
+				//
+				// The `\n` indicates the end of the block. Without this special handling, the footnote would be
+				// incorrectly associated with the beginning of the *next* text node if it existed.
+				//
+				// Visual explanation:
+				//
+				// Let's assume content: "First paragraph.Second paragraph." with template: "First paragraph.#\nSecond paragraph."
+				// The view might look like this:
+				//
+				// <p>
+				//   <$text>"First paragraph."</$text>
+				// </p>
+				// <p>
+				//   <$text>"Second paragraph."</$text>
+				// </p>
+				//
+				// When processing `contentChar` = 'S' from "Second paragraph.":
+				//
+				// lastTextNode: <$text>"First paragraph."
+				//
+				// Content:      F i r s t   p a r a g r a p h .   S e c o n d   p a r a g r a p h .
+				//               ^                                 ^
+				//                                                 Text cursor is here (pointing to 'S')
+				//
+				// Template:     F i r s t   p a r a g r a p h . # \n S e c o n d . . .
+				//                                               ^
+				//                                               templateCursor is here (pointing to '#')
+				//
+				// The current character in template is '#', and the character after '#' is '\n'.
+				// This indicates the footnote should be at the end of the current text node ("First paragraph.").
+				// So, we must use `lastTextNode` to place the footnote at `lastTextNode.data.length`.
+				const insertAtPreviousNode = template[ templateCursor + 1 ] === '\n' && lastTextNode;
+
+				if ( insertAtPreviousNode ) {
+					footnotePositions.push( {
+						textNode: lastTextNode!,
+						offset: lastTextNode!.data.length,
+						footnoteIndex: footnoteCounter++
+					} );
+				} else {
+					footnotePositions.push( {
+						textNode: item.textNode,
+						offset: Math.max( 0, i - 1 ),
+						footnoteIndex: footnoteCounter++
+					} );
+				}
+
+				// Skip the '#' marker.
+				templateCursor++;
+
+				// Advance cursor to avoid pointing to the whitespace which will fail template/content alignment.
+				templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+			}
+
+			// Verify template and content alignment. If misaligned, stop processing.
+			if ( templateCursor < template.length && template[ templateCursor ] !== contentChar ) {
+				break;
+			}
+
+			templateCursor++;
+			lastTextNode = item.textNode;
 		}
 	}
 
-	// If we processed all text, but there's still some template left, it means that the rest of the template
-	// contains only footnote spacers. Add them all.
-	if ( !templateMismatch && data.length < template.length && lastTextNode ) {
-		for ( let i = data.length; i < template.length; i++ ) {
-			// Something is wrong with the data or the template, they are not aligned. Stop processing.
-			// Let's analyze what we collected so far.
-			if ( template[ i ] !== '#' ) {
-				break;
-			}
+	// Handle remaining footnote markers at the end of template.
+	// This handles cases where footnotes appear after all content has been processed.
+	// For example, when multiple footnotes are at the very end of the document:
+	//
+	// Content:  "Final sentence."
+	// Template: "Final sentence.##"
 
-			// Store footnote position for later processing
+	// Both '#' markers at the end need to be converted to footnote references
+	// and inserted at the end of the last text node.
+	if ( lastTextNode ) {
+		templateCursor = advanceToNextNonWhitespace( template, templateCursor );
+
+		while ( templateCursor < template.length && template[ templateCursor ] === '#' ) {
 			footnotePositions.push( {
 				textNode: lastTextNode,
 				offset: lastTextNode.data.length,
 				footnoteIndex: footnoteCounter++
 			} );
 
-			data += '#';
+			templateCursor++; // Skip the '#' marker.
+			templateCursor = advanceToNextNonWhitespace( template, templateCursor );
 		}
 	}
 
-	// Extract all footnote definitions defined in the footnote style slice.
-	// The order of the definitions corresponds to the order of footnote references in the text.
+	// Extract footnote definitions from Google Docs clipboard data.
 	const footnotesSliceDefinitions = footnotesSliceStyle.stsl_styles?.reduce<Array<string>>( ( acc, style ) => {
 		const footnoteSliceId = style?.fs_id;
 
@@ -134,7 +216,7 @@ export function insertGoogleDocsFootnotes(
 			return acc;
 		}
 
-		// Remove the leading escaped `\u0003` character that appears in case of empty footnote.
+		// Remove leading escaped character that appears in empty footnotes.
 		if ( content.startsWith( '\u0003' ) ) {
 			content = content.slice( 1 );
 		}
@@ -147,56 +229,66 @@ export function insertGoogleDocsFootnotes(
 		return;
 	}
 
-	// Phase 2: Create footnotes definitions list and append it to the document fragment.
+	// Create footnotes list container.
 	const footnotesDefinitionsList = createFootnotesListViewElement( writer );
 
-	// Phase 3: Replace footnote positions with footnote references in reverse order (to preserve positions).
-	// We iterate in reverse order to avoid shifting positions when inserting elements.
+	// Insert footnote references and create definitions (process in reverse to preserve positions).
 	for ( let i = footnotePositions.length - 1; i >= 0; i-- ) {
 		const position = footnotePositions[ i ];
 		const footnoteId = `gdocs-footnote-${ position.footnoteIndex + 1 }`;
-		const footnoteContent = footnotesSliceDefinitions[ position.footnoteIndex ];
+		const footnoteContent = footnotesSliceDefinitions[ position.footnoteIndex ] || '';
 
-		if ( !footnoteContent ) {
-			continue;
-		}
+		// Insert footnote reference at the calculated position.
+		insertFootnoteReferenceInText( writer, position, footnoteId );
 
-		// Create footnote reference element
-		const footnoteRef = createFootnoteRefViewElement( writer, footnoteId );
-
-		// Insert footnote reference at the correct position
-		const parent = position.textNode.parent!;
-		const textNodeIndex = parent.getChildIndex( position.textNode );
-
-		// Split text node if needed
-		if ( position.offset > 0 && position.offset < position.textNode.data.length ) {
-			const beforeText = position.textNode.data.substring( 0, position.offset );
-			const afterText = position.textNode.data.substring( position.offset );
-
-			const beforeTextNode = writer.createText( beforeText );
-			const afterTextNode = writer.createText( afterText );
-
-			writer.remove( position.textNode );
-			writer.insertChild( textNodeIndex, beforeTextNode, parent );
-			writer.insertChild( textNodeIndex + 1, footnoteRef, parent );
-			writer.insertChild( textNodeIndex + 2, afterTextNode, parent );
-		} else if ( position.offset === 0 ) {
-			// Insert at the beginning of text node
-			writer.insertChild( textNodeIndex, footnoteRef, parent );
-		} else {
-			// Insert at the end of text node
-			writer.insertChild( textNodeIndex + 1, footnoteRef, parent );
-		}
-
-		// Create footnote definition
+		// Create footnote definition.
 		const defElements = createFootnoteDefViewElement( writer, footnoteId );
 
 		writer.appendChild( writer.createText( footnoteContent ), defElements.content );
 		writer.appendChild( defElements.listItem, footnotesDefinitionsList );
 	}
 
-	// Phase 4: Append footnotes definitions list to the end of the document fragment.
+	// Append footnotes list to document.
 	writer.appendChild( footnotesDefinitionsList, documentFragment );
+}
+
+/**
+ * Inserts a footnote reference element at the specified position in the text node.
+ *
+ * @param writer The view upcast writer.
+ * @param position The position where to insert the footnote reference.
+ * @param footnoteId The ID of the footnote.
+ */
+function insertFootnoteReferenceInText(
+	writer: ViewUpcastWriter,
+	position: FootnotePosition,
+	footnoteId: string
+): void {
+	const footnoteRef = createFootnoteRefViewElement( writer, footnoteId );
+	const { textNode, offset } = position;
+
+	const parent = textNode.parent!;
+	const textNodeIndex = parent.getChildIndex( textNode );
+
+	// Split text node if the footnote should be inserted in the middle
+	if ( offset > 0 && offset < textNode.data.length ) {
+		const beforeText = textNode.data.substring( 0, offset );
+		const afterText = textNode.data.substring( offset );
+
+		const beforeTextNode = writer.createText( beforeText );
+		const afterTextNode = writer.createText( afterText );
+
+		writer.remove( textNode );
+		writer.insertChild( textNodeIndex, beforeTextNode, parent );
+		writer.insertChild( textNodeIndex + 1, footnoteRef, parent );
+		writer.insertChild( textNodeIndex + 2, afterTextNode, parent );
+	} else if ( offset === 0 ) {
+		// Insert at the beginning of text node.
+		writer.insertChild( textNodeIndex, footnoteRef, parent );
+	} else {
+		// Insert at the end of text node.
+		writer.insertChild( textNodeIndex + 1, footnoteRef, parent );
+	}
 }
 
 /**
@@ -218,13 +310,19 @@ function isWhitespace( char: string ): boolean {
 	return /\s/.test( char );
 }
 
-/** Removes all whitespaces from the given string.
+/**
+ * Advances the template cursor to the next non-whitespace character.
  *
- * @param str String to process.
- * @returns String without whitespaces.
+ * @param template The template string to advance in.
+ * @param cursor Current cursor position.
+ * @returns New cursor position at the next non-whitespace character.
  */
-function dropWhitespaces( str: string ): string {
-	return str.replace( /\s+/g, '' );
+function advanceToNextNonWhitespace( template: string, cursor: number ): number {
+	while ( cursor < template.length && isWhitespace( template[ cursor ] ) ) {
+		cursor++;
+	}
+
+	return cursor;
 }
 
 /**
