@@ -9,11 +9,12 @@
 // Images uploaded during the free trial will not be deleted for the whole trial period and additionally the trial service can be converted
 // into a subscription at any moment, allowing you to preserve all uploaded images.
 
-export const TOKEN_URL = 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt';
+// TODO: Revert back to production URLs after testing dev preset
+export const TOKEN_URL = 'https://cke5-dev.cke-cs-dev.com/token/dev/ab089950cf4fa9f576cbeb778bdda5d92dca3023bbe2036072ddfc431ee0';
 
-export const UPLOAD_URL = 'https://33333.cke-cs.com/easyimage/upload/';
+export const UPLOAD_URL = 'https://cke5-dev.cke-cs-dev.com/easyimage/upload/';
 
-export const WEB_SOCKET_URL = '33333.cke-cs.com/ws';
+export const WEB_SOCKET_URL = 'cke5-dev.cke-cs-dev.com/ws';
 
 export const CS_CONFIG = {
 	tokenUrl: TOKEN_URL,
