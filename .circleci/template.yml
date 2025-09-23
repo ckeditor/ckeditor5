@@ -55,7 +55,7 @@ commands:
           name: Install pnpm
           command: sudo npm i -g pnpm@^10
       - run:
-          name: Install pnpm
+          name: Install dependencies
           command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
@@ -120,7 +120,7 @@ jobs:
           command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
-          command: bash scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
+          command: bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
     docker:
