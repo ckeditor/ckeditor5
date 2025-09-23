@@ -161,6 +161,7 @@ export { default as IconPrint } from '../theme/icons/print.svg';
 export { default as IconProjectLogo } from '../theme/icons/project-logo.svg';
 export { default as IconQuote } from '../theme/icons/quote.svg';
 export { default as IconRedo } from '../theme/icons/redo.svg';
+export { default as IconRefresh } from '../theme/icons/refresh.svg';
 export { default as IconRemoveComment } from '../theme/icons/remove-comment.svg';
 export { default as IconRemoveFormat } from '../theme/icons/remove-format.svg';
 export { default as IconRemove } from '../theme/icons/remove.svg';
