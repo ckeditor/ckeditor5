@@ -1023,7 +1023,7 @@ describe( 'DialogView', () => {
 		} );
 
 		it( 'should return early when position is null', () => {
-			const moveToSpy = testUtils.sinon.spy( view, 'moveTo' );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
 
 			view.position = null;
 
@@ -1035,7 +1035,7 @@ describe( 'DialogView', () => {
 		it( 'should call position function with correct arguments and use returned coordinates', () => {
 			const mockCoords = { left: 123, top: 456 };
 			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
-			const moveToSpy = testUtils.sinon.spy( view, 'moveTo' );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
 
 			view.position = positionFunctionSpy;
 
@@ -1069,7 +1069,7 @@ describe( 'DialogView', () => {
 		it( 'should call position function with undefined domRootRect when no DOM root is available', () => {
 			const mockCoords = { left: 789, top: 101 };
 			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
-			const moveToSpy = testUtils.sinon.spy( view, 'moveTo' );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
 
 			getCurrentDomRootStub.returns( null );
 			view.position = positionFunctionSpy;
