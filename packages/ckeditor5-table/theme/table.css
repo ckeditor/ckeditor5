@@ -14,24 +14,8 @@
 		text-align: left;
 	}
 
-	& figure.table:not(.layout-table) {
-		display: table;
-
-		& > table {
-			width: 100%;
-			height: 100%;
-		}
-	}
-
-	& .table:not(.layout-table) {
-		/* Give the table widget some air and center it horizontally */
-		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
-		to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
-		margin: 0.9em auto;
-	}
-
 	& :where(table).table:where(:not(.layout-table)),
-	& :where( figure ).table:where(:not(.layout-table)) > table {
+	& :where(figure).table:where(:not(.layout-table)) > table {
 		/* The table cells should have slight borders */
 		border-collapse: collapse;
 		border-spacing: 0;
@@ -84,6 +68,22 @@
 				}
 			}
 		}
+	}
+
+	& figure.table:not(.layout-table) {
+		display: table;
+
+		& > table {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	& .table:not(.layout-table) {
+		/* Give the table widget some air and center it horizontally */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+		to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
 	}
 }
 
