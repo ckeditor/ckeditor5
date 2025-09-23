@@ -117,7 +117,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 
 		// There is no limit element, browser should handle this.
 		if ( !endPosition ) {
-			return null;
+			return;
 		}
 
 		const range = model.createRange( startPosition, endPosition );
@@ -126,15 +126,13 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		if ( lastRangePosition ) {
 			return model.createRange( startPosition, lastRangePosition );
 		}
-
-		return null;
 	} else {
 		const endPosition = selection.isCollapsed ? selection.focus! : selection.getFirstPosition()!;
 		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
 
 		// There is no limit element, browser should handle this.
 		if ( !startPosition ) {
-			return null;
+			return;
 		}
 
 		const range = model.createRange( startPosition, endPosition );
@@ -143,8 +141,6 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		if ( firstRangePosition ) {
 			return model.createRange( firstRangePosition, endPosition );
 		}
-
-		return null;
 	}
 }
 
@@ -195,8 +191,6 @@ function getNearestTextPosition( schema: ModelSchema, range: ModelRange, directi
 			return nextPosition;
 		}
 	}
-
-	return null;
 }
 
 /**

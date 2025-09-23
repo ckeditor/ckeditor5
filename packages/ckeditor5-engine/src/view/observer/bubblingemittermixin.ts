@@ -29,7 +29,9 @@ import { type ViewRange } from '../range.js';
 import { type ViewElement } from '../element.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
 
-const contextsSymbol = Symbol( 'bubbling contexts' );
+const bubblingEmitterSymbol = Symbol( 'bubblingEmitter' );
+const callbackMapSymbol = Symbol( 'bubblingCallbacks' );
+const contextsSymbol = Symbol( 'bubblingContexts' );
 
 /**
  * Bubbling emitter mixin for the view document as described in the {@link ~BubblingEmitter} interface.
@@ -57,22 +59,19 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 		): GetEventInfo<TEvent>[ 'return' ] {
 			try {
 				const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
-				const eventContexts = getBubblingContexts( this );
-
-				if ( !eventContexts.size ) {
-					return;
-				}
+				const bubblingEmitter = getBubblingEmitter( this );
+				const customContexts = getCustomContexts( this );
 
 				updateEventInfo( eventInfo, 'capturing', this );
 
 				// The capture phase of the event.
-				if ( fireListenerFor( eventContexts, '$capture', eventInfo, ...eventArgs ) ) {
+				if ( fireListenerFor( bubblingEmitter, '$capture', eventInfo, ...eventArgs ) ) {
 					return eventInfo.return;
 				}
 
 				const startRange = ( eventInfo as BubblingEventInfo ).startRange || this.selection.getFirstRange();
 				const selectedElement = startRange ? startRange.getContainedElement() : null;
-				const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
+				const isCustomContext = selectedElement ? hasMatchingCustomContext( customContexts, selectedElement ) : false;
 
 				let node: ViewNode | null = selectedElement || getDeeperRangeParent( startRange );
 
@@ -80,7 +79,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 
 				// For the not yet bubbling event trigger for $text node if selection can be there and it's not a custom context selected.
 				if ( !isCustomContext ) {
-					if ( fireListenerFor( eventContexts, '$text', eventInfo, ...eventArgs ) ) {
+					if ( fireListenerFor( bubblingEmitter, '$text', eventInfo, ...eventArgs ) ) {
 						return eventInfo.return;
 					}
 
@@ -88,22 +87,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 				}
 
 				while ( node ) {
-					// Root node handling.
-					if ( node.is( 'rootElement' ) ) {
-						if ( fireListenerFor( eventContexts, '$root', eventInfo, ...eventArgs ) ) {
-							return eventInfo.return;
-						}
-					}
-
-					// Element node handling.
-					else if ( node.is( 'element' ) ) {
-						if ( fireListenerFor( eventContexts, node.name, eventInfo, ...eventArgs ) ) {
-							return eventInfo.return;
-						}
-					}
-
-					// Check custom contexts (i.e., a widget).
-					if ( fireListenerFor( eventContexts, node, eventInfo, ...eventArgs ) ) {
+					if ( node.is( 'element' ) && fireListenerFor( bubblingEmitter, node, eventInfo, ...eventArgs ) ) {
 						return eventInfo.return;
 					}
 
@@ -115,7 +99,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 				updateEventInfo( eventInfo, 'bubbling', this );
 
 				// Document context.
-				fireListenerFor( eventContexts, '$document', eventInfo, ...eventArgs );
+				fireListenerFor( bubblingEmitter, '$document', eventInfo, ...eventArgs );
 
 				return eventInfo.return;
 			} catch ( err: any ) {
@@ -132,25 +116,33 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 			options: BubblingCallbackOptions
 		) {
 			const contexts = toArray( options.context || '$document' );
-			const eventContexts = getBubblingContexts( this );
+			const bubblingEmitter = getBubblingEmitter( this );
+			const callbacksMap = getCallbackMap( this );
 
 			for ( const context of contexts ) {
-				let emitter = eventContexts.get( context );
-
-				if ( !emitter ) {
-					emitter = new ( EmitterMixin() )();
-					eventContexts.set( context, emitter! );
+				if ( typeof context == 'function' ) {
+					getCustomContexts( this ).add( context );
 				}
-
-				this.listenTo( emitter!, event, callback, options );
 			}
+
+			// Wrap callback with current target match.
+			const wrappedCallback = wrapCallback( this, contexts, callback );
+
+			// Store for later removing of listeners.
+			callbacksMap.set( callback, wrappedCallback );
+
+			// Listen for the event.
+			this.listenTo<BubblingInternalEvent>( bubblingEmitter, event, wrappedCallback, options );
 		}
 
 		public _removeEventListener( this: ViewDocument, event: string, callback: Function ): void {
-			const eventContexts = getBubblingContexts( this );
+			const bubblingEmitter = getBubblingEmitter( this );
+			const callbacksMap = getCallbackMap( this );
+			const wrappedCallback = callbacksMap.get( callback );
 
-			for ( const emitter of eventContexts.values() ) {
-				this.stopListening( emitter, event, callback );
+			if ( wrappedCallback ) {
+				callbacksMap.delete( callback );
+				this.stopListening( bubblingEmitter, event, wrappedCallback );
 			}
 		}
 	}
@@ -184,44 +176,117 @@ function updateEventInfo(
  * @returns True if event stop was called.
  */
 function fireListenerFor(
-	eventContexts: BubblingEventContexts,
-	context: string | ViewNode,
+	emitter: Emitter,
+	currentTarget: string | ViewElement,
 	eventInfo: EventInfo,
 	...eventArgs: Array<unknown>
 ) {
-	const emitter = typeof context == 'string' ? eventContexts.get( context ) : getCustomContext( eventContexts, context );
+	emitter.fire<BubblingInternalEvent>( eventInfo, {
+		currentTarget,
+		eventArgs
+	} );
 
-	if ( !emitter ) {
-		return false;
+	// Similar to DOM Event#stopImmediatePropagation() this does not fire events
+	// for other contexts on the same node.
+	if ( eventInfo.stop.called ) {
+		return true;
 	}
 
-	emitter.fire( eventInfo, ...eventArgs );
-
-	return eventInfo.stop.called;
+	return false;
 }
 
 /**
- * Returns an emitter for a specified view node.
+ * Returns an event callback wrapped with context check condition.
  */
-function getCustomContext( eventContexts: BubblingEventContexts, node: ViewNode ): Emitter | null {
-	for ( const [ context, emitter ] of eventContexts ) {
-		if ( typeof context == 'function' && context( node ) ) {
-			return emitter;
+function wrapCallback(
+	emitter: Emitter,
+	contexts: Array<string | BubblingEventContextFunction>,
+	callback: ( ev: EventInfo, ...args: Array<any> ) => void
+) {
+	return function( event: EventInfo, data: BubblingEventInternalData ) {
+		const { currentTarget, eventArgs } = data;
+
+		// Quick path for string based context ($capture, $text, $document).
+		if ( typeof currentTarget == 'string' ) {
+			if ( contexts.includes( currentTarget ) ) {
+				callback.call( emitter, event, ...eventArgs );
+			}
+
+			return;
 		}
-	}
 
-	return null;
+		// The current target is a view element.
+
+		// Special case for the root element as it could be handled ac $root context.
+		// Note that it could also be matched later by custom context.
+		if ( currentTarget.is( 'rootElement' ) && contexts.includes( '$root' ) ) {
+			callback.call( emitter, event, ...eventArgs );
+
+			return;
+		}
+
+		// Check if it is a context for this element name.
+		if ( contexts.includes( currentTarget.name ) ) {
+			callback.call( emitter, event, ...eventArgs );
+
+			return;
+		}
+
+		// Check if dynamic context matches.
+		for ( const context of contexts ) {
+			if ( typeof context == 'function' && context( currentTarget ) ) {
+				callback.call( emitter, event, ...eventArgs );
+
+				return;
+			}
+		}
+	};
 }
 
 /**
- * Returns bubbling contexts map for the source (emitter).
+ * Returns bubbling emitter for the source (emitter).
  */
-function getBubblingContexts( source: { [ x: string ]: any; [ contextsSymbol ]?: BubblingEventContexts } ) {
+function getBubblingEmitter( source: { [ x: string ]: any; [ bubblingEmitterSymbol ]?: Emitter } ) {
+	if ( !source[ bubblingEmitterSymbol ] ) {
+		source[ bubblingEmitterSymbol ] = new ( EmitterMixin() )();
+	}
+
+	return source[ bubblingEmitterSymbol ];
+}
+
+/**
+ * Returns map of callbacks (original to wrapped one).
+ */
+function getCallbackMap( source: { [ x: string ]: any; [ callbackMapSymbol ]?: Map<any, any> } ) {
+	if ( !source[ callbackMapSymbol ] ) {
+		source[ callbackMapSymbol ] = new Map();
+	}
+
+	return source[ callbackMapSymbol ];
+}
+
+/**
+ * Returns the set of registered custom contexts.
+ */
+function getCustomContexts( source: { [ x: string ]: any; [ contextsSymbol ]?: Set<any> } ) {
 	if ( !source[ contextsSymbol ] ) {
-		source[ contextsSymbol ] = new Map();
+		source[ contextsSymbol ] = new Set();
 	}
 
 	return source[ contextsSymbol ];
+}
+
+/**
+ * Returns true if any of custom context match the given element.
+ */
+function hasMatchingCustomContext( customContexts: Set<any>, element: ViewElement ) {
+	for ( const context of customContexts ) {
+		if ( context( element ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**
@@ -383,4 +448,18 @@ export interface BubblingCallbackOptions extends CallbackOptions {
 	context?: ArrayOrItem<string | BubblingEventContextFunction>;
 }
 
-type BubblingEventContexts = Map<string | BubblingEventContextFunction, Emitter>;
+/**
+ * Internal emitter event type.
+ */
+type BubblingInternalEvent = {
+	name: string;
+	args: [ data: BubblingEventInternalData ];
+};
+
+/**
+ * Internal emitter data type.
+ */
+type BubblingEventInternalData = {
+	currentTarget: string | ViewElement;
+	eventArgs: Array<unknown>;
+};
