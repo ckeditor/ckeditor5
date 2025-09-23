@@ -500,7 +500,7 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 		} else if ( typeof this.position == 'function' ) {
 			const coords = this.position( dialogRect, domRootRect );
 
-			this.moveTo( coords.left, coords.top );
+			this._moveTo( coords.left, coords.top );
 
 			return;
 		}
