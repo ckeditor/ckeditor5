@@ -19,6 +19,10 @@ This article explains how to obtain a commercial license for CKEditor&nbsp;5 and
 
 ## Obtaining a license
 
+### Free commercial plan
+
+CKEditor&nbsp;5 offers a [free commercial plan](https://portal.ckeditor.com/checkout?plan=free) with cloud distribution via CDN. This plan includes up to 1,000 editor loads per month and provides access to a limited set of features. It is designed for small-scale projects that need commercial licensing but don't require the full range of premium features or self-hosted deployment.
+
 ### Purchasing a commercial license
 
 If you wish to purchase a commercial CKEditor&nbsp;5 license there are two options to do that.
@@ -43,9 +47,8 @@ Trial allows testing both self-hosted and cloud distributions. When the trial fi
 
 ### Using the GPL key
 
-CKEditor&nbsp;5 (without the premium features listed above) can be used in an open-source, GPL-compliant setup with:
+CKEditor&nbsp;5 can be used in an open-source, GPL-compliant setup with:
 
-* a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a unique license key and free editor loads.
 * legacy GPL accounts in our Customer Portal. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 * without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
@@ -122,6 +125,10 @@ This key grants access to your subscription features. It does not consume editor
 * **Intended use**: Designed for development environments such as local work, continuous integration (CI), and end-to-end (E2E) tests.
 * **Usage limitation**: Must not be used for production environments.
 * **Editor loads**: It does not consume editor loads, regardless of the plan type.
+  
+<info-box important>
+	While the development key is meant as a means to extensive testing, please remember that testing outside local environments in the Cloud set up requires the production key and consumes editor loads. If you intend to use top-level domain, you need a production license key or [contact us](https://ckeditor.com/contact/) to get a self-hosted plan without usage metering.
+</info-box>
 
 ### Production license key
 
