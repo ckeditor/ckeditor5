@@ -27,7 +27,7 @@ import { ListItemView } from '../../src/list/listitemview.js';
 import { ListSeparatorView } from '../../src/list/listseparatorview.js';
 import { ListView } from '../../src/list/listview.js';
 import { ViewCollection } from '../../src/viewcollection.js';
-import { BodyCollection, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
+import { BodyCollection, ButtonLabelView, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
 	let locale, dropdownView;
@@ -1105,6 +1105,55 @@ describe( 'utils', () => {
 					} );
 
 					button.fire( 'execute' );
+				} );
+
+				describe( 'optional labelView support', () => {
+					it( 'should use a custom ButtonLabelView instance if provided', () => {
+						definitions.add( {
+							type: 'button',
+							model: new UIModel( {
+								label: 'foo',
+								labelStyle: 'color: red',
+								ariaLabelledBy: 'bar'
+							} )
+						} );
+
+						expect( listItems.first.children.first.labelView ).to.be.instanceOf( ButtonLabelView );
+						expect( listItems.first.children.first.labelView.text ).to.equal( 'foo' );
+						expect( listItems.first.children.first.labelView.style ).to.equal( 'color: red' );
+						expect( listItems.first.children.first.labelView.id ).to.equal( 'bar' );
+					} );
+
+					it( 'should use a ButtonLabelView instance by default', () => {
+						class CustomButttonLabelView extends ButtonLabelView {
+							constructor( locale ) {
+								super( locale );
+
+								this.set( {
+									text: '',
+									style: '',
+									id: ''
+								} );
+							}
+						}
+
+						const labelView = new CustomButttonLabelView( locale );
+
+						definitions.add( {
+							type: 'button',
+							model: new UIModel( {
+								label: 'foo',
+								labelStyle: 'color: red',
+								ariaLabelledBy: 'bar'
+							} ),
+							labelView
+						} );
+
+						expect( listItems.first.children.first.labelView ).to.equal( labelView );
+						expect( listItems.first.children.first.labelView.text ).to.equal( 'foo' );
+						expect( listItems.first.children.first.labelView.style ).to.equal( 'color: red' );
+						expect( listItems.first.children.first.labelView.id ).to.equal( 'bar' );
+					} );
 				} );
 			} );
 
