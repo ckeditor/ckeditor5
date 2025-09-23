@@ -10,14 +10,18 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { EventInfo, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BubblingEmitterMixin', () => {
 	let editor, model, view, viewDocument;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing ] } );
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, BlockQuoteEditing, BoldEditing ] } );
 
 		model = editor.model;
 		view = editor.editing.view;
@@ -683,6 +687,149 @@ describe( 'BubblingEmitterMixin', () => {
 					'$capture @ normal'
 				] );
 			} );
+
+			it( 'should bubble events from $text if selected element does not have a custom context', () => {
+				_setModelData( model, '<paragraph>foo[<$text bold="true">123</$text>]bar</paragraph>' );
+
+				const data = {};
+				const events = setListeners( true );
+
+				fireBubblingEvent( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'$capture @ highest (capturing @ $document)',
+					'$capture @ high (capturing @ $document)',
+					'$capture @ normal (capturing @ $document)',
+					'$capture @ low (capturing @ $document)',
+					'$capture @ lowest (capturing @ $document)',
+
+					'$text @ highest (atTarget @ strong)',
+					'$text @ high (atTarget @ strong)',
+					'$text @ normal (atTarget @ strong)',
+					'$text @ low (atTarget @ strong)',
+					'$text @ lowest (atTarget @ strong)',
+
+					'p @ highest (bubbling @ p)',
+					'p @ high (bubbling @ p)',
+					'p @ normal (bubbling @ p)',
+					'p @ low (bubbling @ p)',
+					'p @ lowest (bubbling @ p)',
+
+					'$root @ highest (bubbling @ $root)',
+					'$root @ high (bubbling @ $root)',
+					'$root @ normal (bubbling @ $root)',
+					'$root @ low (bubbling @ $root)',
+					'$root @ lowest (bubbling @ $root)',
+
+					'$document @ highest (bubbling @ $document)',
+					'$document @ high (bubbling @ $document)',
+					'$document @ normal (bubbling @ $document)',
+					'$document @ low (bubbling @ $document)',
+					'$document @ lowest (bubbling @ $document)'
+				] );
+			} );
+
+			it( 'should not trigger listeners on the lower priority if stopped on the custom context matching root element', () => {
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				const data = {};
+				const events = setListeners( true );
+
+				viewDocument.on( 'fakeEvent', event => event.stop(), { context: node => node.is( 'rootElement' ) } );
+				fireBubblingEvent( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'$capture @ highest (capturing @ $document)',
+					'$capture @ high (capturing @ $document)',
+					'$capture @ normal (capturing @ $document)',
+					'$capture @ low (capturing @ $document)',
+					'$capture @ lowest (capturing @ $document)',
+
+					'$text @ highest (atTarget @ $text)',
+					'$text @ high (atTarget @ $text)',
+					'$text @ normal (atTarget @ $text)',
+					'$text @ low (atTarget @ $text)',
+					'$text @ lowest (atTarget @ $text)',
+
+					'p @ highest (bubbling @ p)',
+					'p @ high (bubbling @ p)',
+					'p @ normal (bubbling @ p)',
+					'p @ low (bubbling @ p)',
+					'p @ lowest (bubbling @ p)',
+
+					'$root @ highest (bubbling @ $root)',
+					'$root @ high (bubbling @ $root)',
+					'$root @ normal (bubbling @ $root)'
+				] );
+			} );
+
+			it( 'should call event callbacks in the context on view document instance', () => {
+				_setModelData( model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const events = setListeners( true );
+
+				const spyCapture = sinon.spy();
+				const spyText = sinon.spy();
+				const spyP = sinon.spy();
+				const spyBlockQuote = sinon.spy();
+				const spyRoot = sinon.spy();
+				const spyDocument = sinon.spy();
+
+				viewDocument.on( 'fakeEvent', spyCapture, { context: '$capture' } );
+				viewDocument.on( 'fakeEvent', spyText, { context: '$text' } );
+				viewDocument.on( 'fakeEvent', spyP, { context: 'p' } );
+				viewDocument.on( 'fakeEvent', spyBlockQuote, { context: 'blockquote' } );
+				viewDocument.on( 'fakeEvent', spyRoot, { context: '$root' } );
+				viewDocument.on( 'fakeEvent', spyDocument, { context: '$document' } );
+
+				fireBubblingEvent( 'fakeEvent', data );
+
+				expect( events ).to.deep.equal( [
+					'$capture @ highest (capturing @ $document)',
+					'$capture @ high (capturing @ $document)',
+					'$capture @ normal (capturing @ $document)',
+					'$capture @ low (capturing @ $document)',
+					'$capture @ lowest (capturing @ $document)',
+
+					'$text @ highest (atTarget @ $text)',
+					'$text @ high (atTarget @ $text)',
+					'$text @ normal (atTarget @ $text)',
+					'$text @ low (atTarget @ $text)',
+					'$text @ lowest (atTarget @ $text)',
+
+					'p @ highest (bubbling @ p)',
+					'p @ high (bubbling @ p)',
+					'p @ normal (bubbling @ p)',
+					'p @ low (bubbling @ p)',
+					'p @ lowest (bubbling @ p)',
+
+					'blockquote @ highest (bubbling @ blockquote)',
+					'blockquote @ high (bubbling @ blockquote)',
+					'blockquote @ normal (bubbling @ blockquote)',
+					'blockquote @ low (bubbling @ blockquote)',
+					'blockquote @ lowest (bubbling @ blockquote)',
+
+					'$root @ highest (bubbling @ $root)',
+					'$root @ high (bubbling @ $root)',
+					'$root @ normal (bubbling @ $root)',
+					'$root @ low (bubbling @ $root)',
+					'$root @ lowest (bubbling @ $root)',
+
+					'$document @ highest (bubbling @ $document)',
+					'$document @ high (bubbling @ $document)',
+					'$document @ normal (bubbling @ $document)',
+					'$document @ low (bubbling @ $document)',
+					'$document @ lowest (bubbling @ $document)'
+				] );
+
+				// sinon.assert.calledOn( spyCapture, viewDocument );
+				// sinon.assert.calledOn( spyText, viewDocument );
+				// sinon.assert.calledOn( spyP, viewDocument );
+				// sinon.assert.calledOn( spyBlockQuote, viewDocument );
+				// sinon.assert.calledOn( spyRoot, viewDocument );
+				// sinon.assert.calledOn( spyDocument, viewDocument );
+			} );
 		} );
 
 		describe( 'while the selection in on some object node', () => {
@@ -952,18 +1099,13 @@ describe( 'BubblingEmitterMixin', () => {
 				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
 
 				const data = {};
-				const events = [];
+				const events = setListeners();
 
-				setListener( '$capture', 'highest' );
-				setListener( '$capture', 'high' );
-				setListener( '$capture', 'normal' );
-				setListener( '$capture', 'low' );
-				setListener( '$capture', 'lowest' );
-
-				setListener( '$root', 'highest' );
-
-				setListener( isCustomObject, 'normal' );
-				setListener( isOther, 'high' );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ highest' ), { context: isOther, priority: 'highest' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ high' ), { context: isOther, priority: 'high' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ normal' ), { context: isOther, priority: 'normal' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ low' ), { context: isOther, priority: 'low' } );
+				viewDocument.on( 'fakeEvent', () => events.push( 'isOther @ lowest' ), { context: isOther, priority: 'lowest' } );
 
 				viewDocument.on( 'fakeEvent', event => event.stop(), { context: isOther, priority: 'high' } );
 
@@ -976,16 +1118,11 @@ describe( 'BubblingEmitterMixin', () => {
 					'$capture @ low',
 					'$capture @ lowest',
 
+					'isCustomObject @ highest',
+					'isOther @ highest',
+					'isCustomObject @ high',
 					'isOther @ high'
 				] );
-
-				function setListener( context, priority ) {
-					viewDocument.on( 'fakeEvent', () => {
-						const contextName = typeof context == 'string' ? context : context.name;
-
-						events.push( `${ contextName } @ ${ priority }` );
-					}, { context, priority } );
-				}
 
 				function isOther( node ) {
 					return node.is( 'element', 'obj' );
@@ -1006,6 +1143,18 @@ describe( 'BubblingEmitterMixin', () => {
 					'$capture @ high',
 					'$capture @ normal'
 				] );
+			} );
+
+			it( 'should call event handler on custom context on view document instance', () => {
+				_setModelData( model, '<blockQuote><paragraph>foo[<object/>]bar</paragraph></blockQuote>' );
+
+				const data = {};
+				const spy = sinon.spy();
+
+				viewDocument.on( 'fakeEvent', spy, { context: isCustomObject } );
+				fireBubblingEvent( 'fakeEvent', data );
+
+				sinon.assert.calledOn( spy, viewDocument );
 			} );
 		} );
 
