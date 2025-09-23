@@ -2424,7 +2424,7 @@ function prepareDescriptor(
 	// If passed descriptor is a creator function, call it. If not, just use passed value.
 	const descriptor = typeof highlightDescriptor == 'function' ?
 		highlightDescriptor( data, conversionApi ) :
-		highlightDescriptor;
+		{ ...highlightDescriptor };
 
 	if ( !descriptor ) {
 		return null;

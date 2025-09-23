@@ -74,6 +74,13 @@ export class TableKeyboard extends Plugin {
 		this.listenTo<ViewDocumentTabEvent>(
 			viewDocument,
 			'tab',
+			( ...args ) => this._handleTabOnSelectedTable( ...args ),
+			{ context: 'figure' }
+		);
+
+		this.listenTo<ViewDocumentTabEvent>(
+			viewDocument,
+			'tab',
 			( ...args ) => this._handleTab( ...args ),
 			{ context: [ 'th', 'td' ] }
 		);
@@ -105,6 +112,24 @@ export class TableKeyboard extends Plugin {
 
 	/**
 	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * when the table widget is selected.
+	 */
+	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData ) {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const selectedElement = selection.getSelectedElement();
+
+		if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
+			return;
+		}
+
+		// For backward compatibility stop propagation of this DOM event.
+		// The default tab handling from widgets handles navigation.
+		domEventData.stopPropagation();
+	}
+
+	/**
+	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
 	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: ViewDocumentDomEventData & KeystrokeInfo ) {
@@ -125,7 +150,8 @@ export class TableKeyboard extends Plugin {
 			return;
 		}
 
-		// For backward compatibility stop this DOM event.
+		// For backward compatibility stop propagation of this DOM event.
+		// The default tab handling from widgets handles navigation.
 		domEventData.stopPropagation();
 
 		const tableRow = tableCell.parent as ModelElement;

@@ -44,7 +44,7 @@ HTML comment feature does not require any configuration.
 
 ## Known issues
 
-The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
+The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases (see [#10118](https://github.com/ckeditor/ckeditor5/issues/10118)).
 
 We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor&nbsp;5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 

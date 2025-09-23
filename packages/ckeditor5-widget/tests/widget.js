@@ -1775,6 +1775,11 @@ describe( 'Widget', () => {
 						model: 'tableCell',
 						view: ( modelItem, { writer } ) => writer.createEditableElement( 'div', { contenteditable: true } )
 					} );
+
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
+
+				editor.conversion.for( 'downcast' )
+					.attributeToElement( { model: 'bold', view: 'b' } );
 			} );
 
 			describe( 'tab', () => {
@@ -1813,7 +1818,7 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should move selection to next editable when selection is before a widget',
+					'should move selection to widget when selection is before a widget',
 					'<paragraph>f[]oo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1825,6 +1830,40 @@ describe( 'Widget', () => {
 							'</tableCell>' +
 						'</tableRow>' +
 					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next editable when selection is on a widget',
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
 					'<paragraph>bar</paragraph>',
 
 					keyCodes.tab,
@@ -1881,6 +1920,40 @@ describe( 'Widget', () => {
 				);
 
 				test(
+					'should move selection to a next editable when other editable in widget is selected (attribute element)',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[<$text bold="true">a</$text>]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph><$text bold="true">a</$text></paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
 					'should move selection after a widget if there is no more editable elements in the widget',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -1915,7 +1988,7 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should move selection to first nested editable in the next widget',
+					'should move selection to next widget when inside a nested editable element',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1943,13 +2016,13 @@ describe( 'Widget', () => {
 							'</tableCell>' +
 						'</tableRow>' +
 					'</table>' +
-					'<table>' +
+					'[<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
-								'<paragraph>[b]</paragraph>' +
+								'<paragraph>b</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
-					'</table>' +
+					'</table>]' +
 					'<paragraph>bar</paragraph>',
 					undefined,
 					undefined,
@@ -2187,6 +2260,36 @@ describe( 'Widget', () => {
 					undefined,
 					{ preventDefault: 1 }
 				);
+
+				test(
+					'should not select inline widget',
+					'<paragraph>f[]oo</paragraph>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
 			} );
 
 			describe( 'shift+tab', () => {
@@ -2225,7 +2328,7 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should move selection to next editable when selection is after a widget',
+					'should move selection to widget when selection is after a widget',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -2242,16 +2345,16 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.tab, shiftKey: true },
 
 					'<paragraph>foo</paragraph>' +
-					'<table>' +
+					'[<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>a</paragraph>' +
 							'</tableCell>' +
 							'<tableCell>' +
-								'<paragraph>[b]</paragraph>' +
+								'<paragraph>b</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
-					'</table>' +
+					'</table>]' +
 					'<paragraph>bar</paragraph>',
 					undefined,
 					undefined,
@@ -2327,7 +2430,7 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should move selection to last nested editable in the next widget',
+					'should move selection to next widget if there is no more editables',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -2348,13 +2451,13 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.tab, shiftKey: true },
 
 					'<paragraph>foo</paragraph>' +
-					'<table>' +
+					'[<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
-								'<paragraph>[a]</paragraph>' +
+								'<paragraph>a</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
-					'</table>' +
+					'</table>]' +
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
@@ -2599,14 +2702,90 @@ describe( 'Widget', () => {
 					undefined,
 					{ preventDefault: 1 }
 				);
+
+				test(
+					'should not select inline widget',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<paragraph>b[]ar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
 			} );
 
 			describe( 'esc', () => {
 				test(
 					'should select widget when esc pressed inside nested editable',
-					'<paragraph>foo</paragraph><widget><nested>a[]bc</nested></widget><paragraph>bar</paragraph>',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a[]bc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
 					keyCodes.esc,
-					'<paragraph>foo</paragraph>[<widget><nested>abc</nested></widget>]<paragraph>bar</paragraph>',
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should select widget when esc pressed inside widget but not inside nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.esc,
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
 					undefined,
 					undefined,
 					{ preventDefault: 1 }
@@ -2614,9 +2793,27 @@ describe( 'Widget', () => {
 
 				test(
 					'should not change selection when esc pressed outside widget',
-					'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+					'<paragraph>f[]oo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
 					keyCodes.esc,
-					'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+
+					'<paragraph>f[]oo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
 					undefined,
 					undefined,
 					{ preventDefault: 0 }

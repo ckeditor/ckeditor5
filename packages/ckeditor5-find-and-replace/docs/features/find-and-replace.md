@@ -1,12 +1,15 @@
 ---
+category: features
 title: Find and replace
 meta-title: Find and replace | CKEditor 5 Documentation
 meta-description: Quickly find and replace text in CKEditor 5 with a powerful, user-friendly interface to streamline content editing and corrections.
-category: features
 modified_at: 2024-01-03
+badges: [ premium ]
 ---
 
 The find and replace feature lets you find and replace any text in your document. This speeds up your work and helps with the consistency of your content.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 
