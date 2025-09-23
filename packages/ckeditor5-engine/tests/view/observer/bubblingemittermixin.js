@@ -823,12 +823,12 @@ describe( 'BubblingEmitterMixin', () => {
 					'$document @ lowest (bubbling @ $document)'
 				] );
 
-				// sinon.assert.calledOn( spyCapture, viewDocument );
-				// sinon.assert.calledOn( spyText, viewDocument );
-				// sinon.assert.calledOn( spyP, viewDocument );
-				// sinon.assert.calledOn( spyBlockQuote, viewDocument );
-				// sinon.assert.calledOn( spyRoot, viewDocument );
-				// sinon.assert.calledOn( spyDocument, viewDocument );
+				sinon.assert.calledOn( spyCapture, viewDocument );
+				sinon.assert.calledOn( spyText, viewDocument );
+				sinon.assert.calledOn( spyP, viewDocument );
+				sinon.assert.calledOn( spyBlockQuote, viewDocument );
+				sinon.assert.calledOn( spyRoot, viewDocument );
+				sinon.assert.calledOn( spyDocument, viewDocument );
 			} );
 		} );
 
