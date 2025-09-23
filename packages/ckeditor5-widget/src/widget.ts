@@ -29,7 +29,8 @@ import {
 	type ViewDocumentKeyDownEvent,
 	type ViewNode,
 	type ViewRange,
-	type ViewPosition
+	type ViewPosition,
+	type ModelRange
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -572,7 +573,7 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Moves the document selection into the next editable.
+	 * Moves the document selection into the next editable or block widget.
 	 */
 	private _selectNextEditable( direction: 'backward' | 'forward' ): boolean {
 		const editing = this.editor.editing;
@@ -601,15 +602,26 @@ export class Widget extends Plugin {
 				viewSelection.getLastPosition()!;
 		}
 
-		return this._selectNextEditableStartingFromPosition( startPosition, direction );
+		const modelRange = this._findNextFocusRange( startPosition, direction );
+
+		if ( modelRange ) {
+			model.change( writer => {
+				writer.setSelection( modelRange );
+			} );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * TODO
+	 * Looks for next focus point in the document starting from the given view position and direction.
+	 * The focus point is either a block widget or an editable.
 	 *
 	 * @internal
 	 */
-	public _selectNextEditableStartingFromPosition( startPosition: ViewPosition, direction: 'backward' | 'forward' ): boolean {
+	public _findNextFocusRange( startPosition: ViewPosition, direction: 'backward' | 'forward' ): ModelRange | null {
 		const editing = this.editor.editing;
 		const view = editing.view;
 		const model = this.editor.model;
@@ -648,11 +660,7 @@ export class Widget extends Plugin {
 
 				// Do not select widget itself when going out of widget or iterating over sibling elements in a widget.
 				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
-					model.change( writer => {
-						writer.setSelection( modelElement, 'on' );
-					} );
-
-					return true;
+					return model.createRangeOn( modelElement );
 				}
 			}
 			// Encountered an editable element.
@@ -671,15 +679,11 @@ export class Widget extends Plugin {
 					newRange = model.createRangeIn( modelPosition.parent );
 				}
 
-				model.change( writer => {
-					writer.setSelection( newRange );
-				} );
-
-				return true;
+				return newRange;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
