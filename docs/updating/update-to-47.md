@@ -20,13 +20,27 @@ Released on 1 October, 2025. ([See full release notes](https://github.com/ckedit
 
 This release introduces the new CKEditor AI feature.
 
-### First important change
+### Updated content navigation with <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
 
-Here.
+In version [41.3.0](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-41.html#updated-keyboard-navigation) we disabled the default browser <kbd>tab</kbd> key behavior for cycling nested editable elements inside the editor. Back then we decided that the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) should navigate to the next focusable field or an element outside the editor so that the users can quickly navigate fields or links on the page.
 
-### Second important change
+Though there was one exception to the <kbd>Tab</kbd> behavior. When a widget was selected, the <kbd>Tab</kbd> key would move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
 
-Here.
+The above exception was somehow limited as it supported only the first nested editable in a widget (with an exception to table widget that had custom <kbd>Tab</kbd> support implemented).
+
+The current release extends <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) handling to include all nested editable areas in the editor content. It also includes the content between block widgets as a separate editable areas so the original behavior of jumping far away from the editor while pressing <kbd>Tab</kbd> inside an image caption is now tuned to jump just after that image. This way the flow of <kbd>Tab</kbd> behavior is more linear and predictable to the user. Also, the custom widgets with multiple nested editable elements are now handled out-of-the-box and require no custom code for <kbd>Tab</kbd> handling.
+
+Please make sure that if you had a custom <kbd>Tab</kbd> handling implementation in your editor, it does not collide with the default one. Note that generic <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) handlers are registered on the `low` priority bubbling event in the `context` of widgets and editable elements. For more details on bubbling events and contexts please see [bubbling events](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/event-system.html#listening-to-bubbling-events) guide. 
+
+### Bubbling events priorities fix
+
+The [bubbling events](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/event-system.html#listening-to-bubbling-events) now trigger all event handlers according to the registered priorities even if multiple custom callback contexts are provided. Previously not all custom callback contexts were evaluated for a given element. The custom callback contexts were also triggered after the view element name handlers. Now those are all triggered according to the registered priority no matter if element name based context or callback based context.  
+
+### Table default styles
+
+In version [45.0.0](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-45.html#update-to-ckeditor-5-v4500) we introduced layout tables. This feature is an extension to already existing table feature, and it shares most of the code, but it had to have a separate styles as this type of tables should not be affected by any opinionated defaults. This required change in the table CSS selectors so they would not affect new layout tables. The side effect of this change was the increased specificity of CSS selectors for tables.  
+
+In the current version, thanks to CSS4 pseudo-class `:where()`, we reduced the specificity of table default styles selector in content styles so now it is easier to provide custom [default table styles](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html#default-table-and-table-cell-styles).
 
 ### Major breaking changes in this release
 
