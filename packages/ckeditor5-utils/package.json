@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-editor-classic": "46.1.1",
     "@ckeditor/ckeditor5-core": "46.1.1",
     "@ckeditor/ckeditor5-engine": "46.1.1",
-    "typescript": "5.0.4"
+    "typescript": "5.3.3"
   },
   "depcheckIgnore": [
     "typescript"

@@ -247,3 +247,13 @@ function normalizeRanges( ranges: Array<ModelRange> ): void {
 function isRangeContainedByAnyOtherRange( range: ModelRange, ranges: Array<ModelRange> ): boolean {
 	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }
+
+/**
+ * Fired when execution of the undo or redo command reverts some batch.
+ *
+ * @eventName ~UndoRedoBaseCommand#revert
+ */
+export type UndoRedoBaseCommandRevertEvent = {
+	name: 'revert';
+	args: [ batch: Batch, undoingBatch: Batch ];
+};

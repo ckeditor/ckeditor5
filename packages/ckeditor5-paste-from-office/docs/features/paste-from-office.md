@@ -1,14 +1,17 @@
 ---
+category: features-pasting
 menu-title: Paste from Office
 meta-title: Paste from Office | CKEditor 5 Documentation
 meta-description: CKEditor 5 lets you handle content that you paste from Word and paste from Excel.
-category: features-pasting
 order: 10
+badges: [ premium ]
 ---
 
 # Paste from Office
 
 Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature. You can also try the more advanced, premium {@link features/paste-from-office-enhanced enhanced Paste from Office} feature.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 

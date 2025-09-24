@@ -46,8 +46,12 @@ describe( 'ImageResizeEditing', () => {
 		expect( ImageResizeEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageResizeEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( ImageResizeEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `IR`', () => {
+		expect( ImageResizeEditing.licenseFeatureCode ).to.equal( 'IR' );
 	} );
 
 	describe( 'constructor()', () => {

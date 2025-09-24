@@ -54,6 +54,12 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		document.querySelector( '#preview' ).innerHTML = editor.getData();
+
+		editor.model.document.on( 'change:data', () => {
+			document.querySelector( '#preview' ).innerHTML = editor.getData();
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

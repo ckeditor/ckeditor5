@@ -14,21 +14,43 @@ modified_at: 2025-09-08
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v46.1.1
+
+Released on 15 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.1.1))
+
+This is an internal release focused on improving our development infrastructure and the release process. These changes have no impact on integrators but represent significant improvements to our development workflow.
+
+### Development environment modernization
+
+We have migrated our package management from Yarn Classic to pnpm, unlocking significant advantages:
+
+* Faster installations through efficient linking mechanisms,
+* Improved dependency management with stricter resolution and better peer dependency handling,
+* Better disk efficiency by eliminating duplicate packages across projects.
+
+We have also introduced dependency locking mechanisms that provide greater stability and predictability in our build process, ensuring consistent environments across development setups and CI/CD pipelines.
+
+### What this means for you
+
+As an integrator, you will not notice any changes in functionality or API. This release maintains full backward compatibility while laying the foundation for more efficient development cycles and faster future releases.
+
+If you fork the repository and develop using source code, you will need to update your development setup according to our {@link framework/contributing/development-environment development environment guide}.
+
 ## Update to CKEditor&nbsp;5 v46.1.0
 
 Released on 10 September, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v46.1.0))
 
 A minor stability update with focused fixes and UX improvements.
 
-#### Smoother drag & drop of widgets on iOS
+### Smoother drag & drop of widgets on iOS
 
 We updated the implementation for more reliable drag-and-drop on iOS touch devices. The behavior on the desktop devices remains unchanged.
 
-#### Pagination improvements
+### Pagination improvements
 
 We reverted a low-level change to improve stability in pagination, especially in scenarios including long tables.
 
-#### Hide a user in the Server-side editing API
+### Hide a user in the Server-side editing API
 
 [The Server-side editor API](https://ckeditor.com/docs/ckeditor5/latest/features/cloud-services/server-side-editor-api.html) now supports a `hidden_in_presence_list` user flag. You can use this mechanism to prevent automation script users from appearing in the editor’s presence list while scripts run.
 
@@ -103,7 +125,7 @@ Unneeded styles on block elements, such as tables and images, and General HTML S
 
 ### List markers styling
 
-Working with {@link features/lists#list-styles styled lists} becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
+Working with {@link features/lists-properties#list-styles styled lists} becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
 
 * Font size adjustments,
 * Text color changes,
@@ -111,7 +133,7 @@ Working with {@link features/lists#list-styles styled lists} becomes more intuit
 
 This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports {@link features/multi-level-lists multi-level lists}.
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists#disabling-marker-formatting you can opt out}.
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists-properties#disabling-marker-formatting you can opt out}.
 
 ### Markdown processor dependency refresh
 

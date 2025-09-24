@@ -50,8 +50,12 @@ describe( 'table properties', () => {
 			expect( TablePropertiesEditing.isOfficialPlugin ).to.be.true;
 		} );
 
-		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( TablePropertiesEditing.isPremiumPlugin ).to.be.false;
+		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+			expect( TablePropertiesEditing.isPremiumPlugin ).to.be.true;
+		} );
+
+		it( 'should have `licenseFeatureCode` static flag set to `TCP`', () => {
+			expect( TablePropertiesEditing.licenseFeatureCode ).to.equal( 'TCP' );
 		} );
 
 		describe( 'init()', () => {

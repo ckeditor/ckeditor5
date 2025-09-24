@@ -1,12 +1,15 @@
 ---
+category: features
 title: Restricted editing
 menu-title: Restricted editing
 meta-title: Restricted editing | CKEditor 5 Documentation
 meta-description: Enable restricted editing in CKEditor 5 to limit content changes to specific regions, ensuring control and document integrity.
-category: features
+badges: [ premium ]
 ---
 
 The restricted editing feature introduces two modes: the standard editing mode and the restricted editing mode. Users working in the restricted editing mode cannot change the content, except for parts marked as editable.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 
@@ -16,8 +19,8 @@ Start by creating a template of the document in the standard editing mode. Selec
 
 Then switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
-<info-box info>
-	Tip: Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
+<info-box tip>
+	Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
 </info-box>
 
 **Mode:**

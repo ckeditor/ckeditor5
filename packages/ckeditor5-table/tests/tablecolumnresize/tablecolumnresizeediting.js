@@ -87,8 +87,12 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( TableColumnResizeEditing.isOfficialPlugin ).to.be.true;
 	} );
 
-	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( TableColumnResizeEditing.isPremiumPlugin ).to.be.false;
+	it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+		expect( TableColumnResizeEditing.isPremiumPlugin ).to.be.true;
+	} );
+
+	it( 'should have `licenseFeatureCode` static flag set to `TCR`', () => {
+		expect( TableColumnResizeEditing.licenseFeatureCode ).to.equal( 'TCR' );
 	} );
 
 	it( 'should have defined column widths in model', () => {
