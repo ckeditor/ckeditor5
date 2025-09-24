@@ -32,8 +32,7 @@ export class Module {
 
 	constructor( fileName, ast, { publicApiTag }, errorCollector ) {
 		this.fileName = fileName.replace( /\.d\.ts$/, '.ts' );
-		// TODO: `/external/` check doesn't seem correct, because it causes some errors to be silenced.
-		this.isPublicApi = fileName.includes( '/external/' ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
+		this.isPublicApi = this._isFromPublicPackages( fileName ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
 		this.exports = [];
 		this.imports = [];
 		this.declarations = [];
@@ -370,6 +369,10 @@ export class Module {
 				}
 			}
 		} );
+	}
+
+	_isFromPublicPackages( fileName ) {
+		return fileName.includes( '/external/ckeditor5/packages/' );
 	}
 
 	resolveImportsExports( packages, modules ) {
