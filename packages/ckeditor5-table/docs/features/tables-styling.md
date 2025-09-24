@@ -150,19 +150,19 @@ The **“Table properties”** and **“Table cell properties”** buttons in th
 The style sheet for the editor displayed below looks as follows:
 
 ```css
-.ck-content .table {
+.ck-content .table:not(.layout-table) {
 	float: left;
 	width: 550px;
 	height: 450px;
 }
 
-.ck-content .table table {
+.ck-content .table:not(.layout-table) table {
 	border-style: dashed;
 	border-color: hsl(90, 75%, 60%);
 	border-width: 3px;
 }
 
-.ck-content .table table td {
+.ck-content .table:not(.layout-table) table td {
 	text-align: center;
 	vertical-align: bottom;
 	padding: 10px

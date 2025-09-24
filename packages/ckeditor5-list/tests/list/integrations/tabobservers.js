@@ -1434,7 +1434,7 @@ describe( 'ListEditing integrations: tab key', () => {
 			} );
 		} );
 
-		it( 'nothing should happen if selection spans a table but one of the list items cannot be indented', () => {
+		it( 'nothing should happen if selection spans a table but one of the list items cannot be indented (table gets selected)', () => {
 			const inputTable = modelTable( [
 				[ 'foo', 'bar' ]
 			] );
@@ -1451,13 +1451,18 @@ describe( 'ListEditing integrations: tab key', () => {
 					'* ya]r'
 				],
 				expected: [
-					'* fo[o',
+					'* foo',
 					'* bar',
-					'* ' + outputTable,
-					'* ya]r'
+					'* [' + outputTable + ']',
+					'* yar'
 				],
 				domEventData: tabDomEventData,
-				eventStopped: false,
+				eventStopped: {
+					// This is a default widget behavior, not list handling.
+					stop: true,
+					preventDefault: true,
+					stopPropagation: false
+				},
 				executedCommands: {
 					outdentList: 0,
 					indentList: 0

@@ -1744,109 +1744,1084 @@ describe( 'Widget', () => {
 			} );
 		} );
 
-		describe( 'selection on widget and inside it (tab, shift+tab, esc)', () => {
-			test(
-				'should move selection into nested editable',
-				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
-				keyCodes.tab,
-				'<paragraph>foo</paragraph><widget><nested>[]a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 1 }
-			);
+		describe( 'tab, shift+tab, esc', () => {
+			beforeEach( () => {
+				model.schema.register( 'table', {
+					inheritAllFrom: '$blockObject'
+				} );
 
-			test(
-				'should not move selection into nested editable if shift tab was pressed',
-				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
-				{ keyCode: keyCodes.tab, shiftKey: true },
-				'<paragraph>foo</paragraph>[<widget><nested>a</nested><nested>b</nested></widget>]<paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				model.schema.register( 'tableRow', {
+					allowIn: 'table',
+					isLimit: true
+				} );
 
-			test(
-				'should not move selection when widget is not selected',
-				'<paragraph>[foo]</paragraph><widget><nested>a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
-				keyCodes.tab,
-				'<paragraph>[foo]</paragraph><widget><nested>a</nested><nested>b</nested></widget><paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				model.schema.register( 'tableCell', {
+					allowContentOf: '$container',
+					allowIn: 'tableRow',
+					isLimit: true,
+					isSelectable: true
+				} );
 
-			test(
-				'should not move selection when non-widget element is selected',
-				'<paragraph>foo[<inline></inline>]</paragraph><widget><nested>a</nested><nested>b</nested></widget>',
-				keyCodes.tab,
-				'<paragraph>foo[<inline></inline>]</paragraph><widget><nested>a</nested><nested>b</nested></widget>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'table',
+						view: ( modelItem, { writer } ) => toWidget( writer.createContainerElement( 'div' ), writer )
+					} )
+					.elementToElement( {
+						model: 'tableRow',
+						view: 'div'
+					} )
+					.elementToElement( {
+						model: 'tableCell',
+						view: ( modelItem, { writer } ) => writer.createEditableElement( 'div', { contenteditable: true } )
+					} );
 
-			test(
-				'should not move selection when non-widget element is selected inside nested editable',
-				'<paragraph>foo</paragraph><widget><nested>[<inline></inline>]</nested><nested>b</nested></widget>',
-				keyCodes.tab,
-				'<paragraph>foo</paragraph><widget><nested>[<inline></inline>]</nested><nested>b</nested></widget>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				model.schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			test(
-				'should not move selection when widget has no nested editable',
-				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
-				keyCodes.tab,
-				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				editor.conversion.for( 'downcast' )
+					.attributeToElement( { model: 'bold', view: 'b' } );
+			} );
 
-			test(
-				'should select widget when shift+tab pressed inside nested editable',
-				'<paragraph>foo</paragraph><widget><nested>a[]bc</nested></widget><paragraph>bar</paragraph>',
-				{ keyCode: keyCodes.tab, shiftKey: true },
-				'<paragraph>foo</paragraph>[<widget><nested>abc</nested></widget>]<paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 1 }
-			);
+			describe( 'tab', () => {
+				test(
+					'should move selection into first nested editable when widget is selected',
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
 
-			test(
-				'should not change selection when shift+tab pressed outside widget',
-				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
-				{ keyCode: keyCodes.tab, shiftKey: true },
-				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+					keyCodes.tab,
 
-			test(
-				'should select widget when esc pressed inside nested editable',
-				'<paragraph>foo</paragraph><widget><nested>a[]bc</nested></widget><paragraph>bar</paragraph>',
-				keyCodes.esc,
-				'<paragraph>foo</paragraph>[<widget><nested>abc</nested></widget>]<paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 1 }
-			);
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[a]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
 
-			test(
-				'should not change selection when esc pressed outside widget',
-				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
-				keyCodes.esc,
-				'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
-				undefined,
-				undefined,
-				{ preventDefault: 0 }
-			);
+				test(
+					'should move selection to widget when selection is before a widget',
+					'<paragraph>f[]oo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next editable when selection is on a widget',
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[a]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to a next editable when other editable in widget is selected',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[a]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to a next editable when other editable in widget is selected (attribute element)',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[<$text bold="true">a</$text>]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph><$text bold="true">a</$text></paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection after a widget if there is no more editable elements in the widget',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[]b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>[]bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next widget when inside a nested editable element',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to top nested when selection is backward',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>]' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>]' +
+							'<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 },
+					{ lastRangeBackward: true }
+				);
+
+				test(
+					'should move selection to bottom nested when selection is forward',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>]' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>]' +
+							'<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[d]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 },
+					{ lastRangeBackward: false }
+				);
+
+				test(
+					'should not move selection when widget has no nested editable',
+					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					keyCodes.tab,
+					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 0 }
+				);
+
+				test(
+					'should not change selection when tab pressed outside widget and no following editable elements',
+					'<paragraph>foo</paragraph><widget><nested>abc</nested></widget><paragraph>[]bar</paragraph>',
+					keyCodes.tab,
+					'<paragraph>foo</paragraph><widget><nested>abc</nested></widget><paragraph>[]bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 0 }
+				);
+
+				test(
+					'should move selection to paragraph between widgets',
+					'<table><tableRow><tableCell><paragraph>[]a</paragraph></tableCell></tableRow></table>' +
+					'<paragraph>foo</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>',
+
+					keyCodes.tab,
+
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>' +
+					'<paragraph>[]foo</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next editable when selection is in the last nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection after nested widget when selection is in the last nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+								'<paragraph>x</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+								'<paragraph>[]x</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should not select inline widget',
+					'<paragraph>f[]oo</paragraph>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+			} );
+
+			describe( 'shift+tab', () => {
+				test(
+					'should move selection into last nested editable when widget is selected',
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to widget when selection is after a widget',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>ba[]r</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to a next editable when other editable in widget is selected',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[a]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection after a widget if there is no more editable elements in the widget',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo[]</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next widget if there is no more editables',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to top nested when selection is backward',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[a]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 },
+					{ lastRangeBackward: true }
+				);
+
+				test(
+					'should move selection to bottom nested when selection is forward',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>c</paragraph>' +
+							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[c]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>d</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 },
+					{ lastRangeBackward: false }
+				);
+
+				test(
+					'should not move selection when widget has no nested editable',
+					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					{ keyCode: keyCodes.tab, shiftKey: true },
+					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 0 }
+				);
+
+				test(
+					'should not change selection when shift+tab pressed outside widget and no following editable elements',
+					'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+					{ keyCode: keyCodes.tab, shiftKey: true },
+					'<paragraph>foo[]</paragraph><widget><nested>abc</nested></widget><paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 0 }
+				);
+
+				test(
+					'should move selection to paragraph between widgets',
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>' +
+					'<paragraph>foo</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>[]a</paragraph></tableCell></tableRow></table>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>' +
+					'<paragraph>foo[]</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>a</paragraph></tableCell></tableRow></table>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to next editable when selection is in the last nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection after nested widget when selection is in the last nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>x</paragraph>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>[]a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>b</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>x[]</paragraph>' +
+								'<table>' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>a</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should not select inline widget',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<paragraph>b[]ar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>abc<inline-widget></inline-widget>def</paragraph>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+			} );
+
+			describe( 'esc', () => {
+				test(
+					'should select widget when esc pressed inside nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a[]bc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.esc,
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should select widget when esc pressed inside widget but not inside nested editable',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>]' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.esc,
+
+					'<paragraph>foo</paragraph>' +
+					'[<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should not change selection when esc pressed outside widget',
+					'<paragraph>f[]oo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.esc,
+
+					'<paragraph>f[]oo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>abc</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 0 }
+				);
+			} );
 		} );
 
-		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr', stubCalls = null ) {
+		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr', stubCalls = null, modelOptions ) {
 			it( name, () => {
 				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
 
@@ -1867,7 +2842,7 @@ describe( 'Widget', () => {
 					};
 				} );
 
-				_setModelData( model, data );
+				_setModelData( model, data, modelOptions );
 
 				for ( const action of actions ) {
 					viewDocument.fire( 'keydown', new ViewDocumentDomEventData(
