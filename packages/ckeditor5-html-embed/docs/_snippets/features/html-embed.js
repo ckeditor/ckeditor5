@@ -36,8 +36,6 @@ ClassicEditor.builtinPlugins.push(
 	CKBox,
 	CKBoxImageEdit );
 
-/* eslint-disable @stylistic/max-len */
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-html-embed' ), {
 		toolbar: {

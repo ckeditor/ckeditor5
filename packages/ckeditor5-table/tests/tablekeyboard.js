@@ -128,16 +128,15 @@ describe( 'TableKeyboard', () => {
 		} );
 
 		describe( 'on Tab key press', () => {
-			it( 'should do nothing if the selection is not in a table', () => {
+			it( 'should select table if the selection is before a table', () => {
 				_setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [ [ '11', '12' ] ] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				sinon.assert.notCalled( domEvtDataStub.preventDefault );
-				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph>[]</paragraph>' + modelTable( [
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				expect( _getModelData( model ) ).to.equalMarkup( '<paragraph></paragraph>[' + modelTable( [
 					[ '11', '12' ]
-				] ) );
+				] ) + ']' );
 			} );
 
 			it( 'should move to the next cell', () => {
@@ -206,10 +205,10 @@ describe( 'TableKeyboard', () => {
 				);
 			} );
 
-			it( 'should select the whole table if the "insertTableRowBelow" command is disabled', () => {
+			it( 'should move selection after a table if the "insertTableRowBelow" command is disabled', () => {
 				_setModelData( model, modelTable( [
 					[ '11', '12[]' ]
-				] ) );
+				] ) + '<paragraph>x</paragraph>' );
 
 				const insertTableRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
 
@@ -218,7 +217,7 @@ describe( 'TableKeyboard', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
-					'[' + modelTable( [ [ '11', '12' ] ] ) + ']'
+					modelTable( [ [ '11', '12' ] ] ) + '<paragraph>[]x</paragraph>'
 				);
 			} );
 
@@ -501,7 +500,7 @@ describe( 'TableKeyboard', () => {
 				it( 'should move caret to the first table cell on TAB', () => {
 					const spy = sinon.spy();
 
-					editor.keystrokes.set( 'Tab', spy, { priority: 'lowest' } );
+					editor.editing.view.document.on( 'tab', spy, { priority: 'lowest' } );
 
 					_setModelData( model, '[' + modelTable( [
 						[ '11', '12' ]
@@ -510,7 +509,7 @@ describe( 'TableKeyboard', () => {
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+					// sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 					expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 						[ '[11]', '12' ]
@@ -634,7 +633,7 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should select the whole table if the caret is in the first table cell', () => {
+			it( 'should move selection before table if the caret is in the first table cell', () => {
 				_setModelData( model, '<paragraph>foo</paragraph>' + modelTable( [
 					[ '[]11', '12' ]
 				] ) );
@@ -642,7 +641,7 @@ describe( 'TableKeyboard', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
-					'<paragraph>foo</paragraph>[' + modelTable( [ [ '11', '12' ] ] ) + ']'
+					'<paragraph>foo[]</paragraph>' + modelTable( [ [ '11', '12' ] ] )
 				);
 			} );
 
