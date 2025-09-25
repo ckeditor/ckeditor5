@@ -409,5 +409,81 @@ describe( 'PasteFromOffice - filters', () => {
 				'</ol>'
 			);
 		} );
+
+		it( 'should handle scenario when there is table in footnote definition', () => {
+			const inputData = `
+				<p class="MsoNormal">
+					Hello World
+					<a style='mso-footnote-id:ftn1' href="#_ftn1" name="_ftnref1" title="">
+						<span class="MsoFootnoteReference">
+							<span>
+								<![if !supportFootnotes]>
+								<span class="MsoFootnoteReference">[1]</span>
+								<![endif]>
+							</span>
+						</span>
+					</a>
+					<o:p></o:p>
+				</p>
+				<div style='mso-element:footnote-list'>
+					<![if !supportFootnotes]>
+					<br clear=all>
+					<hr align=left size=1 width="33%">
+					<![endif]>
+					<div style='mso-element:footnote' id=ftn1>
+						<p class="MsoFootnoteText">
+							<a style='mso-footnote-id:ftn1' href="#_ftnref1" name="_ftn1" title="">
+								<span class="MsoFootnoteReference">
+									<span>
+										<![if !supportFootnotes]>
+										<span class="MsoFootnoteReference">[1]</span>
+										<![endif]>
+									</span>
+								</span>
+							</a>&nbsp;
+							<table>
+								<tr>
+									<td>Cell 1</td>
+									<td>Cell 2</td>
+								</tr>
+							</table>
+							<o:p></o:p>
+						</p>
+					</div>
+				</div>
+			`;
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			replaceMSFootnotes( documentFragment, writer );
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<p class="MsoNormal">' +
+					'Hello World&nbsp;' +
+					'<sup class="footnote">' +
+						'<a id="ref-ftn1" href="#ftn1"></a>' +
+					'</sup>' +
+					'<o:p></o:p>' +
+				'</p>' +
+				'<ol class="footnotes">' +
+					'<li class="footnote-definition" id="ftn1">' +
+						'<a class="footnote-backlink" href="#ref-ftn1">^</a>' +
+						'<div class="footnote-content">' +
+							'<p class="MsoFootnoteText">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr>' +
+											'<td>Cell 1</td>' +
+											'<td>Cell 2</td>' +
+										'</tr>' +
+									'</tbody>' +
+								'</table>' +
+								'<o:p></o:p>' +
+							'</p>' +
+						'</div>' +
+					'</li>' +
+				'</ol>'
+			);
+		} );
 	} );
 } );
