@@ -125,11 +125,15 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 		// Order doesn't matter here, as it'll be fixed in the post-fixer.
 		const defElements = createFootnoteDefViewElement( writer, footnoteId );
 
-		trimMSReferences( writer, msFootnoteDef );
+		removeMSReferences( writer, msFootnoteDef );
 
 		// Insert content within the `MsoFootnoteText` element. It's usually a definition text content.
 		for ( const child of msFootnoteDef.getChildren() ) {
-			const clonedChild = child.is( 'element' ) ? writer.clone( child, true ) : child;
+			let clonedChild = child;
+
+			if ( child.is( 'element' ) ) {
+				clonedChild = writer.clone( child, true );
+			}
 
 			writer.appendChild( clonedChild, defElements.content );
 		}
@@ -139,14 +143,16 @@ export function replaceMSFootnotes( documentFragment: ViewDocumentFragment, writ
 }
 
 /**
- * Trims all MS Office specific references from the given element.
- * Also removes any spaces that follow the footnote references.
+ * Removes all MS Office specific references from the given element.
+ *
+ * It also removes leading space from text nodes following the references, as MS Word adds
+ * them to separate the reference from the rest of the text.
  *
  * @param writer The view writer.
  * @param element The element to trim.
  * @returns The trimmed element.
  */
-function trimMSReferences( writer: ViewUpcastWriter, element: ViewElement ): ViewElement {
+function removeMSReferences( writer: ViewUpcastWriter, element: ViewElement ): ViewElement {
 	const elementsToRemove: Array<ViewElement> = [];
 	const textNodesToTrim: Array<ViewText> = [];
 
