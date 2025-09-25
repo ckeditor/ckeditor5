@@ -15,9 +15,10 @@ import { isInternalNode } from './misc.mjs';
 import { createExportResolutionError } from './errorutils.mjs';
 import { globSync } from 'glob';
 import { CKEDITOR5_ROOT_PATH } from '../../../constants.mjs';
+import { PACKAGES_DIRECTORY } from '../../../release/utils/constants.mjs';
 
-// E.g. `packages/ckeditor5-core/` or `packages/ckeditor5`.
-const PUBLIC_PACKAGES = globSync( 'packages/*', { cwd: CKEDITOR5_ROOT_PATH, mark: true } );
+// E.g. `packages/ckeditor5-core/` or `packages/ckeditor5/`.
+const PUBLIC_PACKAGES = globSync( `${ PACKAGES_DIRECTORY }/*/`, { cwd: CKEDITOR5_ROOT_PATH, mark: true } );
 
 export class Module {
 	static load( fileName, errorCollector ) {
@@ -378,7 +379,11 @@ export class Module {
 
 	_isFromPublicPackages( fileName ) {
 		// Checking if fileName contains the package that is marked as public API by default.
-		return PUBLIC_PACKAGES.some( publicPackageName => fileName.includes( publicPackageName ) );
+		return PUBLIC_PACKAGES.some( publicPackageName => {
+			const publicPackageFullPath = upath.join( CKEDITOR5_ROOT_PATH, publicPackageName );
+
+			return fileName.includes( publicPackageFullPath );
+		} );
 	}
 
 	resolveImportsExports( packages, modules ) {
