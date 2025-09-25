@@ -36,12 +36,6 @@ Please make sure that if you had a custom <kbd>Tab</kbd> handling implementation
 
 The {@link framework/deep-dive/event-system#listening-to-bubbling-events bubbling events} now trigger all event handlers according to the registered priorities, even if multiple custom callback contexts are provided. Previously, not all custom callback contexts were evaluated for a given element. The custom callback contexts were also triggered after the view element name handlers. Now those are all triggered according to the registered priority, no matter whether element name-based context or callback-based context.  
 
-### Table default styles
-
-Starting with {@link updating/update-to-45#update-to-ckeditor-5-v4500 version 45.0.0}, we have introduced layout tables. This feature is an extension to the already existing table feature. As such, it shares most of the code, but it had to have separate styles as this type of table should not be affected by any opinionated defaults. This required a change in the table CSS selectors so they would not affect the new layout tables. The side effect of this change was the increased specificity of CSS selectors for tables.  
-
-In the current version, thanks to CSS4 pseudo-class `:where()`, we reduced the specificity of the table default styles selector in content styles, so now it is easier to provide custom {@link features/tables-styling#default-table-and-table-cell-styles default table styles}.
-
 ### Major breaking changes in this release
 
 * list
