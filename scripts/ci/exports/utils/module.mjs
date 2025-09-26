@@ -17,8 +17,12 @@ import { globSync } from 'glob';
 import { CKEDITOR5_ROOT_PATH } from '../../../constants.mjs';
 import { PACKAGES_DIRECTORY } from '../../../release/utils/constants.mjs';
 
-// E.g. `packages/ckeditor5-core/` or `packages/ckeditor5/`.
-const PUBLIC_PACKAGES = globSync( `${ PACKAGES_DIRECTORY }/*/`, { cwd: CKEDITOR5_ROOT_PATH, mark: true } );
+// The trailing `/` is important to mark the end of a package name.
+const PUBLIC_PACKAGES = globSync( `${ PACKAGES_DIRECTORY }/*/`, {
+	cwd: CKEDITOR5_ROOT_PATH,
+	mark: true,
+	absolute: true
+} ).map( upath.normalize );
 
 export class Module {
 	static load( fileName, errorCollector ) {
@@ -378,12 +382,8 @@ export class Module {
 	}
 
 	_isFromPublicPackages( fileName ) {
-		// Checking if fileName contains the package that is marked as public API by default.
-		return PUBLIC_PACKAGES.some( publicPackageName => {
-			const publicPackageFullPath = upath.join( CKEDITOR5_ROOT_PATH, publicPackageName );
-
-			return fileName.includes( publicPackageFullPath );
-		} );
+		// Checking if the file belongs to the public package.
+		return PUBLIC_PACKAGES.some( publicPackagePath => fileName.startsWith( publicPackagePath ) );
 	}
 
 	resolveImportsExports( packages, modules ) {
