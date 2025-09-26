@@ -473,7 +473,7 @@ export interface DialogDefinition {
 	 * {@link module:ui/dialog/dialogview#DialogViewPosition Learn more} about available positions.
 	 */
 	position?: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null |
-		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } );
+		( ( dialogRect: Rect, domRootRect?: Rect | null ) => { left: number; top: number } | null );
 
 	/**
 	 * A callback called when the dialog shows up with a `low` priority. It allows for setting up the dialog's {@link #content}.
