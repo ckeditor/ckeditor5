@@ -884,9 +884,14 @@ export function insertAttributesAndChildren() {
 export function remove() {
 	return (
 		evt: unknown,
-		data: { position: ModelPosition; length: number },
+		data: { position: ModelPosition; length: number; reconversion?: boolean },
 		conversionApi: DowncastConversionApi
 	): void => {
+		// Ignore reconversion related remove as it is handled in the `insert` of reconversion.
+		if ( data.reconversion ) {
+			return;
+		}
+
 		// Find the view range start position by mapping the model position at which the remove happened.
 		const viewStart = conversionApi.mapper.toViewPosition( data.position );
 
@@ -896,13 +901,7 @@ export function remove() {
 		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
-		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
-
-		// After the range is removed, unbind all view elements from the model.
-		// Range inside view document fragment is used to unbind deeply.
-		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child as ViewElement, { defer: true } );
-		}
+		removeRangeAndUnbind( viewRange.getTrimmed(), conversionApi );
 	};
 }
 
@@ -1210,7 +1209,8 @@ export function insertElement( elementCreator: DowncastElementCreatorFunction, c
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewPosition = data.reconversion && removeElementAndUnbind( data.item, conversionApi ) ||
+			conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
@@ -1266,7 +1266,8 @@ export function insertStructure( elementCreator: DowncastStructureCreatorFunctio
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewPosition = data.reconversion && removeElementAndUnbind( data.item, conversionApi ) ||
+			conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
@@ -1346,6 +1347,34 @@ export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFun
 
 		evt.stop();
 	};
+}
+
+/**
+ * Removes given view range content and unbinds removed elements.
+ */
+function removeRangeAndUnbind( viewRange: ViewRange, conversionApi: DowncastConversionApi ) {
+	const removed = conversionApi.writer.remove( viewRange );
+
+	// After the range is removed, unbind all view elements from the model.
+	// Range inside view document fragment is used to unbind deeply.
+	for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
+		conversionApi.mapper.unbindViewElement( child as ViewElement, { defer: true } );
+	}
+
+	return viewRange.start;
+}
+
+/**
+ * Removes view element for given model element and unbinds removed view elements.
+ */
+function removeElementAndUnbind( modelElement: ModelElement, conversionApi: DowncastConversionApi ) {
+	const viewElement = conversionApi.mapper.toViewElement( modelElement );
+
+	if ( !viewElement ) {
+		return;
+	}
+
+	return removeRangeAndUnbind( conversionApi.writer.createRangeOn( viewElement ), conversionApi );
 }
 
 /**
@@ -2498,7 +2527,7 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.type == 'attribute' ? change.range.start.nodeAfter : change.position.parent as ModelNode;
 
-			if ( !node || !shouldReplace( node, change ) ) {
+			if ( !node || !shouldReplace( node, change ) || change.type == 'reinsert' ) {
 				reducedChanges.push( change );
 
 				continue;
@@ -2527,11 +2556,6 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 				}
 
 				reducedChanges.splice( changeIndex, 0, {
-					type: 'remove',
-					name: ( node as ModelElement ).name,
-					position,
-					length: 1
-				} as any, {
 					type: 'reinsert',
 					name: ( node as ModelElement ).name,
 					position,
