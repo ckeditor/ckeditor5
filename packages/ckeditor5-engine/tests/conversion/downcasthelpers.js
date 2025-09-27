@@ -2740,6 +2740,60 @@ describe( 'DowncastHelpers', () => {
 				expect( spy.called ).to.be.true;
 			} );
 
+			it( 'should convert on attribute change on both elements', () => {
+				_setModelData( model,
+					'<complex toClass="true">' +
+						'<complex toStyle="display:block">' +
+							'<paragraph>foo</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:flex', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toStyle', 'display:inline-block', modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter, textAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="is-classy" style="display:flex">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner" style="display:inline-block">' +
+									'<p>foo</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
 			it( 'should convert on one attribute add and other remove', () => {
 				_setModelData( model,
 					'<complex>' +
