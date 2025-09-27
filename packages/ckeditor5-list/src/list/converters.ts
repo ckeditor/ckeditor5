@@ -366,7 +366,7 @@ export function listItemDowncastConverter(
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		const viewElement = findMappedViewElement( listItem, mapper, model )!;
+		const viewElement = findMappedViewElement( listItem, mapper, model, writer )!;
 
 		// Remove custom item marker.
 		removeCustomMarkerElements( viewElement, writer, mapper );
@@ -458,12 +458,25 @@ export function bogusParagraphCreator(
  * @param element The model element.
  * @param mapper The mapper instance.
  * @param model The model.
+ * @param writer The view downcast writer.
  */
-export function findMappedViewElement( element: ModelElement, mapper: Mapper, model: Model ): ViewElement | null {
+export function findMappedViewElement(
+	element: ModelElement,
+	mapper: Mapper,
+	model: Model,
+	writer: ViewDowncastWriter
+): ViewElement | undefined {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
+	const viewWalker = viewRange.getWalker();
 
-	return viewRange.end.nodeBefore as ViewElement | null;
+	for ( const { item } of viewWalker ) {
+		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+			viewWalker.jumpTo( writer.createPositionAfter( item ) );
+		} else if ( item.is( 'element' ) && !item.getCustomProperty( 'listItemWrapper' ) ) {
+			return item;
+		}
+	}
 }
 
 /**
