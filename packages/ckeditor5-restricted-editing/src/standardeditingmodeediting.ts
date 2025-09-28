@@ -72,10 +72,13 @@ export class StandardEditingModeEditing extends Plugin {
 	}
 }
 
+/**
+ * Fallback upcast converter for empty exception span inside a table cell.
+ */
 function registerFallbackUpcastConverter( editor: Editor ) {
-	// Fallback converter for empty exception span.
 	const matcher = new Matcher( { name: 'span', classes: 'restricted-editing-exception' } );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/16376.
 	editor.conversion.for( 'upcast' ).add(
 		dispatcher => dispatcher.on<UpcastElementEvent>( 'element:span', ( evt, data, conversionApi ) => {
 			const matcherResult = matcher.match( data.viewItem );
