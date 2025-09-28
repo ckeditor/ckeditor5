@@ -1370,11 +1370,7 @@ function removeRangeAndUnbind( viewRange: ViewRange, conversionApi: DowncastConv
 function removeElementAndUnbind( modelElement: ModelElement, conversionApi: DowncastConversionApi ) {
 	const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
-	if ( !viewElement ) {
-		return;
-	}
-
-	return removeRangeAndUnbind( conversionApi.writer.createRangeOn( viewElement ), conversionApi );
+	return viewElement && removeRangeAndUnbind( conversionApi.writer.createRangeOn( viewElement ), conversionApi );
 }
 
 /**
@@ -2684,6 +2680,7 @@ function fillSlots(
 	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
 		reinsertOrConvertNodes( viewElement, currentSlotNodes, conversionApi, options );
 
+		conversionApi.writer.setCustomProperty( '$structureSlotParent', true, currentSlot!.parent! );
 		conversionApi.writer.move(
 			conversionApi.writer.createRangeIn( currentSlot ),
 			conversionApi.writer.createPositionBefore( currentSlot )

@@ -251,6 +251,10 @@ export function reconvertItemsOnDataChange(
 			return false;
 		}
 
+		if ( isItemBlockInsideStructureSlot( viewElement ) ) {
+			return true;
+		}
+
 		const needsRefresh = listEditing.fire<ListEditingCheckElementEvent>( 'checkElement', {
 			modelElement: item,
 			viewElement
@@ -269,6 +273,25 @@ export function reconvertItemsOnDataChange(
 		if ( useBogus && viewElement.is( 'element', 'p' ) ) {
 			return true;
 		} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	function isItemBlockInsideStructureSlot( viewElement: ViewElement ) {
+		viewElement = viewElement.parent as ViewElement;
+
+		while ( viewElement.is( 'attributeElement' ) && [ 'ol', 'ul', 'li' ].includes( viewElement.name ) ) {
+			viewElement = viewElement.parent as ViewElement;
+		}
+
+		// List item inside elementToStructure slot parent without mapping then it requires refresh for correct positions
+		// as structure child elements does not have mapping from model and position would land in wrong place.
+		if (
+			viewElement.getCustomProperty( '$structureSlotParent' ) &&
+			!editing.mapper.toModelElement( viewElement )
+		) {
 			return true;
 		}
 
