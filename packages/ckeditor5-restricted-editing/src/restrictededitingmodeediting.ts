@@ -10,9 +10,9 @@
 import {
 	Plugin,
 	type Command,
-	type Editor,
-	type EditingKeystrokeCallback
+	type Editor
 } from 'ckeditor5/src/core.js';
+
 import type {
 	ModelDocumentSelection,
 	Marker,
@@ -22,10 +22,24 @@ import type {
 	ModelRange,
 	ModelSchemaAttributeCheckCallback,
 	ModelSchemaChildCheckCallback,
-	ViewDocumentTabEvent
+	ViewDocumentTabEvent,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyEventData
 } from 'ckeditor5/src/engine.js';
-import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
-import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
+
+import {
+	getCode,
+	parseKeystroke,
+	type BaseEvent,
+	type EventInfo,
+	type GetCallback
+} from 'ckeditor5/src/utils.js';
+
+import type {
+	InsertTextCommand,
+	InsertTextCommandExecuteEvent
+} from 'ckeditor5/src/typing.js';
+
 import type {
 	ClipboardContentInsertionEvent,
 	ViewDocumentClipboardOutputEvent,
@@ -33,14 +47,19 @@ import type {
 } from 'ckeditor5/src/clipboard.js';
 
 import { RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand.js';
+import type { RestrictedEditingConfig } from './restrictededitingconfig.js';
+
+import {
+	getMarkerAtPosition,
+	isSelectionInMarker }
+	from './restrictededitingmode/utils.js';
+
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
 	setupExceptionHighlighting,
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters.js';
-import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils.js';
-import type { RestrictedEditingConfig } from './restrictededitingconfig.js';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 
@@ -150,7 +169,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 			evt.stop();
 		}, { context: '$capture' } );
 
-		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
+		this.listenTo<ViewDocumentKeyDownEvent>( editingView.document, 'keydown', getSelectAllHandler( editor ), { priority: 'high' } );
 
 		editingView.change( writer => {
 			for ( const root of editingView.document.roots ) {
@@ -432,8 +451,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 /**
  * Helper for handling Ctrl+A keydown behaviour.
  */
-function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
-	return ( _, cancel ) => {
+function getSelectAllHandler( editor: Editor ) {
+	return ( eventInfo: EventInfo, domEventData: ViewDocumentKeyEventData ) => {
+		if ( getCode( domEventData ) != parseKeystroke( 'Ctrl+A' ) ) {
+			return;
+		}
+
 		const model = editor.model;
 		const selection = editor.model.document.selection;
 		const marker = getMarkerAtPosition( editor, selection.focus! );
@@ -449,7 +472,8 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
 		const markerRange = marker.getRange();
 
 		if ( markerRange.containsRange( selectionRange, true ) || selection.isCollapsed ) {
-			cancel();
+			eventInfo.stop();
+			domEventData.preventDefault();
 
 			model.change( writer => {
 				writer.setSelection( marker.getRange() );
