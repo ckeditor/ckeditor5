@@ -7,7 +7,8 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Matcher, type UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
 
@@ -49,6 +50,8 @@ export class StandardEditingModeEditing extends Plugin {
 			}
 		} );
 
+		registerFallbackUpcastConverter( editor );
+
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'restrictedEditingException',
 			view: ( modelAttributeValue, { writer } ) => {
@@ -67,4 +70,39 @@ export class StandardEditingModeEditing extends Plugin {
 			}
 		} );
 	}
+}
+
+function registerFallbackUpcastConverter( editor: Editor ) {
+	// Fallback converter for empty exception span.
+	const matcher = new Matcher( { name: 'span', classes: 'restricted-editing-exception' } );
+
+	editor.conversion.for( 'upcast' ).add(
+		dispatcher => dispatcher.on<UpcastElementEvent>( 'element:span', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const match = matcherResult.match;
+
+			if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
+				return;
+			}
+
+			const modelText = conversionApi.writer.createText( ' ', { restrictedEditingException: true } );
+
+			if ( !conversionApi.safeInsert( modelText, data.modelCursor ) ) {
+				return;
+			}
+
+			conversionApi.consumable.consume( data.viewItem, match );
+
+			data.modelRange = conversionApi.writer.createRange(
+				data.modelCursor,
+				data.modelCursor.getShiftedBy( modelText.offsetSize )
+			);
+			data.modelCursor = data.modelRange.end;
+		}, { priority: 'low' } )
+	);
 }

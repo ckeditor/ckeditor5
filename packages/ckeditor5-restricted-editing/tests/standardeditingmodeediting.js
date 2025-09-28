@@ -7,6 +7,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _getViewData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { TableEditing } from '@ckeditor/ckeditor5-table';
 
 import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js';
 import { RestrictedEditingExceptionCommand } from '../src/restrictededitingexceptioncommand.js';
@@ -17,7 +18,7 @@ describe( 'StandardEditingModeEditing', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, StandardEditingModeEditing ] } );
+		editor = await VirtualTestEditor.create( { plugins: [ Paragraph, StandardEditingModeEditing, TableEditing ] } );
 		model = editor.model;
 	} );
 
@@ -69,6 +70,49 @@ describe( 'StandardEditingModeEditing', () => {
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph>foo <$text restrictedEditingException="true">bar</$text> baz</paragraph>' );
+			} );
+
+			it( 'should upcast empty editing exception inside a table cell', () => {
+				editor.setData( '<table><tr><td><span class="restricted-editing-exception">&nbsp;</span></td></tr></table>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph><$text restrictedEditingException="true"> </$text></paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not upcast empty span inside a table cell as exception', () => {
+				editor.setData( '<table><tr><td><span class="foo">&nbsp;</span></td></tr></table>' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph></paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not upcast empty editing exception inside a table cell when disabled by schema', () => {
+				editor.model.schema.register( 'object', { inheritAllFrom: '$blockObject' } );
+				editor.conversion.elementToElement( { model: 'object', view: 'div' } );
+
+				editor.setData(
+					'<p>x<span class="restricted-editing-exception">&nbsp;</span></p>' +
+					'<div><span class="restricted-editing-exception">&nbsp;</span></div>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>x<$text restrictedEditingException="true"> </$text></paragraph>' +
+					'<object></object>'
+				);
 			} );
 		} );
 
