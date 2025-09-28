@@ -474,6 +474,7 @@ function getSelectAllHandler( editor: Editor ) {
 		if ( markerRange.containsRange( selectionRange, true ) || selection.isCollapsed ) {
 			eventInfo.stop();
 			domEventData.preventDefault();
+			domEventData.stopPropagation();
 
 			model.change( writer => {
 				writer.setSelection( marker.getRange() );

@@ -12,6 +12,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BoldEditing, StrikethroughEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
 import { Typing } from '@ckeditor/ckeditor5-typing';
+import { SelectAllEditing } from '@ckeditor/ckeditor5-select-all';
 import { ImageInlineEditing, InsertImageCommand } from '@ckeditor/ckeditor5-image';
 
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
@@ -30,7 +31,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 	describe( 'plugin', () => {
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing, ClipboardPipeline ] } );
+			editor = await VirtualTestEditor.create( { plugins: [ RestrictedEditingModeEditing, ClipboardPipeline, SelectAllEditing ] } );
 		} );
 
 		afterEach( async () => {
