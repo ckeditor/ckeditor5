@@ -5,7 +5,6 @@ meta-title: CKEditor 5 LTS Edition | CKEditor 5 Documentation
 meta-description: Learn about CKEditor 5 Long-term Support (LTS) Edition for enterprise use cases requiring extended support and maintenance.
 order: 140
 modified_at: 2025-09-29
-badges: [ premium ]
 ---
 
 # CKEditor&nbsp;5 LTS Edition
@@ -42,10 +41,7 @@ CKEditor&nbsp;5 LTS Edition is designed for teams that need **long-term stabilit
 		</tr>
 		<tr>
 			<td><strong>Zero breaking changes</strong></td>
-			<td>
-				Minor breaking changes allowed in minor releases;<br>
-				major breaking changes in major releases
-			</td>
+			<td>Minor breaking changes allowed</td>
 		</tr>
 		<tr>
 			<td><strong>No forced upgrades for 3 years</strong></td>
@@ -88,7 +84,6 @@ Schedule details of the **LTS releases**:
 * **Maintenance phase (next 2.5 years)**: Security fixes and critical/high-severity third-party compatibility updates (for example, browsers or Microsoft Office). Begins with a technical release that separates the LTS-only distribution.
 * **Overlap**: Consecutive LTS releases overlap with each other for 1 year, simplifying migration.
 * **Limited breaking changes exception**: A closed, pre‑announced set of new features in an LTS release may introduce minor breaking changes during the Active phase. See the [list of exceptions for `v47.x`](#features-excluded-from-the-no-breaking-changes-guarantee-v47x).
-
 
 Unlike the LTS releases, the Regular releases (for example, `v48.x`, `v49.x`) may include minor breaking changes in minor releases (for example, in `v48.1.0`, `v48.2.0`). Read more in the {@link updating/versioning-policy Versioning policy} guide.
 
