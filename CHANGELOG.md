@@ -27,7 +27,7 @@ We are introducing the **CKEditor 5 LTS (Long-term Support) Edition**, giving te
 
 The first LTS release is **v47.0.0** (October 2025). It will receive **6 months of active development** with new features and fixes, then **2.5 years of maintenance** with security and critical compatibility updates.
 
-For **v47.x**, the Maintenance phase starts in **April 2026**. From then, updates in the v47.x line will be available only under a **commercial LTS Edition license**. Other integrators should upgrade to **v48.x**.
+For **v47.x**, the Maintenance phase starts in **April 2026**. From then, the next versions in the v47.x line will be available only under a **commercial LTS Edition license**. Therefore, starting in April, integrators without an LTS license should migrate to v48.x (the next regular release).
 
 If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about [CKEditor 5 LTS Edition](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html).
 
