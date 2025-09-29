@@ -9,7 +9,7 @@ We are happy to announce the release of CKEditor 5 v47.0.0.
 
 #### CKEditor AI (early access)
 
-We are introducing {@link features/ckeditor-ai-overview **CKEditor AI**}, an AI-powered writing assistant that integrates directly into CKEditor 5. It brings generation, summarization, correction, and contextual chat help right into the editor, reducing the need to switch between tools.
+We are introducing [**CKEditor AI**](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), an AI-powered writing assistant that integrates directly into CKEditor 5. It brings generation, summarization, correction, and contextual chat help right into the editor, reducing the need to switch between tools.
 
 Three features are available in this early access phase:
 
