@@ -28,7 +28,7 @@ Three features are available in this early access phase:
 * **Quick actions:** one-click transformations and instant insights for selected text.
 * **Review:** automatic checks for grammar, tone, and style with in-editor suggestions.
 
-Each feature is powered by our state-of-the-art AI service, available in the Cloud today and coming soon for on-premises deployments. This makes CKEditor AI a true plug-and-play solution that works out of the box, without months of custom development.
+Each feature is powered by our state-of-the-art AI service, available in the Cloud today and coming soon for on-premises deployments. This makes CKEditor AI a true plug-and-play solution that works out of the box, eliminating the need for months of custom development.
 
 CKEditor AI is available as part of our **free trial** in early access.
 
