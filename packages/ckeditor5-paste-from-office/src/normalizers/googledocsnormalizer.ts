@@ -55,11 +55,18 @@ export class GoogleDocsNormalizer implements PasteFromOfficeNormalizer {
 		transformBlockBrsToParagraphs( documentFragment, writer );
 		replaceTabsWithinPreWithSpaces( documentFragment, writer, 8 );
 
-		if ( documentSlice ) {
-			const { data } = JSON.parse( documentSlice );
-			const parsedSliceData: GoogleDocsClipboardDocumentSliceData = JSON.parse( data ).resolved;
+		// Since Google Docs slice data is not documented anywhere, we need to be defensive here.
+		// The format might change without any notice and break the paste feature.
+		// If we cannot parse the data, just skip footnotes insertion.
+		try {
+			if ( documentSlice ) {
+				const { data } = JSON.parse( documentSlice );
+				const parsedSliceData: GoogleDocsClipboardDocumentSliceData = JSON.parse( data ).resolved;
 
-			insertGoogleDocsFootnotes( documentFragment, writer, parsedSliceData );
+				insertGoogleDocsFootnotes( documentFragment, writer, parsedSliceData );
+			}
+		} catch ( err ) {
+			console.warn( 'Could not parse Google Docs clipboard document slice.', err );
 		}
 
 		data.content = documentFragment;
