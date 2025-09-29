@@ -1,7 +1,7 @@
 ---
 menu-title: Versioning policy
-meta-title: Versioning policy | CKEditor 5 Documentation
-meta-description: The versioning approach to the CKEditor 5 project.
+meta-title: Versioning and release process | CKEditor 5 Documentation
+meta-description: How CKEditor 5 is versioned and released - aligned versions across packages, release channels (stable, nightly, alpha/RC), and guidance on staying up to date.
 category: updating
 order: 50
 ---
@@ -34,6 +34,41 @@ The ecosystem of CKEditor&nbsp;5 consists of multiple layers. Our approach to br
 * **The low-level customizability API layer.** This is the part of package APIs that allows tweaking the behavior of existing features, their UI, etc., and building other features on top of the existing ones or by using their helpers.
 	* Breaking changes frequency: frequent. This layer, while exposed by CKEditor&nbsp;5 Framework, is often closely connected to the architecture of a certain feature and may expose some implementation details. We want this layer to be public as it increases the ability to reuse the code, however, we cannot guarantee its stability on the same level as in the two previous layers.
 	* A breaking change in this layer is understood as a **minor breaking change**.
+
+## Release channels
+
+The CKEditor&nbsp;5 codebase is published through several channels to serve different needs:
+
+### Stable releases
+
+Regular code releases (usually around 10 per year) bundle bug fixes, improvements, and new features. Depending on the scope of changes and according to this versioning policy, they may be major or minor releases.
+
+Each stable release is recorded in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md). Packages are published to npm (see the [`ckeditor5` package](https://www.npmjs.com/package/ckeditor5)) and are available in the online builder.
+
+### Nightly releases
+
+`nightly` builds are published daily from the current `master` branch. They can include new features and fixes, but may also include regressions. They are not suitable for production use and should be treated as experimental/testing builds. Integration tests using `nightly` packages may fail; if you encounter an issue, please [report it in the CKEditor&nbsp;5 issue tracker](https://github.com/ckeditor/ckeditor5/issues).
+
+### Pre-releases (alpha and RC)
+
+From time to time, we publish pre-release versions to validate significant changes ahead of the upcoming stable release:
+
+* `alpha` versions are prepared from tested code but are not considered stable.
+* release candidates (`rc`) are typically what will become the next stable release.
+
+Pre-release versions are named by appending a numbered pre-release identifier to the previous stable version. `nightly` versions are marked with the build date.
+
+## Changelog and notifications
+
+To track changes and plan upgrades:
+
+* **Changelog**: Review the [CKEditor&nbsp;5 changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) for a detailed list of changes, including highlights for breaking changes.
+* **npm feed**: Follow new versions on npm for the [`ckeditor5` package](https://www.npmjs.com/package/ckeditor5).
+* **News**: Watch the [CKEditor Ecosystem Blog](https://ckeditor.com/blog/) and optionally [subscribe to the newsletter](https://ckeditor.com/newsletter/) for release announcements and insights.
+
+## Update guides
+
+If a release introduces breaking or otherwise important changes for integrators, the **Updating CKEditor&nbsp;5** section will include dedicated guides with technical details and migration steps. After each release, review the new and updated guides and apply the required changes to keep your integration stable. You can find them under the documentation category: {@link updating/index Updating CKEditor&nbsp;5}.
 
 ## Why not semantic versioning?
 

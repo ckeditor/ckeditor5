@@ -5,6 +5,7 @@ meta-title: CKEditor 5 LTS Edition | CKEditor 5 Documentation
 meta-description: Learn about CKEditor 5 Long-term Support (LTS) Edition for enterprise use cases requiring extended support and maintenance.
 order: 140
 modified_at: 2025-09-29
+badges: [ premium ]
 ---
 
 # CKEditor&nbsp;5 LTS Edition
@@ -41,7 +42,10 @@ CKEditor&nbsp;5 LTS Edition is designed for teams that need **long-term stabilit
 		</tr>
 		<tr>
 			<td><strong>Zero breaking changes</strong></td>
-			<td>Minor breaking changes allowed</td>
+			<td>
+				Minor breaking changes allowed in minor releases;<br>
+				Major breaking changes in major releases
+			</td>
 		</tr>
 		<tr>
 			<td><strong>No forced upgrades for 3 years</strong></td>
