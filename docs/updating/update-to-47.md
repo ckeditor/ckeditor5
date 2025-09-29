@@ -60,7 +60,7 @@ Please make sure that if you had a custom <kbd>Tab</kbd> handling implementation
 
 ### Bubbling events priorities fix
 
-The {@link framework/deep-dive/event-system#listening-to-bubbling-events bubbling events} now trigger all event handlers according to the registered priorities, even if multiple custom callback contexts are provided. Previously, not all custom callback contexts were evaluated for a given element. The custom callback contexts were also triggered after the view element name handlers. Now those are all triggered according to the registered priority, no matter whether element name-based context or callback-based context.
+The {@link framework/deep-dive/event-system#listening-to-bubbling-events bubbling events} now trigger all event handlers according to the registered priorities, even if multiple custom callback contexts are provided. Previously, not all custom callback contexts were evaluated for a given element. The custom callback contexts were also triggered after the view element name handlers. Now those are all triggered according to the registered priority, regardless of context: element name-based or callback-based.
 
 ### Other improvements and fixes
 
