@@ -396,7 +396,8 @@
 		"features/source-editing.html": "features/source-editing/source-editing.html",
 		"examples/framework/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
 		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html",
-		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html"
+		"framework/contributing/git-commit-message-convention.html": "framework/contributing/changelog-entries.html",
+		"updating/release-process.html": "updating/versioning-policy.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
@@ -883,7 +884,7 @@
 					"name": "Update guides",
 					"id": "update-guides",
 					"slug": "guides",
-					"order": 40
+					"order": 50
 				}
 			]
 		},
