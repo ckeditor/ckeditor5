@@ -287,7 +287,7 @@ Refer to the table below to see which versions of each ecosystem library should 
 
 ## FAQ
 
-### What is the latest CKEditor&nbsp;5&nbsp;LTS version?
+### What is the current CKEditor&nbsp;5&nbsp;LTS version?
 
 The current LTS version line is `v47.x`.
 
