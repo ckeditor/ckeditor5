@@ -73,21 +73,13 @@ For projects that need **long-term stability**, we also offer the commercial **C
 
 ## Release channels
 
-CKEditor 5 is published through multiple release channels, each serving different needs:
+CKEditor 5 is distributed through several release channels, each serving a different purpose:
 
-* **Stable releases**
-	* About 10 times per year.
-	* Bundle new features, bug fixes, and improvements.
-	* May be major or minor, depending on the changes.
-	* Published to npm and documented in the [CKEditor 5 changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md).
-* **Pre-releases (alpha, RC)**
-	* Prepared to validate significant changes before the stable release.
-	* `alpha`: tested code, not stable.
-	* `rc`: candidate for the next stable release.
-* **Nightly builds**
-	* Published daily from the `master` branch.
-	* Include the latest features and fixes, but may also include regressions.
-	* Not production-ready; best used for testing and early validation. If you encounter an issue, please [report it in the CKEditor&nbsp;5 issue tracker](https://github.com/ckeditor/ckeditor5/issues).
+* **Stable releases**: The recommended versions for production use. These are fully tested and supported, and are available via **npm**, **ZIP packages**, and the **official CDN**.
+* **Alpha builds**: Used for early access and testing before a stable release. Alpha builds are published to npm under the `alpha` dist-tag.
+* **Nightly builds**: Generated automatically from the latest development branch. They are available via npm under the `nightly` dist-tag and are intended for testing the newest changes.
+
+If you encounter an issue, please [report it in the CKEditor&nbsp;5 issue tracker](https://github.com/ckeditor/ckeditor5/issues). Early feedback (especially about alpha and nightly releases) gives us more time to investigate and resolve problems before they reach a stable release.
 
 ## Tracking changes
 
