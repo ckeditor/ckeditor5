@@ -35,7 +35,7 @@ If you need long-term stability, [contact sales](https://ckeditor.com/contact-sa
 
 This release also brings several smaller but important enhancements and fixes:
 
-* **Widgets:** the ****default `Tab`/`Shift+Tab` navigation now works better inside nested editables, improving usability. This change is also reflected in the editor’s current widgets (like tables), leading to more intuitive keyboard navigation.
+* **Widgets:** the default `Tab`/`Shift+Tab` navigation now works better inside nested editables, improving usability. This change is also reflected in the editor’s current widgets (like tables), leading to more intuitive keyboard navigation.
 * **UI:** dialogs in custom features can now be positioned programmatically with more flexible options (`Dialog#show()`).
 * **Comments:** confirmation views for deleting comments and threads now use simplified CSS selectors (`.ck-confirm-view`). You may need to adjust custom styles accordingly.
 
@@ -51,13 +51,10 @@ Please refer to the [update guide](https://ckeditor.com/docs/ckeditor5/latest/up
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The Widget feature implements the default handling for `Tab`/`Shift+Tab` to navigate nested editable elements in the editor content. Closes [#19083](https://github.com/ckeditor/ckeditor5/issues/19083).
-
-  The listeners are registered on the `low` priority bubbling event in the context of widgets and editable elements.
-  Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The internal structure of the package has changed. Importing `AIAssistant` from the source should be done via `@ckeditor/ckeditor5-ai/src/aiassistant/aiassistant.js` path instead of a previous `@ckeditor/ckeditor5-ai/src/aiassistant.js`.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The Widget feature implements the default handling for `Tab`/`Shift+Tab` to navigate nested editable elements in the editor content. Closes [#19083](https://github.com/ckeditor/ckeditor5/issues/19083). The listeners are registered on the `low` priority bubbling event in the context of widgets and editable elements. Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The internal structure of the package has changed. Importing `AIAssistant` from the source should be done via `@ckeditor/ckeditor5-ai/src/aiassistant/aiassistant.js` path instead of the previous `@ckeditor/ckeditor5-ai/src/aiassistant.js`.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed the CSS selectors used to style the confirmation view displayed when attempting to remove a comment or an entire comment thread. For now, CSS classes will be more generic, for example: `.ck-confirm-view` instead of `.ck-thread__remove-confirm` . If you override styles for these components, you will need to update the selectors.
-* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: The `UndoCommandRevertEvent` type was renamed to `UndoRedoBaseCommandRevertEvent` and moved to `basecommand.ts` file. Adjust your code if you have used this type in your custom integration. See [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).
+* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: The `UndoCommandRevertEvent` type was renamed to `UndoRedoBaseCommandRevertEvent` and moved to the `basecommand.ts` file. Adjust your code if you have used this type in your custom integration. See [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).
 * Updated to TypeScript 5.3.
 
 ### Features
