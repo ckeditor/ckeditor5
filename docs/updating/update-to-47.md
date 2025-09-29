@@ -52,7 +52,7 @@ Starting with {@link updating/update-to-41#updated-keyboard-navigation version 4
 
 There was one exception to this <kbd>Tab</kbd> behavior, however. When a user selected a widget, the <kbd>Tab</kbd> key would move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key while inside a nested editable will move the selection to the closest ancestor widget, for example, moving from an image caption to selecting the whole image widget.
 
-The above exception was limited as it supported only the first nested editable in a widget (the table was an exception that had custom <kbd>Tab</kbd> support implemented).
+The above exception was limited as it supported only the first nested editable in a widget (the table widget was an exception that had custom <kbd>Tab</kbd> support implemented).
 
 The current release extends the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>) handling to include all nested editable areas in the editor content. It also includes the content between block widgets as a separate editable area. Thanks to this, the original behavior of jumping away from the editor while pressing <kbd>Tab</kbd> inside an image caption is now tuned to jump just after that image. This way, the flow of <kbd>Tab</kbd> behavior is more linear and predictable to the user. Also, the custom widgets with multiple nested editable elements are now handled out of the box and require no custom code for <kbd>Tab</kbd> handling.
 
