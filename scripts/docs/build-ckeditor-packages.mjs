@@ -9,7 +9,7 @@ import url from 'url';
 import { parseArgs } from 'util';
 import upath from 'upath';
 import fs from 'fs-extra';
-import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH, IS_STANDALONE_REPOSITORY } from '../constants.mjs';
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
 
 buildCKEditorPackages()
@@ -46,9 +46,9 @@ async function buildCKEditorPackages() {
 
 	console.log( 'Finished building `ckeditor5`.' );
 
-	if ( values[ 'skip-commercial' ] ) {
+	if ( values[ 'skip-commercial' ] || IS_STANDALONE_REPOSITORY ) {
 		console.log( 'Skipping `ckeditor5-premium-features`.' );
-	} else if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
+	} else {
 		console.log( 'Started building `ckeditor5-premium-features`.' );
 
 		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'scripts', 'docs', 'generate-ckeditor5-premium-features-docs-build.mjs' );
