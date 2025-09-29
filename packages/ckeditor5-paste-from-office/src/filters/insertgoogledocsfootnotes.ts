@@ -75,7 +75,7 @@ export function insertGoogleDocsFootnotes(
 	//
 	// Content:  ... f o o t n o t e .
 	//                             ^
-	//                             |---- Footnote position identified here.
+	//                             |---- Footnote position identified after this character.
 	// Template: ... f o o t n o t e # .
 	//                             ^
 
