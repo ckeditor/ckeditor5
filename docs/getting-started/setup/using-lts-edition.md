@@ -4,6 +4,7 @@ menu-title: Using LTS Edition
 meta-title: CKEditor 5 LTS Edition | CKEditor 5 Documentation
 meta-description: Learn about CKEditor 5 Long-term Support (LTS) Edition for enterprise use cases requiring extended support and maintenance.
 order: 140
+modified_at: 2025-09-29
 ---
 
 # CKEditor&nbsp;5 LTS Edition
@@ -104,7 +105,7 @@ Here is how the lifecycle looks for an integrator using the LTS Edition:
 
 ### Features excluded from the "no breaking changes" guarantee (v47.x)
 
-Due to the rapid development of the {@link features/ckeditor-ai-overview CKEditor AI} feature (released in October 2025), during the Active phase of `v47.x` new versions may include minor breaking changes in this feature. No breaking changes will be allowed for this feature in the Maintenance phase (after April 2026).
+Due to the rapid development of the {@link features/ckeditor-ai-overview CKEditor AI} feature (released in October 2025), during the Active phase of `v47.x`, new releases may include minor breaking changes in this feature. No breaking changes will be allowed for this feature in the Maintenance phase (after April 2026).
 
 The {@link features/ai-assistant-overview CKEditor&nbsp;5 AI Assistant} feature (introduced in `v40.0.0`) is not affected by this exception.
 
@@ -114,7 +115,7 @@ The LTS Edition releases of CKEditor&nbsp;5 are available through the standard d
 
 To install an LTS version:
 
-* Choose the latest release of CKEditor&nbsp;5 in the current LTS line. Starting October 2025, this is the latest version in the `v47.x.x` line.
+* Choose the latest release of CKEditor&nbsp;5 in the current LTS line. Starting October 2025, this is the newest version in the `v47.x.x` line.
 * Choose a compatible version of the React, Angular, or Vue integrations (if you use one). See the [Compatibility](#compatibility) section below.
 * Choose a compatible version of CKBox (if you use it). See the [Compatibility](#compatibility) section below.
 
