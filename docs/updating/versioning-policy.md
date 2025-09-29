@@ -1,42 +1,94 @@
 ---
 menu-title: Versioning policy
-meta-title: Versioning policy | CKEditor 5 Documentation
-meta-description: The versioning approach to the CKEditor 5 project.
+meta-title: Versioning and release process | CKEditor 5 Documentation
+meta-description: How CKEditor 5 is versioned and released - aligned versions across packages, release channels (stable, nightly, alpha/RC), and guidance on staying up to date.
 category: updating
-order: 50
+order: 40
 ---
 
 # Versioning policy
 
-CKEditor&nbsp;5 consists of multiple npm packages (over 80). When releasing them, we use the following rules:
+CKEditor 5 is a modular ecosystem of over 80 packages, distributed through npm. To provide predictability and a consistent developer experience, we follow a unified versioning and release policy across all packages.
 
-* We use the `MAJOR.MINOR.PATCH` version identifiers.
-* All packages are always in the same version.
-* A major release of CKEditor&nbsp;5 (that is, of all its packages) is published when at least one of its packages must have a major release.
-* A minor version of CKEditor&nbsp;5 (that is, of all its packages) is published when at least one of its packages must have a minor release and none of them require a major release.
-* A package must have a major release when it contains a *major breaking change*.
-* If none of the packages contain any *major breaking change*, the following rules are used to determine the new version of each package:
-	* If a package contains a *minor breaking change*, a `MINOR` version is increased.
-	* If a package contains a new feature, a `MINOR` version is increased.
-	* If a package contains only bug fixes, unrelated changes (for example, updated translations), documentation or other internal changes, a `PATCH` version is increased.
-* To ensure that all packages are in the same version, some releases of certain packages may be empty (no changes).
+## Package structure
 
-## Major and minor breaking changes
+CKEditor 5 is delivered in two core packages:
 
-The ecosystem of CKEditor&nbsp;5 consists of multiple layers. Our approach to breaking changes and their effect depends on which layer is affected.
+* [**`ckeditor5`**](https://www.npmjs.com/package/ckeditor5) &ndash; the framework and open-source features.
+* [**`ckeditor5-premium-features`**](https://www.npmjs.com/package/ckeditor5-premium-features) &ndash; commercial plugins and add-ons.
 
-* **The integration layer.** This is the most commonly used API which is used to integrate and customize existing builds or editors built from source. It also includes their setup (whose features are included and their default configuration).
-	* Breaking changes frequency: as rarely as possible. Therefore, changes to this layer are usually done in a backward-compatible way.
-	* A breaking change in this layer is understood as a **major breaking change**.
-* **The plugin development API layer.** This is the API exposed by packages such as {@link api/engine `@ckeditor/ckeditor5-engine`} or {@link api/core `@ckeditor/ckeditor5-core`}, which is commonly used by plugin developers.
-	* Breaking changes frequency: rarely. This layer is still frequently used by developers, therefore, we try to limit breaking changes. However, to avoid increasing the technical debt, from time to time we will introduce breaking changes to one or more packages. We also try to "batch" them to have as many breaking changes done in one release as possible, to reduce the frequency of major releases.
-	* A breaking change in this layer is understood as a **major breaking change**.
-* **The low-level customizability API layer.** This is the part of package APIs that allows tweaking the behavior of existing features, their UI, etc., and building other features on top of the existing ones or by using their helpers.
-	* Breaking changes frequency: frequent. This layer, while exposed by CKEditor&nbsp;5 Framework, is often closely connected to the architecture of a certain feature and may expose some implementation details. We want this layer to be public as it increases the ability to reuse the code, however, we cannot guarantee its stability on the same level as in the two previous layers.
-	* A breaking change in this layer is understood as a **minor breaking change**.
+Together, these aggregate and version over 80 underlying packages that make up the editor framework, features, and utilities.
 
-## Why not semantic versioning?
+In addition, the ecosystem provides separately versioned integration packages and tooling:
 
-Prior to version 15.0.0 each package was versioned independently and followed the [semantic versioning (SemVer)](https://semver.org/). Following SemVer as close as possible was useful as it allowed us to quickly identify what changed in each release of a certain package. However, it led to [problems with building old versions of the editor](https://github.com/ckeditor/ckeditor5/issues/1746).
+* **Integrations:** [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react), [`@ckeditor/ckeditor5-angular`](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), [`@ckeditor/ckeditor5-vue`](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
+* **Tooling:** [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator), [`@ckeditor/ckeditor5-integrations-common`](https://www.npmjs.com/package/@ckeditor/ckeditor5-integrations-common)
 
-Therefore, we switched to a more commonly used practice for an ecosystem of packages, which is to treat a single breaking change as a major release of all packages. It automatically fixed the aforementioned problem in all projects that use caret ranges in their `package.json` files. Later on, we decided that it will be even more convenient for integrators if all packages are in the exact same version, which is also not uncommon (for example, [Angular](https://github.com/angular/angular) follows this practice).
+## Unified versioning
+
+* All CKEditor 5 packages share the **same version number**.
+* This includes both `ckeditor5` and `ckeditor5-premium-features`, as well as all underlying feature and framework packages.
+* Integration packages and tooling may follow their own versioning, but major compatibility notes are always documented.
+
+This unified versioning approach is common in large ecosystems (for example, Angular). It simplifies dependency management, avoids mismatched versions, and makes it easy to know which packages are compatible.
+
+## Pinned dependencies
+
+All packages in the ecosystem pin dependencies to specific versions. This prevents issues with npm/yarn/pnpm resolving past versions incorrectly and guarantees reproducible builds.
+
+## Version numbers
+
+We use the **`MAJOR.MINOR.PATCH`** scheme:
+
+* **MAJOR** &ndash; Introduced when at least one package requires a **major breaking change**. This affects the entire ecosystem.
+* **MINOR** &ndash; Introduced when a package adds a new feature or introduces a **minor breaking change**.
+* **PATCH** &ndash; Introduced when a package only includes bug fixes, internal changes, or documentation updates.
+
+Because CKEditor 5 spans multiple layers – from low-level utilities through framework APIs to ready-to-use builds – our approach differs from strict [Semantic Versioning](https://semver.org/). Instead, our policy balances stability with the flexibility needed for such a broad ecosystem.
+
+## Breaking changes
+
+Breaking changes are categorized based on which layer of the ecosystem they affect:
+
+* **Integration layer** (editor builds, configuration, and top-level APIs):
+	* Breaking changes are considered **major**.
+	* Introduced very rarely and only when unavoidable.
+* **Plugin development API** (packages such as `@ckeditor/ckeditor5-engine` or `@ckeditor/ckeditor5-core`):
+	* Breaking changes are also considered **major**.
+	* Introduced occasionally, but batched to reduce the number of major releases.
+* **Low-level customization APIs and feature customization APIs** (internal utilities, hooks, helper functions, and lower-level APIs exposed by specific features, for example the Link balloon):
+	* Designed mainly for **deep customizations of existing features**, rather than for building integrations or plugins.
+	* Treated as **less stable** – breaking changes are considered **minor** and may occur more often as these APIs evolve with feature development.
+	* Provide powerful flexibility but are closer to implementation details, so they should not be relied upon for long-term compatibility guarantees.
+
+## Release schedule
+
+We typically publish a **new major release of CKEditor 5 every 6 months**, though in some cases new majors may arrive sooner. Each new major replaces the previous one as the actively supported version, ensuring that all users benefit from the latest improvements, fixes, and compatibility updates.
+
+For projects that need **long-term stability**, we also offer the commercial **CKEditor 5 LTS (Long-term Support) Edition**. Every two years, one major release (starting with **v47.0.0**) is designated as an LTS release, providing up to **3 years of guaranteed updates** &ndash; 6 months of active development followed by 2.5 years of maintenance with security and critical compatibility fixes. Read more in the {@link getting-started/setup/using-lts-edition CKEditor 5 LTS Edition} guide.
+
+<info-box>
+	For **v47.x**, the **Active phase ends in April 2026**, at which point the release enters the **Maintenance phase**. From then on, all new versions in the `v47.x` line will be distributed under a **commercial LTS Edition license**. Integrators without an LTS license should migrate to **v48.x** (the next regular release).
+</info-box>
+
+## Release channels
+
+CKEditor 5 is distributed through several release channels, each serving a different purpose:
+
+* **Stable releases**: The recommended versions for production use. These are fully tested and supported, and are available via **npm**, **ZIP packages**, and the **official CDN**.
+* **Alpha builds**: Used for early access and testing before a stable release. Alpha builds are published to npm under the `alpha` dist-tag.
+* **Nightly builds**: Generated automatically from the latest development branch. They are available via npm under the `nightly` dist-tag and are intended for testing the newest changes.
+
+If you encounter an issue, please [report it in the CKEditor&nbsp;5 issue tracker](https://github.com/ckeditor/ckeditor5/issues). Early feedback (especially about alpha and nightly releases) gives us more time to investigate and resolve problems before they reach a stable release.
+
+## Tracking changes
+
+To stay up to date with changes:
+
+- **Changelog**: Check the [CKEditor 5 changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md).
+- **News**: Read the [CKEditor Ecosystem Blog](https://ckeditor.com/blog/) or subscribe to the [newsletter](http://ckeditor.com/#newsletter-signup).
+- **npm**: Follow the [`ckeditor5`](https://www.npmjs.com/package/ckeditor5) and [`ckeditor5-premium-features`](https://www.npmjs.com/package/ckeditor5-premium-features) packages.
+
+## Update guides
+
+When a release introduces breaking or otherwise important changes, the {@link updating/index Updating CKEditor&nbsp;5} section provides technical details and migration steps. Always review these guides after a release to keep your integration stable.
