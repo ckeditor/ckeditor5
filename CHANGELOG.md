@@ -13,7 +13,7 @@ We are introducing [**CKEditor AI**](https://ckeditor.com/docs/ckeditor5/latest/
 
 Three features are available in this early access phase:
 
-* **Chat:** a conversational AI for dynamic, multi-turn interactions that support various context sources, model selection, and can perform changes directly on the document.
+* **Chat:** a conversational AI for dynamic, multi-turn interactions that support various context sources, model selection, which can perform changes directly on the document.
 * **Quick actions:** one-click transformations and instant insights for selected text.
 * **Review:** automatic checks for grammar, tone, correctness, style, and more, with UX optimized for performing full-document review.
 
