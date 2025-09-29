@@ -7,7 +7,7 @@ We are happy to announce the release of CKEditor 5 v47.0.0.
 
 ### Release highlights
 
-### CKEditor AI (early access)
+#### CKEditor AI (early access)
 
 We are introducing {@link features/ckeditor-ai-overview **CKEditor AI**}, an AI-powered writing assistant that integrates directly into CKEditor 5. It brings generation, summarization, correction, and contextual chat help right into the editor, reducing the need to switch between tools.
 
@@ -21,7 +21,7 @@ Each feature is powered by our state-of-the-art AI service, available in the Clo
 
 CKEditor AI is available as part of our **free trial** in early access.
 
-### Long-term Support (⭐)
+#### Long-term Support (⭐)
 
 We are introducing the **CKEditor 5 LTS (Long-term Support) Edition**, giving teams up to 3 years of stability with guaranteed updates.
 
@@ -31,7 +31,7 @@ For **v47.x**, the Maintenance phase starts in **April 2026**. From then, the ne
 
 If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about [CKEditor 5 LTS Edition](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html).
 
-### Other improvements and fixes
+#### Other improvements and fixes
 
 This release also brings several smaller but important enhancements and fixes:
 
