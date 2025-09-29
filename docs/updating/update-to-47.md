@@ -32,19 +32,15 @@ Each feature is powered by our state-of-the-art AI service, available in the Clo
 
 CKEditor AI is available as part of our **free trial** in early access.
 
-### Long-Term Support (⭐)
+### Long-term Support (⭐)
 
-With this release, we are introducing the **LTS version (Long-Term Support)** of CKEditor 5.
+We are introducing the **CKEditor 5 LTS (Long-term Support) Edition**, giving teams up to 3 years of stability with guaranteed updates.
 
-Every 2 years, one major version (starting now with **v47.0.0**) will become an **LTS version**, maintained for up to 3 years. It will receive regular updates for 6 months as Active, then will enter the Maintenance phase with security and critical compatibility fixes.
+The first LTS release is **v47.0.0** (October 2025). It will receive **6 months of active development** with new features and fixes, then **2.5 years of maintenance** with security and critical compatibility updates.
 
-The Maintenance phase of the LTS version is available exclusively to our **premium customers**. It enables teams to:
+For **v47.x**, the Maintenance phase starts in **April 2026**. From then the next versions in the v47.x line will be available only under a **commercial LTS Edition license**. Therefore, starting in April, integrators without an LTS license should migrate to v48.x (the next regular release).
 
-* Stick to one stable version without frequent migrations.
-* Receive guaranteed security fixes and compatibility updates.
-* Plan long-term projects with fewer risks and lower maintenance expenses.
-
-If you are interested, [contact us](https://ckeditor.com/contact/).
+If you need long-term stability, [contact sales](https://ckeditor.com/contact-sales/) or read more about the {@link getting-started/setup/using-lts-edition CKEditor 5 LTS Edition}.
 
 ### Updated content navigation with <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd>
 
@@ -71,8 +67,17 @@ This release also brings several smaller but important enhancements and fixes:
 
 ### Major breaking changes in this release
 
-* list
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `AIAssistant` related `.ai.*` configuration structure has changed. The changes are:
+  * `ai.aiAssistant` -> `ai.assistant`,
+  * `ai.useTheme` -> `ai.assistant.useTheme`,
+  * `ai.aws` -> `ai.assistant.adapter.aws`,
+  * `ai.openAI` -> `ai.assistant.adapter.openAI`.
 
 ### Minor breaking changes in this release
 
-* list
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The Widget feature implements the default handling for `Tab`/`Shift+Tab` to navigate nested editable elements in the editor content. Closes [#19083](https://github.com/ckeditor/ckeditor5/issues/19083). The listeners are registered on the `low` priority bubbling event in the context of widgets and editable elements.
+  Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The internal structure of the package has changed. Importing `AIAssistant` from the source should be done via `@ckeditor/ckeditor5-ai/src/aiassistant/aiassistant.js` path instead of a previous `@ckeditor/ckeditor5-ai/src/aiassistant.js`.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed the CSS selectors used to style the confirmation view displayed when attempting to remove a comment or an entire comment thread. For now, CSS classes will be more generic, for example: `.ck-confirm-view` instead of `.ck-thread__remove-confirm` . If you override styles for these components, you will need to update the selectors.
+* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: The `UndoCommandRevertEvent` type was renamed to `UndoRedoBaseCommandRevertEvent` and moved to `basecommand.ts` file. Adjust your code if you have used this type in your custom integration. See [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).
+* Updated to TypeScript 5.3.
