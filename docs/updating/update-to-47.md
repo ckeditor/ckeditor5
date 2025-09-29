@@ -34,11 +34,11 @@ CKEditor AI is available as part of our **free trial** in early access.
 
 ### Long-Term Support (⭐)
 
-With this release, we are introducing the **LTS (Long-Term Support) version** of CKEditor 5.
+With this release, we are introducing the **LTS version (Long-Term Support)** of CKEditor 5.
 
 Every 2 years, one major version (starting now with **v47.0.0**) will become an **LTS version**, maintained for up to 3 years. It will receive regular updates for 6 months as Active, then will enter the Maintenance phase with security and critical compatibility fixes.
 
-The Maintenance phase of the LTS version is available exclusively to our ****premium customers. It enables teams to:
+The Maintenance phase of the LTS version is available exclusively to our **premium customers**. It enables teams to:
 
 * Stick to one stable version without frequent migrations.
 * Receive guaranteed security fixes and compatibility updates.
