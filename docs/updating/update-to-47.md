@@ -67,7 +67,9 @@ This release also brings several smaller but important enhancements and fixes:
 
 ### Major breaking changes in this release
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `AIAssistant` related `.ai.*` configuration structure has changed. The changes are:
+With the release of {@link features/ckeditor-ai-overview **CKEditor AI**}, the `ai.`* configuration namespace has been updated to support all AI-related features. Previously, this namespace was dedicated exclusively to the `AIAssistant` feature. 
+
+As a result of this change, **the `AIAssistant` configuration has been relocated to a new structure.** The changes are: 
   * `ai.aiAssistant` -> `ai.assistant`,
   * `ai.useTheme` -> `ai.assistant.useTheme`,
   * `ai.aws` -> `ai.assistant.adapter.aws`,
