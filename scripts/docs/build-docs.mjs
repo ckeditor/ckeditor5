@@ -83,11 +83,11 @@ async function buildDocs() {
 	}
 
 	if ( IS_ISOLATED_REPOSITORY ) {
-		warnAboutDocsValidationInStandaloneMode();
+		printWarningIsolatedRepository();
 	}
 }
 
-function warnAboutDocsValidationInStandaloneMode() {
+function printWarningIsolatedRepository() {
 	const warning = styleText(
 		'yellow',
 		'\nThis repository is normally used together with a private companion project.\n' +
