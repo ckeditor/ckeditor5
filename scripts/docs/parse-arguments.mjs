@@ -137,7 +137,7 @@ function warnAboutUsingDevEnvironment() {
 function warnAboutDocsValidationInStandaloneMode() {
 	const warning = styleText(
 		'yellow',
-		'Docs validation is disabled in standalone mode, because validating premium features is expected to fail without premium ' +
+		'Docs validation is disabled in standalone mode, because it is expected to fail without premium ' +
 		'features repository context.\nUse "--skip-validation=false" to validate the docs anyway.'
 	);
 
