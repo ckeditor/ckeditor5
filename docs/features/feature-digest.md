@@ -1170,7 +1170,7 @@ The Table of Contents feature is a dynamic tool for organizing documents. It all
 
 Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities, right into the editor.
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>CKEdiotr AI</ck:heading-badge>
+<ck:heading-badge heading-id='ai-assistant' badge='premium'>CKEditor AI</ck:heading-badge>
 
 By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.
 
