@@ -10,8 +10,9 @@ import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
+import { styleText } from 'util';
 
 const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
@@ -80,6 +81,24 @@ async function buildDocs() {
 			await fs.copy( asset, upath.join( destinationPath, directoryName ) );
 		}
 	}
+
+	if ( IS_ISOLATED_REPOSITORY ) {
+		warnAboutDocsValidationInStandaloneMode();
+	}
+}
+
+function warnAboutDocsValidationInStandaloneMode() {
+	const warning = styleText(
+		'yellow',
+		'\nThis repository is normally used together with a private companion project.\n' +
+		'Because that project is not present here, some documentation links will not resolve - ' +
+		'this is expected and does not indicate a problem.\n\n' +
+		'The purpose of this task is to build the API reference and contributor-facing ' +
+		'guides for this repository on its own.\n' +
+		'If you still want to run full documentation validation, use "--skip-validation=false".'
+	);
+
+	console.log( warning );
 }
 
 function shouldBuildCKEditorAssets( options ) {

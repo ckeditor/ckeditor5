@@ -5,7 +5,7 @@
 
 import { parseArgs, styleText } from 'util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
-import { IS_STANDALONE_REPOSITORY } from '../constants.mjs';
+import { IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 
 /**
  * @param {Array<string>} args An array containing modifiers for the executed command.
@@ -26,7 +26,7 @@ export default function parseArguments( args ) {
 			},
 			'skip-validation': {
 				type: 'boolean',
-				default: IS_STANDALONE_REPOSITORY
+				default: IS_ISOLATED_REPOSITORY
 			},
 			'skip-guides': {
 				type: 'boolean',
@@ -70,10 +70,6 @@ export default function parseArguments( args ) {
 			}
 		}
 	} );
-
-	if ( IS_STANDALONE_REPOSITORY ) {
-		warnAboutDocsValidationInStandaloneMode();
-	}
 
 	if ( values.dev && values.production ) {
 		throw new Error( 'The --dev and --production flags are mutually exclusive.' );
@@ -129,19 +125,6 @@ function warnAboutUsingDevEnvironment() {
 	);
 
 	console.log( `\n${ warning }\n` );
-}
-
-/**
- * Logs a warning about not validating the docs by default in standalone mode.
- */
-function warnAboutDocsValidationInStandaloneMode() {
-	const warning = styleText(
-		'yellow',
-		'Docs validation is disabled in standalone mode, because it is expected to fail without premium ' +
-		'features repository context.\nUse "--skip-validation=false" to validate the docs anyway.'
-	);
-
-	console.log( warning );
 }
 
 /**
