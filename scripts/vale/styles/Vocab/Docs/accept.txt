@@ -8,6 +8,7 @@ autodetect
 [Aa]utoformatting
 [Aa]utolink
 [Aa]utoparagraph
+AI[*]
 Automattic
 [Aa]utosave
 [Aa]utosaving
