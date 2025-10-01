@@ -1,18 +1,21 @@
 <style id="table-properties-styles">
-	.ck-content .table {
+	.ck-content figure.table:not(.layout-table) {
 		float: left;
 		width: 300px;
 		height: 250px;
 	}
 
-	.ck-content .table table {
+	.ck-content figure.table:not(.layout-table) > table {
 		border-style: dashed;
 		border-color: hsl(0, 0%, 60%);
 		border-width: 3px;
 		background-color: #00f;
 	}
 
-	.ck-content .table table td {
+	.ck-content figure.table:not(.layout-table) > table  > tbody > tr > td,
+	.ck-content figure.table:not(.layout-table) > table  > tbody > tr > th,
+	.ck-content figure.table:not(.layout-table) > table  > thead > tr > td,
+	.ck-content figure.table:not(.layout-table) > table  > thead > tr > th {
 		border-style: dotted;
 		border-color: hsl(120, 75%, 60%);
 		border-width: 2px;
@@ -45,3 +48,5 @@
 		</tr>
 	</table>
 </div>
+
+<div id="preview" class="ck-content"></div>

@@ -5,6 +5,7 @@ meta-description: Style tables in CKEditor 5 with custom classes, alignment, and
 category: tables
 order: 20
 modified_at: 2022-05-19
+badges: [ premium ]
 ---
 
 # Table and cell styling tools
@@ -12,6 +13,8 @@ modified_at: 2022-05-19
 {@snippet features/build-table-source empty}
 
 CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
+
+{@snippet getting-started/unlock-feature}
 
 ## Demo
 
@@ -147,19 +150,22 @@ The **“Table properties”** and **“Table cell properties”** buttons in th
 The style sheet for the editor displayed below looks as follows:
 
 ```css
-.ck-content .table:not(.layout-table) {
+.ck-content figure.table:not(.layout-table) {
 	float: left;
 	width: 550px;
 	height: 450px;
 }
 
-.ck-content .table:not(.layout-table) table {
+.ck-content figure.table:not(.layout-table) > table {
 	border-style: dashed;
 	border-color: hsl(90, 75%, 60%);
 	border-width: 3px;
 }
 
-.ck-content .table:not(.layout-table) table td {
+.ck-content figure.table:not(.layout-table) > table  > tbody > tr > td,
+.ck-content figure.table:not(.layout-table) > table  > tbody > tr > th,
+.ck-content figure.table:not(.layout-table) > table  > thead > tr > td,
+.ck-content figure.table:not(.layout-table) > table  > thead > tr > th {
 	text-align: center;
 	vertical-align: bottom;
 	padding: 10px

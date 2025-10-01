@@ -41,6 +41,10 @@ describe( 'WordCount', () => {
 			} );
 	} );
 
+	it( 'should have `licenseFeatureCode` static flag set to `WC`', () => {
+		expect( WordCount.licenseFeatureCode ).to.equal( 'WC' );
+	} );
+
 	describe( 'constructor()', () => {
 		describe( '#words property', () => {
 			it( 'is defined', () => {
@@ -124,8 +128,8 @@ describe( 'WordCount', () => {
 			expect( WordCount.isOfficialPlugin ).to.be.true;
 		} );
 
-		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-			expect( WordCount.isPremiumPlugin ).to.be.false;
+		it( 'should have `isPremiumPlugin` static flag set to `true`', () => {
+			expect( WordCount.isPremiumPlugin ).to.be.true;
 		} );
 	} );
 

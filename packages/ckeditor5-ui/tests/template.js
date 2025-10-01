@@ -326,6 +326,64 @@ describe( 'Template', () => {
 					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow;width:1em"></p>' );
 				} );
 
+				it( 'renders CSS variable as a static value', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: '--color: red'
+						}
+					} );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--color:red"></p>' );
+				} );
+
+				it( 'renders CSS variable as a static value (Array of values)', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								'--color': 'red',
+								'--display': 'block'
+							}
+						}
+					} );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--color:red;--display:block"></p>' );
+				} );
+
+				it( 'renders CSS variable as a value bound to the model', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: bind.to( 'width', w => `--width: ${ w }` )
+						}
+					} );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--width:10px"></p>' );
+
+					observable.width = '1em';
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--width:1em"></p>' );
+				} );
+
+				it( 'renders CSS variable as a value bound to the model (Array of bindings)', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: [
+								bind.to( 'width', w => `--width: ${ w };` ),
+								bind.to( 'backgroundColor', c => `--background-color: ${ c };` )
+							]
+						}
+					} );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--background-color:yellow;--width:10px"></p>' );
+
+					observable.width = '1em';
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="--background-color:yellow;--width:1em"></p>' );
+				} );
+
 				describe( 'object', () => {
 					it( 'renders with static and bound attributes', () => {
 						setElement( {
@@ -347,6 +405,34 @@ describe( 'Template', () => {
 
 						expect( normalizeHtml( el.outerHTML ) )
 							.to.equal( '<p style="background-color:green;height:10px;width:20px"></p>' );
+					} );
+
+					it( 'renders CSS variables with static and bound attributes', () => {
+						setElement( {
+							tag: 'p',
+							attributes: {
+								style: {
+									'--width': bind.to( 'width' ),
+									'--height': '10px',
+									'--background-color': bind.to( 'backgroundColor' )
+								}
+							}
+						} );
+
+						expect( normalizeHtml( el.outerHTML ) )
+							.to.equal( '<p style="--background-color:yellow;--height:10px;--width:10px"></p>' );
+
+						observable.width = '20px';
+						observable.backgroundColor = 'green';
+
+						expect( normalizeHtml( el.outerHTML ) )
+							.to.equal( '<p style="--background-color:green;--height:10px;--width:20px"></p>' );
+
+						observable.width = '';
+						observable.backgroundColor = '';
+
+						expect( normalizeHtml( el.outerHTML ) )
+							.to.equal( '<p style="--height:10px"></p>' );
 					} );
 
 					it( 'renders with empty string attributes', () => {

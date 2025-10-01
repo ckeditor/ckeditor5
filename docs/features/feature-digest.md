@@ -20,7 +20,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='full-page-html'>
-			Full page HTML
+			Full page HTML <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
@@ -61,7 +61,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='html-embed'>
-			HTML embed
+			HTML embed <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
@@ -178,7 +178,7 @@ Block Formatting allows for the organization and emphasis of content through the
 	</ck:card>
 </ck:columns>
 
-### Bookmarks
+<ck:heading-badge heading-id='bookmarks' badge='premium'>Bookmarks</ck:heading-badge>
 
 The bookmarks feature allows for adding and managing the bookmarks anchors attached to the content of the editor. These provide fast access to important content sections, and speed up the navigation boosting efficiency.
 
@@ -335,7 +335,7 @@ The image feature allows adding images of various kinds to the rich content insi
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='image-resize'>
-			Image resize
+			Image resize <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The image resize feature lets you change the width of images in your content. It is implemented by the ImageResize plugin.
@@ -419,13 +419,13 @@ Lists allow the creation and management of various list types, including to-do l
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='list-start-index'>
-			List start index
+			List start index <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#list-start-index}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#list-start-index}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -433,13 +433,13 @@ Lists allow the creation and management of various list types, including to-do l
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='list-styles'>
-			List styles
+			List styles <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#list-styles}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#list-styles}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -489,13 +489,13 @@ Lists allow the creation and management of various list types, including to-do l
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='reversed-list'>
-			Reversed list
+			Reversed list <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/lists#reversed-list}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/lists-properties#reversed-list}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
@@ -538,7 +538,7 @@ You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental 
 	Feature page
 </ck:button-link>
 
-### Remove formatting
+<ck:heading-badge heading-id='remove-formatting' badge='premium'>Remove formatting</ck:heading-badge>
 
 The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like basic text styles (bold, italic) or font family, size, and color. This feature does not remove block-level formatting (headings, images) or semantic data (links).
 
@@ -561,7 +561,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='columns-resizing'>
-			Columns resizing
+			Column resizing <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.
@@ -617,7 +617,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='styling-tables-cells'>
-			Styling tables & cells
+			Styling tables & cells <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
@@ -673,7 +673,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='layout-tables'>
-			Layout tables
+			Layout tables <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.
@@ -1137,7 +1137,7 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='page-break'>
-			Page break
+			Page break <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.
@@ -1168,9 +1168,17 @@ The Table of Contents feature is a dynamic tool for organizing documents. It all
 
 ## Productivity
 
-Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
+Speed up the content creation process with dedicated productivity utilities. The CKEditor AI feature brings generation, summarization, correction, contextual chat help, reviews, and many other capabilities right into the editor.
 
-<ck:heading-badge heading-id='ai-assistant' badge='premium'>AI Assistant</ck:heading-badge>
+<ck:heading-badge heading-id='ai-assistant' badge='premium'>CKEditor AI</ck:heading-badge>
+
+By integrating AI writing assistance directly into the editing experience, CKEditor AI empowers authors with real-time AI writing support, streamlines content creation, and enhances editorial workflows across a wide range of use cases – from productivity boosts and proof-reading to content quality and consistency.
+
+<ck:button-link size='sm' variant='secondary' href='{@link features/ckeditor-ai-overview}'>
+	Feature page
+</ck:button-link>
+
+<ck:heading-badge heading-id='ai-assistant' badge='premium'>AI Assistant (older version)</ck:heading-badge>
 
 The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.
 
@@ -1256,7 +1264,7 @@ The Emoji feature lets you insert emojis into the document from the editor toolb
 	Feature page
 </ck:button-link>
 
-### Find and replace
+<ck:heading-badge heading-id='find-and-replace' badge='premium'>Find and replace</ck:heading-badge>
 
 The Find and Replace feature in CKEditor 5's Productivity tools allows you to search for words or phrases in your document and replace them with different text. This function helps speed up editing and maintain content consistency.
 
@@ -1312,7 +1320,7 @@ Paste from Google Docs allows you to paste content from Google Docs and preserve
 	Feature page
 </ck:button-link>
 
-### Paste from Office
+<ck:heading-badge heading-id='paste-from-office' badge='premium'>Paste from Office</ck:heading-badge>
 
 Paste from Office features let you paste content from Microsoft Word and Microsoft Excel and preserve its original structure and formatting. This is the basic, open-source Paste from Office feature.
 
@@ -1344,7 +1352,7 @@ The Slash Commands feature lets users insert block elements and apply styles usi
 	Feature page
 </ck:button-link>
 
-### Special characters
+<ck:heading-badge heading-id='special-characters' badge='premium'>Special characters</ck:heading-badge>
 
 The Special Characters feature lets you insert a variety of unique symbols and characters into your document. This includes mathematical operators, currency symbols, punctuation, graphic symbols like arrows or bullets, and Unicode letters that are not typically available on standard keyboards, such as umlauts or diacritics. Additionally, the feature supports the insertion of emojis. This tool is particularly useful for enhancing the detail and accuracy of content that requires specialized symbols.
 
@@ -1662,7 +1670,7 @@ The Read-Only Mode feature enables content to be locked from editing while still
 	Feature page
 </ck:button-link>
 
-### Restricted editing
+<ck:heading-badge heading-id='restricted-editing' badge='premium'>Restricted editing</ck:heading-badge>
 
 The Restricted Editing feature allows some sections of a document to be designated as non-editable while others remain editable. This feature supports two modes: the standard editing mode, where all content can be edited, and the restricted editing mode, where users can only modify parts of the content that are specifically marked as editable. This functionality is useful for workflows where one group of users creates document templates that include protected sections, and a second group fills in editable details such as names, dates, or product names without altering the rest of the document.
 
@@ -1678,7 +1686,7 @@ The Text Part Language feature allows users to specify the language of individua
 	Feature page
 </ck:button-link>
 
-### Word and character counter
+<ck:heading-badge heading-id='word-and-character-counter' badge='premium'>Word and character counter</ck:heading-badge>
 
 The Word and Character Count feature provides a real-time tracking tool for monitoring the number of words and characters within the editor. This functionality assists in managing content length and ensuring it meets specific requirements or limits.
 
@@ -1752,7 +1760,7 @@ The standard UI library of CKEditor 5 is @ckeditor/ckeditor5-ui. It provides bas
 
 Upload and manage your files using file management features. Take advantage of CKBox, our file management solution, or create your own using an adapter.
 
-### Base64 Upload Adapter
+<ck:heading-badge heading-id='base64-upload-adapter' badge='premium'>Base64 Upload Adapter</ck:heading-badge>
 
 Convert inserted images into Base64-encoded strings in the editor output. Images are stored with other content in the database without server-side processing.
 
@@ -1780,11 +1788,11 @@ The CKFinder feature lets you insert images and links to files into your content
 
 Have your own file management solution? Use this adapter to integrate your preferred software with CKEditor.
 
-<ck:button-link size='sm' variant='secondary' href='{@link features/image-upload#implementing-your-own-upload-adapter}'>
+<ck:button-link size='sm' variant='secondary' href='{@link features/custom-upload-adapter}'>
 	Feature page
 </ck:button-link>
 
-### Simple Upload Adapter
+<ck:heading-badge heading-id='simple-upload-adapter' badge='premium'>Simple Upload Adapter</ck:heading-badge>
 
 Upload images to your server using the XMLHttpRequest API with a minimal editor configuration.
 

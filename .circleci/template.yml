@@ -5,16 +5,10 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@2.1.2
+  browser-tools: circleci/browser-tools@2.3.1
 
-# List of parameters must be synchronized between configuration files.
+# List of parameters are automatically inherited from `config.yml`.
 parameters:
-  isNightly:
-    type: boolean
-    default: false
-  isStaleBot:
-    type: boolean
-    default: false
 
 commands:
   install_newest_emoji:
@@ -61,7 +55,7 @@ commands:
           name: Install pnpm
           command: sudo npm i -g pnpm@^10
       - run:
-          name: Install pnpm
+          name: Install dependencies
           command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
@@ -126,7 +120,7 @@ jobs:
           command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
-          command: bash scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
+          command: bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
     docker:

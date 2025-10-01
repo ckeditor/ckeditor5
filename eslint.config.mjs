@@ -93,8 +93,7 @@ export default defineConfig( [
 				requiredFlags: [ {
 					name: 'isOfficialPlugin',
 					returnValue: true
-				} ],
-				disallowedFlags: [ 'isPremiumPlugin' ]
+				} ]
 			} ]
 		}
 	},

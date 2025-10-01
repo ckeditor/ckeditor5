@@ -3,7 +3,6 @@ category: update-guides
 meta-title: Update to version 46.x | CKEditor 5 Documentation
 menu-title: Update to v46.x
 order: 78
-modified_at: 2025-09-08
 ---
 
 # Update to CKEditor&nbsp;5 v46.x
@@ -125,7 +124,7 @@ Unneeded styles on block elements, such as tables and images, and General HTML S
 
 ### List markers styling
 
-Working with {@link features/lists#list-styles styled lists} becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
+Working with {@link features/lists-properties#list-styles styled lists} becomes more intuitive as list markers (bullets and numbers) now automatically inherit text styling properties. When you apply formatting to list text, the markers will match:
 
 * Font size adjustments,
 * Text color changes,
@@ -133,7 +132,7 @@ Working with {@link features/lists#list-styles styled lists} becomes more intuit
 
 This improvement makes it easier to create visually consistent and professional-looking lists without additional configuration. This improvement also supports {@link features/multi-level-lists multi-level lists}.
 
-**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists#disabling-marker-formatting you can opt out}.
+**Important!** This behavior is enabled by default, which means you may experience content change when you load the content to the editor’s new version (for the better in our opinion). But if this is not something you expect, {@link features/lists-properties#disabling-marker-formatting you can opt out}.
 
 ### Markdown processor dependency refresh
 

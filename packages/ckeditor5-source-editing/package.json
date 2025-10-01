@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-source-editing",
-  "version": "46.1.1",
+  "version": "47.0.0",
   "description": "Source editing feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,24 +13,24 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "46.1.1",
-    "@ckeditor/ckeditor5-icons": "46.1.1",
-    "@ckeditor/ckeditor5-ui": "46.1.1",
-    "@ckeditor/ckeditor5-utils": "46.1.1",
-    "@ckeditor/ckeditor5-theme-lark": "46.1.1",
-    "ckeditor5": "46.1.1"
+    "@ckeditor/ckeditor5-core": "47.0.0",
+    "@ckeditor/ckeditor5-icons": "47.0.0",
+    "@ckeditor/ckeditor5-ui": "47.0.0",
+    "@ckeditor/ckeditor5-utils": "47.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "47.0.0",
+    "ckeditor5": "47.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-code-block": "46.1.1",
+    "@ckeditor/ckeditor5-code-block": "47.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^53.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "46.1.1",
-    "@ckeditor/ckeditor5-engine": "46.1.1",
-    "@ckeditor/ckeditor5-essentials": "46.1.1",
-    "@ckeditor/ckeditor5-heading": "46.1.1",
-    "@ckeditor/ckeditor5-markdown-gfm": "46.1.1",
-    "@ckeditor/ckeditor5-paragraph": "46.1.1",
-    "@ckeditor/ckeditor5-table": "46.1.1",
-    "typescript": "5.0.4",
+    "@ckeditor/ckeditor5-editor-classic": "47.0.0",
+    "@ckeditor/ckeditor5-engine": "47.0.0",
+    "@ckeditor/ckeditor5-essentials": "47.0.0",
+    "@ckeditor/ckeditor5-heading": "47.0.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "47.0.0",
+    "@ckeditor/ckeditor5-paragraph": "47.0.0",
+    "@ckeditor/ckeditor5-table": "47.0.0",
+    "typescript": "5.3.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },

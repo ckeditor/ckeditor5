@@ -344,6 +344,13 @@ export interface PluginStaticMembers<TContext = Editor> {
 	 * @internal
 	 */
 	readonly isPremiumPlugin?: boolean;
+
+	/**
+	 * An unique id of a plugin which belongs to the free plan on commercial license.
+	 *
+	 * @internal
+	 */
+	readonly licenseFeatureCode?: string;
 }
 
 export type PluginDependencies<TContext = Editor> = ReadonlyArray<PluginConstructor<TContext> | string>;
