@@ -5,6 +5,7 @@
 
 import { parseArgs, styleText } from 'util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
+import { IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 
 /**
  * @param {Array<string>} args An array containing modifiers for the executed command.
@@ -25,7 +26,7 @@ export default function parseArguments( args ) {
 			},
 			'skip-validation': {
 				type: 'boolean',
-				default: false
+				default: IS_ISOLATED_REPOSITORY
 			},
 			'skip-guides': {
 				type: 'boolean',

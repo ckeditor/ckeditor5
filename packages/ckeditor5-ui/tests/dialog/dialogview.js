@@ -1094,6 +1094,39 @@ describe( 'DialogView', () => {
 			sinon.assert.calledOnceWithExactly( moveToSpy, 789, 101 );
 		} );
 
+		it( 'should move dialog off screen when position function returns null', () => {
+			const positionFunctionSpy = testUtils.sinon.stub().returns( null );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			sinon.assert.calledOnce( positionFunctionSpy );
+
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( dialogRect ).to.deep.equal( {
+				width: 100,
+				height: 50,
+				left: 0,
+				right: 100,
+				top: 0,
+				bottom: 50
+			} );
+
+			expect( domRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
+			} );
+
+			sinon.assert.calledOnceWithExactly( moveToSpy, -9999, -9999 );
+		} );
+
 		describe( 'when the DOM root is visible in the viewport', () => {
 			it( 'should support EDITOR_TOP_SIDE position (LTR editor)', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_SIDE;
