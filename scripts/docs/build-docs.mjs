@@ -90,11 +90,11 @@ async function buildDocs() {
 function printWarningIsolatedRepository() {
 	const warning = styleText(
 		'yellow',
-		'\nThis repository is normally used together with a private companion project.\n' +
-		'Because that project is not present here, some documentation links will not resolve - ' +
+		'\nThis repository is typically used in conjunction with a private project.\n\n' +
+		'Since the project is not present here, some documentation links may not resolve - ' +
 		'this is expected and does not indicate a problem.\n\n' +
-		'The purpose of this task is to build the API reference and contributor-facing ' +
-		'guides for this repository on its own.\n' +
+		'The purpose of this task is to create the API reference and contributor-facing ' +
+		'guides for this repository independently.\n\n' +
 		'If you still want to run full documentation validation, use "--skip-validation=false".'
 	);
 
