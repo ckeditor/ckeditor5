@@ -716,7 +716,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'aiTools',
  * 				items: [
  * 					'menuBar:aiAssistant',
- * 					'menuBar:aiCommands'
+ * 					'menuBar:aiCommands',
+ * 					'menuBar:toggleAi',
+ * 					'menuBar:aiQuickActions'
  * 				]
  * 			},
  * 			{
@@ -991,7 +993,9 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'aiTools',
 				items: [
 					'menuBar:aiAssistant',
-					'menuBar:aiCommands'
+					'menuBar:aiCommands',
+					'menuBar:toggleAi',
+					'menuBar:aiQuickActions'
 				]
 			},
 			{
