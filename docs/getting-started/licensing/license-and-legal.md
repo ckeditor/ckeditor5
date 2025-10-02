@@ -52,7 +52,7 @@ The commercial license unlocks many benefits:
 	* {@link features/multi-level-lists Multi-level Lists}
 	* Advanced Productivity
 	* Advanced Page Management
-	* {@link features/ai-assistant-overview AI Assistant}
+	* {@link features/ckeditor-ai-overview CKEditor AI}
 	* {@link features/ckbox CKBox for file storage and management}
 * {@link getting-started/licensing/managing-ckeditor-logo White-labeling}
 * Technical support
