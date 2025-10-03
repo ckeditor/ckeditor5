@@ -18,6 +18,7 @@ minimumReleaseAgeExclude:
   - '@ckeditor/*'
   - '@cksource/*'
   - '*ckeditor5*'
+  - 'umberto'
 
 shellEmulator: true
 shamefullyHoist: true
