@@ -395,7 +395,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Fires re-insertion conversion (with a `reconversion` flag passed to `insert` events)
+	 * Fires re-insertion conversion (with a `reconversion` flag passed to `remove` and `insert` events)
 	 * of a range of elements (only elements on the range depth, without children).
 	 *
 	 * For each node in the range on its depth (without children), {@link #event:insert `insert` event} is fired.
@@ -415,6 +415,14 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
+			// For backward compatibility and handlers that does not recognize reconversion.
+			this.fire<DowncastRemoveEvent>(
+				`remove:${ data.item.is( 'element' ) ? data.item.name : '$text' }`,
+				{ position: data.range.start, length: data.item.offsetSize, reconversion: true },
+				conversionApi
+			);
+
+			// Reinsert the view element.
 			this._testAndFire( 'insert', { ...data, reconversion: true }, conversionApi );
 		}
 	}
@@ -706,6 +714,7 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	remove: {
 		position: ModelPosition;
 		length: number;
+		reconversion?: boolean;
 	};
 	attribute: {
 		item: TItem;

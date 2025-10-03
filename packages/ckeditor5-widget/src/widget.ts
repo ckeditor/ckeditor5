@@ -238,7 +238,10 @@ export class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
