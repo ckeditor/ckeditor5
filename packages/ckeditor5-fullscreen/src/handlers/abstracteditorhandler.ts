@@ -138,6 +138,11 @@ export class FullscreenAbstractEditorHandler {
 	declare protected _editor: Editor & Partial<ElementApi>;
 
 	/**
+	 * A map of AI Tabs data that were set before entering the fullscreen mode.
+	 */
+	private _aiTabsData: { side: 'right' | 'left'; type: 'sidebar' | 'overlay' | 'custom' } | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -214,6 +219,7 @@ export class FullscreenAbstractEditorHandler {
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -237,10 +243,6 @@ export class FullscreenAbstractEditorHandler {
 		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
 			this._document.body.classList.add( 'ck-fullscreen' );
 			this._document.body.parentElement!.classList.add( 'ck-fullscreen' );
-		}
-
-		if ( this._editor.plugins.has( 'Dialog' ) ) {
-			this._registerFullscreenDialogPositionAdjustments();
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -291,8 +293,17 @@ export class FullscreenAbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		if ( this._editor.plugins.has( 'AITabs' ) ) {
+			this._handleAITabsTransfer();
+		}
+
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+		}
+
+		// Dialog position should be done after all known elements are moved to the fullscreen container.
+		if ( this._editor.plugins.has( 'Dialog' ) ) {
+			this._registerFullscreenDialogPositionAdjustments();
 		}
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
@@ -340,6 +351,10 @@ export class FullscreenAbstractEditorHandler {
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			this._restoreRevisionHistoryCallbacks();
+		}
+
+		if ( this._editor.plugins.has( 'AITabs' ) ) {
+			this._restoreAITabs();
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
@@ -754,18 +769,28 @@ export class FullscreenAbstractEditorHandler {
 			return;
 		}
 
-		const fullscreenViewContainerRect = new Rect( this._wrapper! ).getVisible();
+		// It's possible that the right edge container is used but not visible. We then fallback to the wrapper.
+		const keepRightEdgeContainerVisible =
+			new Rect( this._wrapper!.querySelector( '.ck-fullscreen__right-edge' ) as HTMLElement ).getVisible();
+		const relativeContainer = keepRightEdgeContainerVisible ?
+			this._wrapper!.querySelector( '.ck-fullscreen__right-edge' ) as HTMLElement :
+			this._wrapper!;
+		const relativeContainerRect = new Rect( relativeContainer ).getVisible();
 		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
 		const scrollOffset = new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
 			.excludeScrollbarsAndBorders().getVisible()!.width -
 			new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement ).getVisible()!.width;
 
-		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
+		if ( relativeContainerRect && editorContainerRect && dialogRect ) {
 			dialogView.position = null;
 
+			const leftOffset = keepRightEdgeContainerVisible ?
+				relativeContainerRect.left - dialogRect.width - DIALOG_OFFSET :
+				relativeContainerRect.left + relativeContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset;
+
 			dialogView.moveTo(
-				fullscreenViewContainerRect.left + fullscreenViewContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset,
+				leftOffset,
 				editorContainerRect.top
 			);
 		}
@@ -805,5 +830,34 @@ export class FullscreenAbstractEditorHandler {
 
 			element = element.parentElement;
 		}
+	}
+
+	/**
+	 * Stores the current state of the AI Tabs and moves it to the fullscreen mode.
+	 */
+	private _handleAITabsTransfer(): void {
+		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
+
+		this._aiTabsData = {
+			side: aiTabs.side,
+			type: aiTabs.type
+		};
+
+		this.moveToFullscreen( aiTabs.view.element!, 'right-edge' );
+
+		aiTabs.side = 'right';
+		aiTabs.type = 'sidebar';
+	}
+
+	/**
+	 * Restores the state of the AI Tabs to the original values.
+	 */
+	private _restoreAITabs(): void {
+		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
+
+		aiTabs.side = this._aiTabsData?.side;
+		aiTabs.type = this._aiTabsData?.type;
+
+		this._aiTabsData = null;
 	}
 }

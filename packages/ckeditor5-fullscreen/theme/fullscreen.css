@@ -46,6 +46,7 @@ Fullscreen layout:
 		<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
 		<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 		<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+		<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 	</div>
 	<div class="ck ck-fullscreen__bottom-wrapper">
 		<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -135,7 +136,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__sidebar {
-	width: 300px;
+	width: 270px;
 	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-left: 10px;
 }
@@ -155,7 +156,7 @@ Fullscreen layout:
 
 	> :first-child {
 		/* Set minimal width if there is any item in the sidebar. */
-		min-width: 300px;
+		min-width: 270px;
 		/* We have to use padding-top instead of margin-top because margin is scrollable. */
 		padding-top: var(--ck-fullscreen-editor-top-margin);
 	}
@@ -231,6 +232,21 @@ Fullscreen layout:
 
 	&> :first-child {
 		/* Set minimal width if there is any item in the sidebar. */
-		min-width: 300px;
+		min-width: 270px;
+	}
+}
+
+.ck-fullscreen__right-edge {
+	--ck-tabs-panels-container-width: 420px;
+	/* width: 450px; */
+	position: sticky;
+	top: 0;
+	margin-top: 0;
+	margin-left: 10px;
+
+	& > :first-child {
+		border-top: none;
+		border-bottom: none;
+		border-right: none;
 	}
 }
