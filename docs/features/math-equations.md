@@ -96,7 +96,6 @@ First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser
 │	├── index.umd.js
 │	└── index.umd.js.map
 ├── ...
-...
 ```
 
 Next, attach the MathType script to your page after the editor scripts. This will expose MathType as a global variable, similar to other plugins.
@@ -115,8 +114,12 @@ const MathType = MathTypeExports.default;
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ MathType ],
-		toolbar: [ 'MathType', 'ChemType' ]
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ MathType, /* ... */ ],
+		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
+		mathTypeParameters : {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
