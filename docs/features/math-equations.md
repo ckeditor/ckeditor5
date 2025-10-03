@@ -81,7 +81,7 @@ ClassicEditor
 
 ## Installation from CDN
 
-Our CDN doesn't provide external packages like MathType. So, after attaching the editor scripts, you can't access the plugin from the global variable like other plugins. However, there is a way to use the CKEditor 5 CDN with the MathType plugin. It requires a custom setup.
+Our CDN doesn't provide external packages like MathType. So, after attaching the editor scripts, you can't access the plugin from the global variable like other plugins. However, there is a way to use the CKEditor&nbsp;5 CDN with the MathType plugin. It requires a custom setup.
 
 First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5?activeTab=code) package to your project. It may look like this:
 
@@ -99,7 +99,7 @@ First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser
 ...
 ```
 
-Next, attach the MathType script to your page after the editor script. This will expose MathType as a global variable, similar to other plugins.
+Next, attach the MathType script to your page after the editor scripts. This will expose MathType as a global variable, similar to other plugins.
 
 ```html
 <script src="./mathtype/index.umd.js"></script>
