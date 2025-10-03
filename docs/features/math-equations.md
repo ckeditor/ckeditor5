@@ -52,7 +52,7 @@ MathType lets you choose between two editing modes:
 
 If you visit a page using MathType with your mobile device, the handwriting interface will appear by default. However, if you visit the same page with a laptop or desktop computer, the classic input will be displayed. The user is always free to change between the two interfaces.
 
-## Installation
+## Installation from npm
 
 MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor preset just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
@@ -78,6 +78,50 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+## Installation from CDN
+
+Our CDN doesn't provide external packages like MathType. So, after attaching the editor scripts, you can't access the plugin from the global variable like other plugins. However, there is a way to use the CKEditor 5 CDN with the MathType plugin. It requires a custom setup.
+
+First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5?activeTab=code) package to your project. It may look like this:
+
+```plain
+├── mathtype
+│	├── index.content.css
+│	├── index.editor.css
+│	├── index.css
+│	├── index.css.map
+│	├── index.js
+│	├── index.js.map
+│	├── index.umd.js
+│	└── index.umd.js.map
+├── ...
+...
+```
+
+Next, attach the MathType script to your page after the editor script. This will expose MathType as a global variable, similar to other plugins.
+
+```html
+<script src="./mathtype/index.umd.js"></script>
+```
+
+Once the scripts are added, get MathType from the UMD file loaded via the script tag. Use the MathType plugin directly from exports, then add it to the editor.
+
+```js
+const { ClassicEditor } = window.CKEDITOR;
+
+const MathTypeExports = window['@wiris/mathtype-ckeditor5'];
+const MathType = MathTypeExports.default;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MathType ],
+		toolbar: [ 'MathType', 'ChemType' ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 
 ## Customizing MathType service
 
