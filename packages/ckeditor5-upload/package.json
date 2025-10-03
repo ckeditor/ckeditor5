@@ -12,8 +12,8 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "47.0.0",
-    "@ckeditor/ckeditor5-utils": "47.0.0"
+    "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
     "typescript": "5.3.3",

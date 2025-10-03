@@ -13,18 +13,18 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "47.0.0",
-    "@ckeditor/ckeditor5-engine": "47.0.0",
-    "@ckeditor/ckeditor5-utils": "47.0.0"
+    "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-utils": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "47.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "47.0.0",
-    "@ckeditor/ckeditor5-heading": "47.0.0",
-    "@ckeditor/ckeditor5-link": "47.0.0",
-    "@ckeditor/ckeditor5-paragraph": "47.0.0",
-    "@ckeditor/ckeditor5-typing": "47.0.0",
-    "@ckeditor/ckeditor5-undo": "47.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "workspace:*",
+    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
+    "@ckeditor/ckeditor5-heading": "workspace:*",
+    "@ckeditor/ckeditor5-link": "workspace:*",
+    "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-typing": "workspace:*",
+    "@ckeditor/ckeditor5-undo": "workspace:*",
     "typescript": "5.3.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
