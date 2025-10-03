@@ -13,7 +13,7 @@ onlyBuiltDependencies:
   - puppeteer
   - sharp
 
-minimumReleaseAge: 10080 # 7 days
+minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@ckeditor/*'
   - '@cksource/*'
