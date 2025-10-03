@@ -13,6 +13,13 @@ onlyBuiltDependencies:
   - puppeteer
   - sharp
 
+minimumReleaseAge: 4320 # 3 days
+minimumReleaseAgeExclude:
+  - '@ckeditor/*'
+  - '@cksource/*'
+  - '*ckeditor5*'
+  - 'umberto'
+
 shellEmulator: true
 shamefullyHoist: true
 preferFrozenLockfile: true

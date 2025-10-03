@@ -84,7 +84,7 @@
   },
   "engines": {
     "node": ">=22.0.0",
-    "pnpm": ">=10.14.0",
+    "pnpm": ">=10.17.0",
     "yarn": "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"
   },
   "author": "CKSource (http://cksource.com/)",
