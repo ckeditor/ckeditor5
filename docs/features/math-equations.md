@@ -89,8 +89,8 @@ First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser
 
 ```plain
 ├── mathtype
-│	├── index.content.css
-│	├── index.editor.css
+│	├── index-content.css
+│	├── index-editor.css
 │	├── index.css
 │	├── index.css.map
 │	├── index.js
@@ -104,6 +104,14 @@ Next, attach the MathType script to your page after the editor scripts. This wil
 
 ```html
 <script src="./mathtype/index.umd.js"></script>
+```
+
+Besides the script, you also need to attach the CSS files.
+
+```html
+<link rel="stylesheet" href="./mathtype/index.css" />
+<link rel="stylesheet" href="./mathtype/index-editor.css" />
+<link rel="stylesheet" href="./mathtype/index-content.css" />
 ```
 
 Once the scripts are added, get MathType from the UMD file loaded via the script tag. Use the MathType plugin directly from exports, then add it to the editor.
