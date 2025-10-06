@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { ModelLivePosition, type ModelRange, type ModelItem, type ModelElement } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, type ModelRange, type ModelItem, type ModelTextProxy } from 'ckeditor5/src/engine.js';
 
 import { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -204,11 +204,10 @@ export class LinkCommand extends Command {
 					const fragment = writer.createDocumentFragment();
 
 					for ( const item of range.getItems() ) {
-						if ( item.is( '$textProxy' ) ) {
-							writer.append( writer.createText( item.data, item.getAttributes() ), fragment );
-						} else {
-							writer.append( writer.cloneElement( item as ModelElement ), fragment );
-						}
+						// `extractTextFromLinkRange()` called above guarantees that we operate only on text proxies here.
+						const text = item as ModelTextProxy;
+
+						writer.append( writer.createText( text.data, text.getAttributes() ), fragment );
 					}
 
 					const fragRange = writer.createRangeIn( fragment );
