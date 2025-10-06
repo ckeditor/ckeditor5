@@ -2510,7 +2510,11 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 
 	return (
 		evt: unknown,
-		data: { changes: Iterable<DifferItem | DifferItemReinsert>; reconvertedElements?: Set<ModelNode> }
+		data: {
+			changes: Iterable<DifferItem | DifferItemReinsert>;
+			reconvertedElements?: Set<ModelNode>;
+			refreshedItems: Set<ModelItem>;
+		}
 	) => {
 		const reducedChanges: Array<DifferItem | DifferItemReinsert> = [];
 
@@ -2527,6 +2531,11 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 				reducedChanges.push( change );
 
 				continue;
+			}
+
+			// Force to not-reuse view elements renamed in model.
+			if ( change.type == 'insert' && change.action == 'rename' ) {
+				data.refreshedItems.add( change.position.nodeAfter! );
 			}
 
 			// If it's already marked for reconversion, so skip this change, otherwise add the diff items.

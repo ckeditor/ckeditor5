@@ -2556,6 +2556,16 @@ describe( 'DowncastHelpers', () => {
 					model: 'paragraph',
 					view: 'p'
 				} );
+
+				model.schema.register( 'heading', {
+					inheritAllFrom: '$block',
+					allowIn: 'complex'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'heading',
+					view: 'h1'
+				} );
 			} );
 
 			it( 'should convert on insert', () => {
@@ -2941,6 +2951,63 @@ describe( 'DowncastHelpers', () => {
 				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
 				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
 				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on renaming a child', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toClass="true">' +
+							'<paragraph>foo</paragraph>' +
+							'<paragraph>bar</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore, paragraph2Before, text2Before
+				] = getNodes();
+
+				model.change( writer => {
+					writer.rename( modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ), 'heading' );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					headingAfter, textAfter, paragraph2After, text2After
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+									'<h1>foo</h1>' +
+									'<p>bar</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( headingAfter, 'p' ).to.not.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.not.equal( textBefore );
+				expect( paragraph2After, 'p' ).to.equal( paragraph2Before );
+				expect( text2After, '$text' ).to.equal( text2Before );
 				expect( spy.called ).to.be.true;
 			} );
 
