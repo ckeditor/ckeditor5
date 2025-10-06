@@ -824,7 +824,10 @@ class Insertion {
 		}
 
 		// ...or it would be accepted if a paragraph would be inserted.
-		if ( this.schema.checkChild( contextElement, 'paragraph' ) && this.schema.checkChild( 'paragraph', childNode ) ) {
+		if (
+			this.schema.checkChild( contextElement, 'paragraph' ) &&
+			this.schema.checkChild( this.schema.createContext( contextElement ).push( 'paragraph' ), childNode )
+		) {
 			return contextElement;
 		}
 

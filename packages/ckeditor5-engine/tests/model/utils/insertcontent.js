@@ -1456,6 +1456,35 @@ describe( 'DataController utils', () => {
 				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 			} );
 
+			it( 'filters out disallowed objects at any schema level', () => {
+				model.schema.register( 'restrictedContainer', {
+					allowWhere: '$block',
+					allowChildren: 'paragraph',
+					isLimit: true
+				} );
+				model.schema.register( 'disabledObject', {
+					allowIn: [ 'paragraph', '$clipboardHolder' ],
+					isObject: true
+				} );
+
+				model.schema.addChildCheck( context => {
+					// Note this check verifies the whole context, not only the last element.
+					for ( const item of context ) {
+						if ( item.name === 'restrictedContainer' ) {
+							return false;
+						}
+					}
+				}, 'disabledObject' );
+
+				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+				const affectedRange = insertHelper( '<disabledObject></disabledObject>' );
+
+				expect( _getModelData( model ) ).to.equal( '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>'
+				);
+			} );
+
 			it( 'filters out disallowed attributes when inserting text', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
