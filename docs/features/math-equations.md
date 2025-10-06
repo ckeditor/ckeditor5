@@ -127,6 +127,10 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+<info-box hint>
+	The above setup uses vanilla JavaScript. Importing editor and other plugins may differ for frameworks. Check the respective {@link getting-started/index Quick start guide} for more information.
+</info-box>
+
 ## Customizing MathType service
 
 It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor&nbsp;5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor&nbsp;5.
