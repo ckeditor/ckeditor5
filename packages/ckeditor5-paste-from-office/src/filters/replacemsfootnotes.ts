@@ -50,7 +50,7 @@ import type { ViewDocumentFragment, ViewElement, ViewText, ViewUpcastWriter } fr
  * </ol>
  * ```
  *
- * @param documentFragment element `data.content` obtained from clipboard
+ * @param documentFragment `data.content` obtained from clipboard.
  * @param writer The view writer instance.
  * @internal
  */
