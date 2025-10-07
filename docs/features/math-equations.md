@@ -106,12 +106,10 @@ Next, attach the MathType script to your page after the editor scripts. This wil
 <script src="./mathtype/index.umd.js"></script>
 ```
 
-Besides the script, you also need to attach the CSS files.
+Besides the script, you also need to attach the CSS file.
 
 ```html
 <link rel="stylesheet" href="./mathtype/index.css" />
-<link rel="stylesheet" href="./mathtype/index-editor.css" />
-<link rel="stylesheet" href="./mathtype/index-content.css" />
 ```
 
 Once the scripts are added, get MathType from the UMD file loaded via the script tag. Use the MathType plugin directly from exports, then add it to the editor.
