@@ -121,17 +121,6 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Updating dependencies.',
-					task: async () => {
-						return releaseTools.updateDependencies( {
-							// We do not use caret ranges by purpose. See: #14046.
-							version: latestVersion,
-							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
-						} );
-					}
-				},
-				{
 					title: 'Updating references.',
 					task: async ctx => {
 						ctx.updatedFiles = await updateVersionReferences( {
@@ -139,10 +128,6 @@ const tasks = new Listr( [
 							releaseDate: new Date()
 						} );
 					}
-				},
-				{
-					title: 'Updating `pnpm-lock.yaml` file.',
-					task: () => tools.shExec( 'pnpm install --lockfile-only', { async: true, verbosity: 'silent' } )
 				}
 			], taskOptions );
 		},
@@ -206,6 +191,17 @@ const tasks = new Listr( [
 							outputDirectory: RELEASE_DIRECTORY,
 							packagesDirectory: PACKAGES_DIRECTORY,
 							packagesToCopy: cliArguments.packages
+						} );
+					}
+				},
+				{
+					title: 'Updating dependencies.',
+					task: async () => {
+						return releaseTools.updateDependencies( {
+							// We do not use caret ranges by purpose. See: #14046.
+							version: latestVersion,
+							packagesDirectory: RELEASE_DIRECTORY,
+							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
 						} );
 					}
 				},
