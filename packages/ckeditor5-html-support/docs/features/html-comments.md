@@ -10,10 +10,8 @@ meta-description: Add and manage HTML comments in CKEditor 5 to include non-visi
 
 By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature lets developers keep HTML comments in the document without displaying them to the user.
 
-<info-box warning>
-	The HTML comments feature is **experimental and not yet production-ready**.
-
-	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues) section below.
+<info-box caution>
+	The support for HTML comments is at the basic level so far &ndash; see the [known issues](#known-issues) section below.
 </info-box>
 
 ## Demo
@@ -57,4 +55,4 @@ CKEditor&nbsp;5 has other features related to HTML editing you may want to check
 
 ## Contribute
 
-The source code of the feature is available on GitHub at https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support.
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support).
