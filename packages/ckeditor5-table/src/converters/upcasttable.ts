@@ -53,9 +53,15 @@ export function upcastTableFigure() {
 			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
 
 			// When table wasn't successfully converted then finish conversion.
-			if ( !modelTable ) {
+			if ( !modelTable || !modelTable.is( 'element', 'table' ) ) {
 				// Revert consumed figure so other features can convert it.
 				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+
+				// If anyway some table content was converted, we have to pass the model range and cursor.
+				if ( conversionResult.modelRange && !conversionResult.modelRange.isCollapsed ) {
+					data.modelRange = conversionResult.modelRange;
+					data.modelCursor = conversionResult.modelCursor;
+				}
 
 				return;
 			}
