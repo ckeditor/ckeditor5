@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^53.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^53.3.0",
     "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-image": "workspace:*",
