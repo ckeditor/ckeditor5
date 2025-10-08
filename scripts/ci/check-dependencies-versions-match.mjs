@@ -13,6 +13,7 @@ import {
 	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
 } from '../constants.mjs';
 import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
+import getCKEditor5PackageNames from '../release/utils/getCKEditor5PackageNames.mjs';
 
 const shouldFix = process.argv[ 2 ] === '--fix';
 
@@ -47,7 +48,8 @@ const options = {
 	fix: shouldFix,
 	devDependenciesFilter: await isCKEditor5PackageFactory(),
 	pkgJsonPatterns,
-	versionExceptions
+	versionExceptions,
+	workspacePackages: await getCKEditor5PackageNames()
 };
 
 checkVersionMatch( options )
