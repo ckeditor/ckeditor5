@@ -13,7 +13,7 @@ import {
 	CKEDITOR5_COMMERCIAL_PACKAGES_PATH
 } from '../constants.mjs';
 import isCKEditor5PackageFactory from '../release/utils/isckeditor5packagefactory.mjs';
-import getCKEditor5PackageNames from '../release/utils/getCKEditor5PackageNames.mjs';
+import getCKEditor5PackageNames from '../release/utils/getckeditor5packagenames.mjs';
 
 const shouldFix = process.argv[ 2 ] === '--fix';
 

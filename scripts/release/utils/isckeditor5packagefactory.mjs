@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getCKEditor5PackageNames from './getCKEditor5PackageNames.mjs';
+import getCKEditor5PackageNames from './getckeditor5packagenames.mjs';
 
 /**
  * Checks whether provided package name is the CKEditor 5 dependency.

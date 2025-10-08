@@ -10,7 +10,7 @@ import fs from 'fs-extra';
 /**
  * Returns an array with all CKEditor 5 packages names.
  *
- * @returns {Promise.<string[]>}
+ * @returns {Promise.<Array.<string>>}
  */
 export default async function getCKEditor5PackageNames() {
 	const allPathsToPackageJson = await glob( [
