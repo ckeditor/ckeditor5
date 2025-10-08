@@ -195,7 +195,7 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Updating dependencies.',
+					title: 'Substituting `workspace:*` with a version.',
 					task: async () => {
 						return releaseTools.updateDependencies( {
 							// We do not use caret ranges by purpose. See: #14046.
@@ -327,7 +327,6 @@ const tasks = new Listr( [
 				version: latestVersion,
 				files: [
 					'package.json',
-					'pnpm-lock.yaml',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
 					...ctx.updatedFiles
 				]
