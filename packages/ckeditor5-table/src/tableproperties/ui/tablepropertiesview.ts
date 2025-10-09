@@ -91,7 +91,47 @@ export class TablePropertiesView extends View {
 	 * @observable
 	 * @default ''
 	 */
+	declare public border: string;
+
+	/**
+	 * The value of the border style.
+	 *
+	 * @observable
+	 * @default ''
+	 */
 	declare public borderStyle: string;
+
+	/**
+	 * The value of the top border style.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public borderTopStyle: string;
+
+	/**
+	 * The value of the right border style.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public borderRightStyle: string;
+
+	/**
+	 * The value of the bottom border style.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public borderBottomStyle: string;
+
+	/**
+	 * The value of the left border style.
+	 *
+	 * @observable
+	 * @default ''
+	 */
+	declare public borderLeftStyle: string;
 
 	/**
 	 * The value of the border width style.
@@ -167,6 +207,26 @@ export class TablePropertiesView extends View {
 	public readonly borderStyleDropdown: LabeledFieldView<DropdownView>;
 
 	/**
+	 * A dropdown that allows selecting the style of the table top border.
+	 */
+	public readonly borderTopStyleDropdown: LabeledFieldView<DropdownView>;
+
+	/**
+	 * A dropdown that allows selecting the style of the table right border.
+	 */
+	public readonly borderRightStyleDropdown: LabeledFieldView<DropdownView>;
+
+	/**
+	 * A dropdown that allows selecting the style of the table bottom border.
+	 */
+	public readonly borderBottomStyleDropdown: LabeledFieldView<DropdownView>;
+
+	/**
+	 * A dropdown that allows selecting the style of the table left border.
+	 */
+	public readonly borderLeftStyleDropdown: LabeledFieldView<DropdownView>;
+
+	/**
 	 * An input that allows specifying the width of the table border.
 	 */
 	public readonly borderWidthInput: LabeledFieldView<InputTextView>;
@@ -224,7 +284,12 @@ export class TablePropertiesView extends View {
 		super( locale );
 
 		this.set( {
+			border: 'all',
 			borderStyle: '',
+			borderTopStyle: '',
+			borderRightStyle: '',
+			borderBottomStyle: '',
+			borderLeftStyle: '',
 			borderWidth: '',
 			borderColor: '',
 			backgroundColor: '',
@@ -235,7 +300,16 @@ export class TablePropertiesView extends View {
 
 		this.options = options;
 
-		const { borderStyleDropdown, borderWidthInput, borderColorInput, borderRowLabel } = this._createBorderFields();
+		const {
+			borderStyleDropdown,
+			borderTopStyleDropdown,
+			borderRightStyleDropdown,
+			borderBottomStyleDropdown,
+			borderLeftStyleDropdown,
+			borderWidthInput,
+			borderColorInput,
+			borderRowLabel
+		} = this._createBorderFields();
 		const { backgroundRowLabel, backgroundInput } = this._createBackgroundFields();
 		const { widthInput, operatorLabel, heightInput, dimensionsLabel } = this._createDimensionFields();
 		const { alignmentToolbar, alignmentLabel } = this._createAlignmentFields();
@@ -245,6 +319,10 @@ export class TablePropertiesView extends View {
 		this.children = this.createCollection();
 
 		this.borderStyleDropdown = borderStyleDropdown;
+		this.borderTopStyleDropdown = borderTopStyleDropdown;
+		this.borderRightStyleDropdown = borderRightStyleDropdown;
+		this.borderBottomStyleDropdown = borderBottomStyleDropdown;
+		this.borderLeftStyleDropdown = borderLeftStyleDropdown;
 		this.borderWidthInput = borderWidthInput;
 		this.borderColorInput = borderColorInput;
 		this.backgroundInput = backgroundInput;
@@ -284,6 +362,10 @@ export class TablePropertiesView extends View {
 			children: [
 				borderRowLabel,
 				borderStyleDropdown,
+				borderTopStyleDropdown,
+				borderRightStyleDropdown,
+				borderBottomStyleDropdown,
+				borderLeftStyleDropdown,
 				borderColorInput,
 				borderWidthInput
 			],
@@ -369,6 +451,10 @@ export class TablePropertiesView extends View {
 
 		[
 			this.borderStyleDropdown,
+			this.borderTopStyleDropdown,
+			this.borderRightStyleDropdown,
+			this.borderBottomStyleDropdown,
+			this.borderLeftStyleDropdown,
 			this.borderColorInput,
 			this.borderWidthInput,
 			this.backgroundInput,
@@ -468,6 +554,134 @@ export class TablePropertiesView extends View {
 			ariaLabel: accessibleLabel
 		} );
 
+		// -- Top Style ---------------------------------------------------
+
+		const borderTopStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
+		borderTopStyleDropdown.set( {
+			label: t( 'Top border style' ),
+			class: 'ck-table-form__border-style'
+		} );
+
+		borderTopStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: t( 'Top border style' ),
+			ariaLabelledBy: undefined,
+			isOn: false,
+			withText: true,
+			tooltip: t( 'Top border style' )
+		} );
+
+		borderTopStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderTopStyle', value => {
+			return styleLabels[ value ? value : 'none' ];
+		} );
+
+		borderTopStyleDropdown.fieldView.on( 'execute', evt => {
+			this.borderTopStyle = ( evt.source as any )._borderStyleValue;
+		} );
+
+		borderTopStyleDropdown.bind( 'isEmpty' ).to( this, 'borderTopStyle', value => !value );
+		borderTopStyleDropdown.bind( 'isVisible' ).to( this, 'border', value => value === 'separate' );
+
+		addListToDropdown( borderTopStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: t( 'Top border style' )
+		} );
+
+		// -- Right Style ---------------------------------------------------
+
+		const borderRightStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
+		borderRightStyleDropdown.set( {
+			label: t( 'Right border style' ),
+			class: 'ck-table-form__border-style'
+		} );
+
+		borderRightStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: t( 'Right border style' ),
+			ariaLabelledBy: undefined,
+			isOn: false,
+			withText: true,
+			tooltip: t( 'Right border style' )
+		} );
+
+		borderRightStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderRightStyle', value => {
+			return styleLabels[ value ? value : 'none' ];
+		} );
+
+		borderRightStyleDropdown.fieldView.on( 'execute', evt => {
+			this.borderRightStyle = ( evt.source as any )._borderStyleValue;
+		} );
+
+		borderRightStyleDropdown.bind( 'isEmpty' ).to( this, 'borderRightStyle', value => !value );
+		borderRightStyleDropdown.bind( 'isVisible' ).to( this, 'border', value => value === 'separate' );
+
+		addListToDropdown( borderRightStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: t( 'Right border style' )
+		} );
+
+		// -- Bottom Style ---------------------------------------------------
+
+		const borderBottomStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
+		borderBottomStyleDropdown.set( {
+			label: t( 'Bottom border style' ),
+			class: 'ck-table-form__border-style'
+		} );
+
+		borderBottomStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: t( 'Bottom border style' ),
+			ariaLabelledBy: undefined,
+			isOn: false,
+			withText: true,
+			tooltip: t( 'Bottom border style' )
+		} );
+
+		borderBottomStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderBottomStyle', value => {
+			return styleLabels[ value ? value : 'none' ];
+		} );
+
+		borderBottomStyleDropdown.fieldView.on( 'execute', evt => {
+			this.borderBottomStyle = ( evt.source as any )._borderStyleValue;
+		} );
+
+		borderBottomStyleDropdown.bind( 'isEmpty' ).to( this, 'borderBottomStyle', value => !value );
+		borderBottomStyleDropdown.bind( 'isVisible' ).to( this, 'border', value => value === 'separate' );
+
+		addListToDropdown( borderBottomStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: t( 'Bottom border style' )
+		} );
+
+		// -- Left Style ---------------------------------------------------
+
+		const borderLeftStyleDropdown = new LabeledFieldView( locale, createLabeledDropdown );
+		borderLeftStyleDropdown.set( {
+			label: t( 'Left border style' ),
+			class: 'ck-table-form__border-style'
+		} );
+
+		borderLeftStyleDropdown.fieldView.buttonView.set( {
+			ariaLabel: t( 'Left border style' ),
+			ariaLabelledBy: undefined,
+			isOn: false,
+			withText: true,
+			tooltip: t( 'Left border style' )
+		} );
+
+		borderLeftStyleDropdown.fieldView.buttonView.bind( 'label' ).to( this, 'borderLeftStyle', value => {
+			return styleLabels[ value ? value : 'none' ];
+		} );
+
+		borderLeftStyleDropdown.fieldView.on( 'execute', evt => {
+			this.borderLeftStyle = ( evt.source as any )._borderStyleValue;
+		} );
+
+		borderLeftStyleDropdown.bind( 'isEmpty' ).to( this, 'borderLeftStyle', value => !value );
+		borderLeftStyleDropdown.bind( 'isVisible' ).to( this, 'border', value => value === 'separate' );
+
+		addListToDropdown( borderLeftStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style! ), {
+			role: 'menu',
+			ariaLabel: t( 'Left border style' )
+		} );
+
 		// -- Width ---------------------------------------------------
 
 		const borderWidthInput = new LabeledFieldView( locale, createLabeledInputText );
@@ -518,6 +732,10 @@ export class TablePropertiesView extends View {
 		return {
 			borderRowLabel,
 			borderStyleDropdown,
+			borderTopStyleDropdown,
+			borderRightStyleDropdown,
+			borderBottomStyleDropdown,
+			borderLeftStyleDropdown,
 			borderColorInput,
 			borderWidthInput
 		};
