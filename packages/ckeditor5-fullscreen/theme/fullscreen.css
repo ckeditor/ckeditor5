@@ -280,4 +280,10 @@ Fullscreen layout:
 		border-bottom: none;
 		border-right: none;
 	}
+
+	/* Remove the stray arrow from the AI chat controls dropdown panel. */
+	& .ck.ck-ai-chat-controls .ck-ai-chat-controls__model-selection .ck-dropdown__panel.ck-dropdown__panel_ne::before,
+	& .ck.ck-ai-chat-controls .ck-ai-chat-controls__model-selection .ck-dropdown__panel.ck-dropdown__panel_ne::after {
+		content: unset;
+	}
 }
