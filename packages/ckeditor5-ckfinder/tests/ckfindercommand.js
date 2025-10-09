@@ -296,9 +296,9 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert multiple chosen images as image widget', () => {
-			const url1 = 'foo/bar1.jpg';
-			const url2 = 'foo/bar2.jpg';
-			const url3 = 'foo/bar3.jpg';
+			const url1 = 'assets/sample.png';
+			const url2 = 'assets/sample2.png';
+			const url3 = 'assets/sample3.png';
 
 			command.execute();
 
@@ -311,9 +311,9 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert images and links to a files from chosen files', () => {
-			const url1 = 'foo/bar1.jpg';
-			const url2 = 'foo/bar2.pdf';
-			const url3 = 'foo/bar3.jpg';
+			const url1 = 'assets/sample1.png';
+			const url2 = 'assets/sample2.pdf';
+			const url3 = 'assets/sample3.png';
 
 			command.execute();
 
