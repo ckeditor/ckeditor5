@@ -40,9 +40,9 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 			const element = model.document.selection.getSelectedElement();
 
-			command.execute( { source: 'bar/foo.jpg' } );
+			command.execute( { source: '/assets/sample.png' } );
 
-			expect( element.getAttribute( 'src' ) ).to.equal( 'bar/foo.jpg' );
+			expect( element.getAttribute( 'src' ) ).to.equal( '/assets/sample.png' );
 		} );
 
 		it( 'should clean up some attributes in responsive image', () => {
@@ -67,9 +67,9 @@ describe( 'ReplaceImageSourceCommand', () => {
 			command.on( 'cleanupImage', ( eventInfo, [ writer, image ] ) => {
 				writer.removeAttribute( 'myCustomId', image );
 			} );
-			command.execute( { source: 'bar/foo.jpg' } );
+			command.execute( { source: '/assets/sample.png' } );
 
-			expect( element.getAttribute( 'src' ) ).to.equal( 'bar/foo.jpg' );
+			expect( element.getAttribute( 'src' ) ).to.equal( '/assets/sample.png' );
 			expect( element.getAttribute( 'sources' ) ).to.be.undefined;
 			expect( element.getAttribute( 'width' ) ).to.be.undefined;
 			expect( element.getAttribute( 'height' ) ).to.be.undefined;

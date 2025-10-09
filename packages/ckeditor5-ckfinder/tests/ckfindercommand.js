@@ -327,7 +327,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should use CKFinder Proxy for privately hosted files', () => {
-			const proxyUrl = 'bar/foo.jpg';
+			const proxyUrl = '/assets/sample.png';
 
 			finderMock.request = () => proxyUrl;
 
