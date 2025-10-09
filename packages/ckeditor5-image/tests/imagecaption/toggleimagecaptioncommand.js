@@ -250,7 +250,7 @@ describe( 'ToggleImageCaptionCommand', () => {
 			} );
 
 			it( 'should save the empty caption content', () => {
-				const imgSrc = 'foo/bar.jpg';
+				const imgSrc = 'assets/sample.png';
 
 				_setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 

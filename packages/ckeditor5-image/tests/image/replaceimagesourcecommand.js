@@ -36,7 +36,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should change image source', () => {
-			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
 			const element = model.document.selection.getSelectedElement();
 
@@ -47,7 +47,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 		it( 'should clean up some attributes in responsive image', () => {
 			_setModelData( model, `[<imageBlock
-				src="foo/bar.jpg"
+				src="assets/sample.png"
 				width="100"
 				height="200"
 				myCustomId="id"
@@ -57,7 +57,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 			const element = model.document.selection.getSelectedElement();
 
-			expect( element.getAttribute( 'src' ) ).to.equal( 'foo/bar.jpg' );
+			expect( element.getAttribute( 'src' ) ).to.equal( 'assets/sample.png' );
 			expect( element.getAttribute( 'sources' ) ).to.equal( '[{srcset:\'url\', sizes:\'100vw, 1920px\', type: \'image/webp\'}]' );
 			expect( element.getAttribute( 'width' ) ).to.equal( 100 );
 			expect( element.getAttribute( 'height' ) ).to.equal( 200 );
@@ -79,7 +79,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 		it( 'should set width and height on replaced image', done => {
 			_setModelData( model, `[<imageBlock
-				src="foo/bar.jpg"
+				src="assets/sample.png"
 				width="100"
 				height="200"
 				myCustomId="id"
@@ -101,7 +101,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 
 	describe( 'refresh()', () => {
 		it( 'should be enabled when selected element is an image', () => {
-			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
@@ -113,7 +113,7 @@ describe( 'ReplaceImageSourceCommand', () => {
 		} );
 
 		it( 'should store element src value', () => {
-			_setModelData( model, '[<imageBlock src="foo/bar.jpg"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="assets/sample.png"></imageBlock>]' );
 
 			const element = model.document.selection.getSelectedElement();
 
