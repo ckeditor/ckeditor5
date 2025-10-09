@@ -150,15 +150,38 @@ Fullscreen layout:
 	height: 100%;
 	background-color: transparent;
 	margin-top: 0px;
+	margin-right: 10px;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 
-	> :first-child {
+	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
+		--ck-icon-size: 20px;
+		--ck-ui-component-min-height: 0px;
+
+		align-self: flex-start;
+		padding-top: 0;
+		margin-top: var(--ck-fullscreen-editor-top-margin);
+		margin-bottom: var(--ck-spacing-large);
+		opacity: 0.5;
+		border-radius: 100%;
+	}
+
+	> .ck-fullscreen__left-sidebar-sticky {
 		/* Set minimal width if there is any item in the sidebar. */
 		min-width: 270px;
-		/* We have to use padding-top instead of margin-top because margin is scrollable. */
-		padding-top: var(--ck-fullscreen-editor-top-margin);
+
+		&:first-child {
+			padding-top: var(--ck-fullscreen-editor-top-margin);
+		}
+	}
+
+	&.ck-fullscreen__left-sidebar--collapsed {
+		width: 65px;
+
+		> :not(.ck-fullscreen__left-sidebar-toggle-button) {
+			display: none;
+		}
 	}
 }
 
@@ -230,9 +253,17 @@ Fullscreen layout:
 	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-right: auto;
 
-	&> :first-child {
+	&:not(.ck-fullscreen__right-sidebar--collapsed) > :first-child {
 		/* Set minimal width if there is any item in the sidebar. */
 		min-width: 270px;
+	}
+
+	&.ck-fullscreen__right-sidebar--collapsed {
+		width: 65px;
+
+		& > :first-child {
+			min-width: 65px;
+		}
 	}
 }
 

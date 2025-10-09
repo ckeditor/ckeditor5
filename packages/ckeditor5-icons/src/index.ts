@@ -63,6 +63,7 @@ export { default as IconDocumentWithCheckmark } from '../theme/icons/document-wi
 export { default as IconDocumentWithCross } from '../theme/icons/document-with-cross.svg';
 export { default as IconDocumentWithLoupe } from '../theme/icons/document-with-loupe.svg';
 export { default as IconDocumentOutline } from '../theme/icons/document-outline.svg';
+export { default as IconDocumentOutlineToggle } from '../theme/icons/document-outline-toggle.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
 export { default as IconDropbox } from '../theme/icons/dropbox.svg';
