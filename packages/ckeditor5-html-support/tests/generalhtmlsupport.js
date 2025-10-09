@@ -237,14 +237,14 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 	it( 'should remove styles and classes from image', () => {
 		editor.setData(
 			'<figure class="image foo" id="test" data-foo="bar" style="color: red;">' +
-				'<img src="/sample.jpg" alt="122" class="bar" style="border-left: 2px solid blue;">' +
+				'<img src="/assets/sample.png" alt="122" class="bar" style="border-left: 2px solid blue;">' +
 				'<figcaption style="background: yellow;">abc</figcaption>' +
 			'</figure>'
 		);
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<figure class="image foo" style="color:red;" id="test" data-foo="bar">' +
-				'<img class="bar" style="border-left:2px solid blue;" src="/sample.jpg" alt="122">' +
+				'<img class="bar" style="border-left:2px solid blue;" src="/assets/sample.png" alt="122">' +
 				'<figcaption style="background-color:yellow;">abc</figcaption>' +
 			'</figure>'
 		);
@@ -254,13 +254,13 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<figure class="image" id="test" data-foo="bar">' +
-				'<img src="/sample.jpg" alt="122">' +
+				'<img src="/assets/sample.png" alt="122">' +
 				'<figcaption>abc</figcaption>' +
 			'</figure>'
 		);
 		expect( _getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
 			'<figure class="ck-widget ck-widget_selected image" contenteditable="false" data-foo="bar" id="test">' +
-				'<img alt="122" src="/sample.jpg"></img>' +
+				'<img alt="122" src="/assets/sample.png"></img>' +
 				'<figcaption aria-label="Caption for image: 122" class="ck-editor__editable ck-editor__nested-editable" ' +
 					'contenteditable="true" data-placeholder="Enter image caption" role="textbox" tabindex="-1">abc</figcaption>' +
 				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
