@@ -295,10 +295,10 @@ describe( 'InsertImageCommand', () => {
 		it( 'should replace a selected inline image with another inline image', () => {
 			_setModelData( model, '<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' );
 
-			command.execute( { source: 'new/image.jpg' } );
+			command.execute( { source: 'assets/sample2.png' } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo[<imageInline src="new/image.jpg"></imageInline>]bar</paragraph>'
+				'<paragraph>foo[<imageInline src="assets/sample2.png"></imageInline>]bar</paragraph>'
 			);
 		} );
 

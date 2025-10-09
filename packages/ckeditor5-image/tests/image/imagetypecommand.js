@@ -725,7 +725,7 @@ describe( 'ImageTypeCommand', () => {
 		} );
 
 		describe( 'inheriting attributes', () => {
-			const imgSrc = '/foo.jpg';
+			const imgSrc = '/assets/sample.png';
 
 			beforeEach( () => {
 				const attributes = [ 'smart', 'pretty' ];
