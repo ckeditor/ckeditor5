@@ -262,12 +262,20 @@ const tasks = new Listr( [
 						// Copy all DLL builds to the CDN folder.
 						const data = fs
 							.globSync( '*/build', { cwd: CKEDITOR5_PACKAGES_PATH } )
-							.map( async path => {
+							.filter( buildPath => {
+								// Ignore `ckeditor5`. It has a dedicated handler.
+								if ( buildPath.split( '/' )[ 0 ] === 'ckeditor5' ) {
+									return false;
+								}
+
+								return true;
+							} )
+							.map( async buildPath => {
 								// `ckeditor5-word-count/build` => `word-count`
-								const dllName = path.split( '/' )[ 0 ].replace( 'ckeditor5-', '' );
+								const dllName = buildPath.split( '/' )[ 0 ].replace( 'ckeditor5-', '' );
 
 								await fs.copy(
-									upath.join( CKEDITOR5_PACKAGES_PATH, path ),
+									upath.join( CKEDITOR5_PACKAGES_PATH, buildPath ),
 									upath.join( RELEASE_CDN_DIRECTORY, 'dll', dllName )
 								);
 							} );
