@@ -143,5 +143,8 @@
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
-  }
+  },
+  "ck-lts-versions": [
+    47
+  ]
 }
