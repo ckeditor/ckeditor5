@@ -440,6 +440,9 @@ export class FullscreenAbstractEditorHandler {
 		if ( this._editor.plugins.has( 'Dialog' ) ) {
 			this._unregisterFullscreenDialogPositionAdjustments();
 		}
+
+		// Reset the behavior of the left sidebar.
+		this._autoToggleLeftSidebar = true;
 	}
 
 	/**
@@ -588,16 +591,11 @@ export class FullscreenAbstractEditorHandler {
 		} );
 
 		button.on( 'execute', () => {
-			// Toggle a CSS class on the left sidebar container to manage its visibility.
-			leftSidebarContainer.classList.toggle( 'ck-fullscreen__left-sidebar--collapsed' );
-
 			// Change the look of the button to reflect the state of the left sidebar.
 			if ( leftSidebarContainer.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
-				button.icon = IconDocumentOutlineToggle;
-				button.tooltip = 'Show left sidebar';
+				this._showLeftSidebar();
 			} else {
-				button.icon = IconPreviousArrow;
-				button.tooltip = 'Hide left sidebar';
+				this._hideLeftSidebar();
 			}
 
 			// Keep the focus in the editor whenever the button is clicked.
@@ -1017,18 +1015,22 @@ export class FullscreenAbstractEditorHandler {
 	}
 
 	private _hideLeftSidebar() {
-		const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+		if ( this._collapseLeftSidebarButton ) {
+			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
 
-		if ( !leftSidebar.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
-			this._collapseLeftSidebarButton?.fire( 'execute' );
+			leftSidebar.classList.add( 'ck-fullscreen__left-sidebar--collapsed' );
+			this._collapseLeftSidebarButton.icon = IconDocumentOutlineToggle;
+			this._collapseLeftSidebarButton.tooltip = 'Show left sidebar';
 		}
 	}
 
 	private _showLeftSidebar() {
-		const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+		if ( this._collapseLeftSidebarButton ) {
+			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
 
-		if ( leftSidebar.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
-			this._collapseLeftSidebarButton?.fire( 'execute' );
+			leftSidebar.classList.remove( 'ck-fullscreen__left-sidebar--collapsed' );
+			this._collapseLeftSidebarButton.icon = IconPreviousArrow;
+			this._collapseLeftSidebarButton.tooltip = 'Hide left sidebar';
 		}
 	}
 
