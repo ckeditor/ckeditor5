@@ -131,6 +131,10 @@ jobs:
       - bootstrap_repository_command
       - run:
           when: always
+          name: Execute tests for internal scripts
+          command: pnpm run scripts:test
+      - run:
+          when: always
           name: Validate versions of CKEditor 5 dependencies
           command: pnpm run check-dependencies:versions-match
       - run:
