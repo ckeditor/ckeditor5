@@ -268,8 +268,6 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__right-edge {
-	--ck-tabs-panels-container-width: 420px;
-	/* width: 450px; */
 	position: sticky;
 	top: 0;
 	margin-top: 0;
@@ -279,11 +277,7 @@ Fullscreen layout:
 		border-top: none;
 		border-bottom: none;
 		border-right: none;
-	}
-
-	/* Remove the stray arrow from the AI chat controls dropdown panel. */
-	& .ck.ck-ai-chat-controls .ck-ai-chat-controls__model-selection .ck-dropdown__panel.ck-dropdown__panel_ne::before,
-	& .ck.ck-ai-chat-controls .ck-ai-chat-controls__model-selection .ck-dropdown__panel.ck-dropdown__panel_ne::after {
-		content: unset;
+		height: 100%;
+		width: 450px;
 	}
 }
