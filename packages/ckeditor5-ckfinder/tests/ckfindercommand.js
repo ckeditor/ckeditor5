@@ -311,7 +311,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert images and links to a files from chosen files', () => {
-			const url1 = 'assets/sample1.png';
+			const url1 = 'assets/sample.png';
 			const url2 = 'assets/sample2.pdf';
 			const url3 = 'assets/sample3.png';
 
