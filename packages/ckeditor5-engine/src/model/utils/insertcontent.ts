@@ -287,9 +287,9 @@ class Insertion {
 	private _lastAutoParagraph: ModelElement | null = null;
 
 	/**
-	 * The array of nodes that should be cleaned of not allowed attributes.
+	 * The array of nodes that should be cleaned of not allowed attributes and sub-nodes.
 	 */
-	private _filterAttributesOf: Array<ModelNode> = [];
+	private _filterAttributesAndChildrenOf: Array<ModelNode> = [];
 
 	/**
 	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
@@ -337,8 +337,39 @@ class Insertion {
 		this._mergeOnRight();
 
 		// TMP this will become a post-fixer.
-		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
-		this._filterAttributesOf = [];
+		this.schema.removeDisallowedAttributes( this._filterAttributesAndChildrenOf, this.writer );
+		this._removeDisallowedChildren( this._filterAttributesAndChildrenOf );
+		this._filterAttributesAndChildrenOf = [];
+	}
+
+	/**
+	 * Removes disallowed children from nodes that were inserted or modified during insertion.
+	 */
+	private _removeDisallowedChildren( nodes: Iterable<ModelNode> ): void {
+		const subNodesToRemove = new Set<ModelItem>();
+
+		// Check all sub-nodes of top level inserted nodes.
+		// We do it at this point so node is already in the model tree and schema checks will be correct.
+		for ( const node of nodes ) {
+			if ( !node.is( 'element' ) ) {
+				continue;
+			}
+
+			const walker = this.writer.createRangeIn( node ).getWalker( { ignoreElementEnd: true } );
+
+			for ( const { item } of walker ) {
+				if ( !this.schema.checkChild( item.parent as ModelElement, item as ModelNode ) ) {
+					subNodesToRemove.add( item );
+
+					// Skip the whole subtree as it will be removed.
+					walker.jumpTo( this.writer.createPositionAfter( item ) );
+				}
+			}
+		}
+
+		for ( const item of subNodesToRemove ) {
+			this.writer.remove( item );
+		}
 	}
 
 	/**
@@ -517,7 +548,7 @@ class Insertion {
 			this._nodeToSelect = null;
 		}
 
-		this._filterAttributesOf.push( node );
+		this._filterAttributesAndChildrenOf.push( node );
 
 		return node;
 	}
@@ -623,7 +654,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosLeft.detach();
 	}
@@ -707,7 +738,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosRight.detach();
 	}

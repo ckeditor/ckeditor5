@@ -1485,6 +1485,43 @@ describe( 'DataController utils', () => {
 				);
 			} );
 
+			it( 'filters out disallowed objects at any schema level nested inside inserted content', () => {
+				model.schema.register( 'restrictedContainer', {
+					allowWhere: '$block',
+					allowChildren: [ 'paragraph', 'blockQuote' ],
+					isLimit: true
+				} );
+				model.schema.register( 'disabledObject', {
+					allowIn: [ 'paragraph', '$clipboardHolder' ],
+					allowContentOf: '$block',
+					isObject: true
+				} );
+				model.schema.register( 'allowedBlock', {
+					inheritAllFrom: '$block',
+					allowIn: [ 'restrictedContainer', '$clipboardHolder' ],
+					allowChildren: 'disabledObject'
+				} );
+
+				model.schema.addChildCheck( context => {
+					// Note this check verifies the whole context, not only the last element.
+					for ( const item of context ) {
+						if ( item.name === 'restrictedContainer' ) {
+							return false;
+						}
+					}
+				}, 'disabledObject' );
+
+				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+				const affectedRange = insertHelper( '<allowedBlock><disabledObject>foobar</disabledObject></allowedBlock>' );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<restrictedContainer><allowedBlock>[]</allowedBlock></restrictedContainer>'
+				);
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<restrictedContainer>[<allowedBlock></allowedBlock>]</restrictedContainer>'
+				);
+			} );
+
 			it( 'filters out disallowed objects at any schema level but preserves text around it', () => {
 				model.schema.register( 'restrictedContainer', {
 					allowWhere: '$block',
