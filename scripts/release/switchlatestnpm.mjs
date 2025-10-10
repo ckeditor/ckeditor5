@@ -31,13 +31,10 @@ const latestPublishedVersion = await releaseTools.getVersionForTag( 'ckeditor5',
 
 console.log( `Current \`@latest\` on npm: ${ latestPublishedVersion }.` );
 
-/**
- * Move @latest only if the just-published version is strictly newer.
- * (No temporary reassignment to older versions.)
- */
-const shouldRestoreLatest = !latestPublishedVersion || semver.compare( currentVersion, latestPublishedVersion ) > 0;
+// Assign `@latest` only if the current version is newer than the one currently tagged as `@latest`.
+const shouldAssignLatest = !latestPublishedVersion || semver.compare( currentVersion, latestPublishedVersion ) > 0;
 
-if ( shouldRestoreLatest ) {
+if ( shouldAssignLatest ) {
 	console.log( `Moving \`@latest\` → v${ currentVersion }.` );
 
 	await releaseTools.reassignNpmTags( {
@@ -50,7 +47,7 @@ if ( shouldRestoreLatest ) {
 	console.log( `Not touching \`@latest\` (current ${ latestPublishedVersion } is >= ${ currentVersion }).` );
 }
 
-/* 2) Update LTS tag if applicable */
+// Update the corresponding LTS tag (e.g., `lts-v47`) if the current version is part of an LTS release line.
 if ( isCurrentVersionLTS ) {
 	await releaseTools.reassignNpmTags( {
 		npmOwner,
