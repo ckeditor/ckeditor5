@@ -331,6 +331,8 @@ export class FullscreenAbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AITabs' ) ) {
 			this._handleAITabsTransfer();
 		}
@@ -402,6 +404,8 @@ export class FullscreenAbstractEditorHandler {
 			this._restoreRevisionHistoryCallbacks();
 		}
 
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AITabs' ) ) {
 			this._restoreAITabs();
 		}
@@ -901,6 +905,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Stores the current state of the AI Tabs and moves it to the fullscreen mode.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _handleAITabsTransfer(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
@@ -918,6 +924,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Restores the state of the AI Tabs to the original values.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _restoreAITabs(): void {
 		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
 
@@ -973,6 +981,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Switches the annotations UI to the requested one.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _switchAnnotationsUI( uiName: string ) {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 		annotationsUIs.deactivateAll();
@@ -1020,6 +1030,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Hides the left sidebar. Works only if there is anything to hide.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _hideLeftSidebar() {
 		if ( this._collapseLeftSidebarButton ) {
 			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
@@ -1033,6 +1045,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Shows the left sidebar. Works only if there is anything to show.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _showLeftSidebar() {
 		if ( this._collapseLeftSidebarButton ) {
 			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
@@ -1046,6 +1060,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Hides the right sidebar. Works only if there is anything to hide.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _hideRightSidebar() {
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 			this._switchAnnotationsUI( 'narrowSidebar' );
@@ -1056,6 +1072,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Shows the right sidebar. Works only if there is anything to show.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _showRightSidebar() {
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 			this._switchAnnotationsUI( 'wideSidebar' );
