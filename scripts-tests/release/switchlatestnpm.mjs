@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { randomUUID } from 'crypto';
 import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest';
 import fs from 'fs-extra';
 import { globSync } from 'glob';
@@ -46,6 +45,8 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	let logSpy;
 
 	beforeEach( () => {
+		vi.resetModules();
+
 		logSpy = vi.spyOn( console, 'log' ).mockImplementation( () => {} );
 		vi.mocked( globSync ).mockReturnValue( packageJsonFiles );
 		vi.mocked( fs.readJsonSync ).mockImplementation( path => {
@@ -62,7 +63,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '45.0.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( globSync ).toHaveBeenCalledTimes( 1 );
 		expect( globSync ).toHaveBeenCalledWith(
@@ -81,7 +82,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '45.0.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( fs.readJsonSync ).toHaveBeenCalledTimes( 3 );
 		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/ckeditor5-commercial/package.json' );
@@ -98,7 +99,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '47.0.0' );
 
 		// Act: import executes the script (top-level await)
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
@@ -130,7 +131,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '46.1.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
@@ -170,7 +171,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '47.0.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
@@ -210,7 +211,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '47.1.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
@@ -250,7 +251,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '48.0.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
@@ -294,7 +295,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '48.0.0' );
 
 		// Act: import executes the script (top-level await).
-		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
 
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledTimes( 1 );
 		expect( releaseTools.getVersionForTag ).toHaveBeenCalledWith( 'ckeditor5', 'latest' );
