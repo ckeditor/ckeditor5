@@ -39,6 +39,7 @@ Additionally, MathType offers a special tool designed to help you work with chem
 The MathType window is split into two main areas: a [tabbed toolbar](https://docs.wiris.com/mathtype/en/user-interfaces/mathtype-web-interface/toolbar-and-icons.html) that contains a large number of icons that are useful for creating math equations and chemical formulas, and an editing area where you can see your current formula, the location of the cursor, and the text currently selected (if any).
 
 The following resources can come in handy if you want to become proficient at working with this tool:
+
 * [Using MathType Web](https://docs.wiris.com/mathtype/en/user-interfaces/mathtype-web-interface/using-mathtype.html) covers the basics of creating formulas, using your keyboard, moving the cursor in templates, formatting your content, or writing on mobile devices.
 * [Introductory tutorials](https://docs.wiris.com/mathtype/en/user-interfaces/mathtype-web-interface/introductory-tutorials.html) are intended to get you started using MathType.
 * [ChemType](https://docs.wiris.com/mathtype/en/mathtype-integrations/mathtype-web-interface-features/chemistry.html) explains the features of the dedicated chemistry toolbar.
@@ -47,12 +48,13 @@ The following resources can come in handy if you want to become proficient at wo
 ## Editing modes
 
 MathType lets you choose between two editing modes:
+
 * **Classic input mode** provides options to choose symbols and templates from the MathType or ChemType toolbars and combine them to build the equation.
 * **Handwritten input mode** lets you write the equation in your own handwriting. After checking the equation preview to ensure its accuracy, you can insert the equation or switch to classic input for further editing. [Read more here](https://docs.wiris.com/mathtype/en/mathtype-integrations/mathtype-web-interface-features/handwritten-input.html).
 
 If you visit a page using MathType with your mobile device, the handwriting interface will appear by default. However, if you visit the same page with a laptop or desktop computer, the classic input will be displayed. The user is always free to change between the two interfaces.
 
-## Installation
+## Installation from npm
 
 MathType is delivered as a CKEditor&nbsp;5 plugin, so it can be combined into an editor preset just like other features. To add this feature to your editor, install the [`@wiris/mathtype-ckeditor5`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5) package:
 
@@ -70,7 +72,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ MathType, /* ... */ ],
-		toolbar: [ 'MathType', 'ChemType', /* ... */ ]
+		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
 		mathTypeParameters : {
 			// Configuration.
 		}
@@ -78,6 +80,62 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+## Installation from CDN
+
+The MathType plugin is provided by an external partner. Hence, after attaching the editor scripts, you cannot access the plugin from the global variable as with other plugins. However, there is a way to use the CKEditor&nbsp;5 CDN with the MathType plugin. It requires a custom setup.
+
+First, copy the MathType files from the [`@wiris/mathtype-ckeditor5/dist/browser`](https://www.npmjs.com/package/@wiris/mathtype-ckeditor5?activeTab=code) package to your project. It may look like this:
+
+```plain
+├── mathtype
+│	├── index-content.css
+│	├── index-editor.css
+│	├── index.css
+│	├── index.css.map
+│	├── index.js
+│	├── index.js.map
+│	├── index.umd.js
+│	└── index.umd.js.map
+├── ...
+```
+
+Next, attach the MathType script to your page after the editor scripts. This will expose MathType as a global variable, similar to other plugins.
+
+```html
+<script src="./mathtype/index.umd.js"></script>
+```
+
+Besides the script, you also need to attach the CSS file.
+
+```html
+<link rel="stylesheet" href="./mathtype/index.css" />
+```
+
+Once the scripts are added, get MathType from the UMD file loaded via the script tag. Use the MathType plugin directly from exports, then add it to the editor.
+
+```js
+const { ClassicEditor } = window.CKEDITOR;
+
+const MathTypeExports = window['@wiris/mathtype-ckeditor5'];
+const MathType = MathTypeExports.default;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ MathType, /* ... */ ],
+		toolbar: [ 'MathType', 'ChemType', /* ... */ ],
+		mathTypeParameters : {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box hint>
+	The above setup uses vanilla JavaScript. Importing editor and other plugins may differ for frameworks. Check the respective {@link getting-started/index Quick start guide} for more information.
+</info-box>
 
 ## Customizing MathType service
 
@@ -88,9 +146,7 @@ It is possible to use different services for MathType support. There are several
 To install the Java service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - Java](https://store.wiris.com/en/products/downloads/mathtype/integrations) package.
-
 2. Deploy the `pluginwiris_engine` war file.
-
 3. Add `mathTypeParameters` to CKEditor&nbsp;5 with the configuration shown below:
 
 	```js
@@ -114,9 +170,7 @@ To install the Java service, follow the steps below:
 To install the PHP service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - PHP](https://store.wiris.com/en/products/downloads/mathtype/integrations) package.
-
 2. Copy the `generic_wiris/integration` folder into your project. In this example, it was assumed the services are located at `DOCUMENT_ROOT/php-services/`.
-
 3. Add `mathTypeParameters` to CKEditor&nbsp;5 with the following configuration:
 
 	```js
@@ -141,9 +195,7 @@ To install the PHP service, follow the steps below:
 To install the .NET service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - Aspx](http://www.wiris.com/en/plugins/services/download) package.
-
 2. Copy the `generic_wiris/integration` folder into your project. In this example, it was assumed the services are located at `DOCUMENT_ROOT/aspx-services/`.
-
 3. Add `mathTypeParameters` to CKEditor&nbsp;5 with this configuration:
 
 	```js
@@ -167,10 +219,9 @@ To install the .NET service, follow the steps below:
 To install the Ruby on Rails service, follow the steps below:
 
 1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
-
 2. Install the `wirispluginengine.gem` gem.
 
-	```
+	```bash
 	gem install -l wirispluginengine.gem
 	```
 
