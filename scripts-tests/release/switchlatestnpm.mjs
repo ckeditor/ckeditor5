@@ -56,7 +56,6 @@ describe( 'scripts/release/switchlatestnpm', () => {
 
 	afterEach( () => {
 		logSpy.mockRestore();
-		vi.clearAllMocks();
 	} );
 
 	it( 'should search for packages in both CKEditor 5 repositories', async () => {
