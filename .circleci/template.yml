@@ -132,7 +132,7 @@ jobs:
       - run:
           when: always
           name: Execute tests for internal scripts
-          command: pnpm run scripts:test
+          command: pnpm run test:scripts
       - run:
           when: always
           name: Validate versions of CKEditor 5 dependencies
