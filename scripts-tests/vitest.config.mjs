@@ -6,10 +6,7 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig( {
-	plugins: [
-	],
 	test: {
-		setupFiles: [],
 		testTimeout: 10000,
 		mockReset: true,
 		restoreMocks: true,
