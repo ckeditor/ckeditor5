@@ -13,20 +13,21 @@ vi.mock( 'fs-extra' );
 vi.mock( 'glob' );
 vi.mock( '@ckeditor/ckeditor5-dev-release-tools' );
 vi.mock( '../../scripts/constants.mjs', () => ( {
-	CKEDITOR5_ROOT_PATH: '/workspace/ckeditor',
-	CKEDITOR5_PACKAGES_PATH: '/workspace/ckeditor/packages',
-	CKEDITOR5_COMMERCIAL_PACKAGES_PATH: '/workspace/ckeditor/external/ckeditor5-commercial/packages'
+	CKEDITOR5_ROOT_PATH: '/workspace/ckeditor/ckeditor5-commercial',
+	CKEDITOR5_PACKAGES_PATH: '/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/packages',
+	CKEDITOR5_COMMERCIAL_PACKAGES_PATH: '/workspace/ckeditor/ckeditor5-commercial/packages'
 } ) );
 
-const SCRIPT_UNDER_TEST = '../../scripts/release/switchlatestnpm.mjs';
+const SWITCH_TO_LATEST_PATH_SCRIPT = '../../scripts/release/switchlatestnpm.mjs';
+
 const packageJsonMap = {
-	'/workspace/ckeditor/packages/alpha/package.json': {
+	'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/packages/alpha/package.json': {
 		name: '@ckeditor/alpha'
 	},
-	'/workspace/ckeditor/external/ckeditor5-commercial/packages/bravo/package.json': {
+	'/workspace/ckeditor/ckeditor5-commercial/packages/bravo/package.json': {
 		name: '@ckeditor/bravo'
 	},
-	'/workspace/ckeditor/package.json': {
+	'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 		version: '46.1.0',
 		'ck-lts-versions': [
 			47
@@ -66,12 +67,12 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		expect( globSync ).toHaveBeenCalledTimes( 1 );
 		expect( globSync ).toHaveBeenCalledWith(
 			[
-				'/workspace/ckeditor/packages/*/package.json',
-				'/workspace/ckeditor/external/ckeditor5-commercial/packages/*/package.json'
+				'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/packages/*/package.json',
+				'/workspace/ckeditor/ckeditor5-commercial/packages/*/package.json'
 			],
 			{
 				absolute: true,
-				cwd: '/workspace/ckeditor'
+				cwd: '/workspace/ckeditor/ckeditor5-commercial'
 			}
 		);
 	} );
@@ -83,9 +84,11 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		await import( `${ SCRIPT_UNDER_TEST }?${ randomUUID() }` );
 
 		expect( fs.readJsonSync ).toHaveBeenCalledTimes( 3 );
-		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/package.json' );
-		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/packages/alpha/package.json' );
-		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/external/ckeditor5-commercial/packages/bravo/package.json' );
+		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/ckeditor5-commercial/package.json' );
+		expect( fs.readJsonSync ).toHaveBeenCalledWith(
+			'/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5/packages/alpha/package.json'
+		);
+		expect( fs.readJsonSync ).toHaveBeenCalledWith( '/workspace/ckeditor/ckeditor5-commercial/packages/bravo/package.json' );
 	} );
 
 	// Given: @latest → 47.0.0
@@ -112,7 +115,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	it( 'assigns @latest and @lts-v47 for the first LTS release (v47.0.0)', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
-			'/workspace/ckeditor/package.json': {
+			'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 				version: '47.0.0',
 				'ck-lts-versions': [
 					47
@@ -152,7 +155,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	it( 'assigns @latest and @lts-v47 for the subsequent LTS release (v47.1.0)', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
-			'/workspace/ckeditor/package.json': {
+			'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 				version: '47.1.0',
 				'ck-lts-versions': [
 					47
@@ -192,7 +195,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	it( 'should not reassign any npm tags when publishing an older version that does not affect @latest or @lts-v* tags', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
-			'/workspace/ckeditor/package.json': {
+			'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 				version: '46.1.1',
 				'ck-lts-versions': [
 					47
@@ -231,7 +234,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	it( 'assigns @latest and @lts-v49 for the current release which is the next LTS version', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
-			'/workspace/ckeditor/package.json': {
+			'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 				version: '49.0.0',
 				'ck-lts-versions': [
 					47,
@@ -275,7 +278,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 	it( 'should reassign the matching LTS tag (@lts-v47) to the new release and leave @latest unchanged', async () => {
 		const packageJsonMapInternal = {
 			...packageJsonMap,
-			'/workspace/ckeditor/package.json': {
+			'/workspace/ckeditor/ckeditor5-commercial/package.json': {
 				version: '47.1.1',
 				'ck-lts-versions': [
 					47,
