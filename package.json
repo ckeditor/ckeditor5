@@ -22,16 +22,16 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
-    "@ckeditor/ckeditor5-dev-build-tools": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-bump-year": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-changelog": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-ci": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-dependency-checker": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-docs": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-release-tools": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-stale-bot": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-tests": "^53.3.0",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^53.3.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-bump-year": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-changelog": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-ci": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-docs": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-release-tools": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-stale-bot": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-tests": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^53.3.1",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
     "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.5",
     "@ckeditor/ckeditor5-react": "^9.5.0",
@@ -39,6 +39,7 @@
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
     "@ocular-d/vale-bin": "^2.29.1",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "chalk": "^5.0.0",
@@ -79,6 +80,7 @@
     "umberto": "^8.0.3",
     "upath": "^2.0.0",
     "wait-on": "^8.0.3",
+    "vitest": "^3.2.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
@@ -131,7 +133,8 @@
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
-    "bump-year": "node ./scripts/bump-year.mjs"
+    "bump-year": "node ./scripts/bump-year.mjs",
+    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run"
   },
   "lint-staged": {
     "**/*": [
@@ -140,5 +143,8 @@
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
-  }
+  },
+  "ck-lts-versions": [
+    47
+  ]
 }
