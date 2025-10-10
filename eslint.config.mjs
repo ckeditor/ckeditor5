@@ -16,13 +16,12 @@ const projectPackages = readdirSync( CKEDITOR5_PACKAGES_PATH, { withFileTypes: t
 	.filter( dirent => dirent.isDirectory() )
 	.map( dirent => dirent.name );
 
-const packageWhitelist = [
-	'inspector',
-	'mermaid'
-];
 const allowedPackageNames = [
-	...projectPackages.map( p => p.replace( /ckeditor5-?/, '' ) ).filter( Boolean ),
-	...packageWhitelist
+	'inspector',
+	'mermaid',
+	...projectPackages
+		.map( projectPackage => projectPackage.replace( /ckeditor5-?/, '' ) )
+		.filter( Boolean )
 ];
 
 const disallowedImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
