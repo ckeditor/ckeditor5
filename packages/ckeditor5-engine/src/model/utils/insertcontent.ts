@@ -420,7 +420,7 @@ class Insertion {
 		}
 
 		// Add node to the current temporary ModelDocumentFragment.
-		this._appendToFragment( node );
+		node = this._appendToFragment( node );
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {
@@ -481,7 +481,7 @@ class Insertion {
 	 *
 	 * @param node The node to insert.
 	 */
-	private _appendToFragment( node: ModelNode ): void {
+	private _appendToFragment( node: ModelNode ): ModelNode {
 		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -504,6 +504,12 @@ class Insertion {
 		this.writer.insert( node, this._documentFragmentPosition );
 		this._documentFragmentPosition = this._documentFragmentPosition.getShiftedBy( node.offsetSize );
 
+		// In case text node was merged with already inserted text node, we need to get the actual node that is in the document.
+		// This happens when there is a non-allowed object between text nodes.
+		if ( !node.parent ) {
+			node = this._documentFragmentPosition.nodeBefore as ModelNode;
+		}
+
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
 		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this._nodeToSelect = node;
@@ -512,6 +518,8 @@ class Insertion {
 		}
 
 		this._filterAttributesOf.push( node );
+
+		return node;
 	}
 
 	/**

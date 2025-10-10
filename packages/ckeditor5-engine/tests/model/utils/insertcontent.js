@@ -1485,6 +1485,38 @@ describe( 'DataController utils', () => {
 				);
 			} );
 
+			it( 'filters out disallowed objects at any schema level but preserves text around it', () => {
+				model.schema.register( 'restrictedContainer', {
+					allowWhere: '$block',
+					allowChildren: 'paragraph',
+					isLimit: true
+				} );
+				model.schema.register( 'disabledObject', {
+					allowIn: [ 'paragraph', '$clipboardHolder' ],
+					isObject: true
+				} );
+
+				model.schema.addChildCheck( context => {
+					// Note this check verifies the whole context, not only the last element.
+					for ( const item of context ) {
+						if ( item.name === 'restrictedContainer' ) {
+							return false;
+						}
+					}
+				}, 'disabledObject' );
+
+				// This is a drag&drop so insert is between blocks and auto-paragraphing is expected.
+				_setModelData( model, '<restrictedContainer><paragraph></paragraph></restrictedContainer>' );
+				const affectedRange = insertHelper( '123<disabledObject></disabledObject>456', null, [ 0, 0 ] );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<restrictedContainer><paragraph>[]123456</paragraph><paragraph></paragraph></restrictedContainer>'
+				);
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<restrictedContainer>[<paragraph>123456</paragraph>]<paragraph></paragraph></restrictedContainer>'
+				);
+			} );
+
 			it( 'filters out disallowed attributes when inserting text', () => {
 				_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 				const affectedRange = insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
