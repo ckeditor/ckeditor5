@@ -135,6 +135,7 @@ describe( 'AbstractHandler', () => {
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -185,6 +186,13 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.enable();
 
 			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should create a collapse left sidebar button if flag is set', () => {
+			abstractHandler._hasLeftCollapseButton = true;
+			abstractHandler.enable();
+
+			expect( abstractHandler._collapseLeftSidebarButton ).to.not.be.null;
 		} );
 
 		it( 'should execute the custom callback if configured', () => {
@@ -675,6 +683,36 @@ describe( 'AbstractHandler', () => {
 			outerScrollableAncestor.remove();
 			innerScrollableAncestor.remove();
 			innerElement.remove();
+		} );
+	} );
+
+	describe( 'on _collapseLeftSidebarButton#execute', () => {
+		it( 'should toggle left sidebar visibility', () => {
+			const hideLeftSidebarSpy = sinon.spy( abstractHandler, '_hideLeftSidebar' );
+			const showLeftSidebarSpy = sinon.spy( abstractHandler, '_showLeftSidebar' );
+
+			abstractHandler._hasLeftCollapseButton = true;
+			abstractHandler.enable();
+
+			abstractHandler._collapseLeftSidebarButton.fire( 'execute' );
+
+			expect( hideLeftSidebarSpy ).to.have.been.called;
+			expect( showLeftSidebarSpy ).to.not.have.been.called;
+
+			abstractHandler._collapseLeftSidebarButton.fire( 'execute' );
+
+			expect( hideLeftSidebarSpy ).to.have.been.calledOnce;
+			expect( showLeftSidebarSpy ).to.have.been.calledOnce;
+		} );
+	} );
+
+	describe( '_setupResizeObserver', () => {
+		it( 'should create a new resize observer every time it is called', () => {
+			abstractHandler.enable();
+			const oldResizeObserver = abstractHandler._resizeObserver;
+
+			abstractHandler._setupResizeObserver();
+			expect( oldResizeObserver ).to.not.be.deep.equal( abstractHandler._resizeObserver );
 		} );
 	} );
 } );
