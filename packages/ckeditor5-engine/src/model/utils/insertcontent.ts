@@ -321,7 +321,10 @@ class Insertion {
 	 */
 	public handleNodes( nodes: Iterable<ModelNode> ): void {
 		for ( const node of Array.from( nodes ) ) {
-			this._handleNode( node );
+			// Ignore empty nodes, especially empty text nodes.
+			if ( node.offsetSize > 0 ) {
+				this._handleNode( node );
+			}
 		}
 
 		// Insert nodes collected in temporary ModelDocumentFragment.
@@ -420,7 +423,7 @@ class Insertion {
 		}
 
 		// Add node to the current temporary ModelDocumentFragment.
-		this._appendToFragment( node );
+		node = this._appendToFragment( node );
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {
@@ -481,7 +484,7 @@ class Insertion {
 	 *
 	 * @param node The node to insert.
 	 */
-	private _appendToFragment( node: ModelNode ): void {
+	private _appendToFragment( node: ModelNode ): ModelNode {
 		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -504,6 +507,12 @@ class Insertion {
 		this.writer.insert( node, this._documentFragmentPosition );
 		this._documentFragmentPosition = this._documentFragmentPosition.getShiftedBy( node.offsetSize );
 
+		// In case text node was merged with already inserted text node, we need to get the actual node that is in the document.
+		// This happens when there is a non-allowed object between text nodes.
+		if ( !node.parent ) {
+			node = this._documentFragmentPosition.nodeBefore as ModelNode;
+		}
+
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
 		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this._nodeToSelect = node;
@@ -512,6 +521,8 @@ class Insertion {
 		}
 
 		this._filterAttributesOf.push( node );
+
+		return node;
 	}
 
 	/**
@@ -818,13 +829,18 @@ class Insertion {
 	 * @param childNode The node to check.
 	 */
 	private _getAllowedIn( contextElement: ModelElement, childNode: ModelNode ): ModelElement | null {
+		const context = this.schema.createContext( contextElement );
+
 		// Check if a node can be inserted in the given context...
-		if ( this.schema.checkChild( contextElement, childNode ) ) {
+		if ( this.schema.checkChild( context, childNode ) ) {
 			return contextElement;
 		}
 
 		// ...or it would be accepted if a paragraph would be inserted.
-		if ( this.schema.checkChild( contextElement, 'paragraph' ) && this.schema.checkChild( 'paragraph', childNode ) ) {
+		if (
+			this.schema.checkChild( context, 'paragraph' ) &&
+			this.schema.checkChild( context.push( 'paragraph' ), childNode )
+		) {
 			return contextElement;
 		}
 

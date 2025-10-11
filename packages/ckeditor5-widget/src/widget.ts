@@ -238,7 +238,10 @@ export class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
@@ -676,7 +679,8 @@ export class Widget extends Plugin {
 				// Select the content of editable element when iterating over sibling editable elements
 				// or going deeper into nested widgets.
 				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
-					newRange = model.createRangeIn( modelPosition.parent );
+					// Find a limit element closest to the new selection range.
+					newRange = model.createRangeIn( model.schema.getLimitElement( newRange ) );
 				}
 
 				return newRange;

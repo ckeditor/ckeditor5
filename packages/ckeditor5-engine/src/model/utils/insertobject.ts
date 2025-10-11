@@ -96,13 +96,14 @@ export function insertObject(
 		}
 
 		let elementToInsert = object;
-		const insertionPositionParent = insertionSelection.anchor!.parent;
+		const insertionPositionParent = insertionSelection.anchor!.parent as ModelElement;
+		const context = model.schema.createContext( insertionPositionParent );
 
-		// Autoparagraphing of an inline objects.
+		// Auto-paragraphing of an inline objects.
 		if (
-			!model.schema.checkChild( insertionPositionParent as any, object ) &&
-			model.schema.checkChild( insertionPositionParent as any, 'paragraph' ) &&
-			model.schema.checkChild( 'paragraph', object )
+			!model.schema.checkChild( context, object ) &&
+			model.schema.checkChild( context, 'paragraph' ) &&
+			model.schema.checkChild( context.push( 'paragraph' ), object )
 		) {
 			elementToInsert = writer.createElement( 'paragraph' );
 

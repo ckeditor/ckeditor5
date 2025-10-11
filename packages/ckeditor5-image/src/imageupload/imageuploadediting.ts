@@ -246,8 +246,13 @@ export class ImageUploadEditing extends Plugin {
 					for ( const imageElement of getImagesFromChangeItem( editor, item ) ) {
 						// Check if the image element still has upload id.
 						const uploadId = imageElement.getAttribute( 'uploadId' ) as string;
+						const uploadStatus = imageElement.getAttribute( 'uploadStatus' );
 
-						if ( !uploadId ) {
+						// Check if status is complete to ensure that there were no additional reconversions
+						// in the same batch that set the status to 'complete'. It may happen when list item
+						// performed refresh of its children (including images) because `uploadStatus` attribute
+						// has been changed.
+						if ( !uploadId || uploadStatus == 'complete' ) {
 							continue;
 						}
 
