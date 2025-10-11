@@ -38,7 +38,18 @@ export class StandardEditingModeUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'restrictedEditingException', () => {
-			const button = this._createButton( ButtonView );
+			const button = this._createButton( 'restrictedEditingException', ButtonView );
+
+			button.set( {
+				tooltip: true,
+				isToggleable: true
+			} );
+
+			return button;
+		} );
+
+		editor.ui.componentFactory.add( 'restrictedEditingExceptionBlock', () => {
+			const button = this._createButton( 'restrictedEditingExceptionBlock', ButtonView );
 
 			button.set( {
 				tooltip: true,
@@ -49,17 +60,23 @@ export class StandardEditingModeUI extends Plugin {
 		} );
 
 		editor.ui.componentFactory.add( 'menuBar:restrictedEditingException', () => {
-			return this._createButton( MenuBarMenuListItemButtonView );
+			return this._createButton( 'restrictedEditingException', MenuBarMenuListItemButtonView );
+		} );
+		editor.ui.componentFactory.add( 'menuBar:restrictedEditingExceptionBlock', () => {
+			return this._createButton( 'restrictedEditingExceptionBlock', MenuBarMenuListItemButtonView );
 		} );
 	}
 
 	/**
 	 * Creates a button for restricted editing exception command to use either in toolbar or in menu bar.
 	 */
-	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>(
+		commandName: 'restrictedEditingException' | 'restrictedEditingExceptionBlock',
+		ButtonClass: T
+	): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
-		const command = this.editor.commands.get( 'restrictedEditingException' )!;
+		const command = this.editor.commands.get( commandName )!;
 		const view = new ButtonClass( locale ) as InstanceType<T>;
 		const t = locale.t;
 
@@ -72,7 +89,7 @@ export class StandardEditingModeUI extends Plugin {
 
 		// Execute the command.
 		this.listenTo( view, 'execute', () => {
-			editor.execute( 'restrictedEditingException' );
+			editor.execute( commandName );
 			editor.editing.view.focus();
 		} );
 
