@@ -11,6 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Matcher, type UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
+import { RestrictedEditingExceptionBlockCommand } from './restrictededitingexceptionblockcommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -39,30 +40,71 @@ export class StandardEditingModeEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const schema = editor.model.schema;
 
-		editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
+		schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
 
-		editor.conversion.for( 'upcast' ).elementToAttribute( {
-			model: 'restrictedEditingException',
-			view: {
-				name: 'span',
-				classes: 'restricted-editing-exception'
-			}
+		schema.register( 'restrictedEditingException', {
+			allowWhere: '$container',
+			allowContentOf: '$container'
 		} );
+
+		// Don't allow nesting of block exceptions.
+		schema.addChildCheck( context => {
+			for ( const item of context ) {
+				if ( item.name == 'restrictedEditingException' ) {
+					return false;
+				}
+			}
+		}, 'restrictedEditingException' );
+
+		// Don't allow nesting inline exceptions inside block exceptions.
+		schema.addAttributeCheck( context => {
+			for ( const item of context ) {
+				if ( item.name == 'restrictedEditingException' ) {
+					return false;
+				}
+			}
+		}, 'restrictedEditingException' );
+
+		editor.conversion.for( 'upcast' )
+			.elementToAttribute( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'span',
+					classes: 'restricted-editing-exception'
+				}
+			} )
+			.elementToElement( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'div',
+					classes: 'restricted-editing-exception'
+				}
+			} );
 
 		registerFallbackUpcastConverter( editor );
 
-		editor.conversion.for( 'downcast' ).attributeToElement( {
-			model: 'restrictedEditingException',
-			view: ( modelAttributeValue, { writer } ) => {
-				if ( modelAttributeValue ) {
-					// Make the restricted editing <span> outer-most in the view.
-					return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+		editor.conversion.for( 'downcast' )
+			.attributeToElement( {
+				model: 'restrictedEditingException',
+				view: ( modelAttributeValue, { writer } ) => {
+					if ( modelAttributeValue ) {
+						// Make the restricted editing <span> outer-most in the view.
+						return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+					}
 				}
-			}
-		} );
+			} )
+			.elementToElement( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'div',
+					classes: 'restricted-editing-exception'
+				}
+			} );
 
 		editor.commands.add( 'restrictedEditingException', new RestrictedEditingExceptionCommand( editor ) );
+		editor.commands.add( 'restrictedEditingExceptionBlock', new RestrictedEditingExceptionBlockCommand( editor ) );
 
 		editor.editing.view.change( writer => {
 			for ( const root of editor.editing.view.document.roots ) {
