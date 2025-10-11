@@ -321,7 +321,10 @@ class Insertion {
 	 */
 	public handleNodes( nodes: Iterable<ModelNode> ): void {
 		for ( const node of Array.from( nodes ) ) {
-			this._handleNode( node );
+			// Ignore empty nodes, especially empty text nodes.
+			if ( node.offsetSize > 0 ) {
+				this._handleNode( node );
+			}
 		}
 
 		// Insert nodes collected in temporary ModelDocumentFragment.
