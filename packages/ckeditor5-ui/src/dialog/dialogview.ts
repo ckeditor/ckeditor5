@@ -648,8 +648,6 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 
 	/**
 	 * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
-	 *
-	 * TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
 	 */
 	private _getViewportRect(): Rect {
 		const viewportRect = new Rect( global.window );
