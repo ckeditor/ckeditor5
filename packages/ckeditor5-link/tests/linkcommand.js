@@ -770,6 +770,16 @@ describe( 'LinkCommand', () => {
 				expect( _getModelData( model ) ).to.equal( 'fo<$text linkHref="url">xyz</$text>[]ar' );
 			} );
 
+			it( 'should change displayed text in one step', () => {
+				_setModelData( model, '<$text linkHref="url">example</$text>' );
+
+				sinon.spy( model, 'insertContent' );
+
+				command.execute( 'url', {}, 'excited' );
+
+				expect( model.insertContent.calledOnce ).to.be.true;
+			} );
+
 			describe( 'keep formatting attributes (with TwoStepCaretMovement plugin available)', () => {
 				it( 'should maintain all formatting when changing only text inside a link', () => {
 					_setModelData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
