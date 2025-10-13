@@ -94,6 +94,7 @@ export { isValidAttributeName } from './dom/isvalidattributename.js';
 export { isVisible } from './dom/isvisible.js';
 export {
 	getOptimalPosition,
+	getConstrainedViewportRect,
 	type DomOptimalPositionOptions,
 	type PositioningFunction,
 	type DomPoint,
