@@ -255,6 +255,15 @@ function updateDocumentPlaceholders(
 		// When not a direct host, it could happen that there is no child element
 		// capable of displaying a placeholder.
 		if ( !hostElement ) {
+			// If some child has been found earlier but now there is none that matches criteria,
+			// the placeholder will be removed from such child.
+			// See: https://github.com/ckeditor/ckeditor5/issues/14354
+			if ( config.hostElement ) {
+				writer.removeAttribute( 'data-placeholder', config.hostElement );
+				hideViewPlaceholder( writer, config.hostElement );
+				config.hostElement = null;
+			}
+
 			continue;
 		}
 

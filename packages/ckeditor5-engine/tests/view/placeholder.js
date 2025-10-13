@@ -356,6 +356,41 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/14354
+		it( 'should remove placeholder when suitable child is moved after non-suitable one (isDirectHost=false)', () => {
+			_setViewData( view, '<container:p></container:p>' );
+			viewDocument.isFocused = false;
+
+			viewRoot.placeholder = 'foo bar baz';
+			enableViewPlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false
+			} );
+
+			// Placeholder should be visible on the first child.
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			// Let's insert an attribute element at the end of the root and move the first element after it.
+			view.change( writer => {
+				const oldElement = viewRoot.getChild( 0 );
+				const attributeElement = writer.createAttributeElement( 'span' );
+
+				writer.insert( writer.createPositionAt( viewRoot, 'end' ), attributeElement );
+				writer.move( writer.createRangeOn( oldElement ), writer.createPositionAt( attributeElement, 'after' ) );
+			} );
+
+			view.forceRender();
+
+			// Attribute element should not have placeholder attributes.
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+
+			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
 		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
 			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
