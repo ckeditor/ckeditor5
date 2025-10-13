@@ -70,7 +70,9 @@ describe( 'collectStylesheets', () => {
 	it( 'should get ".ck-content" styles when "EDITOR_STYLES" token is provided', async () => {
 		const consoleSpy = sinon.stub( console, 'warn' );
 
-		const styles = await collectStylesheets( [ './foo.css', 'EDITOR_STYLES' ] );
+		sinon.stub( window, 'fetch' ).resolves( new Response( '.custom { color: blue; }' ) );
+
+		const styles = await collectStylesheets( [ './custom.css', 'EDITOR_STYLES' ] );
 
 		sinon.assert.notCalled( consoleSpy );
 
@@ -97,11 +99,11 @@ describe( 'collectStylesheets', () => {
 	it( 'should fetch stylesheets from the provided paths and return concat result', async () => {
 		sinon
 			.stub( window, 'fetch' )
-			.onFirstCall().resolves( new Response( '.foo { color: green; }' ) )
-			.onSecondCall().resolves( new Response( '.bar { color: red; }' ) );
+			.onFirstCall().resolves( new Response( '.first { color: green; }' ) )
+			.onSecondCall().resolves( new Response( '.second { color: red; }' ) );
 
-		const styles = await collectStylesheets( [ './foo.css', './bar.css' ] );
+		const styles = await collectStylesheets( [ './first.css', './second.css' ] );
 
-		expect( styles ).to.equal( '.foo { color: green; } .bar { color: red; }' );
+		expect( styles ).to.equal( '.first { color: green; } .second { color: red; }' );
 	} );
 } );
