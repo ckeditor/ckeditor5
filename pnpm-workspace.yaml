@@ -13,6 +13,14 @@ onlyBuiltDependencies:
   - puppeteer
   - sharp
 
+# This section must be synchronized with `ckeditor/ckeditor5-commercial`.
+overrides:
+  markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
+  hexo-render-pug>pug: ^3.0.3
+  '@iktakahiro/markdown-it-katex>katex': ^0.16.0
+  '@ckeditor/jsdoc-plugins>jsdoc': '-'
+  'mermaid>dompurify': '^3.0.0'
+
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - '@ckeditor/*'
