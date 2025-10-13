@@ -37,7 +37,6 @@
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
-    "@ocular-d/vale-bin": "^2.29.1",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
