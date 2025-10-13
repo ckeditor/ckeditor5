@@ -515,9 +515,10 @@ describe( 'ImageUtils plugin', () => {
 			it( 'should insert image with given attributes', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-				imageUtils.insertImage( { src: 'bar' } );
+				imageUtils.insertImage( { src: '/assets/sample.png' } );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="bar"></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) )
+					.to.equal( '<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should use the inline image type when there is only ImageInlineEditing plugin enabled', async () => {
@@ -562,37 +563,38 @@ describe( 'ImageUtils plugin', () => {
 				_setModelData( model, '[]' );
 				model.schema.extend( 'imageBlock', { allowAttributes: 'customAttribute' } );
 
-				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.to.equal( '[<imageBlock customAttribute="value" src="foo"></imageBlock>]' );
+					.to.equal( '[<imageBlock customAttribute="value" src="/assets/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting a block image', () => {
 				_setModelData( model, '[]' );
 
-				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.to.equal( '[<imageBlock src="foo"></imageBlock>]' );
+					.to.equal( '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
 			} );
 
 			it( 'should pass the allowed custom attributes to the inserted inline image', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 				model.schema.extend( 'imageInline', { allowAttributes: 'customAttribute' } );
 
-				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
 
 				expect( _getModelData( model ) )
-					.to.equal( '<paragraph>f[<imageInline customAttribute="value" src="foo"></imageInline>]o</paragraph>' );
+					.to.equal( '<paragraph>f[<imageInline customAttribute="value" src="/assets/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should omit the disallowed attributes while inserting an inline image', () => {
 				_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-				imageUtils.insertImage( { src: 'foo', customAttribute: 'value' } );
+				imageUtils.insertImage( { src: '/assets/sample.png', customAttribute: 'value' } );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>f[<imageInline src="foo"></imageInline>]o</paragraph>' );
+				expect( _getModelData( model ) )
+					.to.equal( '<paragraph>f[<imageInline src="/assets/sample.png"></imageInline>]o</paragraph>' );
 			} );
 
 			it( 'should return the inserted image element', () => {
