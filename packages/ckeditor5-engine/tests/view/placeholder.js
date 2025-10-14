@@ -357,7 +357,7 @@ describe( 'placeholder', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/14354
-		it( 'should remove placeholder when suitable child is moved after non-suitable one (isDirectHost=false)', () => {
+		it( 'should remove placeholder when suitable child is wrapped with an attribute element (isDirectHost=false)', () => {
 			_setViewData( view, '<container:p></container:p>' );
 			viewDocument.isFocused = false;
 
@@ -378,19 +378,20 @@ describe( 'placeholder', () => {
 				const oldElement = viewRoot.getChild( 0 );
 				const attributeElement = writer.createAttributeElement( 'span' );
 
-				writer.insert( writer.createPositionAt( viewRoot, 'end' ), attributeElement );
-				writer.move( writer.createRangeOn( oldElement ), writer.createPositionAt( attributeElement, 'after' ) );
+				writer.wrap( writer.createRangeOn( oldElement ), attributeElement );
 			} );
 
 			view.forceRender();
 
 			// Attribute element should not have placeholder attributes.
+			expect( viewRoot.childCount ).to.equal( 1 );
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 
-			// The old element should not have placeholder attributes as it's not the first child anymore.
-			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+			// The old element should not have placeholder attributes as it's wrapped with an attribute element.
+			expect( viewRoot.getChild( 0 ).childCount ).to.equal( 1 );
+			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/18149
@@ -411,14 +412,12 @@ describe( 'placeholder', () => {
 
 			// Let's insert an container element at the end of the root and move the first element after it.
 			view.change( writer => {
-				const oldElement = viewRoot.getChild( 0 );
-				const attributeElement = writer.createContainerElement( 'span' );
-
-				writer.insert( writer.createPositionAt( viewRoot, 'end' ), attributeElement );
-				writer.move( writer.createRangeOn( oldElement ), writer.createPositionAt( attributeElement, 'after' ) );
+				writer.insert( writer.createPositionAt( viewRoot, 0 ), writer.createContainerElement( 'div' ) );
 			} );
 
 			view.forceRender();
+
+			expect( viewRoot.childCount ).to.equal( 2 );
 
 			// It should have placeholder attribute but placeholder itself should not be visible.
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
