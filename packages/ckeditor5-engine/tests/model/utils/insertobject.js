@@ -134,13 +134,36 @@ describe( 'insertObject()', () => {
 		} );
 	} );
 
-	describe( 'autoparagraphing of inserted object', () => {
-		it( 'should autoparagraph an element if it is not allowed in given position', () => {
+	describe( 'auto-paragraphing of inserted object', () => {
+		it( 'should auto-paragraph an element if it is not allowed in given position', () => {
 			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget );
 
 			expect( _getModelData( model ) ).to.equalMarkup( '<paragraph><inlineWidget></inlineWidget>[]</paragraph>' );
+		} );
+
+		it( 'should not auto-paragraph an element if it is not allowed in given position but also when in paragraph', () => {
+			schema.register( 'container', {
+				allowWhere: '$block',
+				allowChildren: 'paragraph',
+				isLimit: true
+			} );
+
+			schema.addChildCheck( context => {
+				if ( Array.from( context.getNames() ).includes( 'container' ) ) {
+					return false;
+				}
+			}, 'inlineWidget' );
+
+			_setModelData( model, '<container></container>' );
+
+			const widget = new ModelElement( 'inlineWidget' );
+			const selection = model.createSelection( root.getChild( 0 ), 0 );
+
+			insertObject( model, widget, selection );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( '<container></container>' );
 		} );
 	} );
 
