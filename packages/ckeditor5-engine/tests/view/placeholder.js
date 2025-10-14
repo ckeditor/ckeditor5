@@ -373,6 +373,7 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Let's insert an attribute element at the end of the root and move the first element after it.
+			// The parent element should return no-host substitute for the placeholder as the first child is not suitable.
 			view.change( writer => {
 				const oldElement = viewRoot.getChild( 0 );
 				const attributeElement = writer.createAttributeElement( 'span' );
@@ -385,6 +386,42 @@ describe( 'placeholder', () => {
 
 			// Attribute element should not have placeholder attributes.
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+
+			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/18149
+		it( 'should remove placeholder when suitable child is moved after suitable one (isDirectHost=false)', () => {
+			_setViewData( view, '<container:p></container:p>' );
+			viewDocument.isFocused = false;
+
+			viewRoot.placeholder = 'foo bar baz';
+			enableViewPlaceholder( {
+				view,
+				element: viewRoot,
+				isDirectHost: false
+			} );
+
+			// Placeholder should be visible on the first child.
+			expect( viewRoot.getChild( 0 ).getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			// Let's insert an container element at the end of the root and move the first element after it.
+			view.change( writer => {
+				const oldElement = viewRoot.getChild( 0 );
+				const attributeElement = writer.createContainerElement( 'span' );
+
+				writer.insert( writer.createPositionAt( viewRoot, 'end' ), attributeElement );
+				writer.move( writer.createRangeOn( oldElement ), writer.createPositionAt( attributeElement, 'after' ) );
+			} );
+
+			console.info( 'a' );
+			view.forceRender();
+
+			// Attribute element should not have placeholder attributes.
+			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 
 			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
