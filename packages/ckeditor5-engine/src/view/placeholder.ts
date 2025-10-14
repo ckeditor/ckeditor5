@@ -264,7 +264,9 @@ function updateDocumentPlaceholders(
 		if ( hostElement !== config.hostElement && config.hostElement ) {
 			writer.removeAttribute( 'data-placeholder', config.hostElement );
 			hideViewPlaceholder( writer, config.hostElement );
+
 			config.hostElement = null;
+			wasViewModified = true;
 		}
 
 		// When not a direct host, it could happen that there is no child element
