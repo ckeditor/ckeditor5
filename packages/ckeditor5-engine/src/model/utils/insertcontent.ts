@@ -860,15 +860,17 @@ class Insertion {
 	 * @param childNode The node to check.
 	 */
 	private _getAllowedIn( contextElement: ModelElement, childNode: ModelNode ): ModelElement | null {
+		const context = this.schema.createContext( contextElement );
+
 		// Check if a node can be inserted in the given context...
-		if ( this.schema.checkChild( contextElement, childNode ) ) {
+		if ( this.schema.checkChild( context, childNode ) ) {
 			return contextElement;
 		}
 
 		// ...or it would be accepted if a paragraph would be inserted.
 		if (
-			this.schema.checkChild( contextElement, 'paragraph' ) &&
-			this.schema.checkChild( this.schema.createContext( contextElement ).push( 'paragraph' ), childNode )
+			this.schema.checkChild( context, 'paragraph' ) &&
+			this.schema.checkChild( context.push( 'paragraph' ), childNode )
 		) {
 			return contextElement;
 		}

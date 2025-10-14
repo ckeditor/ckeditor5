@@ -2176,13 +2176,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection after widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					keyCodes.tab,
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo</paragraph><widget></widget><paragraph>[]bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(
@@ -2652,13 +2652,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection before widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					{ keyCode: keyCodes.tab, shiftKey: true },
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo[]</paragraph><widget></widget><paragraph>bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(
