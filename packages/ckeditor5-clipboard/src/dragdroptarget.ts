@@ -392,7 +392,7 @@ function findDropTargetRange(
 					const targetModelPosition = mapper.toModelPosition( targetViewPosition );
 					const canDropOnPosition = !draggedRange || Array
 						.from( draggedRange.getItems( { shallow: true } ) )
-						.every( item => model.schema.checkChild( targetModelPosition, item as ModelNode ) );
+						.some( item => model.schema.checkChild( targetModelPosition, item as ModelNode ) );
 
 					if ( canDropOnPosition ) {
 						if ( model.schema.checkChild( targetModelPosition, '$text' ) ) {
