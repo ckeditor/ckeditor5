@@ -388,6 +388,7 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 
+			// The old element should not have placeholder attributes as it's not the first child anymore.
 			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
@@ -417,13 +418,13 @@ describe( 'placeholder', () => {
 				writer.move( writer.createRangeOn( oldElement ), writer.createPositionAt( attributeElement, 'after' ) );
 			} );
 
-			console.info( 'a' );
 			view.forceRender();
 
-			// Attribute element should not have placeholder attributes.
+			// It should have placeholder attribute but placeholder itself should not be visible.
 			expect( viewRoot.getChild( 0 ).hasAttribute( 'data-placeholder' ) ).to.be.true;
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 
+			// The old element should not have placeholder attributes.
 			expect( viewRoot.getChild( 1 ).hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( viewRoot.getChild( 1 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
