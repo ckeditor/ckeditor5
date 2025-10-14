@@ -252,23 +252,24 @@ function updateDocumentPlaceholders(
 
 		const hostElement = getChildPlaceholderHostSubstitute( element );
 
-		// When not a direct host, it could happen that there is no child element
-		// capable of displaying a placeholder.
-		if ( !hostElement ) {
-			// If some child has been found earlier but now there is none that matches criteria,
-			// the placeholder will be removed from such child.
-			// See: https://github.com/ckeditor/ckeditor5/issues/14354
-			if ( config.hostElement ) {
-				writer.removeAttribute( 'data-placeholder', config.hostElement );
-				hideViewPlaceholder( writer, config.hostElement );
-				config.hostElement = null;
-			}
-
+		// Don't override placeholder if the host element already has some direct placeholder.
+		if ( hostElement && directHostElements.includes( hostElement ) ) {
 			continue;
 		}
 
-		// Don't override placeholder if the host element already has some direct placeholder.
-		if ( directHostElements.includes( hostElement ) ) {
+		// If host element changed, remove the placeholder from the previous one.
+		// This can happen when user replaces the first child element of the parent element
+		// with new one, but the previous one is still in the view tree.
+		// See: https://github.com/ckeditor/ckeditor5/issues/14354
+		if ( hostElement !== config.hostElement && config.hostElement ) {
+			writer.removeAttribute( 'data-placeholder', config.hostElement );
+			hideViewPlaceholder( writer, config.hostElement );
+			config.hostElement = null;
+		}
+
+		// When not a direct host, it could happen that there is no child element
+		// capable of displaying a placeholder.
+		if ( !hostElement ) {
 			continue;
 		}
 
