@@ -238,7 +238,10 @@ export class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
@@ -644,13 +647,8 @@ export class Widget extends Plugin {
 		for ( const { nextPosition } of viewRange.getWalker( { direction } ) ) {
 			const item = nextPosition.parent as ViewNode;
 
-			// Ignore currently selected editable or widget.
-			if ( item == editableElement || item == selectedElement ) {
-				continue;
-			}
-
-			// Some widget along the way.
-			if ( isWidget( item ) ) {
+			// Some widget along the way except the currently selected one.
+			if ( isWidget( item ) && item != selectedElement ) {
 				const modelElement = editing.mapper.toModelElement( item as ViewElement )!;
 
 				// Do not select inline widgets.
@@ -665,18 +663,30 @@ export class Widget extends Plugin {
 			}
 			// Encountered an editable element.
 			else if ( item.is( 'editableElement' ) ) {
+				// Ignore the current editable for text selection,
+				// but use it when widget was selected to be able to jump after the widget.
+				if ( item == editableElement && !selectedElement ) {
+					continue;
+				}
+
 				const modelPosition = editing.mapper.toModelPosition( nextPosition );
-				let newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
+				const newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
 
 				// There is nothing to select so just jump to the next one.
 				if ( !newRange ) {
 					continue;
 				}
 
+				// In the same editable while widget was selected - do not select the editable content.
+				if ( item == editableElement && selectedElement ) {
+					return newRange;
+				}
+
 				// Select the content of editable element when iterating over sibling editable elements
 				// or going deeper into nested widgets.
 				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
-					newRange = model.createRangeIn( modelPosition.parent );
+					// Find a limit element closest to the new selection range.
+					return model.createRangeIn( model.schema.getLimitElement( newRange ) );
 				}
 
 				return newRange;
