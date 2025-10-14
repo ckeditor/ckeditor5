@@ -297,6 +297,12 @@ workflows:
           requires:
             - cke5_tests_framework
             - cke5_tests_features_batch_n
+          filters:
+            branches:
+              only:
+                - master
+              ignore:
+                - stable
       - cke5_validators
       - cke5_manual:
           filters:
