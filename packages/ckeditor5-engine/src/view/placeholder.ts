@@ -252,11 +252,6 @@ function updateDocumentPlaceholders(
 
 		const hostElement = getChildPlaceholderHostSubstitute( element );
 
-		// Don't override placeholder if the host element already has some direct placeholder.
-		if ( hostElement && directHostElements.includes( hostElement ) ) {
-			continue;
-		}
-
 		// If host element changed, remove the placeholder from the previous one.
 		// This can happen when user replaces the first child element of the parent element
 		// with new one, but the previous one is still in the view tree.
@@ -274,6 +269,11 @@ function updateDocumentPlaceholders(
 		// When not a direct host, it could happen that there is no child element
 		// capable of displaying a placeholder.
 		if ( !hostElement ) {
+			continue;
+		}
+
+		// Don't override placeholder if the host element already has some direct placeholder.
+		if ( directHostElements.includes( hostElement ) ) {
 			continue;
 		}
 
