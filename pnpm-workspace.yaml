@@ -4,7 +4,6 @@ packages:
 onlyBuiltDependencies:
   - '@ckeditor/ckeditor5-dev-tests'
   - '@ckeditor/ckeditor5-mermaid'
-  - '@ocular-d/vale-bin'
   - '@parcel/watcher'
   - '@swc/core'
   - core-js
@@ -12,6 +11,13 @@ onlyBuiltDependencies:
   - hexo-util
   - puppeteer
   - sharp
+
+# This section must be synchronized with `ckeditor/ckeditor5-commercial`.
+overrides:
+  markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
+  hexo-render-pug>pug: ^3.0.3
+  '@iktakahiro/markdown-it-katex>katex': ^0.16.0
+  '@ckeditor/jsdoc-plugins>jsdoc': '-'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:

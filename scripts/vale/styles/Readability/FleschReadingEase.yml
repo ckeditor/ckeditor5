@@ -1,8 +1,0 @@
-extends: metric
-message: "Try to keep the Flesch reading ease score (%s) above 70."
-link: https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests
-
-formula: |
-  206.835 - (1.015 * (words / sentences)) - (84.6 * (syllables / words))
-
-condition: "< 70"
