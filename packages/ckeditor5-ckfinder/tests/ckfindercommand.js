@@ -184,7 +184,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert single chosen image', () => {
-			const url = 'foo/bar.jpg';
+			const url = 'assets/sample.png';
 
 			command.execute();
 
@@ -195,7 +195,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert link if chosen file is not an image', () => {
-			const url = 'foo/bar.pdf';
+			const url = 'assets/sample.pdf';
 
 			command.execute();
 
@@ -296,9 +296,9 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert multiple chosen images as image widget', () => {
-			const url1 = 'foo/bar1.jpg';
-			const url2 = 'foo/bar2.jpg';
-			const url3 = 'foo/bar3.jpg';
+			const url1 = 'assets/sample.png';
+			const url2 = 'assets/sample2.png';
+			const url3 = 'assets/sample3.png';
 
 			command.execute();
 
@@ -311,9 +311,9 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert images and links to a files from chosen files', () => {
-			const url1 = 'foo/bar1.jpg';
-			const url2 = 'foo/bar2.pdf';
-			const url3 = 'foo/bar3.jpg';
+			const url1 = 'assets/sample.png';
+			const url2 = 'assets/sample2.pdf';
+			const url3 = 'assets/sample3.png';
 
 			command.execute();
 
@@ -327,7 +327,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should use CKFinder Proxy for privately hosted files', () => {
-			const proxyUrl = 'bar/foo.jpg';
+			const proxyUrl = '/assets/sample.png';
 
 			finderMock.request = () => proxyUrl;
 
@@ -341,7 +341,7 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert resized image as image widget', () => {
-			const url = 'foo/bar.jpg';
+			const url = 'assets/sample.png';
 
 			command.execute();
 
@@ -399,7 +399,7 @@ describe( 'CKFinderCommand', () => {
 
 			command.execute();
 
-			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'foo/bar.jpg' } );
+			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'assets/sample.png' } );
 
 			expect( _getModelData( model ) )
 				.to.equal( '<paragraph>f[o]o</paragraph>' );
@@ -418,7 +418,7 @@ describe( 'CKFinderCommand', () => {
 
 			command.execute();
 
-			mockFilesChooseEvent( [ mockFinderFile( 'foo/bar.jpg' ) ] );
+			mockFilesChooseEvent( [ mockFinderFile( 'assets/sample.png' ) ] );
 
 			expect( _getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -431,7 +431,7 @@ describe( 'CKFinderCommand', () => {
 			expect( editor.config.get( 'ckfinder.options' ) ).to.deep.equal( { foo: 'bar' } );
 		} );
 
-		function mockFinderFile( url = 'foo/bar.jpg', isImage = true ) {
+		function mockFinderFile( url = 'assets/sample.png', isImage = true ) {
 			return {
 				isImage: () => isImage,
 				getUrl: () => url

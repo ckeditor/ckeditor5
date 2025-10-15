@@ -211,10 +211,12 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should convert table with image', () => {
-				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
+				editor.setData( '<table><tbody><tr><td><img src="/assets/sample.png"></td></tr></tbody></table>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><imageBlock src="sample.png"></imageBlock></tableCell></tableRow></table>' );
+					.to.equal(
+						'<table><tableRow><tableCell><imageBlock src="/assets/sample.png"></imageBlock></tableCell></tableRow></table>'
+					);
 			} );
 
 			it( 'should insert a paragraph when the cell content is unsupported', () => {

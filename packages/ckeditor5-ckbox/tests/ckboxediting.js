@@ -1835,7 +1835,7 @@ describe( 'CKBoxEditing', () => {
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).to.equal( 'id' );
 
-		replaceImageSourceCommand.execute( { source: 'bar/foo.jpg' } );
+		replaceImageSourceCommand.execute( { source: '/assets/sample.png' } );
 
 		expect( element.getAttribute( 'ckboxImageId' ) ).to.be.undefined;
 	} );

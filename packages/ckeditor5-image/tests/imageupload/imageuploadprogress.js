@@ -227,12 +227,12 @@ describe( 'ImageUploadProgress', () => {
 		model.change( writer => {
 			writer.setAttribute( 'uploadStatus', 'uploading', image );
 			writer.setAttribute( 'uploadId', loader.id, image );
-			writer.setAttribute( 'src', 'image.png', image );
+			writer.setAttribute( 'src', 'assets/sample.png', image );
 		} );
 
 		expect( _getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-				'<img src="image.png"></img>' +
+				'<img src="assets/sample.png"></img>' +
 				'<div class="ck-progress-bar"></div>' +
 			'</figure>]'
 		);
@@ -313,7 +313,7 @@ describe( 'ImageUploadProgress', () => {
 				try {
 					expect( _getViewData( view ) ).to.equal(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="image.png"></img>' +
+							'<img src="assets/sample.png"></img>' +
 							'<div class="ck-image-upload-complete-icon"></div>' +
 						'</span>}foo</p>'
 					);
@@ -322,7 +322,7 @@ describe( 'ImageUploadProgress', () => {
 
 					expect( _getViewData( view ) ).to.equal(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="image.png"></img>' +
+							'<img src="assets/sample.png"></img>' +
 						'</span>}foo</p>'
 					);
 
@@ -332,7 +332,7 @@ describe( 'ImageUploadProgress', () => {
 				}
 			}, { priority: 'lowest' } );
 
-			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
+			loader.file.then( () => adapterMock.mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
