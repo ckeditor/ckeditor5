@@ -4,7 +4,6 @@ packages:
 onlyBuiltDependencies:
   - '@ckeditor/ckeditor5-dev-tests'
   - '@ckeditor/ckeditor5-mermaid'
-  - '@ocular-d/vale-bin'
   - '@parcel/watcher'
   - '@swc/core'
   - core-js
@@ -13,7 +12,7 @@ onlyBuiltDependencies:
   - puppeteer
   - sharp
 
-# This section must be synchronized with `ckeditor/ckeditor5`.
+# This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
   markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
   hexo-render-pug>pug: ^3.0.3
