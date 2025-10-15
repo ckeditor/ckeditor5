@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
+  markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
   hexo-render-pug>pug: ^3.0.3
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
@@ -5947,6 +5947,9 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@inquirer/prompts': '>= 3 < 8'
+
+  '@maboloshi/markdown-it-toc@1.1.1':
+    resolution: {integrity: sha512-D5SLcPa4BmHE3LZ5zuyCchwL4nVMlnndNWcq8VV/ubrpEUm1KY1U/X3scWEzcG4KuwwpDgUyAkig26CTYXIyRQ==}
 
   '@mermaid-js/parser@0.6.3':
     resolution: {integrity: sha512-lnjOhe7zyHjc+If7yT4zoedx2vo4sHaTmtkl1+or8BRTnCtDmcTpAjpzDSfCZrshM5bCoz0GyidzadJAH1xobA==}
@@ -14292,6 +14295,8 @@ snapshots:
       '@inquirer/prompts': 7.8.6(@types/node@24.6.2)
       '@inquirer/type': 1.5.5
 
+  '@maboloshi/markdown-it-toc@1.1.1': {}
+
   '@mermaid-js/parser@0.6.3':
     dependencies:
       langium: 3.3.1
@@ -17783,7 +17788,7 @@ snapshots:
       markdown-it-mark: 3.0.1
       markdown-it-sub: 1.0.0
       markdown-it-sup: 1.0.0
-      markdown-it-toc: link:@maboloshi/markdown-it-toc@1.1.1
+      markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
       uslug: 1.0.4
 
   hexo-util@3.3.0:
