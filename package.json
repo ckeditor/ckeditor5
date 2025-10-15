@@ -108,8 +108,6 @@
     "docs:content-styles": "node -e \"import( './scripts/docs/build-content-styles.mjs' ).then( m => m.default() );\"",
     "docs:serve": "ws --directory ./build/docs/ --compress --https --port 8080",
     "docs:verify": "node ./scripts/web-crawler/index.mjs --docs",
-    "docs:lint": "node scripts/vale/vale.mjs",
-    "docs:vale": "vale",
     "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
     "translations:validate": "node ./scripts/translations/synchronize.mjs --validate-only",
     "translations:move": "node ./scripts/translations/move.mjs",
