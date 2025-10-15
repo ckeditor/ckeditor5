@@ -110,9 +110,6 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
-      ini:
-        specifier: ^5.0.0
-        version: 5.0.0
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
