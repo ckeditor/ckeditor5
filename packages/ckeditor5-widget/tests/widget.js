@@ -1762,6 +1762,12 @@ describe( 'Widget', () => {
 					isSelectable: true
 				} );
 
+				model.schema.register( 'tableCellLimited', {
+					allowIn: 'tableCell',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
 				editor.conversion.for( 'downcast' )
 					.elementToElement( {
 						model: 'table',
@@ -1774,6 +1780,10 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'tableCell',
 						view: ( modelItem, { writer } ) => writer.createEditableElement( 'div', { contenteditable: true } )
+					} )
+					.elementToElement( {
+						model: 'tableCellLimited',
+						view: 'div'
 					} );
 
 				model.schema.extend( '$text', { allowAttributes: 'bold' } );
@@ -1944,6 +1954,40 @@ describe( 'Widget', () => {
 							'</tableCell>' +
 							'<tableCell>' +
 								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to a next editable with limit element inside',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>[]a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>b</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>[b]</tableCellLimited>' +
 							'</tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -2132,13 +2176,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection after widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					keyCodes.tab,
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo</paragraph><widget></widget><paragraph>[]bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(
@@ -2396,6 +2440,40 @@ describe( 'Widget', () => {
 				);
 
 				test(
+					'should move selection to a next editable with limit element inside',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>[b]</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>[a]</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>b</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
 					'should move selection after a widget if there is no more editable elements in the widget',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -2574,13 +2652,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection before widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					{ keyCode: keyCodes.tab, shiftKey: true },
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo[]</paragraph><widget></widget><paragraph>bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(

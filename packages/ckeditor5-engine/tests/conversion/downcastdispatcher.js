@@ -934,16 +934,26 @@ describe( 'DowncastDispatcher', () => {
 				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
+			dispatcher.on( 'remove', ( evt, data ) => {
+				const log = evt.name + ':' + data.position.path + ':' + data.length;
+				loggedEvents.push( log );
+				expect( data ).to.have.property( 'reconversion' ).to.be.true;
+			} );
+
 			view.change( writer => {
 				dispatcher._convertReinsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
 			// Check the data passed to called events and the order of them.
 			expect( loggedEvents ).to.deep.equal( [
+				'remove:$text:0:3',
 				'insert:$text:foo:0:3',
 				'attribute:bold:true:$text:foo:0:3',
+				'remove:imageBlock:3:1',
 				'insert:imageBlock:3:4',
+				'remove:$text:4:3',
 				'insert:$text:bar:4:7',
+				'remove:paragraph:7:1',
 				'insert:paragraph:7:8',
 				'attribute:class:nice:paragraph:7:8'
 			] );

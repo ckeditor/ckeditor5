@@ -164,7 +164,8 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		markers: MarkerCollection,
 		writer: ViewDowncastWriter
 	): void {
-		const conversionApi = this._createConversionApi( writer, differ.getRefreshedItems() );
+		const refreshedItems = differ.getRefreshedItems();
+		const conversionApi = this._createConversionApi( writer, refreshedItems );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
@@ -172,7 +173,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		// Let features modify the change list (for example to allow reconversion).
-		const changes = this._reduceChanges( differ.getChanges() );
+		const changes = this._reduceChanges( differ.getChanges(), refreshedItems );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -395,7 +396,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Fires re-insertion conversion (with a `reconversion` flag passed to `insert` events)
+	 * Fires re-insertion conversion (with a `reconversion` flag passed to `remove` and `insert` events)
 	 * of a range of elements (only elements on the range depth, without children).
 	 *
 	 * For each node in the range on its depth (without children), {@link #event:insert `insert` event} is fired.
@@ -415,6 +416,14 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
+			// For backward compatibility and handlers that does not recognize reconversion.
+			this.fire<DowncastRemoveEvent>(
+				`remove:${ data.item.is( 'element' ) ? data.item.name : '$text' }`,
+				{ position: data.range.start, length: data.item.offsetSize, reconversion: true },
+				conversionApi
+			);
+
+			// Reinsert the view element.
 			this._testAndFire( 'insert', { ...data, reconversion: true }, conversionApi );
 		}
 	}
@@ -499,8 +508,17 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @fires reduceChanges
 	 */
-	private _reduceChanges( changes: Iterable<DifferItem> ): Iterable<DifferItem | DifferItemReinsert> {
-		const data: { changes: Iterable<DifferItem | DifferItemReinsert> } = { changes };
+	private _reduceChanges(
+		changes: Iterable<DifferItem>,
+		refreshedItems: Set<ModelItem>
+	): Iterable<DifferItem | DifferItemReinsert> {
+		const data: {
+			changes: Iterable<DifferItem | DifferItemReinsert>;
+			refreshedItems: Set<ModelItem>;
+		} = {
+			changes,
+			refreshedItems
+		};
 
 		this.fire<DowncastReduceChangesEvent>( 'reduceChanges', data );
 
@@ -695,6 +713,11 @@ export type DowncastReduceChangesEventData = {
 	 * A buffered changes to get reduced.
 	 */
 	changes: Iterable<DifferItem | DifferItemReinsert>;
+
+	/**
+	 * Set of items marked for rebuild without reusing view nodes.
+	 */
+	refreshedItems: Set<ModelItem>;
 };
 
 export type DowncastDispatcherEventMap<TItem = ModelItem> = {
@@ -706,6 +729,7 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	remove: {
 		position: ModelPosition;
 		length: number;
+		reconversion?: boolean;
 	};
 	attribute: {
 		item: TItem;
