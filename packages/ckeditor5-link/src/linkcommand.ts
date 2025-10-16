@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { ModelLivePosition, type ModelRange, type ModelItem } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, type ModelRange, type ModelItem, type ModelTextProxy } from 'ckeditor5/src/engine.js';
 
 import { AutomaticLinkDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -201,18 +201,29 @@ export class LinkCommand extends Command {
 
 				// Only if needed.
 				if ( newText != linkText ) {
+					const fragment = writer.createDocumentFragment();
+
+					for ( const item of range.getItems() ) {
+						// `extractTextFromLinkRange()` called above guarantees that we operate only on text proxies here.
+						const text = item as ModelTextProxy;
+
+						writer.append( writer.createText( text.data, text.getAttributes() ), fragment );
+					}
+
+					const fragRange = writer.createRangeIn( fragment );
+
 					const changes = findChanges( linkText, newText );
 					let insertsLength = 0;
 
 					for ( const { offset, actual, expected } of changes ) {
 						const updatedOffset = offset + insertsLength;
 						const subRange = writer.createRange(
-							range.start.getShiftedBy( updatedOffset ),
-							range.start.getShiftedBy( updatedOffset + actual.length )
+							fragRange.start.getShiftedBy( updatedOffset ),
+							fragRange.start.getShiftedBy( updatedOffset + actual.length )
 						);
 
 						// Collect formatting attributes from replaced text.
-						const textNode = getLinkPartTextNode( subRange, range )!;
+						const textNode = getLinkPartTextNode( subRange, fragRange )!;
 						const attributes = textNode.getAttributes();
 						const formattingAttributes = Array
 							.from( attributes )
@@ -225,11 +236,14 @@ export class LinkCommand extends Command {
 						updateLinkAttributes( newTextNode );
 
 						// Replace text with formatting.
-						model.insertContent( newTextNode, subRange );
+						writer.remove( subRange );
+						writer.insert( newTextNode, subRange.start );
 
 						// Sum of all previous inserts.
 						insertsLength += expected.length;
 					}
+
+					model.insertContent( fragment, range );
 
 					return writer.createRange( range.start, range.start.getShiftedBy( newText.length ) );
 				}
