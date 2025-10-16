@@ -614,15 +614,18 @@ export class FullscreenAbstractEditorHandler {
 			// Change the look of the button to reflect the state of the left sidebar.
 			if ( leftSidebarContainer.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
 				this._showLeftSidebar();
+
+				// Enable automatic left sidebar toggling.
+				this._autoToggleLeftSidebar = true;
 			} else {
 				this._hideLeftSidebar();
+
+				// Disable automatic left sidebar toggling.
+				this._autoToggleLeftSidebar = false;
 			}
 
 			// Keep the focus in the editor whenever the button is clicked.
 			this._editor.editing.view.focus();
-
-			// Disable auto toggle left sidebar.
-			this._autoToggleLeftSidebar = false;
 		} );
 
 		button.render();
@@ -1060,10 +1063,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Hides the right sidebar. Works only if there is anything to hide.
 	 */
-	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
 	private _hideRightSidebar() {
-		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+		if ( this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.firstChild ) {
 			this._switchAnnotationsUI( 'narrowSidebar' );
 			this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.classList.add( 'ck-fullscreen__right-sidebar--collapsed' );
 		}
@@ -1072,10 +1073,8 @@ export class FullscreenAbstractEditorHandler {
 	/**
 	 * Shows the right sidebar. Works only if there is anything to show.
 	 */
-	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
 	private _showRightSidebar() {
-		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+		if ( this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.firstChild ) {
 			this._switchAnnotationsUI( 'wideSidebar' );
 			this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.classList.remove( 'ck-fullscreen__right-sidebar--collapsed' );
 		}
