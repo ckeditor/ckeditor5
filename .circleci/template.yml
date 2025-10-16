@@ -50,6 +50,9 @@ commands:
     steps:
       - install_ssh_keys_command
       - run:
+          name: Running the correct branch
+          command: echo "Running the correct branch"
+      - run:
           name: Disable Corepack
           command: sudo corepack disable
       - run:
