@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2025-09-30
+modified_at: 2025-10-16
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,26 @@ modified_at: 2025-09-30
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.1.0
+
+Released on 16 October, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.1.0))
+
+This release introduces a minor stability update, featuring focused fixes and UX improvements.
+
+### Minor breaking changes in this release
+
+<info-box note>
+Breaking changes in CKEditor AI are allowed in the LTS Edition. {@link getting-started/setup/using-lts-edition#features-excluded-from-the-no-breaking-changes-guarantee-v47x Learn more}.
+</info-box>
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified CSS for the CKEditor AI integration in a sidebar mode (`config.ai.container.type: 'sidebar'`) by removing default layout constraints:
+
+  * Removed the default `min-height` from `.ck-ai-chat`,
+  * Removed the default `height` from `.ck-tabs`,
+  * Removed the default `width` from `.ck-ai-tabs`.
+
+  Also, the `--ck-tabs-panels-container-width` custom property has been removed from the codebase.
 
 ## Update to CKEditor&nbsp;5 v47.0.0
 
