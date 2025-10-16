@@ -14,7 +14,7 @@ onlyBuiltDependencies:
 
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
-  markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
+  markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
   hexo-render-pug>pug: ^3.0.3
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
