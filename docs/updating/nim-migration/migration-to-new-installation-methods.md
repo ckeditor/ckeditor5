@@ -322,26 +322,33 @@ What we sunset on this date:
 2. No more new versions of predefined builds packages are published to npm.
 5. We updated our environment to target ES2022, thus dropping the support for webpack 4.
 
+See the {@link updating/nim-migration/predefined-builds migration guide}.
+
 ### Deprecation of the custom builds
 
-The setup method which was “webpack-first”, in which you imported from specific packages from `src` folder, will be supported until **the end of 2025**.
+The setup method which was “webpack-first”, in which you imported from specific packages from `src` folder, will be supported until **the end of Q1 (March), 2026**.
 
 What we will sunset on this date:
 
 1. The documentation for the custom builds will be removed.
-3. New versions of npm packages published after this date will not have the `src` directory. It will not be possible to import files from those destinations, as `dist` will become the main folder.
+3. New npm package versions will no longer include the `src` directory. Instead, the `dist` directory will become the primary entry point for importing files, and all imports will happen through the package’s index.
 4. Deprecation of `@ckeditor/ckeditor5-dev-translations` package, as it will not be needed anymore.
+5. Still to be decided, but we may deprecate loading translations from the `CKEDITOR_TRANSLATIONS` global, as new installation methods enable and promote doing it through the editor’s configuration.
+
+See the {@link updating/nim-migration/customized-builds migration guide}.
 
 ### Deprecation of DLLs
 
 This is an advanced setup method that we provided, that was used to dynamically create the editor and its configuration on the browser side. As this is now provided out-of-the-box with our browser builds, this method will also be deprecated. As DLLs are used in complex CMSes, this deprecation timeline is significantly longer.
 
-The DLLs will be supported until **the end of 2025**.
+The DLLs will be supported until **the end of Q1 (March), 2026**.
 
 What we will sunset on this date:
 
 1. The documentation for DLLs will be removed.
-2. New versions of npm packages published after this date will not have `build` directory. It will not be possible to import files from those destinations.
+2. New versions of npm packages published after this date will not have `build` directory.
+
+See the {@link updating/nim-migration/dll-builds migration guide}.
 
 <info-box>
 	We have an [active GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779) which goes into details, and also documents improvements we planned for new installation methods.
