@@ -195,13 +195,6 @@ export {
 export { ModelTypeCheckable } from './model/typecheckable.js';
 export { ModelWriter } from './model/writer.js';
 
-// Model utils.
-export {
-	autoParagraphEmptyRoots,
-	isParagraphable,
-	wrapInParagraph
-} from './model/utils/autoparagraphing.js';
-
 // Model Events.
 export type { ModelDocumentChangeEvent } from './model/document.js';
 export type { ModelDocumentSelectionChangeEvent } from './model/documentselection.js';
