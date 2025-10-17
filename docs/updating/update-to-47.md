@@ -23,7 +23,7 @@ This release introduces a minor stability update, featuring focused fixes and UX
 ### Minor breaking changes in this release
 
 <info-box note>
-Breaking changes in CKEditor AI are allowed in the LTS Edition. {@link getting-started/setup/using-lts-edition#features-excluded-from-the-no-breaking-changes-guarantee-v47x Learn more}.
+Breaking changes in CKEditor AI are permitted during the Active phase of an LTS release. {@link getting-started/setup/using-lts-edition#features-excluded-from-the-no-breaking-changes-guarantee-v47x Learn more}.
 </info-box>
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified CSS for the CKEditor AI integration in a sidebar mode (`config.ai.container.type: 'sidebar'`) by removing default layout constraints:
