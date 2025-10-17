@@ -19,6 +19,11 @@ validateLicenseFiles( {
 	fix,
 	authorDisclaimerCallback,
 	additionalCopyrights: [ {
+		packageName: 'ckeditor5-ckbox',
+		dependencies: [
+			{ license: 'MIT', name: 'blurhash', copyright: 'Copyright (c) Wolt Enterprises.' }
+		]
+	}, {
 		packageName: 'ckeditor5-emoji',
 		dependencies: [
 			{ license: 'MIT', name: 'emojibase-data', copyright: 'Copyright (c) 2017-2019 Miles Johnson.' },
