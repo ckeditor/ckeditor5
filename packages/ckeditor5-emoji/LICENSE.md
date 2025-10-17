@@ -18,8 +18,10 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
-* es-toolkit - Copyright (c) 2024 Viva Republica, Inc
-* fuzzysort - Copyright (c) 2018 Stephen Kamenar
+* emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* fuzzysort - Copyright (c) 2018 Stephen Kamenar.
+* is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 
 Trademarks
 ----------

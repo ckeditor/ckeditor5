@@ -17,7 +17,19 @@ validateLicenseFiles( {
 	commonFeatureName: 'CKEditor',
 	mainPackageName: 'ckeditor5',
 	fix,
-	authorDisclaimerCallback
+	authorDisclaimerCallback,
+	additionalCopyrights: [ {
+		packageName: 'ckeditor5-emoji',
+		dependencies: [
+			{ license: 'MIT', name: 'emojibase-data', copyright: 'Copyright (c) 2017-2019 Miles Johnson.' },
+			{ license: 'MIT', name: 'is-emoji-supported', copyright: 'Copyright (c) 2016-2020 Koala Interactive, Inc.' }
+		]
+	}, {
+		packageName: 'ckeditor5-link',
+		dependencies: [
+			{ license: 'MIT', name: 'Regular Expression for URL validation', copyright: 'Copyright (c) 2010-2018 Diego Perini.' }
+		]
+	} ]
 } ).then( exitCode => {
 	process.exit( exitCode );
 } );
