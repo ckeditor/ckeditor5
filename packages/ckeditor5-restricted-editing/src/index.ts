@@ -21,6 +21,10 @@ export {
 	type RestrictedEditingModeNavigationDirection
 } from './restrictededitingmodenavigationcommand.js';
 
+export {
+	RestrictedEditingExceptionBlockCommand
+} from './restrictededitingexceptionblockcommand.js';
+
 export { StandardEditingMode } from './standardeditingmode.js';
 export { StandardEditingModeEditing } from './standardeditingmodeediting.js';
 export { StandardEditingModeUI } from './standardeditingmodeui.js';
