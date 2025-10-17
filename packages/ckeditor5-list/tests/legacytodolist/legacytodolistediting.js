@@ -1160,6 +1160,10 @@ describe( 'LegacyTodoListEditing', () => {
 				return VirtualTestEditor
 					.create( {
 						language: 'ar',
+						translations: [ { ar: {
+							dictionary: [],
+							getPluralForm: sinon.spy()
+						} } ],
 						plugins: [ Paragraph, LegacyTodoListEditing, Typing, BoldEditing, BlockQuoteEditing ]
 					} )
 					.then( newEditor => {
