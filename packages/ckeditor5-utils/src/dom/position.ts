@@ -194,7 +194,7 @@ function getVisibleViewportIntersectionRect( source: RectSource, viewportRect: R
 /**
  * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
  */
-function getConstrainedViewportRect( viewportOffsetConfig: DomOptimalPositionOptions[ 'viewportOffsetConfig' ] ): Rect {
+export function getConstrainedViewportRect( viewportOffsetConfig: DomOptimalPositionOptions[ 'viewportOffsetConfig' ] ): Rect {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
 	const viewportRect = new Rect( global.window );
@@ -203,6 +203,9 @@ function getConstrainedViewportRect( viewportOffsetConfig: DomOptimalPositionOpt
 	viewportRect.height -= viewportOffsetConfig.top!;
 	viewportRect.bottom -= viewportOffsetConfig.bottom!;
 	viewportRect.height -= viewportOffsetConfig.bottom!;
+	viewportRect.left += viewportOffsetConfig.left!;
+	viewportRect.right -= viewportOffsetConfig.right!;
+	viewportRect.width -= viewportOffsetConfig.left! + viewportOffsetConfig.right!;
 
 	return viewportRect;
 }

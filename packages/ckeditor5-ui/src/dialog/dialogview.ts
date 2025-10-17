@@ -11,6 +11,7 @@ import {
 	KeystrokeHandler,
 	FocusTracker,
 	Rect,
+	getConstrainedViewportRect,
 	global,
 	toUnit,
 	type EventInfo,
@@ -647,8 +648,6 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 
 	/**
 	 * Returns a viewport `Rect` shrunk by the viewport offset config from all sides.
-	 *
-	 * TODO: This is a duplicate from position.ts module. It should either be exported there or land somewhere in utils.
 	 */
 	private _getViewportRect(): Rect {
 		const viewportRect = new Rect( global.window );
@@ -658,23 +657,7 @@ export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) imple
 			return viewportRect;
 		}
 
-		const viewportOffset = {
-			top: 0,
-			bottom: 0,
-			left: 0,
-			right: 0,
-			...this._getViewportOffset()
-		};
-
-		viewportRect.top += viewportOffset.top!;
-		viewportRect.height -= viewportOffset.top!;
-		viewportRect.bottom -= viewportOffset.bottom!;
-		viewportRect.height -= viewportOffset.bottom!;
-		viewportRect.left += viewportOffset.left!;
-		viewportRect.right -= viewportOffset.right!;
-		viewportRect.width -= viewportOffset.left! + viewportOffset.right!;
-
-		return viewportRect;
+		return getConstrainedViewportRect( this._getViewportOffset() );
 	}
 
 	/**

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { getOptimalPosition } from '../../src/dom/position.js';
+import { getOptimalPosition, getConstrainedViewportRect } from '../../src/dom/position.js';
 import { Rect } from '../../src/dom/rect.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -903,6 +903,46 @@ describe( 'getOptimalPosition()', () => {
 			element.remove();
 			parentWithOverflow.remove();
 		} );
+	} );
+} );
+
+describe( 'getConstrainedViewportRect()', () => {
+	beforeEach( () => {
+		stubWindow( {
+			innerWidth: 10000,
+			innerHeight: 10000,
+			scrollX: 0,
+			scrollY: 0
+		} );
+	} );
+
+	it( 'should return viewport rect', () => {
+		const result = getConstrainedViewportRect();
+
+		expect( result.top ).to.equal( 0 );
+		expect( result.left ).to.equal( 0 );
+		expect( result.width ).to.equal( 10000 );
+		expect( result.height ).to.equal( 10000 );
+		expect( result.right ).to.equal( 10000 );
+		expect( result.bottom ).to.equal( 10000 );
+	} );
+
+	it( 'should accept viewport offsets', () => {
+		const viewportOffsetConfig = {
+			top: 50,
+			left: 60,
+			bottom: 70,
+			right: 80
+		};
+
+		const result = getConstrainedViewportRect( viewportOffsetConfig );
+
+		expect( result.top ).to.equal( 50 );
+		expect( result.left ).to.equal( 60 );
+		expect( result.width ).to.equal( 9860 );
+		expect( result.height ).to.equal( 9880 );
+		expect( result.right ).to.equal( 9920 );
+		expect( result.bottom ).to.equal( 9930 );
 	} );
 } );
 
