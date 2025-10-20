@@ -356,7 +356,7 @@ export class DragDrop extends Plugin {
 
 			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 
-			const { targetRange, hasDropMarker } = dragDropTarget.updateDropMarker(
+			const targetRange = dragDropTarget.updateDropMarker(
 				data.target,
 				data.targetRanges,
 				clientX,
@@ -365,9 +365,8 @@ export class DragDrop extends Plugin {
 				this._draggedRange
 			);
 
-			// Do not drop if target place where the drop marker is not shown.
-			// This can happen if dropping over non-editable place.
-			if ( targetRange && !hasDropMarker ) {
+			// Do not allow dropping if there is no valid target range.
+			if ( targetRange && !editor.model.canEditAt( targetRange ) ) {
 				data.dataTransfer.dropEffect = 'none';
 				return;
 			}
