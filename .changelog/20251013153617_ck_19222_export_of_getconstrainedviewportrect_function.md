@@ -10,4 +10,4 @@ closes:
 
 ---
 
-Export of `getConstrainedViewportRect` function that returns viewport `Rect`.
+Exposed a utility function `getConstrainedViewportRect()`, which returns the bounds of the visible viewport.
