@@ -124,6 +124,7 @@ export class DragDropTarget extends Plugin {
 	/**
 	 * Finds the drop target range and updates the drop marker.
 	 *
+	 * @return The updated drop target range or null if no valid range was found.
 	 * @internal
 	 */
 	public updateDropMarker(
@@ -154,13 +155,13 @@ export class DragDropTarget extends Plugin {
 		if ( draggedRange && draggedRange.containsRange( targetRange ) ) {
 			// Target range is inside the dragged range.
 			this.removeDropMarker();
-			return targetRange;
+			return null;
 		}
 
 		if ( targetRange && !this.editor.model.canEditAt( targetRange ) ) {
 			// Do not show drop marker if target place is not editable.
 			this.removeDropMarker();
-			return targetRange;
+			return null;
 		}
 
 		this._updateDropMarkerThrottled( targetRange );
