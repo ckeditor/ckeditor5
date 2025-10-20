@@ -133,7 +133,7 @@ export class DragDropTarget extends Plugin {
 		clientY: number,
 		blockMode: boolean,
 		draggedRange: ModelLiveRange | null
-	): void {
+	): { targetRange: ModelRange | null; hasDropMarker: boolean } {
 		this.removeDropMarkerDelayed.cancel();
 
 		const targetRange = findDropTargetRange(
@@ -148,15 +148,37 @@ export class DragDropTarget extends Plugin {
 
 		/* istanbul ignore next -- @preserve */
 		if ( !targetRange ) {
-			return;
+			return {
+				targetRange: null,
+				hasDropMarker: false
+			};
 		}
 
 		if ( draggedRange && draggedRange.containsRange( targetRange ) ) {
 			// Target range is inside the dragged range.
-			return this.removeDropMarker();
+			this.removeDropMarker();
+
+			return {
+				targetRange,
+				hasDropMarker: false
+			};
+		}
+
+		if ( targetRange && !this.editor.model.canEditAt( targetRange ) ) {
+			// Do not show drop marker if target place is not editable.
+			this.removeDropMarker();
+
+			return {
+				targetRange,
+				hasDropMarker: false
+			};
 		}
 
 		this._updateDropMarkerThrottled( targetRange );
+		return {
+			targetRange,
+			hasDropMarker: true
+		};
 	}
 
 	/**
