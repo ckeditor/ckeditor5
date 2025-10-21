@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { Matcher, type UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import { Matcher, type ModelElement, type UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
 import { RestrictedEditingExceptionBlockCommand } from './restrictededitingexceptionblockcommand.js';
@@ -66,6 +66,50 @@ export class StandardEditingModeEditing extends Plugin {
 				}
 			}
 		}, 'restrictedEditingException' );
+
+		// Post-fixer to ensure proper structure.
+		editor.model.document.registerPostFixer( writer => {
+			const changes = editor.model.document.differ.getChanges();
+			const unwrap = new Set<ModelElement>();
+			const remove = new Set<ModelElement>();
+
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' && entry.name != '$text' ) {
+					for ( const child of writer.createRangeOn( entry.position.nodeAfter! ).getItems() ) {
+						if ( !child.is( 'element', 'restrictedEditingException' ) ) {
+							continue;
+						}
+
+						// Make sure that block exception is not nested or added in invalid place.
+						if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
+							unwrap.add( child );
+						} else if ( child.isEmpty ) {
+							remove.add( child );
+						}
+					}
+				} else if ( entry.type == 'remove' ) {
+					const parent = entry.position.parent;
+
+					if ( parent.is( 'element', 'restrictedEditingException' ) && parent.isEmpty ) {
+						remove.add( parent );
+					}
+				}
+			}
+
+			let changed = false;
+
+			for ( const child of unwrap ) {
+				writer.unwrap( child );
+				changed = true;
+			}
+
+			for ( const child of remove ) {
+				writer.remove( child );
+				changed = true;
+			}
+
+			return changed;
+		} );
 
 		editor.conversion.for( 'upcast' )
 			.elementToAttribute( {
