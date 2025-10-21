@@ -155,6 +155,7 @@ export class DragDropTarget extends Plugin {
 		if ( draggedRange && draggedRange.containsRange( targetRange ) ) {
 			// Target range is inside the dragged range.
 			this.removeDropMarker();
+
 			return null;
 		}
 
