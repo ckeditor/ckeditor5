@@ -6,7 +6,6 @@ settings:
 
 overrides:
   markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
-  hexo-render-pug>pug: ^3.0.3
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
 
@@ -174,8 +173,8 @@ importers:
         specifier: ^8.33.0
         version: 8.45.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       umberto:
-        specifier: ^8.0.3
-        version: 8.3.2(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^8.3.4
+        version: 8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -7950,10 +7949,6 @@ packages:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
 
-  cuid@2.1.8:
-    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
-    deprecated: Cuid and other k-sortable and non-cryptographic ids (Ulid, ObjectId, KSUID, all UUIDs) are all insecure. Use @paralleldrive/cuid2 instead.
-
   current-module-paths@1.1.2:
     resolution: {integrity: sha512-H4s4arcLx/ugbu1XkkgSvcUZax0L6tXUqnppGniQb8l5VjUKGHoayXE5RiriiPhYDd+kjZnaok1Uig13PKtKYQ==}
     engines: {node: '>=12.17'}
@@ -8712,6 +8707,9 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
+  fast-text-table@1.0.1:
+    resolution: {integrity: sha512-KUwE3MizTzXwhrvTTEpWbug1ngV1zfjwzdxSkeWYGUoVGaaQoid+jxgg4zm4LB+OrtnD+X2xJFq7DCO3pc3fdQ==}
+
   fast-uri@3.1.0:
     resolution: {integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==}
 
@@ -9121,6 +9119,10 @@ packages:
     resolution: {integrity: sha512-Q92zQ5PlVDouvSWFLXQoFSTLIUIODikUJs2BfAXQglyOEjN1dOQn1Z5Nimk/7GHof17R5h/uObCQLnZAjzI2tg==}
     engines: {node: '>=14'}
 
+  hexo-fs@5.0.0:
+    resolution: {integrity: sha512-oBkg1QgXyb4JxipaH+yCV/7E7XOUASTK6x1pocWvLw6U2mB6VfLENgYg61ft9Qn6JCiKSzs7FU4vyTUy6gIPvQ==}
+    engines: {node: '>=18'}
+
   hexo-generator-archive@2.0.0:
     resolution: {integrity: sha512-KikJk7dGFbtNHOgqtLFGf5T/S8n1paGp+Gy0KfVDz+HKYhGbXOouyiZkmc3O9KrYt6ja14rmkMhq7KKGtvfehw==}
     engines: {node: '>=14'}
@@ -9149,19 +9151,20 @@ packages:
     resolution: {integrity: sha512-8oo1iozloZo7TojPVYg4IxL3SJKCBdSJ908fTlIxIK7TWJIKdYnQlW31+12DBJ0NhVZA/lZisPObGF08wT8fKw==}
     engines: {node: '>=14'}
 
-  hexo-render-pug@2.1.4:
-    resolution: {integrity: sha512-i5o+PqOf/hUU4B3ffQwD0egADgMwsU4vGKSM+LoUSlAhSDO4srOj8owlGAA+Vr76/tmNUR7BClSX8tSyEAHQuw==}
-
   hexo-renderer-markdown-it-plus@1.0.6:
     resolution: {integrity: sha512-nuidp4IvyHC9G3hnRO4bY7BfBBZBhnOEfQjfk6AJI+qsy+BlaUwDvemuARFTD3APPIO78YamAv5mweo5XMRwfA==}
+
+  hexo-renderer-pug@3.0.0:
+    resolution: {integrity: sha512-PmbLx6VkNv+mPLOe97OC4F8iTzTuj665dSYN7bZKArd4M/q7gb2tNs29VGuAOC50i9tvWY2f+tPQimf0GZ9Hyw==}
+    engines: {node: '>=12.4.0'}
 
   hexo-util@3.3.0:
     resolution: {integrity: sha512-YvGngXijE2muEh5L/VI4Fmjqb+/yAkmY+VuyhWVoRwQu1X7bmWodsfYRXX7CUYhi5LqsvH8FAe/yBW1+f6ZX4Q==}
     engines: {node: '>=14'}
 
-  hexo@7.3.0:
-    resolution: {integrity: sha512-dOe8mzBKrvjubW5oBmyhcnQDpC+M2xmAMLae5K+o+SkHxyvAhShkS2VQZoTsOLIJKY6xilv7dzCjCvE7ol/NHQ==}
-    engines: {node: '>=14'}
+  hexo@8.0.0:
+    resolution: {integrity: sha512-GFNUICrDWvrBrhq4Oe2BUKg4UFJpaU0PjoAm5WIwf6O0gV52vPCGkGWQxH6AhOfJ1BEHm3hJALRl7RqOcgQP+A==}
+    engines: {node: '>=20.19.0'}
     hasBin: true
 
   highlight.js@11.11.1:
@@ -11879,6 +11882,7 @@ packages:
   sitemap@8.0.0:
     resolution: {integrity: sha512-+AbdxhM9kJsHtruUF39bwS/B0Fytw6Fr1o4ZAIAEqA6cke2xcoO2GleBw9Zw7nRzILVEgz7zBM5GiTJjie1G9A==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    deprecated: 'SECURITY: Multiple vulnerabilities fixed in 8.0.1 (XML injection, path traversal, command injection, protocol injection). Upgrade immediately: npm install sitemap@8.0.1'
     hasBin: true
 
   slack-notify@2.0.7:
@@ -12447,9 +12451,9 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@8.3.2:
-    resolution: {integrity: sha512-0jqSGzvhpmzF182UfH2FJtAdeJsl4tLN6fVPXJzpfW6PRHxxdOtfe2u0J3r27zK593Na0IgiULGOW792lYMIDQ==}
-    engines: {node: '>=22.0.0'}
+  umberto@8.3.4:
+    resolution: {integrity: sha512-1IpekoCWYCNl0cTeIPwa2fQcDdNrBI2wrLmATZvgeQOeVhhMBwsI9EM6cFfjlYzgAs3CEFh+2g0EglH6TdnWdg==}
+    engines: {node: '>=22.0.0', pnpm: '>=10.14.0', yarn: "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"}
 
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
@@ -12703,9 +12707,9 @@ packages:
     resolution: {integrity: sha512-e/FRLDVdZQWFrAzU6Hdvpm7D7m2ina833gIKLptQykRK49mmCYHLHq7UqjPDbxbKLZkTkW1rFqbengdE3sLfdw==}
     engines: {node: '>=12.17'}
 
-  warehouse@5.0.1:
-    resolution: {integrity: sha512-5BQEQP56bPY+cqocTho4syazuGgSoyKd0y3PsS2j8tGN10HH+CEfJSIY+KUw9D0k4jaVEFMXLz0KqCiUzTYb8A==}
-    engines: {node: '>=14'}
+  warehouse@6.0.0:
+    resolution: {integrity: sha512-eOlhyPp5HC951QVDgAeculpSxvfum4UZAbqXSzocqbdiziTseFJFYxmhsKqrQ3wrwgtzPGgkVN2rPL31YLQ0SA==}
+    engines: {node: '>=18'}
 
   watchpack@2.4.4:
     resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
@@ -16647,8 +16651,6 @@ snapshots:
     dependencies:
       css-tree: 2.2.1
 
-  cuid@2.1.8: {}
-
   current-module-paths@1.1.2: {}
 
   custom-event@1.0.1: {}
@@ -17560,6 +17562,8 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
+  fast-text-table@1.0.1: {}
+
   fast-uri@3.1.0: {}
 
   fastest-levenshtein@1.0.16: {}
@@ -18050,6 +18054,13 @@ snapshots:
       graceful-fs: 4.2.11
       hexo-util: 3.3.0
 
+  hexo-fs@5.0.0:
+    dependencies:
+      bluebird: 3.7.2
+      chokidar: 4.0.3
+      graceful-fs: 4.2.11
+      hexo-util: 3.3.0
+
   hexo-generator-archive@2.0.0:
     dependencies:
       hexo-pagination: 3.0.0
@@ -18076,10 +18087,6 @@ snapshots:
 
   hexo-pagination@3.0.0: {}
 
-  hexo-render-pug@2.1.4:
-    dependencies:
-      pug: 3.0.3
-
   hexo-renderer-markdown-it-plus@1.0.6:
     dependencies:
       '@iktakahiro/markdown-it-katex': 4.0.1
@@ -18097,6 +18104,10 @@ snapshots:
       markdown-it-toc: '@maboloshi/markdown-it-toc@1.1.1'
       uslug: 1.0.4
 
+  hexo-renderer-pug@3.0.0:
+    dependencies:
+      pug: 3.0.3
+
   hexo-util@3.3.0:
     dependencies:
       camel-case: 4.1.2
@@ -18107,14 +18118,15 @@ snapshots:
       prismjs: 1.30.0
       strip-indent: 3.0.0
 
-  hexo@7.3.0(chokidar@3.6.0):
+  hexo@8.0.0(chokidar@3.6.0):
     dependencies:
-      abbrev: 2.0.0
+      abbrev: 3.0.1
       archy: 1.0.0
       bluebird: 3.7.2
+      fast-text-table: 1.0.1
       hexo-cli: 4.3.2
       hexo-front-matter: 4.2.1
-      hexo-fs: 4.1.3
+      hexo-fs: 5.0.0
       hexo-i18n: 2.0.0
       hexo-log: 4.1.0
       hexo-util: 3.3.0
@@ -18127,12 +18139,10 @@ snapshots:
       nunjucks: 3.2.4(chokidar@3.6.0)
       picocolors: 1.1.1
       pretty-hrtime: 1.0.3
-      resolve: 1.22.10
-      strip-ansi: 6.0.1
-      text-table: 0.2.0
+      strip-ansi: 7.1.2
       tildify: 2.0.0
       titlecase: 1.1.3
-      warehouse: 5.0.1
+      warehouse: 6.0.0
     transitivePeerDependencies:
       - chokidar
 
@@ -22164,7 +22174,7 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@8.3.2(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
@@ -22175,13 +22185,13 @@ snapshots:
       fs-extra: 11.3.2
       fuse.js: 7.1.0
       glob: 11.0.3
-      hexo: 7.3.0(chokidar@3.6.0)
+      hexo: 8.0.0(chokidar@3.6.0)
       hexo-generator-archive: 2.0.0
       hexo-generator-category: 2.0.0
       hexo-generator-index: 4.0.0
       hexo-generator-tag: 2.0.0
-      hexo-render-pug: 2.1.4
       hexo-renderer-markdown-it-plus: 1.0.6
+      hexo-renderer-pug: 3.0.0
       htmlparser2: 10.0.0
       javascript-stringify: 2.1.0
       jquery: 3.7.1
@@ -22465,14 +22475,14 @@ snapshots:
 
   walk-back@5.1.1: {}
 
-  warehouse@5.0.1:
+  warehouse@6.0.0:
     dependencies:
       bluebird: 3.7.2
-      cuid: 2.1.8
       graceful-fs: 4.2.11
       hexo-log: 4.1.0
       is-plain-object: 5.0.0
       jsonparse: 1.3.1
+      nanoid: 3.3.11
       rfdc: 1.4.1
       through2: 4.0.2
 
