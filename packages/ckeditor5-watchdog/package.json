@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "46.1.1",
+  "version": "47.1.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -12,18 +12,18 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "46.1.1",
-    "@ckeditor/ckeditor5-editor-multi-root": "46.1.1",
-    "@ckeditor/ckeditor5-engine": "46.1.1",
-    "@ckeditor/ckeditor5-utils": "46.1.1",
+    "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "@ckeditor/ckeditor5-utils": "workspace:*",
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "46.1.1",
-    "@ckeditor/ckeditor5-clipboard": "46.1.1",
-    "@ckeditor/ckeditor5-editor-classic": "46.1.1",
-    "@ckeditor/ckeditor5-heading": "46.1.1",
-    "@ckeditor/ckeditor5-paragraph": "46.1.1",
+    "@ckeditor/ckeditor5-basic-styles": "workspace:*",
+    "@ckeditor/ckeditor5-clipboard": "workspace:*",
+    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
+    "@ckeditor/ckeditor5-heading": "workspace:*",
+    "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "typescript": "5.3.3"
   },
   "author": "CKSource (http://cksource.com/)",

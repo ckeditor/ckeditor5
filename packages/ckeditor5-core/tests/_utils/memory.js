@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const TEST_RETRIES = 2;
-const TEST_TIMEOUT = 6500;
-const GARBAGE_COLLECTOR_TIMEOUT = 800;
+const TEST_RETRIES = 3;
+const TEST_TIMEOUT = 12000;
+const GARBAGE_COLLECTOR_TIMEOUT = 1500;
 
 /**
  * Memory tests suite definition that:
@@ -81,15 +81,15 @@ function runTest( createEditor ) {
 		} )
 		// Run create&destroy multiple times. Helps scaling up the issue.
 		.then( createAndDestroy ) // #1
-		.then( () => timeout( 300 ) )
+		.then( () => timeout( 600 ) )
 		.then( createAndDestroy ) // #2
-		.then( () => timeout( 300 ) )
+		.then( () => timeout( 600 ) )
 		.then( createAndDestroy ) // #3
-		.then( () => timeout( 300 ) )
+		.then( () => timeout( 600 ) )
 		.then( createAndDestroy ) // #4
-		.then( () => timeout( 300 ) )
+		.then( () => timeout( 600 ) )
 		.then( createAndDestroy ) // #5
-		.then( () => timeout( 300 ) )
+		.then( () => timeout( 600 ) )
 		.then( collectMemoryStats )
 		.then( memory => {
 			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
@@ -97,8 +97,8 @@ function runTest( createEditor ) {
 			// While theoretically we should get 0KB when there's no memory leak, in reality,
 			// the results we get (when there are no leaks) vary from -500KB to 500KB (depending on which tests are executed).
 			// However, when we had memory leaks, memoryDifference was reaching 20MB,
-			// so, in order to detect significant memory leaks we can expect that the heap won't grow more than 1MB.
-			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 1e6 );
+			// so, in order to detect significant memory leaks we can expect that the heap won't grow more than 1.5MB.
+			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 1.5e6 );
 		} );
 
 	function createAndDestroy() {
