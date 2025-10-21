@@ -5,12 +5,13 @@
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getViewData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
+import { _getViewData, _getModelData, _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 
 import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js';
 import { RestrictedEditingExceptionCommand } from '../src/restrictededitingexceptioncommand.js';
+import { RestrictedEditingExceptionBlockCommand } from '../src/index.js';
 
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
@@ -48,19 +49,71 @@ describe( 'StandardEditingModeEditing', () => {
 		}
 	} );
 
-	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$text' ], 'restrictedEditingException' ) ).to.be.true;
+	describe( 'schema', () => {
+		it( 'should set proper schema rules for inline exception', () => {
+			expect( model.schema.checkAttribute( [ '$root', '$text' ], 'restrictedEditingException' ) ).to.be.true;
 
-		expect( model.schema.checkAttribute( [ '$block', '$text' ], 'restrictedEditingException' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'restrictedEditingException' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$block', '$text' ], 'restrictedEditingException' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'restrictedEditingException' ) ).to.be.true;
 
-		expect( model.schema.checkAttribute( [ '$block' ], 'restrictedEditingException' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$block' ], 'restrictedEditingException' ) ).to.be.false;
+		} );
+
+		it( 'should set proper schema rules for block exception', () => {
+			expect( model.schema.checkChild( '$root', 'restrictedEditingException' ) ).to.be.true;
+			expect( model.schema.checkChild( '$container', 'restrictedEditingException' ) ).to.be.true;
+
+			expect( model.schema.checkChild( 'restrictedEditingException', '$block' ) ).to.be.true;
+			expect( model.schema.checkChild( 'restrictedEditingException', '$container' ) ).to.be.true;
+		} );
+
+		it( 'should not allow nesting of block exceptions', () => {
+			expect( model.schema.checkChild(
+				[ '$root', 'restrictedEditingException' ],
+				'restrictedEditingException'
+			) ).to.be.false;
+
+			expect( model.schema.checkChild(
+				[ '$root', 'restrictedEditingException', '$container', 'paragraph' ],
+				'restrictedEditingException'
+			) ).to.be.false;
+		} );
+
+		it( 'should not allow inline exceptions inside block exceptions', () => {
+			expect( model.schema.checkAttribute(
+				'restrictedEditingException',
+				'restrictedEditingException'
+			) ).to.be.false;
+
+			expect( model.schema.checkAttribute(
+				[ 'restrictedEditingException', '$text' ],
+				'restrictedEditingException'
+			) ).to.be.false;
+
+			expect( model.schema.checkAttribute(
+				[ 'restrictedEditingException', 'paragraph', '$text' ],
+				'restrictedEditingException'
+			) ).to.be.false;
+
+			expect( model.schema.checkAttribute(
+				[ 'restrictedEditingException', '$container', 'paragraph', '$text' ],
+				'restrictedEditingException'
+			) ).to.be.false;
+		} );
 	} );
 
-	it( 'should register the command', () => {
-		const command = editor.commands.get( 'restrictedEditingException' );
+	describe( 'commands', () => {
+		it( 'should register the inline command', () => {
+			const command = editor.commands.get( 'restrictedEditingException' );
 
-		expect( command ).to.be.instanceof( RestrictedEditingExceptionCommand );
+			expect( command ).to.be.instanceof( RestrictedEditingExceptionCommand );
+		} );
+
+		it( 'should register the block command', () => {
+			const command = editor.commands.get( 'restrictedEditingExceptionBlock' );
+
+			expect( command ).to.be.instanceof( RestrictedEditingExceptionBlockCommand );
+		} );
 	} );
 
 	describe( 'conversion', () => {
@@ -114,6 +167,24 @@ describe( 'StandardEditingModeEditing', () => {
 					'<object></object>'
 				);
 			} );
+
+			it( 'should upcast block exception', () => {
+				editor.setData(
+					'<p>foo</p>' +
+					'<div class="restricted-editing-exception">' +
+						'<p>bar</p>' +
+					'</div>' +
+					'<p>baz</p>'
+				);
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<restrictedEditingException>' +
+						'<paragraph>bar</paragraph>' +
+					'</restrictedEditingException>' +
+					'<paragraph>baz</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'downcast', () => {
@@ -152,6 +223,141 @@ describe( 'StandardEditingModeEditing', () => {
 				expect( editor.getData() ).to.equalMarkup( expectedView );
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
 			} );
+
+			it( 'should downcast block exception', () => {
+				const expectedView =
+					'<p>foo</p>' +
+					'<div class="restricted-editing-exception">' +
+						'<p>bar</p>' +
+					'</div>' +
+					'<p>baz</p>';
+
+				_setModelData( editor.model,
+					'<paragraph>foo</paragraph>' +
+					'<restrictedEditingException>' +
+						'<paragraph>bar</paragraph>' +
+					'</restrictedEditingException>' +
+					'<paragraph>baz</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equalMarkup( expectedView );
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
+			} );
+		} );
+	} );
+
+	describe( 'post-fixer', () => {
+		it( 'should unwrap nested block exceptions', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<restrictedEditingException>' +
+								'<paragraph>bar</paragraph>' +
+							'</restrictedEditingException>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				writer.wrap( writer.createRangeOn( model.document.getRoot().getChild( 1 ) ), 'restrictedEditingException' );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>bar</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should unwrap nested block exceptions when inserted as nested structure', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>abc[]</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				const content =
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<restrictedEditingException>' +
+									'<paragraph>bar</paragraph>' +
+								'</restrictedEditingException>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>';
+
+				const fragment = _parseModel( content, model.schema, {
+					context: [ '$clipboardHolder' ]
+				} );
+
+				writer.insert( fragment, model.document.getRoot().getChild( 1 ), 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>abc</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>bar</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should remove block exceptions - inserted empty', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				writer.insertElement( 'restrictedEditingException', model.document.getRoot(), 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should remove empty block exceptions - content removed', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>bar</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				writer.remove( model.document.getRoot().getChild( 1 ).getChild( 0 ) );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
 		} );
 	} );
 } );
