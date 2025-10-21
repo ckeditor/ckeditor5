@@ -162,6 +162,7 @@ export class DragDropTarget extends Plugin {
 		if ( targetRange && !this.editor.model.canEditAt( targetRange ) ) {
 			// Do not show drop marker if target place is not editable.
 			this.removeDropMarker();
+
 			return null;
 		}
 
