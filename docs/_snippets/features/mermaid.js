@@ -38,6 +38,7 @@ ClassicEditor
 			}
 		},
 		cloudServices: CS_CONFIG,
+		// A proper indentation is required for the Mermaid syntax to work.
 		initialData: `<h2>CKEditor timeline diagram</h2>
 <pre spellcheck="false"><code class="language-mermaid">timeline
 title History of CKEditor
