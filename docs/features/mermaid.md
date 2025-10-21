@@ -16,7 +16,7 @@ You can create flowcharts and diagrams in CKEditor&nbsp;5 thanks to the experime
 
 ## Demo
 
-The example below lets you test creating diagrams and flowcharts right during the content creation &ndash; no more screenshots that need to be re-created and re-uploaded each time something needs a change! You can also check out a live implementation in [GitHub Writer](https://ckeditor.com/blog/github-writer-now-available-with-mermaid-support/).
+The example below lets you test creating diagrams and flowcharts right during the content creation &ndash; no more screenshots that need to be re-created and re-uploaded each time something needs a change!
 
 {@snippet features/mermaid}
 
