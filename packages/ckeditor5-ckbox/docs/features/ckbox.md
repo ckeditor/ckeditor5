@@ -142,7 +142,7 @@ CKBox offers two primary methods for loading the library: using a Content Delive
 
 The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
 ```html
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
 
 When referencing the CKBox library via CDN, you must specify the version number (e.g. `{%CKBOX_VERSION%}` or `latest`).
