@@ -599,7 +599,7 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 					'<restrictedEditingException>' +
 						'<paragraph>abc</paragraph>' +
 					'</restrictedEditingException>' +
-						'<paragraph>c[]de</paragraph>' +
+					'<paragraph>c[]de</paragraph>' +
 					'<restrictedEditingException>' +
 						'<paragraph>fgh</paragraph>' +
 					'</restrictedEditingException>' +
@@ -612,6 +612,51 @@ describe( 'RestrictedEditingExceptionBlockCommand', () => {
 						'<p>abc</p>' +
 					'</div>' +
 					'<p>c{}de</p>' +
+					'<div class="restricted-editing-exception">' +
+						'<p>fgh</p>' +
+					'</div>' +
+					'<p>xx</p>'
+				);
+			} );
+
+			it( 'should unwrap even if deeply nested structure', () => {
+				_setModelData(
+					model,
+					'<paragraph>xx</paragraph>' +
+					'<restrictedEditingException>' +
+						'<paragraph>abc</paragraph>' +
+						'<blockQuote>' +
+							'<paragraph>c[]de</paragraph>' +
+						'</blockQuote>' +
+						'<paragraph>fgh</paragraph>' +
+					'</restrictedEditingException>' +
+					'<paragraph>xx</paragraph>'
+				);
+
+				editor.execute( 'restrictedEditingExceptionBlock' );
+
+				expect( _getModelData( model ) ).to.equal(
+					'<paragraph>xx</paragraph>' +
+					'<restrictedEditingException>' +
+						'<paragraph>abc</paragraph>' +
+					'</restrictedEditingException>' +
+					'<blockQuote>' +
+						'<paragraph>c[]de</paragraph>' +
+					'</blockQuote>' +
+					'<restrictedEditingException>' +
+						'<paragraph>fgh</paragraph>' +
+					'</restrictedEditingException>' +
+					'<paragraph>xx</paragraph>'
+				);
+
+				expect( _getViewData( editor.editing.view ) ).to.equal(
+					'<p>xx</p>' +
+					'<div class="restricted-editing-exception">' +
+						'<p>abc</p>' +
+					'</div>' +
+					'<blockquote>' +
+						'<p>c{}de</p>' +
+					'</blockquote>' +
 					'<div class="restricted-editing-exception">' +
 						'<p>fgh</p>' +
 					'</div>' +

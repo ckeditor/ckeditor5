@@ -49,7 +49,12 @@ export class RestrictedEditingExceptionBlockCommand extends Command {
 
 		model.change( writer => {
 			if ( !value ) {
-				this._removeException( writer, blocks.filter( findException ) );
+				const blocksToUnwrap = blocks.map( block => {
+					// Find blocks directly nested inside an exception.
+					return findExceptionContentBlock( block );
+				} ).filter( ( exception ): exception is ModelElement => !!exception );
+
+				this._removeException( writer, blocksToUnwrap );
 			} else {
 				const blocksToWrap = blocks.filter( block => {
 					// Already wrapped blocks needs to be considered while wrapping too
@@ -191,6 +196,20 @@ export class RestrictedEditingExceptionBlockCommand extends Command {
 
 function findException( elementOrPosition: ModelElement | ModelPosition ): ModelElement | ModelDocumentFragment | null {
 	return elementOrPosition.findAncestor( 'restrictedEditingException', { includeSelf: true } );
+}
+
+function findExceptionContentBlock( element: ModelElement ): ModelElement | null {
+	let node = element;
+
+	while ( node.parent ) {
+		if ( node.parent.name == 'restrictedEditingException' ) {
+			return node;
+		}
+
+		node = node.parent as ModelElement;
+	}
+
+	return null;
 }
 
 /**
