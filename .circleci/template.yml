@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   browser-tools: circleci/browser-tools@2.3.1
+  codecov: codecov/codecov@5.4.3
 
 # List of parameters are automatically inherited from `config.yml`.
 parameters:
@@ -82,7 +83,7 @@ commands:
           command: |
             #!/bin/bash
 
-            if [[ -z ${COVERALLS_REPO_TOKEN} ]];
+            if [[ -z ${CODECOV_TOKEN} ]];
             then
               circleci-agent step halt
             fi
@@ -129,6 +130,10 @@ jobs:
     steps:
       - checkout_command
       - bootstrap_repository_command
+      - run:
+          when: always
+          name: Execute tests for internal scripts
+          command: pnpm run test:scripts
       - run:
           when: always
           name: Validate versions of CKEditor 5 dependencies
@@ -180,15 +185,8 @@ jobs:
       - run:
           name: Merge the code coverage of the framework and features
           command: cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info
-      - run:
-          name: Preparing the environment variables
-          command: |
-            export COVERALLS_SERVICE_NAME="CKEditor 5 code coverage"
-            export COVERALLS_SERVICE_JOB_ID=$( CIRCLE_WORKFLOW_ID )
-            export COVERALLS_GIT_BRANCH=$( CIRCLE_BRANCH )
-      - run:
-          name: Upload the coverage to Coveralls
-          command: npx coveralls -v < .out/combined_lcov.info
+      - codecov/upload:
+          files: .out/combined_lcov.info
 
   cke5_trigger_release_process:
     docker:
