@@ -368,6 +368,7 @@ export class DragDrop extends Plugin {
 			// Do not allow dropping if there is no valid target range (e.g., dropping on non-editable place).
 			if ( !targetRange ) {
 				data.dataTransfer.dropEffect = 'none';
+
 				return;
 			}
 
