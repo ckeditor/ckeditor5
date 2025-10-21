@@ -359,5 +359,72 @@ describe( 'StandardEditingModeEditing', () => {
 				'<paragraph>baz</paragraph>'
 			);
 		} );
+
+		it( 'should remove nested inline exceptions from block exceptions', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>b[]ar</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				writer.insert(
+					writer.createText( '123', { restrictedEditingException: true } ),
+					model.document.selection.focus
+				);
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>b123ar</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should remove nested inline exceptions from block exceptions when inserted bigger structure', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>b[]ar</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				const content =
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a<$text restrictedEditingException="true">123</$text>z</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>';
+
+				const fragment = _parseModel( content, model.schema, {
+					context: [ '$clipboardHolder' ]
+				} );
+
+				writer.insert( fragment, model.document.getRoot().getChild( 1 ), 1 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>bar</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>a123z</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
 	} );
 } );

@@ -72,19 +72,27 @@ export class StandardEditingModeEditing extends Plugin {
 			const changes = editor.model.document.differ.getChanges();
 			const unwrap = new Set<ModelElement>();
 			const remove = new Set<ModelElement>();
+			let changed = false;
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name != '$text' ) {
-					for ( const child of writer.createRangeOn( entry.position.nodeAfter! ).getItems() ) {
-						if ( !child.is( 'element', 'restrictedEditingException' ) ) {
-							continue;
-						}
+				if ( entry.type == 'insert' ) {
+					const range = writer.createRange( entry.position, entry.position.getShiftedBy( entry.length ) );
 
-						// Make sure that block exception is not nested or added in invalid place.
-						if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
-							unwrap.add( child );
-						} else if ( child.isEmpty ) {
-							remove.add( child );
+					for ( const child of range.getItems() ) {
+						if ( child.is( 'element', 'restrictedEditingException' ) ) {
+							// Make sure that block exception is not nested or added in invalid place.
+							if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
+								unwrap.add( child );
+							} else if ( child.isEmpty ) {
+								remove.add( child );
+							}
+						} else if (
+							child.is( '$textProxy' ) &&
+							child.hasAttribute( 'restrictedEditingException' ) &&
+							!schema.checkAttribute( child, 'restrictedEditingException' )
+						) {
+							writer.removeAttribute( 'restrictedEditingException', child );
+							changed = true;
 						}
 					}
 				} else if ( entry.type == 'remove' ) {
@@ -95,8 +103,6 @@ export class StandardEditingModeEditing extends Plugin {
 					}
 				}
 			}
-
-			let changed = false;
 
 			for ( const child of unwrap ) {
 				writer.unwrap( child );
