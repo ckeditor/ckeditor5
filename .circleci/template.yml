@@ -118,9 +118,9 @@ jobs:
           command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
-          environment:
-            PUPPETEER_EXECUTABLE_PATH: "$(command -v google-chrome || command -v google-chrome-stable)"
-          command: bash scripts/check-manual-tests.sh -r ckeditor5-root
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
+            bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
     docker:
