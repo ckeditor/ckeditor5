@@ -1480,7 +1480,18 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowright, shiftKey: true },
 					{ keyCode: keyCodes.arrowright, shiftKey: true }
 				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
+				'[<widget></widget><paragraph>f]oo</paragraph>'
+			);
+
+			test(
+				'should work correctly with modifier key when selection starts before widget: right arrow + shift',
+				'<paragraph>fo[o</paragraph><widget></widget>]<paragraph>bar</paragraph>',
+				// Note: The first step is handled by the WidgetTypeAround plugin.
+				[
+					{ keyCode: keyCodes.arrowright, shiftKey: true },
+					{ keyCode: keyCodes.arrowright, shiftKey: true }
+				],
+				'<paragraph>fo[o</paragraph><widget></widget><paragraph>b]ar</paragraph>'
 			);
 
 			test(
@@ -1513,7 +1524,7 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowdown, shiftKey: true },
 					{ keyCode: keyCodes.arrowdown, shiftKey: true }
 				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
+				'[<widget></widget><paragraph>f]oo</paragraph>'
 			);
 
 			test(
@@ -1546,7 +1557,22 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowleft, shiftKey: true },
 					{ keyCode: keyCodes.arrowleft, shiftKey: true }
 				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
+				'<paragraph>fo[o</paragraph><widget></widget>]'
+			);
+
+			test(
+				'should work correctly with modifier key when selection starts after widget: left arrow + shift',
+				'<paragraph>foo</paragraph>[<widget></widget><paragraph>b]ar</paragraph>',
+				// Note: The first step is handled by the WidgetTypeAround plugin.
+				[
+					{ keyCode: keyCodes.arrowleft, shiftKey: true },
+					{ keyCode: keyCodes.arrowleft, shiftKey: true }
+				],
+				'<paragraph>fo[o</paragraph><widget></widget><paragraph>b]ar</paragraph>',
+				undefined,
+				undefined,
+				undefined,
+				{ lastRangeBackward: true }
 			);
 
 			test(
@@ -1579,7 +1605,7 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowup, shiftKey: true },
 					{ keyCode: keyCodes.arrowup, shiftKey: true }
 				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
+				'<paragraph>fo[o</paragraph><widget></widget>]'
 			);
 
 			test(
