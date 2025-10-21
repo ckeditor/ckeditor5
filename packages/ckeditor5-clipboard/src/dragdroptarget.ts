@@ -166,6 +166,7 @@ export class DragDropTarget extends Plugin {
 		}
 
 		this._updateDropMarkerThrottled( targetRange );
+
 		return targetRange;
 	}
 
