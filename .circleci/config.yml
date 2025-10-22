@@ -70,6 +70,8 @@ jobs:
           command: sudo npm i -g pnpm@^10
       - run:
           name: Install dependencies
+          environment:
+            PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
       - run:
           name: Generate a new configuration to check all packages in the repository

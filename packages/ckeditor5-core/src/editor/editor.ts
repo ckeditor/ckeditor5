@@ -999,6 +999,10 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			}
 
 			if ( reason == 'pluginNotAllowed' ) {
+				// It's safe to assume `name` exists because `pluginNotAllowed` must know a plugin name when checking the license.
+				const gluePluginName = name!.replace( /(Editing|UI)$/, '' );
+				const containsGluePlugin = this.plugins.has( gluePluginName );
+
 				/**
 				 * The plugin you are trying to use is not permitted under your current license.
 				 * Please check the available features on the
@@ -1008,7 +1012,9 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				 * @error license-key-plugin-not-allowed
 				 * @param {String} pluginName The plugin you tried to load.
 				 */
-				throw new CKEditorError( 'license-key-plugin-not-allowed', null, { pluginName: name } );
+				throw new CKEditorError( 'license-key-plugin-not-allowed', null, {
+					pluginName: containsGluePlugin ? gluePluginName : name
+				} );
 			}
 
 			if ( reason == 'featureNotAllowed' ) {
