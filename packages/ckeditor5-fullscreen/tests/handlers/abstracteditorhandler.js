@@ -829,8 +829,6 @@ describe( 'AbstractHandler', () => {
 				sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
 				sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
 
-				abstractHandler._autoToggleLeftSidebar = true;
-
 				const hideLeftSidebarStub = sinon.stub( abstractHandler, '_hideLeftSidebar' ).callsFake( () => {
 					sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
 				} );
@@ -849,8 +847,6 @@ describe( 'AbstractHandler', () => {
 
 				sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
 				sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
-
-				abstractHandler._autoToggleLeftSidebar = true;
 
 				const hideLeftSidebarStub = sinon.stub( abstractHandler, '_hideLeftSidebar' ).callsFake( () => {
 					sinon.stub( editableWrapper, 'scrollWidth' ).value( 600 );
@@ -875,7 +871,6 @@ describe( 'AbstractHandler', () => {
 				sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
 				sinon.stub( editableWrapper, 'clientWidth' ).value( 850 );
 
-				abstractHandler._autoToggleLeftSidebar = true;
 				abstractHandler._sidebarsWidths.left = 500;
 
 				const showRightSidebarStub = sinon.stub( abstractHandler, '_showRightSidebar' ).callsFake( () => {
@@ -899,8 +894,6 @@ describe( 'AbstractHandler', () => {
 				sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
 				sinon.stub( editableWrapper, 'clientWidth' ).value( 1000 );
 
-				abstractHandler._autoToggleLeftSidebar = true;
-
 				const showRightSidebarStub = sinon.stub( abstractHandler, '_showRightSidebar' ).callsFake( () => {
 					sinon.stub( editableWrapper, 'scrollWidth' ).value( 600 );
 				} );
@@ -913,6 +906,25 @@ describe( 'AbstractHandler', () => {
 				expect( showLeftSidebarStub ).to.have.been.called;
 				expect( showRightSidebarStub ).to.have.been.called;
 			} );
+		} );
+
+		it( 'if #_forceShowLeftSidebar is true should not adjust the sidebars visibility', () => {
+			abstractHandler.enable();
+
+			const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+			sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
+			sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
+
+			abstractHandler._forceShowLeftSidebar = true;
+
+			const hideLeftSidebarStub = sinon.spy( abstractHandler, '_hideLeftSidebar' );
+			const hideRightSidebarSpy = sinon.spy( abstractHandler, '_hideRightSidebar' );
+
+			abstractHandler._adjustVisibleElements();
+
+			expect( hideLeftSidebarStub ).to.not.have.been.called;
+			expect( hideRightSidebarSpy ).to.not.have.been.called;
 		} );
 	} );
 

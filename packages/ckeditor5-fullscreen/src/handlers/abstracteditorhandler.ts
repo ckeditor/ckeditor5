@@ -126,9 +126,16 @@ export class FullscreenAbstractEditorHandler {
 	private _sidebarsWidths: { left: number; right: number } = { left: 0, right: 0 };
 
 	/**
-	 * Whether the left sidebar should be automatically toggled depending on the available space.
+	 * Whether the left sidebar should be kept hidden even if there is enough space for it. It's set to `true` when user
+	 * collapses the left sidebar with a button. Behavior is reset when exiting the fullscreen mode.
 	 */
-	private _autoToggleLeftSidebar: boolean = true;
+	private _keepLeftSidebarHidden: boolean = false;
+
+	/**
+	 * Temporary flag used to ignore the first automatic layout adjustment logic when user collapses the left sidebar with a button.
+	 * It is then immediately set back to `false`.
+	 */
+	private _forceShowLeftSidebar: boolean = false;
 
 	/**
 	 * A callback that hides the document outline header when the source editing mode is enabled.
@@ -460,7 +467,7 @@ export class FullscreenAbstractEditorHandler {
 		}
 
 		// Reset the behavior of the left sidebar.
-		this._autoToggleLeftSidebar = true;
+		this._keepLeftSidebarHidden = false;
 
 		this._resizeObserver?.destroy();
 	}
@@ -598,14 +605,17 @@ export class FullscreenAbstractEditorHandler {
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _generateCollapseButton(): void {
 		const button = new ButtonView( this._editor.locale );
 		const leftSidebarContainer = document.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+		const t = this._editor.t;
 
 		button.set( {
-			label: 'Toggle sidebar',
+			label: t( 'Toggle sidebar' ),
 			class: 'ck-fullscreen__left-sidebar-toggle-button',
-			tooltip: 'Show left sidebar',
+			tooltip: t( 'Hide left sidebar' ),
 			tooltipPosition: 'se',
 			icon: IconPreviousArrow
 		} );
@@ -613,15 +623,16 @@ export class FullscreenAbstractEditorHandler {
 		button.on( 'execute', () => {
 			// Change the look of the button to reflect the state of the left sidebar.
 			if ( leftSidebarContainer.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
-				this._showLeftSidebar();
-
 				// Enable automatic left sidebar toggling.
-				this._autoToggleLeftSidebar = true;
-			} else {
-				this._hideLeftSidebar();
+				this._forceShowLeftSidebar = true;
+				this._keepLeftSidebarHidden = false;
 
+				this._showLeftSidebar();
+			} else {
 				// Disable automatic left sidebar toggling.
-				this._autoToggleLeftSidebar = false;
+				this._keepLeftSidebarHidden = true;
+
+				this._hideLeftSidebar();
 			}
 
 			// Keep the focus in the editor whenever the button is clicked.
@@ -944,12 +955,18 @@ export class FullscreenAbstractEditorHandler {
 	private _adjustVisibleElements(): void {
 		const editableWrapper = this._wrapper!.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement;
 
+		// If user has explicitly opened the left sidebar, don't try to hide it automatically - but only once. Any later
+		// resizes will affect the sidebar visibility.
+		if ( this._forceShowLeftSidebar ) {
+			this._forceShowLeftSidebar = false;
+
+			return;
+		}
+
 		// First of all, check if we need to collapse something or not.
 		if ( editableWrapper.scrollWidth > editableWrapper.clientWidth ) {
-			// If we do, collapse left sidebar first - but only if we are in control of it (i.e. user hasn't used the collapse button yet).
-			if ( this._autoToggleLeftSidebar ) {
-				this._hideLeftSidebar();
-			}
+			// If we do, collapse left sidebar first.
+			this._hideLeftSidebar();
 
 			// If we still need more space, collapse right sidebar.
 			if ( editableWrapper.scrollWidth > editableWrapper.clientWidth ) {
@@ -971,12 +988,10 @@ export class FullscreenAbstractEditorHandler {
 				actualWidth = [ ...editableWrapper.children ].reduce( ( acc, child ) => acc + child.scrollWidth, 0 );
 			}
 
-			// Then follow the same logic for left sidebar - but only if we are in control of it
-			// (i.e. user hasn't used the collapse button yet).
-			if ( actualWidth + this._sidebarsWidths.left < editableWrapper.clientWidth ) {
-				if ( this._autoToggleLeftSidebar ) {
-					this._showLeftSidebar();
-				}
+			// Then follow the same logic for left sidebar - but only if we are controlling it
+			// (i.e. user hasn't explicitly collapsed the sidebar with a button).
+			if ( actualWidth + this._sidebarsWidths.left < editableWrapper.clientWidth && !this._keepLeftSidebarHidden ) {
+				this._showLeftSidebar();
 			}
 		}
 	}
@@ -1036,12 +1051,14 @@ export class FullscreenAbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _hideLeftSidebar() {
+		const t = this._editor.t;
+
 		if ( this._collapseLeftSidebarButton ) {
 			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
 
 			leftSidebar.classList.add( 'ck-fullscreen__left-sidebar--collapsed' );
 			this._collapseLeftSidebarButton.icon = IconDocumentOutlineToggle;
-			this._collapseLeftSidebarButton.tooltip = 'Show left sidebar';
+			this._collapseLeftSidebarButton.tooltip = t( 'Show left sidebar' );
 		}
 	}
 
@@ -1051,12 +1068,14 @@ export class FullscreenAbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _showLeftSidebar() {
+		const t = this._editor.t;
+
 		if ( this._collapseLeftSidebarButton ) {
 			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
 
 			leftSidebar.classList.remove( 'ck-fullscreen__left-sidebar--collapsed' );
 			this._collapseLeftSidebarButton.icon = IconPreviousArrow;
-			this._collapseLeftSidebarButton.tooltip = 'Hide left sidebar';
+			this._collapseLeftSidebarButton.tooltip = t( 'Hide left sidebar' );
 		}
 	}
 
