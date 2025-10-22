@@ -1512,6 +1512,7 @@ describe( 'DataController utils', () => {
 				}, 'disabledObject' );
 
 				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+
 				const affectedRange = insertHelper( '<allowedBlock><disabledObject>foobar</disabledObject></allowedBlock>' );
 
 				expect( _getModelData( model ) ).to.equal(
@@ -1519,6 +1520,84 @@ describe( 'DataController utils', () => {
 				);
 				expect( _stringifyModel( root, affectedRange ) ).to.equal(
 					'<restrictedContainer>[<allowedBlock></allowedBlock>]</restrictedContainer>'
+				);
+			} );
+
+			it( 'unwraps disallowed elements at any schema level nested inside inserted content', () => {
+				model.schema.register( 'restrictedContainer', {
+					allowWhere: '$block',
+					allowChildren: [ 'paragraph', 'blockQuote' ],
+					isLimit: true
+				} );
+				model.schema.register( 'disabledElement', {
+					allowIn: [ 'paragraph', '$clipboardHolder' ],
+					allowContentOf: '$block'
+				} );
+				model.schema.register( 'allowedBlock', {
+					inheritAllFrom: '$block',
+					allowIn: [ 'restrictedContainer', '$clipboardHolder' ],
+					allowChildren: 'disabledElement'
+				} );
+
+				model.schema.addChildCheck( context => {
+					// Note this check verifies the whole context, not only the last element.
+					for ( const item of context ) {
+						if ( item.name === 'restrictedContainer' ) {
+							return false;
+						}
+					}
+				}, 'disabledElement' );
+
+				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+
+				const affectedRange = insertHelper(
+					'<allowedBlock><disabledElement>foo</disabledElement>bar<disabledElement>baz</disabledElement></allowedBlock>'
+				);
+
+				expect( _getModelData( model ) ).to.equal(
+					'<restrictedContainer><allowedBlock>foobarbaz[]</allowedBlock></restrictedContainer>'
+				);
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<restrictedContainer>[<allowedBlock>foobarbaz</allowedBlock>]</restrictedContainer>'
+				);
+			} );
+
+			it( 'unwraps multiple disallowed elements at any schema level nested inside inserted content', () => {
+				model.schema.register( 'restrictedContainer', {
+					allowWhere: '$block',
+					allowChildren: [ 'paragraph', 'blockQuote' ],
+					isLimit: true
+				} );
+				model.schema.register( 'disabledElement', {
+					allowIn: [ 'paragraph', '$clipboardHolder' ],
+					allowContentOf: '$container'
+				} );
+				model.schema.register( 'allowedBlock', {
+					inheritAllFrom: '$block',
+					allowIn: [ 'restrictedContainer', '$clipboardHolder' ],
+					allowChildren: 'disabledElement'
+				} );
+
+				model.schema.addChildCheck( context => {
+					// Note this check verifies the whole context, not only the last element.
+					for ( const item of context ) {
+						if ( item.name === 'restrictedContainer' ) {
+							return false;
+						}
+					}
+				}, 'disabledElement' );
+
+				_setModelData( model, '<restrictedContainer><paragraph>[]</paragraph></restrictedContainer>' );
+
+				const affectedRange = insertHelper(
+					'<allowedBlock><disabledElement><paragraph>foobar</paragraph></disabledElement></allowedBlock>'
+				);
+
+				expect( _getModelData( model ) ).to.equal(
+					'<restrictedContainer><allowedBlock>foobar[]</allowedBlock></restrictedContainer>'
+				);
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<restrictedContainer>[<allowedBlock>foobar</allowedBlock>]</restrictedContainer>'
 				);
 			} );
 
@@ -1544,6 +1623,7 @@ describe( 'DataController utils', () => {
 
 				// This is a drag&drop so insert is between blocks and auto-paragraphing is expected.
 				_setModelData( model, '<restrictedContainer><paragraph></paragraph></restrictedContainer>' );
+
 				const affectedRange = insertHelper( '123<disabledObject></disabledObject>456', null, [ 0, 0 ] );
 
 				expect( _getModelData( model ) ).to.equal(

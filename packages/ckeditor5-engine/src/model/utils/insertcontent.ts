@@ -349,29 +349,47 @@ class Insertion {
 	 * Removes disallowed children from nodes that were inserted or modified during insertion.
 	 */
 	private _removeDisallowedChildren( nodes: Iterable<ModelNode> ): void {
-		const subNodesToRemove = new Set<ModelItem>();
+		// Make sure we do not modify the original iterable.
+		const nodesArray = Array.from( nodes );
 
 		// Check all sub-nodes of top level inserted nodes.
 		// We do it at this point so node is already in the model tree and schema checks will be correct.
-		for ( const node of nodes ) {
+		for ( const node of nodesArray ) {
 			if ( !node.is( 'element' ) ) {
 				continue;
 			}
 
+			const remove = [];
+			const unwrap = [];
 			const walker = this.writer.createRangeIn( node ).getWalker( { ignoreElementEnd: true } );
 
 			for ( const { item } of walker ) {
-				if ( !this.schema.checkChild( item.parent as ModelElement, item as ModelNode ) ) {
-					subNodesToRemove.add( item );
+				const itemParent = item.parent as ModelElement;
 
-					// Skip the whole subtree as it will be removed.
+				if ( !this.schema.checkChild( itemParent, item as ModelNode ) ) {
+					if ( item.is( 'element' ) && !this.schema.isObject( item ) ) {
+						// Unwrap non-object element.
+						unwrap.push( item );
+
+						// Store the parent for re-checking children after unwrap.
+						nodesArray.push( itemParent );
+					} else {
+						// Remove object with children, or text.
+						remove.push( item );
+					}
+
+					// Skip the whole subtree as it will be removed or processed later.
 					walker.jumpTo( this.writer.createPositionAfter( item ) );
 				}
 			}
-		}
 
-		for ( const item of subNodesToRemove ) {
-			this.writer.remove( item );
+			for ( const item of unwrap ) {
+				this.writer.unwrap( item );
+			}
+
+			for ( const item of remove ) {
+				this.writer.remove( item );
+			}
 		}
 	}
 
