@@ -109,3 +109,15 @@ Read the {@link support/index#reporting-issues reporting issues} guide to learn 
 To accept contributions sent to us in the form of code, documentation, or translations, a Contributor License Agreement (CLA) must be in place to clarify the intellectual property license granted with them. This license is for your protection as a contributor as well as the protection of us and our users; it does not change your rights to use your own contributions for any other purpose.
 
 To sign the CLA and to get more information, follow this link: [https://cla.ckeditor.com/](https://cla.ckeditor.com/).
+
+## Signing commits
+
+We use Git signing to ensure the commits added to codebase are verified. By signing your commits, you can prove that you are the author and ensure that the code has not been tampered with. Signed commits could also act as a reliable source for an audit trail.
+
+Git commit signing attaches a unique cryptographic signature to a commit, verifying the author’s identity. This adds a layer of security, making it easier to trust the source of the code changes. Such commits are visually marked with a "Verified" badge. We advise signing all your commits added to CKEditor&nbsp;5's codebase.
+
+<info-box note>
+	Starting 2025.01.01, all commits targeting the main branches (`stable`, `master` and `release`) must be signed.
+</info-box>
+
+To set up your digital signature, please refer to the GitHub [Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) guide. Please note, that the GPG key must use the same values as a committer, so the name, surname, and email must be identical.
