@@ -114,6 +114,6 @@ To sign the CLA and to get more information, follow this link: [https://cla.cked
 
 Starting January 1, 2025, all commits targeting the main branches must be signed for security reasons. We therefore require you to sign all commits added to CKEditor&nbsp;5's codebase.
 
-All commits require a signed Contributor License Agreement (CLA). We use Git signing to ensure the commits added to the codebase are verified. By signing your commits, you can prove that you are the author and ensure that the code has not been tampered with. This aids the compliance with our SOC2 Type 2 certification.
+We use Git signing to ensure the commits added to the codebase are verified. By signing your commits, you can prove that you are the author and ensure that the code has not been tampered with. This aids the compliance with our SOC2 Type 2 certification.
 
 Git commit signing attaches a unique cryptographic signature to a commit, which adds a layer of security, making it easier to trust the source of the code changes. To set up your digital signature, please refer to the GitHub [Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) guide. Please note that the GPG key must use the same values as a committer, so the name, surname, and email must be identical.
