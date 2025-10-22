@@ -119,7 +119,7 @@ jobs:
       - run:
           name: Verify CKEditor 5 manual tests
           command: |
-            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
             bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
