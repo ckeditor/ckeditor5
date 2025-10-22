@@ -112,12 +112,8 @@ To sign the CLA and to get more information, follow this link: [https://cla.cked
 
 ## Signing commits
 
-We use Git signing to ensure the commits added to codebase are verified. By signing your commits, you can prove that you are the author and ensure that the code has not been tampered with. Signed commits could also act as a reliable source for an audit trail.
+Since 2025.01.01, all commits targeting the main branches must be signed for security reasons. We therefore require signing all your commits added to CKEditor&nbsp;5's codebase.
 
-Git commit signing attaches a unique cryptographic signature to a commit, verifying the author’s identity. This adds a layer of security, making it easier to trust the source of the code changes. Such commits are visually marked with a "Verified" badge. We advise signing all your commits added to CKEditor&nbsp;5's codebase.
+We use Git signing to ensure the commits added to the codebase are verified. By signing your commits, you can prove that you are the author and ensure that the code has not been tampered with. This aids the compliance with our SOC2 Type 2 certification.
 
-<info-box note>
-	Starting 2025.01.01, all commits targeting the main branches (`stable`, `master` and `release`) must be signed.
-</info-box>
-
-To set up your digital signature, please refer to the GitHub [Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) guide. Please note, that the GPG key must use the same values as a committer, so the name, surname, and email must be identical.
+Git commit signing attaches a unique cryptographic signature to a commit, which adds a layer of security, making it easier to trust the source of the code changes. To set up your digital signature, please refer to the GitHub [Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) guide. Please note that the GPG key must use the same values as a committer, so the name, surname, and email must be identical.
