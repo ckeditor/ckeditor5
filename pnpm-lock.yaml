@@ -86,14 +86,14 @@ importers:
         specifier: ^9.34.0
         version: 9.36.0(jiti@2.6.1)
       eslint-config-ckeditor5:
-        specifier: ^12.1.0
-        version: 12.1.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
+        specifier: ^12.2.0
+        version: 12.2.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^12.1.1
-        version: 12.1.1
+        specifier: ^12.2.0
+        version: 12.2.0
       eslint-plugin-import:
         specifier: ^2.31.0
         version: 2.32.0(@typescript-eslint/parser@8.45.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3))(eslint@9.36.0(jiti@2.6.1))
@@ -158,8 +158,8 @@ importers:
         specifier: ^16.0.0
         version: 16.24.0(typescript@5.3.3)
       stylelint-config-ckeditor5:
-        specifier: ^12.1.0
-        version: 12.1.1(stylelint@16.24.0(typescript@5.3.3))
+        specifier: ^12.2.0
+        version: 12.2.0(stylelint@16.24.0(typescript@5.3.3))
       svgo:
         specifier: ^3.3.2
         version: 3.3.2
@@ -8525,8 +8525,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-ckeditor5@12.1.1:
-    resolution: {integrity: sha512-08GaAQihDvGeTL5XVx/Ihgin11+3bVPaWi+xKzh3ewkcM5HrC9PF06WltBGFsxSJmBRmg8VFSLMwAXcuyZDq3Q==}
+  eslint-config-ckeditor5@12.2.0:
+    resolution: {integrity: sha512-/TQsJuSkTZDVK8srm29tt0kicMEqAyusad1aH6EIXhBjNiQnsagYRNBZjAKiBGdofhjXy4sAD4g+gNa2igO9NA==}
     peerDependencies:
       eslint: ^9.0.0
       typescript: ^5.0.0
@@ -8559,8 +8559,8 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
 
-  eslint-plugin-ckeditor5-rules@12.1.1:
-    resolution: {integrity: sha512-e0PhbA3sNWy4Djs6r+kVfWNvu6urJXucIUfqI2GKjgOfqYOhmpLNaudH6FHKAg/OM8g0ETb7TbG3Bc375ru+sg==}
+  eslint-plugin-ckeditor5-rules@12.2.0:
+    resolution: {integrity: sha512-WgQP9aZo1N7bIDwwf2Wsnd0RpL20MAVxEehhYoFWy7HAMAnV3IliKuU3dsFA35O8cK4q7eKz7FiObwSRAfttQA==}
 
   eslint-plugin-import@2.32.0:
     resolution: {integrity: sha512-whOE1HFo/qJDyX4SnXzP4N6zOWn79WhnCUY/iDR0mPfQZO8wcYE4JClzI2oZrhBnnMUCBCHZhO6VQyoBU95mZA==}
@@ -12139,8 +12139,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  stylelint-config-ckeditor5@12.1.1:
-    resolution: {integrity: sha512-bEqemEiQ8Y4emTKAlOsN4cOx/lk61pVhFwegBDewlS8OqbJ6QsWXBPccSWQCETN5DUUoqoOcZYKsfsH/IsrNEg==}
+  stylelint-config-ckeditor5@12.2.0:
+    resolution: {integrity: sha512-CnOovy7bPzWXEwNikoTZ1wK+cOAgcWKIe6sSPGRqC2wFXl81ipFafSHb48k7cNDA4qxHy47iGB0N1qwgnoDjSg==}
     peerDependencies:
       stylelint: '>=16.0.0'
 
@@ -12150,8 +12150,8 @@ packages:
     peerDependencies:
       stylelint: ^16.16.0
 
-  stylelint-plugin-ckeditor5-rules@12.1.1:
-    resolution: {integrity: sha512-vS7uJta2itqoGo6hXgitclZH0ucwikbXP30y0I7GLhppUmYPqQhPvDBX21RuC9imbEYuIkTcaQzggU/DjSTBsA==}
+  stylelint-plugin-ckeditor5-rules@12.2.0:
+    resolution: {integrity: sha512-NsNVaVrEvBrxh2pRpzZkRZBUS1gjh07vzZJUj8evVCTZ69iVVcCVGz0Jlbvl1vZ6RiVDCfMpPu6XWTTwTL+FMw==}
     peerDependencies:
       stylelint: '>=16.0.0'
 
@@ -17325,13 +17325,13 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@12.1.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3):
+  eslint-config-ckeditor5@12.2.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3):
     dependencies:
       '@eslint/js': 9.36.0
       '@eslint/markdown': 6.6.0
       '@stylistic/eslint-plugin': 4.4.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       eslint: 9.36.0(jiti@2.6.1)
-      eslint-plugin-ckeditor5-rules: 12.1.1
+      eslint-plugin-ckeditor5-rules: 12.2.0
       eslint-plugin-mocha: 11.2.0(eslint@9.36.0(jiti@2.6.1))
       globals: 16.4.0
       typescript: 5.3.3
@@ -17363,7 +17363,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-ckeditor5-rules@12.1.1:
+  eslint-plugin-ckeditor5-rules@12.2.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       enhanced-resolve: 5.18.3
@@ -21798,18 +21798,18 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  stylelint-config-ckeditor5@12.1.1(stylelint@16.24.0(typescript@5.3.3)):
+  stylelint-config-ckeditor5@12.2.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       '@stylistic/stylelint-plugin': 3.1.3(stylelint@16.24.0(typescript@5.3.3))
       stylelint: 16.24.0(typescript@5.3.3)
       stylelint-config-recommended: 16.0.0(stylelint@16.24.0(typescript@5.3.3))
-      stylelint-plugin-ckeditor5-rules: 12.1.1(stylelint@16.24.0(typescript@5.3.3))
+      stylelint-plugin-ckeditor5-rules: 12.2.0(stylelint@16.24.0(typescript@5.3.3))
 
   stylelint-config-recommended@16.0.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       stylelint: 16.24.0(typescript@5.3.3)
 
-  stylelint-plugin-ckeditor5-rules@12.1.1(stylelint@16.24.0(typescript@5.3.3)):
+  stylelint-plugin-ckeditor5-rules@12.2.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       stylelint: 16.24.0(typescript@5.3.3)
 
