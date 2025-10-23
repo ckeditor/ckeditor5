@@ -115,6 +115,7 @@ CKBox offers significant architectural flexibility, providing users with full co
 </table>
 
 To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html). 
+
 You can read more about the storage options in the dedicated [CKBox Deployment](https://ckeditor.com/docs/cs/latest/onpremises/ckbox-onpremises/deployment.html) guide.
 
 ## Demo
@@ -137,27 +138,29 @@ You can also upload images by dragging them into your content. After you drag an
 
 CKBox offers two primary methods for loading the library: using a Content Delivery Network (CDN) for fast, script-based integration, or using a Package Manager (npm/yarn) for modern application bundles.
 
-### Method 1: Installation via CDN
+### Method 1: Installation from CDN
 
 The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
 ```html
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
 
-When referencing the CKBox library via CDN, you must specify the version number (e.g. `{%CKBOX_VERSION%}` or `latest`).
+When referencing the CKBox library via CDN, you must specify the version number (e.g., `{%CKBOX_VERSION%}` or `latest`).
 
 <info-box>
 **Important note on versioning**
-While the ability to use the shorthand `latest` tag instead of a specific version number is available, it is strongly advised against. The use of the latest tag may inadvertently introduce breaking changes into your application, which could stall your CKBox integration unexpectedly.
+While the ability to use the shorthand `latest` tag instead of a specific version number is available, it is strongly advised against. The use of the latest tag may inadvertently introduce breaking changes into your application, which could cause your CKBox integration to stall unexpectedly.
 </info-box>
 
-If you wish to change the default language of the CKBox, which supports over 40 official translations, you must ensure you load the corresponding translation file after loading the main CKBox library. For example, to load the Spanish translation (es):
+Suppose you wish to change the default language of the CKBox, which supports over 40 official translations. In that case, you must ensure you load the corresponding translation file after loading the main CKBox library. For example, to load the Spanish translation (es):
+
 ```html
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
 ```
 
-Once imported you can use it within your application:
+Once imported, you can use it within your application:
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -187,22 +190,25 @@ Once imported you can use it within your application:
 </html>
 ```
 
-### Method 2: Installation via Package Manager (npm/yarn/pnpm)
+### Method 2: Installation from npm
 
-For applications utilizing modern bundling tools (like Webpack, Vite, etc.) and package managers (npm or yarn), CKBox components should be installed as dependencies and imported into your CKEditor 5 build.
+For applications using modern bundling tools (such as Webpack or Vite) and package managers (npm, yarn, pnpm), CKBox components should be installed as dependencies and imported into your CKEditor 5 build.
 
 <info-box>
 **Licensing Requirement**
+
 CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
-You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log into your Customer Portal Dashboard to access feature settings and credentials.
+
+You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log in to your Customer Portal Dashboard to access feature settings and credentials.
 </info-box>
 
 First, install the necessary dependencies:
+
 ```bash
 npm install ckeditor5 ckbox
 ```
 
-Once the packages are installed, you can import the necessary modules directly into your application code and use it within your application:
+Once the packages are installed, you can import the necessary modules directly into your application code and use them within your application:
 
 ```js
 import { ClassicEditor, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } from 'ckeditor5';
