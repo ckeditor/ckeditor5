@@ -103,8 +103,8 @@
 		 * 	* The block element is placed directly after the table.
 		 */
 		&:not(.layout-table):not(:has(> figcaption)) {
-			display: block;
 			width: fit-content;
+			height: fit-content;
 		}
 
 		/**
