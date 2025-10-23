@@ -233,12 +233,18 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						);
 					} );
 
-					it( 'should not prevent default browser behavior while navigating backward', () => {
+					it( 'should expand the selection to the position closest to object (navigating backward)', () => {
 						upArrowDomEvtDataStub.shiftKey = true;
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						expect( _getModelData( model ) ).to.equalMarkup(
+							'<horizontalLine></horizontalLine>' +
+							'<paragraph>[fo]obar</paragraph>' +
+							'<horizontalLine></horizontalLine>'
+						);
 					} );
 				} );
 			} );
@@ -284,8 +290,14 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						downArrowDomEvtDataStub.shiftKey = true;
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+						expect( _getModelData( model ) ).to.equalMarkup(
+							'<horizontalLine></horizontalLine>' +
+							'<paragraph>foob[ar]</paragraph>' +
+							'<horizontalLine></horizontalLine>'
+						);
 					} );
 
 					it( 'should expand the selection to the position closest to object (navigating backward)', () => {
@@ -576,8 +588,24 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						downArrowDomEvtDataStub.shiftKey = true;
 					} );
 
-					it( 'should expand selection to the beginning of the nested editable content', () => {
+					it( 'should collapse selection at the beginning of the nested editable content', () => {
 						_setModelData( model, '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
+
+						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
+
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+						expect( _getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>[]foobar</paragraph></nested></widget>'
+						);
+					} );
+
+					it( 'should do nothing when selection focus is at the beginning of the nested editable content', () => {
+						_setModelData( model,
+							'<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>',
+							{ lastRangeBackward: true }
+						);
 
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
@@ -585,7 +613,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
 					} );
 
-					it( 'should expand selection to the end of the nested editable content', () => {
+					it( 'should do nothing when selection focus is at the end of the nested editable content', () => {
 						_setModelData( model, '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
 
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
@@ -625,14 +653,14 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						downArrowDomEvtDataStub.shiftKey = true;
 					} );
 
-					it( 'should not prevent default browser behavior on arrow up press', () => {
+					it( 'should expand to line start on arrow up press', () => {
 						editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
 						expect( _getModelData( model ) ).to.equalMarkup(
-							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
+							'<widget><nested><paragraph>[fo]obar</paragraph></nested></widget>'
 						);
 					} );
 
@@ -691,14 +719,14 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						);
 					} );
 
-					it( 'should not prevent default browser behavior on arrow down press', () => {
+					it( 'should expand to line end on arrow down press', () => {
 						editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
 						expect( _getModelData( model ) ).to.equalMarkup(
-							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
+							'<widget><nested><paragraph>foob[ar]</paragraph></nested></widget>'
 						);
 					} );
 				} );
@@ -793,13 +821,17 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					);
 				} );
 
-				it( 'should not prevent default browser behavior for shrinking selection (up arrow)', () => {
+				it( 'should expand non-collapsed selection to the beginning of the nested editable content (up arrow)', () => {
 					_setModelData( model, `<widget><nested><paragraph>${ 'word [word]' + text }</paragraph></nested></widget>` );
 
 					editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-					sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
-					sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						`<widget><nested><paragraph>${ '[word ]word' + text }</paragraph></nested></widget>`
+					);
 				} );
 
 				it( 'should expand not collapsed selection to the beginning of the editable content from the selection anchor', () => {
@@ -831,7 +863,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					);
 				} );
 
-				it( 'should not prevent default browser behavior for shrinking selection (down arrow)', () => {
+				it( 'should expand non-collapsed selection to the end of the nested editable content (down arrow)', () => {
 					_setModelData( model,
 						`<widget><nested><paragraph>${ text + '[word] word' }</paragraph></nested></widget>`,
 						{ lastRangeBackward: true }
@@ -839,8 +871,12 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 					editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-					sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
-					sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
+
+					expect( _getModelData( model ) ).to.equalMarkup(
+						`<widget><nested><paragraph>${ text + 'word[ word]' }</paragraph></nested></widget>`
+					);
 				} );
 
 				it( 'should expand not collapsed selection to the end of the nested editable content from the selection anchor', () => {

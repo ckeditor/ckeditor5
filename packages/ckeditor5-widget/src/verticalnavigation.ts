@@ -46,12 +46,6 @@ export function verticalWidgetNavigationHandler(
 
 		const isForward = arrowDownPressed;
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach any object.
-		if ( expandSelection && selectionWillShrink( selection, isForward ) ) {
-			return;
-		}
-
 		// Find a range between selection and closest limit element.
 		const range = findTextRangeFromSelection( editing, selection, isForward );
 
@@ -112,7 +106,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 	const model = editing.model;
 
 	if ( isForward ) {
-		const startPosition = selection.isCollapsed ? selection.focus! : selection.getLastPosition()!;
+		const startPosition = selection.focus!;
 		const endPosition = getNearestNonInlineLimit( model, startPosition, 'forward' );
 
 		// There is no limit element, browser should handle this.
@@ -127,7 +121,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 			return model.createRange( startPosition, lastRangePosition );
 		}
 	} else {
-		const endPosition = selection.isCollapsed ? selection.focus! : selection.getFirstPosition()!;
+		const endPosition = selection.focus!;
 		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
 
 		// There is no limit element, browser should handle this.
@@ -243,8 +237,4 @@ function isSingleLineRange( editing: EditingController, modelRange: ModelRange, 
 	}
 
 	return true;
-}
-
-function selectionWillShrink( selection: ModelDocumentSelection, isForward: boolean ) {
-	return !selection.isCollapsed && selection.isBackward == isForward;
 }

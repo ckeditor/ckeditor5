@@ -426,6 +426,11 @@ export class WidgetTypeAround extends Plugin {
 		const schema = model.schema;
 		const editingView = editor.editing.view;
 
+		// Selection expanding/shrinking is handled without the fake caret by the widget plugin.
+		if ( domEventData.shiftKey ) {
+			return;
+		}
+
 		const keyCode = domEventData.keyCode;
 		const isForward = isForwardArrowKeyCode( keyCode, editor.locale.contentLanguageDirection );
 		const selectedViewElement = editingView.document.selection.getSelectedElement()!;
