@@ -35,8 +35,8 @@ CKBox works natively with CKEditor&nbsp;5. Implementation is straightforward, sa
 <table>
 	<thead>
 		<tr>
-			<th width="150px">CKEditor&nbsp;5 Integration Capabilities</th>
-			<th width="400px">Details</th>
+			<th width="30%">CKEditor&nbsp;5 Integration Capabilities</th>
+			<th width="70%">Details</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -94,8 +94,8 @@ CKBox offers significant architectural flexibility, providing users with full co
 <table>
     <thead>
 		<tr>
-			<th width="150px">Option</th>
-			<th width="400px">Benefits</th>
+			<th style="width: 30%;">Option</th>
+			<th style="width: 70%;">Benefits</th>
 		</tr>
 	</thead>
     <tbody>
