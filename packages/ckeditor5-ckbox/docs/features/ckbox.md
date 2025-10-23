@@ -141,6 +141,7 @@ CKBox offers two primary methods for loading the library: using a Content Delive
 ### Method 1: Installation from CDN
 
 The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
+
 ```html
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
@@ -219,7 +220,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>',
 		plugins: [ LinkEditing, Image, PictureEditing, ImageUpload, CloudServices, CKBox, CKBoxImageEdit, /* ... */ ],
-		toolbar: ['imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
+		toolbar: [ 'imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Configuration.
 		}
@@ -319,8 +320,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
 ```
 
 ### Providing the token URL
