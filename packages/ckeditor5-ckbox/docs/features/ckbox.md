@@ -18,9 +18,9 @@ It handles file uploads and significantly reduces the effort required to build a
 
 ## How CKBox enhances CKEditor&nbsp;5
 
-CKBox is designed to streamline the entire media content lifecycle - from uploading and storing to management and display. By integrating CKBox, you enhance editing and accelerate content creation for your team.
+CKBox streamlines the entire media content lifecycle from uploading and storing to management and display. By integrating CKBox, you enhance editing and accelerate content creation for your team.
 
-CKBox is built to work natively with CKEditor&nbsp;5. Integration saves time and money during implementation.
+CKBox works natively with CKEditor&nbsp;5. Implementation is straightforward, saving you time and money.
 
 ### Before you start
 
@@ -55,13 +55,13 @@ CKBox is built to work natively with CKEditor&nbsp;5. Integration saves time and
 		<tr>
 			<td>Management UI</td>
 			<td>
-                Adds a dedicated toolbar button to open the CKBox UI to manage and reuse uploaded files. Non-embeddable files (like PDFs) are automatically inserted as links.
+                Adds a dedicated toolbar button to open the CKBox UI for managing and reusing uploaded files. Non-embeddable files (such as PDFs) are inserted as links automatically.
             </td>
 		</tr>
 		<tr>
 			<td>Asset Separation</td>
 			<td>
-                Supports multi-tenant workspaces to allow separation of assets per user, document, or customer.
+                Supports multi-tenant workspaces to separate assets per user, document, or customer.
             </td>
 		</tr>
         <tr>
@@ -102,7 +102,7 @@ CKBox offers significant architectural flexibility, providing users with full co
         <tr>
 			<td>SaaS</td>
 			<td>
-                Offers hassle-free, maintenance-free usage. We manage the cloud infrastructure to keep it secure and up to date, perform regular backups of your files, ensure automatic scaling, and guarantee maximum security and high availability. Assets are served via a secure and blazing-fast CDN.
+                Offers hassle-free, maintenance-free usage. We manage the cloud infrastructure to keep it secure and up-to-date, perform regular backups of your files, ensure automatic scaling, and guarantee maximum security and high availability. Assets are served via a secure and blazing-fast CDN.
             </td>
 		</tr>
         <tr>
