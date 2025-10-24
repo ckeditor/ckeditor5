@@ -143,10 +143,10 @@ CKBox offers two primary methods for loading the library: using a Content Delive
 The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
 
-When referencing the CKBox library via CDN, you must specify the version number (e.g., `` or `latest`).
+When referencing the CKBox library via CDN, you must specify the version number (e.g., `{%CKBOX_VERSION%}` or `latest`).
 
 <info-box>
 **Important note on versioning**
@@ -156,8 +156,8 @@ While the ability to use the shorthand `latest` tag instead of a specific versio
 Suppose you wish to change the default language of the CKBox, which supports over 40 official translations. In that case, you must ensure you load the corresponding translation file after loading the main CKBox library. For example, to load the Spanish translation (es):
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox//translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
 ```
 
 Once imported, you can use it within your application:
@@ -166,12 +166,12 @@ Once imported, you can use it within your application:
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5//ckeditor5.css">
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{%CKBOX_VERSION%}/ckeditor5.css">
 	</head>
 	<body>
 		<div id="editor"></div>
         <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-        <script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
+        <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 		<script>
 			const { ClassicEditor, LinkEditing, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } = CKEDITOR;
 
@@ -320,8 +320,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox//translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
 ```
 
 ### Providing the token URL
