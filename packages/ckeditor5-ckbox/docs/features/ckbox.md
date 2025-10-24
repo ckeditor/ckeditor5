@@ -148,9 +148,8 @@ The easiest way to load the CKBox library is by including a `<script>` tag in yo
 
 When referencing the CKBox library via CDN, you must specify the version number (e.g., `{%CKBOX_VERSION%}` or `latest`).
 
-<info-box>
-**Important note on versioning**
-While the ability to use the shorthand `latest` tag instead of a specific version number is available, it is strongly advised against. The use of the latest tag may inadvertently introduce breaking changes into your application, which could cause your CKBox integration to stall unexpectedly.
+<info-box note>
+	While the ability to use the shorthand `latest` tag instead of a specific version number is available, it is strongly advised against. The use of the latest tag may inadvertently introduce breaking changes into your application, which could cause your CKBox integration to stall unexpectedly.
 </info-box>
 
 Suppose you wish to change the default language of the CKBox, which supports over 40 official translations. In that case, you must ensure you load the corresponding translation file after loading the main CKBox library. For example, to load the Spanish translation (es):
@@ -195,12 +194,10 @@ Once imported, you can use it within your application:
 
 For applications using modern bundling tools (such as Webpack or Vite) and package managers (npm, yarn, pnpm), CKBox components should be installed as dependencies and imported into your CKEditor 5 build.
 
-<info-box>
-**Licensing Requirement**
+<info-box note>
+	CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
 
-CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
-
-You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log in to your Customer Portal Dashboard to access feature settings and credentials.
+	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log in to your Customer Portal Dashboard to access feature settings and credentials.
 </info-box>
 
 First, install the necessary dependencies:
