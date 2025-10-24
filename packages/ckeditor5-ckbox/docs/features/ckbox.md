@@ -16,6 +16,22 @@ It handles file uploads and significantly reduces the effort required to build a
 
 {@snippet getting-started/unlock-feature}
 
+## Demo
+
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
+
+Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
+
+{@snippet features/ckbox}
+
+<snippet-footer>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</snippet-footer>
+
+Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
+
+You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
+
 ## How CKBox enhances CKEditor&nbsp;5
 
 CKBox streamlines the entire media content lifecycle from uploading and storing to management and display. By integrating CKBox, you enhance editing and accelerate content creation for your team.
@@ -118,22 +134,6 @@ To find out more about CKBox, the brand-new file manager and image editor, visit
 
 You can read more about the storage options in the dedicated [CKBox Deployment](https://ckeditor.com/docs/cs/latest/onpremises/ckbox-onpremises/deployment.html) guide.
 
-## Demo
-
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
-
-Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
-
-{@snippet features/ckbox}
-
-<snippet-footer>
-	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</snippet-footer>
-
-Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
-
-You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
-
 ## Installation
 
 CKBox offers two primary methods for loading the library: using a Content Delivery Network (CDN) for fast, script-based integration, or using a Package Manager (npm/yarn) for modern application bundles.
@@ -143,10 +143,10 @@ CKBox offers two primary methods for loading the library: using a Content Delive
 The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
 ```
 
-When referencing the CKBox library via CDN, you must specify the version number (e.g., `{%CKBOX_VERSION%}` or `latest`).
+When referencing the CKBox library via CDN, you must specify the version number (e.g., `` or `latest`).
 
 <info-box>
 **Important note on versioning**
@@ -156,8 +156,8 @@ While the ability to use the shorthand `latest` tag instead of a specific versio
 Suppose you wish to change the default language of the CKBox, which supports over 40 official translations. In that case, you must ensure you load the corresponding translation file after loading the main CKBox library. For example, to load the Spanish translation (es):
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox//translations/es.js"></script>
 ```
 
 Once imported, you can use it within your application:
@@ -166,12 +166,12 @@ Once imported, you can use it within your application:
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{%CKBOX_VERSION%}/ckeditor5.css">
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5//ckeditor5.css">
 	</head>
 	<body>
 		<div id="editor"></div>
         <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-        <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+        <script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
 		<script>
 			const { ClassicEditor, LinkEditing, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } = CKEDITOR;
 
@@ -320,8 +320,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox//ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox//translations/es.js"></script>
 ```
 
 ### Providing the token URL
