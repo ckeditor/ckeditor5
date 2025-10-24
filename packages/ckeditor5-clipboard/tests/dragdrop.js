@@ -1802,8 +1802,7 @@ describe( 'Drag and Drop', () => {
 				expectDraggingMarker( targetPosition );
 			} );
 
-			// TODO: this should be fixed in code.
-			it.skip( 'cannot be dropped on non-editable place.', () => {
+			it( 'cannot be dropped on non-editable place.', () => {
 				_setModelData( model, '<paragraph>[]foobar</paragraph>' );
 
 				const dataTransferMock = createDataTransfer();

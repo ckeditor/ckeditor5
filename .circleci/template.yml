@@ -57,6 +57,8 @@ commands:
           command: sudo npm i -g pnpm@^10
       - run:
           name: Install dependencies
+          environment:
+            PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
@@ -109,11 +111,6 @@ jobs:
       - checkout_command
       - halt_if_short_flow
       - browser-tools/install_chrome
-      - run:
-          name: Set Puppeteer environment variables
-          command: |
-            echo 'export PUPPETEER_EXECUTABLE_PATH=$(command -v google-chrome || command -v google-chrome-stable)' >> $BASH_ENV
-            echo 'export PUPPETEER_SKIP_DOWNLOAD=true' >> $BASH_ENV
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
@@ -121,7 +118,9 @@ jobs:
           command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
-          command: bash scripts/check-manual-tests.sh -r ckeditor5-root
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
+            bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
     docker:
