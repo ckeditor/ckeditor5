@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { EmitterMixin, CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, CKEditorError, Config } from '@ckeditor/ckeditor5-utils';
 import { Model } from '../../src/model/model.js';
 import { ModelText } from '../../src/model/text.js';
 import { ModelElement } from '../../src/model/element.js';
@@ -103,6 +103,15 @@ describe( 'Model', () => {
 			expect( schema.checkChild( [ '$block' ], '$marker' ) ).to.be.true;
 			expect( schema.checkChild( [ '$otherRoot' ], '$marker' ) ).to.be.true;
 			expect( schema.checkChild( [ 'foo' ], '$marker' ) ).to.be.false;
+		} );
+
+		it( 'sets the _config property', () => {
+			const config = new Config();
+			const model = new Model( config );
+
+			expect( model._config ).to.equal( config );
+
+			model.destroy();
 		} );
 	} );
 
