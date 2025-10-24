@@ -135,6 +135,8 @@ describe( 'Editor', () => {
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
+
+			expect( editor.model._config ).to.equal( editor.config );
 		} );
 
 		it( 'should extend an editor configuration using built in config', () => {

@@ -865,6 +865,11 @@ export interface EditorConfig {
 	 * ```
 	 */
 	label?: string | Record<string, string>;
+
+	/**
+	 * TODO
+	 */
+	experimentalFlags?: ExperimentalFlagsConfig;
 }
 
 /**
@@ -1025,4 +1030,15 @@ export interface UiConfig {
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
 	poweredBy?: PoweredByConfig;
+}
+
+/**
+ * TODO
+ */
+export interface ExperimentalFlagsConfig {
+
+	/**
+	 * TODO
+	 */
+	modelInsertContentDeepSchemaVerification?: boolean;
 }

@@ -341,7 +341,11 @@ class Insertion {
 
 		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesAndChildrenOf, this.writer );
-		this._removeDisallowedChildren( this._filterAttributesAndChildrenOf );
+
+		if ( this.model._config?.get( 'experimentalFlags.modelInsertContentDeepSchemaVerification' ) ) {
+			this._removeDisallowedChildren( this._filterAttributesAndChildrenOf );
+		}
+
 		this._filterAttributesAndChildrenOf = [];
 	}
 
