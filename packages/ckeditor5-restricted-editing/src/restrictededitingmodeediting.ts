@@ -24,8 +24,7 @@ import type {
 	ModelSchemaChildCheckCallback,
 	ViewDocumentTabEvent,
 	ViewDocumentKeyDownEvent,
-	ViewDocumentKeyEventData,
-	ModelCanEditAtEvent
+	ViewDocumentKeyEventData
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -408,14 +407,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 		// Block clipboard outside exception marker on cut.
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			if ( data.method == 'cut' && !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
-				evt.stop();
-			}
-		}, { priority: 'high' } );
-
-		// Overwrite `Model#canEditAt()` decorated method.
-		this.listenTo<ModelCanEditAtEvent>( model, 'canEditAt', ( evt, [ selection ] ) => {
-			if ( selection && !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
-				evt.return = false;
 				evt.stop();
 			}
 		}, { priority: 'high' } );
