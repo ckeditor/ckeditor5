@@ -146,7 +146,7 @@ describe( 'ImageTypeCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'block command', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			it( 'should return an object containing the old and new image elements', () => {
 				_setModelData( model, `<paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
@@ -408,10 +408,10 @@ describe( 'ImageTypeCommand', () => {
 		} );
 
 		describe( 'inline command', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			it( 'should return an object containing the old and new image elements', () => {
-				const imgSrc = 'foo/bar.jpg';
+				const imgSrc = 'assets/sample.png';
 
 				_setModelData( model, `[<imageBlock src="${ imgSrc }"></imageBlock>]` );
 
@@ -680,7 +680,7 @@ describe( 'ImageTypeCommand', () => {
 
 		describe( 'integration with ImageCaptionEditing', () => {
 			it( 'should preserve the caption so it can be restored', () => {
-				const imgSrc = 'foo/bar.jpg';
+				const imgSrc = 'assets/sample.png';
 
 				_setModelData( model, `[<imageBlock src="${ imgSrc }"><caption>foo</caption></imageBlock>]` );
 
@@ -702,7 +702,7 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should preserve the caption if the selection was in the caption at the moment of type change', () => {
-				const imgSrc = 'foo/bar.jpg';
+				const imgSrc = 'assets/sample.png';
 
 				_setModelData( model, `<imageBlock src="${ imgSrc }"><caption>f[o]o</caption></imageBlock>` );
 
@@ -725,7 +725,7 @@ describe( 'ImageTypeCommand', () => {
 		} );
 
 		describe( 'inheriting attributes', () => {
-			const imgSrc = '/foo.jpg';
+			const imgSrc = '/assets/sample.png';
 
 			beforeEach( () => {
 				const attributes = [ 'smart', 'pretty' ];

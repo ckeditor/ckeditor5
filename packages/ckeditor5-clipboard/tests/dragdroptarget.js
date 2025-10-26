@@ -548,6 +548,124 @@ describe( 'Drag and Drop target', () => {
 			) ).to.be.true;
 		} );
 
+		it( 'should put drop target marker inside a text node even if dragged range contains also not-allowed elements', () => {
+			model.schema.register( 'inlineWidget', {
+				inheritAllFrom: '$inlineObject'
+			} );
+			model.schema.register( 'blockWidget', {
+				inheritAllFrom: '$blockObject'
+			} );
+			model.schema.register( 'widgetTitle', {
+				isLimit: true,
+				allowIn: 'blockWidget',
+				allowContentOf: '$block',
+				disallowChildren: 'inlineWidget'
+			} );
+
+			editor.conversion.for( 'editingDowncast' )
+				.elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidget( viewWriter.createContainerElement( 'span' ), viewWriter );
+					}
+				} )
+				.elementToElement( {
+					model: 'blockWidget',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidget( viewWriter.createContainerElement( 'div' ), viewWriter );
+					}
+				} )
+				.elementToElement( {
+					model: 'widgetTitle',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidgetEditable( viewWriter.createEditableElement( 'h1' ), viewWriter );
+					}
+				} );
+
+			_setModelData( model,
+				'<paragraph>f[oo<inlineWidget></inlineWidget>ba]r</paragraph>' +
+				'<blockWidget><widgetTitle>abc</widgetTitle></blockWidget>'
+			);
+
+			const modelPosition = model.createPositionAt( root.getChild( 1 ).getChild( 0 ), 1 );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			const domNode = domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode;
+
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			dragDropTarget.updateDropMarker(
+				mapper.findMappedViewAncestor( viewPosition ),
+				[ view.createRange( viewPosition ) ],
+				clientX,
+				clientY,
+				false,
+				ModelLiveRange.fromRange( model.document.selection.getFirstRange() )
+			);
+
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root.getChild( 1 ).getChild( 0 ), 1 )
+			) ).to.be.true;
+		} );
+
+		it( 'should not put drop target marker inside a text node if dragged range contains only disallowed elements', () => {
+			model.schema.register( 'inlineWidget', {
+				inheritAllFrom: '$inlineObject'
+			} );
+			model.schema.register( 'blockWidget', {
+				inheritAllFrom: '$blockObject'
+			} );
+			model.schema.register( 'widgetTitle', {
+				isLimit: true,
+				allowIn: 'blockWidget',
+				allowContentOf: '$block',
+				disallowChildren: 'inlineWidget'
+			} );
+
+			editor.conversion.for( 'editingDowncast' )
+				.elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidget( viewWriter.createContainerElement( 'span' ), viewWriter );
+					}
+				} )
+				.elementToElement( {
+					model: 'blockWidget',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidget( viewWriter.createContainerElement( 'div' ), viewWriter );
+					}
+				} )
+				.elementToElement( {
+					model: 'widgetTitle',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						return toWidgetEditable( viewWriter.createEditableElement( 'h1' ), viewWriter );
+					}
+				} );
+
+			_setModelData( model,
+				'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' +
+				'<blockWidget><widgetTitle>abc</widgetTitle></blockWidget>'
+			);
+
+			const modelPosition = model.createPositionAt( root.getChild( 1 ).getChild( 0 ), 1 );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			const domNode = domConverter.findCorrespondingDomText( viewPosition.parent ).parentNode;
+
+			const { clientX, clientY } = getMockedMousePosition( { domNode } );
+
+			dragDropTarget.updateDropMarker(
+				mapper.findMappedViewAncestor( viewPosition ),
+				[ view.createRange( viewPosition ) ],
+				clientX,
+				clientY,
+				false,
+				ModelLiveRange.fromRange( model.document.selection.getFirstRange() )
+			);
+
+			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
+				model.createPositionAt( root, 1 )
+			) ).to.be.true;
+		} );
+
 		it( 'should not remove drop target marker if dragging left some nested element', () => {
 			_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 

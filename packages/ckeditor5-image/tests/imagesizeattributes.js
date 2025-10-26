@@ -645,7 +645,7 @@ describe( 'ImageSizeAttributes', () => {
 			const command = new ReplaceImageSourceCommand( editor );
 
 			_setModelData( model, `[<imageBlock
-				src="foo/bar.jpg"
+				src="assets/sample.png"
 				width="100"
 				height="200"
 			></imageBlock>]` );

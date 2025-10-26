@@ -149,7 +149,7 @@ describe( 'image utils', () => {
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
@@ -166,7 +166,7 @@ describe( 'image utils', () => {
 			it( 'should return a matcher pattern for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				element = writer.createElement( 'img', { src: 'sample.jpg' } );
+				element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 				writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 				expect( getImgViewElementMatcher( editor, 'imageBlock' )( element ) ).to.deep.equal( {
@@ -228,7 +228,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return null if the element is not an image', () => {
-						element = writer.createElement( 'media', { src: 'sample.jpg' } );
+						element = writer.createElement( 'media', { src: 'assets/sample.png' } );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );
@@ -240,7 +240,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return null if the element is an "imageInline"', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );
@@ -248,7 +248,7 @@ describe( 'image utils', () => {
 					it( 'should return null if the element is an "imageInline" in a table', () => {
 						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
-								'[<img src="sample.jpg"></img>]' +
+								'[<img src="assets/sample.png"></img>]' +
 							'</td></tr></tbody></table></figure>'
 						);
 
@@ -256,7 +256,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "image"', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
@@ -266,7 +266,7 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return a matcherPattern object if the element has `display:block` style', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg', style: 'display:block' } );
+						element = writer.createElement( 'img', { src: 'assets/sample.png', style: 'display:block' } );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true,
@@ -298,20 +298,20 @@ describe( 'image utils', () => {
 					} );
 
 					it( 'should return null if the element has no src property', () => {
-						element = writer.createElement( 'media', { src: 'sample.jpg' } );
+						element = writer.createElement( 'media', { src: 'assets/sample.png' } );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );
 
 					it( 'should return null if the element is an "image"', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.be.null;
 					} );
 
 					it( 'should return a matcherPattern object if the element is an "imageInline"', () => {
-						element = writer.createElement( 'img', { src: 'sample.jpg' } );
+						element = writer.createElement( 'img', { src: 'assets/sample.png' } );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
 							name: true,
@@ -322,7 +322,7 @@ describe( 'image utils', () => {
 					it( 'should return a matcherPattern object if the element is an "imageInline" in a table', () => {
 						const fragment = _parseView(
 							'<figure><table><tbody><tr><td>' +
-								'[<img src="sample.jpg"></img>]' +
+								'[<img src="assets/sample.png"></img>]' +
 							'</td></tr></tbody></table></figure>'
 						);
 
