@@ -456,7 +456,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 		this._disableCommands();
 
-		if ( isSelectionInMarker( selection, marker ) ) {
+		if ( isSelectionInMarker( selection, editor.model, marker ) ) {
 			this._enableCommands( marker! );
 		}
 	}

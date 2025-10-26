@@ -19,7 +19,7 @@ import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model }
  */
 export function getMarkerAtPosition( editor: Editor, position: ModelPosition ): Marker | undefined {
 	for ( const marker of editor.model.markers ) {
-		const markerRange = marker.getRange();
+		const markerRange = getExceptionRange( marker, editor.model );
 
 		if ( isPositionInRangeBoundaries( markerRange, position ) ) {
 			if ( marker.name.startsWith( 'restrictedEditingException:' ) ) {
@@ -54,12 +54,12 @@ export function isPositionInRangeBoundaries( range: ModelRange, position: ModelP
  *
  * @internal
  */
-export function isSelectionInMarker( selection: ModelDocumentSelection, marker?: Marker ): boolean {
+export function isSelectionInMarker( selection: ModelDocumentSelection, model: Model, marker?: Marker ): boolean {
 	if ( !marker ) {
 		return false;
 	}
 
-	const markerRange = marker.getRange();
+	const markerRange = getExceptionRange( marker, model );
 
 	if ( selection.isCollapsed ) {
 		return isPositionInRangeBoundaries( markerRange, selection.focus! );
