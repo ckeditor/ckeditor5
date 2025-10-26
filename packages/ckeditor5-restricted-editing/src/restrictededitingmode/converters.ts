@@ -52,9 +52,18 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 			return false;
 		}
 
-		for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name )! ) {
+		const modelWrapperElement = marker.getRange().getContainedElement();
+
+		if ( modelWrapperElement && modelWrapperElement.is( 'element', 'restrictedEditingException' ) ) {
+			const viewElement = editor.editing.mapper.toViewElement( modelWrapperElement )!;
+
 			writer.addClass( HIGHLIGHT_CLASS, viewElement );
 			highlightedMarkers.add( viewElement );
+		} else {
+			for ( const viewElement of editor.editing.mapper.markerNameToElements( marker.name )! ) {
+				writer.addClass( HIGHLIGHT_CLASS, viewElement );
+				highlightedMarkers.add( viewElement );
+			}
 		}
 
 		return false;
@@ -131,8 +140,8 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
  * @param config Conversion configuration.
  * @internal
  */
-export function upcastHighlightToMarker( config: { view: MatcherPattern; model: () => string } ) {
-	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
+export function upcastHighlightToMarker( config: { view: MatcherPattern; model: () => string; useWrapperElement?: boolean } ) {
+	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 		const { writer } = conversionApi;
 
 		const matcher = new Matcher( config.view );
@@ -148,16 +157,35 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 		// Force consuming element's name (taken from upcast helpers elementToElement converter).
 		match.name = true;
 
-		const { modelRange: convertedChildrenRange } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
+			return;
+		}
+
+		let position = data.modelCursor;
+		let wrapperElement = null;
+
+		if ( config.useWrapperElement ) {
+			wrapperElement = writer.createElement( 'restrictedEditingException' );
+			writer.insert( wrapperElement, position );
+			position = writer.createPositionAt( wrapperElement, 0 );
+		}
+
+		const { modelRange: convertedChildrenRange } = conversionApi.convertChildren( data.viewItem, position );
+
 		conversionApi.consumable.consume( data.viewItem, match );
 
 		const markerName = config.model();
 		const fakeMarkerStart = writer.createElement( '$marker', { 'data-name': markerName } );
 		const fakeMarkerEnd = writer.createElement( '$marker', { 'data-name': markerName } );
 
-		// Insert in reverse order to use converter content positions directly (without recalculating).
-		writer.insert( fakeMarkerEnd, convertedChildrenRange.end );
-		writer.insert( fakeMarkerStart, convertedChildrenRange.start );
+		if ( config.useWrapperElement ) {
+			writer.insert( fakeMarkerStart, writer.createPositionBefore( wrapperElement ) );
+			writer.insert( fakeMarkerEnd, writer.createPositionAfter( wrapperElement ) );
+		} else {
+			// Insert in reverse order to use converter content positions directly (without recalculating).
+			writer.insert( fakeMarkerEnd, convertedChildrenRange.end );
+			writer.insert( fakeMarkerStart, convertedChildrenRange.start );
+		}
 
 		data.modelRange = writer.createRange(
 			writer.createPositionBefore( fakeMarkerStart ),

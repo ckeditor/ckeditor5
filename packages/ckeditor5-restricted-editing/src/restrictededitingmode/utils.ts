@@ -4,7 +4,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from 'ckeditor5/src/engine.js';
 
 /**
  * @module restricted-editing/restrictededitingmode/utils
@@ -66,4 +66,20 @@ export function isSelectionInMarker( selection: ModelDocumentSelection, marker?:
 	}
 
 	return markerRange.containsRange( selection.getFirstRange()!, true );
+}
+
+/**
+ * TODO
+ *
+ * @internal
+ */
+export function getExceptionRange( marker: Marker, model: Model ): ModelRange {
+	const markerRange = marker.getRange();
+	const wrapperElement = markerRange.getContainedElement();
+
+	if ( wrapperElement && wrapperElement.is( 'element', 'restrictedEditingException' ) ) {
+		return model.createRangeIn( wrapperElement );
+	}
+
+	return markerRange;
 }
