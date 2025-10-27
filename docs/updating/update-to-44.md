@@ -15,7 +15,7 @@ modified_at: 2024-11-28
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-## Update to CKEditor&nbsp;5 v 44.3.0
+## Update to CKEditor&nbsp;5 v44.3.0
 
 Released on March 5, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.3.0))
 
@@ -41,7 +41,7 @@ We enhanced emoji support for better compatibility with users' devices.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `ViewElementConsumables` now accepts and outputs only normalized data. The `ViewConsumable` still accepts normalized or non-normalized input.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Matcher#match()` and `Matcher#matchAll()` output is now normalized. The `MatchResult#match` now contains normalized data compatible with changes in the `ViewConsumable`.
 
-## Update to CKEditor&nbsp;5 v 44.2.1
+## Update to CKEditor&nbsp;5 v44.2.1
 
 Released on February 20, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.1))
 
@@ -53,7 +53,7 @@ This vulnerability affects only installations with [real-time collaborative edit
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh) and [contact us](mailto:security@cksource.com) if you have more questions.
 
-## Update to CKEditor&nbsp;5 v 44.2.0
+## Update to CKEditor&nbsp;5 v44.2.0
 
 Released on February 12, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.0))
 
