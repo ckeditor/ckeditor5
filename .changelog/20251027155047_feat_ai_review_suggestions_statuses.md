@@ -10,4 +10,4 @@ closes:
 
 ---
 
-Introducing new icons for AI-related features.
+Introducing an icon that represents an outdated state.
