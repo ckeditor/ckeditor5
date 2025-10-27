@@ -15,7 +15,6 @@ export { default as IconAIAskAI } from '../theme/icons/ai-ask-ai.svg';
 export { default as IconAIChangeTone } from '../theme/icons/ai-change-tone.svg';
 export { default as IconAIChatCommands } from '../theme/icons/ai-chat-commands.svg';
 export { default as IconAIContinueWriting } from '../theme/icons/ai-continue-writing.svg';
-export { default as IconCancel } from '../theme/icons/cancel.svg';
 export { default as IconAIGrammarCheck } from '../theme/icons/ai-grammar-check.svg';
 export { default as IconAIImproveWriting } from '../theme/icons/ai-improve-writing.svg';
 export { default as IconAIOther } from '../theme/icons/ai-other.svg';
