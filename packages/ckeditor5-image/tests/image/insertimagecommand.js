@@ -125,7 +125,7 @@ describe( 'InsertImageCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should insert image at selection position as other widgets', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
@@ -135,7 +135,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be possible to specify image type as image (imageBlock)', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
@@ -148,8 +148,8 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be possible to specify image type as image (imageInline)', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			_setModelData( model, '[]' );
 
@@ -166,7 +166,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should be possible to break the block with an inserted image', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
 
@@ -182,8 +182,8 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should insert multiple images at selection position as other widgets for inline type images', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			_setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
@@ -198,8 +198,8 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should insert multiple images at selection position as other widgets for block type images', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			_setModelData( model, '[]' );
 
@@ -210,7 +210,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			model.schema.register( 'other', {
 				allowIn: '$root',
@@ -233,16 +233,16 @@ describe( 'InsertImageCommand', () => {
 
 			_setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
 
-			command.execute( { source: 'foo/bar.jpg' } );
+			command.execute( { source: 'assets/sample.png' } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>'
+				'<paragraph>foo</paragraph>[<imageBlock src="assets/sample.png"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
 
 		it( 'should replace a selected object with multiple block images', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
@@ -258,8 +258,8 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should replace a selected inline object with multiple inline images', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			model.schema.register( 'placeholder', {
 				allowWhere: '$text',
@@ -280,29 +280,32 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should replace a selected block image with another block image', () => {
-			_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo/bar.jpg"></imageBlock>]<paragraph>bar</paragraph>' );
+			_setModelData(
+				model,
+				'<paragraph>foo</paragraph>[<imageBlock src="assets/sample.png"></imageBlock>]<paragraph>bar</paragraph>'
+			);
 
-			command.execute( { source: 'new/image.jpg' } );
+			command.execute( { source: 'assets/sample2.png' } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<imageBlock src="new/image.jpg"></imageBlock>]<paragraph>bar</paragraph>'
+				'<paragraph>foo</paragraph>[<imageBlock src="assets/sample2.png"></imageBlock>]<paragraph>bar</paragraph>'
 			);
 		} );
 
 		it( 'should replace a selected inline image with another inline image', () => {
-			_setModelData( model, '<paragraph>foo[<imageInline src="foo/bar.jpg"></imageInline>]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[<imageInline src="assets/sample.png"></imageInline>]bar</paragraph>' );
 
-			command.execute( { source: 'new/image.jpg' } );
+			command.execute( { source: 'assets/sample2.png' } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>foo[<imageInline src="new/image.jpg"></imageInline>]bar</paragraph>'
+				'<paragraph>foo[<imageInline src="assets/sample2.png"></imageInline>]bar</paragraph>'
 			);
 		} );
 
 		it( 'should set document selection attributes on an image to maintain their continuity in downcast (e.g. links)', () => {
 			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
 
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			_setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
 
@@ -311,14 +314,14 @@ describe( 'InsertImageCommand', () => {
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
-					'[<imageInline bar="b" baz="c" foo="a" src="foo/bar.jpg"></imageInline>]' +
+					'[<imageInline bar="b" baz="c" foo="a" src="assets/sample.png"></imageInline>]' +
 					'<$text bar="b" baz="c" foo="a">o</$text>' +
 				'</paragraph>'
 			);
 		} );
 
 		it( 'should allow to set all image attributes declaratively (single image)', () => {
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			editor.model.schema.extend( 'imageInline', {
 				allowAttributes: [ 'foo', 'bar' ]
@@ -341,8 +344,8 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		it( 'should allow to set all image attributes declaratively (multiple images)', () => {
-			const imgSrc1 = 'foo/bar.jpg';
-			const imgSrc2 = 'foo/baz.jpg';
+			const imgSrc1 = 'assets/sample.png';
+			const imgSrc2 = 'assets/sample2.png';
 
 			editor.model.schema.extend( 'imageInline', {
 				allowAttributes: [ 'foo', 'bar' ]
@@ -372,7 +375,7 @@ describe( 'InsertImageCommand', () => {
 		} );
 
 		describe( 'inheriting attributes', () => {
-			const imgSrc = '/foo.jpg';
+			const imgSrc = 'assets/sample.png';
 
 			beforeEach( () => {
 				const attributes = [ 'smart', 'pretty' ];
@@ -402,7 +405,7 @@ describe( 'InsertImageCommand', () => {
 				} );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
-					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );
 
@@ -417,7 +420,7 @@ describe( 'InsertImageCommand', () => {
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph pretty="true" smart="true">' +
-						'Foo [<imageInline src="/foo.jpg"></imageInline>]' +
+						'Foo [<imageInline src="assets/sample.png"></imageInline>]' +
 					'</paragraph>'
 				);
 			} );
@@ -433,7 +436,7 @@ describe( 'InsertImageCommand', () => {
 
 				expect( _getModelData( model ) ).to.equalMarkup(
 					'<paragraph>' +
-						'[<imageInline src="/foo.jpg"></imageInline>]' +
+						'[<imageInline src="assets/sample.png"></imageInline>]' +
 					'</paragraph>'
 				);
 			} );
@@ -448,7 +451,7 @@ describe( 'InsertImageCommand', () => {
 				} );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
-					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );
 
@@ -465,7 +468,7 @@ describe( 'InsertImageCommand', () => {
 				} );
 
 				expect( _getModelData( model ) ).to.equalMarkup(
-					'[<imageBlock pretty="true" smart="true" src="/foo.jpg"></imageBlock>]'
+					'[<imageBlock pretty="true" smart="true" src="assets/sample.png"></imageBlock>]'
 				);
 			} );
 		} );
