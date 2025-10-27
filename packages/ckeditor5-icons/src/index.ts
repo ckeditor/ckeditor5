@@ -14,7 +14,9 @@ export { default as IconAIAdjustLength } from '../theme/icons/ai-adjust-length.s
 export { default as IconAIAskAI } from '../theme/icons/ai-ask-ai.svg';
 export { default as IconAIChangeTone } from '../theme/icons/ai-change-tone.svg';
 export { default as IconAIChatCommands } from '../theme/icons/ai-chat-commands.svg';
+export { default as IconAICheck } from '../theme/icons/ai-check.svg';
 export { default as IconAIContinueWriting } from '../theme/icons/ai-continue-writing.svg';
+export { default as IconAIClose } from '../theme/icons/ai-close.svg';
 export { default as IconAIGrammarCheck } from '../theme/icons/ai-grammar-check.svg';
 export { default as IconAIImproveWriting } from '../theme/icons/ai-improve-writing.svg';
 export { default as IconAIOther } from '../theme/icons/ai-other.svg';
@@ -144,6 +146,7 @@ export { default as IconObjectSizeLarge } from '../theme/icons/object-size-large
 export { default as IconObjectSizeMedium } from '../theme/icons/object-size-medium.svg';
 export { default as IconObjectSizeSmall } from '../theme/icons/object-size-small.svg';
 export { default as IconOneDrive } from '../theme/icons/onedrive.svg';
+export { default as IconOutdated } from '../theme/icons/outdated.svg';
 export { default as IconOutdent } from '../theme/icons/outdent.svg';
 export { default as IconPageBreak } from '../theme/icons/page-break.svg';
 export { default as IconPaginationExample } from '../theme/icons/pagination-example.svg';
