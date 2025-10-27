@@ -144,6 +144,7 @@ export { default as IconObjectSizeLarge } from '../theme/icons/object-size-large
 export { default as IconObjectSizeMedium } from '../theme/icons/object-size-medium.svg';
 export { default as IconObjectSizeSmall } from '../theme/icons/object-size-small.svg';
 export { default as IconOneDrive } from '../theme/icons/onedrive.svg';
+export { default as IconOutdated } from '../theme/icons/outdated.svg';
 export { default as IconOutdent } from '../theme/icons/outdent.svg';
 export { default as IconPageBreak } from '../theme/icons/page-break.svg';
 export { default as IconPaginationExample } from '../theme/icons/pagination-example.svg';
