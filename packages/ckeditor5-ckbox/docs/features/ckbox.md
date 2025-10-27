@@ -28,7 +28,7 @@ Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
 
-Image files are inserted into the content as images that you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
+Images are embedded directly into the content, which you can drag around and resize. Non-embeddable files (like PDF files) are inserted as links.
 
 You can also upload images by dragging them into your content. After you drag an image into the editor, it gets uploaded into the CKBox cloud storage and inserted into the content.
 
@@ -140,7 +140,7 @@ CKBox offers two primary methods for loading the library: using a Content Delive
 
 ### Method 1: Installation from CDN
 
-The easiest way to load the CKBox library is by including a `<script>` tag in your HTML header that points to the CKBox CDN. You must include the script tag loading the ckbox.js file first:
+The easiest way to load the CKBox library is to include the following `<script>` tag in your HTML header that points to the CKBox CDN, ensuring it loads before the rich text editor:
 
 ```html
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
@@ -197,7 +197,7 @@ For applications using modern bundling tools (such as Webpack or Vite) and packa
 <info-box note>
 	CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
 
-	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log in to your Customer Portal Dashboard to access feature settings and credentials.
+	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should[ log in to your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
 </info-box>
 
 First, install the necessary dependencies:
@@ -220,6 +220,7 @@ ClassicEditor
 		toolbar: [ 'imageUpload', 'ckbox', 'ckboxImageEdit', /* ... */ ], // Depending on your preference.
 		ckbox: {
 			// Configuration.
+			tokenUrl: <YOUR_TOKEN_URL>
 		}
 	} )
 	.then( /* ... */ )
