@@ -933,7 +933,16 @@ export class FullscreenAbstractEditorHandler {
 
 		aiTabs.side = 'right';
 		aiTabs.type = 'sidebar';
+
+		// Adjust the visible elements when the transition (changing the size of the AI tabs) ends. Earlier we do not have the
+		// correct sizes of elements.
+		aiTabs.view.element.addEventListener( 'transitionend', this._adjustVisibleElementsBound );
 	}
+
+	/**
+	 * A bound reference to the _adjustVisibleElements method. To be used as a callback for the transitionend event.
+	 */
+	private _adjustVisibleElementsBound = this._adjustVisibleElements.bind( this );
 
 	/**
 	 * Restores the state of the AI Tabs to the original values.
@@ -947,6 +956,8 @@ export class FullscreenAbstractEditorHandler {
 		aiTabs.type = this._aiTabsData?.type;
 
 		this._aiTabsData = null;
+
+		aiTabs.view.element.removeEventListener( 'transitionend', this._adjustVisibleElementsBound );
 	}
 
 	/**
