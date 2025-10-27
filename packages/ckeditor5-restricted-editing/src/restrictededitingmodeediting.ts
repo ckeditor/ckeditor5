@@ -86,11 +86,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 	private _allowedInException: Set<string>;
 
 	/**
-	 * TODO
-	 */
-	private _allowedInBlockException: Set<string>;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -125,7 +120,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		// TODO
 		editor.config.define( 'restrictedEditing', {
 			allowedCommands: [ 'bold', 'italic', 'link', 'unlink' ],
 			allowedAttributes: [ 'bold', 'italic', 'linkHref' ]
@@ -133,7 +127,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
 		this._allowedInException = new Set( [ 'input', 'insertText', 'delete', 'deleteForward' ] );
-		this._allowedInBlockException = new Set( [ ...this._allowedInException, 'enter', 'shiftEnter' ] );
 	}
 
 	/**
@@ -142,7 +135,6 @@ export class RestrictedEditingModeEditing extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		// TODO add block exception configuration
 		const allowedCommands: RestrictedEditingConfig['allowedCommands'] = editor.config.get( 'restrictedEditing.allowedCommands' )!;
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
@@ -465,14 +457,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 			}
 
 			// Enable ony those commands that are allowed in the exception marker.
-			if ( marker.name.startsWith( 'restrictedEditingException:block:' ) ) {
-				if ( !this._allowedInBlockException.has( commandName ) ) {
-					continue;
-				}
-			} else {
-				if ( !this._allowedInException.has( commandName ) ) {
-					continue;
-				}
+			// In block exceptions all commands are enabled.
+			if (
+				!marker.name.startsWith( 'restrictedEditingException:block:' ) &&
+				!this._allowedInException.has( commandName )
+			) {
+				continue;
 			}
 
 			// Do not enable 'delete' and 'deleteForward' commands on the exception marker boundaries.
