@@ -12,4 +12,4 @@ closes:
 
 ---
 
-Display CKEditor5 AI component in fullscreen mode if it is available.
+Enabled CKEditor AI support in Fullscreen mode, allowing users to access AI tools while editing in fullscreen.
