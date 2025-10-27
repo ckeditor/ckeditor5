@@ -791,11 +791,11 @@ describe( 'AbstractHandler', () => {
 
 	describe( 'on _collapseLeftSidebarButton#execute', () => {
 		it( 'should toggle left sidebar visibility', () => {
-			const hideLeftSidebarSpy = sinon.spy( abstractHandler, '_hideLeftSidebar' );
-			const showLeftSidebarSpy = sinon.spy( abstractHandler, '_showLeftSidebar' );
-
 			abstractHandler._hasLeftCollapseButton = true;
 			abstractHandler.enable();
+
+			const hideLeftSidebarSpy = sinon.spy( abstractHandler, '_hideLeftSidebar' );
+			const showLeftSidebarSpy = sinon.spy( abstractHandler, '_showLeftSidebar' );
 
 			abstractHandler._collapseLeftSidebarButton.fire( 'execute' );
 
