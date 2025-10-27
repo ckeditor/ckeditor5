@@ -74,7 +74,7 @@
     "table": "^6.8.1",
     "typescript": "5.3.3",
     "typescript-eslint": "^8.33.0",
-    "umberto": "^8.3.4",
+    "umberto": "github:cksource/umberto#internal/4144-minify-output-html",
     "upath": "^2.0.0",
     "vitest": "^3.2.4",
     "wait-on": "^8.0.3",

@@ -173,8 +173,8 @@ importers:
         specifier: ^8.33.0
         version: 8.45.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       umberto:
-        specifier: ^8.3.4
-        version: 8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: github:cksource/umberto#internal/4144-minify-output-html
+        version: git+https://git@github.com:cksource/umberto.git#f27c16230259f17efab62fdf6cb8943b374bc582(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -5966,6 +5966,36 @@ packages:
 
   '@mermaid-js/parser@0.6.3':
     resolution: {integrity: sha512-lnjOhe7zyHjc+If7yT4zoedx2vo4sHaTmtkl1+or8BRTnCtDmcTpAjpzDSfCZrshM5bCoz0GyidzadJAH1xobA==}
+
+  '@minify-html/node-darwin-arm64@0.17.1':
+    resolution: {integrity: sha512-Ns6UU7rb3gGqLNy2cUcUTqYcMWSYkcwpigBmM+bOdNXQcEZx0OimtSP2NODGF1Y56FvKRwlv63MvxXx/Tm+FCg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    resolution: {integrity: sha512-Ov/FTmdvCFsCVauk8AtMy1mLVCc3dkO4IfrQbM/vgoOPiQAdlfWD4d5ncaCTUX5XR7JUHqQoDKKaAIxaUpnSnw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    resolution: {integrity: sha512-wIWE7dXg2BHnmnbIldtTYUL4+Ms5JF22H5EE6Xzt3UIo1SNd7z/j7CXNt4f/yPXA7tguqO0wTZWiImA2oqgF4A==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@minify-html/node-linux-x64@0.17.1':
+    resolution: {integrity: sha512-41+3cFhts+KUA+Hd6KgS+WNJu9hMGhm1rv5f5ef64xBey/LfVCzPQVLb3XtmxlFTIc5ayhAxPDrjkiG2MWvBcw==}
+    cpu: [x64]
+    os: [linux]
+
+  '@minify-html/node-win32-x64@0.17.1':
+    resolution: {integrity: sha512-zS+GqHLrPiZKnxXyFHrxIT+B+Yerm5Tie/9VyhafkbvPyPJ99XGmsbW38FbdMjyJSiaPWgVjRxeuFt71alsVGQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@minify-html/node@0.17.1':
+    resolution: {integrity: sha512-MA5XErjzWynYEGqYKjV0GOFjdJCNxCKIBp69BgZdynSqNmIxL35pZJGIxWJsBlUqEOCxUtnI3tprnP6XxCAAbw==}
+    engines: {node: '>= 8.6.0'}
+    hasBin: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -12295,6 +12325,10 @@ packages:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
 
+  tinypool@2.0.0:
+    resolution: {integrity: sha512-/RX9RzeH2xU5ADE7n2Ykvmi9ED3FBGPAjw9u3zucrNNaEBIO0HPSYgL0NT7+3p147ojeSdaVu08F6hjpv31HJg==}
+    engines: {node: ^20.0.0 || >=22.0.0}
+
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
     engines: {node: '>=14.0.0'}
@@ -12451,8 +12485,9 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@8.3.4:
-    resolution: {integrity: sha512-1IpekoCWYCNl0cTeIPwa2fQcDdNrBI2wrLmATZvgeQOeVhhMBwsI9EM6cFfjlYzgAs3CEFh+2g0EglH6TdnWdg==}
+  umberto@git+https://git@github.com:cksource/umberto.git#f27c16230259f17efab62fdf6cb8943b374bc582:
+    resolution: {commit: f27c16230259f17efab62fdf6cb8943b374bc582, repo: git@github.com:cksource/umberto.git, type: git}
+    version: 8.3.4
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0', yarn: "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"}
 
   unbox-primitive@1.1.0:
@@ -14521,6 +14556,29 @@ snapshots:
   '@mermaid-js/parser@0.6.3':
     dependencies:
       langium: 3.3.1
+
+  '@minify-html/node-darwin-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-win32-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node@0.17.1':
+    optionalDependencies:
+      '@minify-html/node-darwin-arm64': 0.17.1
+      '@minify-html/node-darwin-x64': 0.17.1
+      '@minify-html/node-linux-arm64': 0.17.1
+      '@minify-html/node-linux-x64': 0.17.1
+      '@minify-html/node-win32-x64': 0.17.1
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -22023,6 +22081,8 @@ snapshots:
 
   tinypool@1.1.1: {}
 
+  tinypool@2.0.0: {}
+
   tinyrainbow@2.0.0: {}
 
   tinyspy@4.0.4: {}
@@ -22174,11 +22234,12 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@git+https://git@github.com:cksource/umberto.git#f27c16230259f17efab62fdf6cb8943b374bc582(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
       '@ckeditor/jsdoc-plugins': 43.1.0
+      '@minify-html/node': 0.17.1
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.102.0)
       cheerio: 1.1.2
       escape-string-regexp: 4.0.0
@@ -22208,6 +22269,7 @@ snapshots:
       sass: 1.93.2
       shiki: 3.13.0
       sitemap: 8.0.0
+      tinypool: 2.0.0
       tippy.js: 6.3.7
       tree-model: 1.0.7
       upath: 2.0.1
