@@ -426,5 +426,60 @@ describe( 'StandardEditingModeEditing', () => {
 				'<paragraph>baz</paragraph>'
 			);
 		} );
+
+		it( 'should merge sibling block exceptions on insert', () => {
+			_setModelData( editor.model,
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>bar</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+
+			model.change( writer => {
+				const content =
+					'<restrictedEditingException>' +
+						'<paragraph>123</paragraph>' +
+					'</restrictedEditingException>';
+
+				const fragment = _parseModel( content, model.schema, {
+					context: [ '$clipboardHolder' ]
+				} );
+
+				writer.insert( fragment, model.document.getRoot(), 2 );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>bar</paragraph>' +
+					'<paragraph>123</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should merge sibling block exceptions on remove block between exceptions', () => {
+			_setModelData( editor.model,
+				'<restrictedEditingException>' +
+					'<paragraph>foo</paragraph>' +
+				'</restrictedEditingException>' +
+				'<paragraph>bar</paragraph>' +
+				'<restrictedEditingException>' +
+					'<paragraph>baz</paragraph>' +
+				'</restrictedEditingException>'
+			);
+
+			model.change( writer => {
+				writer.remove( model.document.getRoot().getChild( 1 ) );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<restrictedEditingException>' +
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>baz</paragraph>' +
+				'</restrictedEditingException>'
+			);
+		} );
 	} );
 } );

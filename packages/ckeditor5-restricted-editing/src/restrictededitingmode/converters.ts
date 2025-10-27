@@ -165,6 +165,10 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 		let wrapperElement = null;
 
 		if ( config.useWrapperElement ) {
+			if ( !conversionApi.schema.checkChild( position, 'restrictedEditingException' ) ) {
+				return;
+			}
+
 			wrapperElement = writer.createElement( 'restrictedEditingException' );
 			writer.insert( wrapperElement, position );
 			position = writer.createPositionAt( wrapperElement, 0 );
@@ -178,7 +182,7 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 		const fakeMarkerStart = writer.createElement( '$marker', { 'data-name': markerName } );
 		const fakeMarkerEnd = writer.createElement( '$marker', { 'data-name': markerName } );
 
-		if ( config.useWrapperElement ) {
+		if ( wrapperElement ) {
 			writer.insert( fakeMarkerStart, writer.createPositionBefore( wrapperElement ) );
 			writer.insert( fakeMarkerEnd, writer.createPositionAfter( wrapperElement ) );
 		} else {

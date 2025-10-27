@@ -72,6 +72,7 @@ export class StandardEditingModeEditing extends Plugin {
 			const changes = editor.model.document.differ.getChanges();
 			const unwrap = new Set<ModelElement>();
 			const remove = new Set<ModelElement>();
+			const merge = new Set<ModelElement>();
 			let changed = false;
 
 			for ( const entry of changes ) {
@@ -85,6 +86,8 @@ export class StandardEditingModeEditing extends Plugin {
 								unwrap.add( child );
 							} else if ( child.isEmpty ) {
 								remove.add( child );
+							} else {
+								merge.add( child );
 							}
 						} else if (
 							child.is( '$textProxy' ) &&
@@ -101,6 +104,13 @@ export class StandardEditingModeEditing extends Plugin {
 					if ( parent.is( 'element', 'restrictedEditingException' ) && parent.isEmpty ) {
 						remove.add( parent );
 					}
+
+					// Verify if some block exceptions are siblings now after element removed between.
+					for ( const child of parent.getChildren() ) {
+						if ( child.is( 'element', 'restrictedEditingException' ) ) {
+							merge.add( child );
+						}
+					}
 				}
 			}
 
@@ -112,6 +122,23 @@ export class StandardEditingModeEditing extends Plugin {
 			for ( const child of remove ) {
 				writer.remove( child );
 				changed = true;
+			}
+
+			for ( const child of merge ) {
+				if ( child.root.rootName == '$graveyard' ) {
+					continue;
+				}
+
+				const nodeBefore = child.previousSibling;
+				const nodeAfter = child.nextSibling;
+
+				if ( nodeBefore && nodeBefore.is( 'element', 'restrictedEditingException' ) ) {
+					writer.merge( writer.createPositionBefore( child ) );
+				}
+
+				if ( nodeAfter && nodeAfter.is( 'element', 'restrictedEditingException' ) ) {
+					writer.merge( writer.createPositionAfter( child ) );
+				}
 			}
 
 			return changed;

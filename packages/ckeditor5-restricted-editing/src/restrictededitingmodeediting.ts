@@ -20,8 +20,6 @@ import type {
 	ModelDeleteContentEvent,
 	ModelPostFixer,
 	ModelRange,
-	ModelSchemaAttributeCheckCallback,
-	ModelSchemaChildCheckCallback,
 	ViewDocumentTabEvent,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentKeyEventData
@@ -390,9 +388,34 @@ export class RestrictedEditingModeEditing extends Plugin {
 		}
 
 		// Block clipboard outside exception marker on paste and drop.
-		this.listenTo<ClipboardContentInsertionEvent>( clipboard, 'contentInsertion', evt => {
+		this.listenTo<ClipboardContentInsertionEvent>( clipboard, 'contentInsertion', ( evt, data ) => {
 			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
 				evt.stop();
+			}
+
+			const marker = getMarkerAtPosition( editor, selection.focus! );
+
+			// Reduce content pasted into inline exception to text nodes only. Also strip not allowed attributes.
+			if ( marker && marker.name.startsWith( 'restrictedEditingException:inline:' ) ) {
+				const allowedAttributes: Array<string> = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
+
+				model.change( writer => {
+					const content = writer.createDocumentFragment();
+					const textNodes = Array.from( writer.createRangeIn( data.content ).getItems() )
+						.filter( node => node.is( '$textProxy' ) );
+
+					for ( const item of textNodes ) {
+						for ( const attr of item.getAttributeKeys() ) {
+							if ( !allowedAttributes.includes( attr ) ) {
+								writer.removeAttribute( attr, item );
+							}
+						}
+
+						writer.append( item, content );
+					}
+
+					data.content = content;
+				} );
 			}
 		} );
 
@@ -403,9 +426,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		const allowedAttributes: RestrictedEditingConfig['allowedAttributes'] = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
-		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
-		model.schema.addChildCheck( allowTextOnlyInClipboardHolder() );
+		// Do not allow pasting/dropping block exception wrapper.
+		model.schema.addChildCheck( context => {
+			if ( context.startsWith( '$clipboardHolder' ) ) {
+				return false;
+			}
+		}, 'restrictedEditingException' );
 	}
 
 	/**
@@ -655,21 +681,5 @@ function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 		}
 
 		return changeApplied;
-	};
-}
-
-function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): ModelSchemaAttributeCheckCallback {
-	return ( context, attributeName ) => {
-		if ( context.startsWith( '$clipboardHolder' ) ) {
-			return allowedAttributes.includes( attributeName );
-		}
-	};
-}
-
-function allowTextOnlyInClipboardHolder(): ModelSchemaChildCheckCallback {
-	return ( context, childDefinition ) => {
-		if ( context.startsWith( '$clipboardHolder' ) ) {
-			return childDefinition.name === '$text';
-		}
 	};
 }
