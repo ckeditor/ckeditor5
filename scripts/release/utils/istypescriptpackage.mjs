@@ -5,6 +5,7 @@
 
 import fs from 'fs-extra';
 import path from 'upath';
+import { glob } from 'glob';
 
 /**
  * @param {String} packagePath
@@ -16,12 +17,19 @@ export default async function isTypeScriptPackage( packagePath ) {
 
 	// Almost all CKEditor 5 packages define an entry point. When it points to a TypeScript file,
 	// the package is written in TS.
-	if ( packageJson.main ) {
-		return packageJson.main.includes( '.ts' );
+	if ( packageJson.main && packageJson.main.includes( '.ts' ) ) {
+		return true;
 	}
 
-	// Otherwise, let's check if the package contains a `tsconfig.json` file.
-	return checkFileExists( path.join( packagePath, 'tsconfig.json' ) );
+	// In step two, Let's check if the package contains a `tsconfig.json` file.
+	if ( await checkFileExists( path.join( packagePath, 'tsconfig.json' ) ) ) {
+		return true;
+	}
+
+	// In the last step check if any typescript files are present in the src directory.
+	const tsFiles = await glob( 'src/**/*.ts', { cwd: packagePath } );
+
+	return tsFiles.length > 0;
 }
 
 function checkFileExists( file ) {
