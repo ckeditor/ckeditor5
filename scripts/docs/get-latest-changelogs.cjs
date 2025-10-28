@@ -57,7 +57,7 @@ module.exports = () => {
 				.replace( getSectionRegexp( 'Released packages' ), '' );
 
 			return [
-				`## CKEditor 5 ${ version } release`,
+				`## CKEditor 5 v${ version } release`,
 				'',
 				`${ changelog }`,
 				''
