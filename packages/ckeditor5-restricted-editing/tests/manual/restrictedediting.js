@@ -44,7 +44,8 @@ async function startStandardEditingMode() {
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
-			'restrictedEditingException:inline', 'restrictedEditingException:block', '|', 'restrictedEditingException:dropdown', '|',
+			// 'restrictedEditingException:inline', 'restrictedEditingException:block', '|',
+			'restrictedEditingException:dropdown', '|',
 			'undo', 'redo'
 		],
 		image: {
