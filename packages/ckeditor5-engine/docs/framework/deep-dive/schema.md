@@ -160,300 +160,300 @@ Here is a table listing various model elements and their properties registered i
 	<tbody>
 		<tr>
 			<td><code>$block</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$container</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$blockObject</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>$inlineObject</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>❌</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>$clipboardHolder</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$documentFragment</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$marker</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$root</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>$text</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>blockQuote</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>bookmark</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>❌</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>caption</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>codeBlock</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>heading1</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>heading2</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>heading3</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>horizontalLine</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>imageBlock</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>imageInline</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>❌</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>listItem</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>media</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>mergeField</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>❌</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>mergeFieldBlock</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>pageBreak</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>paragraph</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>rawHtml</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>softBreak</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>table</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>tableRow</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>tableCell</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>tableColumn</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>tableColumnGroup</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
-			<td><code>false</code></td>
+			<td>❌</td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
+			<td>❌</td>
 		</tr>
 		<tr>
 			<td><code>tableOfContents</code></td>
-			<td><code>true</code></td>
-			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td><code>true</code></td>
-			<td><code>false</code></td>
-			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
+			<td>❌</td>
+			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
+			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 	</tbody>
 </table>
