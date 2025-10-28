@@ -3617,6 +3617,9 @@ importers:
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
+      '@ckeditor/ckeditor5-select-all':
+        specifier: workspace:*
+        version: link:../ckeditor5-select-all
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
