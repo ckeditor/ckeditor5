@@ -179,20 +179,20 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>$blockObject</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>$inlineObject</code></td>
 			<td>❌</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
 			<td>✅</td>
 			<td>✅</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>$clipboardHolder</code></td>
@@ -251,11 +251,11 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>bookmark</code></td>
 			<td>❌</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
 			<td>✅</td>
 			<td>✅</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>caption</code></td>
@@ -305,29 +305,29 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>horizontalLine</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>imageBlock</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>imageInline</code></td>
 			<td>❌</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
 			<td>✅</td>
 			<td>✅</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>listItem</code></td>
@@ -341,38 +341,38 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>media</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>mergeField</code></td>
 			<td>❌</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
 			<td>✅</td>
 			<td>✅</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>mergeFieldBlock</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>pageBreak</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>paragraph</code></td>
@@ -386,11 +386,11 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>rawHtml</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>softBreak</code></td>
@@ -404,11 +404,11 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>table</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 		<tr>
 			<td><code>tableRow</code></td>
@@ -449,11 +449,11 @@ Here is a table listing various model elements and their properties registered i
 		<tr>
 			<td><code>tableOfContents</code></td>
 			<td>✅</td>
-			<td>✅<a href="#inherited1"><sup>[1]</sup></a></td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>✅<a href="#inherited2"><sup>[2]</sup></a></td>
-			<td>✅<a href="#inherited3"><sup>[3]</sup></a></td>
+			<td>✅</td>
+			<td>✅</td>
 		</tr>
 	</tbody>
 </table>
