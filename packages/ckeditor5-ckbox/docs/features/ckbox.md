@@ -59,46 +59,46 @@ CKBox works natively with CKEditor&nbsp;5. Implementation is straightforward, sa
 		<tr>
 			<td>Effortless Uploads</td>
 			<td>
-                Enables drag and drop uploads of images and files directly into CKEditor&nbsp;5, as well as image pasting from the clipboard, Word, and Google Docs.
-            </td>
+				Enables drag and drop uploads of images and files directly into CKEditor&nbsp;5, as well as image pasting from the clipboard, Word, and Google Docs.
+			</td>
 		</tr>
 		<tr>
 			<td>Image Editing</td>
 			<td>
-                Provides an intuitive image editor for basic operations such as cropping, resizing, and rotating. Basic editing capabilities (crop, resize, rotate, flip) are available directly from the image contextual toolbar for CKBox-served images. 
-            </td>
+				Provides an intuitive image editor for basic operations such as cropping, resizing, and rotating. Basic editing capabilities (crop, resize, rotate, flip) are available directly from the image contextual toolbar for CKBox-served images. 
+			</td>
 		</tr>
 		<tr>
 			<td>Management UI</td>
 			<td>
-                Adds a dedicated toolbar button to open the CKBox UI for managing and reusing uploaded files. Non-embeddable files (such as PDFs) are inserted as links automatically.
-            </td>
+				Adds a dedicated toolbar button to open the CKBox UI for managing and reusing uploaded files. Non-embeddable files (such as PDF) are inserted as links automatically.
+			</td>
 		</tr>
 		<tr>
 			<td>Asset Separation</td>
 			<td>
-                Supports multi-tenant workspaces to separate assets per user, document, or customer.
-            </td>
+				Supports multi-tenant workspaces to separate assets per user, document, or customer.
+			</td>
 		</tr>
-        <tr>
-            <td>User Experience and SEO</td>
-            <td>
-                CKBox simplifies the use of responsive images served from a CDN, improving loading times, boosting SEO, and increasing conversions.
-            </td>
-        </tr>
-        <tr>
-            <td>Bandwidth Savings</td>
-            <td>
-                Out-of-the-box support for the most modern image formats, CKBox can save up to 90% of bandwidth if your application doesn't yet support responsive images, or up to 34% compared to relying on responsive JPG/PNG images.
-            </td>
-        </tr>
-        <tr>
-            <td>Security and Administration</td>
-            <td>
-                Manage asset security and compliance using configurable permissions across workspaces, categories, and user groups.
-            </td>
-        </tr>
-    </tbody>
+		<tr>
+			<td>User Experience and SEO</td>
+			<td>
+				CKBox simplifies the use of responsive images served from a CDN, improving loading times, boosting SEO, and increasing conversions.
+			</td>
+		</tr>
+		<tr>
+			<td>Bandwidth Savings</td>
+			<td>
+				Out-of-the-box support for the most modern image formats, CKBox can save up to 90% of bandwidth if your application does not yet support responsive images, or up to 34% compared to relying on responsive JPG/PNG images.
+			</td>
+		</tr>
+		<tr>
+			<td>Security and Administration</td>
+			<td>
+				Manage asset security and compliance using configurable permissions across workspaces, categories, and user groups.
+			</td>
+		</tr>
+	</tbody>
 </table>
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
@@ -108,26 +108,26 @@ With CKBox you no longer need to write server-side code to upload and scale imag
 CKBox offers significant architectural flexibility, providing users with full control of their data by supporting diverse deployment scenarios. CKBox is available for both cloud (SaaS) and on-premises (self-hosted) installation:
 
 <table>
-    <thead>
+	<thead>
 		<tr>
 			<th style="width: 30%;">Option</th>
 			<th style="width: 70%;">Benefits</th>
 		</tr>
 	</thead>
-    <tbody>
-        <tr>
+	<tbody>
+		<tr>
 			<td>SaaS</td>
 			<td>
-                Offers hassle-free, maintenance-free usage. We manage the cloud infrastructure to keep it secure and up-to-date, perform regular backups of your files, ensure automatic scaling, and guarantee maximum security and high availability. Assets are served via a secure and blazing-fast CDN.
-            </td>
+				Offers hassle-free, maintenance-free usage. We manage the cloud infrastructure to keep it secure and up-to-date, perform regular backups of your files, ensure automatic scaling, and guarantee maximum security and high availability. Assets are served via a secure and blazing-fast CDN.
+			</td>
 		</tr>
-        <tr>
+		<tr>
 			<td>On-premises Option (Self-Hosted)</td>
 			<td>
-                Allows you to host CKBox yourself. It can be installed anywhere, including AWS, Azure, Google Cloud, or your own data center. It runs with any Open Container runtime tool (e.g., Kubernetes, Docker, OpenShift, Podman) and supports various storage types like S3, Azure Blob Storage, MySQL, Postgres, and local filesystem.
-            </td>
+				Allows you to host CKBox yourself. It can be installed anywhere, including AWS, Azure, Google Cloud, or your own data center. It runs with any Open Container runtime tool (for example: Kubernetes, Docker, OpenShift, Podman) and supports various storage types like S3, Azure Blob Storage, MySQL, Postgres, and local filesystem.
+			</td>
 		</tr>
-    </tbody>
+	</tbody>
 </table>
 
 To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html). 
@@ -146,7 +146,7 @@ The easiest way to load the CKBox library is to include the following `<script>`
 <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
 
-When referencing the CKBox library via CDN, you must specify the version number (e.g., `{%CKBOX_VERSION%}` or `latest`).
+When referencing the CKBox library via CDN, you must specify the version number (for example: `{%CKBOX_VERSION%}` or `latest`).
 
 <info-box note>
 	While the ability to use the shorthand `latest` tag instead of a specific version number is available, it is strongly advised against. The use of the latest tag may inadvertently introduce breaking changes into your application, which could cause your CKBox integration to stall unexpectedly.
@@ -169,8 +169,8 @@ Once imported, you can use it within your application:
 	</head>
 	<body>
 		<div id="editor"></div>
-        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-        <script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 		<script>
 			const { ClassicEditor, LinkEditing, Image, ImageUpload, PictureEditing, CKBox, CKBoxImageEdit, CloudServices } = CKEDITOR;
 
@@ -197,7 +197,7 @@ For applications using modern bundling tools (such as Webpack or Vite) and packa
 <info-box note>
 	CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
 
-	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should[ log in to your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
+	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log into your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
 </info-box>
 
 First, install the necessary dependencies:
@@ -233,7 +233,7 @@ The feature can be configured via the {@link module:ckbox/ckboxconfig~CKBoxConfi
 
 ### Defining upload categories
 
-By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object, where the keys define categories and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
+By default, the CKBox feature maps the uploaded image type to the category configured on the cloud service. You can override this behavior and provide your own mappings via the {@link module:ckbox/ckboxconfig~CKBoxConfig#defaultUploadCategories `config.ckbox.defaultUploadCategories`} configuration option. It is an object where the keys define categories, and their values are the types of images that will be uploaded to these categories. The categories might be referenced either by their name or by their ID. Referencing by ID is future-proof because it will not require configuration changes when a category name changes.
 
 ```js
 ClassicEditor
