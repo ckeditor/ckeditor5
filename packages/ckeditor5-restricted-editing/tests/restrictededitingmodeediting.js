@@ -359,7 +359,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			it( 'inline image should not split span between text nodes', () => {
-				_setModelData( model, '<paragraph>foo <imageInline src="foo/bar.jpg"></imageInline> baz</paragraph>' );
+				_setModelData( model, '<paragraph>foo <imageInline src="assets/sample.png"></imageInline> baz</paragraph>' );
 
 				const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -372,13 +372,13 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception">foo <img src="foo/bar.jpg">baz</span></p>'
+					'<p><span class="restricted-editing-exception">foo <img src="assets/sample.png">baz</span></p>'
 				);
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'foo' +
-								' <span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+								' <span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 							'baz' +
 						'</span>' +
 					'</p>'
@@ -386,7 +386,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			it( 'inline image should not split span between text nodes (inline image at start)', () => {
-				_setModelData( model, '<paragraph><imageInline src="foo/bar.jpg"></imageInline>foo baz</paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="assets/sample.png"></imageInline>foo baz</paragraph>' );
 
 				const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -399,12 +399,12 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception"><img src="foo/bar.jpg">foo baz</span></p>'
+					'<p><span class="restricted-editing-exception"><img src="assets/sample.png">foo baz</span></p>'
 				);
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
-							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 							'foo ' +
 							'baz' +
 						'</span>' +
@@ -413,7 +413,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			} );
 
 			it( 'inline image should not split span between text nodes (inline image at the end)', () => {
-				_setModelData( model, '<paragraph>foo baz<imageInline src="foo/bar.jpg"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph>foo baz<imageInline src="assets/sample.png"></imageInline></paragraph>' );
 
 				const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -426,14 +426,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 				} );
 
 				expect( editor.getData() ).to.equal(
-					'<p><span class="restricted-editing-exception">foo baz<img src="foo/bar.jpg"></span></p>'
+					'<p><span class="restricted-editing-exception">foo baz<img src="assets/sample.png"></span></p>'
 				);
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<p>' +
 						'<span class="restricted-editing-exception restricted-editing-exception_selected">' +
 							'foo ' +
 							'baz' +
-							'<span class="ck-widget image-inline" contenteditable="false"><img src="foo/bar.jpg"></img></span>' +
+							'<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>' +
 						'</span>' +
 					'</p>'
 				);
@@ -651,7 +651,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		it( 'should extend marker when inserting inline image on the marker boundary (end)', () => {
 			_setModelData( model, '<paragraph>foo bar[] baz</paragraph>' );
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
 			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
@@ -669,7 +669,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			command.execute( { source: imgSrc } );
 
 			expect( _getModelData( model ) ).to.equalMarkup(
-				'<paragraph>foo bar[<imageInline src="foo/bar.jpg"></imageInline>] baz</paragraph>'
+				'<paragraph>foo bar[<imageInline src="assets/sample.png"></imageInline>] baz</paragraph>'
 			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
 			const expectedRange = model.createRange(
@@ -682,7 +682,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		it( 'should extend marker when inserting inline image on the marker boundary (start)', () => {
 			_setModelData( model, '<paragraph>foo []bar baz</paragraph>' );
-			const imgSrc = 'foo/bar.jpg';
+			const imgSrc = 'assets/sample.png';
 			const firstParagraph = model.document.getRoot().getChild( 0 );
 			// We don't use `editor.execute( ... )` because it requires adding Image plugin into VirtualTestEditor,
 			// so it's impossible because it doesn't has 'ui' which Image package requires. So we are simply using
@@ -700,7 +700,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 			command.execute( { source: imgSrc } );
 
 			expect( _getModelData( model ) ).to.equalMarkup(
-				'<paragraph>foo [<imageInline src="foo/bar.jpg"></imageInline>]bar baz</paragraph>'
+				'<paragraph>foo [<imageInline src="assets/sample.png"></imageInline>]bar baz</paragraph>'
 			);
 			const markerRange = editor.model.markers.get( 'restrictedEditingException:1' ).getRange();
 			const expectedRange = model.createRange(

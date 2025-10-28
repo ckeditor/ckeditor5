@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-root",
-  "version": "47.0.0",
+  "version": "47.1.0",
   "description": "The development environment of CKEditor 5 - the best browser-based rich text editor.",
   "private": true,
   "keywords": [
@@ -22,40 +22,38 @@
   ],
   "devDependencies": {
     "@babel/parser": "^7.23.3",
-    "@ckeditor/ckeditor5-dev-build-tools": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-bump-year": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-changelog": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-ci": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-dependency-checker": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-docs": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-release-tools": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-stale-bot": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-tests": "^53.1.0",
-    "@ckeditor/ckeditor5-dev-web-crawler": "^53.1.0",
+    "@ckeditor/ckeditor5-dev-build-tools": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-bump-year": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-changelog": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-ci": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-dependency-checker": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-docs": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-release-tools": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-stale-bot": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-tests": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-web-crawler": "^53.3.1",
     "@ckeditor/ckeditor5-inspector": "^5.0.0",
-    "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.5",
+    "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.6",
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
-    "@ocular-d/vale-bin": "^2.29.1",
+    "@vitest/coverage-v8": "^3.2.4",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "acorn": "^8.11.3",
     "assert": "^2.0.0",
     "chalk": "^5.0.0",
-    "coveralls": "^3.1.0",
     "date-fns": "^4.0.0",
     "esbuild": "^0.25.0",
     "eslint": "^9.34.0",
-    "eslint-config-ckeditor5": "^12.1.0",
+    "eslint-config-ckeditor5": "^12.2.0",
     "eslint-formatter-stylish": "^8.40.0",
-    "eslint-plugin-ckeditor5-rules": "^12.1.1",
+    "eslint-plugin-ckeditor5-rules": "^12.2.0",
     "eslint-plugin-import": "^2.31.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.0.0",
     "glob": "^11.0.2",
     "globals": "^16.1.0",
     "husky": "^9.1.7",
-    "ini": "^5.0.0",
     "js-yaml": "^4.1.0",
     "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
@@ -71,13 +69,14 @@
     "schema-utils": "^4.2.0",
     "sharp": "^0.34.2",
     "stylelint": "^16.0.0",
-    "stylelint-config-ckeditor5": "^12.1.0",
+    "stylelint-config-ckeditor5": "^12.2.0",
     "svgo": "^3.3.2",
     "table": "^6.8.1",
     "typescript": "5.3.3",
     "typescript-eslint": "^8.33.0",
-    "umberto": "^8.0.3",
+    "umberto": "^8.3.4",
     "upath": "^2.0.0",
+    "vitest": "^3.2.4",
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
@@ -110,8 +109,6 @@
     "docs:content-styles": "node -e \"import( './scripts/docs/build-content-styles.mjs' ).then( m => m.default() );\"",
     "docs:serve": "ws --directory ./build/docs/ --compress --https --port 8080",
     "docs:verify": "node ./scripts/web-crawler/index.mjs --docs",
-    "docs:lint": "node scripts/vale/vale.mjs",
-    "docs:vale": "vale",
     "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
     "translations:validate": "node ./scripts/translations/synchronize.mjs --validate-only",
     "translations:move": "node ./scripts/translations/move.mjs",
@@ -131,7 +128,8 @@
     "check-theme-lark-imports": "node ./scripts/check-theme-lark-imports.mjs",
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
-    "bump-year": "node ./scripts/bump-year.mjs"
+    "bump-year": "node ./scripts/bump-year.mjs",
+    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run"
   },
   "lint-staged": {
     "**/*": [
@@ -140,5 +138,8 @@
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
-  }
+  },
+  "ck-lts-versions": [
+    47
+  ]
 }

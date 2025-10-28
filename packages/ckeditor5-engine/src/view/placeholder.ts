@@ -252,6 +252,20 @@ function updateDocumentPlaceholders(
 
 		const hostElement = getChildPlaceholderHostSubstitute( element );
 
+		// If host element changed, remove the placeholder from the previous one.
+		// This can happen when user replaces the first child element of the parent element
+		// with new one, but the previous one is still in the view tree.
+		// See:
+		// https://github.com/ckeditor/ckeditor5/issues/14354
+		// https://github.com/ckeditor/ckeditor5/issues/18149
+		if ( hostElement !== config.hostElement && config.hostElement ) {
+			writer.removeAttribute( 'data-placeholder', config.hostElement );
+			hideViewPlaceholder( writer, config.hostElement );
+
+			config.hostElement = null;
+			wasViewModified = true;
+		}
+
 		// When not a direct host, it could happen that there is no child element
 		// capable of displaying a placeholder.
 		if ( !hostElement ) {

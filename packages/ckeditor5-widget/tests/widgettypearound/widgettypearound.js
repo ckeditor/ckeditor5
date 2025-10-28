@@ -449,13 +449,13 @@ describe( 'WidgetTypeAround', () => {
 				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
 			} );
 
-			it( 'should activate if an arrow key is pressed along with Shift', () => {
+			it( 'should not activate if an arrow key is pressed along with Shift', () => {
 				_setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
 				fireKeyboardEvent( 'arrowright', { shiftKey: true } );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[</paragraph><blockWidget></blockWidget>]' );
+				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
@@ -689,15 +689,7 @@ describe( 'WidgetTypeAround', () => {
 
 				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
 
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
-
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
-
-				fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
-
-				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>fo[o</paragraph><blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
@@ -967,6 +959,36 @@ describe( 'WidgetTypeAround', () => {
 			} );
 
 			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+		} );
+
+		it( 'should start selection before widget when fake caret before is active and user presses arrow left', () => {
+			_setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			fireKeyboardEvent( 'arrowleft', { shiftKey: true } );
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph>fo[o]</paragraph><blockWidget></blockWidget><paragraph>baz</paragraph>'
+			);
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+		} );
+
+		it( 'should start selection after widget when fake caret after is active and user presses arrow right', () => {
+			_setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+			} );
+
+			fireKeyboardEvent( 'arrowright', { shiftKey: true } );
+
+			expect( _getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>[b]az</paragraph>'
+			);
 			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 		} );
 
