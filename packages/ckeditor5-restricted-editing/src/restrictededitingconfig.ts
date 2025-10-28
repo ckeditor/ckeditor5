@@ -28,7 +28,7 @@
 export interface RestrictedEditingConfig {
 
 	/**
-	 * The command names allowed in non-restricted areas of the content.
+	 * The command names allowed in inline non-restricted areas of the content.
 	 *
 	 * Defines which feature commands should be enabled in the restricted editing mode. The commands used for typing and deleting text
 	 * (`'input'`, `'delete'` and `'deleteForward'`) are allowed by the feature inside non-restricted regions and do not need to be defined.
@@ -53,7 +53,7 @@ export interface RestrictedEditingConfig {
 	allowedCommands: Array<string>;
 
 	/**
-	 * The text attribute names allowed when pasting content ot non-restricted areas.
+	 * The text attribute names allowed when pasting content in inline non-restricted areas.
 	 *
 	 * The default value is:
 	 *

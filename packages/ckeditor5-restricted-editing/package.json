@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-link": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-select-all": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",
