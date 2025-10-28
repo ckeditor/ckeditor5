@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { ImageUpload, ImageInsert } from '@ckeditor/ckeditor5-image';
+import { Image, ImageUpload, ImageInsert, ImageStyle } from '@ckeditor/ckeditor5-image';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 
 import { StandardEditingMode } from '../../src/standardeditingmode.js';
@@ -37,11 +37,15 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, EasyImage, ImageInsert, ImageUpload, CloudServices, StandardEditingMode ],
+		plugins: [
+			ArticlePluginSet, Table, EasyImage, Image, ImageStyle, ImageInsert, ImageUpload, CloudServices,
+			StandardEditingMode
+		],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
-			'restrictedEditingException', 'restrictedEditingExceptionBlock', '|', 'undo', 'redo'
+			'restrictedEditingException:inline', 'restrictedEditingException:block', '|', 'restrictedEditingException:dropdown', '|',
+			'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ],
@@ -84,12 +88,14 @@ function MyPlugin( editor ) {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		plugins: [
-			ArticlePluginSet, Table, TableToolbar, EasyImage, ImageInsert, ImageUpload, CloudServices, RestrictedEditingMode, MyPlugin
+			ArticlePluginSet, Table, TableToolbar, Image, ImageStyle, EasyImage, ImageInsert, ImageUpload, CloudServices,
+			RestrictedEditingMode, MyPlugin
 		],
 		toolbar: [ 'bold', 'italic', 'link', 'insertImage', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
 		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|', 'imageTextAlternative' ],
 			insert: {
-				type: 'inline'
+				type: 'auto'
 			}
 		},
 		table: {
@@ -101,7 +107,7 @@ async function startRestrictedEditingMode() {
 			isVisible: true
 		},
 		restrictedEditing: {
-			allowedCommands: [ 'imageInsert', 'imageUpload' ]
+			allowedCommands: [ 'imageInsert', 'imageUpload', 'bold' ]
 		},
 		cloudServices: CS_CONFIG
 	} );
