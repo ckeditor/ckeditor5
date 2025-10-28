@@ -892,3 +892,9 @@ Finally, the schema plays a crucial role during the conversion from the view to 
 <info-box>
 	Some features may miss schema checks. If you happen to find such a scenario, do not hesitate to [report it to us](https://github.com/ckeditor/ckeditor5/issues).
 </info-box>
+
+<style>
+	.doc.b-table tr td:not(:first-child) {
+		text-align: center;
+	}
+</style>
