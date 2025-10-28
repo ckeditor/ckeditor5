@@ -993,6 +993,63 @@ describe( 'AbstractHandler', () => {
 				.classList.contains( 'ck-fullscreen__right-sidebar--collapsed' ) ).to.be.true;
 		} );
 	} );
+
+	describe( '_handleAISidebarTransitions', () => {
+		let aiElement, nestedElement;
+
+		beforeEach( () => {
+			aiElement = global.document.createElement( 'div' );
+			nestedElement = global.document.createElement( 'div' );
+			aiElement.appendChild( nestedElement );
+
+			sinon.stub( editor.plugins, 'get' ).withArgs( 'AITabs' ).returns( {
+				view: {
+					element: aiElement
+				}
+			} );
+		} );
+
+		afterEach( () => {
+			sinon.restore();
+			aiElement.remove();
+		} );
+
+		it( 'should not adjust the fullscreen elements if the transition is not on the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const evt = new TransitionEvent( 'transitionend', {
+				target: nestedElement,
+				propertyName: 'width'
+			} );
+
+			abstractHandler._handleAISidebarTransitions( evt );
+
+			expect( adjustVisibleElementsStub ).to.not.have.been.called;
+		} );
+
+		it( 'should not adjust the fullscreen elements if the transition concerns non-width properties of the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const evt = new TransitionEvent( 'transitionend', {
+				target: aiElement,
+				propertyName: 'height'
+			} );
+
+			abstractHandler._handleAISidebarTransitions( evt );
+
+			expect( adjustVisibleElementsStub ).to.not.have.been.called;
+		} );
+
+		it( 'should adjust the fullscreen elements if the transition is on the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const fakeEvt = {
+				target: aiElement,
+				propertyName: 'width'
+			};
+
+			abstractHandler._handleAISidebarTransitions( fakeEvt );
+
+			expect( adjustVisibleElementsStub ).to.have.been.called;
+		} );
+	} );
 } );
 
 function wait( time ) {
