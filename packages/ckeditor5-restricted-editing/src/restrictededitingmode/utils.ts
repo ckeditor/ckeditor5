@@ -69,7 +69,7 @@ export function isSelectionInMarker( selection: ModelDocumentSelection, model: M
 }
 
 /**
- * TODO
+ * Returns the marker range asjusted to the inside of exception wrapper element if needed.
  *
  * @internal
  */

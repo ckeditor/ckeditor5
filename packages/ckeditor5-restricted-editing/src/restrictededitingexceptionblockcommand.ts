@@ -32,7 +32,7 @@ export class RestrictedEditingExceptionBlockCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Wraps or unwraps the selected blocks with non-restricted area.
 	 *
 	 * @fires execute
 	 * @param options Command options.
