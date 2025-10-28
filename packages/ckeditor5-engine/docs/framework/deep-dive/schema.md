@@ -460,9 +460,9 @@ Here is a table listing various model elements and their properties registered i
 
 <info-box>
 	There are some remarks regarding the `$blockObject`, `$inlineObject`, `bookmark`, `horizontalLine`, `imageBlock`, `imageInline`, `media`, `mergeField`, `mergeFieldBlock`, `pageBreak`, `rawHtml`, `table`, `tableOfContents` elements:
-	* <span id="inherited1">[1]</span> The value of `isLimit` is `true` for those elements because all [objects](#object-elements) are automatically [limit elements](#limit-elements).
-	* <span id="inherited2">[2]</span> The value of `isSelectable` is `true` for those elements because all [objects](#object-elements) are automatically [selectable elements](#selectable-elements).
-	* <span id="inherited3">[3]</span> The value of `isContent` is `true` for those elements because all [objects](#object-elements) are automatically [content elements](#content-elements).
+	* The value of `isLimit` is `true` for those elements because all [objects](#object-elements) are automatically [limit elements](#limit-elements).
+	* The value of `isSelectable` is `true` for those elements because all [objects](#object-elements) are automatically [selectable elements](#selectable-elements).
+	* The value of `isContent` is `true` for those elements because all [objects](#object-elements) are automatically [content elements](#content-elements).
 </info-box>
 
 ### Limit elements
