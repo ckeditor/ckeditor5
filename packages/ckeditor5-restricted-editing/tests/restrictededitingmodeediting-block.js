@@ -421,14 +421,14 @@ describe( 'RestrictedEditingModeEditing - block exceptions', () => {
 			);
 		} );
 
-		it.skip( 'should trim deleted content to a exception marker (focus in marker)', () => {
+		it( 'should trim deleted content to a exception marker (focus in marker)', () => {
 			model.change( writer => {
 				model.deleteContent( writer.createSelection(
 					writer.createRange(
 						writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ),
 						writer.createPositionAt( model.document.getRoot().getChild( 1 ).getChild( 0 ), 3 )
 					)
-				) );
+				), { doNotAutoparagraph: true } );
 			} );
 
 			expect( _getModelData( model ) ).to.equal(
