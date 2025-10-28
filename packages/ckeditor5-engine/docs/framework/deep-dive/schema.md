@@ -160,300 +160,300 @@ Here is a table listing various model elements and their properties registered i
 	<tbody>
 		<tr>
 			<td><code>$block</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$container</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$blockObject</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>$inlineObject</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>$clipboardHolder</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$documentFragment</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$marker</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$root</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>$text</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
 		</tr>
 		<tr>
 			<td><code>blockQuote</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>bookmark</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>caption</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>codeBlock</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>heading1</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>heading2</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>heading3</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>horizontalLine</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>imageBlock</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>imageInline</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>listItem</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>media</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>mergeField</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>mergeFieldBlock</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>pageBreak</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>paragraph</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>rawHtml</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>softBreak</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>table</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>tableRow</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>tableCell</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>tableColumn</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>tableColumnGroup</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive"><code>false</code></td>
-			<td class="value_negative"><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
+			<td><code>false</code></td>
 		</tr>
 		<tr>
 			<td><code>tableOfContents</code></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
-			<td class="value_positive"><code>true</code></td>
-			<td class="value_negative"><code>false</code></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
-			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td><code>true</code></td>
+			<td><code>false</code></td>
+			<td><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 	</tbody>
 </table>
