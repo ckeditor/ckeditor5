@@ -197,7 +197,7 @@ For applications using modern bundling tools (such as Webpack or Vite) and packa
 <info-box note>
 	CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
 
-	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should[ log in to your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
+	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log in to your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
 </info-box>
 
 First, install the necessary dependencies:
