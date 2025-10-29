@@ -26,7 +26,7 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "140.0.7339.127"
+    default: "141.0.7390.54"
 
 orbs:
   continuation: circleci/continuation@0.1.2
@@ -70,6 +70,8 @@ jobs:
           command: sudo npm i -g pnpm@^10
       - run:
           name: Install dependencies
+          environment:
+            PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
       - run:
           name: Generate a new configuration to check all packages in the repository

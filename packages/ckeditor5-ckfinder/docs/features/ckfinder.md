@@ -62,7 +62,8 @@ You can use this feature in the rich-text editor in two different ways:
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-<code-switcher>
+### From npm
+
 ```js
 import { ClassicEditor, CKFinder, CKFinderUploadAdapter } from 'ckeditor5';
 
@@ -78,7 +79,28 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-</code-switcher>
+
+### From CDN
+
+<info-box note>
+	The `ckfinder.js` script exposes a global variable named `window.CKFinder`. Use an alias for the `CKFinder` import to avoid naming conflicts.
+</info-box>
+
+```js
+const { ClassicEditor, CKFinder: CKFinderPlugin, CKFinderUploadAdapter } = CKEDITOR;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ CKFinderPlugin, CKFinderUploadAdapter, /* ... */ ],
+		toolbar: [ 'ckfinder', 'uploadImage', /* ... */ ], // Depending on your preference.
+		ckfinder: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Configuration
 

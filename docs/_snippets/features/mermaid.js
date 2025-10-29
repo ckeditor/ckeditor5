@@ -37,7 +37,27 @@ ClassicEditor
 				top: getViewportTopOffsetConfig()
 			}
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		// A proper indentation is required for the Mermaid syntax to work.
+		initialData: `<h2>CKEditor timeline diagram</h2>
+<pre spellcheck="false"><code class="language-mermaid">timeline
+title History of CKEditor
+2003 : FCKeditor
+2009 : CKEditor 3
+2012 : CKEditor 4
+2018 : CKEditor 5</code></pre>
+
+<h2>Collaboration features mindmap</h2>
+<pre spellcheck="false"><code class="language-mermaid">mindmap
+  root((CKEditor 5<br>Collaboration))
+    Change control
+      Track changes
+      Revision history
+    Comments
+      Comments archive
+    Other tools
+      Mentions
+      User list</code></pre>`
 	} )
 	.then( editor => {
 		window.editor = editor;

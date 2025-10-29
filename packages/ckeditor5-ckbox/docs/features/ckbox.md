@@ -53,7 +53,7 @@ To use this feature in your application, you must first load the CKBox library a
 The easiest way to load the CKBox library is to include the `<script>` tag loading the `ckbox.js` file first:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
 ```
 
 Please note, that while using the `latest` call instead of a version number is available, it is not advised. The latest version may bring breaking changes that will stall your CKBox integration.
@@ -215,8 +215,8 @@ ClassicEditor
 Also, make sure to include the translation file after loading the CKBox library:
 
 ```html
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/ckbox.js"></script>
-<script src="https://cdn.ckbox.io/ckbox/2.4.0/translations/es.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/{%CKBOX_VERSION%}/translations/es.js"></script>
 ```
 
 ### Providing the token URL
@@ -299,6 +299,10 @@ If you want to use the CKBox editing capabilities straight from the editor, the 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## REST API
+
+The CKBox REST API allows managing files and configuration of the drive. Read the [REST API documentation](https://api.ckbox.io/api/docs) to find out how to employ it in your implementation.
 
 ## What's next
 

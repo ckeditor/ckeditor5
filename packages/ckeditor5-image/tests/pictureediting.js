@@ -2061,7 +2061,7 @@ describe( 'PictureEditing', () => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
 				loader.file.then( () => {
 					adapterMock.mockSuccess( {
-						default: 'image.png',
+						default: 'assets/sample.png',
 						sources: [
 							{ srcset: 'bar.png', type: 'image/png', media: '(max-width: 800px)' },
 							{ srcset: 'baz.png', type: 'image/png', media: '(min-width: 800px)' }
@@ -2072,7 +2072,7 @@ describe( 'PictureEditing', () => {
 
 			expect( _getModelData( editor.model ) ).to.equal(
 				'<paragraph>' +
-					'[<imageInline sources="[object Object],[object Object]" src="image.png"></imageInline>]' +
+					'[<imageInline sources="[object Object],[object Object]" src="assets/sample.png"></imageInline>]' +
 					'foo' +
 				'</paragraph>'
 			);
@@ -2103,13 +2103,13 @@ describe( 'PictureEditing', () => {
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
 				loader.file.then( () => {
-					adapterMock.mockSuccess( { default: 'image.png' } );
+					adapterMock.mockSuccess( { default: 'assets/sample.png' } );
 				} );
 			} );
 
 			expect( _getModelData( editor.model ) ).to.equal(
 				'<paragraph>' +
-					'[<imageInline src="image.png"></imageInline>]' +
+					'[<imageInline src="assets/sample.png"></imageInline>]' +
 					'foo' +
 				'</paragraph>'
 			);

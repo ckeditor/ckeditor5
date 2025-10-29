@@ -883,6 +883,124 @@ describe( 'ListEditing - converters', () => {
 
 			expect( spy.callCount ).to.equal( 0 );
 		} );
+
+		describe( 'inside an elementToStructure', () => {
+			beforeEach( () => {
+				editor.model.schema.register( 'complex', {
+					inheritAllFrom: '$blockObject',
+					allowContentOf: '$container'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToStructure( {
+					model: 'complex',
+					view: ( modelElement, conversionApi ) => {
+						return conversionApi.writer.createContainerElement( 'div', { class: 'outer' }, [
+							conversionApi.writer.createContainerElement( 'div', { class: 'inner' }, [
+								conversionApi.writer.createSlot()
+							] )
+						] );
+					}
+				} );
+
+				editor.conversion.for( 'editingDowncast' ).elementToElement( {
+					model: 'paragraph',
+					view: ( modelElement, { writer } ) => {
+						if ( modelElement.parent.is( 'element', 'complex' ) ) {
+							return writer.createContainerElement( 'span', { class: 'ck-bogus-paragraph' } );
+						}
+					},
+					converterPriority: 'high'
+				} );
+
+				editor.conversion.for( 'dataDowncast' ).elementToElement( {
+					model: 'paragraph',
+					view: ( modelElement, { writer } ) => {
+						if ( modelElement.parent.is( 'element', 'complex' ) ) {
+							const viewElement = writer.createContainerElement( 'p' );
+
+							writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
+
+							return viewElement;
+						}
+					},
+					converterPriority: 'high'
+				} );
+			} );
+
+			it( 'when bogus paragraph is used inside complex structure before change into list', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<paragraph>f[]oo</paragraph>' +
+					'</complex>'
+				);
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ), 'editing view' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<span class="ck-bogus-paragraph">foo</span>' +
+						'</div>' +
+					'</div>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ), 'editing view' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+							'</ul>' +
+						'</div>' +
+					'</div>'
+				);
+				expect( editor.getData( { skipListItemIds: true } ), 'data' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<ul>' +
+								'<li>foo</li>' +
+							'</ul>' +
+						'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'when there is no bogus paragraph', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<heading1>f[]oo</heading1>' +
+					'</complex>'
+				);
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ), 'editing view' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<h2>foo</h2>' +
+						'</div>' +
+					'</div>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ), 'editing view' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<ul>' +
+								'<li><h2>foo</h2></li>' +
+							'</ul>' +
+						'</div>' +
+					'</div>'
+				);
+				expect( editor.getData( { skipListItemIds: true } ), 'data' ).to.equal(
+					'<div class="outer">' +
+						'<div class="inner">' +
+							'<ul>' +
+								'<li><h2>foo</h2></li>' +
+							'</ul>' +
+						'</div>' +
+					'</div>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'schema checking and parent splitting', () => {

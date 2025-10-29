@@ -9,9 +9,6 @@ We are happy to announce the release of CKEditor 5 v47.1.0.
 
 This release introduces a minor stability update, featuring focused fixes and UX improvements.
 
-> [!NOTE]
-> Breaking changes in CKEditor AI are allowed in the LTS Edition. [Learn more why.](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#features-excluded-from-the-no-breaking-changes-guarantee-v47x)
-
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified CSS for the CKEditor AI integration in a sidebar mode (`config.ai.container.type: 'sidebar'`) by removing default layout constraints:
@@ -21,6 +18,9 @@ This release introduces a minor stability update, featuring focused fixes and UX
   * Removed the default `width` from `.ck-ai-tabs`.
 
   Also, the `--ck-tabs-panels-container-width` custom property has been removed from the codebase.
+
+> [!NOTE]
+> Breaking changes in CKEditor AI are permitted during the Active phase of an LTS release. [Learn more why](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#features-excluded-from-the-no-breaking-changes-guarantee-v47x).
 
 ### Features
 
