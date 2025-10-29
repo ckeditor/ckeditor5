@@ -165,7 +165,7 @@ Once imported, you can use it within your application:
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{%CKBOX_VERSION%}/ckeditor5.css">
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css">
 	</head>
 	<body>
 		<div id="editor"></div>
