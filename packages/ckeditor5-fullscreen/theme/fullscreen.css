@@ -267,7 +267,7 @@ Fullscreen layout:
 	}
 }
 
-.ck-fullscreen__right-edge {
+.ck.ck-fullscreen__right-edge {
 	position: sticky;
 	top: 0;
 	margin-top: 0;
