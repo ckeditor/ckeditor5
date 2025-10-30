@@ -142,8 +142,8 @@ Apart from this, follow the matching guides covering the technology of your choi
 
 When installing CKEditor&nbsp;5 LTS Edition from ZIP, make sure to choose the LTS version:
 
-* <a href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/zip/ckeditor5-{@var ckeditor5-version}.zip">Download ZIP: CKEditor&nbsp;5&nbsp;LTS version</a>
-* <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/zip/ckeditor5-premium-features-{@var ckeditor5-version}.zip">Download ZIP: CKEditor 5 with Premium features LTS version</a>
+* <a href="https://cdn.ckeditor.com/ckeditor5/{%CKEDITOR_5_VERSION_LTS_V47%}/zip/ckeditor5-{%CKEDITOR_5_VERSION_LTS_V47%}.zip">Download ZIP: CKEditor&nbsp;5&nbsp;LTS version</a>
+* <a href="https://cdn.ckeditor.com/ckeditor5-premium-features/{%CKEDITOR_5_VERSION_LTS_V47%}/zip/ckeditor5-premium-features-{%CKEDITOR_5_VERSION_LTS_V47%}.zip">Download ZIP: CKEditor 5 with Premium features LTS version</a>
 
 Apart from this, follow the matching guides covering the technology of your choice (for example, React, Angular, Vue, or vanilla JS) in the {@link getting-started/index Getting started} section.
 
@@ -152,14 +152,14 @@ Apart from this, follow the matching guides covering the technology of your choi
 When installing CKEditor&nbsp;5 LTS Edition from CDN, make sure to choose the LTS version:
 
 ```html
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{%CKEDITOR_5_VERSION_LTS_V47%}/ckeditor5.css" />
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{%CKEDITOR_5_VERSION_LTS_V47%}/ckeditor5-premium-features.css" />
 
-<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{%CKEDITOR_5_VERSION_LTS_V47%}/ckeditor5.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{%CKEDITOR_5_VERSION_LTS_V47%}/ckeditor5-premium-features.umd.js"></script>
 ```
 
-Or specify `version: '{@var ckeditor5-version}'` when using functions such as {@link getting-started/setup/loading-cdn-resources `useCKEditorCloud()`}.
+Or specify `version: '{%CKEDITOR_5_VERSION_LTS_V47%}'` when using functions such as {@link getting-started/setup/loading-cdn-resources `useCKEditorCloud()`}.
 
 Apart from this, follow the matching guides covering the technology of your choice (for example, React, Angular, Vue or vanilla JS) in the {@link getting-started/index Getting started} section.
 
@@ -295,7 +295,7 @@ Refer to the table below to see which versions of each ecosystem library should 
 
 The current LTS version line is `v47.x`.
 
-The latest release in this line is `v{@var ckeditor5-version}`.
+The latest release in this line is `v{%CKEDITOR_5_VERSION_LTS_V47%}`.
 
 ### Will I need to upgrade CKEditor 5 if I use the LTS Edition?
 
