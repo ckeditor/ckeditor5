@@ -177,8 +177,8 @@ importers:
         specifier: ^8.33.0
         version: 8.44.0(eslint@9.35.0(jiti@2.5.1))(typescript@5.3.3)
       umberto:
-        specifier: ^8.3.5
-        version: 8.3.5(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        specifier: ^8.4.0
+        version: 8.4.0(chokidar@3.6.0)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -190,7 +190,7 @@ importers:
         version: 8.0.5
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -383,16 +383,16 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-translations':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@wiris/mathtype-ckeditor5':
         specifier: ^8.13.1
         version: 8.13.4(ckeditor5@packages+ckeditor5)
       terser-webpack-plugin:
         specifier: ^5.0.0
-        version: 5.3.14(@swc/core@1.13.5)(esbuild@0.25.9)(webpack@5.101.3)
+        version: 5.3.14(webpack@5.101.3)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -401,7 +401,7 @@ importers:
         version: 2.0.1
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -426,7 +426,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -459,7 +459,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -487,7 +487,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -520,7 +520,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -557,7 +557,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -584,7 +584,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -606,7 +606,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -624,7 +624,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -652,7 +652,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -673,7 +673,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -707,7 +707,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -737,7 +737,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -780,7 +780,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -825,7 +825,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -877,7 +877,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -901,7 +901,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -935,7 +935,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -956,7 +956,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1089,7 +1089,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1108,7 +1108,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1120,7 +1120,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1166,7 +1166,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1199,7 +1199,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1266,7 +1266,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1294,7 +1294,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1312,7 +1312,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1343,7 +1343,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1373,7 +1373,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1404,7 +1404,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1437,7 +1437,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1468,7 +1468,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1498,7 +1498,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1529,7 +1529,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1562,7 +1562,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1602,7 +1602,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1638,7 +1638,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1678,7 +1678,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -1708,7 +1708,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1787,7 +1787,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1830,7 +1830,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1864,7 +1864,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1879,7 +1879,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1910,7 +1910,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1961,7 +1961,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -1989,7 +1989,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2013,7 +2013,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2062,7 +2062,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2152,7 +2152,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2195,7 +2195,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2225,7 +2225,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2253,7 +2253,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2286,7 +2286,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2317,7 +2317,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2341,7 +2341,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2375,7 +2375,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2405,7 +2405,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2469,7 +2469,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2532,7 +2532,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2544,7 +2544,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2608,7 +2608,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2665,7 +2665,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2699,7 +2699,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2714,7 +2714,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2736,7 +2736,7 @@ importers:
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2754,7 +2754,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2809,7 +2809,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2839,7 +2839,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -2897,7 +2897,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2963,7 +2963,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3042,7 +3042,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3093,7 +3093,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3136,7 +3136,7 @@ importers:
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -3166,7 +3166,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3206,7 +3206,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3239,7 +3239,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3276,7 +3276,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3309,7 +3309,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3340,7 +3340,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3364,7 +3364,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3416,7 +3416,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3450,7 +3450,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3498,7 +3498,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3529,7 +3529,7 @@ importers:
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3565,7 +3565,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3605,7 +3605,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3638,7 +3638,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3687,7 +3687,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3730,7 +3730,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3823,7 +3823,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3854,7 +3854,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3881,7 +3881,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3912,7 +3912,7 @@ importers:
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3930,7 +3930,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -3985,7 +3985,7 @@ importers:
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4057,7 +4057,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4106,7 +4106,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4166,7 +4166,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4273,7 +4273,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4397,7 +4397,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4449,7 +4449,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4468,7 +4468,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4606,7 +4606,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4637,7 +4637,7 @@ importers:
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
         specifier: ^53.3.1
-        version: 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
+        version: 53.3.1(typescript@5.3.3)(webpack@5.101.3)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4673,7 +4673,7 @@ importers:
         version: 5.3.3
       webpack:
         specifier: ^5.94.0
-        version: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+        version: 5.101.3
       webpack-cli:
         specifier: ^6.0.1
         version: 6.0.1(webpack@5.101.3)
@@ -4779,6 +4779,10 @@ packages:
     resolution: {integrity: sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/helper-validator-identifier@7.28.5':
+    resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/helper-validator-option@7.27.1':
     resolution: {integrity: sha512-YvjJow9FxbhFFKDSuFnVCe2WxXk1zWc22fFePVNEaWJEu8IrZVlda6N0uHwzZrUM1il7NC9Mlp4MaJYbYd9JSg==}
     engines: {node: '>=6.9.0'}
@@ -4793,6 +4797,11 @@ packages:
 
   '@babel/parser@7.28.4':
     resolution: {integrity: sha512-yZbBqeM6TkpP9du/I2pUZnJsRMGGvOuIrhjzC1AwHwW+6he4mni6Bp/m8ijn0iOuZuPI2BfkCoSRunpyjnrQKg==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@7.28.5':
+    resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -5177,6 +5186,10 @@ packages:
 
   '@babel/types@7.28.4':
     resolution: {integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/types@7.28.5':
+    resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
 
   '@bcoe/v8-coverage@1.0.2':
@@ -5906,6 +5919,36 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@inquirer/prompts': '>= 3 < 8'
+
+  '@minify-html/node-darwin-arm64@0.17.1':
+    resolution: {integrity: sha512-Ns6UU7rb3gGqLNy2cUcUTqYcMWSYkcwpigBmM+bOdNXQcEZx0OimtSP2NODGF1Y56FvKRwlv63MvxXx/Tm+FCg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    resolution: {integrity: sha512-Ov/FTmdvCFsCVauk8AtMy1mLVCc3dkO4IfrQbM/vgoOPiQAdlfWD4d5ncaCTUX5XR7JUHqQoDKKaAIxaUpnSnw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    resolution: {integrity: sha512-wIWE7dXg2BHnmnbIldtTYUL4+Ms5JF22H5EE6Xzt3UIo1SNd7z/j7CXNt4f/yPXA7tguqO0wTZWiImA2oqgF4A==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@minify-html/node-linux-x64@0.17.1':
+    resolution: {integrity: sha512-41+3cFhts+KUA+Hd6KgS+WNJu9hMGhm1rv5f5ef64xBey/LfVCzPQVLb3XtmxlFTIc5ayhAxPDrjkiG2MWvBcw==}
+    cpu: [x64]
+    os: [linux]
+
+  '@minify-html/node-win32-x64@0.17.1':
+    resolution: {integrity: sha512-zS+GqHLrPiZKnxXyFHrxIT+B+Yerm5Tie/9VyhafkbvPyPJ99XGmsbW38FbdMjyJSiaPWgVjRxeuFt71alsVGQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@minify-html/node@0.17.1':
+    resolution: {integrity: sha512-MA5XErjzWynYEGqYKjV0GOFjdJCNxCKIBp69BgZdynSqNmIxL35pZJGIxWJsBlUqEOCxUtnI3tprnP6XxCAAbw==}
+    engines: {node: '>= 8.6.0'}
+    hasBin: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -12040,6 +12083,7 @@ packages:
   sitemap@8.0.0:
     resolution: {integrity: sha512-+AbdxhM9kJsHtruUF39bwS/B0Fytw6Fr1o4ZAIAEqA6cke2xcoO2GleBw9Zw7nRzILVEgz7zBM5GiTJjie1G9A==}
     engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    deprecated: 'SECURITY: Multiple vulnerabilities fixed in 8.0.1 (XML injection, path traversal, command injection, protocol injection). Upgrade immediately: npm install sitemap@8.0.1'
     hasBin: true
 
   slack-notify@2.0.7:
@@ -12488,6 +12532,10 @@ packages:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
 
+  tinypool@2.0.0:
+    resolution: {integrity: sha512-/RX9RzeH2xU5ADE7n2Ykvmi9ED3FBGPAjw9u3zucrNNaEBIO0HPSYgL0NT7+3p147ojeSdaVu08F6hjpv31HJg==}
+    engines: {node: ^20.0.0 || >=22.0.0}
+
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
     engines: {node: '>=14.0.0'}
@@ -12662,8 +12710,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@8.3.5:
-    resolution: {integrity: sha512-WQhtRSJsOttvjYwyFIHO5VdeQGtn8kcrbC9wJ5ghxgvbAXIeTNyuBXeWioZPLvGIJrnmQ5G+J4SpqZy4f2hQYA==}
+  umberto@8.4.0:
+    resolution: {integrity: sha512-xqEs0o/knPYt3Gf4KaV9zls7mQsdcAUjTEeZyFUIXZxxhm7wIJ6akgY3g1ImAgqiPI3yInqL9w/FENaxSISayQ==}
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0', yarn: "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"}
 
   unbox-primitive@1.1.0:
@@ -13338,6 +13386,8 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.27.1': {}
 
+  '@babel/helper-validator-identifier@7.28.5': {}
+
   '@babel/helper-validator-option@7.27.1': {}
 
   '@babel/helper-wrap-function@7.28.3':
@@ -13356,6 +13406,10 @@ snapshots:
   '@babel/parser@7.28.4':
     dependencies:
       '@babel/types': 7.28.4
+
+  '@babel/parser@7.28.5':
+    dependencies:
+      '@babel/types': 7.28.5
 
   '@babel/plugin-bugfix-firefox-class-in-computed-class-key@7.27.1(@babel/core@7.28.4)':
     dependencies:
@@ -13851,6 +13905,11 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@babel/types@7.28.5':
+    dependencies:
+      '@babel/helper-string-parser': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
+
   '@bcoe/v8-coverage@1.0.2': {}
 
   '@braintree/sanitize-url@6.0.4': {}
@@ -14075,6 +14134,27 @@ snapshots:
       - uglify-js
       - webpack
 
+  '@ckeditor/ckeditor5-dev-translations@53.3.1(typescript@5.3.3)(webpack@5.101.3)':
+    dependencies:
+      '@babel/parser': 7.28.4
+      '@babel/traverse': 7.28.4
+      '@ckeditor/ckeditor5-dev-utils': 53.3.1(typescript@5.3.3)(webpack@5.101.3)
+      chalk: 5.6.2
+      fs-extra: 11.3.2
+      glob: 11.0.3
+      plural-forms: 0.5.5
+      pofile: 1.1.4
+      rimraf: 6.0.1
+      upath: 2.0.1
+      webpack-sources: 3.3.3
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@swc/core'
+      - supports-color
+      - typescript
+      - uglify-js
+      - webpack
+
   '@ckeditor/ckeditor5-dev-utils@53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)':
     dependencies:
       '@ckeditor/ckeditor5-dev-translations': 53.3.1(@swc/core@1.13.5)(esbuild@0.25.9)(typescript@5.3.3)(webpack@5.101.3)
@@ -14108,6 +14188,43 @@ snapshots:
       - '@rspack/core'
       - '@swc/core'
       - esbuild
+      - supports-color
+      - typescript
+      - uglify-js
+      - webpack
+
+  '@ckeditor/ckeditor5-dev-utils@53.3.1(typescript@5.3.3)(webpack@5.101.3)':
+    dependencies:
+      '@ckeditor/ckeditor5-dev-translations': 53.3.1(typescript@5.3.3)(webpack@5.101.3)
+      '@types/postcss-import': 14.0.3
+      '@types/through2': 2.0.41
+      chalk: 5.6.2
+      cli-cursor: 5.0.0
+      cli-spinners: 3.2.0
+      css-loader: 7.1.2(webpack@5.101.3)
+      cssnano: 7.1.1(postcss@8.5.6)
+      esbuild-loader: 4.3.0(webpack@5.101.3)
+      fs-extra: 11.3.2
+      glob: 11.0.3
+      is-interactive: 2.0.0
+      mini-css-extract-plugin: 2.9.4(webpack@5.101.3)
+      mocha: 11.7.2
+      pacote: 21.0.1
+      postcss: 8.5.6
+      postcss-import: 16.1.1(postcss@8.5.6)
+      postcss-loader: 8.2.0(postcss@8.5.6)(typescript@5.3.3)(webpack@5.101.3)
+      postcss-mixins: 11.0.3(postcss@8.5.6)
+      postcss-nesting: 13.0.2(postcss@8.5.6)
+      raw-loader: 4.0.2(webpack@5.101.3)
+      shelljs: 0.10.0
+      simple-git: 3.28.0
+      style-loader: 4.0.0(webpack@5.101.3)
+      terser-webpack-plugin: 5.3.14(webpack@5.101.3)
+      through2: 4.0.2
+      upath: 2.0.1
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@swc/core'
       - supports-color
       - typescript
       - uglify-js
@@ -14679,6 +14796,29 @@ snapshots:
     dependencies:
       '@inquirer/prompts': 7.8.6(@types/node@24.5.0)
       '@inquirer/type': 1.5.5
+
+  '@minify-html/node-darwin-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-win32-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node@0.17.1':
+    optionalDependencies:
+      '@minify-html/node-darwin-arm64': 0.17.1
+      '@minify-html/node-darwin-x64': 0.17.1
+      '@minify-html/node-linux-arm64': 0.17.1
+      '@minify-html/node-linux-x64': 0.17.1
+      '@minify-html/node-win32-x64': 0.17.1
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -15664,19 +15804,19 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)':
+  '@webpack-cli/configtest@3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)':
     dependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
       webpack-cli: 6.0.1(webpack@5.101.3)
 
-  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)':
+  '@webpack-cli/info@3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)':
     dependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
       webpack-cli: 6.0.1(webpack@5.101.3)
 
-  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)':
+  '@webpack-cli/serve@3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)':
     dependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
       webpack-cli: 6.0.1(webpack@5.101.3)
 
   '@webspellchecker/wproofreader-ckeditor5@3.1.3(ckeditor5@packages+ckeditor5)':
@@ -15712,6 +15852,8 @@ snapshots:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
+
+  acorn-import-phases@1.0.4: {}
 
   acorn-import-phases@1.0.4(acorn@8.15.0):
     dependencies:
@@ -15936,7 +16078,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.28.4
       find-up: 5.0.0
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
 
   babel-plugin-istanbul@7.0.1:
     dependencies:
@@ -16616,7 +16758,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.2
     optionalDependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
 
   css-select@4.3.0:
     dependencies:
@@ -17442,7 +17584,7 @@ snapshots:
       esbuild: 0.25.9
       get-tsconfig: 4.10.1
       loader-utils: 2.0.4
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
       webpack-sources: 1.4.3
 
   esbuild@0.25.9:
@@ -18976,7 +19118,7 @@ snapshots:
 
   jsdoc@https://codeload.github.com/ckeditor/jsdoc/tar.gz/f22dcfb0da4b1ddead56da929384b828e8994de3:
     dependencies:
-      '@babel/parser': 7.28.4
+      '@babel/parser': 7.28.5
       bluebird: 3.7.2
       catharsis: 0.8.11
       escape-string-regexp: 2.0.0
@@ -20073,7 +20215,7 @@ snapshots:
     dependencies:
       schema-utils: 4.3.2
       tapable: 2.2.3
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
 
   minimatch@10.0.3:
     dependencies:
@@ -20826,7 +20968,7 @@ snapshots:
       postcss: 8.5.6
       semver: 7.7.2
     optionalDependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
     transitivePeerDependencies:
       - typescript
 
@@ -21347,7 +21489,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
 
   react-dom@18.3.1(react@18.3.1):
     dependencies:
@@ -22236,7 +22378,7 @@ snapshots:
 
   style-loader@4.0.0(webpack@5.101.3):
     dependencies:
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
 
   style-search@0.1.0: {}
 
@@ -22442,6 +22584,15 @@ snapshots:
       '@swc/core': 1.13.5
       esbuild: 0.25.9
 
+  terser-webpack-plugin@5.3.14(webpack@5.101.3):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.44.0
+      webpack: 5.101.3
+
   terser@5.44.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
@@ -22489,6 +22640,8 @@ snapshots:
       picomatch: 4.0.3
 
   tinypool@1.1.1: {}
+
+  tinypool@2.0.0: {}
 
   tinyrainbow@2.0.0: {}
 
@@ -22662,11 +22815,12 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@8.3.5(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.9)(webpack-cli@6.0.1):
+  umberto@8.4.0(chokidar@3.6.0):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
       '@ckeditor/jsdoc-plugins': 43.1.0
+      '@minify-html/node': 0.17.1
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.101.3)
       cheerio: 1.1.2
       escape-string-regexp: 4.0.0
@@ -22696,18 +22850,17 @@ snapshots:
       sass: 1.92.1
       shiki: 3.12.2
       sitemap: 8.0.0
+      tinypool: 2.0.0
       tippy.js: 6.3.7
       tree-model: 1.0.7
       upath: 2.0.1
       vnu-jar: 21.10.12
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
     transitivePeerDependencies:
       - '@swc/core'
       - chokidar
-      - esbuild
       - supports-color
       - uglify-js
-      - webpack-cli
 
   unbox-primitive@1.1.0:
     dependencies:
@@ -22992,9 +23145,9 @@ snapshots:
   webpack-cli@6.0.1(webpack@5.101.3):
     dependencies:
       '@discoveryjs/json-ext': 0.6.3
-      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)
-      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)
-      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1)(webpack@5.101.3)
+      '@webpack-cli/configtest': 3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)
+      '@webpack-cli/info': 3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)
+      '@webpack-cli/serve': 3.0.1(webpack-cli@6.0.1(webpack@5.101.3))(webpack@5.101.3)
       colorette: 2.0.20
       commander: 12.1.0
       cross-spawn: 7.0.6
@@ -23003,7 +23156,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1)
+      webpack: 5.101.3
       webpack-merge: 6.0.1
 
   webpack-merge@4.2.2:
@@ -23024,6 +23177,37 @@ snapshots:
   webpack-sources@3.3.3: {}
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.101.3:
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4
+      browserslist: 4.26.0
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.3
+      es-module-lexer: 1.7.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.2
+      tapable: 2.2.3
+      terser-webpack-plugin: 5.3.14(webpack@5.101.3)
+      watchpack: 2.4.4
+      webpack-sources: 3.3.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - uglify-js
 
   webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.9)(webpack-cli@6.0.1):
     dependencies:
