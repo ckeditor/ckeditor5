@@ -12,7 +12,8 @@ import {
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage
+	LinkImage,
+	TodoList
 } from 'ckeditor5';
 import {
 	TOKEN_URL,
@@ -33,6 +34,7 @@ ClassicEditor.builtinPlugins.push(
 	ImageResize,
 	AutoImage,
 	LinkImage,
+	TodoList,
 	CKBox,
 	CKBoxImageEdit );
 
@@ -64,8 +66,8 @@ async function startStandardEditingMode() {
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'restrictedEditingException', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'|', 'link', 'insertImage', 'insertTable', 'restrictedEditingException:dropdown', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
 		table: {

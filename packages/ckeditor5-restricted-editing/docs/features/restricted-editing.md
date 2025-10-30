@@ -43,11 +43,18 @@ The restricted editing feature enables two editing modes:
 * **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
 * **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. This mode supports only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
 
+There are two types of editable fields: inline and block.
+
+* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content.
+*  **Block editable fields** enable all content editing features loaded in the editor in both the standard and restricted editing modes. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
+
+Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured]().
+
 You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
 By using this feature, the users of your application will be able to create template documents. In a certain way, you can use this feature to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor&nbsp;5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
-<info-box>
+<info-box note>
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
@@ -57,7 +64,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 ### Running the standard editing mode
 
-To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException:dropdown'` button to the toolbar:
 
 <code-switcher>
 ```js
@@ -67,7 +74,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException', /* ... */ ]
+		toolbar: [ 'restrictedEditingException:dropdown', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -76,7 +83,7 @@ ClassicEditor
 
 ### Running the restricted editing mode
 
-To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
+To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing:dropdown'` button to the toolbar:
 
 <code-switcher>
 ```js
@@ -86,12 +93,16 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditing', /* ... */ ]
+		toolbar: [ 'restrictedEditing:dropdown', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+<info-box note>
+	Please note there are available toolbar items for inline, block, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
+</info-box>
 
 ## Configuration
 
@@ -130,6 +141,25 @@ class MyPlugin extends Plugin {
 }
 ```
 </code-switcher>
+
+### Configuring the toolbar
+
+When configuring the toolbar item for inserting restricted editing fields, you can choose to provide your users with access to inline, block or both types of fields. To add these to the rtoolbar, you should use the dollowint tollbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+
+Example toolbar configuration may look like the one below:
+
+```js
+toolbar: [
+	'heading', '|', 'bold', 'italic', 'link', '|',
+	'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
+	'restrictedEditingException:dropdown', '|',
+	'undo', 'redo'
+]
+```
+
+#### Legacy toolbar button
+
+The new toolbar items were introduced with version 47.2.0. To retain full backwards compatibility, we have provided an alias toolbar item: `restrictedEditingException`. It is the old toolbar button call and it defaults to inline restricted editing field button. There is no need to change your configuration if you only want to use inline fields type.
 
 ## Related features
 
