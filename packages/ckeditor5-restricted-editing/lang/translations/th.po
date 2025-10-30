@@ -29,16 +29,16 @@ msgstr "นำทางไปยังพื้นที่ซึ่งสาม
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "ปิดใช้งานการแก้ไขแบบอินไลน์"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "เปิดใช้งานการแก้ไขแบบอินไลน์"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "ปิดใช้งานการแก้ไขแบบบล็อก"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "เปิดใช้งานการแก้ไขแบบบล็อก"

@@ -37,12 +37,12 @@ msgstr "Utilisateurs connectés"
 
 msgctxt "Tooltip for a button that shows the left sidebar"
 msgid "Show left sidebar"
-msgstr ""
+msgstr "Afficher la barre latérale gauche"
 
 msgctxt "Tooltip for a button that hides the left sidebar"
 msgid "Hide left sidebar"
-msgstr ""
+msgstr "Masquer la barre latérale gauche"
 
 msgctxt "Label for a button that toggles the left sidebar"
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Basculer vers la barre latérale"

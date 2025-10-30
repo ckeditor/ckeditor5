@@ -37,12 +37,12 @@ msgstr "Aangesloten gebruikers"
 
 msgctxt "Tooltip for a button that shows the left sidebar"
 msgid "Show left sidebar"
-msgstr ""
+msgstr "Linkerzijbalk weergeven"
 
 msgctxt "Tooltip for a button that hides the left sidebar"
 msgid "Hide left sidebar"
-msgstr ""
+msgstr "Linkerzijbalk verbergen"
 
 msgctxt "Label for a button that toggles the left sidebar"
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Zijbalk in-/uitschakelen"
