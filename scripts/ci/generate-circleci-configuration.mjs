@@ -137,7 +137,7 @@ const persistToWorkspace = fileName => ( {
 
 	config.jobs.cke5_tests_framework = {
 		docker: [
-			{ image: 'cimg/node:22.12.0-browsers' }
+			{ image: 'cimg/node:24.11.0-browsers' }
 		],
 		steps: [
 			...bootstrapCommands(),
@@ -155,7 +155,7 @@ const persistToWorkspace = fileName => ( {
 	featureTestBatches.forEach( ( batch, batchIndex ) => {
 		config.jobs[ featureTestBatchNames[ batchIndex ] ] = {
 			docker: [
-				{ image: 'cimg/node:22.12.0-browsers' }
+				{ image: 'cimg/node:24.11.0-browsers' }
 			],
 			steps: [
 				...bootstrapCommands(),

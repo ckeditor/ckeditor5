@@ -54,7 +54,7 @@ commands:
 jobs:
   generate_configuration:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     parameters:
       isNightly:

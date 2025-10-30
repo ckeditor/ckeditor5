@@ -31,9 +31,6 @@
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
-  "engines": {
-    "node": ">=22.0.0"
-  },
   "files": [
     "dist",
     "src/*.js",

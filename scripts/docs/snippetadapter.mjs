@@ -188,13 +188,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 			hrefs.map( href => `@import '${ href }' layer(${ layer });` ).join( '\n' ) +
 		'</style>';
 
-	const documents = {};
-
-	// TODO: Use `Object.groupBy` instead, when we migrate to Node 22.
-	for ( const snippet of snippets ) {
-		documents[ snippet.destinationPath ] ??= [];
-		documents[ snippet.destinationPath ].push( snippet );
-	}
+	const documents = Object.groupBy( snippets, snippet => snippet.destinationPath );
 
 	// Style paths for preloading and layered imports
 	const editorStylePaths = [
