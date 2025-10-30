@@ -916,5 +916,8 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	]
+	],
+	"variables": {
+		"CKBOX_VERSION": "2.9.2"
+	}
 }
