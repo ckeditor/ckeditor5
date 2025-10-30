@@ -129,7 +129,8 @@
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
-    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run"
+    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
+    "validate-licenses": "node scripts/validate-licenses.mjs"
   },
   "lint-staged": {
     "**/*": [
