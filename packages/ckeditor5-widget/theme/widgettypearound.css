@@ -99,15 +99,21 @@
 }
 
 /*
- * Integration with the restricted editing mode (feature) of the editor.
- */
-.ck.ck-editor__editable.ck-restricted-editing_mode_restricted .ck-widget__type-around {
-	display: none;
-}
-
-/*
  * Integration with the #isEnabled property of the WidgetTypeAround plugin.
  */
 .ck.ck-editor__editable.ck-widget__type-around_disabled .ck-widget__type-around {
 	display: none;
+}
+
+/*
+ * Integration with the restricted editing mode (feature) of the editor.
+ */
+.ck.ck-editor__editable.ck-restricted-editing_mode_restricted {
+	& .ck-widget__type-around {
+		display: none;
+	}
+
+	& div.restricted-editing-exception .ck-widget__type-around {
+		display: initial;
+	}
 }
