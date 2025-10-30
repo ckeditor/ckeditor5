@@ -195,7 +195,7 @@ Once imported, you can use it within your application:
 For applications using modern bundling tools (such as Webpack or Vite) and package managers (npm, yarn, pnpm), CKBox components should be installed as dependencies and imported into your CKEditor 5 build.
 
 <info-box note>
-	CKBox is a premium feature. Using the npm/yarn distribution channel (Self-hosted) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
+	CKBox is a premium feature. Using the self-hosted distribution channel (npm) requires having an appropriate commercial plan or a Custom plan that permits the use of the editor via npm or a ZIP package.
 
 	You can [sign up](https://portal.ckeditor.com/checkout?plan=free) for the CKEditor Premium Features 14-day free trial to test the feature. If you already have a license, you should log into your [Customer Portal Dashboard](https://portal.ckeditor.com/signin) to access feature settings and credentials.
 </info-box>
