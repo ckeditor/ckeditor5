@@ -37,12 +37,12 @@ msgstr "Pengguna yang terhubung"
 
 msgctxt "Tooltip for a button that shows the left sidebar"
 msgid "Show left sidebar"
-msgstr ""
+msgstr "Tampilkan panel kiri"
 
 msgctxt "Tooltip for a button that hides the left sidebar"
 msgid "Hide left sidebar"
-msgstr ""
+msgstr "Sembunyikan panel kiri"
 
 msgctxt "Label for a button that toggles the left sidebar"
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Alihkan panel samping"

@@ -29,16 +29,16 @@ msgstr "Düzenlenebilir alanlara git"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "Satır içi düzenlemeyi devre dışı bırak"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "Satır içi düzenlemeyi etkinleştir"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "Blok düzenlemeyi devre dışı bırak"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "Blok düzenlemeyi etkinleştir"

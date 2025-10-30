@@ -29,16 +29,16 @@ msgstr "Пронђи регије за уређивање"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "Onemogući direktno uređivanje"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "Omogući direktno uređivanje"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "Onemogući uređivanje blokova"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "Omogući uređivanje blokova"

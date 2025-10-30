@@ -29,16 +29,16 @@ msgstr "Gennemgå redigérbare regioner"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "Deaktiver inline redigering"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "Aktiver inline redigering"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "Deaktiver blokredigering"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "Aktiver blokredigering"

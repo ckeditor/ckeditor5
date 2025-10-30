@@ -29,16 +29,16 @@ msgstr "导航至可编辑区域"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "禁用行内编辑"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "启用行内编辑"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "禁用块编辑"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "启用块编辑"

@@ -29,16 +29,16 @@ msgstr "সম্পাদনাযোগ্য অংশে নেভিগে�
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "ইনলাইন ইডিটিং নিষ্ক্রিয় করুন"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "ইনলাইন ইডিটিং সষ্ক্রিয় করুন"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "ব্লক ইডিটিং নিষ্ক্রিয় করুন"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "ব্লক ইডিটিং সষ্ক্রিয় করুন"

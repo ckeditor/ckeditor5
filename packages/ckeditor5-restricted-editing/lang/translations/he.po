@@ -29,16 +29,16 @@ msgstr "ניווט באזורים הניתנים לעריכה"
 
 msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
 msgid "Disable inline editing"
-msgstr ""
+msgstr "ביטול אפשרות עריכה בתוך השורה"
 
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable inline editing"
-msgstr ""
+msgstr "אפשר עריכה בתוך השורה"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
 msgid "Disable block editing"
-msgstr ""
+msgstr "ביטול אפשרות עריכת בלוקים"
 
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
-msgstr ""
+msgstr "אפשר עריכת בלוקים"

@@ -37,12 +37,12 @@ msgstr "接続ユーザー"
 
 msgctxt "Tooltip for a button that shows the left sidebar"
 msgid "Show left sidebar"
-msgstr ""
+msgstr "左サイドバーを表示する"
 
 msgctxt "Tooltip for a button that hides the left sidebar"
 msgid "Hide left sidebar"
-msgstr ""
+msgstr "左サイドバーを隠す"
 
 msgctxt "Label for a button that toggles the left sidebar"
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "サイドバーを切り替える"
