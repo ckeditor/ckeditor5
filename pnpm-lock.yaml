@@ -86,14 +86,14 @@ importers:
         specifier: ^9.34.0
         version: 9.36.0(jiti@2.6.1)
       eslint-config-ckeditor5:
-        specifier: ^12.1.0
-        version: 12.1.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
+        specifier: ^12.2.0
+        version: 12.2.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^12.1.1
-        version: 12.1.1
+        specifier: ^12.2.0
+        version: 12.2.0
       eslint-plugin-import:
         specifier: ^2.31.0
         version: 2.32.0(@typescript-eslint/parser@8.45.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3))(eslint@9.36.0(jiti@2.6.1))
@@ -158,8 +158,8 @@ importers:
         specifier: ^16.0.0
         version: 16.24.0(typescript@5.3.3)
       stylelint-config-ckeditor5:
-        specifier: ^12.1.0
-        version: 12.1.1(stylelint@16.24.0(typescript@5.3.3))
+        specifier: ^12.2.0
+        version: 12.2.0(stylelint@16.24.0(typescript@5.3.3))
       svgo:
         specifier: ^3.3.2
         version: 3.3.2
@@ -173,8 +173,8 @@ importers:
         specifier: ^8.33.0
         version: 8.45.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       umberto:
-        specifier: ^8.3.4
-        version: 8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^8.4.0
+        version: 8.4.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -3617,6 +3617,9 @@ importers:
       '@ckeditor/ckeditor5-paragraph':
         specifier: workspace:*
         version: link:../ckeditor5-paragraph
+      '@ckeditor/ckeditor5-select-all':
+        specifier: workspace:*
+        version: link:../ckeditor5-select-all
       '@ckeditor/ckeditor5-table':
         specifier: workspace:*
         version: link:../ckeditor5-table
@@ -5966,6 +5969,36 @@ packages:
 
   '@mermaid-js/parser@0.6.3':
     resolution: {integrity: sha512-lnjOhe7zyHjc+If7yT4zoedx2vo4sHaTmtkl1+or8BRTnCtDmcTpAjpzDSfCZrshM5bCoz0GyidzadJAH1xobA==}
+
+  '@minify-html/node-darwin-arm64@0.17.1':
+    resolution: {integrity: sha512-Ns6UU7rb3gGqLNy2cUcUTqYcMWSYkcwpigBmM+bOdNXQcEZx0OimtSP2NODGF1Y56FvKRwlv63MvxXx/Tm+FCg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    resolution: {integrity: sha512-Ov/FTmdvCFsCVauk8AtMy1mLVCc3dkO4IfrQbM/vgoOPiQAdlfWD4d5ncaCTUX5XR7JUHqQoDKKaAIxaUpnSnw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    resolution: {integrity: sha512-wIWE7dXg2BHnmnbIldtTYUL4+Ms5JF22H5EE6Xzt3UIo1SNd7z/j7CXNt4f/yPXA7tguqO0wTZWiImA2oqgF4A==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@minify-html/node-linux-x64@0.17.1':
+    resolution: {integrity: sha512-41+3cFhts+KUA+Hd6KgS+WNJu9hMGhm1rv5f5ef64xBey/LfVCzPQVLb3XtmxlFTIc5ayhAxPDrjkiG2MWvBcw==}
+    cpu: [x64]
+    os: [linux]
+
+  '@minify-html/node-win32-x64@0.17.1':
+    resolution: {integrity: sha512-zS+GqHLrPiZKnxXyFHrxIT+B+Yerm5Tie/9VyhafkbvPyPJ99XGmsbW38FbdMjyJSiaPWgVjRxeuFt71alsVGQ==}
+    cpu: [x64]
+    os: [win32]
+
+  '@minify-html/node@0.17.1':
+    resolution: {integrity: sha512-MA5XErjzWynYEGqYKjV0GOFjdJCNxCKIBp69BgZdynSqNmIxL35pZJGIxWJsBlUqEOCxUtnI3tprnP6XxCAAbw==}
+    engines: {node: '>= 8.6.0'}
+    hasBin: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -8525,8 +8558,8 @@ packages:
     engines: {node: '>=6.0'}
     hasBin: true
 
-  eslint-config-ckeditor5@12.1.1:
-    resolution: {integrity: sha512-08GaAQihDvGeTL5XVx/Ihgin11+3bVPaWi+xKzh3ewkcM5HrC9PF06WltBGFsxSJmBRmg8VFSLMwAXcuyZDq3Q==}
+  eslint-config-ckeditor5@12.2.0:
+    resolution: {integrity: sha512-/TQsJuSkTZDVK8srm29tt0kicMEqAyusad1aH6EIXhBjNiQnsagYRNBZjAKiBGdofhjXy4sAD4g+gNa2igO9NA==}
     peerDependencies:
       eslint: ^9.0.0
       typescript: ^5.0.0
@@ -8559,8 +8592,8 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
 
-  eslint-plugin-ckeditor5-rules@12.1.1:
-    resolution: {integrity: sha512-e0PhbA3sNWy4Djs6r+kVfWNvu6urJXucIUfqI2GKjgOfqYOhmpLNaudH6FHKAg/OM8g0ETb7TbG3Bc375ru+sg==}
+  eslint-plugin-ckeditor5-rules@12.2.0:
+    resolution: {integrity: sha512-WgQP9aZo1N7bIDwwf2Wsnd0RpL20MAVxEehhYoFWy7HAMAnV3IliKuU3dsFA35O8cK4q7eKz7FiObwSRAfttQA==}
 
   eslint-plugin-import@2.32.0:
     resolution: {integrity: sha512-whOE1HFo/qJDyX4SnXzP4N6zOWn79WhnCUY/iDR0mPfQZO8wcYE4JClzI2oZrhBnnMUCBCHZhO6VQyoBU95mZA==}
@@ -8684,6 +8717,9 @@ packages:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
     engines: {node: '>= 10.17.0'}
     hasBin: true
+
+  fast-archy@1.0.0:
+    resolution: {integrity: sha512-j8CNf0sCX92BogtUZAMPhMj7p3nv7xxeETwfpVWQNQocC5b21FAa6bUzfuhcNoEa4f2RtDe5U3uY0NriH9nA7g==}
 
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
@@ -9119,8 +9155,8 @@ packages:
     resolution: {integrity: sha512-Q92zQ5PlVDouvSWFLXQoFSTLIUIODikUJs2BfAXQglyOEjN1dOQn1Z5Nimk/7GHof17R5h/uObCQLnZAjzI2tg==}
     engines: {node: '>=14'}
 
-  hexo-fs@5.0.0:
-    resolution: {integrity: sha512-oBkg1QgXyb4JxipaH+yCV/7E7XOUASTK6x1pocWvLw6U2mB6VfLENgYg61ft9Qn6JCiKSzs7FU4vyTUy6gIPvQ==}
+  hexo-fs@5.0.1:
+    resolution: {integrity: sha512-Zm4m21coQA7TtL9JL0oNZF+ypY/HbqwVdaqGqoKD+GEV7HH2Y1YObNBgl1o/lV1tzStC8f15AoRcHdS2jiWp0w==}
     engines: {node: '>=18'}
 
   hexo-generator-archive@2.0.0:
@@ -9162,8 +9198,12 @@ packages:
     resolution: {integrity: sha512-YvGngXijE2muEh5L/VI4Fmjqb+/yAkmY+VuyhWVoRwQu1X7bmWodsfYRXX7CUYhi5LqsvH8FAe/yBW1+f6ZX4Q==}
     engines: {node: '>=14'}
 
-  hexo@8.0.0:
-    resolution: {integrity: sha512-GFNUICrDWvrBrhq4Oe2BUKg4UFJpaU0PjoAm5WIwf6O0gV52vPCGkGWQxH6AhOfJ1BEHm3hJALRl7RqOcgQP+A==}
+  hexo-util@4.0.0:
+    resolution: {integrity: sha512-oXKXBs1HZ2Wu/eq0paAVqtCmAEcqJPZ4xxSVRuwAplm1hFU41Ul53WA5bmYMEz9Dp+OJ/SdchjXRmYlbGJdt3w==}
+    engines: {node: '>=18'}
+
+  hexo@8.1.0:
+    resolution: {integrity: sha512-4t7oqGBGDfjCk1oFqJaKrzcWzjS7QlPQrP0PGwvsNeEpwjrSMV4pXlcZ3V49j/LGX2UE2NjtDyiYENBQCZFajw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -11655,6 +11695,11 @@ packages:
     engines: {node: '>= 0.4'}
     hasBin: true
 
+  resolve@1.22.11:
+    resolution: {integrity: sha512-RfqAvLnMl313r7c9oclB1HhUEAezcpLjz95wFH4LVuhk9JF/r22qmVP9AMmOU4vMX7Q8pN8jwNg/CSpdFnMjTQ==}
+    engines: {node: '>= 0.4'}
+    hasBin: true
+
   restore-cursor@5.1.0:
     resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
     engines: {node: '>=18'}
@@ -12139,8 +12184,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  stylelint-config-ckeditor5@12.1.1:
-    resolution: {integrity: sha512-bEqemEiQ8Y4emTKAlOsN4cOx/lk61pVhFwegBDewlS8OqbJ6QsWXBPccSWQCETN5DUUoqoOcZYKsfsH/IsrNEg==}
+  stylelint-config-ckeditor5@12.2.0:
+    resolution: {integrity: sha512-CnOovy7bPzWXEwNikoTZ1wK+cOAgcWKIe6sSPGRqC2wFXl81ipFafSHb48k7cNDA4qxHy47iGB0N1qwgnoDjSg==}
     peerDependencies:
       stylelint: '>=16.0.0'
 
@@ -12150,8 +12195,8 @@ packages:
     peerDependencies:
       stylelint: ^16.16.0
 
-  stylelint-plugin-ckeditor5-rules@12.1.1:
-    resolution: {integrity: sha512-vS7uJta2itqoGo6hXgitclZH0ucwikbXP30y0I7GLhppUmYPqQhPvDBX21RuC9imbEYuIkTcaQzggU/DjSTBsA==}
+  stylelint-plugin-ckeditor5-rules@12.2.0:
+    resolution: {integrity: sha512-NsNVaVrEvBrxh2pRpzZkRZBUS1gjh07vzZJUj8evVCTZ69iVVcCVGz0Jlbvl1vZ6RiVDCfMpPu6XWTTwTL+FMw==}
     peerDependencies:
       stylelint: '>=16.0.0'
 
@@ -12294,6 +12339,10 @@ packages:
   tinypool@1.1.1:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
+
+  tinypool@2.0.0:
+    resolution: {integrity: sha512-/RX9RzeH2xU5ADE7n2Ykvmi9ED3FBGPAjw9u3zucrNNaEBIO0HPSYgL0NT7+3p147ojeSdaVu08F6hjpv31HJg==}
+    engines: {node: ^20.0.0 || >=22.0.0}
 
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
@@ -12451,8 +12500,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@8.3.4:
-    resolution: {integrity: sha512-1IpekoCWYCNl0cTeIPwa2fQcDdNrBI2wrLmATZvgeQOeVhhMBwsI9EM6cFfjlYzgAs3CEFh+2g0EglH6TdnWdg==}
+  umberto@8.4.0:
+    resolution: {integrity: sha512-xqEs0o/knPYt3Gf4KaV9zls7mQsdcAUjTEeZyFUIXZxxhm7wIJ6akgY3g1ImAgqiPI3yInqL9w/FENaxSISayQ==}
     engines: {node: '>=22.0.0', pnpm: '>=10.14.0', yarn: "\n\n┌─────────────────────────┐\n│  Hey, we use pnpm now!  │\n└─────────────────────────┘\n\n"}
 
   unbox-primitive@1.1.0:
@@ -12751,6 +12800,16 @@ packages:
 
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
+
+  webpack@5.101.3:
+    resolution: {integrity: sha512-7b0dTKR3Ed//AD/6kkx/o7duS8H3f1a4w3BYpIriX4BzIhjkn4teo05cptsxvLesHFKK5KObnadmCHBwGc+51A==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    peerDependencies:
+      webpack-cli: '*'
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
 
   webpack@5.102.0:
     resolution: {integrity: sha512-hUtqAR3ZLVEYDEABdBioQCIqSoguHbFn1K7WlPPWSuXmx0031BD73PSE35jKyftdSh4YLDoQNgK4pqBt5Q82MA==}
@@ -14522,6 +14581,29 @@ snapshots:
     dependencies:
       langium: 3.3.1
 
+  '@minify-html/node-darwin-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-darwin-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-arm64@0.17.1':
+    optional: true
+
+  '@minify-html/node-linux-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node-win32-x64@0.17.1':
+    optional: true
+
+  '@minify-html/node@0.17.1':
+    optionalDependencies:
+      '@minify-html/node-darwin-arm64': 0.17.1
+      '@minify-html/node-darwin-x64': 0.17.1
+      '@minify-html/node-linux-arm64': 0.17.1
+      '@minify-html/node-linux-x64': 0.17.1
+      '@minify-html/node-win32-x64': 0.17.1
+
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
       '@emnapi/core': 1.5.0
@@ -15871,11 +15953,11 @@ snapshots:
 
   b4a@1.7.3: {}
 
-  babel-loader@10.0.0(@babel/core@7.28.4)(webpack@5.102.0):
+  babel-loader@10.0.0(@babel/core@7.28.4)(webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)):
     dependencies:
       '@babel/core': 7.28.4
       find-up: 5.0.0
-      webpack: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
+      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
 
   babel-plugin-istanbul@7.0.1:
     dependencies:
@@ -17325,13 +17407,13 @@ snapshots:
     optionalDependencies:
       source-map: 0.6.1
 
-  eslint-config-ckeditor5@12.1.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3):
+  eslint-config-ckeditor5@12.2.0(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3):
     dependencies:
       '@eslint/js': 9.36.0
       '@eslint/markdown': 6.6.0
       '@stylistic/eslint-plugin': 4.4.1(eslint@9.36.0(jiti@2.6.1))(typescript@5.3.3)
       eslint: 9.36.0(jiti@2.6.1)
-      eslint-plugin-ckeditor5-rules: 12.1.1
+      eslint-plugin-ckeditor5-rules: 12.2.0
       eslint-plugin-mocha: 11.2.0(eslint@9.36.0(jiti@2.6.1))
       globals: 16.4.0
       typescript: 5.3.3
@@ -17363,7 +17445,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-ckeditor5-rules@12.1.1:
+  eslint-plugin-ckeditor5-rules@12.2.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       enhanced-resolve: 5.18.3
@@ -17541,6 +17623,8 @@ snapshots:
       '@types/yauzl': 2.10.3
     transitivePeerDependencies:
       - supports-color
+
+  fast-archy@1.0.0: {}
 
   fast-content-type-parse@3.0.0: {}
 
@@ -18040,7 +18124,7 @@ snapshots:
       hexo-util: 3.3.0
       minimist: 1.2.8
       picocolors: 1.1.1
-      resolve: 1.22.10
+      resolve: 1.22.11
       tildify: 2.0.0
 
   hexo-front-matter@4.2.1:
@@ -18054,7 +18138,7 @@ snapshots:
       graceful-fs: 4.2.11
       hexo-util: 3.3.0
 
-  hexo-fs@5.0.0:
+  hexo-fs@5.0.1:
     dependencies:
       bluebird: 3.7.2
       chokidar: 4.0.3
@@ -18118,18 +18202,28 @@ snapshots:
       prismjs: 1.30.0
       strip-indent: 3.0.0
 
-  hexo@8.0.0(chokidar@3.6.0):
+  hexo-util@4.0.0:
+    dependencies:
+      camel-case: 4.1.2
+      cross-spawn: 7.0.6
+      deepmerge: 4.3.1
+      highlight.js: 11.11.1
+      htmlparser2: 10.0.0
+      prismjs: 1.30.0
+      strip-indent: 3.0.0
+
+  hexo@8.1.0(chokidar@3.6.0):
     dependencies:
       abbrev: 3.0.1
-      archy: 1.0.0
       bluebird: 3.7.2
+      fast-archy: 1.0.0
       fast-text-table: 1.0.1
       hexo-cli: 4.3.2
       hexo-front-matter: 4.2.1
-      hexo-fs: 5.0.0
+      hexo-fs: 5.0.1
       hexo-i18n: 2.0.0
       hexo-log: 4.1.0
-      hexo-util: 3.3.0
+      hexo-util: 4.0.0
       js-yaml: 4.1.0
       js-yaml-js-types: 1.0.1(js-yaml@4.1.0)
       micromatch: 4.0.8
@@ -21169,6 +21263,12 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
+  resolve@1.22.11:
+    dependencies:
+      is-core-module: 2.16.1
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+
   restore-cursor@5.1.0:
     dependencies:
       onetime: 7.0.0
@@ -21798,18 +21898,18 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  stylelint-config-ckeditor5@12.1.1(stylelint@16.24.0(typescript@5.3.3)):
+  stylelint-config-ckeditor5@12.2.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       '@stylistic/stylelint-plugin': 3.1.3(stylelint@16.24.0(typescript@5.3.3))
       stylelint: 16.24.0(typescript@5.3.3)
       stylelint-config-recommended: 16.0.0(stylelint@16.24.0(typescript@5.3.3))
-      stylelint-plugin-ckeditor5-rules: 12.1.1(stylelint@16.24.0(typescript@5.3.3))
+      stylelint-plugin-ckeditor5-rules: 12.2.0(stylelint@16.24.0(typescript@5.3.3))
 
   stylelint-config-recommended@16.0.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       stylelint: 16.24.0(typescript@5.3.3)
 
-  stylelint-plugin-ckeditor5-rules@12.1.1(stylelint@16.24.0(typescript@5.3.3)):
+  stylelint-plugin-ckeditor5-rules@12.2.0(stylelint@16.24.0(typescript@5.3.3)):
     dependencies:
       stylelint: 16.24.0(typescript@5.3.3)
 
@@ -21963,6 +22063,18 @@ snapshots:
       minizlib: 3.1.0
       yallist: 5.0.0
 
+  terser-webpack-plugin@5.3.14(@swc/core@1.13.5)(esbuild@0.25.10)(webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.2
+      serialize-javascript: 6.0.2
+      terser: 5.44.0
+      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
+    optionalDependencies:
+      '@swc/core': 1.13.5
+      esbuild: 0.25.10
+
   terser-webpack-plugin@5.3.14(@swc/core@1.13.5)(esbuild@0.25.10)(webpack@5.102.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
@@ -22022,6 +22134,8 @@ snapshots:
       picomatch: 4.0.3
 
   tinypool@1.1.1: {}
+
+  tinypool@2.0.0: {}
 
   tinyrainbow@2.0.0: {}
 
@@ -22174,18 +22288,19 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@8.3.4(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@8.4.0(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
       '@ckeditor/jsdoc-plugins': 43.1.0
-      babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.102.0)
+      '@minify-html/node': 0.17.1
+      babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1))
       cheerio: 1.1.2
       escape-string-regexp: 4.0.0
       fs-extra: 11.3.2
       fuse.js: 7.1.0
       glob: 11.0.3
-      hexo: 8.0.0(chokidar@3.6.0)
+      hexo: 8.1.0(chokidar@3.6.0)
       hexo-generator-archive: 2.0.0
       hexo-generator-category: 2.0.0
       hexo-generator-index: 4.0.0
@@ -22208,11 +22323,12 @@ snapshots:
       sass: 1.93.2
       shiki: 3.13.0
       sitemap: 8.0.0
+      tinypool: 2.0.0
       tippy.js: 6.3.7
       tree-model: 1.0.7
       upath: 2.0.1
       vnu-jar: 21.10.12
-      webpack: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
+      webpack: 5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
     transitivePeerDependencies:
       - '@swc/core'
       - chokidar
@@ -22530,6 +22646,40 @@ snapshots:
   webpack-sources@3.3.3: {}
 
   webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1):
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.8
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.15.0
+      acorn-import-phases: 1.0.4(acorn@8.15.0)
+      browserslist: 4.26.3
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.3
+      es-module-lexer: 1.7.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.2
+      tapable: 2.2.3
+      terser-webpack-plugin: 5.3.14(@swc/core@1.13.5)(esbuild@0.25.10)(webpack@5.101.3(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1))
+      watchpack: 2.4.4
+      webpack-sources: 3.3.3
+    optionalDependencies:
+      webpack-cli: 6.0.1(webpack@5.102.0)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   webpack@5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:

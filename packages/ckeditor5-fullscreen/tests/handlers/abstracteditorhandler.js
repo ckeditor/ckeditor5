@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { global } from '@ckeditor/ckeditor5-utils';
+import { global, Rect } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -135,6 +135,7 @@ describe( 'AbstractHandler', () => {
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -185,6 +186,13 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.enable();
 
 			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should create a collapse left sidebar button if flag is set', () => {
+			abstractHandler._hasLeftCollapseButton = true;
+			abstractHandler.enable();
+
+			expect( abstractHandler._collapseLeftSidebarButton ).to.not.be.null;
 		} );
 
 		it( 'should execute the custom callback if configured', () => {
@@ -626,6 +634,109 @@ describe( 'AbstractHandler', () => {
 
 			editor.commands.get( 'toggleFullscreen' ).execute();
 		} );
+
+		it( 'should use wrapper as a relative container when right edge container is not visible', async () => {
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			abstractHandler.enable();
+
+			await wait( 20 );
+
+			sinon.stub( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ), 'getBoundingClientRect' )
+				.returns( {
+					top: 0,
+					right: 400,
+					bottom: 500,
+					left: 0,
+					width: 400,
+					height: 500
+				} );
+
+			abstractHandler.moveToFullscreen( abstractHandler._editor.ui.getEditableElement(), 'editable' );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: DialogViewPosition.EDITOR_TOP_SIDE
+			} );
+
+			await wait( 20 );
+
+			// Calculate the expected left offset given the right edge container is not visible.
+			const DIALOG_OFFSET = 28;
+			const relativeContainer = abstractHandler.getWrapper();
+			const relativeContainerRect = new Rect( relativeContainer ).getVisible();
+			const dialogRect = new Rect( dialogPlugin.view.element.querySelector( '.ck-dialog' ) ).getVisible();
+			const scrollOffset = new Rect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ) )
+				.excludeScrollbarsAndBorders().getVisible().width -
+				new Rect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ) ).getVisible().width;
+
+			const leftOffset =
+				relativeContainerRect.left + relativeContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset;
+
+			expect( leftOffset ).to.equal( dialogPlugin.view.element.firstChild.getBoundingClientRect().left );
+		} );
+
+		it( 'should use right edge container as a relative container when right edge container is visible', async () => {
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			abstractHandler.enable();
+
+			await wait( 20 );
+
+			sinon.stub( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' ), 'getBoundingClientRect' )
+				.returns( {
+					top: 0,
+					right: 1500,
+					bottom: 700,
+					left: 0,
+					width: 1500,
+					height: 700
+				} );
+
+			sinon.stub( window, 'innerWidth' ).value( 1500 );
+
+			abstractHandler.moveToFullscreen( abstractHandler._editor.ui.getEditableElement(), 'editable' );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: DialogViewPosition.EDITOR_TOP_SIDE
+			} );
+
+			await wait( 20 );
+
+			// Calculate the expected left offset given the right edge container is not visible.
+			const DIALOG_OFFSET = 28;
+			const relativeContainer = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-edge' );
+			const relativeContainerRect = new Rect( relativeContainer );
+			const dialogRect = new Rect( dialogPlugin.view.element.querySelector( '.ck-dialog' ) ).getVisible();
+			const leftOffset = relativeContainerRect.left - dialogRect.width - DIALOG_OFFSET;
+
+			expect( leftOffset ).to.equal( dialogPlugin.view.element.firstChild.getBoundingClientRect().left );
+		} );
 	} );
 
 	describe( '#_saveAncestorsScrollPositions()', () => {
@@ -677,4 +788,272 @@ describe( 'AbstractHandler', () => {
 			innerElement.remove();
 		} );
 	} );
+
+	describe( 'on _collapseLeftSidebarButton#execute', () => {
+		it( 'should toggle left sidebar visibility', () => {
+			abstractHandler._hasLeftCollapseButton = true;
+			abstractHandler.enable();
+
+			const hideLeftSidebarSpy = sinon.spy( abstractHandler, '_hideLeftSidebar' );
+			const showLeftSidebarSpy = sinon.spy( abstractHandler, '_showLeftSidebar' );
+
+			abstractHandler._collapseLeftSidebarButton.fire( 'execute' );
+
+			expect( hideLeftSidebarSpy ).to.have.been.called;
+			expect( showLeftSidebarSpy ).to.not.have.been.called;
+
+			abstractHandler._collapseLeftSidebarButton.fire( 'execute' );
+
+			expect( hideLeftSidebarSpy ).to.have.been.calledOnce;
+			expect( showLeftSidebarSpy ).to.have.been.calledOnce;
+		} );
+	} );
+
+	describe( '_setupResizeObserver', () => {
+		it( 'should create a new resize observer every time it is called', () => {
+			abstractHandler.enable();
+			const oldResizeObserver = abstractHandler._resizeObserver;
+
+			abstractHandler._setupResizeObserver();
+			expect( oldResizeObserver ).to.not.be.deep.equal( abstractHandler._resizeObserver );
+		} );
+	} );
+
+	describe( 'on window resize', () => {
+		describe( 'when window is shrinked', () => {
+			it( 'should collapse the left sidebar if it is expanded first', () => {
+				abstractHandler.enable();
+
+				const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+				sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
+				sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
+
+				const hideLeftSidebarStub = sinon.stub( abstractHandler, '_hideLeftSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
+				} );
+				const hideRightSidebarSpy = sinon.spy( abstractHandler, '_hideRightSidebar' );
+
+				abstractHandler._adjustVisibleElements();
+
+				expect( hideLeftSidebarStub ).to.have.been.called;
+				expect( hideRightSidebarSpy ).to.not.have.been.called;
+			} );
+
+			it( 'should collapse the right sidebar if it is expanded second', () => {
+				abstractHandler.enable();
+
+				const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+				sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
+				sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
+
+				const hideLeftSidebarStub = sinon.stub( abstractHandler, '_hideLeftSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 600 );
+				} );
+				const hideRightSidebarStub = sinon.stub( abstractHandler, '_hideRightSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
+				} );
+
+				abstractHandler._adjustVisibleElements();
+
+				expect( hideLeftSidebarStub ).to.have.been.called;
+				expect( hideRightSidebarStub ).to.have.been.called;
+			} );
+		} );
+
+		describe( 'when window is expanded', () => {
+			it( 'should expand the right sidebar if it is collapsed first', () => {
+				abstractHandler.enable();
+
+				const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+				sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
+				sinon.stub( editableWrapper, 'clientWidth' ).value( 850 );
+
+				abstractHandler._sidebarsWidths.left = 500;
+
+				const showRightSidebarStub = sinon.stub( abstractHandler, '_showRightSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 600 );
+				} );
+				const showLeftSidebarStub = sinon.stub( abstractHandler, '_showLeftSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 800 );
+				} );
+
+				abstractHandler._adjustVisibleElements();
+
+				expect( showRightSidebarStub ).to.have.been.called;
+				expect( showLeftSidebarStub ).to.not.have.been.called;
+			} );
+
+			it( 'should expand the left sidebar if it is collapsed second', () => {
+				abstractHandler.enable();
+
+				const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+				sinon.stub( editableWrapper, 'scrollWidth' ).value( 400 );
+				sinon.stub( editableWrapper, 'clientWidth' ).value( 1000 );
+
+				const showRightSidebarStub = sinon.stub( abstractHandler, '_showRightSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 600 );
+				} );
+				const showLeftSidebarStub = sinon.stub( abstractHandler, '_showLeftSidebar' ).callsFake( () => {
+					sinon.stub( editableWrapper, 'scrollWidth' ).value( 800 );
+				} );
+
+				abstractHandler._adjustVisibleElements();
+
+				expect( showLeftSidebarStub ).to.have.been.called;
+				expect( showRightSidebarStub ).to.have.been.called;
+			} );
+		} );
+
+		it( 'if #_forceShowLeftSidebar is true should not adjust the sidebars visibility', () => {
+			abstractHandler.enable();
+
+			const editableWrapper = abstractHandler.getWrapper().querySelector( '.ck-fullscreen__editable-wrapper' );
+
+			sinon.stub( editableWrapper, 'scrollWidth' ).value( 1000 );
+			sinon.stub( editableWrapper, 'clientWidth' ).value( 500 );
+
+			abstractHandler._forceShowLeftSidebar = true;
+
+			const hideLeftSidebarStub = sinon.spy( abstractHandler, '_hideLeftSidebar' );
+			const hideRightSidebarSpy = sinon.spy( abstractHandler, '_hideRightSidebar' );
+
+			abstractHandler._adjustVisibleElements();
+
+			expect( hideLeftSidebarStub ).to.not.have.been.called;
+			expect( hideRightSidebarSpy ).to.not.have.been.called;
+		} );
+	} );
+
+	describe( '_hideRightSidebar', () => {
+		it( 'should hide the right sidebar if it contains anything', () => {
+			abstractHandler.enable();
+
+			sinon.stub( abstractHandler, '_switchAnnotationsUI' );
+
+			const fakeRightSidebarContent = global.document.createElement( 'div' );
+
+			abstractHandler.moveToFullscreen( fakeRightSidebarContent, 'right-sidebar' );
+
+			abstractHandler._hideRightSidebar();
+
+			expect( abstractHandler._switchAnnotationsUI ).to.have.been.called;
+			expect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.contains( 'ck-fullscreen__right-sidebar--collapsed' ) ).to.be.true;
+
+			fakeRightSidebarContent.remove();
+		} );
+
+		it( 'should do nothing if the right sidebar does not contain anything', () => {
+			abstractHandler.enable();
+
+			sinon.stub( abstractHandler, '_switchAnnotationsUI' );
+			abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.add( 'ck-fullscreen__right-sidebar--collapsed' );
+
+			abstractHandler._hideRightSidebar();
+			expect( abstractHandler._switchAnnotationsUI ).to.not.have.been.called;
+			expect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.contains( 'ck-fullscreen__right-sidebar--collapsed' ) ).to.be.true;
+		} );
+	} );
+
+	describe( '_showRightSidebar', () => {
+		it( 'should show the right sidebar if it is collapsed', () => {
+			abstractHandler.enable();
+
+			sinon.stub( abstractHandler, '_switchAnnotationsUI' );
+
+			const fakeRightSidebarContent = global.document.createElement( 'div' );
+
+			abstractHandler.moveToFullscreen( fakeRightSidebarContent, 'right-sidebar' );
+			abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.add( 'ck-fullscreen__right-sidebar--collapsed' );
+
+			abstractHandler._showRightSidebar();
+
+			expect( abstractHandler._switchAnnotationsUI ).to.have.been.called;
+			expect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.contains( 'ck-fullscreen__right-sidebar--collapsed' ) ).to.be.false;
+		} );
+
+		it( 'should do nothing if the right sidebar does not contain anything', () => {
+			abstractHandler.enable();
+
+			sinon.stub( abstractHandler, '_switchAnnotationsUI' );
+
+			abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.add( 'ck-fullscreen__right-sidebar--collapsed' );
+
+			expect( abstractHandler._switchAnnotationsUI ).to.not.have.been.called;
+			expect( abstractHandler.getWrapper().querySelector( '.ck-fullscreen__right-sidebar' )
+				.classList.contains( 'ck-fullscreen__right-sidebar--collapsed' ) ).to.be.true;
+		} );
+	} );
+
+	describe( '_handleAISidebarTransitions', () => {
+		let aiElement, nestedElement;
+
+		beforeEach( () => {
+			aiElement = global.document.createElement( 'div' );
+			nestedElement = global.document.createElement( 'div' );
+			aiElement.appendChild( nestedElement );
+
+			sinon.stub( editor.plugins, 'get' ).withArgs( 'AITabs' ).returns( {
+				view: {
+					element: aiElement
+				}
+			} );
+		} );
+
+		afterEach( () => {
+			sinon.restore();
+			aiElement.remove();
+		} );
+
+		it( 'should not adjust the fullscreen elements if the transition is not on the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const evt = new TransitionEvent( 'transitionend', {
+				target: nestedElement,
+				propertyName: 'width'
+			} );
+
+			abstractHandler._handleAISidebarTransitions( evt );
+
+			expect( adjustVisibleElementsStub ).to.not.have.been.called;
+		} );
+
+		it( 'should not adjust the fullscreen elements if the transition concerns non-width properties of the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const evt = new TransitionEvent( 'transitionend', {
+				target: aiElement,
+				propertyName: 'height'
+			} );
+
+			abstractHandler._handleAISidebarTransitions( evt );
+
+			expect( adjustVisibleElementsStub ).to.not.have.been.called;
+		} );
+
+		it( 'should adjust the fullscreen elements if the transition is on the AI tabs', () => {
+			const adjustVisibleElementsStub = sinon.stub( abstractHandler, '_adjustVisibleElements' );
+			const fakeEvt = {
+				target: aiElement,
+				propertyName: 'width'
+			};
+
+			abstractHandler._handleAISidebarTransitions( fakeEvt );
+
+			expect( adjustVisibleElementsStub ).to.have.been.called;
+		} );
+	} );
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		window.setTimeout( res, time );
+	} );
+}

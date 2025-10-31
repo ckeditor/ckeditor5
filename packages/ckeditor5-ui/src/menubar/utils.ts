@@ -888,7 +888,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 			{
 				groupId: 'restrictedEditingException',
 				items: [
-					'menuBar:restrictedEditingException'
+					'menuBar:restrictedEditingException:inline',
+					'menuBar:restrictedEditingException:block'
 				]
 			}
 		]
