@@ -41,12 +41,14 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 The restricted editing feature enables two editing modes:
 
 * **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
-* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. This mode supports only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
+* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. There changes allowed withing these fields can be configured.
 
 There are two types of editable fields: inline and block.
 
-* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content.
+* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content. They support only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
 *  **Block editable fields** enable all content editing features loaded in the editor. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
+
+You can observe it in the [demo](#demo) while switching between the inline and the block editable field &ndash; the number of active toolbar items will change.
 
 Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured](#configuring-the-toolbar).
 
@@ -81,6 +83,10 @@ ClassicEditor
 ```
 </code-switcher>
 
+<info-box note>
+	Please note there are available toolbar items for inline, block, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
+</info-box>
+
 ### Running the restricted editing mode
 
 To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
@@ -99,10 +105,6 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
-
-<info-box note>
-	Please note there are available toolbar items for inline, block, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
-</info-box>
 
 ## Configuration
 
@@ -144,17 +146,34 @@ class MyPlugin extends Plugin {
 
 ### Configuring the toolbar
 
-When configuring the toolbar item for inserting restricted editing fields, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
 
 Example toolbar configuration may look like the one below:
 
 ```js
 toolbar: [
-	'heading', '|', 'bold', 'italic', 'link', '|',
-	'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
 	'restrictedEditingException:dropdown', '|',
+	'heading', '|', 'bold', 'italic', 'link', '|',
+	'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent', '|',
+	'blockQuote', 'insertImage', 'insertTable', '|',
 	'undo', 'redo'
 ]
+```
+
+To configure the feature toolbar button for restricted mode, use the `restrictedEditing` call, instead. The Navigate editable regions button {@icon @ckeditor/ckeditor5-icons/theme/icons/content-lock.svg Navigate editable regions} allows for moving between previous/next editable fields.
+
+Example toolbar configuration may look like the one below. Please note that whatever toolbar items maybe enable, the two different types of editable fields [will not support all of them.](#additional-feature-information). From the example below, inline editable fields will only support bolr, italic, link and undo, while images, tables and list will only be available for block type fields.
+
+```js
+toolbar: {
+	items: [
+		'restrictedEditing', '|', 
+		'heading', '|', 'bold', 'italic', `link`, '|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent', '|',
+		'insertImage', 'insertTable', '|',
+		'undo', 'redo'
+	]
+}
 ```
 
 #### Legacy toolbar button
