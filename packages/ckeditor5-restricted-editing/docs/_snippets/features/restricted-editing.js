@@ -64,9 +64,11 @@ async function startStandardEditingMode() {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'heading',
+				'restrictedEditingException:dropdown',
+				'|', 'undo', 'redo',
+				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'restrictedEditingException:dropdown', 'mediaEmbed',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
@@ -103,7 +105,9 @@ async function startRestrictedEditingMode() {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'heading',
+				'restrictedEditing',
+				'|', 'undo', 'redo',
+				'|', 'heading',
 				'|', 'bold', 'italic',
 				'|', 'link', 'insertImage', 'insertTable',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'

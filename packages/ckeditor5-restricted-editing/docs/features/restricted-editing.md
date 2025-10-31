@@ -196,8 +196,12 @@ CKEditor&nbsp;5 has more features that help you control user permissions:
 
 The {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin registers:
 
-* The `'restrictedEditingException'` button that lets you mark regions as editable.
-* The {@link module:restricted-editing/restrictededitingexceptioncommand~RestrictedEditingExceptionCommand `'restrictedEditingException'`} command that allows marking regions as editable.
+* The `'restrictedEditingException:dropdown'` button that lets you mark regions as editable.
+* The `'restrictedEditingException:inline'` button that lets you mark inline regions as editable.
+* The `'restrictedEditingException:block'` button that lets you mark block regions as editable.
+* The `'restrictedEditingException'` button that lets you mark inline regions as editable (legacy alias).
+* The {@link module:restricted-editing/restrictededitingexceptioncommand~RestrictedEditingExceptionCommand `'restrictedEditingException'`} command that allows marking inline regions as editable.
+* The {@link module:restricted-editing/restrictededitingexceptionblockcommand~RestrictedEditingExceptionBlockCommand `'restrictedEditingExceptionBlock'`} command that allows marking block regions as editable.
 
 The {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin registers:
 
