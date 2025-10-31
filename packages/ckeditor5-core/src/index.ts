@@ -44,8 +44,7 @@ export type {
 	ToolbarConfigItem,
 	UiConfig,
 	ViewportOffsetConfig,
-	PoweredByConfig,
-	ExperimentalFlagsConfig
+	PoweredByConfig
 } from './editor/editorconfig.js';
 
 export { attachToForm } from './editor/utils/attachtoform.js';

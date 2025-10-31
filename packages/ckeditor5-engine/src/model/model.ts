@@ -39,7 +39,7 @@ import {
 	type Config
 } from '@ckeditor/ckeditor5-utils';
 
-import type { EditorConfig } from '@ckeditor/ckeditor5-core';
+import type { EngineConfig } from '../engineconfig.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -69,7 +69,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @internal
 	 */
-	public readonly _config?: Config<EditorConfig>;
+	public readonly _config?: Config<EngineConfig>;
 
 	/**
 	 * All callbacks added by {@link module:engine/model/model~Model#change} or
@@ -85,7 +85,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	// @if CK_DEBUG_ENGINE // private _operationLogs: Array<string>;
 	// @if CK_DEBUG_ENGINE // private _appliedOperations: Array<Operation>;
 
-	constructor( config?: Config<EditorConfig> ) {
+	constructor( config?: Config<EngineConfig> ) {
 		super();
 
 		this.markers = new MarkerCollection();

@@ -12,6 +12,7 @@ import { type Context } from '../context.js';
 import type { PluginConstructor } from '../plugin.js';
 import { type Editor } from './editor.js';
 import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
+import type { EngineConfig } from '@ckeditor/ckeditor5-engine';
 
 /**
  * CKEditor configuration options.
@@ -32,7 +33,7 @@ import type { MenuBarConfig } from '@ckeditor/ckeditor5-ui';
  * 	.catch( ... );
  * ```
  */
-export interface EditorConfig {
+export interface EditorConfig extends EngineConfig {
 	context?: Context;
 
 	/**
@@ -865,11 +866,6 @@ export interface EditorConfig {
 	 * ```
 	 */
 	label?: string | Record<string, string>;
-
-	/**
-	 * TODO
-	 */
-	experimentalFlags?: ExperimentalFlagsConfig;
 }
 
 /**
@@ -1030,15 +1026,4 @@ export interface UiConfig {
 	 * Read more in {@link module:core/editor/editorconfig~PoweredByConfig}.
 	 **/
 	poweredBy?: PoweredByConfig;
-}
-
-/**
- * TODO
- */
-export interface ExperimentalFlagsConfig {
-
-	/**
-	 * TODO
-	 */
-	modelInsertContentDeepSchemaVerification?: boolean;
 }
