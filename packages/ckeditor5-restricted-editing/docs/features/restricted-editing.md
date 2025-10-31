@@ -162,7 +162,7 @@ toolbar: [
 
 To configure the feature toolbar button for restricted mode, use the `restrictedEditing` call, instead. The Navigate editable regions button {@icon @ckeditor/ckeditor5-icons/theme/icons/content-lock.svg Navigate editable regions} allows for moving between previous/next editable fields.
 
-Example toolbar configuration may look like the one below. Please note that whatever toolbar items maybe enable, the two different types of editable fields [will not support all of them.](#additional-feature-information). From the example below, inline editable fields will only support bolr, italic, link and undo, while images, tables and list will only be available for block type fields.
+Example toolbar configuration may look like the one below. Please note that whatever toolbar items maybe enable, the two different types of editable fields [will not support all of them.](#additional-feature-information). From the example below, inline editable fields will only support bold, italic, link, and undo, while images, tables, and list will only be available for block type fields.
 
 ```js
 toolbar: {
