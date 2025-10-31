@@ -83,7 +83,7 @@ ClassicEditor
 
 ### Running the restricted editing mode
 
-To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing:dropdown'` button to the toolbar:
+To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
 
 <code-switcher>
 ```js
