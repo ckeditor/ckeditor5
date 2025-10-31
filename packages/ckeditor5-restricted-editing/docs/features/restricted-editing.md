@@ -144,7 +144,7 @@ class MyPlugin extends Plugin {
 
 ### Configuring the toolbar
 
-When configuring the toolbar item for inserting restricted editing fields, you can choose to provide your users with access to inline, block or both types of fields. To add these to the rtoolbar, you should use the dollowint tollbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+When configuring the toolbar item for inserting restricted editing fields, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
 
 Example toolbar configuration may look like the one below:
 
