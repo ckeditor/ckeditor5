@@ -93,7 +93,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditing:dropdown', /* ... */ ]
+		toolbar: [ 'restrictedEditing', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
