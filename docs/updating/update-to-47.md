@@ -14,6 +14,22 @@ modified_at: 2025-10-16
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v47.2.0
+
+Released on 5 November, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.2.0))
+
+to do
+
+#### Legacy toolbar button for restricted editing
+
+The version introduces new toolbar items for the {@link features/restricted-editing restricted editing} feature. The new available toolbar ites are `restrictedEditingException:dropdown` (for both inline and block types of editing fields), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+
+To retain full backwards compatibility, we have provided an alias toolbar item: `restrictedEditingException`. It is the old toolbar button call and it defaults to inline restricted editing field button. There is no need to change your configuration if you only want to use inline fields type. If you want to use both the block and inline type fields, please {@link features/restricted-editing#configuring-the-toolbar update your toolbar configuration}.
+
+### Minor breaking changes in this release
+
+todo
+
 ## Update to CKEditor&nbsp;5 v47.1.0
 
 Released on 16 October, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.1.0))
