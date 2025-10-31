@@ -122,11 +122,11 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
-
 <info-box warning>
-	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the inline fields in restricted editing mode.
+	This setting only applies to inline editing fields, where only inline content inserting or editing commands are allowed. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are only available in block editing fields.
 </info-box>
+
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
 ### Enabling commands in the restricted editing mode
 
