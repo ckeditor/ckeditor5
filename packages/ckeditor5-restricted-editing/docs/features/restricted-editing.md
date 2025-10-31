@@ -48,7 +48,7 @@ There are two types of editable fields: inline and block.
 * **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content.
 *  **Block editable fields** enable all content editing features loaded in the editor. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
 
-Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured]().
+Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured](#configuring-the-toolbar).
 
 You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
