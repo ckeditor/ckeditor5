@@ -18,13 +18,32 @@ modified_at: 2025-10-16
 
 Released on 5 November, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.2.0))
 
-to do
+to do  lead in
+
+### Footnotes (⭐)
+
+A brand-new {@link features/footnotes Footnotes} feature is here! It lets users insert and manage footnotes directly in their content, keeping references organized and readable. Footnotes stay linked to their source text and update automatically when edited, ideal for academic, legal, or technical writing. You can also **customize the numbering**, including the starting number and numbering style, to match your document’s formatting needs.
+
+### Restricted editing for blocks (⭐)
+
+{@link features/restricted-editing Restricted editing} now supports **block-level restrictions**, not just inline ones. This makes it easier to protect the entire content while still allowing controlled edits where required. A common use case is unlocking for editing template sections like paragraphs, tables, or structured document parts, and protecting the rest of the content.
 
 #### Legacy toolbar button for restricted editing
 
 The version introduces new toolbar items for the {@link features/restricted-editing restricted editing} feature. The new available toolbar ites are `restrictedEditingException:dropdown` (for both inline and block types of editing fields), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
 
 To retain full backwards compatibility, we have provided an alias toolbar item: `restrictedEditingException`. It is the old toolbar button call and it defaults to inline restricted editing field button. There is no need to change your configuration if you only want to use inline fields type. If you want to use both the block and inline type fields, please {@link features/restricted-editing#configuring-the-toolbar update your toolbar configuration}.
+
+### Old installation methods sunset timelines
+
+We are extending the sunset period for old installation methods ([#17779](https://github.com/ckeditor/ckeditor5/issues/17779)) to the **end of Q1 2026**. It is a good moment to consider switching to the {@link getting-started/setup/using-lts-edition LTS edition} for long-term stability and an additional 3 years of support for the old installation methods.
+
+### Other improvements and fixes
+
+This release also brings several smaller but important enhancements and fixes:
+
+* **View engine stability:** Fixed a bug where placeholders could remain visible after view changes, such as moving or replacing elements.
+* **Downcast reliability:** The [`elementToStructure`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcasthelpers-DowncastHelpers.html#function-elementToStructure) helper now handles nested structures and list elements more consistently, ensuring correct reconversion and structure maintenance.
 
 ### Minor breaking changes in this release
 
