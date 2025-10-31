@@ -108,7 +108,7 @@ ClassicEditor
 
 ## Configuration
 
-You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
+You can configure which features should be available in the inline editing field. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
 ClassicEditor
