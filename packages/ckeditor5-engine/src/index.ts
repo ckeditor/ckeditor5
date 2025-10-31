@@ -7,6 +7,11 @@
  * @module engine
  */
 
+export type {
+	EngineConfig,
+	ExperimentalFlagsConfig
+} from './engineconfig.js';
+
 export {
 	type PlaceholderableViewElement,
 	disableViewPlaceholder,

@@ -10,6 +10,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { TableEditing } from '../src/tableediting.js';
 import { TableUI } from '../src/tableui.js';
 import { InsertTableView } from '../src/ui/inserttableview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { SwitchButtonView, DropdownView, ListSeparatorView, SplitButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconTable } from '@ckeditor/ckeditor5-icons';
 
@@ -33,7 +34,7 @@ describe( 'TableUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TableEditing, TableUI ]
+				plugins: [ TableEditing, TableUI, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
