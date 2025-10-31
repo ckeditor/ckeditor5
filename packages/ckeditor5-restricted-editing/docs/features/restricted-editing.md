@@ -46,7 +46,7 @@ The restricted editing feature enables two editing modes:
 There are two types of editable fields: inline and block.
 
 * **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content.
-*  **Block editable fields** enable all content editing features loaded in the editor in both the standard and restricted editing modes. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
+*  **Block editable fields** enable all content editing features loaded in the editor. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
 
 Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured]().
 
