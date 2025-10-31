@@ -45,7 +45,7 @@ The restricted editing feature enables two editing modes:
 
 There are two types of editable fields: inline and block.
 
-* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content. They support only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
+* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content. They support only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this field, either.
 *  **Block editable fields** enable all content editing features loaded in the editor. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
 
 You can observe it in the [demo](#demo) while switching between the inline and the block editable field &ndash; the number of active toolbar items will change.
