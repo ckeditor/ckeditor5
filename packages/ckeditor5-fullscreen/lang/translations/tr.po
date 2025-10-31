@@ -37,12 +37,12 @@ msgstr "Bağlı kullanıcılar"
 
 msgctxt "Tooltip for a button that shows the left sidebar"
 msgid "Show left sidebar"
-msgstr ""
+msgstr "Sol kenar çubuğunu göster"
 
 msgctxt "Tooltip for a button that hides the left sidebar"
 msgid "Hide left sidebar"
-msgstr ""
+msgstr "Sol kenar çubuğunu gizle"
 
 msgctxt "Label for a button that toggles the left sidebar"
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Kenar çubuğunu aç/kapat"
