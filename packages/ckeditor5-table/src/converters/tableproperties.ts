@@ -8,7 +8,6 @@
  */
 
 import type {
-	UpcastElementEvent,
 	Conversion,
 	UpcastConversionApi,
 	UpcastConversionData,
@@ -229,41 +228,36 @@ export function upcastBorderStyles(
 }
 
 /**
- * Conversion helper for upcasting the table `border="0"` attribute to border styles.
+ * Helper function to check if border="0" attribute should be processed.
+ * Returns the model table element if all conditions are met, null otherwise.
  *
  * @internal
  */
-export function upcastBorderZeroAttribute( conversion: Conversion ): void {
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
-		const { consumable, writer } = conversionApi;
-		const { viewItem } = data;
+export function shouldProcessBorderZeroAttribute(
+	viewItem: ViewElement,
+	consumable: UpcastConversionApi['consumable'],
+	data: UpcastConversionData<ViewElement>
+): ModelElement | null {
+	if (
+		viewItem.getAttribute( 'border' ) !== '0' ||
+		!consumable.test( viewItem, { attributes: 'border' } ) ||
+		!data.modelRange
+	) {
+		return null;
+	}
 
-		if (
-			viewItem.getAttribute( 'border' ) !== '0' ||
-			!consumable.test( viewItem, { attributes: 'border' } )
-		) {
-			return;
-		}
+	const modelTableElement = Array
+		.from( data.modelRange.getItems( { shallow: true } ) )
+		.find( item => item.is( 'element', 'table' ) );
 
-		const modelTableElement = first( data.modelRange!.getItems( { shallow: true } ) ) as ModelElement;
+	if (
+		!modelTableElement ||
+		modelTableElement.getAttribute( 'tableType' ) === 'layout'
+	) {
+		return null;
+	}
 
-		if (
-			!modelTableElement.is( 'element', 'table' ) ||
-			modelTableElement.hasAttribute( 'tableBorderStyle' )
-		) {
-			return;
-		}
-
-		writer.setAttribute( 'tableBorderStyle', 'none', modelTableElement );
-
-		for ( const { item } of writer.createRangeIn( modelTableElement ) ) {
-			if ( item.is( 'element', 'tableCell' ) && !item.hasAttribute( 'tableCellBorderStyle' ) ) {
-				writer.setAttribute( 'tableCellBorderStyle', 'none', item );
-			}
-		}
-
-		consumable.consume( viewItem, { attributes: 'border' } );
-	}, { priority: 'low' } ) );
+	return modelTableElement;
 }
 
 /**

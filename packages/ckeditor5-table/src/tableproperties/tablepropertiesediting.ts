@@ -15,7 +15,8 @@ import {
 	type Conversion,
 	type ModelSchema,
 	type UpcastConversionApi,
-	type UpcastConversionData
+	type UpcastConversionData,
+	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 
 import { TableEditing } from '../tableediting.js';
@@ -23,7 +24,7 @@ import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
 	getDefaultValueAdjusted,
-	upcastBorderZeroAttribute,
+	shouldProcessBorderZeroAttribute,
 	upcastBorderStyles,
 	upcastStyleToAttribute
 } from '../converters/tableproperties.js';
@@ -185,7 +186,7 @@ function enableBorderProperties(
 	}
 
 	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
-	upcastBorderZeroAttribute( conversion );
+	upcastTableBorderZeroAttribute( conversion );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );
@@ -390,4 +391,22 @@ function enableTableToFigureProperty(
 	} );
 
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
+}
+
+/**
+ * Enables the `border="0"` attribute upcast for tables.
+ */
+function upcastTableBorderZeroAttribute( conversion: Conversion ): void {
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+		const { consumable, writer } = conversionApi;
+
+		const modelTableElement = shouldProcessBorderZeroAttribute( data.viewItem, consumable, data );
+
+		if ( !modelTableElement || modelTableElement.hasAttribute( 'tableBorderStyle' ) ) {
+			return;
+		}
+
+		writer.setAttribute( 'tableBorderStyle', 'none', modelTableElement );
+		consumable.consume( data.viewItem, { attributes: 'border' } );
+	}, { priority: 'low' } ) );
 }

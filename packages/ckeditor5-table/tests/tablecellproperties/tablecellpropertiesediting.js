@@ -281,6 +281,46 @@ describe( 'table cell properties', () => {
 					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
 					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
+
+				describe( 'border="0" attribute handling', () => {
+					it( 'should convert border="0" to tableCellBorderStyle="none" on all table cells', () => {
+						editor.setData(
+							'<table border="0">' +
+								'<tr>' +
+									'<td>foo</td>' +
+									'<td>bar</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td>baz</td>' +
+									'<td>qux</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						const cells = Array.from( table.getChildren() )
+							.flatMap( row => Array.from( row.getChildren() ) );
+
+						expect( cells ).to.have.lengthOf( 4 );
+
+						for ( const cell of cells ) {
+							expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'none' );
+						}
+					} );
+
+					it( 'should not override existing tableCellBorderStyle attribute', () => {
+						editor.setData(
+							'<table border="0">' +
+								'<tr>' +
+									'<td style="border-style: dashed;">foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+						expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'dashed' );
+					} );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {

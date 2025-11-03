@@ -15,6 +15,8 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import { PlainTableOutput } from '../../src/plaintableoutput.js';
 import { TableEditing } from '../../src/tableediting.js';
+import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 
 describe( 'TableLayoutEditing', () => {
 	let editor, model, view, editorElement, insertTableCommand;
@@ -36,7 +38,7 @@ describe( 'TableLayoutEditing', () => {
 
 	afterEach( async () => {
 		editorElement.remove();
-		await editor.destroy();
+		await editor?.destroy();
 	} );
 
 	it( 'should have pluginName', () => {
@@ -1004,6 +1006,108 @@ describe( 'TableLayoutEditing', () => {
 						'</tableColumnGroup>' +
 					'</table>'
 				);
+			} );
+		} );
+
+		describe( 'border="0" attribute handling', () => {
+			beforeEach( async () => {
+				// Remove previously created editor.
+				await editor.destroy();
+				editorElement.remove();
+
+				// Create a new editor instance with TableCellPropertiesEditing and TablePropertiesEditing plugins.
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				const plugins = [
+					Table,
+					TableCaption,
+					TableColumnResize,
+					PlainTableOutput,
+					TableLayoutEditing,
+					TablePropertiesEditing,
+					TableCellPropertiesEditing,
+					Paragraph,
+					BlockQuote
+				];
+
+				editor = await createEditor( editorElement, plugins );
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+				editorElement.remove();
+			} );
+
+			it( 'should not apply border="0" to layout tables', () => {
+				editor.setData(
+					'<table border="0" class="layout-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const table = model.document.getRoot().getChild( 0 );
+				expect( table.hasAttribute( 'tableBorderStyle' ) ).to.be.false;
+			} );
+
+			it( 'should not apply border="0" to cells in layout tables', () => {
+				editor.setData(
+					'<table border="0" class="layout-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				expect( cell.hasAttribute( 'tableCellBorderStyle' ) ).to.be.false;
+			} );
+
+			it( 'should not consume border attribute for layout tables', () => {
+				let borderConsumed = false;
+
+				editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+					borderConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'border' } );
+				}, { priority: 'lowest' } );
+
+				editor.setData(
+					'<table border="0" class="layout-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				expect( borderConsumed ).to.be.false;
+			} );
+
+			it( 'should apply border="0" to content tables', () => {
+				editor.setData(
+					'<table border="0" class="content-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const table = model.document.getRoot().getChild( 0 );
+				expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'none' );
+			} );
+
+			it( 'should apply border="0" to cells in content tables', () => {
+				editor.setData(
+					'<table border="0" class="content-table">' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>'
+				);
+
+				const cell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+				expect( cell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'none' );
 			} );
 		} );
 	} );
