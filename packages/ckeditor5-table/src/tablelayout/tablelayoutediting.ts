@@ -247,6 +247,11 @@ function upcastLayoutTable( preferredExternalTableType: TableType | undefined ) 
 			conversionApi.consumable.consume( viewTable, { attributes: [ 'role' ] } );
 			conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
 
+			// Layout tables have no border, so it's equitable to consume the border="0" attribute.
+			if ( viewTable.getAttribute( 'border' ) === '0' ) {
+				conversionApi.consumable.consume( viewTable, { attributes: [ 'border' ] } );
+			}
+
 			// Get all rows from the table and convert them.
 			// While looping over the children of `<table>` we can be sure that first will be `<tbody>`
 			// and optionally `<thead>` and `<tfoot>`, and in these elements are the table rows found.

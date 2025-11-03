@@ -1066,7 +1066,7 @@ describe( 'TableLayoutEditing', () => {
 				expect( cell.hasAttribute( 'tableCellBorderStyle' ) ).to.be.false;
 			} );
 
-			it( 'should not consume border attribute for layout tables', () => {
+			it( 'should consume border attribute for layout tables', () => {
 				let borderConsumed = false;
 
 				editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
@@ -1081,7 +1081,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( borderConsumed ).to.be.false;
+				expect( borderConsumed ).to.be.true;
 			} );
 
 			it( 'should apply border="0" to content tables', () => {

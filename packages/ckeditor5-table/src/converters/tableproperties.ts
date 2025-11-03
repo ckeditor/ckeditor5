@@ -12,8 +12,7 @@ import type {
 	UpcastConversionApi,
 	UpcastConversionData,
 	ViewElement,
-	ModelElement,
-	ViewConsumable
+	UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -226,36 +225,43 @@ export function upcastBorderStyles(
 			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
 		}
 	} ) );
-}
 
-/**
- * Helper function to check if border="0" attribute that is present on a view table element should be processed.
- *
- * @internal
- */
-export function shouldProcessBorderZeroAttribute(
-	viewItem: ViewElement,
-	consumable: ViewConsumable,
-	data: UpcastConversionData<ViewElement>
-): ModelElement | null {
-	if (
-		viewItem.getAttribute( 'border' ) !== '0' ||
-		!consumable.test( viewItem, { attributes: 'border' } ) ||
-		!data.modelRange
-	) {
-		return null;
-	}
+	// If parent table has `border="0"` attribute then set border style to `none`
+	// all table cells of that table and table itself.
+	conversion.for( 'upcast' ).add( dispatcher => {
+		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+			const { viewItem } = data;
 
-	const modelTableElement = data.modelRange.start.nodeAfter as ModelElement | null;
+			const viewTable = (
+				viewItem.is( 'element', 'table' ) ?
+					viewItem :
+					viewItem.findAncestor( 'table' )
+			)!;
 
-	if (
-		!modelTableElement ||
-		modelTableElement.getAttribute( 'tableType' ) === 'layout'
-	) {
-		return null;
-	}
+			// If something already consumed the border attribute on the nearest table element, skip the conversion.
+			if ( !conversionApi.consumable.test( viewTable, { attributes: 'border' } ) ) {
+				return;
+			}
 
-	return modelTableElement;
+			// Ignore tables with border different than "0" or layout tables.
+			if ( viewTable.getAttribute( 'border' ) !== '0' ) {
+				return;
+			}
+
+			const modelElement = data.modelRange?.start?.nodeAfter;
+
+			// If model element has already border style attribute, skip the conversion.
+			if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+				return;
+			}
+
+			conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
+
+			if ( viewElementName === 'table' ) {
+				conversionApi.consumable.consume( data.viewItem, { attributes: 'border' } );
+			}
+		} );
+	} );
 }
 
 /**

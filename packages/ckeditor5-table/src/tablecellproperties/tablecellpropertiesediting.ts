@@ -16,14 +16,12 @@ import {
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
-	type UpcastConversionData,
-	type UpcastElementEvent
+	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
 import {
 	downcastAttributeToStyle,
 	getDefaultValueAdjusted,
-	shouldProcessBorderZeroAttribute,
 	upcastBorderStyles
 } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
@@ -202,7 +200,6 @@ function enableBorderProperties(
 
 	upcastBorderStyles( conversion, 'td', modelAttributes, defaultBorder );
 	upcastBorderStyles( conversion, 'th', modelAttributes, defaultBorder );
-	upcastTableCellBorderZeroAttribute( conversion );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.style, styleName: 'border-style' } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.width, styleName: 'border-width' } );
@@ -356,24 +353,4 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 				}
 			}
 		} );
-}
-
-/**
- * Ensures that table with `border="0"` has its cells set to `tableCellBorderStyle="none"` on upcast.
- */
-function upcastTableCellBorderZeroAttribute( conversion: Conversion ): void {
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
-		const { writer, consumable } = conversionApi;
-		const modelTableElement = shouldProcessBorderZeroAttribute( data.viewItem, consumable, data );
-
-		if ( !modelTableElement ) {
-			return;
-		}
-
-		for ( const { item } of writer.createRangeIn( modelTableElement ) ) {
-			if ( item.is( 'element', 'tableCell' ) && !item.hasAttribute( 'tableCellBorderStyle' ) ) {
-				writer.setAttribute( 'tableCellBorderStyle', 'none', item );
-			}
-		}
-	} ) );
 }
