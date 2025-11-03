@@ -23,6 +23,7 @@ import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
 	getDefaultValueAdjusted,
+	upcastBorderZeroAttribute,
 	upcastBorderStyles,
 	upcastStyleToAttribute
 } from '../converters/tableproperties.js';
@@ -184,6 +185,7 @@ function enableBorderProperties(
 	}
 
 	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
+	upcastBorderZeroAttribute( conversion );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );

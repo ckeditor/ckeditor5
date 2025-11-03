@@ -7,7 +7,14 @@
  * @module table/converters/tableproperties
  */
 
-import type { Conversion, UpcastConversionApi, UpcastConversionData, ViewElement } from 'ckeditor5/src/engine.js';
+import type {
+	UpcastElementEvent,
+	Conversion,
+	UpcastConversionApi,
+	UpcastConversionData,
+	ViewElement,
+	ModelElement
+} from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
@@ -219,6 +226,41 @@ export function upcastBorderStyles(
 			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
 		}
 	} ) );
+}
+
+/**
+ * Conversion helper for upcasting the table `border="0"` attribute to border styles.
+ *
+ * @internal
+ */
+export function upcastBorderZeroAttribute( conversion: Conversion ): void {
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+		const { consumable, writer } = conversionApi;
+		const { viewItem } = data;
+
+		if (
+			viewItem.getAttribute( 'border' ) !== '0' ||
+			!consumable.test( viewItem, { attributes: 'border' } )
+		) {
+			return;
+		}
+
+		const modelTableElement = first( data.modelRange!.getItems( { shallow: true } ) ) as ModelElement;
+
+		if ( modelTableElement.hasAttribute( 'tableBorderStyle' ) ) {
+			return;
+		}
+
+		writer.setAttribute( 'tableBorderStyle', 'none', modelTableElement );
+
+		for ( const { item } of writer.createRangeIn( modelTableElement ) ) {
+			if ( item.is( 'element', 'tableCell' ) && !item.hasAttribute( 'tableCellBorderStyle' ) ) {
+				writer.setAttribute( 'tableCellBorderStyle', 'none', item );
+			}
+		}
+
+		consumable.consume( viewItem, { attributes: 'border' } );
+	}, { priority: 'low' } ) );
 }
 
 /**
