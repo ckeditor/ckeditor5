@@ -246,13 +246,7 @@ export function shouldProcessBorderZeroAttribute(
 		return null;
 	}
 
-	// For some reason TS compiler is not able to infer the type correctly here and causes an error in building process.
-	// So we need to help it a bit by adding an explicit type annotation.
-	const modelTableElement = (
-		Array
-			.from( data.modelRange.getItems( { shallow: true } ) )
-			.find( item => item.is( 'element', 'table' ) )
-	) as ModelElement | undefined;
+	const modelTableElement = data.modelRange.start.nodeAfter as ModelElement | null;
 
 	if (
 		!modelTableElement ||
