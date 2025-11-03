@@ -247,7 +247,10 @@ export function upcastBorderZeroAttribute( conversion: Conversion ): void {
 
 		const modelTableElement = first( data.modelRange!.getItems( { shallow: true } ) ) as ModelElement;
 
-		if ( modelTableElement.hasAttribute( 'tableBorderStyle' ) ) {
+		if (
+			!modelTableElement.is( 'element', 'table' ) ||
+			modelTableElement.hasAttribute( 'tableBorderStyle' )
+		) {
 			return;
 		}
 
