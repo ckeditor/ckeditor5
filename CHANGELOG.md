@@ -7,7 +7,7 @@ Changelog
 
 #### CKEditor AI
 
-We are introducing CKEditor AI, a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
+We are introducing [**CKEditor AI**](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
 
 CKEditor AI includes three core capabilities:
 
@@ -43,7 +43,7 @@ This release also brings several smaller but important enhancements and fixes:
 ### Features
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Added a new configuration option, `config.ai.chat.context.searchInputVisibleFrom`, to manage the visibility of the search input in the AI Chat context panel.
-* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added a new package `@ckeditor/ckeditor5-footnotes` that provides the footnotes feature. This feature allows user to add and manage footnotes in their documents, enhancing the document's readability and providing additional context where necessary.
+* **[footnotes](https://www.npmjs.com/package/@ckeditor/ckeditor5-footnotes)**: Added a new package `@ckeditor/ckeditor5-footnotes` that provides the footnotes feature. This feature allows users to add and manage footnotes in their documents, enhancing the document's readability and providing additional context where necessary.
 * **[fullscreen](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen)**: Enabled CKEditor AI support in Fullscreen mode, allowing users to access AI tools while editing in fullscreen. Closes [#19234](https://github.com/ckeditor/ckeditor5/issues/19234).
 * **[fullscreen](https://www.npmjs.com/package/@ckeditor/ckeditor5-fullscreen)**: Sidebars in the fullscreen mode will now automatically collapsed and expanded depending on the available space in the viewport. Closes [#19294](https://github.com/ckeditor/ckeditor5/issues/19294).
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: Introduced block editable areas in restricted editing. Closes [#9071](https://github.com/ckeditor/ckeditor5/issues/9071), [#5953](https://github.com/ckeditor/ckeditor5/issues/5953).
@@ -52,12 +52,12 @@ This release also brings several smaller but important enhancements and fixes:
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: If the content you were working on in `AI Balloon` gets removed (for example, by another user), a proper message will appear with the information and prevent further actions that could lead to errors.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Conversations loaded from AI Chat History are now correctly scrolled to the last message.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fix visual inconsistencies of hover state in AI Chat.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fix visual inconsistencies in AI Chat context section.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fix AI Chat resize button `hover` and `active` visual states.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fix various visual issues across the AI feature.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed visual inconsistencies of hover state in AI Chat.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed visual inconsistencies in AI Chat context section.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed AI Chat resize button `hover` and `active` visual states.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed various visual issues across the AI feature.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Fixed an issue where using DLLs for the `AI` package together with the `TrackChanges` plugin could fail due to a `DocumentCompare` plugin conflict.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Remove doubled border at the bottom of review mode suggestions list.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Removed doubled border at the bottom of review mode suggestions list.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The styles in the AI feature operate independently from one another.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Prevent editor crash on exiting pending AI review check.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Configuration option `ai.availableReplyActions` will now also impact visibility of buttons displayed next to "Change X" header, which are displayed in AI Chat feed when AI returns multiple changes.
@@ -78,7 +78,7 @@ This release also brings several smaller but important enhancements and fixes:
   * It should work correctly with lists inside.
   * It should create proper structure with list inside.
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `model.insertContent()` and `model.insertObject()` should verify the whole `Schema` context before checking auto-paragraphing. Closes [#19210](https://github.com/ckeditor/ckeditor5/issues/19210).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixes a bug where placeholders could become stuck and remain visible on elements when the view changed. Closes [#14354](https://github.com/ckeditor/ckeditor5/issues/14354), [#18149](https://github.com/ckeditor/ckeditor5/issues/18149).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Fixed a bug where placeholders could become stuck and remain visible on elements when the view changed. Closes [#14354](https://github.com/ckeditor/ckeditor5/issues/14354), [#18149](https://github.com/ckeditor/ckeditor5/issues/18149).
 
   This resolves two scenarios:
 
