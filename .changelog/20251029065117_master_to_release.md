@@ -1,5 +1,0 @@
----
-type: Other
----
-
-Updated translations.
