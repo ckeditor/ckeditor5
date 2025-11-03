@@ -230,7 +230,7 @@ export function upcastBorderStyles(
 	// all table cells of that table and table itself.
 	conversion.for( 'upcast' ).add( dispatcher => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
-			const { viewItem } = data;
+			const { modelRange, viewItem } = data;
 
 			const viewTable = (
 				viewItem.is( 'element', 'table' ) ?
@@ -248,7 +248,7 @@ export function upcastBorderStyles(
 				return;
 			}
 
-			const modelElement = data.modelRange?.start?.nodeAfter;
+			const modelElement = modelRange?.start?.nodeAfter;
 
 			// If model element has already border style attribute, skip the conversion.
 			if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
@@ -257,8 +257,8 @@ export function upcastBorderStyles(
 
 			conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
 
-			if ( viewElementName === 'table' ) {
-				conversionApi.consumable.consume( data.viewItem, { attributes: 'border' } );
+			if ( viewItem.hasAttribute( 'border' ) ) {
+				conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
 			}
 		} );
 	} );
