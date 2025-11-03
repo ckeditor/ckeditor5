@@ -19,11 +19,7 @@ import {
 	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
-import {
-	downcastAttributeToStyle,
-	getDefaultValueAdjusted,
-	upcastBorderStyles
-} from '../converters/tableproperties.js';
+import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
 import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
 import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
