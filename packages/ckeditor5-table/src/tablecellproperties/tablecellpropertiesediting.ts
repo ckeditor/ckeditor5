@@ -359,7 +359,7 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 }
 
 /**
- * Enables the `border="0"` attribute upcast for table cells.
+ * Ensures that table with `border="0"` has its cells set to `tableCellBorderStyle="none"` on upcast.
  */
 function upcastTableCellBorderZeroAttribute( conversion: Conversion ): void {
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {

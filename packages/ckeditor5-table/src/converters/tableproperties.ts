@@ -12,7 +12,8 @@ import type {
 	UpcastConversionApi,
 	UpcastConversionData,
 	ViewElement,
-	ModelElement
+	ModelElement,
+	ViewConsumable
 } from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -228,14 +229,13 @@ export function upcastBorderStyles(
 }
 
 /**
- * Helper function to check if border="0" attribute should be processed.
- * Returns the model table element if all conditions are met, null otherwise.
+ * Helper function to check if border="0" attribute that is present on a view table element should be processed.
  *
  * @internal
  */
 export function shouldProcessBorderZeroAttribute(
 	viewItem: ViewElement,
-	consumable: UpcastConversionApi['consumable'],
+	consumable: ViewConsumable,
 	data: UpcastConversionData<ViewElement>
 ): ModelElement | null {
 	if (
