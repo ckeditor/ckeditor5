@@ -18,7 +18,7 @@ modified_at: 2025-10-16
 
 Released on 5 November, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.2.0))
 
-This release introduces expanded CKEditor Ai feature, new Footnotes features and several improvements.
+This release introduces expanded CKEditor AI feature, new Footnotes features and several improvements.
 
 ### CKEditor AI
 
