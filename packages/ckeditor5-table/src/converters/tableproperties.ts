@@ -243,7 +243,7 @@ export function upcastBorderStyles(
 				return;
 			}
 
-			// Ignore tables with border different than "0" or layout tables.
+			// Ignore tables with border different than "0".
 			if ( viewTable.getAttribute( 'border' ) !== '0' ) {
 				return;
 			}
