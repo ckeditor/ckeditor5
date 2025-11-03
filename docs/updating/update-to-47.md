@@ -22,7 +22,7 @@ This release introduces expanded CKEditor AI feature, new Footnotes features and
 
 ### CKEditor AI
 
-We are introducing {@link features/ai/ckeditor-ai-overview CKEditor AI}, a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
+We are introducing {@link features/ckeditor-ai-overview CKEditor AI}, a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
 
 CKEditor AI includes three core capabilities:
 
