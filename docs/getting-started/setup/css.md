@@ -62,8 +62,23 @@ The editor's look after customization:
 
 {@img assets/img/customizing-the-editor-look-after.png The editor's look after customization.}
 
+Here are some of the most commonly used CSS variables for customizing the editor:
+
+| Variable                                      | Description                                             |
+|-----------------------------------------------|---------------------------------------------------------|
+| `--ck-border-radius`                          | Border radius for rounded corners throughout the editor.|
+| `--ck-spacing-unit`                           | Base spacing unit that controls all spacing in the UI.  |
+| `--ck-font-size-base`                         | Base font size for the editor UI.                       |
+| `--ck-font-face`                              | Font family used throughout the editor UI.              |
+| `--ck-color-focus-border`                     | Border color when elements are focused.                 |
+| `--ck-color-toolbar-background`               | Background color of the toolbar.                        |
+| `--ck-color-base-border`                      | Primary border color used throughout the UI.            |
+| `--ck-color-button-on-background`             | Background color for active/selected buttons.           |
+| `--ck-color-button-on-color`                  | Text color for active/selected buttons.                 |
+| `--ck-color-button-default-hover-background`  | Background color when hovering over buttons.            |
+
 <info-box hint>
-	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
+	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn more about the available variables.
 </info-box>
 
 ## Customizing the look of the features
