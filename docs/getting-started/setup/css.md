@@ -81,6 +81,8 @@ Here are some of the most commonly used CSS variables for customizing the editor
 	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn more about the available variables.
 </info-box>
 
+Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.
+
 ## Customizing the look of the features
 
 Similarly to the customizable editor look, some features also provide an interface to change their styles via [native CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties).
