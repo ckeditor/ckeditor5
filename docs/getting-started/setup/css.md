@@ -78,7 +78,7 @@ Here are some of the most commonly used CSS variables for customizing the editor
 | `--ck-color-button-default-hover-background`  | Background color when hovering over buttons.            |
 
 <info-box hint>
-	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn more about the available variables.
+	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to find more available variables.
 </info-box>
 
 Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.
@@ -138,10 +138,8 @@ Below is an example with placeholder paths showing how to load the `ckeditor5-co
 ```html
 <link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="path/to/assets/ckeditor5-premium-features-content.css">
 
-<!-- If you have other style sheet that changes the look of the content: -->
 <link rel="stylesheet" href="path/to/assets/styles.css">
 ```
 
