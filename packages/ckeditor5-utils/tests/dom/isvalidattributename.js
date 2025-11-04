@@ -15,8 +15,12 @@ describe( 'isValidAttributeName', () => {
 		'id',
 		'name',
 		undefined
-		// Uncomment below tests when every major browser (Chrome, Firefox, Safari) will support creating attributes with those values.
-		// Details here: https://github.com/whatwg/dom/pull/1079.
+		// Uncomment last valid test case when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
+		// Currently, only Chrome supports it since v143.
+		// See details:
+		// [x] Chrome: bugs.chromium.org/p/chromium/issues/detail?id=1334640
+		// [ ] Firefox: bugzilla.mozilla.org/show_bug.cgi?id=1773312
+		// [ ] Safari: bugs.webkit.org/show_bug.cgi?id=241419
 		// '200',
 		// '<',
 		// '"',

@@ -965,6 +965,38 @@ describe( 'DataFilter', () => {
 			} );
 
 			// eslint-disable-next-line no-useless-escape
+			editor.setData( '<p zzz="a" \="2">x</p>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph htmlPAttributes="(1)">x</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							zzz: 'a'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p zzz="a">x</p>'
+			);
+		} );
+
+		// Unskip it when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
+		// Currently, only Chrome supports it since v143.
+		// See details:
+		// [x] Chrome: bugs.chromium.org/p/chromium/issues/detail?id=1334640
+		// [ ] Firefox: bugzilla.mozilla.org/show_bug.cgi?id=1773312
+		// [ ] Safari: bugs.webkit.org/show_bug.cgi?id=241419
+		it.skip( 'should not allow invalid attributes with unclosed `p` tag', () => {
+			dataFilter.allowElement( 'p' );
+			dataFilter.allowAttributes( {
+				name: 'p',
+				attributes: true
+			} );
+
+			// eslint-disable-next-line no-useless-escape
 			editor.setData( '<p zzz="a" \="2">x</p><p foo="a" bar' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
