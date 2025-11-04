@@ -46,4 +46,36 @@ describe( 'createElement', () => {
 		expect( p.childNodes[ 0 ].data ).to.equal( 'foo' );
 		expect( p.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'img' );
 	} );
+
+	const validTestCases = [
+		'foo-bar-baz',
+		'Custom-Element'
+		// Uncomment below test when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
+		// Details here: https://github.com/whatwg/dom/pull/1079.
+		// '🙂'
+	];
+
+	for ( const name of validTestCases ) {
+		it( `should create element for name: '${ name }'`, () => {
+			expect( createElement( document, name ) ).to.be.instanceOf( HTMLElement );
+		} );
+	}
+
+	const invalidTestCases = [
+		'200',
+		'<',
+		'>',
+		'!',
+		'"',
+		// eslint-disable-next-line @stylistic/quotes
+		"'",
+		'`',
+		200
+	];
+
+	for ( const name of invalidTestCases ) {
+		it( `should throw an error for name: '${ name }'`, () => {
+			expect( () => createElement( document, name ) ).to.throw();
+		} );
+	}
 } );

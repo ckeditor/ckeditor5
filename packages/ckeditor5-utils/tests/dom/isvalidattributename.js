@@ -13,7 +13,17 @@ describe( 'isValidAttributeName', () => {
 		'class',
 		'style',
 		'id',
-		'name'
+		'name',
+		undefined
+		// Uncomment below tests when every major browser (Chrome, Firefox, Safari) will support creating attributes with those values.
+		// Details here: https://github.com/whatwg/dom/pull/1079.
+		// '200',
+		// '<',
+		// '"',
+		// "'",
+		// '`',
+		// 200,
+		// '🙂'
 	];
 
 	for ( const name of validTestCases ) {
@@ -23,9 +33,14 @@ describe( 'isValidAttributeName', () => {
 	}
 
 	const invalidTestCases = [
-		'200',
-		'-data',
-		'7abc'
+		'',
+		'space ',
+		'space inside',
+		'newline\n',
+		'null\0',
+		'>',
+		'/',
+		'='
 	];
 
 	for ( const name of invalidTestCases ) {

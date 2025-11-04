@@ -964,7 +964,8 @@ describe( 'DataFilter', () => {
 				attributes: true
 			} );
 
-			editor.setData( '<p zzz="a" ab?cd="2">x</p><p foo="a" bar' );
+			// eslint-disable-next-line no-useless-escape
+			editor.setData( '<p zzz="a" \="2">x</p><p foo="a" bar' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data: '<paragraph htmlPAttributes="(1)">x</paragraph><paragraph htmlPAttributes="(2)"></paragraph>',

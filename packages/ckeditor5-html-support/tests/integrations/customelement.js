@@ -346,7 +346,7 @@ describe( 'CustomElementSupport', () => {
 			dataFilter.allowElement( /.*/ );
 			dataFilter.allowAttributes( { attributes: /.*/ } );
 
-			editor.setData( '<custom-foo-element 200-abc="invalid" data-foo="bar">baz</custom-foo-element>' );
+			editor.setData( '<custom-foo-element \n="invalid" data-foo="bar">baz</custom-foo-element>' );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true, excludeAttributes } ) ).to.deep.equal( {
 				data: '<htmlCustomElement' +
@@ -496,10 +496,7 @@ describe( 'CustomElementSupport', () => {
 	} );
 
 	const INVALID_ELEMENTS_TEST_DATA = [
-		[ '<p', '' ],
-		[ '<p ', '' ],
-		[ '<xyz?abc>foo</xyz?abc>', 'foo' ],
-		[ '<a!>bar</a!>', 'bar' ]
+		[ '<p ', '' ]
 	];
 
 	for ( const [ data, text ] of INVALID_ELEMENTS_TEST_DATA ) {
