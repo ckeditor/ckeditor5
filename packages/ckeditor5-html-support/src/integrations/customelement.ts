@@ -74,10 +74,6 @@ export class CustomElementSupport extends Plugin {
 						return null;
 					}
 
-					if ( !isValidElementName( viewElement.name ) ) {
-						return null;
-					}
-
 					// Allow for fallback only if this element is not defined in data schema to make sure
 					// that this will handle only custom elements not registered in the data schema.
 					if ( dataSchema.getDefinitionsForView( viewElement.name ).size ) {
@@ -188,17 +184,4 @@ export class CustomElementSupport extends Plugin {
 			} );
 		} );
 	}
-}
-
-/**
- * Returns true if name is valid for a DOM element name.
- */
-function isValidElementName( name: string ): boolean {
-	try {
-		document.createElement( name );
-	} catch {
-		return false;
-	}
-
-	return true;
 }
