@@ -32,10 +32,9 @@ It is as easy in HTML if you decide to use our CDN:
 
 ## Why do I need content styles?
 
-Some {@link features/index core editor features} bring additional CSS to control the look of the content they produce. One of such examples is the {@link features/images-overview image feature} that needs special content styles to render images and their captions in the content. Another would be the {@link features/block-quote block quote} feature that displays quotes in italics with a subtle border on the side. You can see both of these pictured below.
+Some {@link features/index core editor features} bring additional CSS to control the look of the content they produce. One such example is the {@link features/images-overview image feature}, which requires special content styles to render images and their captions within the content. Another would be the {@link features/block-quote block quote} feature that displays quotes in italics with a subtle border on the side. You can see both of these pictured below.
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
-
 
 ## Customizing the editor's look
 
