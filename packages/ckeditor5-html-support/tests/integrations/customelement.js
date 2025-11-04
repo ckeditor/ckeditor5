@@ -496,6 +496,8 @@ describe( 'CustomElementSupport', () => {
 	} );
 
 	const INVALID_ELEMENTS_TEST_DATA = [
+		[ '</tag', '' ],
+		[ '</p>', '' ],
 		[ '<p ', '' ]
 	];
 
