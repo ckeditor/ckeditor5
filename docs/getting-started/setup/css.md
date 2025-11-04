@@ -38,11 +38,7 @@ Some {@link features/index core editor features} bring additional CSS to control
 
 ## Customizing the editor's look
 
-The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor&nbsp;5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
-
-Although it was designed with versatility and the most common editor use cases in mind, some integrations may require adjustments to make it match the style guidelines of their ecosystems. This kind of customization can be done by importing an extra `.css` file and overriding the [native CSS variables](https://www.w3.org/TR/css-variables/).
-
-For example, the override below will tweak the border radius of several elements in the editor, such as toolbar or contextual balloons.
+CKEditor&nbsp;5 comes with a predefined theme. But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
 
 ```css
 :root {
