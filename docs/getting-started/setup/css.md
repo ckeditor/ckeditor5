@@ -38,14 +38,29 @@ Some {@link features/index core editor features} bring additional CSS to control
 
 ## Customizing the editor's look
 
-CKEditor&nbsp;5 comes with a predefined theme. But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
+CKEditor&nbsp;5 comes with a predefined theme. But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
+
+The example below shows how the customized variables affect the editor's appearance.
 
 ```css
 :root {
-	/* Overrides the border radius setting in the theme. */
-	--ck-border-radius: 4px;
+	--ck-color-focus-border: hsl(263, 59%, 52%);
+	--ck-color-toolbar-background: hsl(210, 33%, 99%);
+	--ck-color-button-on-background: hsl(210, 8%, 95%);
+	--ck-color-button-on-color: hsl(263, 59%, 52%);
+	--ck-font-size-base: 16px;
+	--ck-spacing-unit: 1em;
+	--ck-border-radius: 16px;
 }
 ```
+
+The default editor's look:
+
+{@img assets/img/customizing-the-editor-look-before.png The editor's look before customization.}
+
+The editor's look after customization:
+
+{@img assets/img/customizing-the-editor-look-after.png The editor's look after customization.}
 
 <info-box hint>
 	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
