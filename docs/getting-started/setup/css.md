@@ -9,17 +9,16 @@ modified_at: 2024-06-25
 
 # Editor and content styles
 
-CKEditor&nbsp;5 is distributed with two types of styles:
+We distribute CKEditor&nbsp;5 with two types of styles:
 
-* Editor styles, used to style the editor's user interface.
-* Content styles, used to style the content in the editor.
+* Editor styles to style the editor’s user interface.
+* Content styles for styling content in the editor.
 
-If you went through our {@link getting-started/integrations-cdn/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined:
+If you went through our {@link getting-started/integrations-cdn/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined. There are separate styles for open-source and premium features:
 
 ```js
 import 'ckeditor5/ckeditor5.css';
 
-// If you are using premium features:
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
@@ -28,7 +27,6 @@ It is as easy in HTML if you decide to use our CDN:
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
