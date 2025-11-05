@@ -262,7 +262,7 @@ export function upcastBorderStyles(
 
 				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
 
-				if ( viewItem.hasAttribute( 'border' ) ) {
+				if ( viewItem.is( 'element', 'table' ) ) {
 					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
 				}
 			} );
