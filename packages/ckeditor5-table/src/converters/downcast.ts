@@ -232,6 +232,9 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 	};
 }
 
+/**
+ * Downcasts a plain table caption (also used in the clipboard pipeline).
+ */
 export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer, options } ) => {
 		if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
@@ -247,7 +250,7 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
 }
 
 /**
- * Downcasts a plain table (also used in the clipboard pipeline).
+ * Downcasts a plain table.
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
