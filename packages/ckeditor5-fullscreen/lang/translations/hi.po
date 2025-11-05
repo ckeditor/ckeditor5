@@ -34,3 +34,15 @@ msgstr "डॉक्युमेंट की पूरी तस्वीर"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "जुड़े हुए यूज़र"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "बायां साइडबार दिखाएँ"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "बायां साइडबार छिपाएं"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "साइडबार बदलें"
