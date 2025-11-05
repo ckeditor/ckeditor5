@@ -7,7 +7,7 @@
  * @module table/tablelayout/tablelayoutediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import type {
 	DowncastDispatcher,
@@ -109,7 +109,7 @@ export class TableLayoutEditing extends Plugin {
 
 		const preferredExternalTableType = editor.config.get( 'table.tableLayout.preferredExternalTableType' );
 
-		conversion.for( 'upcast' ).add( upcastLayoutTable( preferredExternalTableType ) );
+		conversion.for( 'upcast' ).add( upcastLayoutTable( editor, preferredExternalTableType ) );
 		conversion.for( 'dataDowncast' ).add( dataDowncastLayoutTable() );
 		conversion.for( 'editingDowncast' ).attributeToAttribute( {
 			model: {
@@ -219,9 +219,10 @@ export class TableLayoutEditing extends Plugin {
  *
  * This conversion helper overrides the default table converter to meet table layout conditions.
  *
+ * @param editor Editor instance.
  * @returns Conversion helper.
  */
-function upcastLayoutTable( preferredExternalTableType: TableType | undefined ) {
+function upcastLayoutTable( editor: Editor, preferredExternalTableType: TableType | undefined ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -248,7 +249,10 @@ function upcastLayoutTable( preferredExternalTableType: TableType | undefined ) 
 			conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
 
 			// Layout tables have no border, so it's equitable to consume the border="0" attribute.
-			if ( viewTable.getAttribute( 'border' ) === '0' ) {
+			if (
+				editor.config.get( 'experimentalFlags.upcastTableBorderZeroAttributes' ) &&
+				viewTable.getAttribute( 'border' ) === '0'
+			) {
 				conversionApi.consumable.consume( viewTable, { attributes: [ 'border' ] } );
 			}
 
