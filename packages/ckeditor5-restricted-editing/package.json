@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-restricted-editing",
-  "version": "47.1.0",
+  "version": "47.2.0",
   "description": "Restricted editing feature for CKEditor 5 editors.",
   "keywords": [
     "ckeditor",
@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-image": "workspace:*",
     "@ckeditor/ckeditor5-link": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-select-all": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
     "@ckeditor/ckeditor5-typing": "workspace:*",

@@ -1480,7 +1480,18 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowright, shiftKey: true },
 					{ keyCode: keyCodes.arrowright, shiftKey: true }
 				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
+				'[<widget></widget><paragraph>f]oo</paragraph>'
+			);
+
+			test(
+				'should work correctly with modifier key when selection starts before widget: right arrow + shift',
+				'<paragraph>fo[o</paragraph><widget></widget>]<paragraph>bar</paragraph>',
+				// Note: The first step is handled by the WidgetTypeAround plugin.
+				[
+					{ keyCode: keyCodes.arrowright, shiftKey: true },
+					{ keyCode: keyCodes.arrowright, shiftKey: true }
+				],
+				'<paragraph>fo[o</paragraph><widget></widget><paragraph>b]ar</paragraph>'
 			);
 
 			test(
@@ -1513,7 +1524,7 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowdown, shiftKey: true },
 					{ keyCode: keyCodes.arrowdown, shiftKey: true }
 				],
-				'<widget></widget><paragraph>[]foo</paragraph>'
+				'[<widget></widget><paragraph>f]oo</paragraph>'
 			);
 
 			test(
@@ -1546,7 +1557,22 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowleft, shiftKey: true },
 					{ keyCode: keyCodes.arrowleft, shiftKey: true }
 				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
+				'<paragraph>fo[o</paragraph><widget></widget>]'
+			);
+
+			test(
+				'should work correctly with modifier key when selection starts after widget: left arrow + shift',
+				'<paragraph>foo</paragraph>[<widget></widget><paragraph>b]ar</paragraph>',
+				// Note: The first step is handled by the WidgetTypeAround plugin.
+				[
+					{ keyCode: keyCodes.arrowleft, shiftKey: true },
+					{ keyCode: keyCodes.arrowleft, shiftKey: true }
+				],
+				'<paragraph>fo[o</paragraph><widget></widget><paragraph>b]ar</paragraph>',
+				undefined,
+				undefined,
+				undefined,
+				{ lastRangeBackward: true }
 			);
 
 			test(
@@ -1579,7 +1605,7 @@ describe( 'Widget', () => {
 					{ keyCode: keyCodes.arrowup, shiftKey: true },
 					{ keyCode: keyCodes.arrowup, shiftKey: true }
 				],
-				'<paragraph>foo[]</paragraph><widget></widget>'
+				'<paragraph>fo[o</paragraph><widget></widget>]'
 			);
 
 			test(
@@ -1762,6 +1788,12 @@ describe( 'Widget', () => {
 					isSelectable: true
 				} );
 
+				model.schema.register( 'tableCellLimited', {
+					allowIn: 'tableCell',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
 				editor.conversion.for( 'downcast' )
 					.elementToElement( {
 						model: 'table',
@@ -1774,6 +1806,10 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'tableCell',
 						view: ( modelItem, { writer } ) => writer.createEditableElement( 'div', { contenteditable: true } )
+					} )
+					.elementToElement( {
+						model: 'tableCellLimited',
+						view: 'div'
 					} );
 
 				model.schema.extend( '$text', { allowAttributes: 'bold' } );
@@ -1944,6 +1980,40 @@ describe( 'Widget', () => {
 							'</tableCell>' +
 							'<tableCell>' +
 								'<paragraph>[b]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
+					'should move selection to a next editable with limit element inside',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>[]a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>b</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					keyCodes.tab,
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>[b]</tableCellLimited>' +
 							'</tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -2132,13 +2202,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection after widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					keyCodes.tab,
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo</paragraph><widget></widget><paragraph>[]bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(
@@ -2396,6 +2466,40 @@ describe( 'Widget', () => {
 				);
 
 				test(
+					'should move selection to a next editable with limit element inside',
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>a</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>[b]</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+
+					{ keyCode: keyCodes.tab, shiftKey: true },
+
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<tableCellLimited>[a]</tableCellLimited>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<tableCellLimited>b</tableCellLimited>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>',
+					undefined,
+					undefined,
+					{ preventDefault: 1 }
+				);
+
+				test(
 					'should move selection after a widget if there is no more editable elements in the widget',
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -2574,13 +2678,13 @@ describe( 'Widget', () => {
 				);
 
 				test(
-					'should not move selection when widget has no nested editable',
+					'should move selection before widget when widget has no nested editable',
 					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 					{ keyCode: keyCodes.tab, shiftKey: true },
-					'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
+					'<paragraph>foo[]</paragraph><widget></widget><paragraph>bar</paragraph>',
 					undefined,
 					undefined,
-					{ preventDefault: 0 }
+					{ preventDefault: 1 }
 				);
 
 				test(

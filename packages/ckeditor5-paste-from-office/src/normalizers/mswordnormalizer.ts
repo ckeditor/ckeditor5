@@ -13,6 +13,7 @@ import { replaceImagesSourceWithBase64 } from '../filters/image.js';
 import { removeMSAttributes } from '../filters/removemsattributes.js';
 import { transformTables } from '../filters/table.js';
 import { removeInvalidTableWidth } from '../filters/removeinvalidtablewidth.js';
+import { replaceMSFootnotes } from '../filters/replacemsfootnotes.js';
 import { ViewUpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 import type { PasteFromOfficeNormalizer, PasteFromOfficeNormalizerData } from '../normalizer.js';
 
@@ -56,6 +57,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
 		transformTables( documentFragment, writer );
 		removeInvalidTableWidth( documentFragment, writer );
+		replaceMSFootnotes( documentFragment, writer );
 		removeMSAttributes( documentFragment );
 
 		data.content = documentFragment;

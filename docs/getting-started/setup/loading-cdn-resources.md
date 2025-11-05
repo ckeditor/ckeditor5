@@ -89,7 +89,7 @@ Here is an example showing all the available options:
 	translations: [ 'es', 'de' ],
 	premium: true,
 	ckbox: {
-		version: '2.5.1',
+		version: '{%CKBOX_VERSION%}',
 		theme: 'lark' // Optional, default 'lark'.
 	},
 	plugins: {

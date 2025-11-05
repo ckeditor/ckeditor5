@@ -1,8 +1,0 @@
-extends: metric
-message: "Try to keep the SMOG grade (%s) below 10."
-link: https://en.wikipedia.org/wiki/SMOG
-
-formula: |
-  1.0430 * math.sqrt((polysyllabic_words * 30.0) / sentences) + 3.1291
-
-condition: "> 10"

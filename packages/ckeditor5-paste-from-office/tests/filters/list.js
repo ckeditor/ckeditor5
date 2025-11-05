@@ -68,8 +68,8 @@ describe( 'PasteFromOffice - filters', () => {
 				transformListItemLikeElementsIntoLists( view, '' );
 
 				expect( view.childCount ).to.equal( 1 );
-				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
-				expect( _stringifyView( view ) ).to.equal( '<ol><li><p style="mso-list:none">not numbered<o:p></o:p></p></li></ol>' );
+				expect( view.getChild( 0 ).name ).to.equal( 'p' );
+				expect( _stringifyView( view ) ).to.equal( '<p style="mso-list:none">not numbered<o:p></o:p></p>' );
 			} );
 
 			it( 'handles empty body correctly', () => {

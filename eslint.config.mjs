@@ -10,16 +10,22 @@ import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 import ts from 'typescript-eslint';
 import eslintPluginImport from 'eslint-plugin-import';
-import ckeditor5PkgJson from './packages/ckeditor5/package.json' with { type: 'json' };
 import { CKEDITOR5_PACKAGES_PATH } from './scripts/constants.mjs';
-
-const disallowedImports = Object.keys( ckeditor5PkgJson.devDependencies ).filter( pkgName => {
-	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
-} );
 
 const projectPackages = readdirSync( CKEDITOR5_PACKAGES_PATH, { withFileTypes: true } )
 	.filter( dirent => dirent.isDirectory() )
 	.map( dirent => dirent.name );
+
+const allowedPackageNames = [
+	'inspector',
+	'mermaid',
+	...projectPackages
+		.map( projectPackage => projectPackage.replace( /ckeditor5-?/, '' ) )
+		.filter( Boolean )
+];
+
+const disallowedImportsPattern = `@ckeditor/ckeditor5-(?!${ allowedPackageNames.join( '|' ) })`;
+const disallowedImportsMessage = 'External `@ckeditor/ckeditor5-*` imports are forbidden.';
 
 export default defineConfig( [
 	{
@@ -100,6 +106,7 @@ export default defineConfig( [
 	{
 		files: [
 			'packages/*/@(src|tests)/**/*.js',
+			'**/docs/**/_snippets/**/*.js',
 			'src/**/*.js'
 		],
 
@@ -109,7 +116,10 @@ export default defineConfig( [
 
 		rules: {
 			'no-restricted-imports': [ 'error', {
-				'paths': disallowedImports
+				patterns: [ {
+					regex: disallowedImportsPattern,
+					message: disallowedImportsMessage
+				} ]
 			} ]
 		}
 	},
@@ -126,7 +136,10 @@ export default defineConfig( [
 
 		rules: {
 			'@typescript-eslint/no-restricted-imports': [ 'error', {
-				'paths': disallowedImports
+				patterns: [ {
+					regex: disallowedImportsPattern,
+					message: disallowedImportsMessage
+				} ]
 			} ]
 		}
 	},
