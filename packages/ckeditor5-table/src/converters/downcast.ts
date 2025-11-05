@@ -221,6 +221,33 @@ function hasAnyAttribute( element: ModelNode ): boolean {
 
 /**
  * Downcasts a plain table (also used in the clipboard pipeline).
+ */
+export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunction {
+	return ( table, conversionApi ) => {
+		if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+			return null;
+		}
+
+		return downcastPlainTable( table, conversionApi );
+	};
+}
+
+export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
+	return ( modelElement, { writer, options } ) => {
+		if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+			return null;
+		}
+
+		if ( modelElement.parent!.name === 'table' ) {
+			return writer.createContainerElement( 'caption' );
+		}
+
+		return null;
+	};
+}
+
+/**
+ * Downcasts a plain table (also used in the clipboard pipeline).
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.

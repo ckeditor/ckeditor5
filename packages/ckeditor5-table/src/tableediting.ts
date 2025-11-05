@@ -16,8 +16,9 @@ import {
 	downcastCell,
 	downcastRow,
 	downcastTable,
-	downcastPlainTable,
-	downcastTableBorderAndBackgroundAttributes
+	downcastTableBorderAndBackgroundAttributes,
+	convertPlainTable,
+	convertPlainTableCaption
 } from './converters/downcast.js';
 
 import { InsertTableCommand } from './commands/inserttablecommand.js';
@@ -243,13 +244,7 @@ export class TableEditing extends Plugin {
 		// Override default table data downcast converter.
 		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'table',
-			view: ( table, conversionApi ) => {
-				if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
-					return null;
-				}
-
-				return downcastPlainTable( table, conversionApi );
-			},
+			view: convertPlainTable( editor ),
 			converterPriority: 'high'
 		} );
 
@@ -257,15 +252,7 @@ export class TableEditing extends Plugin {
 		if ( editor.plugins.has( 'TableCaption' ) ) {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
 				model: 'caption',
-				view: ( modelElement, { writer, options } ) => {
-					if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
-						return null;
-					}
-
-					if ( modelElement.parent!.name === 'table' ) {
-						return writer.createContainerElement( 'caption' );
-					}
-				},
+				view: convertPlainTableCaption( editor ),
 				converterPriority: 'high'
 			} );
 		}
