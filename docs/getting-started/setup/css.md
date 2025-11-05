@@ -62,7 +62,7 @@ The editor's look after customization:
 
 {@img assets/img/customizing-the-editor-look-after.png The editor's look after customization.}
 
-Here are some of the most commonly used CSS variables for customizing the editor:
+Here are some essential CSS variables for customizing the editor:
 
 | Variable                                      | Description                                             |
 |-----------------------------------------------|---------------------------------------------------------|
