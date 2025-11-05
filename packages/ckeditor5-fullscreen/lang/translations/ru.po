@@ -34,3 +34,15 @@ msgstr "Состав документа"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "Подключенные пользователи"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "Показать левую боковую панель"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "Скрыть левую боковую панель"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "Переключить боковую панель"

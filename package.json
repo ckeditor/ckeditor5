@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-root",
-  "version": "47.1.0",
+  "version": "47.2.0",
   "description": "The development environment of CKEditor 5 - the best browser-based rich text editor.",
   "private": true,
   "keywords": [
@@ -80,6 +80,13 @@
     "wait-on": "^8.0.3",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "markdown-it-toc": "npm:@maboloshi/markdown-it-toc@1.1.1",
+      "@iktakahiro/markdown-it-katex>katex": "^0.16.0",
+      "@ckeditor/jsdoc-plugins>jsdoc": "-"
+    }
   },
   "engines": {
     "node": ">=22.0.0",
