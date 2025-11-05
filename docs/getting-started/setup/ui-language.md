@@ -320,7 +320,7 @@ Below you will find list of available official translations. Each language is ac
 			Ukrainian (uk)
 			</td>
 			<td>
-			Vietnamese (`vi`)
+			Vietnamese (vi)
 			</td>
 			<td>&nbsp;</td>
 		</tr>
