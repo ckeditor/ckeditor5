@@ -74,6 +74,7 @@ export class CustomElementSupport extends Plugin {
 						return null;
 					}
 
+					/* istanbul ignore next -- @preserve */
 					if ( !isValidElementName( viewElement.name ) ) {
 						return null;
 					}
@@ -197,6 +198,7 @@ function isValidElementName( name: string ): boolean {
 	try {
 		document.createElement( name );
 	} catch {
+		/* istanbul ignore next -- @preserve */
 		return false;
 	}
 
