@@ -173,6 +173,8 @@ ClassicEditor
 
 ## List of available professional translations
 
+Below you will find list of available official translations. Each language is accompanied by a code that can be used to set language with the `language:*` setting ({@link module:core/editor/editorconfig~LanguageConfig see configuration}).
+
 <style>
 	td {
 		text-align: center;
@@ -186,146 +188,146 @@ ClassicEditor
 	<tbody>
 		<tr>
 			<td>
-			Arabic
+			Arabic (ar)
 			</td>
 			<td>
-			Bengali
+			Bengali (bn) 
 			</td>
 			<td>
-			Bulgarian
+			Bulgarian (bg)
 			</td>
 			<td>
-			Catalan
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Chinese (China)
-			</td>
-			<td>
-			Chinese (Taiwan)
-			</td>
-			<td>
-			Czech
-			</td>
-			<td>
-			Danish
+			Catalan (ca)
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Dutch
+			Chinese (China) (zh)
 			</td>
 			<td>
-			English (American)
+			Chinese (Taiwan) (zh-tw)
 			</td>
 			<td>
-			Estonian
+			Czech (cs)
 			</td>
 			<td>
-			Finnish
-			</td>
-		</tr>
-		<tr>
-			<td>
-			French
-			</td>
-			<td>
-			German
-			</td>
-			<td>
-			Greek
-			</td>
-			<td>
-			Hebrew
+			Danish (da)
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Hindi
+			Dutch (nl)
 			</td>
 			<td>
-			Hungarian
+			English (American) default
 			</td>
 			<td>
-			Indonesian
+			Estonian (et)
 			</td>
 			<td>
-			Italian
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Japanese
-			</td>
-			<td>
-			Korean
-			</td>
-			<td>
-			Latvian
-			</td>
-			<td>
-			Lithuanian
+			Finnish (fi)
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Malay
+			French (fr)
 			</td>
 			<td>
-			Norwegian
+			German (de)
 			</td>
 			<td>
-			Polish
+			Greek (el)
 			</td>
 			<td>
-			Portuguese (Brazilian)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Portuguese
-			</td>
-			<td>
-			Romanian
-			</td>
-			<td>
-			Russian
-			</td>
-			<td>
-			Serbian
+			Hebrew (he)
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Slovak
+			Hindi (hi)
 			</td>
 			<td>
-			Spanish
+			Hungarian (hu)
 			</td>
 			<td>
-			Swedish
+			Indonesian (id)
 			</td>
 			<td>
-			Thai
+			Italian (it)
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Turkish
+			Japanese (ja)
 			</td>
 			<td>
-			Ukrainian
+			Korean (ko)
 			</td>
 			<td>
-			Vietnamese
+			Latvian (lv)
+			</td>
+			<td>
+			Lithuanian (lt)
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Malay (ms)
+			</td>
+			<td>
+			Norwegian (no)
+			</td>
+			<td>
+			Polish (pl)
+			</td>
+			<td>
+			Portuguese (Brazilian) (pt-br)
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Portuguese (pt)
+			</td>
+			<td>
+			Romanian (ro)
+			</td>
+			<td>
+			Russian (ru)
+			</td>
+			<td>
+			Serbian (sr)
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Slovak (sk)
+			</td>
+			<td>
+			Spanish (es)
+			</td>
+			<td>
+			Swedish (sv)
+			</td>
+			<td>
+			Thai (th)
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Turkish (tr)
+			</td>
+			<td>
+			Ukrainian (uk)
+			</td>
+			<td>
+			Vietnamese (`vi`)
 			</td>
 			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>
 
-There are community translations available for Australian and British variations of English, too, as well as various others.
+There are community translations available for Australian and British variations of English, too, as well as various others. Language codes for these can be found in the translation files.
 
 <info-box>
 	You can help {@link framework/contributing/contributing#translating translating} CKEditor&nbsp;5 into your native language. You do not need to be a programmer to contribute to the project. Your help will be much appreciated!
