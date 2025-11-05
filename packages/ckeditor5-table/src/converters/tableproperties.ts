@@ -7,7 +7,7 @@
  * @module table/converters/tableproperties
  */
 
-import type { Editor } from 'ckeditor5';
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	Conversion,
 	UpcastConversionApi,
