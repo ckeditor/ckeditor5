@@ -17,9 +17,9 @@ See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
-<info-box info>
+<snippet-footer>
 	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 <info-box>
 	If you are interested in creating features that can be localized, check out the {@link framework/deep-dive/localization localization guide}.
@@ -188,139 +188,139 @@ Below you will find list of available official translations. Each language is ac
 	<tbody>
 		<tr>
 			<td>
-			Arabic (ar)
+			Arabic<br /><code>(ar)</code>
 			</td>
 			<td>
-			Bengali (bn) 
+			Bengali<br /><code>(bn)</code>
 			</td>
 			<td>
-			Bulgarian (bg)
+			Bulgarian<br /><code>(bg)</code>
 			</td>
 			<td>
-			Catalan (ca)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Chinese (China) (zh)
-			</td>
-			<td>
-			Chinese (Taiwan) (zh-tw)
-			</td>
-			<td>
-			Czech (cs)
-			</td>
-			<td>
-			Danish (da)
+			Catalan<br /><code>(ca)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Dutch (nl)
+			Chinese (China)<br /><code>(zh)</code>
 			</td>
 			<td>
-			English (American) default
+			Chinese (Taiwan)<br /><code>(zh-tw)</code>
 			</td>
 			<td>
-			Estonian (et)
+			Czech<br /><code>(cs)</code>
 			</td>
 			<td>
-			Finnish (fi)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			French (fr)
-			</td>
-			<td>
-			German (de)
-			</td>
-			<td>
-			Greek (el)
-			</td>
-			<td>
-			Hebrew (he)
+			Danish<br /><code>(da)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Hindi (hi)
+			Dutch<br /><code>(nl)</code>
 			</td>
 			<td>
-			Hungarian (hu)
+			English(American)<br />default
 			</td>
 			<td>
-			Indonesian (id)
+			Estonian<br /><code>(et)</code>
 			</td>
 			<td>
-			Italian (it)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Japanese (ja)
-			</td>
-			<td>
-			Korean (ko)
-			</td>
-			<td>
-			Latvian (lv)
-			</td>
-			<td>
-			Lithuanian (lt)
+			Finnish<br /><code>(fi)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Malay (ms)
+			French<br /><code>(fr)</code>
 			</td>
 			<td>
-			Norwegian (no)
+			German<br /><code>(de)</code>
 			</td>
 			<td>
-			Polish (pl)
+			Greek<br /><code>(el)</code>
 			</td>
 			<td>
-			Portuguese (Brazilian) (pt-br)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Portuguese (pt)
-			</td>
-			<td>
-			Romanian (ro)
-			</td>
-			<td>
-			Russian (ru)
-			</td>
-			<td>
-			Serbian (sr)
+			Hebrew<br /><code>(he)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Slovak (sk)
+			Hindi<br /><code>(hi)</code>
 			</td>
 			<td>
-			Spanish (es)
+			Hungarian<br /><code>(hu)</code>
 			</td>
 			<td>
-			Swedish (sv)
+			Indonesian<br /><code>(id)</code>
 			</td>
 			<td>
-			Thai (th)
+			Italian<br /><code>(it)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Turkish (tr)
+			Japanese<br /><code>(ja)</code>
 			</td>
 			<td>
-			Ukrainian (uk)
+			Korean<br /><code>(ko)</code>
 			</td>
 			<td>
-			Vietnamese (vi)
+			Latvian<br /><code>(lv)</code>
+			</td>
+			<td>
+			Lithuanian<br /><code>(lt)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Malay<br /><code>(ms)</code>
+			</td>
+			<td>
+			Norwegian<br /><code>(no)</code>
+			</td>
+			<td>
+			Polish<br /><code>(pl)</code>
+			</td>
+			<td>
+			Portuguese (Brazilian)<br /><code>(pt-br)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Portuguese<br /><code>(pt)</code>
+			</td>
+			<td>
+			Romanian<br /><code>(ro)</code>
+			</td>
+			<td>
+			Russian<br /><code>(ru)</code>
+			</td>
+			<td>
+			Serbian<br /><code>(sr)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Slovak<br /><code>(sk)</code>
+			</td>
+			<td>
+			Spanish<br /><code>(es)</code>
+			</td>
+			<td>
+			Swedish<br /><code>(sv)</code>
+			</td>
+			<td>
+			Thai<br /><code>(th)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Turkish<br /><code>(tr)</code>
+			</td>
+			<td>
+			Ukrainian<br /><code>(uk)</code>
+			</td>
+			<td>
+			Vietnamese<br /><code>(vi)</code>
 			</td>
 			<td>&nbsp;</td>
 		</tr>
