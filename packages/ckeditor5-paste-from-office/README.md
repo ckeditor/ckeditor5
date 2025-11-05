@@ -2,7 +2,7 @@ CKEditor&nbsp;5 paste from Office feature
 ==================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-paste-from-office.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![codecov](https://codecov.io/gh/ckeditor/ckeditor5/branch/master/graph/badge.svg)](https://codecov.io/gh/ckeditor/ckeditor5)
 [![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
 This package implements the [paste from Office](https://docs.ckeditor.com/ckeditor5/latest/features/paste-from-office.html) feature for CKEditor&nbsp;5.

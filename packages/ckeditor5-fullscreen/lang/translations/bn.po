@@ -34,3 +34,15 @@ msgstr "ডকুমেন্ট আউটলাইন"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "সংযুক্ত ব্যবহারকারী"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "বাম সাইডবার দেখান"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "বাম সাইডবার লুকান"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "সাইডবার টগল করুন"

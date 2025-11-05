@@ -14,6 +14,54 @@ modified_at: 2025-10-16
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v47.2.0
+
+Released on 5 November, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.2.0))
+
+This release introduces expanded CKEditor AI feature, new Footnotes features and several improvements.
+
+### CKEditor AI
+
+We are introducing {@link features/ckeditor-ai-overview CKEditor AI}, a powerful writing assistant that brings AI-powered content creation directly into CKEditor 5. It helps users create, review, and refine content without switching between tools, making the editing experience faster and more productive.
+
+CKEditor AI includes three core capabilities:
+
+* **Chat**: a conversational AI assistant for multi-turn interactions that supports context setting and model selection. All conversations are tracked in a persistent chat history, and suggestions are reviewable before being applied.
+* **Quick actions**: one-click transformations for selected text, including rewriting, simplifying, expanding, summarizing, or adjusting tone. Changes appear inline with preview capabilities.
+* **Review**: automatic quality assurance that checks grammar, tone, clarity, and style across the document. Suggested changes are presented in a visual review interface where users can accept or reject individual edits or apply all approved suggestions in bulk.
+
+Power users can select their preferred model during sessions (GPT-5, Claude 3.5, Gemini 2.5, and more), while integrators maintain control over access rules and usage tiers. 
+
+Built as a plugin for CKEditor 5, it integrates quickly into existing applications with minimal configuration, and all AI interactions are fully observable via audit logs and optional APIs.
+
+CKEditor AI is available as a premium add-on to all paid CKEditor 5 plans with a transparent subscription-plus-usage pricing model. A 14-day trial is available with access to all premium features.
+
+### Footnotes (⭐)
+
+A brand-new {@link features/footnotes Footnotes} feature is here! It lets users insert and manage footnotes directly in their content, keeping references organized and readable. Footnotes stay linked to their source text and update automatically when edited, ideal for academic, legal, or technical writing. You can also **customize the numbering**, including the starting number and numbering style, to match your document’s formatting needs.
+
+### Restricted editing for blocks (⭐)
+
+{@link features/restricted-editing Restricted editing} now supports **block-level restrictions**, not just inline ones. This makes it easier to protect the entire content while still allowing controlled edits where required. A common use case is unlocking for editing template sections like paragraphs, tables, or structured document parts, and protecting the rest of the content.
+to do
+
+#### Legacy toolbar button for restricted editing
+
+The version introduces new toolbar items for the {@link features/restricted-editing restricted editing} feature. The new available toolbar ites are `restrictedEditingException:dropdown` (for both inline and block types of editing fields), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+
+To retain full backwards compatibility, we have provided an alias toolbar item: `restrictedEditingException`. It is the old toolbar button call and it defaults to inline restricted editing field button. There is no need to change your configuration if you only want to use inline fields type. If you want to use both the block and inline type fields, please {@link features/restricted-editing#configuring-the-toolbar update your toolbar configuration}.
+
+### Old installation methods sunset timelines
+
+We are extending the sunset period for old installation methods ([#17779](https://github.com/ckeditor/ckeditor5/issues/17779)) to the **end of Q1 2026**. It is a good moment to consider switching to the {@link getting-started/setup/using-lts-edition LTS edition} for long-term stability and an additional 3 years of support for the old installation methods.
+
+### Other improvements and fixes
+
+This release also brings several smaller but important enhancements and fixes:
+
+* **View engine stability:** Fixed a bug where placeholders could remain visible after view changes, such as moving or replacing elements.
+* **Downcast reliability:** The [`elementToStructure`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcasthelpers-DowncastHelpers.html#function-elementToStructure) helper now handles nested structures and list elements more consistently, ensuring correct reconversion and structure maintenance.
+
 ## Update to CKEditor&nbsp;5 v47.1.0
 
 Released on 16 October, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.1.0))

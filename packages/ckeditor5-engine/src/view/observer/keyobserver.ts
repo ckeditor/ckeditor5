@@ -9,6 +9,7 @@
 
 import { DomEventObserver } from './domeventobserver.js';
 import { type ViewDocumentDomEventData } from './domeventdata.js';
+import type { BubblingEvent } from './bubblingemittermixin.js';
 import { getCode, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -54,10 +55,10 @@ export class KeyObserver extends DomEventObserver<'keydown' | 'keyup', Keystroke
  * @see module:engine/view/observer/keyobserver~KeyObserver
  * @eventName module:engine/view/document~ViewDocument#keydown
  */
-export type ViewDocumentKeyDownEvent = {
+export type ViewDocumentKeyDownEvent = BubblingEvent<{
 	name: 'keydown';
 	args: [ data: ViewDocumentKeyEventData ];
-};
+}>;
 
 /**
  * Fired when a key has been released.
@@ -70,10 +71,10 @@ export type ViewDocumentKeyDownEvent = {
  * @see module:engine/view/observer/keyobserver~KeyObserver
  * @eventName module:engine/view/document~ViewDocument#keyup
  */
-export type ViewDocumentKeyUpEvent = {
+export type ViewDocumentKeyUpEvent = BubblingEvent<{
 	name: 'keyup';
 	args: [ data: ViewDocumentKeyEventData ];
-};
+}>;
 
 /**
  * The value of both events - {@link ~ViewDocumentKeyDownEvent} and {@link ~ViewDocumentKeyUpEvent}.

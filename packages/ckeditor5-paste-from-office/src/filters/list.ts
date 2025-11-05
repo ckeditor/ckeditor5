@@ -236,7 +236,10 @@ function findAllItemLikeElements(
 		}
 
 		// List item or a following list item block.
-		if ( item.hasStyle( 'mso-list' ) || marginLeft !== undefined && foundMargins.has( marginLeft ) ) {
+		if (
+			( item.hasStyle( 'mso-list' ) && item.getStyle( 'mso-list' ) !== 'none' ) ||
+			( marginLeft !== undefined && foundMargins.has( marginLeft ) )
+		) {
 			const itemData = getListItemData( item );
 
 			itemLikeElements.push( {

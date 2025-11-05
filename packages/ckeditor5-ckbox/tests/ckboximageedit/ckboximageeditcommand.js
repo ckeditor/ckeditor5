@@ -265,7 +265,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (external image with relative URL)', async () => {
-				const imageUrl = 'sample.png';
+				const imageUrl = 'assets/sample.png';
 				const categoryId = 'id-category-1';
 				const origin = window.location.origin;
 

@@ -34,3 +34,15 @@ msgstr "Dokumentum vázlata"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "Csatlakozott felhasználók"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "Bal oldalsáv megjelenítése"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "Bal oldalsáv elrejtése"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "Oldalsáv megjelenítése/elrejtése"

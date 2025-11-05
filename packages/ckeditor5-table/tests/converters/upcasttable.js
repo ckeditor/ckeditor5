@@ -409,6 +409,58 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	describe( 'in limited container allowing only inline content', () => {
+		beforeEach( () => {
+			model.schema.register( 'limitContainer', {
+				allowWhere: '$block',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.elementToElement( {
+				model: 'limitContainer',
+				view: 'div'
+			} );
+		} );
+
+		it( 'should strip table if parent does not allow it', () => {
+			editor.setData(
+				'<div>' +
+					'123' +
+					'<table>' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>' +
+					'456' +
+				'</div>'
+			);
+
+			expectModel(
+				'<limitContainer>123foo456</limitContainer>'
+			);
+		} );
+
+		it( 'should strip table in figure if parent does not allow it', () => {
+			editor.setData(
+				'<div>' +
+					'123' +
+					'<figure class="table">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</figure>' +
+					'456' +
+				'</div>'
+			);
+
+			expectModel(
+				'<limitContainer>123foo456</limitContainer>'
+			);
+		} );
+	} );
+
 	describe( 'headingColumns', () => {
 		it( 'should properly calculate heading columns', () => {
 			editor.setData(
@@ -881,14 +933,14 @@ describe( 'upcastTable()', () => {
 				'<table>' +
 					'<tbody>' +
 						'<tr>' +
-							'<td><img src="sample.png"></td>' +
+							'<td><img src="/assets/sample.png"></td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>'
 			);
 
 			expectModel( modelTable( [
-				[ '<imageBlock src="sample.png"></imageBlock>' ]
+				[ '<imageBlock src="/assets/sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );
