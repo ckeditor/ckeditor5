@@ -572,6 +572,19 @@ describe( 'table properties', () => {
 				} );
 
 				describe( 'border="0" attribute handling', () => {
+					beforeEach( async () => {
+						await editor.destroy();
+
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+							experimentalFlags: {
+								tableBorderZeroAttributeHandling: true
+							}
+						} );
+
+						model = editor.model;
+					} );
+
 					it( 'should convert border="0" to tableBorderStyle="none"', () => {
 						editor.setData(
 							'<table border="0">' +

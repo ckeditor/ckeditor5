@@ -1031,7 +1031,11 @@ describe( 'TableLayoutEditing', () => {
 					BlockQuote
 				];
 
-				editor = await createEditor( editorElement, plugins );
+				editor = await createEditor( editorElement, plugins, {
+					experimentalFlags: {
+						upcastTableBorderZeroAttributes: true
+					}
+				} );
 				model = editor.model;
 			} );
 

@@ -283,6 +283,17 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'border="0" attribute handling', () => {
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+							experimentalFlags: {
+								upcastTableBorderZeroAttributes: true
+							}
+						} );
+
+						model = editor.model;
+					} );
+
 					it( 'should convert border="0" to tableCellBorderStyle="none" on all table cells', () => {
 						editor.setData(
 							'<table border="0">' +
