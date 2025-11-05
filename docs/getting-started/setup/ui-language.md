@@ -17,9 +17,9 @@ See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
 
-<info-box info>
+<snippet-footer>
 	All demos in this guide only present a limited set of features for clarity. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
+</snippet-footer>
 
 <info-box>
 	If you are interested in creating features that can be localized, check out the {@link framework/deep-dive/localization localization guide}.
@@ -173,6 +173,8 @@ ClassicEditor
 
 ## List of available professional translations
 
+Below you will find list of available official translations. Each language is accompanied by a code that can be used to set language with the `language:*` setting ({@link module:core/editor/editorconfig~LanguageConfig see configuration}).
+
 <style>
 	td {
 		text-align: center;
@@ -186,146 +188,146 @@ ClassicEditor
 	<tbody>
 		<tr>
 			<td>
-			Arabic
+			Arabic<br /><code>(ar)</code>
 			</td>
 			<td>
-			Bengali
+			Bengali<br /><code>(bn)</code>
 			</td>
 			<td>
-			Bulgarian
+			Bulgarian<br /><code>(bg)</code>
 			</td>
 			<td>
-			Catalan
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Chinese (China)
-			</td>
-			<td>
-			Chinese (Taiwan)
-			</td>
-			<td>
-			Czech
-			</td>
-			<td>
-			Danish
+			Catalan<br /><code>(ca)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Dutch
+			Chinese (China)<br /><code>(zh)</code>
 			</td>
 			<td>
-			English (American)
+			Chinese (Taiwan)<br /><code>(zh-tw)</code>
 			</td>
 			<td>
-			Estonian
+			Czech<br /><code>(cs)</code>
 			</td>
 			<td>
-			Finnish
-			</td>
-		</tr>
-		<tr>
-			<td>
-			French
-			</td>
-			<td>
-			German
-			</td>
-			<td>
-			Greek
-			</td>
-			<td>
-			Hebrew
+			Danish<br /><code>(da)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Hindi
+			Dutch<br /><code>(nl)</code>
 			</td>
 			<td>
-			Hungarian
+			English(American)<br />default
 			</td>
 			<td>
-			Indonesian
+			Estonian<br /><code>(et)</code>
 			</td>
 			<td>
-			Italian
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Japanese
-			</td>
-			<td>
-			Korean
-			</td>
-			<td>
-			Latvian
-			</td>
-			<td>
-			Lithuanian
+			Finnish<br /><code>(fi)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Malay
+			French<br /><code>(fr)</code>
 			</td>
 			<td>
-			Norwegian
+			German<br /><code>(de)</code>
 			</td>
 			<td>
-			Polish
+			Greek<br /><code>(el)</code>
 			</td>
 			<td>
-			Portuguese (Brazilian)
-			</td>
-		</tr>
-		<tr>
-			<td>
-			Portuguese
-			</td>
-			<td>
-			Romanian
-			</td>
-			<td>
-			Russian
-			</td>
-			<td>
-			Serbian
+			Hebrew<br /><code>(he)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Slovak
+			Hindi<br /><code>(hi)</code>
 			</td>
 			<td>
-			Spanish
+			Hungarian<br /><code>(hu)</code>
 			</td>
 			<td>
-			Swedish
+			Indonesian<br /><code>(id)</code>
 			</td>
 			<td>
-			Thai
+			Italian<br /><code>(it)</code>
 			</td>
 		</tr>
 		<tr>
 			<td>
-			Turkish
+			Japanese<br /><code>(ja)</code>
 			</td>
 			<td>
-			Ukrainian
+			Korean<br /><code>(ko)</code>
 			</td>
 			<td>
-			Vietnamese
+			Latvian<br /><code>(lv)</code>
+			</td>
+			<td>
+			Lithuanian<br /><code>(lt)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Malay<br /><code>(ms)</code>
+			</td>
+			<td>
+			Norwegian<br /><code>(no)</code>
+			</td>
+			<td>
+			Polish<br /><code>(pl)</code>
+			</td>
+			<td>
+			Portuguese (Brazilian)<br /><code>(pt-br)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Portuguese<br /><code>(pt)</code>
+			</td>
+			<td>
+			Romanian<br /><code>(ro)</code>
+			</td>
+			<td>
+			Russian<br /><code>(ru)</code>
+			</td>
+			<td>
+			Serbian<br /><code>(sr)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Slovak<br /><code>(sk)</code>
+			</td>
+			<td>
+			Spanish<br /><code>(es)</code>
+			</td>
+			<td>
+			Swedish<br /><code>(sv)</code>
+			</td>
+			<td>
+			Thai<br /><code>(th)</code>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			Turkish<br /><code>(tr)</code>
+			</td>
+			<td>
+			Ukrainian<br /><code>(uk)</code>
+			</td>
+			<td>
+			Vietnamese<br /><code>(vi)</code>
 			</td>
 			<td>&nbsp;</td>
 		</tr>
 	</tbody>
 </table>
 
-There are community translations available for Australian and British variations of English, too, as well as various others.
+There are community translations available for Australian and British variations of English, too, as well as various others. Language codes for these can be found in the translation files.
 
 <info-box>
 	You can help {@link framework/contributing/contributing#translating translating} CKEditor&nbsp;5 into your native language. You do not need to be a programmer to contribute to the project. Your help will be much appreciated!
