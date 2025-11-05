@@ -2421,6 +2421,25 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle( editor, 'background-color:red;' );
 				} );
+
+				it( 'and not strip figure element when PlainTableOutput is not loaded and not in clipboard pipeline', async () => {
+					model.change( writer => {
+						writer.setAttribute( 'tableBorderWidth', '2px', table );
+						writer.setAttribute( 'tableBorderColor', 'red', table );
+						writer.setAttribute( 'tableBorderStyle', 'solid', table );
+						writer.setAttribute( 'tableBackgroundColor', 'blue', table );
+					} );
+
+					expect( editor.getData() ).to.equalMarkup(
+						'<figure class="table">' +
+							'<table style="background-color:blue;border:2px solid red;">' +
+								'<tbody>' +
+									'<tr><td>foo</td></tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>'
+					);
+				} );
 			} );
 
 			describe( 'should remove attribute', () => {
