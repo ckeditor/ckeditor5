@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   browser-tools: circleci/browser-tools@2.3.1
+  codecov: codecov/codecov@5.4.3
 
 # List of parameters are automatically inherited from `config.yml`.
 parameters:
@@ -56,6 +57,8 @@ commands:
           command: sudo npm i -g pnpm@^10
       - run:
           name: Install dependencies
+          environment:
+            PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
       - prepare_environment_variables_commands
 
@@ -82,7 +85,7 @@ commands:
           command: |
             #!/bin/bash
 
-            if [[ -z ${COVERALLS_REPO_TOKEN} ]];
+            if [[ -z ${CODECOV_TOKEN} ]];
             then
               circleci-agent step halt
             fi
@@ -108,11 +111,6 @@ jobs:
       - checkout_command
       - halt_if_short_flow
       - browser-tools/install_chrome
-      - run:
-          name: Set Puppeteer environment variables
-          command: |
-            echo 'export PUPPETEER_EXECUTABLE_PATH=$(command -v google-chrome || command -v google-chrome-stable)' >> $BASH_ENV
-            echo 'export PUPPETEER_SKIP_DOWNLOAD=true' >> $BASH_ENV
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
@@ -120,7 +118,9 @@ jobs:
           command: pnpm run dll:build
       - run:
           name: Verify CKEditor 5 manual tests
-          command: bash scripts/check-manual-tests.sh -r ckeditor5-root
+          command: |
+            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
+            bash scripts/check-manual-tests.sh -r ckeditor5-root
 
   cke5_validators:
     docker:
@@ -184,15 +184,8 @@ jobs:
       - run:
           name: Merge the code coverage of the framework and features
           command: cat .out/combined_framework.info .out/combined_features_batch_n.info > .out/combined_lcov.info
-      - run:
-          name: Preparing the environment variables
-          command: |
-            export COVERALLS_SERVICE_NAME="CKEditor 5 code coverage"
-            export COVERALLS_SERVICE_JOB_ID=$( CIRCLE_WORKFLOW_ID )
-            export COVERALLS_GIT_BRANCH=$( CIRCLE_BRANCH )
-      - run:
-          name: Upload the coverage to Coveralls
-          command: npx coveralls -v < .out/combined_lcov.info
+      - codecov/upload:
+          files: .out/combined_lcov.info
 
   cke5_trigger_release_process:
     docker:
