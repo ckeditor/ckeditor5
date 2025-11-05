@@ -588,7 +588,7 @@
 					],
 					"categories":[
 						{
-							"name": "AI Assistant (previous version)",
+							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",
 							"slug": "ai-assistant",
 							"order": 100,

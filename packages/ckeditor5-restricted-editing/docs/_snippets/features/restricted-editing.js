@@ -12,7 +12,8 @@ import {
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage
+	LinkImage,
+	TodoList
 } from 'ckeditor5';
 import {
 	TOKEN_URL,
@@ -33,6 +34,7 @@ ClassicEditor.builtinPlugins.push(
 	ImageResize,
 	AutoImage,
 	LinkImage,
+	TodoList,
 	CKBox,
 	CKBoxImageEdit );
 
@@ -62,10 +64,12 @@ async function startStandardEditingMode() {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'heading',
+				'restrictedEditingException:dropdown',
+				'|', 'undo', 'redo',
+				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'restrictedEditingException', 'mediaEmbed',
-				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
 			]
 		},
 		table: {
@@ -99,7 +103,16 @@ async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
 		cloudServices: CS_CONFIG,
-		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		toolbar: {
+			items: [
+				'restrictedEditing',
+				'|', 'undo', 'redo',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'insertImage', 'insertTable',
+				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
+			]
+		},
 		image: {
 			toolbar: [
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:wrapText', '|',
