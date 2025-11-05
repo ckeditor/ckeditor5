@@ -38,7 +38,7 @@ Some {@link features/index core editor features} bring additional CSS to control
 
 ## Customizing the editor's look
 
-CKEditor&nbsp;5 comes with a predefined theme. But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
+CKEditor&nbsp;5 comes with a [predefined theme](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-theme-lark). But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
 
 The example below shows how the customized variables affect the editor's appearance.
 
