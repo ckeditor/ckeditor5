@@ -33,7 +33,9 @@ import {
 	IconCheck,
 	IconObjectCenter,
 	IconObjectInlineLeft,
-	IconObjectInlineRight
+	IconObjectInlineRight,
+	IconObjectLeft,
+	IconObjectRight
 } from 'ckeditor5/src/icons.js';
 
 import {
@@ -661,7 +663,9 @@ export class TablePropertiesView extends View {
 			icons: {
 				left: IconObjectInlineLeft,
 				center: IconObjectCenter,
-				right: IconObjectInlineRight
+				right: IconObjectInlineRight,
+				blockLeft: IconObjectLeft,
+				blockRight: IconObjectRight
 			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
@@ -731,16 +735,19 @@ export class TablePropertiesView extends View {
 		const locale = this.locale!;
 		const t = this.t!;
 
-		const left = t( 'Align table to the left' );
-		const center = t( 'Center table' );
-		const right = t( 'Align table to the right' );
+		const blockLeft = t( 'Align table to the left (block, no text wrapping)' );
+		const blockRight = t( 'Align table to the right (block, no text wrapping)' );
+
+		const left = t( 'Align table to the left (inline, allows text wrapping)' );
+		const center = t( 'Center table (block, no text wrapping)' );
+		const right = t( 'Align table to the right (inline, allows text wrapping)' );
 
 		// Returns object with a proper order of labels.
 		if ( locale.uiLanguageDirection === 'rtl' ) {
-			return { right, center, left };
-		} else {
-			return { left, center, right };
+			return { left, right, blockRight, center, blockLeft };
 		}
+
+		return { blockLeft, center, blockRight, right, left };
 	}
 }
 
