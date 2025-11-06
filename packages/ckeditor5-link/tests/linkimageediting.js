@@ -981,7 +981,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a class="gallery highlighted" href="https://cksource.com" target="_blank" ' +
 						'rel="noopener noreferrer" download="download" style="text-decoration:underline;">' +
-							'<img src="sample.jpg" alt="bar">' +
+							'<img src="assets/sample.png" alt="bar">' +
 						'</a>' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>' +
@@ -999,7 +999,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'linkIsHighlighted="true" ' +
-						'src="sample.jpg">' +
+						'src="assets/sample.png">' +
 					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
@@ -1014,7 +1014,7 @@ describe( 'LinkImageEditing', () => {
 				editor.setData(
 					'<a class="gallery highlighted" href="https://cksource.com" target="_blank" rel="noopener noreferrer"' +
 					'download="download" style="text-decoration:underline;">' +
-						'<img src="sample.jpg" alt="bar">' +
+						'<img src="assets/sample.png" alt="bar">' +
 					'</a>' +
 					'<p>' +
 						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
@@ -1030,7 +1030,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'linkIsHighlighted="true" ' +
-						'src="sample.jpg">' +
+						'src="assets/sample.png">' +
 					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
@@ -1058,7 +1058,7 @@ describe( 'LinkImageEditing', () => {
 						'foo ' +
 						'<a class="gallery" href="https://cksource.com">' +
 							'abc ' +
-							'<img src="sample.jpg" alt="bar">' +
+							'<img src="assets/sample.png" alt="bar">' +
 							' 123' +
 						'</a>' +
 						' bar' +
@@ -1069,7 +1069,8 @@ describe( 'LinkImageEditing', () => {
 					'<paragraph>' +
 						'foo ' +
 						'<$text linkHref="https://cksource.com" linkIsGallery="true">abc </$text>' +
-						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" src="sample.jpg"></imageInline>' +
+						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" ' +
+							'src="assets/sample.png"></imageInline>' +
 						'<$text linkHref="https://cksource.com" linkIsGallery="true"> 123</$text>' +
 						' bar' +
 					'</paragraph>'
@@ -1131,7 +1132,7 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should downcast the decorators after applying a change', () => {
 				_setModelData( model,
-					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]' +
+					'[<imageBlock alt="bar" src="assets/sample.png"></imageBlock>]' +
 					'<paragraph>' +
 						'<$text>https://cksource.com</$text>' +
 					'</paragraph>'
@@ -1159,7 +1160,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
 						'download="download" target="_blank" rel="noopener noreferrer">' +
-							'<img alt="bar" src="sample.jpg">' +
+							'<img alt="bar" src="assets/sample.png">' +
 						'</a>' +
 					'</figure>' +
 					'<p>' +
@@ -1175,7 +1176,7 @@ describe( 'LinkImageEditing', () => {
 				_setModelData( model,
 					'<imageBlock alt="bar" linkHref="https://cksource.com" ' +
 					'linkIsDownloadable="true" linkIsExternal="true" ' +
-					'linkIsGallery="true" linkIsHighlighted="true" src="sample.jpg"></imageBlock>'
+					'linkIsGallery="true" linkIsHighlighted="true" src="assets/sample.png"></imageBlock>'
 				);
 
 				// Verify if decorators are present in the view
@@ -1183,7 +1184,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" download="download" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1199,7 +1200,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1211,7 +1212,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" style="text-decoration:underline">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1223,7 +1224,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="highlighted" href="https://cksource.com" style="text-decoration:underline">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1235,7 +1236,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://cksource.com">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1244,7 +1245,7 @@ describe( 'LinkImageEditing', () => {
 			// See #8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				_setModelData( model,
-					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]'
+					'[<imageBlock alt="bar" src="assets/sample.png"></imageBlock>]'
 				);
 
 				editor.execute( 'link', 'https://cksource.com', {
@@ -1267,7 +1268,7 @@ describe( 'LinkImageEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img alt="bar" src="sample.jpg">' +
+						'<img alt="bar" src="assets/sample.png">' +
 					'</figure>'
 				);
 			} );

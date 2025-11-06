@@ -46,6 +46,7 @@ Fullscreen layout:
 		<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
 		<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 		<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+		<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 	</div>
 	<div class="ck ck-fullscreen__bottom-wrapper">
 		<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -135,7 +136,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__sidebar {
-	width: 300px;
+	width: 270px;
 	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-left: 10px;
 }
@@ -149,15 +150,38 @@ Fullscreen layout:
 	height: 100%;
 	background-color: transparent;
 	margin-top: 0px;
+	margin-right: 10px;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 
-	> :first-child {
+	& .ck-button.ck-fullscreen__left-sidebar-toggle-button {
+		--ck-icon-size: 20px;
+		--ck-ui-component-min-height: 0px;
+
+		align-self: flex-start;
+		padding-top: 0;
+		margin-top: var(--ck-fullscreen-editor-top-margin);
+		margin-bottom: var(--ck-spacing-large);
+		opacity: 0.5;
+		border-radius: 100%;
+	}
+
+	> .ck-fullscreen__left-sidebar-sticky {
 		/* Set minimal width if there is any item in the sidebar. */
-		min-width: 300px;
-		/* We have to use padding-top instead of margin-top because margin is scrollable. */
-		padding-top: var(--ck-fullscreen-editor-top-margin);
+		min-width: 270px;
+
+		&:first-child {
+			padding-top: var(--ck-fullscreen-editor-top-margin);
+		}
+	}
+
+	&.ck-fullscreen__left-sidebar--collapsed {
+		width: 65px;
+
+		> :not(.ck-fullscreen__left-sidebar-toggle-button) {
+			display: none;
+		}
 	}
 }
 
@@ -229,8 +253,31 @@ Fullscreen layout:
 	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-right: auto;
 
-	&> :first-child {
+	&:not(.ck-fullscreen__right-sidebar--collapsed) > :first-child {
 		/* Set minimal width if there is any item in the sidebar. */
-		min-width: 300px;
+		min-width: 270px;
+	}
+
+	&.ck-fullscreen__right-sidebar--collapsed {
+		width: 65px;
+
+		& > :first-child {
+			min-width: 65px;
+		}
+	}
+}
+
+.ck.ck-fullscreen__right-edge {
+	position: sticky;
+	top: 0;
+	margin-top: 0;
+	margin-left: 10px;
+
+	& > :first-child {
+		border-top: none;
+		border-bottom: none;
+		border-right: none;
+		height: 100%;
+		width: 495px;
 	}
 }

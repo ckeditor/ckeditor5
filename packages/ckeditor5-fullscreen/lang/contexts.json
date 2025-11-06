@@ -4,5 +4,8 @@
 	"Fullscreen mode": "Label for a menu bar button that toggles fullscreen mode",
 	"Toggle fullscreen mode": "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode.",
 	"Document outline": "Label for a sidebar header that contains a document outline",
-	"Connected users": "Label for a sidebar header that contains a list of connected users"
+	"Connected users": "Label for a sidebar header that contains a list of connected users",
+	"Show left sidebar": "Tooltip for a button that shows the left sidebar",
+	"Hide left sidebar": "Tooltip for a button that hides the left sidebar",
+	"Toggle sidebar": "Label for a button that toggles the left sidebar"
 }

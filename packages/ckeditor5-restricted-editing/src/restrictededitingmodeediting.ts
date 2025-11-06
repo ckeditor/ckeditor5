@@ -10,9 +10,9 @@
 import {
 	Plugin,
 	type Command,
-	type Editor,
-	type EditingKeystrokeCallback
+	type Editor
 } from 'ckeditor5/src/core.js';
+
 import type {
 	ModelDocumentSelection,
 	Marker,
@@ -20,12 +20,24 @@ import type {
 	ModelDeleteContentEvent,
 	ModelPostFixer,
 	ModelRange,
-	ModelSchemaAttributeCheckCallback,
-	ModelSchemaChildCheckCallback,
-	ViewDocumentTabEvent
+	ViewDocumentTabEvent,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyEventData
 } from 'ckeditor5/src/engine.js';
-import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
-import type { InsertTextCommand, InsertTextCommandExecuteEvent } from 'ckeditor5/src/typing.js';
+
+import {
+	getCode,
+	parseKeystroke,
+	type BaseEvent,
+	type EventInfo,
+	type GetCallback
+} from 'ckeditor5/src/utils.js';
+
+import type {
+	InsertTextCommand,
+	InsertTextCommandExecuteEvent
+} from 'ckeditor5/src/typing.js';
+
 import type {
 	ClipboardContentInsertionEvent,
 	ViewDocumentClipboardOutputEvent,
@@ -33,14 +45,20 @@ import type {
 } from 'ckeditor5/src/clipboard.js';
 
 import { RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand.js';
+import type { RestrictedEditingConfig } from './restrictededitingconfig.js';
+
+import {
+	getMarkerAtPosition,
+	isSelectionInMarker,
+	getExceptionRange
+} from './restrictededitingmode/utils.js';
+
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
 	setupExceptionHighlighting,
 	upcastHighlightToMarker
 } from './restrictededitingmode/converters.js';
-import { getMarkerAtPosition, isSelectionInMarker } from './restrictededitingmode/utils.js';
-import type { RestrictedEditingConfig } from './restrictededitingconfig.js';
 
 const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
 
@@ -119,6 +137,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 		allowedCommands.forEach( commandName => this._allowedInException.add( commandName ) );
 
+		this._setupSchema();
 		this._setupConversion();
 		this._setupCommandsToggling();
 		this._setupRestrictions();
@@ -150,7 +169,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 			evt.stop();
 		}, { context: '$capture' } );
 
-		editor.keystrokes.set( 'Ctrl+A', getSelectAllHandler( editor ) );
+		this.listenTo<ViewDocumentKeyDownEvent>( editingView.document, 'keydown', getSelectAllHandler( editor ), { priority: 'high' } );
 
 		editingView.change( writer => {
 			for ( const root of editingView.document.roots ) {
@@ -188,6 +207,19 @@ export class RestrictedEditingModeEditing extends Plugin {
 	}
 
 	/**
+	 * Registers block exception wrapper in the schema.
+	 */
+	private _setupSchema(): void {
+		const schema = this.editor.model.schema;
+
+		schema.register( 'restrictedEditingException', {
+			allowWhere: '$block',
+			allowContentOf: '$container',
+			isLimit: true
+		} );
+	}
+
+	/**
 	 * Sets up the restricted mode editing conversion:
 	 *
 	 * * ucpast & downcast converters,
@@ -211,9 +243,31 @@ export class RestrictedEditingModeEditing extends Plugin {
 			model: () => {
 				markerNumber++; // Starting from restrictedEditingException:1 marker.
 
-				return `restrictedEditingException:${ markerNumber }`;
+				return `restrictedEditingException:inline:${ markerNumber }`;
 			}
 		} ) );
+
+		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
+			view: {
+				name: 'div',
+				classes: 'restricted-editing-exception'
+			},
+			model: () => {
+				markerNumber++; // Starting from restrictedEditingException:1 marker.
+
+				return `restrictedEditingException:block:${ markerNumber }`;
+			},
+			useWrapperElement: true
+		} ) );
+
+		// Block exception wrapper.
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'restrictedEditingException',
+			view: {
+				name: 'div',
+				classes: 'restricted-editing-exception'
+			}
+		} );
 
 		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
 		// Also, markerToHighlight cannot convert marker on an inline object. It handles only text and widgets,
@@ -221,7 +275,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 		//
 		// 1. The custom inline item (text or inline object) converter (but not the selection).
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			dispatcher.on<DowncastAddMarkerEvent>( 'addMarker:restrictedEditingException', ( evt, data, conversionApi ): void => {
+			dispatcher.on<DowncastAddMarkerEvent>( 'addMarker:restrictedEditingException:inline', ( evt, data, conversionApi ): void => {
 				// Only convert per-item conversion.
 				if ( !data.item ) {
 					return;
@@ -265,7 +319,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 		// 2. The marker-to-highlight converter for the document selection.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
-			model: 'restrictedEditingException',
+			model: 'restrictedEditingException:inline',
 			// Use callback to return new object every time new marker instance is created - otherwise it will be seen as the same marker.
 			view: () => {
 				return {
@@ -279,7 +333,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 		// 3. And for collapsed marker we need to render it as an element.
 		// Additionally, the editing pipeline should always display a collapsed marker.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
-			model: 'restrictedEditingException',
+			model: 'restrictedEditingException:inline',
 			view: ( markerData, { writer } ) => {
 				return writer.createUIElement( 'span', {
 					class: 'restricted-editing-exception restricted-editing-exception_collapsed'
@@ -288,7 +342,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 		} );
 
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
-			model: 'restrictedEditingException',
+			model: 'restrictedEditingException:inline',
 			view: ( markerData, { writer } ) => {
 				return writer.createEmptyElement( 'span', {
 					class: 'restricted-editing-exception'
@@ -334,9 +388,34 @@ export class RestrictedEditingModeEditing extends Plugin {
 		}
 
 		// Block clipboard outside exception marker on paste and drop.
-		this.listenTo<ClipboardContentInsertionEvent>( clipboard, 'contentInsertion', evt => {
+		this.listenTo<ClipboardContentInsertionEvent>( clipboard, 'contentInsertion', ( evt, data ) => {
 			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange()! ) ) {
 				evt.stop();
+			}
+
+			const marker = getMarkerAtPosition( editor, selection.focus! );
+
+			// Reduce content pasted into inline exception to text nodes only. Also strip not allowed attributes.
+			if ( marker && marker.name.startsWith( 'restrictedEditingException:inline:' ) ) {
+				const allowedAttributes: Array<string> = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
+
+				model.change( writer => {
+					const content = writer.createDocumentFragment();
+					const textNodes = Array.from( writer.createRangeIn( data.content ).getItems() )
+						.filter( node => node.is( '$textProxy' ) );
+
+					for ( const item of textNodes ) {
+						for ( const attr of item.getAttributeKeys() ) {
+							if ( !allowedAttributes.includes( attr ) ) {
+								writer.removeAttribute( attr, item );
+							}
+						}
+
+						writer.append( item, content );
+					}
+
+					data.content = content;
+				} );
 			}
 		} );
 
@@ -347,9 +426,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 			}
 		}, { priority: 'high' } );
 
-		const allowedAttributes: RestrictedEditingConfig['allowedAttributes'] = editor.config.get( 'restrictedEditing.allowedAttributes' )!;
-		model.schema.addAttributeCheck( onlyAllowAttributesFromList( allowedAttributes ) );
-		model.schema.addChildCheck( allowTextOnlyInClipboardHolder() );
+		// Do not allow pasting/dropping block exception wrapper.
+		model.schema.addChildCheck( context => {
+			if ( context.startsWith( '$clipboardHolder' ) ) {
+				return false;
+			}
+		}, 'restrictedEditingException' );
 	}
 
 	/**
@@ -383,7 +465,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 
 		this._disableCommands();
 
-		if ( isSelectionInMarker( selection, marker ) ) {
+		if ( isSelectionInMarker( selection, editor.model, marker ) ) {
 			this._enableCommands( marker! );
 		}
 	}
@@ -393,6 +475,7 @@ export class RestrictedEditingModeEditing extends Plugin {
 	 */
 	private _enableCommands( marker: Marker ): void {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		for ( const [ commandName, command ] of editor.commands ) {
 			if ( !command.affectsData || this._alwaysEnabled.has( commandName ) ) {
@@ -400,12 +483,16 @@ export class RestrictedEditingModeEditing extends Plugin {
 			}
 
 			// Enable ony those commands that are allowed in the exception marker.
-			if ( !this._allowedInException.has( commandName ) ) {
+			// In block exceptions all commands are enabled.
+			if (
+				!marker.name.startsWith( 'restrictedEditingException:block:' ) &&
+				!this._allowedInException.has( commandName )
+			) {
 				continue;
 			}
 
 			// Do not enable 'delete' and 'deleteForward' commands on the exception marker boundaries.
-			if ( isDeleteCommandOnMarkerBoundaries( commandName, editor.model.document.selection, marker.getRange() ) ) {
+			if ( isDeleteCommandOnMarkerBoundaries( commandName, selection, getExceptionRange( marker, editor.model ) ) ) {
 				continue;
 			}
 
@@ -432,8 +519,12 @@ export class RestrictedEditingModeEditing extends Plugin {
 /**
  * Helper for handling Ctrl+A keydown behaviour.
  */
-function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
-	return ( _, cancel ) => {
+function getSelectAllHandler( editor: Editor ) {
+	return ( eventInfo: EventInfo, domEventData: ViewDocumentKeyEventData ) => {
+		if ( getCode( domEventData ) != parseKeystroke( 'Ctrl+A' ) ) {
+			return;
+		}
+
 		const model = editor.model;
 		const selection = editor.model.document.selection;
 		const marker = getMarkerAtPosition( editor, selection.focus! );
@@ -446,13 +537,15 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
 		//
 		// Note: Second Ctrl+A press is also blocked and it won't select the entire text in the editor.
 		const selectionRange = selection.getFirstRange()!;
-		const markerRange = marker.getRange();
+		const markerRange = getExceptionRange( marker, editor.model );
 
 		if ( markerRange.containsRange( selectionRange, true ) || selection.isCollapsed ) {
-			cancel();
+			eventInfo.stop();
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
 
 			model.change( writer => {
-				writer.setSelection( marker.getRange() );
+				writer.setSelection( markerRange );
 			} );
 		}
 	};
@@ -466,12 +559,12 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
  * - is on marker end - "deleteForward" - to prevent removing content after marker
  */
 function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: ModelDocumentSelection, markerRange: ModelRange ) {
-	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus! ) ) {
+	if ( commandName == 'delete' && selection.isCollapsed && markerRange.start.isTouching( selection.focus! ) ) {
 		return true;
 	}
 
 	// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
-	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus! ) ) {
+	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isTouching( selection.focus! ) ) {
 		return true;
 	}
 
@@ -504,7 +597,7 @@ function restrictDeleteContent( editor: Editor ): GetCallback<BaseEvent> {
 		}
 
 		// Shrink the selection to the range inside exception marker.
-		const allowedToDelete = marker.getRange().getIntersection( selection.getFirstRange() );
+		const allowedToDelete = getExceptionRange( marker, editor.model ).getIntersection( selection.getFirstRange() );
 
 		// Some features uses selection passed to model.deleteContent() to set the selection afterwards. For this we need to properly modify
 		// either the document selection using change block...
@@ -588,21 +681,5 @@ function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 		}
 
 		return changeApplied;
-	};
-}
-
-function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): ModelSchemaAttributeCheckCallback {
-	return ( context, attributeName ) => {
-		if ( context.startsWith( '$clipboardHolder' ) ) {
-			return allowedAttributes.includes( attributeName );
-		}
-	};
-}
-
-function allowTextOnlyInClipboardHolder(): ModelSchemaChildCheckCallback {
-	return ( context, childDefinition ) => {
-		if ( context.startsWith( '$clipboardHolder' ) ) {
-			return childDefinition.name === '$text';
-		}
 	};
 }

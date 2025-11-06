@@ -166,6 +166,55 @@ describe( 'ImageUploadProgress', () => {
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
+	it( 'should work if image is refreshed by the differ in the same batch as uploadStatus attribute is changed', function( done ) {
+		_setModelData( model, '<paragraph>[]</paragraph>' );
+
+		model.document.on( 'change:data', () => {
+			const changes = model.document.differ.getChanges();
+
+			for ( const change of changes ) {
+				if ( change.type === 'attribute' && change.attributeKey === 'uploadStatus' && change.attributeNewValue === 'complete' ) {
+					for ( const { item } of change.range ) {
+						if ( item.is( 'element', 'imageBlock' ) ) {
+							editor.editing.reconvertItem( item );
+						}
+					}
+				}
+			}
+		}, { priority: 'high' } );
+
+		const notifications = editor.plugins.get( 'Notification' );
+		const warningStub = testUtils.sinon.stub( notifications, 'showWarning' );
+
+		const onChange = sinon.spy( () => {
+			expect( _getViewData( view ) ).to.equal(
+				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+					`<img src="${ base64Sample }"></img>` +
+					'<div class="ck-progress-bar"></div>' +
+				'</figure>]'
+			);
+		} );
+
+		editor.execute( 'uploadImage', { file: createNativeFileMock() } );
+		model.document.once( 'change', onChange, { priority: 'lowest' } );
+
+		adapterMock.upload = () =>
+			Promise
+				.resolve( { default: base64Sample } )
+				.then( data => {
+					// Jump out of the current upload and make sure it'll be executed after promise chain.
+					setTimeout( () => {
+						expect( onChange ).to.be.calledOnce;
+						expect( warningStub ).to.not.be.called;
+						done();
+					}, 60 );
+
+					return data;
+				} );
+
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
+	} );
+
 	it( 'should work correctly when there is no "reading" status and go straight to "uploading"', () => {
 		const fileRepository = editor.plugins.get( FileRepository );
 		const file = createNativeFileMock();
@@ -178,12 +227,12 @@ describe( 'ImageUploadProgress', () => {
 		model.change( writer => {
 			writer.setAttribute( 'uploadStatus', 'uploading', image );
 			writer.setAttribute( 'uploadId', loader.id, image );
-			writer.setAttribute( 'src', 'image.png', image );
+			writer.setAttribute( 'src', 'assets/sample.png', image );
 		} );
 
 		expect( _getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-				'<img src="image.png"></img>' +
+				'<img src="assets/sample.png"></img>' +
 				'<div class="ck-progress-bar"></div>' +
 			'</figure>]'
 		);
@@ -264,7 +313,7 @@ describe( 'ImageUploadProgress', () => {
 				try {
 					expect( _getViewData( view ) ).to.equal(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="image.png"></img>' +
+							'<img src="assets/sample.png"></img>' +
 							'<div class="ck-image-upload-complete-icon"></div>' +
 						'</span>}foo</p>'
 					);
@@ -273,7 +322,7 @@ describe( 'ImageUploadProgress', () => {
 
 					expect( _getViewData( view ) ).to.equal(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img src="image.png"></img>' +
+							'<img src="assets/sample.png"></img>' +
 						'</span>}foo</p>'
 					);
 
@@ -283,7 +332,7 @@ describe( 'ImageUploadProgress', () => {
 				}
 			}, { priority: 'lowest' } );
 
-			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
+			loader.file.then( () => adapterMock.mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );

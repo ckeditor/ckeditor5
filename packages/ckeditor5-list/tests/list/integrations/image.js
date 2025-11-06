@@ -20,7 +20,7 @@ describe( 'image plugin integration', () => {
 	let element;
 	let editor, model;
 
-	const imgSrc = 'foo/bar.jpg';
+	const imgSrc = 'assets/sample.png';
 
 	testUtils.createSinonSandbox();
 
