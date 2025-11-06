@@ -284,20 +284,10 @@ export class TablePropertiesView extends View {
 			children: [
 				borderRowLabel,
 				borderStyleDropdown,
-				borderColorInput,
-				borderWidthInput
+				borderWidthInput,
+				borderColorInput
 			],
 			class: 'ck-table-form__border-row'
-		} ) );
-
-		// Background row.
-		this.children.add( new FormRowView( locale, {
-			labelView: backgroundRowLabel,
-			children: [
-				backgroundRowLabel,
-				backgroundInput
-			],
-			class: 'ck-table-form__background-row'
 		} ) );
 
 		this.children.add( new FormRowView( locale, {
@@ -313,17 +303,30 @@ export class TablePropertiesView extends View {
 					],
 					class: 'ck-table-form__dimensions-row'
 				} ),
-				// Alignment row.
+
+				// Background row.
 				new FormRowView( locale, {
-					labelView: alignmentLabel,
+					labelView: backgroundRowLabel,
 					children: [
-						alignmentLabel,
-						alignmentToolbar
+						backgroundRowLabel,
+						backgroundInput
 					],
-					class: 'ck-table-properties-form__alignment-row'
+					class: 'ck-table-form__background-row'
 				} )
 			]
 		} ) );
+
+		// Alignment row.
+		this.children.add(
+			new FormRowView( locale, {
+				labelView: alignmentLabel,
+				children: [
+					alignmentLabel,
+					alignmentToolbar
+				],
+				class: 'ck-table-properties-form__alignment-row'
+			} )
+		);
 
 		// Action row.
 		this.children.add( new FormRowView( locale, {
