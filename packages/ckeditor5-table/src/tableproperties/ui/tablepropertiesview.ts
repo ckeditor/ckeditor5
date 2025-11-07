@@ -29,8 +29,6 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
 import {
-	IconCancel,
-	IconCheck,
 	IconObjectCenter,
 	IconObjectInlineLeft,
 	IconObjectInlineRight,
@@ -333,8 +331,8 @@ export class TablePropertiesView extends View {
 		// Action row.
 		this.children.add( new FormRowView( locale, {
 			children: [
-				this.saveButtonView,
-				this.cancelButtonView
+				this.cancelButtonView,
+				this.saveButtonView
 			],
 			class: 'ck-table-form__action-row'
 		} ) );
@@ -704,8 +702,7 @@ export class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: IconCheck,
-			class: 'ck-button-save',
+			class: 'ck-button-action',
 			type: 'submit',
 			withText: true
 		} );
@@ -716,8 +713,6 @@ export class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: IconCancel,
-			class: 'ck-button-cancel',
 			withText: true
 		} );
 

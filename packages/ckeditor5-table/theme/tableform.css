@@ -34,7 +34,7 @@
 
 		/* Ignore labels that work as fieldset legends */
 		/* Fallback for table dimension operator */
-		& > *:not(.ck-label, .ck-table-form__dimension-operator) {
+		&:not(.ck-table-form__action-row) > *:not(.ck-label, .ck-table-form__dimension-operator) {
 			flex-grow: 1;
 		}
 	}

@@ -547,19 +547,18 @@ describe( 'table properties', () => {
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.saveButtonView.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.cancelButtonView.element );
+						expect( row.childNodes[ 0 ] ).to.equal( view.cancelButtonView.element );
+						expect( row.childNodes[ 1 ] ).to.equal( view.saveButtonView.element );
 					} );
 
 					it( 'should have buttons with right properties', () => {
 						expect( view.saveButtonView.label ).to.equal( 'Save' );
 						expect( view.saveButtonView.type ).to.equal( 'submit' );
 						expect( view.saveButtonView.withText ).to.be.true;
-						expect( view.saveButtonView.class ).to.equal( 'ck-button-save' );
+						expect( view.saveButtonView.class ).to.equal( 'ck-button-action' );
 
 						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 						expect( view.cancelButtonView.withText ).to.be.true;
-						expect( view.cancelButtonView.class ).to.equal( 'ck-button-cancel' );
 						expect( view.cancelButtonView.type ).to.equal( 'button' );
 					} );
 
