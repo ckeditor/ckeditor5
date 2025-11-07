@@ -38,7 +38,8 @@ import {
 	IconAlignLeft,
 	IconAlignMiddle,
 	IconAlignRight,
-	IconAlignTop
+	IconAlignTop,
+	IconPreviousArrow
 } from 'ckeditor5/src/icons.js';
 
 import {
@@ -216,6 +217,11 @@ export class TableCellPropertiesView extends View {
 	public cancelButtonView: ButtonView;
 
 	/**
+	 * The "Back" button view.
+	 */
+	public backButtonView: ButtonView;
+
+	/**
 	 * A collection of views that can be focused in the form.
 	 */
 	protected readonly _focusables: ViewCollection<FocusableView>;
@@ -276,6 +282,8 @@ export class TableCellPropertiesView extends View {
 
 		this.saveButtonView = saveButtonView;
 		this.cancelButtonView = cancelButtonView;
+		this.backButtonView = this._createBackButton();
+
 		this._focusables = new ViewCollection();
 
 		this._focusCycler = new FocusCycler( {
@@ -292,9 +300,13 @@ export class TableCellPropertiesView extends View {
 		} );
 
 		// Form header.
-		this.children.add( new FormHeaderView( locale, {
+		const header = new FormHeaderView( locale, {
 			label: this.t!( 'Cell properties' )
-		} ) );
+		} );
+
+		header.children.add( this.backButtonView, 0 );
+
+		this.children.add( header );
 
 		// Border row.
 		this.children.add( new FormRowView( locale, {
@@ -405,8 +417,9 @@ export class TableCellPropertiesView extends View {
 			this.paddingInput,
 			this.horizontalAlignmentToolbar,
 			this.verticalAlignmentToolbar,
+			this.cancelButtonView,
 			this.saveButtonView,
-			this.cancelButtonView
+			this.backButtonView
 		].forEach( view => {
 			// Register the view as focusable.
 			this._focusables.add( view );
@@ -815,6 +828,25 @@ export class TableCellPropertiesView extends View {
 		return {
 			saveButtonView, cancelButtonView
 		};
+	}
+
+	/**
+	 * Creates a back button view that cancels the form.
+	 */
+	private _createBackButton(): ButtonView {
+		const t = this.locale!.t;
+		const backButton = new ButtonView( this.locale );
+
+		backButton.set( {
+			class: 'ck-button-back',
+			label: t( 'Back' ),
+			icon: IconPreviousArrow,
+			tooltip: true
+		} );
+
+		backButton.delegate( 'execute' ).to( this, 'cancel' );
+
+		return backButton;
 	}
 
 	/**

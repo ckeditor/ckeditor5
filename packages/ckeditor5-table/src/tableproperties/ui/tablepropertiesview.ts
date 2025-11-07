@@ -33,7 +33,8 @@ import {
 	IconObjectInlineLeft,
 	IconObjectInlineRight,
 	IconObjectLeft,
-	IconObjectRight
+	IconObjectRight,
+	IconPreviousArrow
 } from 'ckeditor5/src/icons.js';
 
 import {
@@ -207,6 +208,11 @@ export class TablePropertiesView extends View {
 	public cancelButtonView: ButtonView;
 
 	/**
+	 * The Back button view displayed in the header.
+	 */
+	public backButtonView: ButtonView;
+
+	/**
 	 * A collection of views that can be focused in the form.
 	 */
 	protected readonly _focusables: ViewCollection<FocusableView>;
@@ -259,6 +265,8 @@ export class TablePropertiesView extends View {
 
 		this.saveButtonView = saveButtonView;
 		this.cancelButtonView = cancelButtonView;
+		this.backButtonView = this._createBackButton();
+
 		this._focusables = new ViewCollection();
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
@@ -274,9 +282,13 @@ export class TablePropertiesView extends View {
 		} );
 
 		// Form header.
-		this.children.add( new FormHeaderView( locale, {
+		const headerView = new FormHeaderView( locale, {
 			label: this.t!( 'Table properties' )
-		} ) );
+		} );
+
+		headerView.children.add( this.backButtonView, 0 );
+
+		this.children.add( headerView );
 
 		// Border row.
 		this.children.add( new FormRowView( locale, {
@@ -372,14 +384,15 @@ export class TablePropertiesView extends View {
 
 		[
 			this.borderStyleDropdown,
-			this.borderColorInput,
 			this.borderWidthInput,
-			this.backgroundInput,
+			this.borderColorInput,
 			this.widthInput,
 			this.heightInput,
+			this.backgroundInput,
 			this.alignmentToolbar,
+			this.cancelButtonView,
 			this.saveButtonView,
-			this.cancelButtonView
+			this.backButtonView
 		].forEach( view => {
 			// Register the view as focusable.
 			this._focusables.add( view! );
@@ -721,6 +734,25 @@ export class TablePropertiesView extends View {
 		return {
 			saveButtonView, cancelButtonView
 		};
+	}
+
+	/**
+	 * Creates a back button view that cancels the form.
+	 */
+	private _createBackButton(): ButtonView {
+		const t = this.locale!.t;
+		const backButton = new ButtonView( this.locale );
+
+		backButton.set( {
+			class: 'ck-button-back',
+			label: t( 'Back' ),
+			icon: IconPreviousArrow,
+			tooltip: true
+		} );
+
+		backButton.delegate( 'execute' ).to( this, 'cancel' );
+
+		return backButton;
 	}
 
 	/**
