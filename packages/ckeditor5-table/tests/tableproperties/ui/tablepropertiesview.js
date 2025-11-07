@@ -102,6 +102,7 @@ describe( 'table properties', () => {
 
 				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
 				expect( view.cancelButtonView ).to.be.instanceOf( ButtonView );
+				expect( view.backButtonView ).to.be.instanceOf( ButtonView );
 			} );
 
 			it( 'should have a header', () => {
@@ -109,7 +110,7 @@ describe( 'table properties', () => {
 
 				expect( header.classList.contains( 'ck' ) ).to.be.true;
 				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
-				expect( header.textContent ).to.equal( 'Table properties' );
+				expect( header.children[ 1 ].textContent ).to.equal( 'Table properties' );
 			} );
 
 			describe( 'form rows', () => {
@@ -541,6 +542,29 @@ describe( 'table properties', () => {
 					} );
 				} );
 
+				describe( 'back button', () => {
+					it( 'should be defined', () => {
+						const header = view.element.firstChild;
+
+						expect( header.childNodes[ 0 ] ).to.equal( view.backButtonView.element );
+					} );
+
+					it( 'should have button with right properties', () => {
+						expect( view.backButtonView.label ).to.equal( 'Back' );
+						expect( view.backButtonView.type ).to.equal( 'button' );
+						expect( view.backButtonView.class ).to.equal( 'ck-button-back' );
+					} );
+
+					it( 'should delegate execute to cancel event', () => {
+						const spy = sinon.spy();
+
+						view.on( 'cancel', spy );
+						view.backButtonView.fire( 'execute' );
+
+						expect( spy.calledOnce ).to.be.true;
+					} );
+				} );
+
 				describe( 'action row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 4 ];
@@ -645,14 +669,15 @@ describe( 'table properties', () => {
 			it( 'should register child views in #_focusables', () => {
 				expect( view._focusables.map( f => f ) ).to.have.members( [
 					view.borderStyleDropdown,
-					view.borderColorInput,
 					view.borderWidthInput,
-					view.backgroundInput,
+					view.borderColorInput,
 					view.widthInput,
 					view.heightInput,
+					view.backgroundInput,
 					view.alignmentToolbar,
+					view.cancelButtonView,
 					view.saveButtonView,
-					view.cancelButtonView
+					view.backButtonView
 				] );
 			} );
 
@@ -695,7 +720,7 @@ describe( 'table properties', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.borderColorInput, 'focus' );
+					const spy = sinon.spy( view.borderWidthInput, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -715,7 +740,7 @@ describe( 'table properties', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.cancelButtonView, 'focus' );
+					const spy = sinon.spy( view.backButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -736,7 +761,7 @@ describe( 'table properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.dropdownView.buttonView.element;
 
-					const spy = sinon.spy( view.borderWidthInput, 'focus' );
+					const spy = sinon.spy( view.widthInput, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -758,7 +783,7 @@ describe( 'table properties', () => {
 					view.borderColorInput.fieldView.focusTracker.focusedElement =
 						view.borderColorInput.fieldView.inputView.element;
 
-					const spy = sinon.spy( view.borderStyleDropdown, 'focus' );
+					const spy = sinon.spy( view.borderWidthInput, 'focus' );
 
 					view.borderColorInput.fieldView.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
