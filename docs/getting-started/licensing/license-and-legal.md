@@ -43,8 +43,8 @@ The following features are available for the GPL-compliant projects, but their a
 The commercial license unlocks many benefits. All commercial plans include:
 
 * No GPL restrictions,
-* {@link getting-started/licensing/managing-ckeditor-logo White-labeling},
-* Technical support,
+* {@link getting-started/licensing/managing-ckeditor-logo White-labeling} (except the free plan),
+* Technical support (except the free plan),
 
 Additionally, depending on the plan you choose, you gain access to Premium features such as:
 
@@ -58,17 +58,17 @@ Additionally, depending on the plan you choose, you gain access to Premium featu
 * {@link features/ckbox CKBox for file storage and management}
 * {@link features/uploadcare Image Optimizer powered by Uploadcare}
 
-Some premium features are included in specific plans, while others are available as add-ons depending on your chosen deployment model and plan tier.
+Some premium features are included in selected pricing plans, while others are available as add-ons depending on the selected deployment model and plan.
 
 [Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
 
-### Distribution options in commercial licenses
+### Distribution options on commercial license
 
 CKEditor&nbsp;5 commercial plans are available with different distribution models:
 
 **Cloud-hosted distribution**
 
-Cloud-hosting is available in self-service and custom plans. The packages are managed and hosted on a CDN, providing quick setup and maintenance-free deployment.
+Cloud-hosting is available in self-service and custom plans. The packages are managed and hosted through a CDN, providing quick setup and maintenance-free deployment.
 
 **Self-hosted distribution**
 
