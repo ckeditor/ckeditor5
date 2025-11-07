@@ -507,14 +507,26 @@ describe( 'table properties', () => {
 						} );
 
 						it( 'should change the #horizontalAlignment value', () => {
-							toolbar.items.get( 3 ).fire( 'execute' );
-							expect( view.alignment ).to.equal( 'right' );
-							expect( toolbar.items.get( 3 ).isOn ).to.be.true;
+							const values = [
+								'blockLeft',
+								'center',
+								'blockRight',
+								'right',
+								'left'
+							];
 
-							toolbar.items.get( 4 ).fire( 'execute' );
-							expect( view.alignment ).to.equal( 'left' );
-							expect( toolbar.items.get( 3 ).isOn ).to.be.false;
-							expect( toolbar.items.get( 4 ).isOn ).to.be.true;
+							for ( let i = 0; i < values.length; i++ ) {
+								toolbar.items.get( i ).fire( 'execute' );
+								expect( view.alignment ).to.equal( values[ i ] );
+
+								for ( let j = 0; j < values.length; j++ ) {
+									if ( i === j ) {
+										expect( toolbar.items.get( j ).isOn ).to.be.true;
+									} else {
+										expect( toolbar.items.get( j ).isOn ).to.be.false;
+									}
+								}
+							}
 						} );
 
 						it( 'should set proper ARIA properties', () => {
