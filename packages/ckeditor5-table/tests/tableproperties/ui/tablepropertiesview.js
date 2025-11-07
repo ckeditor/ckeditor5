@@ -121,8 +121,8 @@ describe( 'table properties', () => {
 						expect( row.classList.contains( 'ck-table-form__border-row' ) ).to.be.true;
 						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Border' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
-						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
-						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
+						expect( row.childNodes[ 2 ] ).to.equal( view.borderWidthInput.element );
+						expect( row.childNodes[ 3 ] ).to.equal( view.borderColorInput.element );
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -306,7 +306,7 @@ describe( 'table properties', () => {
 
 				describe( 'background row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 2 ];
+						const row = view.element.childNodes[ 2 ].childNodes[ 1 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
@@ -367,7 +367,7 @@ describe( 'table properties', () => {
 
 				describe( 'dimensions row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ].childNodes[ 0 ];
+						const row = view.element.childNodes[ 2 ].childNodes[ 0 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__dimensions-row' ) ).to.be.true;
@@ -444,7 +444,7 @@ describe( 'table properties', () => {
 
 				describe( 'dimensions alignment row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 3 ].childNodes[ 1 ];
+						const row = view.element.childNodes[ 3 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-properties-form__alignment-row' ) ).to.be.true;
@@ -469,13 +469,15 @@ describe( 'table properties', () => {
 
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the left',
-								'Center table',
-								'Align table to the right'
+								'Align table to the left (block, no text wrapping)',
+								'Center table (block, no text wrapping)',
+								'Align table to the right (block, no text wrapping)',
+								'Align table to the right (inline, allows text wrapping)',
+								'Align table to the left (inline, allows text wrapping)'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
-								false, true, false
+								false, true, false, false, false
 							] );
 						} );
 
@@ -490,27 +492,29 @@ describe( 'table properties', () => {
 							const toolbar = view.alignmentToolbar;
 
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the right',
-								'Center table',
-								'Align table to the left'
+								'Align table to the left (inline, allows text wrapping)',
+								'Align table to the right (inline, allows text wrapping)',
+								'Align table to the right (block, no text wrapping)',
+								'Center table (block, no text wrapping)',
+								'Align table to the left (block, no text wrapping)'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
-								false, true, false
+								false, false, false, true, false
 							] );
 
 							view.destroy();
 						} );
 
 						it( 'should change the #horizontalAlignment value', () => {
-							toolbar.items.last.fire( 'execute' );
+							toolbar.items.get( 3 ).fire( 'execute' );
 							expect( view.alignment ).to.equal( 'right' );
-							expect( toolbar.items.last.isOn ).to.be.true;
+							expect( toolbar.items.get( 3 ).isOn ).to.be.true;
 
-							toolbar.items.first.fire( 'execute' );
+							toolbar.items.get( 4 ).fire( 'execute' );
 							expect( view.alignment ).to.equal( 'left' );
-							expect( toolbar.items.last.isOn ).to.be.false;
-							expect( toolbar.items.first.isOn ).to.be.true;
+							expect( toolbar.items.get( 3 ).isOn ).to.be.false;
+							expect( toolbar.items.get( 4 ).isOn ).to.be.true;
 						} );
 
 						it( 'should set proper ARIA properties', () => {
@@ -520,7 +524,7 @@ describe( 'table properties', () => {
 
 						it( 'should have role=radio set on buttons', () => {
 							expect( [ ...toolbar.items ].some( ( { role, isToggleable } ) => role && isToggleable ) ).to.be.true;
-							expect( toolbar.items.length ).to.equal( 3 );
+							expect( toolbar.items.length ).to.equal( 5 );
 						} );
 					} );
 				} );
