@@ -12,7 +12,7 @@ import type { ViewElement } from 'ckeditor5/src/engine.js';
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
 const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 
-export const DEFAULT_ALIGNMENT_OPTIONS = {
+export const DEFAULT_TABLE_ALIGNMENT_OPTIONS = {
 	get blockLeft(): { className: string } {
 		return {
 			className: 'table-style-block-align-left'
@@ -28,7 +28,7 @@ export const DEFAULT_ALIGNMENT_OPTIONS = {
 /**
  * Configuration for upcasting table alignment from view to model.
  */
-export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
+export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 	// Support for the `float:*;` CSS definition for the table alignment.
 	{
 		view: {
@@ -46,7 +46,7 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 
 			return align;
 		},
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { styles: 'float' };
 		}
 	},
@@ -60,7 +60,7 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'center',
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -69,11 +69,11 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 		view: {
 			name: /^(table|figure)$/,
 			key: 'class',
-			value: DEFAULT_ALIGNMENT_OPTIONS.blockLeft.className
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
 		},
 		getAlign: (): string => 'blockLeft',
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
-			return { classes: DEFAULT_ALIGNMENT_OPTIONS.blockLeft.className };
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className };
 		}
 	},
 	// Support for the block alignment right using CSS classes.
@@ -81,11 +81,11 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 		view: {
 			name: /^(table|figure)$/,
 			key: 'class',
-			value: DEFAULT_ALIGNMENT_OPTIONS.blockRight.className
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 		},
 		getAlign: (): string => 'blockRight',
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
-			return { classes: DEFAULT_ALIGNMENT_OPTIONS.blockRight.className };
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className };
 		}
 	},
 	// Support for the block alignment left using margin CSS styles.
@@ -98,7 +98,7 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'blockLeft',
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -112,7 +112,7 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'blockRight',
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -125,13 +125,13 @@ export const upcastAlignmentConfig: Array<UpcastAlignmentConfig> = [
 			}
 		},
 		getAlign: ( viewElement: ViewElement ): string | undefined => viewElement.getAttribute( 'align' ),
-		get consume(): UpcastAlignmentConfig[ 'consume' ] {
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { attributes: 'align' };
 		}
 	}
 ];
 
-type UpcastAlignmentConfig = {
+type UpcastTableAlignmentConfig = {
 	view: {
 		name: RegExp | string;
 		styles?: Record<string, RegExp | string>;

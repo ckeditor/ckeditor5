@@ -35,7 +35,7 @@ import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
-import { upcastAlignmentConfig, DEFAULT_ALIGNMENT_OPTIONS } from './utils.js';
+import { upcastTableAlignmentConfig, DEFAULT_TABLE_ALIGNMENT_OPTIONS } from './utils.js';
 
 /**
  * The table properties editing feature.
@@ -240,7 +240,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 				},
 				blockLeft: useCssClasses ? {
 					key: 'class',
-					value: DEFAULT_ALIGNMENT_OPTIONS.blockLeft.className
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
 				} : {
 					key: 'style',
 					value: {
@@ -250,7 +250,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 				},
 				blockRight: useCssClasses ? {
 					key: 'class',
-					value: DEFAULT_ALIGNMENT_OPTIONS.blockRight.className
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 				} : {
 					key: 'style',
 					value: {
@@ -265,7 +265,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 	/**
 	 * Enables upcasting of the `tableAlignment` attribute.
 	 */
-	upcastAlignmentConfig.forEach( config => {
+	upcastTableAlignmentConfig.forEach( config => {
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: config.view,
 			model: {
