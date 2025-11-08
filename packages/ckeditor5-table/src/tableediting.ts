@@ -235,7 +235,7 @@ export class TableEditing extends Plugin {
 	}
 
 	/**
-	 * Adds converters for plain table output. They are used either when the PlainTableOutput plugin is loaded
+	 * Adds converters for plain table output. These converters are used either when the `PlainTableOutput` plugin is loaded
 	 * or when content is processed by the clipboard pipeline, ensuring that pasted tables are not wrapped in a <figure> element.
 	 */
 	private _addPlainTableOutputConverters(): void {
