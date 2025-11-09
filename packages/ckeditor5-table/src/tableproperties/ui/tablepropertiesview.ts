@@ -762,12 +762,12 @@ export class TablePropertiesView extends View {
 		const locale = this.locale!;
 		const t = this.t!;
 
-		const blockLeft = t( 'Align table to the left (block, no text wrapping)' );
-		const blockRight = t( 'Align table to the right (block, no text wrapping)' );
+		const blockLeft = t( 'Align table to the left with no text wrapping' );
+		const blockRight = t( 'Align table to the right with no text wrapping' );
 
-		const left = t( 'Align table to the left (inline, allows text wrapping)' );
-		const center = t( 'Center table (block, no text wrapping)' );
-		const right = t( 'Align table to the right (inline, allows text wrapping)' );
+		const left = t( 'Center table with no text wrapping' );
+		const center = t( 'Center table with no text wrapping' );
+		const right = t( 'Align table to the right with text wrapping' );
 
 		// Returns object with a proper order of labels.
 		if ( locale.uiLanguageDirection === 'rtl' ) {

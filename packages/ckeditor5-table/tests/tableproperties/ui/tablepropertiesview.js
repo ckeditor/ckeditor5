@@ -470,11 +470,11 @@ describe( 'table properties', () => {
 
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the left (block, no text wrapping)',
-								'Center table (block, no text wrapping)',
-								'Align table to the right (block, no text wrapping)',
-								'Align table to the right (inline, allows text wrapping)',
-								'Align table to the left (inline, allows text wrapping)'
+								'Align table to the left with no text wrapping',
+								'Center table with no text wrapping',
+								'Align table to the right with no text wrapping',
+								'Align table to the right with text wrapping',
+								'Center table with no text wrapping'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
@@ -493,11 +493,11 @@ describe( 'table properties', () => {
 							const toolbar = view.alignmentToolbar;
 
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Align table to the left (inline, allows text wrapping)',
-								'Align table to the right (inline, allows text wrapping)',
-								'Align table to the right (block, no text wrapping)',
-								'Center table (block, no text wrapping)',
-								'Align table to the left (block, no text wrapping)'
+								'Center table with no text wrapping',
+								'Align table to the right with text wrapping',
+								'Align table to the right with no text wrapping',
+								'Center table with no text wrapping',
+								'Align table to the left with no text wrapping'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
