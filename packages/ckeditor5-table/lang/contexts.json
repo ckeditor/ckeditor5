@@ -32,7 +32,7 @@
 	"Padding": "The label for the input that allows configuring the padding of a table cell.",
 	"Dimensions": "The label describing a group of form fields that allows setting dimensions of a table or a table cell.",
 	"Table cell text alignment": "The label for the group of toolbars that allows configuring the text alignment in a table cell.",
-	"Alignment": "The label for the toolbar that allows configuring the alignment of a table.",
+	"Table Alignment": "The label for the toolbar that allows configuring the alignment of a table.",
 	"Horizontal text alignment toolbar": "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell.",
 	"Vertical text alignment toolbar": "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell.",
 	"Table alignment toolbar": "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table.",

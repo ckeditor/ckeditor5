@@ -449,7 +449,7 @@ describe( 'table properties', () => {
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-properties-form__alignment-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Alignment' );
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Table Alignment' );
 						expect( row.childNodes[ 1 ] ).to.equal( view.alignmentToolbar.element );
 					} );
 

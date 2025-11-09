@@ -658,7 +658,7 @@ export class TablePropertiesView extends View {
 		// -- Label ---------------------------------------------------
 
 		const alignmentLabel = new LabelView( locale );
-		alignmentLabel.text = t( 'Alignment' );
+		alignmentLabel.text = t( 'Table Alignment' );
 
 		// -- Toolbar ---------------------------------------------------
 
