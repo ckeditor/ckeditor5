@@ -19,15 +19,15 @@
 
 .ck-content {
 	& .table {
-		& .table-style-align-left {
+		&.table-style-align-left {
 			float: left;
 		}
 
-		& .table-style-align-right {
+		&.table-style-align-right {
 			float: right;
 		}
 
-		& .table-style-align-center {
+		&.table-style-align-center {
 			margin-left: auto;
 			margin-right: auto;
 
