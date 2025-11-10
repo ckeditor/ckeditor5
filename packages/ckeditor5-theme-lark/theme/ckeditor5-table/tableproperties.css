@@ -21,26 +21,5 @@
 				}
 			}
 		}
-
-		&.ck-table-form__dimensions-row {
-			--ck-table-border-input-width: 80px;
-
-			max-width: calc(var(--ck-table-border-input-width) * 2 + var(--ck-spacing-large));
-
-			& .ck-table-form__dimensions-row__width,
-			& .ck-table-form__dimensions-row__height {
-				width: var(--ck-table-border-input-width);
-				min-width: var(--ck-table-border-input-width);
-				max-width: var(--ck-table-border-input-width);
-				margin: 0;
-			}
-
-			& .ck-table-form__dimension-operator {
-				position: relative;
-				left: -0.5ch;
-				width: 0;
-				overflow: visible;
-			}
-		}
 	}
 }

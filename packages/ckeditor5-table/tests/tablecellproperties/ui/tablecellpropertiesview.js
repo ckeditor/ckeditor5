@@ -104,6 +104,7 @@ describe( 'table cell properties', () => {
 
 				expect( view.saveButtonView ).to.be.instanceOf( ButtonView );
 				expect( view.cancelButtonView ).to.be.instanceOf( ButtonView );
+				expect( view.backButtonView ).to.be.instanceOf( ButtonView );
 			} );
 
 			it( 'should have a header', () => {
@@ -111,7 +112,7 @@ describe( 'table cell properties', () => {
 
 				expect( header.classList.contains( 'ck' ) ).to.be.true;
 				expect( header.classList.contains( 'ck-form__header' ) ).to.be.true;
-				expect( header.textContent ).to.equal( 'Cell properties' );
+				expect( header.children[ 1 ].textContent ).to.equal( 'Cell properties' );
 			} );
 
 			describe( 'form rows', () => {
@@ -614,25 +615,47 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( 'back button', () => {
+					it( 'should be defined', () => {
+						const header = view.element.firstChild;
+
+						expect( header.childNodes[ 0 ] ).to.equal( view.backButtonView.element );
+					} );
+
+					it( 'should have button with right properties', () => {
+						expect( view.backButtonView.label ).to.equal( 'Back' );
+						expect( view.backButtonView.type ).to.equal( 'button' );
+						expect( view.backButtonView.class ).to.equal( 'ck-button-back' );
+					} );
+
+					it( 'should delegate execute to cancel event', () => {
+						const spy = sinon.spy();
+
+						view.on( 'cancel', spy );
+						view.backButtonView.fire( 'execute' );
+
+						expect( spy.calledOnce ).to.be.true;
+					} );
+				} );
+
 				describe( 'action row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 5 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__action-row' ) ).to.be.true;
-						expect( row.childNodes[ 0 ] ).to.equal( view.saveButtonView.element );
-						expect( row.childNodes[ 1 ] ).to.equal( view.cancelButtonView.element );
+						expect( row.childNodes[ 0 ] ).to.equal( view.cancelButtonView.element );
+						expect( row.childNodes[ 1 ] ).to.equal( view.saveButtonView.element );
 					} );
 
 					it( 'should have buttons with right properties', () => {
 						expect( view.saveButtonView.label ).to.equal( 'Save' );
 						expect( view.saveButtonView.type ).to.equal( 'submit' );
 						expect( view.saveButtonView.withText ).to.be.true;
-						expect( view.saveButtonView.class ).to.equal( 'ck-button-save' );
+						expect( view.saveButtonView.class ).to.equal( 'ck-button-action' );
 
 						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 						expect( view.cancelButtonView.withText ).to.be.true;
-						expect( view.cancelButtonView.class ).to.equal( 'ck-button-cancel' );
 						expect( view.cancelButtonView.type ).to.equal( 'button' );
 					} );
 
@@ -714,8 +737,9 @@ describe( 'table cell properties', () => {
 					view.paddingInput,
 					view.horizontalAlignmentToolbar,
 					view.verticalAlignmentToolbar,
+					view.cancelButtonView,
 					view.saveButtonView,
-					view.cancelButtonView
+					view.backButtonView
 				] );
 			} );
 
@@ -778,7 +802,7 @@ describe( 'table cell properties', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.borderStyleDropdown.element;
 
-					const spy = sinon.spy( view.cancelButtonView, 'focus' );
+					const spy = sinon.spy( view.backButtonView, 'focus' );
 
 					view.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
