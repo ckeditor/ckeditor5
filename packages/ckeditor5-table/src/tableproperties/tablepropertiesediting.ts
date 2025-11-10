@@ -25,7 +25,9 @@ import {
 	downcastTableAttribute,
 	getDefaultValueAdjusted,
 	upcastBorderStyles,
-	upcastStyleToAttribute
+	upcastStyleToAttribute,
+	upcastTableAlignmentConfig,
+	DEFAULT_TABLE_ALIGNMENT_OPTIONS
 } from '../converters/tableproperties.js';
 import { TableBackgroundColorCommand } from './commands/tablebackgroundcolorcommand.js';
 import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
@@ -35,7 +37,6 @@ import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
-import { upcastTableAlignmentConfig, DEFAULT_TABLE_ALIGNMENT_OPTIONS } from './utils.js';
 
 /**
  * The table properties editing feature.

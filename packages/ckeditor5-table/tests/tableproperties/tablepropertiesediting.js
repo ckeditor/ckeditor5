@@ -1679,14 +1679,14 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
 				} );
 
-				it( 'should upcast class="table-style-block-align-left" to left value', () => {
+				it( 'should upcast class="table-style-block-align-left" to blockLeft value', () => {
 					editor.setData( '<table class="table-style-block-align-left"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
 				} );
 
-				it( 'should upcast class="table-style-block-align-right" to right value', () => {
+				it( 'should upcast class="table-style-block-align-right" to blockRight value', () => {
 					editor.setData( '<table class="table-style-block-align-right"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
@@ -1974,42 +1974,42 @@ describe( 'table properties', () => {
 							await editor.destroy();
 						} );
 
-						it( 'should downcast `blockLeft` alignment for content table using margin styles', () => {
+						it( 'should downcast `blockLeft` alignment for layout table using margin styles', () => {
 							_setModelData( model,
 								'<table tableType="layout" headingRows="0" headingColumns="0">' +
-									'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
+									'<tableRow><tableCell><paragraph>layout table</paragraph></tableCell></tableRow>' +
 								'</table>'
 							);
 
-							const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
+							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
 								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
 									'<table>' +
 										'<tbody>' +
-											'<tr><td>content table</td></tr>' +
+											'<tr><td>layout table</td></tr>' +
 										'</tbody>' +
 									'</table>' +
 								'</figure>'
 							);
 						} );
 
-						it( 'should downcast `blockRight` alignment for content table using margin styles', () => {
+						it( 'should downcast `blockRight` alignment for layout table using margin styles', () => {
 							_setModelData( model,
 								'<table tableType="layout" headingRows="0" headingColumns="0">' +
-									'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
+									'<tableRow><tableCell><paragraph>layout table</paragraph></tableCell></tableRow>' +
 								'</table>'
 							);
 
-							const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', contentTable ) );
+							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+							model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', layoutTable ) );
 
 							expect( editor.getData() ).to.be.equal(
 								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
 									'<table>' +
 										'<tbody>' +
-											'<tr><td>content table</td></tr>' +
+											'<tr><td>layout table</td></tr>' +
 										'</tbody>' +
 									'</table>' +
 								'</figure>'
