@@ -16,3 +16,17 @@
 		}
 	}
 }
+
+.ck-content {
+	& .table {
+		&.table-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+		&.table-style-block-align-right {
+			margin-left: auto;
+			margin-right: 0;
+		}
+	}
+}
