@@ -18,21 +18,33 @@
 }
 
 .ck-content {
-	& .table-style-align-left {
-		float: left;
-	}
-
-	& .table-style-align-center {
-		margin-left: auto;
-		margin-right: auto;
-
-		&:not(.layout-table) {
-			float: none;
+	& .table {
+		& .table-style-align-left {
+			float: left;
 		}
-	}
 
-	& .table-style-align-right {
-		float: right;
+		& .table-style-align-right {
+			float: right;
+		}
+
+		& .table-style-align-center {
+			margin-left: auto;
+			margin-right: auto;
+
+			&:not(.layout-table) {
+				float: none;
+			}
+		}
+
+		&.table-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+		&.table-style-block-align-right {
+			margin-left: auto;
+			margin-right: 0;
+		}
 	}
 }
 

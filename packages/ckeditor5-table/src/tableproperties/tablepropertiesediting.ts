@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	addBackgroundStylesRules,
 	addBorderStylesRules,
+	addMarginStylesRules,
 	type ViewElement,
 	type Conversion,
 	type ModelSchema,
@@ -24,7 +25,9 @@ import {
 	downcastTableAttribute,
 	getDefaultValueAdjusted,
 	upcastBorderStyles,
-	upcastStyleToAttribute
+	upcastStyleToAttribute,
+	upcastTableAlignmentConfig,
+	DEFAULT_TABLE_ALIGNMENT_OPTIONS
 } from '../converters/tableproperties.js';
 import { TableBackgroundColorCommand } from './commands/tablebackgroundcolorcommand.js';
 import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
@@ -34,9 +37,6 @@ import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
-
-const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
-const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 
 /**
  * The table properties editing feature.
@@ -109,8 +109,9 @@ export class TablePropertiesEditing extends Plugin {
 			}
 		);
 
-		const useInlineStyles = editor.config.get( 'table.tableProperties.styles.useInlineStyles' ) !== false;
+		const useInlineStyles = editor.config.get( 'table.tableProperties.alignment.useInlineStyles' ) !== false;
 
+		editor.data.addStyleProcessorRules( addMarginStylesRules );
 		editor.data.addStyleProcessorRules( addBorderStylesRules );
 		enableBorderProperties( schema, conversion, {
 			color: defaultTableProperties.borderColor,
@@ -209,7 +210,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 			model: {
 				name: 'table',
 				key: 'tableAlignment',
-				values: [ 'left', 'center', 'right' ]
+				values: [ 'left', 'center', 'right', 'blockLeft', 'blockRight' ]
 			},
 			view: {
 				left: useInlineStyles ? {
@@ -219,7 +220,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 					}
 				} : {
 					key: 'class',
-					value: 'table-style-align-left'
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.left.className
 				},
 				right: useInlineStyles ? {
 					key: 'style',
@@ -228,7 +229,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 					}
 				} : {
 					key: 'class',
-					value: 'table-style-align-right'
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
 				},
 				center: ( alignment, conversionApi, data ) => {
 					const value: Record<string, string> = data.item.getAttribute( 'tableType' ) !== 'layout' ? {
@@ -244,162 +245,58 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 						value
 					} : {
 						key: 'class',
-						value: 'table-style-align-center'
+						value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
 					};
+				},
+				blockLeft: useInlineStyles ? {
+					key: 'style',
+					value: {
+						'margin-left': '0',
+						'margin-right': 'auto'
+					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
+				},
+				blockRight: useInlineStyles ? {
+					key: 'style',
+					value: {
+						'margin-left': 'auto',
+						'margin-right': '0'
+					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 				}
 			},
 			converterPriority: 'high'
 		} );
 
-	conversion.for( 'upcast' )
-		// Support for the `float:*;` CSS definition for the table alignment.
-		.attributeToAttribute( {
-			view: {
-				name: /^(table|figure)$/,
-				styles: {
-					float: FLOAT_VALUES_REG_EXP
-				}
-			},
+	/**
+	 * Enables upcasting of the `tableAlignment` attribute.
+	 */
+	upcastTableAlignmentConfig.forEach( config => {
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: config.view,
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Ignore other figure elements.
-					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
+					if ( isNonTableFigureElement( viewElement ) ) {
 						return;
 					}
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					let align = viewElement.getStyle( 'float' );
-
-					// CSS: `float:none` => Model: `alignment:center`.
-					if ( align === 'none' ) {
-						align = 'center';
-					}
+					const align = config.getAlign( viewElement );
 
 					if ( align !== localDefaultValue ) {
 						return align;
 					}
 
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
-				}
-			}
-		} )
-		// Support for the `margin-left:auto; margin-right:auto;` CSS definition for the table alignment.
-		.attributeToAttribute( {
-			view: {
-				name: /^(table|figure)$/,
-				styles: {
-					'margin-left': 'auto',
-					'margin-right': 'auto'
-				}
-			},
-			model: {
-				key: 'tableAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Ignore other figure elements.
-					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
-						return;
-					}
-
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					const align = 'center';
-
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the styles even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
-				}
-			}
-		} )
-		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
-		.attributeToAttribute( {
-			view: {
-				name: 'table',
-				attributes: {
-					align: ALIGN_VALUES_REG_EXP
-				}
-			},
-			model: {
-				key: 'tableAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					const align = viewElement.getAttribute( 'align' );
-
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-				}
-			}
-		} )
-		.attributeToAttribute( {
-			view: {
-				name: /^(table|figure)$/,
-				key: 'class',
-				value: 'table-style-align-left'
-			},
-			model: {
-				key: 'tableAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					const align = 'left';
-
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { classes: 'table-style-align-left' } );
-				}
-			}
-		} )
-		.attributeToAttribute( {
-			view: {
-				name: /^(table|figure)$/,
-				key: 'class',
-				value: 'table-style-align-center'
-			},
-			model: {
-				key: 'tableAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					const align = 'center';
-
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { classes: 'table-style-align-center' } );
-				}
-			}
-		} )
-		.attributeToAttribute( {
-			view: {
-				name: /^(table|figure)$/,
-				key: 'class',
-				value: 'table-style-align-right'
-			},
-			model: {
-				key: 'tableAlignment',
-				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
-					const align = 'right';
-
-					if ( align !== localDefaultValue ) {
-						return align;
-					}
-
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { classes: 'table-style-align-right' } );
+					conversionApi.consumable.consume( viewElement, config.consume );
 				}
 			}
 		} );
+	} );
 }
 
 /**
@@ -462,4 +359,11 @@ function enableTableToFigureProperty(
 	} );
 
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
+}
+
+/**
+ * Checks whether a given figure element should be ignored when upcasting table properties.
+ */
+function isNonTableFigureElement( viewElement: ViewElement ): boolean {
+	return viewElement.name == 'figure' && !viewElement.hasClass( 'table' );
 }
