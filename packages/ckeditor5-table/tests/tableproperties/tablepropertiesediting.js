@@ -1796,6 +1796,105 @@ describe( 'table properties', () => {
 
 					await editor.destroy();
 				} );
+
+				it( 'should upcast "table-style-align-left" class to left value', () => {
+					editor.setData( '<table class="table-style-align-left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+				} );
+
+				it( 'should upcast "table-style-align-right" class to right value', () => {
+					editor.setData( '<table class="table-style-align-right"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+				} );
+
+				it( 'should consume default align class (table-style-align-center)', () => {
+					// It should consume it as it is the default alignment, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-center' ] } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table class="table-style-align-center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should upcast "table-style-align-center" class to center value (if default is not center)', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<table class="table-style-align-center"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume left alignment class even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-left' ] } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table class="table-style-align-left"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume right alignment class even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'right'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'table-style-align-right' ] } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table class="table-style-align-right"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -1853,6 +1952,92 @@ describe( 'table properties', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
 
 					assertTableStyle( editor, null, 'margin-left:0;margin-right:auto;' );
+				} );
+
+				describe( 'with useInlineStyles=false', () => {
+					let editor, model;
+
+					beforeEach( async () => {
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+							table: {
+								tableProperties: {
+									alignment: {
+										useInlineStyles: false
+									}
+								}
+							}
+						} );
+
+						model = editor.model;
+					} );
+
+					afterEach( async () => {
+						await editor.destroy();
+					} );
+
+					it( 'should downcast "left" alignment to "table-style-align-left" class', () => {
+						_setModelData( model,
+							'<table>' +
+								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
+							'</table>'
+						);
+
+						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', contentTable ) );
+
+						expect( editor.getData() ).to.be.equal(
+							'<figure class="table table-style-align-left">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>foo</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should downcast "right" alignment to "table-style-align-right" class', () => {
+						_setModelData( model,
+							'<table>' +
+								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
+							'</table>'
+						);
+
+						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', contentTable ) );
+
+						expect( editor.getData() ).to.be.equal(
+							'<figure class="table table-style-align-right">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>foo</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
+						);
+					} );
+
+					it( 'should downcast "center" alignment to "table-style-align-center" class', () => {
+						_setModelData( model,
+							'<table>' +
+								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
+							'</table>'
+						);
+
+						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
+
+						expect( editor.getData() ).to.be.equal(
+							'<figure class="table table-style-align-center">' +
+								'<table>' +
+									'<tbody>' +
+										'<tr><td>foo</td></tr>' +
+									'</tbody>' +
+								'</table>' +
+							'</figure>'
+						);
+					} );
 				} );
 
 				describe( 'with TableLayoutEditing', () => {
@@ -1954,7 +2139,7 @@ describe( 'table properties', () => {
 						);
 					} );
 
-					describe( 'with config option `useCssClasses` set to `true`', () => {
+					describe( 'with config option `useInlineStyles` set to `false`', () => {
 						let editor, model;
 
 						beforeEach( async () => {
@@ -1962,7 +2147,9 @@ describe( 'table properties', () => {
 								plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
 								table: {
 									tableProperties: {
-										useCssClasses: true
+										alignment: {
+											useInlineStyles: false
+										}
 									}
 								}
 							} );
@@ -2007,6 +2194,48 @@ describe( 'table properties', () => {
 
 							expect( editor.getData() ).to.be.equal(
 								'<figure class="table layout-table table-style-block-align-left" role="presentation">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr><td>layout table</td></tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</figure>'
+							);
+						} );
+
+						it( 'should downcast "center" alignment for content table using "table-style-align-center" class', () => {
+							_setModelData( model,
+								'<table headingRows="0" headingColumns="0">' +
+									'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
+								'</table>'
+							);
+
+							const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
+
+							expect( editor.getData() ).to.be.equal(
+								'<figure class="table content-table table-style-align-center">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr><td>content table</td></tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</figure>'
+							);
+						} );
+
+						it( 'should downcast "center" alignment for layout table using "table-style-align-center" class', () => {
+							_setModelData( model,
+								'<table tableType="layout" headingRows="0" headingColumns="0">' +
+									'<tableRow><tableCell><paragraph>layout table</paragraph></tableCell></tableRow>' +
+								'</table>'
+							);
+
+							const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+							model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
+
+							expect( editor.getData() ).to.be.equal(
+								'<figure class="table layout-table table-style-align-center" role="presentation">' +
 									'<table>' +
 										'<tbody>' +
 											'<tr><td>layout table</td></tr>' +

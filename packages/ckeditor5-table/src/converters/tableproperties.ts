@@ -337,6 +337,9 @@ function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
  * Default table alignment options.
  */
 export const DEFAULT_TABLE_ALIGNMENT_OPTIONS = {
+	left: { className: 'table-style-align-left' },
+	center: { className: 'table-style-align-center' },
+	right: { className: 'table-style-align-right' },
 	blockLeft: { className: 'table-style-block-align-left' },
 	blockRight: { className: 'table-style-block-align-right' }
 };
@@ -378,6 +381,42 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 		getAlign: (): string => 'center',
 		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
 			return { styles: [ 'margin-left', 'margin-right' ] };
+		}
+	},
+	// Support for the left alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: 'table-style-align-left'
+		},
+		getAlign: (): string => 'left',
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.left.className };
+		}
+	},
+	// Support for the right alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
+		},
+		getAlign: (): string => 'right',
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className };
+		}
+	},
+	// Support for the center alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
+		},
+		getAlign: (): string => 'center',
+		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className };
 		}
 	},
 	// Support for the block alignment left using CSS classes.

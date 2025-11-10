@@ -109,7 +109,7 @@ export class TablePropertiesEditing extends Plugin {
 			}
 		);
 
-		const useCssClasses = !!editor.config.get( 'table.tableProperties.useCssClasses' );
+		const useInlineStyles = editor.config.get( 'table.tableProperties.alignment.useInlineStyles' ) !== false;
 
 		editor.data.addStyleProcessorRules( addMarginStylesRules );
 		editor.data.addStyleProcessorRules( addBorderStylesRules );
@@ -123,7 +123,7 @@ export class TablePropertiesEditing extends Plugin {
 		editor.commands.add( 'tableBorderStyle', new TableBorderStyleCommand( editor, defaultTableProperties.borderStyle ) );
 		editor.commands.add( 'tableBorderWidth', new TableBorderWidthCommand( editor, defaultTableProperties.borderWidth ) );
 
-		enableAlignmentProperty( schema, conversion, defaultTableProperties.alignment!, useCssClasses );
+		enableAlignmentProperty( schema, conversion, defaultTableProperties.alignment!, useInlineStyles );
 		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, defaultTableProperties.alignment! ) );
 
 		enableTableToFigureProperty( schema, conversion, {
@@ -198,7 +198,7 @@ function enableBorderProperties(
  *
  * @param defaultValue The default alignment value.
  */
-function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string, useCssClasses: boolean ) {
+function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, defaultValue: string, useInlineStyles: boolean ) {
 	schema.extend( 'table', {
 		allowAttributes: [ 'tableAlignment' ]
 	} );
@@ -213,17 +213,23 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 				values: [ 'left', 'center', 'right', 'blockLeft', 'blockRight' ]
 			},
 			view: {
-				left: {
+				left: useInlineStyles ? {
 					key: 'style',
 					value: {
 						float: 'left'
 					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.left.className
 				},
-				right: {
+				right: useInlineStyles ? {
 					key: 'style',
 					value: {
 						float: 'right'
 					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
 				},
 				center: ( alignment, conversionApi, data ) => {
 					const value: Record<string, string> = data.item.getAttribute( 'tableType' ) !== 'layout' ? {
@@ -234,30 +240,33 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 						'margin-right': 'auto'
 					};
 
-					return {
+					return useInlineStyles ? {
 						key: 'style',
 						value
+					} : {
+						key: 'class',
+						value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
 					};
 				},
-				blockLeft: useCssClasses ? {
-					key: 'class',
-					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
-				} : {
+				blockLeft: useInlineStyles ? {
 					key: 'style',
 					value: {
 						'margin-left': '0',
 						'margin-right': 'auto'
 					}
-				},
-				blockRight: useCssClasses ? {
-					key: 'class',
-					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
+				},
+				blockRight: useInlineStyles ? {
 					key: 'style',
 					value: {
 						'margin-left': 'auto',
 						'margin-right': '0'
 					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 				}
 			},
 			converterPriority: 'high'
