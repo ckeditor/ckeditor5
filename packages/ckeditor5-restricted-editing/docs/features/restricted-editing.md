@@ -84,7 +84,7 @@ ClassicEditor
 </code-switcher>
 
 <info-box note>
-	Please note there are available toolbar items for inline, block, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
+	Please note there are available toolbar items for inline, block, auto, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
 </info-box>
 
 ### Running the restricted editing mode
@@ -146,13 +146,13 @@ class MyPlugin extends Plugin {
 
 ### Configuring the toolbar
 
-When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`.
+When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`. There is also the `restrictedEditingException:auto` button that switches between an inline and block depending on the selection. 
 
 Example toolbar configuration may look like the one below:
 
 ```js
 toolbar: [
-	'restrictedEditingException:dropdown', '|',
+	'restrictedEditingException:auto', '|',
 	'heading', '|', 'bold', 'italic', 'link', '|',
 	'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent', '|',
 	'blockQuote', 'insertImage', 'insertTable', '|',
@@ -197,11 +197,13 @@ CKEditor&nbsp;5 has more features that help you control user permissions:
 The {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin registers:
 
 * The `'restrictedEditingException:dropdown'` button that lets you mark regions as editable.
+* The `'restrictedEditingException:auto'` button that lets you mark regions as editable (either block or inline depending on the selection).
 * The `'restrictedEditingException:inline'` button that lets you mark inline regions as editable.
 * The `'restrictedEditingException:block'` button that lets you mark block regions as editable.
 * The `'restrictedEditingException'` button that lets you mark inline regions as editable (legacy alias).
 * The {@link module:restricted-editing/restrictededitingexceptioncommand~RestrictedEditingExceptionCommand `'restrictedEditingException'`} command that allows marking inline regions as editable.
 * The {@link module:restricted-editing/restrictededitingexceptionblockcommand~RestrictedEditingExceptionBlockCommand `'restrictedEditingExceptionBlock'`} command that allows marking block regions as editable.
+* The {@link module:restricted-editing/restrictededitingexceptionautocommand~RestrictedEditingExceptionAutoCommand `'restrictedEditingExceptionAuto'`} command that calls either inline or block command depending on the selection.
 
 The {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin registers:
 
