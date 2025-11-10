@@ -66,7 +66,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 ### Running the standard editing mode
 
-To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException:dropdown'` button to the toolbar:
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException:auto'` button to the toolbar:
 
 <code-switcher>
 ```js
@@ -76,7 +76,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException:dropdown', /* ... */ ]
+		toolbar: [ 'restrictedEditingException:auto', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -196,8 +196,8 @@ CKEditor&nbsp;5 has more features that help you control user permissions:
 
 The {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin registers:
 
-* The `'restrictedEditingException:dropdown'` button that lets you mark regions as editable.
 * The `'restrictedEditingException:auto'` button that lets you mark regions as editable (either block or inline depending on the selection).
+* The `'restrictedEditingException:dropdown'` button that lets you mark regions as editable.
 * The `'restrictedEditingException:inline'` button that lets you mark inline regions as editable.
 * The `'restrictedEditingException:block'` button that lets you mark block regions as editable.
 * The `'restrictedEditingException'` button that lets you mark inline regions as editable (legacy alias).
