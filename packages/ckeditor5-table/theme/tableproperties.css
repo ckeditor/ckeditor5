@@ -48,7 +48,7 @@
 	}
 }
 
-& .ck-editor__editable {
+.ck-editor__editable {
 	& .table.layout-table {
 		&.table-style-align-center {
 			margin-left: auto;
