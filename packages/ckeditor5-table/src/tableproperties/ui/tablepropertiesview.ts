@@ -765,7 +765,7 @@ export class TablePropertiesView extends View {
 		const blockLeft = t( 'Align table to the left with no text wrapping' );
 		const blockRight = t( 'Align table to the right with no text wrapping' );
 
-		const left = t( 'Center table with no text wrapping' );
+		const left = t( 'Align table to the left with text wrapping' );
 		const center = t( 'Center table with no text wrapping' );
 		const right = t( 'Align table to the right with text wrapping' );
 

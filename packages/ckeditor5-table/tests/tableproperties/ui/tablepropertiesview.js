@@ -474,7 +474,7 @@ describe( 'table properties', () => {
 								'Center table with no text wrapping',
 								'Align table to the right with no text wrapping',
 								'Align table to the right with text wrapping',
-								'Center table with no text wrapping'
+								'Align table to the left with text wrapping'
 							] );
 
 							expect( toolbar.items.map( ( { isOn } ) => isOn ) ).to.have.ordered.members( [
@@ -493,7 +493,7 @@ describe( 'table properties', () => {
 							const toolbar = view.alignmentToolbar;
 
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
-								'Center table with no text wrapping',
+								'Align table to the left with text wrapping',
 								'Align table to the right with text wrapping',
 								'Align table to the right with no text wrapping',
 								'Center table with no text wrapping',
