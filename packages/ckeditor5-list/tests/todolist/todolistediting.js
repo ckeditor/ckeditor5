@@ -734,6 +734,31 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 		} );
+
+		it( 'should use description span if attribute is registered via registerAllowedDescriptionBlockAttribute', () => {
+			const todoListEditing = editor.plugins.get( TodoListEditing );
+
+			model.schema.extend( 'paragraph', { allowAttributes: 'customAttribute' } );
+
+			todoListEditing.registerAllowedDescriptionBlockAttribute( 'customAttribute' );
+
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" customAttribute="value">foo</paragraph>'
+			);
+
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+				'<ul class="todo-list">' +
+					'<li>' +
+						'<span class="todo-list__label">' +
+							'<span contenteditable="false">' +
+								'<input tabindex="-1" type="checkbox"></input>' +
+							'</span>' +
+							'<span class="todo-list__label__description">foo</span>' +
+						'</span>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
 	} );
 
 	describe( 'downcast - data', () => {
