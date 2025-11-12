@@ -34,3 +34,15 @@ msgstr "Dokumenta izklāsts"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "Pievienotie lietotāji"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "Rādīt kreiso sānu joslu"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "Slēpt kreiso sānu joslu"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "Pārslēgt sānu joslu"

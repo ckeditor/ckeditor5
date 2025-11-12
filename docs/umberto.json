@@ -588,7 +588,7 @@
 					],
 					"categories":[
 						{
-							"name": "AI Assistant (previous version)",
+							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",
 							"slug": "ai-assistant",
 							"order": 100,
@@ -916,5 +916,8 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	]
+	],
+	"variables": {
+		"CKBOX_VERSION": "2.9.2"
+	}
 }

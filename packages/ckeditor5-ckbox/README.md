@@ -2,7 +2,7 @@ CKEditor&nbsp;5 CKBox integration
 =========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ckbox.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![codecov](https://codecov.io/gh/ckeditor/ckeditor5/branch/master/graph/badge.svg)](https://codecov.io/gh/ckeditor/ckeditor5)
 [![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
 This package implements the [CKBox feature](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html). It allows you to easily insert images as well as links to files into the editor content. It is a bridge between CKEditor&nbsp;5 WYSIWYG editor and [CKBox](https://ckeditor.com/ckbox/) file manager and uploader.

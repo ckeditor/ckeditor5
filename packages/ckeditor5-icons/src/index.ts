@@ -63,6 +63,7 @@ export { default as IconDocumentWithCheckmark } from '../theme/icons/document-wi
 export { default as IconDocumentWithCross } from '../theme/icons/document-with-cross.svg';
 export { default as IconDocumentWithLoupe } from '../theme/icons/document-with-loupe.svg';
 export { default as IconDocumentOutline } from '../theme/icons/document-outline.svg';
+export { default as IconDocumentOutlineToggle } from '../theme/icons/document-outline-toggle.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
 export { default as IconDragIndicator } from '../theme/icons/drag-indicator.svg';
 export { default as IconDropbox } from '../theme/icons/dropbox.svg';
@@ -82,6 +83,7 @@ export { default as IconFontBackground } from '../theme/icons/font-background.sv
 export { default as IconFontColor } from '../theme/icons/font-color.svg';
 export { default as IconFontFamily } from '../theme/icons/font-family.svg';
 export { default as IconFontSize } from '../theme/icons/font-size.svg';
+export { default as IconFootnote } from '../theme/icons/footnote.svg';
 export { default as IconFullscreenEnter } from '../theme/icons/fullscreen-enter.svg';
 export { default as IconFullscreenLeave } from '../theme/icons/fullscreen-leave.svg';
 export { default as IconGoogleDrive } from '../theme/icons/google-drive.svg';
@@ -143,6 +145,7 @@ export { default as IconObjectSizeLarge } from '../theme/icons/object-size-large
 export { default as IconObjectSizeMedium } from '../theme/icons/object-size-medium.svg';
 export { default as IconObjectSizeSmall } from '../theme/icons/object-size-small.svg';
 export { default as IconOneDrive } from '../theme/icons/onedrive.svg';
+export { default as IconOutdated } from '../theme/icons/outdated.svg';
 export { default as IconOutdent } from '../theme/icons/outdent.svg';
 export { default as IconPageBreak } from '../theme/icons/page-break.svg';
 export { default as IconPaginationExample } from '../theme/icons/pagination-example.svg';

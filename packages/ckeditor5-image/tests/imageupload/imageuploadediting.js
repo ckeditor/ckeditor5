@@ -515,11 +515,11 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
 		expect( _getViewData( view ) ).to.equal(
-			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="image.png"></img></span>}foo bar</p>'
+			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 		);
 		expect( loader.status ).to.equal( 'idle' );
 	} );
@@ -564,13 +564,13 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: '/assets/sample2.png' } ) );
 		} );
 
 		await timeout( 100 );
 
 		expect( _getModelData( model ) ).to.equal(
-			'[<imageBlock src="/assets/sample.png" srcset="image-800.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
+			'[<imageBlock src="/assets/sample.png" srcset="/assets/sample2.png 800w" width="50"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
 
@@ -592,13 +592,13 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: '/assets/sample2.png' } ) );
 		} );
 
 		await timeout( 100 );
 
 		expect( _getModelData( model ) ).to.equal(
-			'[<imageBlock height="50" src="/assets/sample.png" srcset="image-800.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
+			'[<imageBlock height="50" src="/assets/sample.png" srcset="/assets/sample2.png 800w"></imageBlock>]<paragraph>foo</paragraph>'
 		);
 	} );
 
@@ -614,11 +614,11 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { urls: { default: 'image.png' } } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { urls: { default: 'assets/sample.png' } } ) );
 		} );
 
 		expect( _getViewData( view ) ).to.equal(
-			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="image.png"></img></span>}foo bar</p>'
+			'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 		);
 		expect( loader.status ).to.equal( 'idle' );
 	} );
@@ -703,10 +703,10 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should do nothing if image does not have uploadId', () => {
-		_setModelData( model, '<imageBlock src="image.png"></imageBlock>' );
+		_setModelData( model, '<imageBlock src="assets/sample.png"></imageBlock>' );
 
 		expect( _getViewData( view ) ).to.equal(
-			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'
+			'[<figure class="ck-widget image" contenteditable="false"><img src="assets/sample.png"></img></figure>]'
 		);
 	} );
 
@@ -806,11 +806,11 @@ describe( 'ImageUploadEditing', () => {
 
 		await new Promise( res => {
 			model.document.once( 'change', res, { priority: 'lowest' } );
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 		} );
 
 		expect( _getModelData( model ) ).to.equal(
-			'[<imageBlock src="image.png"></imageBlock>]<paragraph>foo bar</paragraph>'
+			'[<imageBlock src="assets/sample.png"></imageBlock>]<paragraph>foo bar</paragraph>'
 		);
 
 		sinon.assert.notCalled( abortSpy );
@@ -897,14 +897,21 @@ describe( 'ImageUploadEditing', () => {
 				tryExpect( done, () => {
 					expect( _getViewData( view ) ).to.equal(
 						'<p>[<span class="ck-widget image-inline" contenteditable="false">' +
-							'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
+							'<img sizes="100vw" src="assets/sample.png" ' +
+							'srcset="assets/sample2.png 500w, assets/sample3.png 800w" width="800"></img>' +
 						'</span>}foo bar</p>'
 					);
 					expect( loader.status ).to.equal( 'idle' );
 				} );
 			}, { priority: 'lowest' } );
 
-			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } ) );
+			loader.file.then( () =>
+				adapterMocks[ 0 ].mockSuccess( {
+					default: 'assets/sample.png',
+					500: 'assets/sample2.png',
+					800: 'assets/sample3.png'
+				} )
+			);
 		} );
 
 		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
@@ -931,7 +938,7 @@ describe( 'ImageUploadEditing', () => {
 
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
-				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 			} );
 
 			sinon.assert.calledOnce( uploadCompleteSpy );
@@ -940,7 +947,7 @@ describe( 'ImageUploadEditing', () => {
 
 			expect( eventArgs ).to.be.an( 'object' );
 			expect( eventArgs.imageElement.is( 'model:element', 'imageInline' ) ).to.be.true;
-			expect( eventArgs.data ).to.deep.equal( { default: 'image.png' } );
+			expect( eventArgs.data ).to.deep.equal( { default: 'assets/sample.png' } );
 		} );
 
 		it( 'should allow modifying the image element once the original image is uploaded', async () => {
@@ -980,7 +987,7 @@ describe( 'ImageUploadEditing', () => {
 
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
-				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { originalUrl: 'original.jpg', default: 'image.jpg' } ) );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { originalUrl: 'original.jpg', default: 'assets/sample.png' } ) );
 			} );
 
 			// Make sure the custom attribute was set in the same non-undoable batch as the default handling (setting src and status).
@@ -997,14 +1004,14 @@ describe( 'ImageUploadEditing', () => {
 
 			expect( batch.operations[ 2 ].type ).to.equal( 'addAttribute' );
 			expect( batch.operations[ 2 ].key ).to.equal( 'src' );
-			expect( batch.operations[ 2 ].newValue ).to.equal( 'image.jpg' );
+			expect( batch.operations[ 2 ].newValue ).to.equal( 'assets/sample.png' );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>[<imageInline data-original="original.jpg" src="image.jpg"></imageInline>]foo bar</paragraph>'
+				'<paragraph>[<imageInline data-original="original.jpg" src="assets/sample.png"></imageInline>]foo bar</paragraph>'
 			);
 
 			expect( _getViewData( view ) ).to.equal(
-				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="image.jpg"></img></span>}foo bar</p>'
+				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 			);
 		} );
 
@@ -1019,7 +1026,7 @@ describe( 'ImageUploadEditing', () => {
 				evt.stop();
 
 				model.change( writer => {
-					writer.setAttribute( 'src', 'foo.jpg', imageElement );
+					writer.setAttribute( 'src', 'assets/sample.png', imageElement );
 					batch = writer.batch;
 				} );
 			} );
@@ -1034,7 +1041,7 @@ describe( 'ImageUploadEditing', () => {
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
 				loader.file.then( () => adapterMocks[ 0 ].mockSuccess(
-					{ default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' }
+					{ default: 'assets/sample.png', 500: 'assets/sample2.png', 800: 'assets/sample3.png' }
 				) );
 			} );
 
@@ -1048,14 +1055,14 @@ describe( 'ImageUploadEditing', () => {
 
 			expect( batch.operations[ 1 ].type ).to.equal( 'addAttribute' );
 			expect( batch.operations[ 1 ].key ).to.equal( 'src' );
-			expect( batch.operations[ 1 ].newValue ).to.equal( 'foo.jpg' );
+			expect( batch.operations[ 1 ].newValue ).to.equal( 'assets/sample.png' );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>[<imageInline src="foo.jpg"></imageInline>]foo bar</paragraph>'
+				'<paragraph>[<imageInline src="assets/sample.png"></imageInline>]foo bar</paragraph>'
 			);
 
 			expect( _getViewData( view ) ).to.equal(
-				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="foo.jpg"></img></span>}foo bar</p>'
+				'<p>[<span class="ck-widget image-inline" contenteditable="false"><img src="assets/sample.png"></img></span>}foo bar</p>'
 			);
 		} );
 	} );
@@ -1441,7 +1448,7 @@ describe( 'ImageUploadEditing', () => {
 
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
-				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'assets/sample.png' } ) );
 			} );
 
 			expectAnnounce( 'Image upload complete' );
@@ -1681,11 +1688,11 @@ describe( 'ImageUploadEditing', () => {
 			// Let's resolve uploading status and ensure that image is loaded.
 			await new Promise( res => {
 				model.document.once( 'change', res, { priority: 'lowest' } );
-				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'image-800.png' } ) );
+				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: '/assets/sample.png', 800: 'assets/sample2.png' } ) );
 			} );
 
 			expect( editor.getData() ).to.be.equal(
-				'<p><img src="/assets/sample.png" srcset="image-800.png 800w" sizes="100vw" width="800">foo</p>'
+				'<p><img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800">foo</p>'
 			);
 
 			// Make sure it's no longer present in registry, so image upload is completed.
@@ -1701,7 +1708,7 @@ describe( 'ImageUploadEditing', () => {
 			} );
 
 			expect( editor.getData() ).to.be.equal(
-				'<p>hello<img src="/assets/sample.png" srcset="image-800.png 800w" sizes="100vw" width="800"></p>'
+				'<p>hello<img src="/assets/sample.png" srcset="assets/sample2.png 800w" sizes="100vw" width="800"></p>'
 			);
 		} );
 	} );

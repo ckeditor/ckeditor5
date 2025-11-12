@@ -4,7 +4,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange, Model } from 'ckeditor5/src/engine.js';
 
 /**
  * @module restricted-editing/restrictededitingmode/utils
@@ -19,7 +19,7 @@ import type { ModelDocumentSelection, Marker, ModelPosition, ModelRange } from '
  */
 export function getMarkerAtPosition( editor: Editor, position: ModelPosition ): Marker | undefined {
 	for ( const marker of editor.model.markers ) {
-		const markerRange = marker.getRange();
+		const markerRange = getExceptionRange( marker, editor.model );
 
 		if ( isPositionInRangeBoundaries( markerRange, position ) ) {
 			if ( marker.name.startsWith( 'restrictedEditingException:' ) ) {
@@ -54,16 +54,32 @@ export function isPositionInRangeBoundaries( range: ModelRange, position: ModelP
  *
  * @internal
  */
-export function isSelectionInMarker( selection: ModelDocumentSelection, marker?: Marker ): boolean {
+export function isSelectionInMarker( selection: ModelDocumentSelection, model: Model, marker?: Marker ): boolean {
 	if ( !marker ) {
 		return false;
 	}
 
-	const markerRange = marker.getRange();
+	const markerRange = getExceptionRange( marker, model );
 
 	if ( selection.isCollapsed ) {
 		return isPositionInRangeBoundaries( markerRange, selection.focus! );
 	}
 
 	return markerRange.containsRange( selection.getFirstRange()!, true );
+}
+
+/**
+ * Returns the marker range asjusted to the inside of exception wrapper element if needed.
+ *
+ * @internal
+ */
+export function getExceptionRange( marker: Marker, model: Model ): ModelRange {
+	const markerRange = marker.getRange();
+	const wrapperElement = markerRange.getContainedElement();
+
+	if ( wrapperElement && wrapperElement.is( 'element', 'restrictedEditingException' ) ) {
+		return model.createRangeIn( wrapperElement );
+	}
+
+	return markerRange;
 }

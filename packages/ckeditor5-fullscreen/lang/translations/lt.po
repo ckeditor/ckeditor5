@@ -34,3 +34,15 @@ msgstr "Dokumento metmenys"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "Prisijungę naudotojai"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "Rodyti kairę šoninę juostą"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "Slėpti kairę šoninę juostą"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "Perjungti šoninę juostą"
