@@ -55,6 +55,16 @@ const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
  */
 export class TodoListEditing extends Plugin {
 	/**
+	 * A set of attributes that are allowed on description blocks of to-do list items without
+	 * preventing them from being rendered as description blocks.
+	 *
+	 * By default, only list attributes (like `listType`, `listItemId`, etc.) are allowed.
+	 * Additional attributes (like text formatting) can be registered using
+	 * {@link #registerAllowedDescriptionBlockAttribute}.
+	 */
+	private _allowedDescriptionBlockAttributes = new Set<string>();
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -120,7 +130,7 @@ export class TodoListEditing extends Plugin {
 			) );
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
-			) );
+			), { priority: 'low' } );
 
 			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
 				{ name: 'ul', classes: 'todo-list' }
@@ -130,7 +140,7 @@ export class TodoListEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: elementName,
 			view: ( element, { writer } ) => {
-				if ( isDescriptionBlock( element, listEditing.getListAttributeNames() ) ) {
+				if ( isDescriptionBlock( element, listEditing.getListAttributeNames(), this._allowedDescriptionBlockAttributes ) ) {
 					return writer.createContainerElement( 'span', { class: 'todo-list__label__description' } );
 				}
 			},
@@ -182,14 +192,14 @@ export class TodoListEditing extends Plugin {
 				return wrapper;
 			},
 
-			canWrapElement( modelElement ) {
-				return isDescriptionBlock( modelElement, listEditing.getListAttributeNames() );
+			canWrapElement: modelElement => {
+				return isDescriptionBlock( modelElement, listEditing.getListAttributeNames(), this._allowedDescriptionBlockAttributes );
 			},
 
-			createWrapperElement( writer, modelElement, { dataPipeline } ) {
+			createWrapperElement: ( writer, modelElement, { dataPipeline } ) => {
 				const classes = [ 'todo-list__label' ];
 
-				if ( !isDescriptionBlock( modelElement, listEditing.getListAttributeNames() ) ) {
+				if ( !isDescriptionBlock( modelElement, listEditing.getListAttributeNames(), this._allowedDescriptionBlockAttributes ) ) {
 					classes.push( 'todo-list__label_without-description' );
 				}
 
@@ -201,7 +211,12 @@ export class TodoListEditing extends Plugin {
 
 		// Verifies if a to-do list block requires reconversion of a first item downcasted as an item description.
 		listEditing.on<ListEditingCheckElementEvent>( 'checkElement', ( evt, { modelElement, viewElement } ) => {
-			const isFirstTodoModelParagraphBlock = isDescriptionBlock( modelElement, listEditing.getListAttributeNames() );
+			const isFirstTodoModelParagraphBlock = isDescriptionBlock(
+				modelElement,
+				listEditing.getListAttributeNames(),
+				this._allowedDescriptionBlockAttributes
+			);
+
 			const hasViewClass = viewElement.hasClass( 'todo-list__label__description' );
 
 			if ( hasViewClass != isFirstTodoModelParagraphBlock ) {
@@ -351,6 +366,22 @@ export class TodoListEditing extends Plugin {
 		}, { priority: 'low' } );
 
 		this._initAriaAnnouncements();
+	}
+
+	/**
+	 * Registers an attribute that is allowed on a description block of a to-do list item.
+	 *
+	 * By default, only list attributes (like `listType`, `listItemId`, etc.) are allowed on description blocks.
+	 * If a to-do list item block has any other attributes, it will not be rendered as a description block
+	 * (with `<span class="todo-list__label__description">`).
+	 *
+	 * Use this method to register additional attributes (like text formatting attributes) that should be
+	 * allowed on description blocks without preventing them from being rendered as description blocks.
+	 *
+	 * @param attributeName The attribute name.
+	 */
+	public registerAllowedDescriptionBlockAttribute( attributeName: string ): void {
+		this._allowedDescriptionBlockAttributes.add( attributeName );
 	}
 
 	/**
@@ -519,24 +550,35 @@ function attributeUpcastConsumingConverter( matcherPattern: MatcherPattern ): Ge
 /**
  * Returns true if the given list item block should be converted as a description block of a to-do list item.
  */
-function isDescriptionBlock( modelElement: ModelElement, listAttributeNames: Array<string> ): boolean {
+function isDescriptionBlock(
+	modelElement: ModelElement,
+	listAttributeNames: Array<string>,
+	allowedDescriptionBlockAttributes: Set<string>
+): boolean {
 	return ( modelElement.is( 'element', 'paragraph' ) || modelElement.is( 'element', 'listItem' ) ) &&
 		modelElement.getAttribute( 'listType' ) == 'todo' &&
 		isFirstBlockOfListItem( modelElement ) &&
-		hasOnlyListAttributes( modelElement, listAttributeNames );
+		hasOnlyAllowedAttributes( modelElement, listAttributeNames, allowedDescriptionBlockAttributes );
 }
 
 /**
  * Returns true if only attributes from the given list are present on the model element.
  */
-function hasOnlyListAttributes( modelElement: ModelElement, attributeNames: Array<string> ): boolean {
+function hasOnlyAllowedAttributes(
+	modelElement: ModelElement,
+	listAttributeNames: Array<string>,
+	allowedDescriptionBlockAttributes: Set<string>
+): boolean {
 	for ( const attributeKey of modelElement.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
 		if ( attributeKey.startsWith( 'selection:' ) ) {
 			continue;
 		}
 
-		if ( !attributeNames.includes( attributeKey ) ) {
+		if (
+			!listAttributeNames.includes( attributeKey ) &&
+			!allowedDescriptionBlockAttributes.has( attributeKey )
+		) {
 			return false;
 		}
 	}
