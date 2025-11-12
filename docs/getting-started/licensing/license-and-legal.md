@@ -44,7 +44,7 @@ The commercial license unlocks many benefits. All commercial plans include:
 
 * No GPL restrictions,
 * {@link getting-started/licensing/managing-ckeditor-logo White-labeling} (except the free plan),
-* Technical support (except the free plan),
+* Technical support (except the free plan).
 
 Additionally, depending on the plan you choose, you gain access to Premium features such as:
 
