@@ -130,7 +130,7 @@ export class TodoListEditing extends Plugin {
 			) );
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
-			), { priority: 'low' } );
+			) );
 
 			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
 				{ name: 'ul', classes: 'todo-list' }
