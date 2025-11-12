@@ -447,6 +447,34 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 	}
 ];
 
+export const downcastTableAlignmentConfig: Record<TableAlignmentValues, { align: string | undefined; style: string; className: string }> = {
+	center: {
+		align: 'center',
+		style: 'float: none; margin-left: auto; margin-right: auto;',
+		className: 'table-style-align-center'
+	},
+	left: {
+		align: 'left',
+		style: 'float: left;',
+		className: 'table-style-align-left'
+	},
+	right: {
+		align: 'right',
+		style: 'float: right;',
+		className: 'table-style-align-right'
+	},
+	blockLeft: {
+		align: undefined,
+		style: 'margin-left: 0; margin-right: auto;',
+		className: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
+	},
+	blockRight: {
+		align: undefined,
+		style: 'margin-left: auto; margin-right: 0;',
+		className: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
+	}
+};
+
 type UpcastTableAlignmentConfig = {
 	view: {
 		name: RegExp | string;
@@ -462,3 +490,5 @@ type UpcastTableAlignmentConfig = {
 		classes?: string | Array<string>;
 	};
 };
+
+export type TableAlignmentValues = 'left' | 'center' | 'right' | 'blockLeft' | 'blockRight';

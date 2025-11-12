@@ -17,6 +17,7 @@ import {
 	downcastRow,
 	downcastTable,
 	downcastTableBorderAndBackgroundAttributes,
+	downcastTableMarginAttribute,
 	convertPlainTable,
 	convertPlainTableCaption
 } from './converters/downcast.js';
@@ -257,9 +258,11 @@ export class TableEditing extends Plugin {
 			} );
 		}
 
-		// Handle border-style, border-color, border-width and background-color table attributes.
 		if ( editor.plugins.has( 'TableProperties' ) ) {
+			// Handle border-style, border-color, border-width and background-color table attributes.
 			downcastTableBorderAndBackgroundAttributes( editor );
+			// Handle table margin attribute.
+			downcastTableMarginAttribute( editor );
 		}
 	}
 }
