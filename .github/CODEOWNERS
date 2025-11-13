@@ -1,4 +1,5 @@
 scripts/release/utils/config.js     @ckeditor/ckeditor-5-admins
+packages/*/LICENSE.md               @ckeditor/ckeditor-5-admins
 
 packages/*/package.json             @ckeditor/ckeditor-5-platform
 package.json                        @ckeditor/ckeditor-5-platform
