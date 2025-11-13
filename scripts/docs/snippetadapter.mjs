@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import url from 'url';
-import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
+import url from 'node:url';
+import { constants, readFile, writeFile, copyFile, access, mkdir } from 'node:fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';

@@ -5,8 +5,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
-import childProcess from 'child_process';
+import path from 'node:path';
+import childProcess from 'node:child_process';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import minimist from 'minimist';

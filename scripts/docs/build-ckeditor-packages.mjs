@@ -5,8 +5,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import url from 'url';
-import { parseArgs } from 'util';
+import url from 'node:url';
+import { parseArgs } from 'node:util';
 import upath from 'upath';
 import fs from 'fs-extra';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';

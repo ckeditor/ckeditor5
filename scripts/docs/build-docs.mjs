@@ -5,14 +5,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
 import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
 import { CKEDITOR5_ROOT_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
-import { styleText } from 'util';
+import { styleText } from 'node:util';
 
 const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 

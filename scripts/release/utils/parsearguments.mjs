@@ -4,7 +4,7 @@
  */
 
 import minimist from 'minimist';
-import { cpus, freemem } from 'os';
+import { cpus, freemem } from 'node:os';
 import replaceKebabCaseWithCamelCase from '../../utils/replacekebabcasewithcamelcase.mjs';
 
 /**

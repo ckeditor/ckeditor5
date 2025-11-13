@@ -12,7 +12,7 @@
 
 import chalk from 'chalk';
 import upath from 'upath';
-import fs from 'fs';
+import fs from 'node:fs';
 import { globSync } from 'glob';
 import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 
