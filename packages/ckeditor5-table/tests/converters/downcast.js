@@ -2224,7 +2224,7 @@ describe( 'downcast converters', () => {
 				] ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><td>foo</td></tr>' +
 						'</tbody>' +
@@ -2240,7 +2240,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 2 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -2260,7 +2260,7 @@ describe( 'downcast converters', () => {
 				], { headingColumns: 1 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><th>1</th><td>2</td></tr>' +
 							'<tr><th>3</th><td>4</td></tr>' +
@@ -2278,7 +2278,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 1, headingColumns: 1 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 						'</thead>' +
@@ -2297,7 +2297,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 3 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -2318,7 +2318,7 @@ describe( 'downcast converters', () => {
 				);
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table">' +
+					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
 						'<caption>Foo</caption>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
@@ -2362,7 +2362,12 @@ describe( 'downcast converters', () => {
 
 				model.change( writer => writer.setAttribute( 'tableBorderColor', '#f00', table ) );
 
-				assertPlainTableStyle( editor, '' );
+				assertPlainTableStyle(
+					editor,
+					'float:none;margin-left:auto;margin-right:auto;',
+					'table table-style-align-center',
+					'align="center"'
+				);
 			} );
 
 			describe( 'should create attribute', () => {
@@ -2375,19 +2380,34 @@ describe( 'downcast converters', () => {
 				it( 'tableBorderStyle', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
 
-					assertPlainTableStyle( editor, 'border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBorderColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'border-color:red;' );
+					assertPlainTableStyle(
+						editor,
+						'border-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBorderWidth', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
 
-					assertPlainTableStyle( editor, 'border-width:1px;' );
+					assertPlainTableStyle(
+						editor,
+						'border-width:1px;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'border shorthand', () => {
@@ -2395,31 +2415,69 @@ describe( 'downcast converters', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
 
-					assertPlainTableStyle( editor, 'border:1px dotted red;' );
+					assertPlainTableStyle(
+						editor,
+						'border:1px dotted red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
-				it( 'tableAlignment', () => {
+				it( 'tableAlignment right', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableStyle( editor, 'float:right;', 'table table-style-align-right', 'align="right"' );
+				} );
+
+				it( 'tableAlignment blockRight', () => {
+					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', table ) );
+
+					assertPlainTableStyle( editor, 'margin-left:auto;margin-right:0;', 'table table-style-block-align-right' );
+				} );
+
+				it( 'tableAlignment left', () => {
+					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
+
+					assertPlainTableStyle( editor, 'float:left;', 'table table-style-align-left', 'align="left"' );
+				} );
+
+				it( 'tableAlignment blockLeft', () => {
+					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
+
+					assertPlainTableStyle( editor, 'margin-left:0;margin-right:auto;', 'table table-style-block-align-left' );
 				} );
 
 				it( 'tableWidth', () => {
 					model.change( writer => writer.setAttribute( 'tableWidth', '500px', table ) );
 
-					assertPlainTableStyle( editor, 'width:500px;' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;width:500px;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableHeight', () => {
 					model.change( writer => writer.setAttribute( 'tableHeight', '500px', table ) );
 
-					assertPlainTableStyle( editor, 'height:500px;' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;height:500px;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'background-color:red;' );
+					assertPlainTableStyle(
+						editor,
+						'background-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'and not strip figure element when PlainTableOutput is not loaded and not in clipboard pipeline', async () => {
@@ -2453,33 +2511,63 @@ describe( 'downcast converters', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
 					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', '', table ) );
 
-					assertPlainTableStyle( editor, 'border-color:red;' );
+					assertPlainTableStyle(
+						editor,
+						'border-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBorderColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
 					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.setAttribute( 'tableBorderColor', '', table ) );
 
-					assertPlainTableStyle( editor, 'border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBorderWidth', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
 
-					assertPlainTableStyle( editor, 'border-style:dotted;border-width:1px;' );
+					assertPlainTableStyle(
+						editor,
+						'border-style:dotted;border-width:1px;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '', table ) );
 
-					assertPlainTableStyle( editor, 'border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'from border shorthand', () => {
@@ -2487,51 +2575,101 @@ describe( 'downcast converters', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
 
-					assertPlainTableStyle( editor, 'border:1px dotted red;' );
+					assertPlainTableStyle(
+						editor,
+						'border:1px dotted red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '', table ) );
 
-					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+					assertPlainTableStyle(
+						editor,
+						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableStyle(
+						editor,
+						'float:right;',
+						'table table-style-align-right',
+						'align="right"'
+					);
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
-					assertPlainTableStyle( editor, '' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableWidth', () => {
 					model.change( writer => writer.setAttribute( 'tableWidth', '500px', table ) );
 
-					assertPlainTableStyle( editor, 'width:500px;' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;width:500px;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.removeAttribute( 'tableWidth', table ) );
 
-					assertPlainTableStyle( editor, '' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableHeight', () => {
 					model.change( writer => writer.setAttribute( 'tableHeight', '500px', table ) );
 
-					assertPlainTableStyle( editor, 'height:500px;' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;height:500px;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.removeAttribute( 'tableHeight', table ) );
 
-					assertPlainTableStyle( editor, '' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 
 				it( 'tableBackgroundColor', () => {
 					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
 
-					assertPlainTableStyle( editor, 'background-color:red;' );
+					assertPlainTableStyle(
+						editor,
+						'background-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 
 					model.change( writer => writer.removeAttribute( 'tableBackgroundColor', table ) );
 
-					assertPlainTableStyle( editor, '' );
+					assertPlainTableStyle(
+						editor,
+						'float:none;margin-left:auto;margin-right:auto;',
+						'table table-style-align-center',
+						'align="center"'
+					);
 				} );
 			} );
 
@@ -2692,11 +2830,13 @@ describe( 'downcast converters', () => {
 				return model.document.getRoot().getNodeByPath( [ 0 ] );
 			}
 
-			function assertPlainTableStyle( editor, tableStyle ) {
+			function assertPlainTableStyle( editor, tableStyle, tableClasses, align ) {
 				const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+				const classes = tableClasses ? tableClasses : 'table';
+				const alignAttribute = align ? ` ${ align }` : '';
 
 				expect( getClipboardData( editor ) ).to.equalMarkup(
-					`<table class="table"${ tableStyleEntry }>` +
+					`<table class="${ classes }"${ tableStyleEntry }${ alignAttribute }>` +
 						'<tbody><tr><td>foo</td></tr></tbody>' +
 					'</table>'
 				);

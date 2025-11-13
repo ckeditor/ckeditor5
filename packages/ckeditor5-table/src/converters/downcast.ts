@@ -12,15 +12,19 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type {
 	ModelNode,
 	ViewElement,
+	ViewElementAttributes,
 	ModelElement,
 	ViewDowncastWriter,
 	DowncastElementCreatorFunction,
-	ViewContainerElement
+	ViewContainerElement,
+	DowncastConversionApi
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
+import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
+import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -228,7 +232,7 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 			return null;
 		}
 
-		return downcastPlainTable( table, conversionApi );
+		return downcastPlainTable( table, conversionApi, editor );
 	};
 }
 
@@ -254,9 +258,15 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
+ * @param defaultTableProperties Normalized default table properties.
  * @returns Created element.
  */
-export function downcastPlainTable( table: ModelElement, { writer }: { writer: ViewDowncastWriter } ): ViewElement {
+export function downcastPlainTable(
+	table: ModelElement,
+	conversionApi: DowncastConversionApi,
+	editor: Editor
+): ViewElement {
+	const writer = conversionApi.writer;
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
@@ -289,6 +299,36 @@ export function downcastPlainTable( table: ModelElement, { writer }: { writer: V
 		tableContentElements.push( tbodyElement );
 	}
 
+	const tableAttributes: ViewElementAttributes = { class: 'table' };
+
+	if ( editor.plugins.has( 'TableProperties' ) && conversionApi.options.isClipboardPipeline ) {
+		const defaultTableProperties = getNormalizedDefaultTableProperties(
+			editor.config.get( 'table.tableProperties.defaultProperties' )!,
+			{
+				includeAlignmentProperty: true
+			}
+		);
+
+		const tableAlignment = table.getAttribute( 'tableAlignment' ) as TableAlignmentValues | undefined;
+
+		let localDefaultValue = defaultTableProperties.alignment;
+
+		if ( table.getAttribute( 'tableType' ) === 'layout' ) {
+			localDefaultValue = '';
+		}
+
+		const tableAlignmentValue = tableAlignment || localDefaultValue as TableAlignmentValues | undefined;
+
+		if ( tableAlignmentValue ) {
+			tableAttributes.class += ' ' + downcastTableAlignmentConfig[ tableAlignmentValue ].className;
+			tableAttributes.style = downcastTableAlignmentConfig[ tableAlignmentValue ].style;
+
+			if ( downcastTableAlignmentConfig[ tableAlignmentValue ].align !== undefined ) {
+				tableAttributes.align = downcastTableAlignmentConfig[ tableAlignmentValue ].align;
+			}
+		}
+	}
+
 	// Create table structure.
 	//
 	// <table>
@@ -300,7 +340,7 @@ export function downcastPlainTable( table: ModelElement, { writer }: { writer: V
 	//        {table-body-rows-slot}
 	//    </tbody>
 	// </table>
-	return writer.createContainerElement( 'table', { class: 'table' }, [ childrenSlot, ...tableContentElements ] );
+	return writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] );
 }
 
 /**
