@@ -79,13 +79,6 @@
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
-  "pnpm": {
-    "overrides": {
-      "markdown-it-toc": "npm:@maboloshi/markdown-it-toc@1.1.1",
-      "@iktakahiro/markdown-it-katex>katex": "^0.16.0",
-      "@ckeditor/jsdoc-plugins>jsdoc": "-"
-    }
-  },
   "engines": {
     "node": ">=24.11.0",
     "pnpm": ">=10.17.0",
