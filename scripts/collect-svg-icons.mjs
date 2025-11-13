@@ -4,9 +4,9 @@
  */
 
 import chalk from 'chalk';
-import fs from 'fs';
+import fs from 'node:fs';
 import { globSync } from 'glob';
-import path from 'path';
+import path from 'node:path';
 import sharp from 'sharp';
 import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
 

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const fs = require( 'fs' );
-const path = require( 'path' );
+const fs = require( 'node:fs' );
+const path = require( 'node:path' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const VERSIONS_TO_PRINT = 3;

@@ -31,7 +31,7 @@
  * - automagically generating the `src/index.ts` file based on the files in the `theme/icons` folder;
  */
 
-import fs from 'fs';
+import fs from 'node:fs';
 import upath from 'upath';
 
 const path = upath.join( process.cwd(), 'src', 'index.d.ts' );

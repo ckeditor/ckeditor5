@@ -39,7 +39,7 @@ import upath from 'upath';
 import fs from 'fs-extra';
 import minimist from 'minimist';
 import { globSync } from 'glob';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 
 // A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 // because, for instance, CSS animations may depend on it.
