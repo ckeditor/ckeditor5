@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-dev-ci": "^54.0.0",
     "@ckeditor/ckeditor5-dev-dependency-checker": "^54.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^54.0.0",
+    "@ckeditor/ckeditor5-dev-license-checker": "^54.0.0",
     "@ckeditor/ckeditor5-dev-release-tools": "^54.0.0",
     "@ckeditor/ckeditor5-dev-stale-bot": "^54.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^54.0.0",
@@ -134,7 +135,8 @@
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",
-    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run"
+    "test:scripts": "vitest --config ./scripts-tests/vitest.config.mjs --run",
+    "validate-license-files": "node ./scripts/ci/validate-license-files.mjs"
   },
   "lint-staged": {
     "**/*": [
