@@ -305,7 +305,6 @@ export function downcastPlainTable(
 	}
 
 	const tableAttributes: ViewElementAttributes = { class: 'table' };
-	const tableWrapperAttributes: ViewElementAttributes = {};
 	const tableAlignment = table.getAttribute( 'tableAlignment' ) as TableAlignmentValues | undefined;
 
 	let localDefaultValue = defaultTableProperties.alignment;
@@ -315,16 +314,12 @@ export function downcastPlainTable(
 	}
 
 	const tableAlignmentValue = tableAlignment || localDefaultValue as TableAlignmentValues | undefined;
-	let alignAttribute = undefined;
 
 	if ( tableAlignmentValue ) {
 		tableAttributes.class += ' ' + downcastTableAlignmentConfig[ tableAlignmentValue ].className;
 		tableAttributes.style = downcastTableAlignmentConfig[ tableAlignmentValue ].style;
 
-		if ( downcastTableAlignmentConfig[ tableAlignmentValue ].align === undefined ) {
-			alignAttribute = tableAlignmentValue.replace( 'block', '' ).toLowerCase();
-			tableWrapperAttributes.align = alignAttribute;
-		} else {
+		if ( downcastTableAlignmentConfig[ tableAlignmentValue ].align !== undefined ) {
 			tableAttributes.align = downcastTableAlignmentConfig[ tableAlignmentValue ].align;
 		}
 	}
@@ -340,34 +335,7 @@ export function downcastPlainTable(
 	//        {table-body-rows-slot}
 	//    </tbody>
 	// </table>
-	//
-	// or wrapped with <div> with `align` attribute.
-	//
-	// <div align="...">
-	//    <table>
-	//        {children-slot-like-caption}
-	//        <thead>
-	//            {table-head-rows-slot}
-	//        </thead>
-	//        <tbody>
-	//            {table-body-rows-slot}
-	//        </tbody>
-	//     </table>
-	// </div>
-
-	let tableStructure = undefined;
-
-	if ( alignAttribute ) {
-		tableStructure = writer.createContainerElement(
-			'div',
-			tableWrapperAttributes,
-			writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] )
-		);
-	} else {
-		tableStructure = writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] );
-	}
-
-	return tableStructure;
+	return writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] );
 }
 
 /**
@@ -412,62 +380,6 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 			}, { priority: 'high' } );
 		} );
 	}
-}
-
-/**
- * Registers table alignment attribute converter for plain tables or when the clipboard pipeline is used.
- */
-export function downcastTableMarginAttribute( editor: Editor ): void {
-	const modelAttribute = 'tableAlignment';
-
-	editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-		return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi: DowncastConversionApi ) => {
-			const { item, attributeNewValue } = data;
-			const { mapper, writer } = conversionApi;
-
-			if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
-				return;
-			}
-
-			if ( !conversionApi.consumable.consume( item, evt.name ) ) {
-				return;
-			}
-
-			const table = mapper.toViewElement( item );
-
-			if ( !table ) {
-				return;
-			}
-
-			// Check if the table is wrapped in a <div>.
-			const tableElement = table.is( 'element', 'table' ) ? table as ViewElement : table.getChild( 0 ) as ViewElement;
-
-			if ( attributeNewValue && attributeNewValue in downcastTableAlignmentConfig ) {
-				const config = downcastTableAlignmentConfig[ attributeNewValue as TableAlignmentValues ];
-
-				const propertyValueArray: Array<{ property: string; value: string }> = config.style
-					.split( ';' )
-					.filter( Boolean )
-					.map( curr => {
-						const [ key, value ] = curr.split( ':' ).map( item => item.trim() );
-						return { property: key, value };
-					} );
-
-				if ( attributeNewValue && config.style ) {
-					propertyValueArray.forEach( ( { property, value } ) => {
-						writer.setStyle( property, value, tableElement );
-					} );
-				} else {
-					propertyValueArray.forEach( ( { property } ) => {
-						writer.removeStyle( property, tableElement );
-					} );
-				}
-			} else {
-				// TODO: Remove only alignment related styles.
-				writer.removeStyle( 'margin', tableElement );
-			}
-		}, { priority: 'high' } );
-	} );
 }
 
 /**
