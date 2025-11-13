@@ -1651,6 +1651,26 @@ describe( 'table properties', () => {
 					await editor.destroy();
 				} );
 
+				it( 'should consume margin-left when upcasting float:right', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData(
+						'<table style="float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);"><tr><td>foo</td></tr></table>'
+					);
+				} );
+
+				it( 'should consume margin-right when upcasting float:left', () => {
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData(
+						'<table style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);"><tr><td>foo</td></tr></table>'
+					);
+				} );
+
 				it( 'should upcast style="margin-left: 0; margin-right: auto;" attribute', () => {
 					editor.setData( '<table style="margin-left: 0; margin-right: auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
