@@ -18,6 +18,7 @@ import { TableCaption } from '../../src/tablecaption.js';
 import { TableProperties } from '../../src/tableproperties.js';
 
 import { TableEditing } from '../../src/tableediting.js';
+import { TableLayout } from '../../src/tablelayout.js';
 
 describe( 'downcast converters', () => {
 	let editor, model, root, view, viewRoot;
@@ -2445,6 +2446,129 @@ describe( 'downcast converters', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
 
 					assertPlainTableStyle( editor, 'margin-left:0;margin-right:auto;', 'table table-style-block-align-left' );
+				} );
+
+				it( 'tableAlignment right with TableLayout plugin', async () => {
+					const testEditor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+					} );
+
+					_setModelData(
+						testEditor.model,
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const table = testEditor.model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					testEditor.model.change( writer => writer.setAttribute( 'tableType', 'layout', table ) );
+					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+					expect( getClipboardData( testEditor ) ).to.equalMarkup(
+						'<table class="table table-style-align-right layout-table" style="float:right;" ' +
+						'align="right" role="presentation">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					await testEditor.destroy();
+				} );
+
+				it( 'tableAlignment blockRight with TableLayout plugin', async () => {
+					const testEditor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+					} );
+
+					_setModelData(
+						testEditor.model,
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const table = testEditor.model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					testEditor.model.change( writer => writer.setAttribute( 'tableType', 'layout', table ) );
+					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', table ) );
+
+					expect( getClipboardData( testEditor ) ).to.equalMarkup(
+						'<table class="table table-style-block-align-right layout-table" ' +
+						'style="margin-left:auto;margin-right:0;" role="presentation">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					await testEditor.destroy();
+				} );
+
+				it( 'tableAlignment left with TableLayout plugin', async () => {
+					const testEditor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+					} );
+
+					_setModelData(
+						testEditor.model,
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const table = testEditor.model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					testEditor.model.change( writer => writer.setAttribute( 'tableType', 'layout', table ) );
+					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
+
+					expect( getClipboardData( testEditor ) ).to.equalMarkup(
+						'<table class="table table-style-align-left layout-table" style="float:left;" align="left" role="presentation">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					await testEditor.destroy();
+				} );
+
+				it( 'tableAlignment blockLeft with TableLayout plugin', async () => {
+					const testEditor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+					} );
+
+					_setModelData(
+						testEditor.model,
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>'
+					);
+
+					const table = testEditor.model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					testEditor.model.change( writer => writer.setAttribute( 'tableType', 'layout', table ) );
+					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
+
+					expect( getClipboardData( testEditor ) ).to.equalMarkup(
+						'<table class="table table-style-block-align-left layout-table" ' +
+						'style="margin-left:0;margin-right:auto;" role="presentation">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					await testEditor.destroy();
 				} );
 
 				it( 'tableWidth', () => {
