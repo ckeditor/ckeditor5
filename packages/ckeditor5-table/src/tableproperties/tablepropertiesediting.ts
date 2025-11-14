@@ -216,7 +216,8 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 				left: useInlineStyles ? {
 					key: 'style',
 					value: {
-						float: 'left'
+						float: 'left',
+						'margin-right': 'var(--ck-content-table-style-spacing, 1.5em)'
 					}
 				} : {
 					key: 'class',
@@ -225,7 +226,8 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 				right: useInlineStyles ? {
 					key: 'style',
 					value: {
-						float: 'right'
+						float: 'right',
+						'margin-left': 'var(--ck-content-table-style-spacing, 1.5em)'
 					}
 				} : {
 					key: 'class',
@@ -287,12 +289,13 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = config.getAlign( viewElement );
+					const consumables = config.getConsumables( viewElement );
+
+					conversionApi.consumable.consume( viewElement, consumables );
 
 					if ( align !== localDefaultValue ) {
 						return align;
 					}
-
-					conversionApi.consumable.consume( viewElement, config.consume );
 				}
 			}
 		} );

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-content-table-style-spacing: 1.5em;
+}
+
 .ck.ck-table-properties-form {
 	& .ck-form__row {
 		&.ck-table-properties-form__alignment-row {
@@ -21,10 +25,12 @@
 	& .table {
 		&.table-style-align-left {
 			float: left;
+			margin-right: var(--ck-content-table-style-spacing);
 		}
 
 		&.table-style-align-right {
 			float: right;
+			margin-left: var(--ck-content-table-style-spacing);
 		}
 
 		&.table-style-align-center {
@@ -53,6 +59,14 @@
 		&.table-style-align-center {
 			margin-left: auto;
 			margin-right: auto;
+		}
+
+		&.table-style-align-left {
+			margin-right: var(--ck-content-table-style-spacing);
+		}
+
+		&.table-style-align-right {
+			margin-left: var(--ck-content-table-style-spacing);
 		}
 
 		&.table-style-block-align-left {
