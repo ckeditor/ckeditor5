@@ -434,4 +434,4 @@ You can provide a custom toolbar button icon by {@link framework/architecture/ui
 
 ## Feature-specific toolbars
 
-Some features also sport their own dedicated toolbars. In the demos on this page, you can see the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables#toolbars table toolbars} when you use the respective features. You will find all information about these toolbars in the {@link features/index respective feature guides}.
+Some features also sport their own dedicated toolbars. In the demos on this page, you can see the {@link features/images-overview#image-contextual-toolbar image toolbar} or the {@link features/tables-installation#toolbars table toolbars} when you use the respective features. You will find all information about these toolbars in the {@link features/index respective feature guides}.
