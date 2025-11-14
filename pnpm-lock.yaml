@@ -4094,6 +4094,9 @@ importers:
       '@ckeditor/ckeditor5-autoformat':
         specifier: workspace:*
         version: link:../ckeditor5-autoformat
+      '@ckeditor/ckeditor5-autosave':
+        specifier: workspace:*
+        version: link:../ckeditor5-autosave
       '@ckeditor/ckeditor5-basic-styles':
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
