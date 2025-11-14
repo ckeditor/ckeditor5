@@ -151,6 +151,10 @@ jobs:
           command: node scripts/ci/check-manual-tests-directory-structure.mjs
       - run:
           when: always
+          name: Validate license files
+          command: pnpm run validate-license-files --verbose
+      - run:
+          when: always
           name: Execute ESLint
           command: pnpm run lint
       - run:
