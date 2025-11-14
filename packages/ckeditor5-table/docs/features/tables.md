@@ -38,6 +38,10 @@ The {@link module:table/tableselection~TableSelection} plugin introduces support
 
 The table selection plugin is loaded automatically by the `Table` plugin and can be tested in the [demo above](#demo).
 
+## Table alignment
+
+Here will be the documentation for the updated table alignment feature.
+
 ## Typing around tables
 
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
