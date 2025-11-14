@@ -287,10 +287,11 @@ function scanTable( viewTable: ViewElement ) {
 		}
 	}
 
-	// Generate the cell matrix so we can calculate the heading columns
+	// Generate the cell matrix so we can calculate the heading columns.
 	const bodyMatrix = generateCellMatrix( bodyRows );
+
 	for ( const rowSlots of bodyMatrix ) {
-		// Look for the first non-`<th>` entry (either a `<td>` or a missing cell)
+		// Look for the first non-`<th>` entry (either a `<td>` or a missing cell).
 		let index = 0;
 		while ( index < rowSlots.length ) {
 			if ( rowSlots[ index ]?.name !== 'th' ) {
@@ -298,7 +299,7 @@ function scanTable( viewTable: ViewElement ) {
 			}
 			index += 1;
 		}
-		// Update headingColumns
+		// Update headingColumns.
 		if ( !headingColumns || index < headingColumns ) {
 			headingColumns = index;
 		}
@@ -372,12 +373,12 @@ function generateCellMatrix( trs: Array<ViewElement> ) {
 	// factor them in. This trackes any such cells from previous rows.
 	let prevRowspans = new Map<number, { cell: ViewElement; remaining: number }>();
 
-	// This is the maximum number of columns we've encountered
+	// This is the maximum number of columns we've encountered.
 	let maxColumns = 0;
 
 	const slots = trs.map( tr => {
 		// This will be the slots that are in this row, including cells from
-		// previous rows with a big enough "rowspan" to affect this row
+		// previous rows with a big enough "rowspan" to affect this row.
 		const curSlots: Array<ViewElement | null> = [];
 
 		// Get the cell elements
@@ -385,31 +386,31 @@ function generateCellMatrix( trs: Array<ViewElement> ) {
 			.filter( child => child.name === 'th' || child.name === 'td' );
 
 		// This will be any cells in this row that have a rowspan >1, so we can
-		// combine it with `prevRowspans` when we're done processing this row
+		// combine it with `prevRowspans` when we're done processing this row.
 		const curRowspans = new Map<number, { cell: ViewElement; remaining: number }>();
 
 		// We need to process all the cells in this row, but also previous rows'
 		// cells with rowspans might add additional slots to the end of this row, so
 		// we need to iterate until we've both consumed all the children _and_
-		// filled out slots to the max number of columns we've encountered so far
+		// filled out slots to the max number of columns we've encountered so far.
 		while ( children.length || curSlots.length < maxColumns ) {
 			const rowSpan = prevRowspans.get( curSlots.length );
 			if ( rowSpan && rowSpan.remaining > 0 ) {
 				// We have a cell at this index in a previous row whose rowspan extends
-				// it into this row, so we insert a copy of it here
+				// it into this row, so we insert a copy of it here.
 				curSlots.push( rowSpan.cell );
 			} else {
-				// See if we have more cells in the row
+				// See if we have more cells in the row.
 				const cell = children.shift();
 				if ( cell ) {
 					// We do, so process it
 					const colspan = parseInt( cell.getAttribute( 'colspan' ) as string || '1' );
 					const rowspan = parseInt( cell.getAttribute( 'rowspan' ) as string || '1' );
 
-					// Process this cell as many times as needed according to its colspan
+					// Process this cell as many times as needed according to its colspan.
 					for ( let i = 0; i < colspan; i++ ) {
 						// if we have a >1 rowspan, create a record in the rowSpans map for
-						// this column index keeping track of it
+						// this column index keeping track of it.
 						if ( rowspan > 1 ) {
 							curRowspans.set( curSlots.length, { cell, remaining: rowspan - 1 } );
 						}
@@ -417,7 +418,7 @@ function generateCellMatrix( trs: Array<ViewElement> ) {
 						curSlots.push( cell );
 					}
 				} else {
-					// No remaining children in this row, so no cell in this slot
+					// No remaining children in this row, so no cell in this slot.
 					curSlots.push( null );
 					continue;
 				}
@@ -438,13 +439,13 @@ function generateCellMatrix( trs: Array<ViewElement> ) {
 		}
 		prevRowspans = curRowspans;
 
-		// Finally, update `maxColumns`
+		// Finally, update `maxColumns`.
 		maxColumns = Math.max( maxColumns, curSlots.length );
 		return curSlots;
 	} );
 
 	// Now expand any rows that have fewer than `maxColumns` with nulls so we have
-	// a proper matrix
+	// a proper matrix.
 	for ( const rowSlots of slots ) {
 		while ( rowSlots.length < maxColumns ) {
 			rowSlots.push( null );
