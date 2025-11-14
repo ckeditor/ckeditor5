@@ -2427,7 +2427,12 @@ describe( 'downcast converters', () => {
 				it( 'tableAlignment right', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;', 'table table-style-align-right', 'align="right"' );
+					assertPlainTableStyle(
+						editor,
+						'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);',
+						'table table-style-align-right',
+						'align="right"'
+					);
 				} );
 
 				it( 'tableAlignment blockRight', () => {
@@ -2439,7 +2444,12 @@ describe( 'downcast converters', () => {
 				it( 'tableAlignment left', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertPlainTableStyle( editor, 'float:left;', 'table table-style-align-left', 'align="left"' );
+					assertPlainTableStyle(
+						editor,
+						'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);',
+						'table table-style-align-left',
+						'align="left"'
+					);
 				} );
 
 				it( 'tableAlignment blockLeft', () => {
@@ -2470,7 +2480,8 @@ describe( 'downcast converters', () => {
 					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
 					expect( getClipboardData( testEditor ) ).to.equalMarkup(
-						'<table class="table table-style-align-right layout-table" style="float:right;" ' +
+						'<table class="table table-style-align-right layout-table" ' +
+						'style="float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);" ' +
 						'align="right" role="presentation">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
@@ -2532,7 +2543,8 @@ describe( 'downcast converters', () => {
 					testEditor.model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
 					expect( getClipboardData( testEditor ) ).to.equalMarkup(
-						'<table class="table table-style-align-left layout-table" style="float:left;" align="left" role="presentation">' +
+						'<table class="table table-style-align-left layout-table" ' +
+						'style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);" align="left" role="presentation">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
@@ -2721,7 +2733,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:right;',
+						'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);',
 						'table table-style-align-right',
 						'align="right"'
 					);

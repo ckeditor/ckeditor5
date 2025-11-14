@@ -7,7 +7,7 @@
  * @module table/converters/tableproperties
  */
 
-import type { Conversion, UpcastConversionApi, UpcastConversionData, ViewElement } from 'ckeditor5/src/engine.js';
+import type { Consumables, Conversion, UpcastConversionApi, UpcastConversionData, ViewElement } from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
@@ -365,8 +365,17 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 
 			return align;
 		},
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
-			return { styles: 'float' };
+		getConsumables( viewElement: ViewElement ): Consumables {
+			const float = viewElement.getStyle( 'float' );
+			const styles: Array<string> = [ 'float' ];
+
+			if ( float === 'left' && viewElement.hasStyle( 'margin-right' ) ) {
+				styles.push( 'margin-right' );
+			} else if ( float === 'right' && viewElement.hasStyle( 'margin-left' ) ) {
+				styles.push( 'margin-left' );
+			}
+
+			return { styles };
 		}
 	},
 	// Support for the `margin-left:auto; margin-right:auto;` CSS definition for the table alignment.
@@ -379,7 +388,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'center',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables: (): Consumables => {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -391,7 +400,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			value: 'table-style-align-left'
 		},
 		getAlign: (): string => 'left',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.left.className };
 		}
 	},
@@ -403,7 +412,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
 		},
 		getAlign: (): string => 'right',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className };
 		}
 	},
@@ -415,7 +424,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
 		},
 		getAlign: (): string => 'center',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className };
 		}
 	},
@@ -427,7 +436,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
 		},
 		getAlign: (): string => 'blockLeft',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className };
 		}
 	},
@@ -439,7 +448,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
 		},
 		getAlign: (): string => 'blockRight',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className };
 		}
 	},
@@ -453,7 +462,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'blockLeft',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -467,7 +476,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			}
 		},
 		getAlign: (): string => 'blockRight',
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { styles: [ 'margin-left', 'margin-right' ] };
 		}
 	},
@@ -480,7 +489,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 			}
 		},
 		getAlign: ( viewElement: ViewElement ): string | undefined => viewElement.getAttribute( 'align' ),
-		get consume(): UpcastTableAlignmentConfig[ 'consume' ] {
+		getConsumables(): Consumables {
 			return { attributes: 'align' };
 		}
 	}
@@ -523,11 +532,7 @@ type UpcastTableAlignmentConfig = {
 		value?: RegExp | string;
 	};
 	getAlign: ( ( viewElement: ViewElement ) => string | undefined ) | ( () => string );
-	get consume(): {
-		styles?: string | Array<string>;
-		attributes?: string | Array<string>;
-		classes?: string | Array<string>;
-	};
+	getConsumables: ( viewElement: ViewElement ) => Consumables;
 };
 
 export type TableAlignmentValues = 'left' | 'center' | 'right' | 'blockLeft' | 'blockRight';
