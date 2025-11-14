@@ -293,12 +293,15 @@ function scanTable( viewTable: ViewElement ) {
 	for ( const rowSlots of bodyMatrix ) {
 		// Look for the first non-`<th>` entry (either a `<td>` or a missing cell).
 		let index = 0;
+
 		while ( index < rowSlots.length ) {
 			if ( rowSlots[ index ]?.name !== 'th' ) {
 				break;
 			}
+
 			index += 1;
 		}
+
 		// Update headingColumns.
 		if ( !headingColumns || index < headingColumns ) {
 			headingColumns = index;
