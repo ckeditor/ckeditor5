@@ -4,10 +4,11 @@
  */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Bold, Italic, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { Table, TableCaption } from '@ckeditor/ckeditor5-table';
+import { Table, TableCaption, TableProperties, TableCellProperties } from '@ckeditor/ckeditor5-table';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
@@ -23,7 +24,10 @@ ClassicEditor
 			SourceEditing,
 			Strikethrough,
 			Table,
-			TableCaption
+			TableCaption,
+			TableProperties,
+			TableCellProperties,
+			ArticlePluginSet
 		],
 		toolbar: [ 'insertTable', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
 		htmlSupport: {
@@ -39,6 +43,10 @@ ClassicEditor
 					attributes: 'data-validation-disallow'
 				}
 			]
+		},
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
+			tableToolbar: [ 'bold', 'italic' ]
 		}
 	} )
 	.then( editor => {

@@ -21,6 +21,12 @@ import {
 	convertPlainTableCaption
 } from './converters/downcast.js';
 
+import {
+	type ViewDocumentClipboardOutputEvent
+} from 'ckeditor5/src/clipboard.js';
+
+import { type TableAlignmentValues } from './converters/tableproperties.js';
+
 import { InsertTableCommand } from './commands/inserttablecommand.js';
 import { InsertRowCommand } from './commands/insertrowcommand.js';
 import { InsertColumnCommand } from './commands/insertcolumncommand.js';
@@ -257,9 +263,72 @@ export class TableEditing extends Plugin {
 			} );
 		}
 
-		// Handle border-style, border-color, border-width and background-color table attributes.
 		if ( editor.plugins.has( 'TableProperties' ) ) {
+			// Handle border-style, border-color, border-width and background-color table attributes.
 			downcastTableBorderAndBackgroundAttributes( editor );
+
+			// TODO: temporary solution to make wrap table in div with align attribute.
+			const viewDoc = editor.editing.view.document;
+
+			this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+				editor.editing.view.change( writer => {
+					const children = [];
+
+					for ( const item of Array.from( data.content.getChildren() ) ) {
+						if ( item.is( 'element', 'table' ) ) {
+							const tableStyles = item.getAttribute( 'style' ) as TableAlignmentValues | undefined;
+
+							if ( tableStyles ) {
+								const currentTableStylesArray: Array<{ property: string; value: string }> = tableStyles
+									.split( ';' )
+									.filter( Boolean )
+									.map( curr => {
+										const [ key, value ] = curr.split( ':' ).map( item => item.trim() );
+										return { property: key, value };
+									} );
+
+								let isBlockLeft = 0;
+								let isBlockRight = 0;
+
+								currentTableStylesArray.forEach( style => {
+									if ( style.property === 'margin-left' && style.value === 'auto' ) {
+										isBlockRight++;
+									}
+									if ( style.property === 'margin-right' && style.value === '0' ) {
+										isBlockRight++;
+									}
+									if ( style.property === 'margin-right' && style.value === 'auto' ) {
+										isBlockLeft++;
+									}
+									if ( style.property === 'margin-left' && style.value === '0' ) {
+										isBlockLeft++;
+									}
+								} );
+
+								if ( isBlockLeft === 2 || isBlockRight === 2 ) {
+									const wrapper = writer.createContainerElement(
+										'div',
+										{ align: isBlockLeft === 2 ? 'left' : 'right' },
+										item
+									);
+
+									children.push( wrapper );
+								} else {
+									children.push( item );
+								}
+							} else {
+								children.push( item );
+							}
+						} else {
+							children.push( item );
+						}
+					}
+
+					const documentFragment = writer.createDocumentFragment( children );
+
+					data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( documentFragment ) );
+				} );
+			}, { priority: 'low' } );
 		}
 	}
 }

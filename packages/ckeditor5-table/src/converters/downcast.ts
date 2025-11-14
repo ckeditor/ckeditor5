@@ -12,15 +12,19 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type {
 	ModelNode,
 	ViewElement,
+	ViewElementAttributes,
 	ModelElement,
 	ViewDowncastWriter,
 	DowncastElementCreatorFunction,
-	ViewContainerElement
+	ViewContainerElement,
+	DowncastConversionApi
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
+import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
+import { getNormalizedDefaultTableProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -228,7 +232,14 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
 			return null;
 		}
 
-		return downcastPlainTable( table, conversionApi );
+		const defaultTableProperties = getNormalizedDefaultTableProperties(
+			editor.config.get( 'table.tableProperties.defaultProperties' )!,
+			{
+				includeAlignmentProperty: true
+			}
+		);
+
+		return downcastPlainTable( table, conversionApi, defaultTableProperties );
 	};
 }
 
@@ -256,7 +267,11 @@ export function convertPlainTableCaption( editor: Editor ): DowncastElementCreat
  * @param conversionApi The conversion API object.
  * @returns Created element.
  */
-export function downcastPlainTable( table: ModelElement, { writer }: { writer: ViewDowncastWriter } ): ViewElement {
+export function downcastPlainTable(
+	table: ModelElement,
+	{ writer }: { writer: ViewDowncastWriter },
+	defaultTableProperties: NormalizedDefaultProperties
+): ViewElement {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
@@ -289,6 +304,26 @@ export function downcastPlainTable( table: ModelElement, { writer }: { writer: V
 		tableContentElements.push( tbodyElement );
 	}
 
+	const tableAttributes: ViewElementAttributes = { class: 'table' };
+	const tableAlignment = table.getAttribute( 'tableAlignment' ) as TableAlignmentValues | undefined;
+
+	let localDefaultValue = defaultTableProperties.alignment;
+
+	if ( table.getAttribute( 'tableType' ) === 'layout' ) {
+		localDefaultValue = '';
+	}
+
+	const tableAlignmentValue = tableAlignment || localDefaultValue as TableAlignmentValues | undefined;
+
+	if ( tableAlignmentValue ) {
+		tableAttributes.class += ' ' + downcastTableAlignmentConfig[ tableAlignmentValue ].className;
+		tableAttributes.style = downcastTableAlignmentConfig[ tableAlignmentValue ].style;
+
+		if ( downcastTableAlignmentConfig[ tableAlignmentValue ].align !== undefined ) {
+			tableAttributes.align = downcastTableAlignmentConfig[ tableAlignmentValue ].align;
+		}
+	}
+
 	// Create table structure.
 	//
 	// <table>
@@ -300,7 +335,7 @@ export function downcastPlainTable( table: ModelElement, { writer }: { writer: V
 	//        {table-body-rows-slot}
 	//    </tbody>
 	// </table>
-	return writer.createContainerElement( 'table', { class: 'table' }, [ childrenSlot, ...tableContentElements ] );
+	return writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] );
 }
 
 /**
@@ -316,7 +351,7 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 
 	for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-			return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
+			return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi: DowncastConversionApi ) => {
 				const { item, attributeNewValue } = data;
 				const { mapper, writer } = conversionApi;
 
@@ -330,10 +365,17 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 
 				const table = mapper.toViewElement( item );
 
+				if ( !table ) {
+					return;
+				}
+
+				// Check if the table is wrapped in a <div>.
+				const tableElement = table.is( 'element', 'table' ) ? table as ViewElement : table.getChild( 0 ) as ViewElement;
+
 				if ( attributeNewValue ) {
-					writer.setStyle( styleName, attributeNewValue, table );
+					writer.setStyle( styleName, attributeNewValue, tableElement );
 				} else {
-					writer.removeStyle( styleName, table );
+					writer.removeStyle( styleName, tableElement );
 				}
 			}, { priority: 'high' } );
 		} );
