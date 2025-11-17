@@ -40,7 +40,7 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 ## Table alignment
 
-There are five alignment options in tables:
+You can move tables horizontally and vertically to create a desired document layout. There are five alignment options in tables:
 
 * Left (wrap): A table aligns to the left, and other content wraps around it.
 * Right (wrap): A table aligns to the right, and other content wraps around it.
