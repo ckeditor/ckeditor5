@@ -218,6 +218,15 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 	</tbody>
 </table>
 
+### Table alignment
+
+Table alignment in the editor's output uses inline styles by default. But, you can control it with the `table.tableProperties.alignment.useInlineStyles` property.
+
+* When the property is `true` (default), output contains inline styles.
+* When the property is `false`, output contains CSS classes.
+
+The option applies to all five alignment options.
+
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
