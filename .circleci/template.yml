@@ -60,7 +60,6 @@ commands:
           environment:
             PUPPETEER_SKIP_DOWNLOAD: true
           command: pnpm install --frozen-lockfile
-      - prepare_environment_variables_commands
 
   checkout_command:
     description: "Clone the CKEditor 5 repository with limited depth and branches"
@@ -89,18 +88,6 @@ commands:
             then
               circleci-agent step halt
             fi
-
-  prepare_environment_variables_commands:
-    description: "Prepare non-secret environment variables"
-    steps:
-      - run:
-          name: Prepare environment variables
-          command: |
-            #!/bin/bash
-
-            echo export CKE5_GITHUB_TRIGGER_REPOSITORY_SLUG="ckeditor/ckeditor5" >> $BASH_ENV
-            echo export CKE5_GITHUB_REPOSITORY_SLUG="$INTEGRATION_CI_ORGANIZATION/$INTEGRATION_CI_REPOSITORY" >> $BASH_ENV
-            echo export CKE5_COMMIT_SHA1=$CIRCLE_SHA1 >> $BASH_ENV
 
 jobs:
   cke5_manual:
@@ -216,7 +203,7 @@ jobs:
             fi
       - run:
           name: Trigger CKEditor 5 release job
-          command: pnpm ckeditor5-dev-ci-trigger-circle-build --release-branch << pipeline.git.branch >>
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5 --release-branch << pipeline.git.branch >>
 
   cke5_trigger_uber_ci:
     docker:
