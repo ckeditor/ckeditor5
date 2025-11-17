@@ -31,6 +31,7 @@ import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizon
 import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
+import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 import { TableWalker } from '../tablewalker.js';
@@ -168,6 +169,8 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableCellTypeProperty( editor );
+		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor, 'data' ) );
+
 		addTableCellTypePostfixer( editor );
 		addInsertedTableCellTypePostfixer( editor );
 	}
