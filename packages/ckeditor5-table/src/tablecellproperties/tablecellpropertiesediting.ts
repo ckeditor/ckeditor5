@@ -277,24 +277,65 @@ function addTableCellTypePostfixer( editor: Editor ) {
 
 			const tableWalker = new TableWalker( element );
 
+			// First pass: Check if all cells leaving the heading section still have the 'header' type.
+			// This prevents unwanted type changes when the user manually changed some cells to 'data'.
+			//
+			// Example scenario:
+			// - Table has headingColumns=2 (first two columns are headers)
+			// - User manually changes one cell in column 1 from 'header' to 'data'
+			// - TableCellTypeCommand reduces headingColumns to 1 (because not all cells in column 1 are headers)
+			// - Without this check: all cells in column 1 would be forced back to 'data'
+			// - With this check: cells that were already 'header' remain 'header', only the manually changed cell stays 'data'
+			let allLeavingCellsWereHeaders = true;
+
 			for ( const { cell, row, column } of tableWalker ) {
-				// Determine if this cell's status changed based on the old and new values.
 				let wasInHeadingSection;
 
 				if ( change.attributeKey === 'headingRows' ) {
-					// Check old headingRows value with current headingColumns.
 					wasInHeadingSection = row < oldValue || column < headingColumns;
 				} else {
-					// Check current headingRows with old headingColumns value.
 					wasInHeadingSection = row < headingRows || column < oldValue;
 				}
 
 				const isInHeadingSection = row < headingRows || column < headingColumns;
 
-				// Only update cells whose heading status actually changed.
-				if ( wasInHeadingSection !== isInHeadingSection ) {
-					const expectedCellType = isInHeadingSection ? 'header' : 'data';
+				// Check only cells that are leaving the heading section.
+				if ( wasInHeadingSection && !isInHeadingSection ) {
 					const currentCellType = cell.getAttribute( 'tableCellType' );
+
+					if ( currentCellType !== 'header' ) {
+						allLeavingCellsWereHeaders = false;
+						break;
+					}
+				}
+			}
+
+			// Second pass: Update cell types based on whether they're entering or leaving the heading section.
+			for ( const { cell, row, column } of new TableWalker( element ) ) {
+				let wasInHeadingSection;
+
+				if ( change.attributeKey === 'headingRows' ) {
+					wasInHeadingSection = row < oldValue || column < headingColumns;
+				} else {
+					wasInHeadingSection = row < headingRows || column < oldValue;
+				}
+
+				const isInHeadingSection = row < headingRows || column < headingColumns;
+
+				// Only update cells whose heading section status actually changed.
+				if ( wasInHeadingSection !== isInHeadingSection ) {
+					const currentCellType = cell.getAttribute( 'tableCellType' );
+					let expectedCellType;
+
+					if ( isInHeadingSection ) {
+						// Cell is entering heading section - always change to 'header'.
+						expectedCellType = 'header';
+					} else {
+						// Cell is leaving heading section.
+						// Only change to 'data' if ALL leaving cells were 'header' (no manual changes by user).
+						// Otherwise preserve the current type to respect user's manual modifications.
+						expectedCellType = allLeavingCellsWereHeaders ? 'data' : currentCellType;
+					}
 
 					if ( currentCellType !== expectedCellType ) {
 						writer.setAttribute( 'tableCellType', expectedCellType, cell );

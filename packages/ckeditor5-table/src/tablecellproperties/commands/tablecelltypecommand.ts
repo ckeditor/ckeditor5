@@ -11,7 +11,8 @@ import type { Editor } from 'ckeditor5/src/core.js';
 import type { Batch, ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 
 import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
-import type { TableUtils } from '../../tableutils.js';
+import { TableUtils } from '../../tableutils.js';
+import { TableWalker } from '../../tablewalker.js';
 
 /**
  * The table cell type command.
@@ -56,37 +57,78 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 				tableCells.forEach( tableCell => writer.removeAttribute( this.attributeName, tableCell ) );
 			}
 
-			// If changing cell type to 'data', adjust headingRows/headingColumns if necessary.
-			if ( valueToSet === 'data' ) {
-				this._adjustHeadingAttributesWhenChangingToData( tableCells, writer, tableUtils );
+			switch ( valueToSet ) {
+				// If changing cell type to 'header', increment headingRows/headingColumns if entire row/column is of header type.
+				case 'header':
+					this._adjustHeadingAttributesWhenChangingToHeader( tableCells, writer );
+					break;
+
+				// If changing cell type to 'data', decrement headingRows/headingColumns
+				// if at least one row/column is no longer of header type.
+				case 'data':
+					this._adjustHeadingAttributesWhenChangingToData( tableCells, writer );
+					break;
 			}
 		} );
 	}
 
 	/**
-	 * Adjusts `headingRows` or `headingColumns` when cells in heading sections are changed to 'data' type.
+	 * Increments the `headingRows` and `headingColumns` attributes of the tables
+	 * containing the given table cells being changed to `header` cell type,
+	 * but only if the entire row/column is of header type and the heading attributes
+	 * are directly preceding the changed cell.
 	 */
-	private _adjustHeadingAttributesWhenChangingToData(
-		tableCells: Array<ModelElement>,
-		writer: ModelWriter,
-		tableUtils: TableUtils
-	): void {
-		// Group cells by their parent table.
-		const tableMap = new Map<ModelElement, Array<ModelElement>>();
+	private _adjustHeadingAttributesWhenChangingToHeader( tableCells: Array<ModelElement>, writer: ModelWriter ): void {
+		const tableMap = groupCellsByTable( tableCells );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		for ( const tableCell of tableCells ) {
-			const table = tableCell.findAncestor( 'table' ) as ModelElement;
+		// Process each table.
+		for ( const [ table, cells ] of tableMap ) {
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
-			if ( !table ) {
-				continue;
+			const tableRowCount = tableUtils.getRows( table );
+			const tableColumnCount = tableUtils.getColumns( table );
+
+			// Track which rows and columns were changed.
+			const changedRowsSet = new Set<number>();
+			const changedColumnsSet = new Set<number>();
+
+			for ( const cell of cells ) {
+				const { row, column } = tableUtils.getCellLocation( cell );
+				changedRowsSet.add( row );
+				changedColumnsSet.add( column );
 			}
 
-			if ( !tableMap.has( table ) ) {
-				tableMap.set( table, [] );
+			// Check if we should increment headingRows.
+			// We only increment if the changed row index equals the current headingRows value.
+			if ( changedRowsSet.has( headingRows ) && headingRows < tableRowCount ) {
+				const rowIndex = headingRows;
+
+				if ( isEntireRowOfType( table, rowIndex, 'header', cells ) ) {
+					writer.setAttribute( 'headingRows', headingRows + 1, table );
+				}
 			}
 
-			tableMap.get( table )!.push( tableCell );
+			// Check if we should increment headingColumns.
+			// We only increment if the changed column index equals the current headingColumns value.
+			if ( changedColumnsSet.has( headingColumns ) && headingColumns < tableColumnCount ) {
+				const colIndex = headingColumns;
+
+				if ( isEntireColumnOfType( table, colIndex, 'header', cells ) ) {
+					writer.setAttribute( 'headingColumns', headingColumns + 1, table );
+				}
+			}
 		}
+	}
+
+	/**
+	 * Decrements the `headingRows` and `headingColumns` attributes of the tables
+	 * containing the given table cells being changed to `data` cell type.
+	 */
+	private _adjustHeadingAttributesWhenChangingToData( tableCells: Array<ModelElement>, writer: ModelWriter ): void {
+		const tableMap = groupCellsByTable( tableCells );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		// Process each table.
 		for ( const [ table, cells ] of tableMap ) {
@@ -134,4 +176,75 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 			}
 		}
 	}
+}
+
+/**
+ * Checks if all cells in a given row are of the specified type.
+ * Takes into account cells that are being changed in the current operation.
+ */
+function isEntireRowOfType(
+	table: ModelElement,
+	rowIndex: number,
+	type: string,
+	cellsBeingChanged: Array<ModelElement>
+): boolean {
+	const tableWalker = new TableWalker( table, { row: rowIndex } );
+
+	for ( const { cell } of tableWalker ) {
+		const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+		const isBeingChangedToType = cellsBeingChanged.includes( cell );
+
+		if ( cellType !== type && !isBeingChangedToType ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Checks if all cells in a given column are of the specified type.
+ * Takes into account cells that are being changed in the current operation.
+ */
+function isEntireColumnOfType(
+	table: ModelElement,
+	columnIndex: number,
+	type: string,
+	cellsBeingChanged: Array<ModelElement>
+): boolean {
+	const tableWalker = new TableWalker( table, { column: columnIndex } );
+
+	for ( const { cell } of tableWalker ) {
+		const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+		const isBeingChangedToType = cellsBeingChanged.includes( cell );
+
+		if ( cellType !== type && !isBeingChangedToType ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Groups table cells by their parent table.
+ */
+function groupCellsByTable( tableCells: Array<ModelElement> ): Map<ModelElement, Array<ModelElement>> {
+	const tableMap = new Map<ModelElement, Array<ModelElement>>();
+
+	for ( const tableCell of tableCells ) {
+		const table = tableCell.findAncestor( 'table' ) as ModelElement;
+
+		if ( !table ) {
+			continue;
+		}
+
+		if ( !tableMap.has( table ) ) {
+			tableMap.set( table, [] );
+		}
+
+		tableMap.get( table )!.push( tableCell );
+	}
+
+	return tableMap;
 }
