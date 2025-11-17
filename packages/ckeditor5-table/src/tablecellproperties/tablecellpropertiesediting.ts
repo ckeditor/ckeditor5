@@ -173,6 +173,7 @@ export class TableCellPropertiesEditing extends Plugin {
 
 		addTableCellTypePostfixer( editor );
 		addInsertedTableCellTypePostfixer( editor );
+		addTableCellTypeChangePostfixer( editor );
 		addTableCellTypeReconversionHandler( editor );
 	}
 }
@@ -370,6 +371,93 @@ function addInsertedTableCellTypePostfixer( editor: Editor ) {
 
 				writer.setAttribute( 'tableCellType', cellType, item );
 				changed = true;
+			}
+		}
+
+		return changed;
+	} );
+}
+
+/**
+ * Adds a postfixer that adjusts `headingRows` or `headingColumns` when `tableCellType` is changed to `data`
+ * for cells in heading rows or columns.
+ *
+ * @param editor The editor instance.
+ */
+function addTableCellTypeChangePostfixer( editor: Editor ) {
+	const model = editor.model;
+
+	model.document.registerPostFixer( writer => {
+		let changed = false;
+
+		for ( const change of model.document.differ.getChanges() ) {
+			// Check if tableCellType attribute changed.
+			if ( change.type !== 'attribute' || change.attributeKey !== 'tableCellType' || change.range.root.rootName === '$graveyard' ) {
+				continue;
+			}
+
+			// Check if the new value is 'data'.
+			if ( change.attributeNewValue !== 'data' ) {
+				continue;
+			}
+
+			const tableCell = change.range.start.nodeAfter;
+
+			if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+				continue;
+			}
+
+			// Find the parent table.
+			const table = tableCell.findAncestor( 'table' );
+
+			if ( !table ) {
+				continue;
+			}
+
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+			// If there are no heading rows or columns, no need to check.
+			if ( headingRows === 0 && headingColumns === 0 ) {
+				continue;
+			}
+
+			// Determine the position of the cell in the table.
+			const tableWalker = new TableWalker( table );
+			let cellRow = 0;
+			let cellColumn = 0;
+
+			for ( const { cell, row, column } of tableWalker ) {
+				if ( cell === tableCell ) {
+					cellRow = row;
+					cellColumn = column;
+					break;
+				}
+			}
+
+			// Check if the cell is in heading rows or columns.
+			if ( cellRow < headingRows || cellColumn < headingColumns ) {
+				// Adjust headingRows if the cell is in a heading row.
+				if ( cellRow < headingRows ) {
+					if ( !cellRow ) {
+						writer.removeAttribute( 'headingRows', table );
+					} else {
+						writer.setAttribute( 'headingRows', cellRow, table );
+					}
+
+					changed = true;
+				}
+
+				// Adjust headingColumns if the cell is in a heading column.
+				if ( cellColumn < headingColumns ) {
+					if ( !cellColumn ) {
+						writer.removeAttribute( 'headingColumns', table );
+					} else {
+						writer.setAttribute( 'headingColumns', cellColumn, table );
+					}
+
+					changed = true;
+				}
 			}
 		}
 
