@@ -173,6 +173,7 @@ export class TableCellPropertiesEditing extends Plugin {
 
 		addTableCellTypePostfixer( editor );
 		addInsertedTableCellTypePostfixer( editor );
+		addTableCellTypeReconversionHandler( editor );
 	}
 }
 
@@ -373,6 +374,56 @@ function addInsertedTableCellTypePostfixer( editor: Editor ) {
 		}
 
 		return changed;
+	} );
+}
+
+/**
+ * Adds a handler that forces reconversion of table cells when their `tableCellType` attribute changes.
+ * This is necessary because changing from `<td>` to `<th>` (or vice versa) requires rebuilding the element.
+ *
+ * @param editor The editor instance.
+ */
+function addTableCellTypeReconversionHandler( editor: Editor ) {
+	const model = editor.model;
+	const editing = editor.editing;
+
+	model.document.on( 'change:data', () => {
+		const differ = model.document.differ;
+
+		for ( const change of differ.getChanges() ) {
+			// Only process attribute changes.
+			if ( change.type !== 'attribute' ) {
+				continue;
+			}
+
+			// Check if tableCellType attribute changed.
+			if ( change.attributeKey !== 'tableCellType' ) {
+				continue;
+			}
+
+			// Get the table cell element.
+			const tableCell = change.range.start.nodeAfter;
+
+			if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+				continue;
+			}
+
+			// Get the view element for this table cell.
+			const viewElement = editing.mapper.toViewElement( tableCell );
+
+			if ( !viewElement || !viewElement.is( 'element' ) ) {
+				continue;
+			}
+
+			// Determine the expected element name based on the new attribute value.
+			const cellType = tableCell.getAttribute( 'tableCellType' );
+			const expectedElementName = cellType === 'header' ? 'th' : 'td';
+
+			// Only reconvert if the element name actually needs to change.
+			if ( viewElement.name !== expectedElementName ) {
+				editing.reconvertItem( tableCell );
+			}
+		}
 	} );
 }
 
