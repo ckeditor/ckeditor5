@@ -185,7 +185,6 @@ export class TableCellPropertiesEditing extends Plugin {
 function enableCellTypeProperty( editor: Editor ) {
 	const { conversion } = editor;
 	const { schema } = editor.model;
-	const tableEditing = editor.plugins.get( TableEditing );
 
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellType' ]
@@ -236,12 +235,6 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 		}
 	} ) );
-
-	tableEditing.registerCellElementNameCallback( ( { tableCell } ) => {
-		const cellType = tableCell.getAttribute( 'tableCellType' )!;
-
-		return cellType === 'header' ? 'th' : 'td';
-	} );
 }
 
 /**

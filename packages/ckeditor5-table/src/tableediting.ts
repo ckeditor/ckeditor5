@@ -46,12 +46,6 @@ export class TableEditing extends Plugin {
 	private _additionalSlots: Array<TableConversionAdditionalSlot>;
 
 	/**
-	 * Callback for determining the cell element name during downcast.
-	 * If set, this callback takes precedence over the default logic based on heading rows/columns.
-	 */
-	private _cellElementNameCallback: TableCellElementNameCallback | null = null;
-
-	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -152,11 +146,11 @@ export class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( { asWidget: true, getCellElementNameCallback: () => this._cellElementNameCallback } )
+			view: downcastCell( { asWidget: true } )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( { getCellElementNameCallback: () => this._cellElementNameCallback } )
+			view: downcastCell()
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
@@ -228,17 +222,6 @@ export class TableEditing extends Plugin {
 	 */
 	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
-	}
-
-	/**
-	 * Registers a callback for determining the cell element name during downcast.
-	 * The callback receives the model table cell element and should return 'td' or 'th'.
-	 * If the callback returns null, the default logic (based on heading rows/columns) will be used.
-	 *
-	 * @internal
-	 */
-	public registerCellElementNameCallback( callback: TableCellElementNameCallback ): void {
-		this._cellElementNameCallback = callback;
 	}
 }
 

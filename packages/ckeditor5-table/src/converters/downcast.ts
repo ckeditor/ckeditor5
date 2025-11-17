@@ -11,8 +11,8 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
-import { type TableUtils } from '../tableutils.js';
-import type { TableCellElementNameCallback, TableConversionAdditionalSlot } from '../tableediting.js';
+import type { TableUtils } from '../tableutils.js';
+import type { TableConversionAdditionalSlot } from '../tableediting.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -95,13 +95,11 @@ export function downcastRow(): DowncastElementCreatorFunction {
  *
  * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
- * @param options.getCellElementNameCallback Optional callback returning a function that will be used to determine the cell element name.
  * @returns Element creator.
  */
 export function downcastCell(
 	options: {
 		asWidget?: boolean;
-		getCellElementNameCallback?: () => ( TableCellElementNameCallback | null );
 	} = {}
 ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
@@ -112,7 +110,6 @@ export function downcastCell(
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-		const cellNameCallback = options.getCellElementNameCallback?.();
 
 		let result: ViewElement | null = null;
 
@@ -121,12 +118,10 @@ export function downcastCell(
 			if ( tableSlot.cell == tableCell ) {
 				let cellElementName: 'td' | 'th' | null = null;
 
-				if ( cellNameCallback ) {
-					cellElementName = cellNameCallback( {
-						tableCell,
-						table,
-						tableSlot
-					} );
+				if ( tableSlot.cell.hasAttribute( 'tableCellType' ) ) {
+					const cellType = tableCell.getAttribute( 'tableCellType' )!;
+
+					cellElementName = cellType === 'header' ? 'th' : 'td';
 				}
 
 				if ( !cellElementName ) {
