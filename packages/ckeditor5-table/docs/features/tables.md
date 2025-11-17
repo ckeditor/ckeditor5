@@ -50,6 +50,8 @@ You can move tables horizontally and vertically to create a desired document lay
 
 You can find all of those options in the [table properties balloon](#table-contextual-toolbar). The balloon displays after you click on a table. Use the [demo above](#demo) to test all those options.
 
+You can also control how the alignment appears in the editor's output. Learn more about it in the {@link features/tables-installation#table-alignment-in-output Table alignment in output} section.
+
 ## Typing around tables
 
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
