@@ -771,10 +771,10 @@ export class TablePropertiesView extends View {
 
 		// Returns object with a proper order of labels.
 		if ( locale.uiLanguageDirection === 'rtl' ) {
-			return { left, right, blockRight, center, blockLeft };
+			return { right, left, blockRight, center, blockLeft };
 		}
 
-		return { blockLeft, center, blockRight, right, left };
+		return { blockLeft, center, blockRight, left, right };
 	}
 }
 
