@@ -2225,7 +2225,7 @@ describe( 'downcast converters', () => {
 				] ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><td>foo</td></tr>' +
 						'</tbody>' +
@@ -2241,7 +2241,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 2 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -2261,7 +2261,7 @@ describe( 'downcast converters', () => {
 				], { headingColumns: 1 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<tbody>' +
 							'<tr><th>1</th><td>2</td></tr>' +
 							'<tr><th>3</th><td>4</td></tr>' +
@@ -2279,7 +2279,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 1, headingColumns: 1 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 						'</thead>' +
@@ -2298,7 +2298,7 @@ describe( 'downcast converters', () => {
 				], { headingRows: 3 } ) );
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
@@ -2319,7 +2319,7 @@ describe( 'downcast converters', () => {
 				);
 
 				expect( getClipboardData( editor ) ).to.equal(
-					'<table class="table table-style-align-center" style="float:none;margin-left:auto;margin-right:auto;" align="center">' +
+					'<table class="table table-style-align-center" style="margin-left:auto;margin-right:auto;" align="center">' +
 						'<caption>Foo</caption>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
@@ -2365,7 +2365,7 @@ describe( 'downcast converters', () => {
 
 				assertPlainTableStyle(
 					editor,
-					'float:none;margin-left:auto;margin-right:auto;',
+					'margin-left:auto;margin-right:auto;',
 					'table table-style-align-center',
 					'align="center"'
 				);
@@ -2383,7 +2383,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2394,7 +2394,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'border-color:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2405,7 +2405,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-width:1px;float:none;margin-left:auto;margin-right:auto;',
+						'border-width:1px;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2418,7 +2418,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border:1px dotted red;float:none;margin-left:auto;margin-right:auto;',
+						'border:1px dotted red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2588,7 +2588,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;width:500px;',
+						'margin-left:auto;margin-right:auto;width:500px;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2599,7 +2599,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;height:500px;margin-left:auto;margin-right:auto;',
+						'height:500px;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2610,7 +2610,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'background-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'background-color:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2649,7 +2649,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-color:red;border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2658,7 +2658,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'border-color:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2670,7 +2670,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-color:red;border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2679,7 +2679,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2691,7 +2691,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-style:dotted;border-width:1px;float:none;margin-left:auto;margin-right:auto;',
+						'border-style:dotted;border-width:1px;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2700,7 +2700,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2713,7 +2713,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border:1px dotted red;float:none;margin-left:auto;margin-right:auto;',
+						'border:1px dotted red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2722,7 +2722,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'border-color:red;border-style:dotted;float:none;margin-left:auto;margin-right:auto;',
+						'border-color:red;border-style:dotted;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2742,7 +2742,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;',
+						'margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2753,7 +2753,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;width:500px;',
+						'margin-left:auto;margin-right:auto;width:500px;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2762,7 +2762,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;',
+						'margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2773,7 +2773,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;height:500px;margin-left:auto;margin-right:auto;',
+						'height:500px;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2782,7 +2782,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;',
+						'margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2793,7 +2793,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'background-color:red;float:none;margin-left:auto;margin-right:auto;',
+						'background-color:red;margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);
@@ -2802,7 +2802,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:none;margin-left:auto;margin-right:auto;',
+						'margin-left:auto;margin-right:auto;',
 						'table table-style-align-center',
 						'align="center"'
 					);

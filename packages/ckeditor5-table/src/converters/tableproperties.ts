@@ -498,7 +498,7 @@ export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
 export const downcastTableAlignmentConfig: Record<TableAlignmentValues, { align: string | undefined; style: string; className: string }> = {
 	center: {
 		align: 'center',
-		style: 'float: none; margin-left: auto; margin-right: auto;',
+		style: 'margin-left: auto; margin-right: auto;',
 		className: 'table-style-align-center'
 	},
 	left: {

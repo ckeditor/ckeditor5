@@ -233,22 +233,15 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 					key: 'class',
 					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
 				},
-				center: ( alignment, conversionApi, data ) => {
-					const value: Record<string, string> = data.item.getAttribute( 'tableType' ) !== 'layout' ? {
-						// Model: `alignment:center` => CSS: `float:none`.
-						float: 'none'
-					} : {
+				center: useInlineStyles ? {
+					key: 'style',
+					value: {
 						'margin-left': 'auto',
 						'margin-right': 'auto'
-					};
-
-					return useInlineStyles ? {
-						key: 'style',
-						value
-					} : {
-						key: 'class',
-						value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
-					};
+					}
+				} : {
+					key: 'class',
+					value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
 				},
 				blockLeft: useInlineStyles ? {
 					key: 'style',
