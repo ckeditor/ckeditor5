@@ -169,7 +169,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableCellTypeProperty( editor );
-		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor, 'data' ) );
+		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 
 		addTableCellTypePostfixer( editor );
 		addInsertedTableCellTypePostfixer( editor );

@@ -47,7 +47,7 @@ export class TableCellPropertyCommand extends Command {
 	 * @param attributeName Table cell attribute name.
 	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor: Editor, attributeName: string, defaultValue: string ) {
+	constructor( editor: Editor, attributeName: string, defaultValue?: string ) {
 		super( editor );
 
 		this.attributeName = attributeName;

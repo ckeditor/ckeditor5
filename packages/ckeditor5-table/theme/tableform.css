@@ -5,11 +5,9 @@
 
 .ck.ck-table-form {
 	& .ck-form__row {
-		&.ck-table-form__border-row {
-			flex-wrap: wrap;
-		}
-
-		&.ck-table-form__background-row {
+		&.ck-table-form__border-row,
+		&.ck-table-form__background-row,
+		&.ck-table-form__cell-type-row {
 			flex-wrap: wrap;
 		}
 

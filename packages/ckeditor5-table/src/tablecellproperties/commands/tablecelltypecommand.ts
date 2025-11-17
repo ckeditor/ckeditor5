@@ -32,9 +32,8 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 	 * Creates a new `TableCellTypeCommand` instance.
 	 *
 	 * @param editor An editor in which this command will be used.
-	 * @param defaultValue The default value of the attribute.
 	 */
-	constructor( editor: Editor, defaultValue: string ) {
-		super( editor, 'tableCellType', defaultValue );
+	constructor( editor: Editor ) {
+		super( editor, 'tableCellType' );
 	}
 }
