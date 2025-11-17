@@ -40,7 +40,15 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 ## Table alignment
 
-Here will be the documentation for the updated table alignment feature.
+There are five alignment options in tables:
+
+* Left (wrap): A table aligns to the left, and other content wraps around it.
+* Right (wrap): A table aligns to the right, and other content wraps around it.
+* Center: A table is horizontally centered, with equal amounts of space on both sides.
+* Left (block): A table aligns to the left. The table does not influence the flow of other content.
+* Right (block): A table is aligned to the right. The table does not influence the flow of other content.
+
+You can find all of those options in the [table properties balloon](#table-contextual-toolbar). The balloon displays after you click on a table. Use the [demo above](#demo) to test all those options.
 
 ## Typing around tables
 
