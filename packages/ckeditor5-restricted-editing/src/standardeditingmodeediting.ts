@@ -12,6 +12,7 @@ import { Matcher, type ModelElement, type UpcastElementEvent } from 'ckeditor5/s
 
 import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
 import { RestrictedEditingExceptionBlockCommand } from './restrictededitingexceptionblockcommand.js';
+import { RestrictedEditingExceptionAutoCommand } from './restrictededitingexceptionautocommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -182,6 +183,7 @@ export class StandardEditingModeEditing extends Plugin {
 
 		editor.commands.add( 'restrictedEditingException', new RestrictedEditingExceptionCommand( editor ) );
 		editor.commands.add( 'restrictedEditingExceptionBlock', new RestrictedEditingExceptionBlockCommand( editor ) );
+		editor.commands.add( 'restrictedEditingExceptionAuto', new RestrictedEditingExceptionAutoCommand( editor ) );
 
 		editor.editing.view.change( writer => {
 			for ( const root of editor.editing.view.document.roots ) {
