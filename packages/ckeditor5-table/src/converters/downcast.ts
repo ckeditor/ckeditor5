@@ -12,7 +12,7 @@ import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, Downcast
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
-import type { TableConversionAdditionalSlot } from '../tableediting.js';
+import type { TableCellElementNameCallback, TableConversionAdditionalSlot } from '../tableediting.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -95,9 +95,15 @@ export function downcastRow(): DowncastElementCreatorFunction {
  *
  * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param options.getCellElementNameCallback Optional callback returning a function that will be used to determine the cell element name.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
+export function downcastCell(
+	options: {
+		asWidget?: boolean;
+		getCellElementNameCallback?: () => ( TableCellElementNameCallback | null );
+	} = {}
+): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
@@ -106,14 +112,28 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastEl
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+		const cellNameCallback = options.getCellElementNameCallback?.();
 
 		let result: ViewElement | null = null;
 
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-				const cellElementName = isHeading ? 'th' : 'td';
+				let cellElementName: 'td' | 'th' | null = null;
+
+				if ( cellNameCallback ) {
+					cellElementName = cellNameCallback( {
+						tableCell,
+						table,
+						tableSlot
+					} );
+				}
+
+				if ( !cellElementName ) {
+					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+
+					cellElementName = isHeading ? 'th' : 'td';
+				}
 
 				result = options.asWidget ?
 					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :

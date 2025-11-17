@@ -8,10 +8,11 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
+import type { ModelPositionOffset, ViewElement, DowncastSlotFilter, ModelElement } from 'ckeditor5/src/engine.js';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
+import type { TableSlot } from './tablewalker.js';
 
 import { InsertTableCommand } from './commands/inserttablecommand.js';
 import { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -43,6 +44,12 @@ export class TableEditing extends Plugin {
 	 * Handlers for creating additional slots in the table.
 	 */
 	private _additionalSlots: Array<TableConversionAdditionalSlot>;
+
+	/**
+	 * Callback for determining the cell element name during downcast.
+	 * If set, this callback takes precedence over the default logic based on heading rows/columns.
+	 */
+	private _cellElementNameCallback: TableCellElementNameCallback | null = null;
 
 	/**
 	 * @inheritDoc
@@ -145,11 +152,11 @@ export class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( { asWidget: true } )
+			view: downcastCell( { asWidget: true, getCellElementNameCallback: () => this._cellElementNameCallback } )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell()
+			view: downcastCell( { getCellElementNameCallback: () => this._cellElementNameCallback } )
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
@@ -222,6 +229,17 @@ export class TableEditing extends Plugin {
 	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
 	}
+
+	/**
+	 * Registers a callback for determining the cell element name during downcast.
+	 * The callback receives the model table cell element and should return 'td' or 'th'.
+	 * If the callback returns null, the default logic (based on heading rows/columns) will be used.
+	 *
+	 * @internal
+	 */
+	public registerCellElementNameCallback( callback: TableCellElementNameCallback ): void {
+		this._cellElementNameCallback = callback;
+	}
 }
 
 /**
@@ -241,6 +259,18 @@ function upcastCellSpan( type: string ) {
 		return span;
 	};
 }
+
+/**
+ * Callback for determining the cell element name during downcast.
+ * Returns 'td' or 'th' based on the model element, or null to use default logic.
+ */
+export type TableCellElementNameCallback = (
+	data: {
+		tableCell: ModelElement;
+		table: ModelElement;
+		tableSlot: TableSlot;
+	}
+) => 'td' | 'th' | null;
 
 /**
  * By default, only the `tableRow` elements from the `table` model are downcast inside the `<table>` and

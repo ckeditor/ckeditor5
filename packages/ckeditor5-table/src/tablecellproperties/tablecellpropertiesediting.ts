@@ -16,7 +16,8 @@ import {
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
-	type UpcastConversionData
+	type UpcastConversionData,
+	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
@@ -32,6 +33,7 @@ import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcomm
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
+import { TableWalker } from '../tablewalker.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -164,7 +166,211 @@ export class TableCellPropertiesEditing extends Plugin {
 			'tableCellVerticalAlignment',
 			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
+
+		enableCellTypeProperty( editor );
+		addTableCellTypePostfixer( editor );
+		addInsertedTableCellTypePostfixer( editor );
 	}
+}
+
+/**
+ * Enables the `'tableCellType'` attribute for table cells that switches between `<td>` and `<th>`.
+ *
+ * @param editor The editor instance.
+ */
+function enableCellTypeProperty( editor: Editor ) {
+	const { conversion } = editor;
+	const { schema } = editor.model;
+	const tableEditing = editor.plugins.get( TableEditing );
+
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'tableCellType' ]
+	} );
+
+	schema.setAttributeProperties( 'tableCellType', {
+		isFormatting: true
+	} );
+
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
+		const { writer } = conversionApi;
+		const { viewItem, modelRange } = data;
+
+		if ( !viewItem.is( 'element', 'td' ) && !viewItem.is( 'element', 'th' ) ) {
+			return;
+		}
+
+		const modelElement = modelRange?.start.nodeAfter;
+
+		if ( modelElement && modelElement.is( 'element', 'tableCell' ) ) {
+			const cellType = viewItem.name === 'th' ? 'header' : 'data';
+
+			writer.setAttribute( 'tableCellType', cellType, modelElement );
+		}
+	} ) );
+
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+		const { writer } = conversionApi;
+		const { modelRange } = data;
+
+		const table = modelRange?.start?.nodeAfter;
+
+		if ( !table?.is( 'element', 'table' ) ) {
+			return;
+		}
+
+		const headingRows = table.getAttribute( 'headingRows' ) as number;
+		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+		const tableWalker = new TableWalker( table );
+
+		if ( headingRows + headingColumns === 0 ) {
+			return;
+		}
+
+		for ( const { cell, row, column } of tableWalker ) {
+			if ( row < headingRows || column < headingColumns ) {
+				writer.setAttribute( 'tableCellType', 'header', cell );
+			}
+		}
+	} ) );
+
+	tableEditing.registerCellElementNameCallback( ( { tableCell } ) => {
+		const cellType = tableCell.getAttribute( 'tableCellType' )!;
+
+		return cellType === 'header' ? 'th' : 'td';
+	} );
+}
+
+/**
+ * Adds a postfixer that updates `tableCellType` attribute when `headingRows` or `headingColumns` attributes change on a table.
+ *
+ * @param editor The editor instance.
+ */
+function addTableCellTypePostfixer( editor: Editor ) {
+	const model = editor.model;
+
+	model.document.registerPostFixer( writer => {
+		let changed = false;
+
+		for ( const change of model.document.differ.getChanges() ) {
+			// Check if headingRows or headingColumns attribute changed on a table.
+			if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
+				continue;
+			}
+
+			const element = change.range.start.nodeAfter;
+
+			if ( !element?.is( 'element', 'table' ) ) {
+				continue;
+			}
+
+			if ( change.attributeKey !== 'headingRows' && change.attributeKey !== 'headingColumns' ) {
+				continue;
+			}
+
+			const oldValue = change.attributeOldValue as number || 0;
+			const headingRows = element.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
+
+			const tableWalker = new TableWalker( element );
+
+			for ( const { cell, row, column } of tableWalker ) {
+				// Determine if this cell's status changed based on the old and new values.
+				let wasInHeadingSection;
+
+				if ( change.attributeKey === 'headingRows' ) {
+					// Check old headingRows value with current headingColumns.
+					wasInHeadingSection = row < oldValue || column < headingColumns;
+				} else {
+					// Check current headingRows with old headingColumns value.
+					wasInHeadingSection = row < headingRows || column < oldValue;
+				}
+
+				const isInHeadingSection = row < headingRows || column < headingColumns;
+
+				// Only update cells whose heading status actually changed.
+				if ( wasInHeadingSection !== isInHeadingSection ) {
+					const expectedCellType = isInHeadingSection ? 'header' : 'data';
+					const currentCellType = cell.getAttribute( 'tableCellType' );
+
+					if ( currentCellType !== expectedCellType ) {
+						writer.setAttribute( 'tableCellType', expectedCellType, cell );
+						changed = true;
+					}
+				}
+			}
+		}
+
+		return changed;
+	} );
+}
+
+/**
+ * Adds a postfixer that ensures newly inserted `tableCell` elements have the `tableCellType` attribute set.
+ *
+ * @param editor The editor instance.
+ */
+function addInsertedTableCellTypePostfixer( editor: Editor ) {
+	const model = editor.model;
+
+	model.document.registerPostFixer( writer => {
+		let changed = false;
+
+		for ( const change of model.document.differ.getChanges() ) {
+			// Check if something was inserted.
+			if ( change.type !== 'insert' || change.name === '$text' || change.position.root.rootName === '$graveyard' ) {
+				continue;
+			}
+
+			if ( !change.position.nodeAfter ) {
+				continue;
+			}
+
+			// Create a range over the inserted element to find all tableCell elements within.
+			const range = model.createRangeOn( change.position.nodeAfter );
+
+			for ( const item of range.getItems() ) {
+				if ( !item.is( 'element', 'tableCell' ) ) {
+					continue;
+				}
+
+				// Check if the tableCell already has tableCellType attribute.
+				if ( item.hasAttribute( 'tableCellType' ) ) {
+					continue;
+				}
+
+				// Find the parent table to determine heading rows and columns.
+				const table = item.findAncestor( 'table' );
+
+				if ( !table ) {
+					continue;
+				}
+
+				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+				const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+				// Determine the position of the cell in the table.
+				const tableWalker = new TableWalker( table );
+				let cellRow = 0;
+				let cellColumn = 0;
+
+				for ( const { cell, row, column } of tableWalker ) {
+					if ( cell === item ) {
+						cellRow = row;
+						cellColumn = column;
+						break;
+					}
+				}
+
+				// Determine the cell type based on its position.
+				const cellType = ( cellRow < headingRows || cellColumn < headingColumns ) ? 'header' : 'data';
+
+				writer.setAttribute( 'tableCellType', cellType, item );
+				changed = true;
+			}
+		}
+
+		return changed;
+	} );
 }
 
 /**
