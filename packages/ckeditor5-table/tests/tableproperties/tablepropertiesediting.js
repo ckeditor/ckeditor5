@@ -1959,7 +1959,7 @@ describe( 'table properties', () => {
 				it( 'should downcast "center" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'center', table ) );
 
-					assertTableStyle( editor, null, 'float:none;' );
+					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
 				} );
 
 				it( 'should downcast "blockRight" tableAlignment', () => {
@@ -2075,7 +2075,7 @@ describe( 'table properties', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should downcast "center" alignment for content table using float:none', () => {
+					it( 'should downcast "center" alignment for content table using auto margins', () => {
 						_setModelData( model,
 							'<table headingRows="0" headingColumns="0">' +
 								'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
@@ -2086,7 +2086,7 @@ describe( 'table properties', () => {
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
-							'<figure class="table content-table" style="float:none;">' +
+							'<figure class="table content-table" style="margin-left:auto;margin-right:auto;">' +
 								'<table>' +
 									'<tbody>' +
 										'<tr><td>content table</td></tr>' +
