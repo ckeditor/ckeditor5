@@ -103,16 +103,118 @@ export class TableCellTypeEditing extends Plugin {
 
 		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 
-		this._addTableCellTypePostfixer();
+		this._addHeadingAttributeChangePostfixer();
+		this._addAutoIncrementHeadingPostfixer();
 		this._addInsertedTableCellTypePostfixer();
 		this._addTableCellTypeReconversionHandler();
 	}
 
 	/**
-	 * Adds a postfixer that updates `tableCellType` attribute when `headingRows` or `headingColumns` attributes change
-	 * on a table and ensures proper synchronization between cell types and heading section boundaries.
+	 * Adds a postfixer that synchronizes `tableCellType` attribute with heading section boundaries.
+	 *
+	 * When `headingRows` or `headingColumns` attributes change on a table, this postfixer:
+	 * - Updates cell types for cells entering the heading section (always changes to 'header')
+	 * - Updates cell types for cells leaving the heading section (changes to 'data' only if all
+	 *   leaving cells were 'header', otherwise preserves current type to respect manual changes)
+	 *
+	 * This ensures that cell types stay in sync with the structural heading boundaries while
+	 * respecting user's manual modifications to cell types.
 	 */
-	private _addTableCellTypePostfixer(): void {
+	private _addHeadingAttributeChangePostfixer(): void {
+		const model = this.editor.model;
+
+		model.document.registerPostFixer( writer => {
+			let changed = false;
+
+			for ( const change of model.document.differ.getChanges() ) {
+				// Check if headingRows or headingColumns attribute changed on a table.
+				if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
+					continue;
+				}
+
+				const element = change.range.start.nodeAfter;
+
+				if ( !element?.is( 'element', 'table' ) ) {
+					continue;
+				}
+
+				if ( change.attributeKey !== 'headingRows' && change.attributeKey !== 'headingColumns' ) {
+					continue;
+				}
+
+				const oldValue = change.attributeOldValue as number || 0;
+				const headingRows = element.getAttribute( 'headingRows' ) as number || 0;
+				const headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
+
+				// Helper function to determine if a cell was in the heading section before the change.
+				const wasInHeadingSection = ( row: number, column: number ): boolean => {
+					if ( change.attributeKey === 'headingRows' ) {
+						return row < oldValue || column < headingColumns;
+					} else {
+						return row < headingRows || column < oldValue;
+					}
+				};
+
+				// Check if all cells leaving the heading section still have the 'header' type.
+				// This prevents unwanted type changes when the user manually changed some cells to 'data'.
+				let allLeavingCellsWereHeaders = true;
+
+				for ( const { cell, row, column } of new TableWalker( element ) ) {
+					const isInHeadingSection = row < headingRows || column < headingColumns;
+
+					// Check only cells that are leaving the heading section.
+					if ( wasInHeadingSection( row, column ) && !isInHeadingSection ) {
+						const currentCellType = cell.getAttribute( 'tableCellType' );
+
+						if ( currentCellType !== 'header' ) {
+							allLeavingCellsWereHeaders = false;
+							break;
+						}
+					}
+				}
+
+				// Update cell types based on whether they're entering or leaving the heading section.
+				for ( const { cell, row, column } of new TableWalker( element ) ) {
+					const isInHeadingSection = row < headingRows || column < headingColumns;
+
+					// Only update cells whose heading section status actually changed.
+					if ( wasInHeadingSection( row, column ) !== isInHeadingSection ) {
+						const currentCellType = cell.getAttribute( 'tableCellType' );
+						let expectedCellType;
+
+						if ( isInHeadingSection ) {
+							// Cell is entering heading section - always change to 'header'.
+							expectedCellType = 'header';
+						} else {
+							// Cell is leaving heading section.
+							// Only change to 'data' if ALL leaving cells were 'header' (no manual changes by user).
+							// Otherwise preserve the current type to respect user's manual modifications.
+							expectedCellType = allLeavingCellsWereHeaders ? 'data' : currentCellType;
+						}
+
+						if ( currentCellType !== expectedCellType ) {
+							writer.setAttribute( 'tableCellType', expectedCellType, cell );
+							changed = true;
+						}
+					}
+				}
+			}
+
+			return changed;
+		} );
+	}
+
+	/**
+	 * Adds a postfixer that automatically expands heading section when adjacent rows/columns contain only headers.
+	 *
+	 * When `headingRows` or `headingColumns` increase (e.g., via table header commands), this postfixer
+	 * checks if the immediately following rows/columns consist entirely of header cells. If so, it
+	 * automatically increments the heading attribute to include those rows/columns.
+	 *
+	 * This creates intuitive behavior where manually changing multiple cells to 'header' and then
+	 * toggling the heading section will include all consecutive header rows/columns.
+	 */
+	private _addAutoIncrementHeadingPostfixer(): void {
 		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
@@ -137,66 +239,6 @@ export class TableCellTypeEditing extends Plugin {
 				const oldValue = change.attributeOldValue as number || 0;
 				let headingRows = element.getAttribute( 'headingRows' ) as number || 0;
 				let headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
-
-				// Check if all cells leaving the heading section still have the 'header' type.
-				// This prevents unwanted type changes when the user manually changed some cells to 'data'.
-				let allLeavingCellsWereHeaders = true;
-
-				for ( const { cell, row, column } of new TableWalker( element ) ) {
-					let wasInHeadingSection;
-
-					if ( change.attributeKey === 'headingRows' ) {
-						wasInHeadingSection = row < oldValue || column < headingColumns;
-					} else {
-						wasInHeadingSection = row < headingRows || column < oldValue;
-					}
-
-					const isInHeadingSection = row < headingRows || column < headingColumns;
-
-					// Check only cells that are leaving the heading section.
-					if ( wasInHeadingSection && !isInHeadingSection ) {
-						const currentCellType = cell.getAttribute( 'tableCellType' );
-
-						if ( currentCellType !== 'header' ) {
-							allLeavingCellsWereHeaders = false;
-							break;
-						}
-					}
-				}
-
-				// Update cell types based on whether they're entering or leaving the heading section.
-				for ( const { cell, row, column } of new TableWalker( element ) ) {
-					let wasInHeadingSection;
-
-					if ( change.attributeKey === 'headingRows' ) {
-						wasInHeadingSection = row < oldValue || column < headingColumns;
-					} else {
-						wasInHeadingSection = row < headingRows || column < oldValue;
-					}
-
-					const isInHeadingSection = row < headingRows || column < headingColumns;
-
-					// Only update cells whose heading section status actually changed.
-					if ( wasInHeadingSection !== isInHeadingSection ) {
-						const currentCellType = cell.getAttribute( 'tableCellType' );
-						let expectedCellType;
-
-						if ( isInHeadingSection ) {
-							// Cell is entering heading section - always change to 'header'.
-							expectedCellType = 'header';
-						} else {
-							// Cell is leaving heading section.
-							// Only change to 'data' if ALL leaving cells were 'header' (no manual changes by user).
-							// Otherwise preserve the current type to respect user's manual modifications.
-							expectedCellType = allLeavingCellsWereHeaders ? 'data' : currentCellType;
-						}
-
-						if ( currentCellType !== expectedCellType ) {
-							writer.setAttribute( 'tableCellType', expectedCellType, cell );
-							changed = true;
-						}
-					}
-				}
 
 				// Auto-increment headingRows if next rows contain only header cells.
 				if ( change.attributeKey === 'headingRows' && headingRows > oldValue ) {
