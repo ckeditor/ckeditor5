@@ -100,7 +100,7 @@ The `Image` plugin registers:
 * The {@link module:image/imageconfig~ImageInsertConfig `insertImage`} dropdown component (to use in the toolbar). 
 
 <info-box note>
-	The basic image plugin is minimal and provides the foundation for the image ecosystem. Most UI components (buttons, toolbars) and additional commands are registered by subplugins. See the respective feature guides linked in the [Image features](#image-features) section to learn more about their APIs.
+	The basic image plugin is minimal and provides the foundation for the image ecosystem. Subplugins register most UI components (buttons, toolbars) and additional commands. See the feature guides linked in the [Image features](#image-features) section for more information about their APIs.
 </info-box>
 
 
