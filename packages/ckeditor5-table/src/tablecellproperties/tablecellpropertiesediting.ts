@@ -174,6 +174,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		addTableCellTypePostfixer( editor );
 		addInsertedTableCellTypePostfixer( editor );
 		addTableCellTypeReconversionHandler( editor );
+		addHeadingAttributeAutoIncrementPostfixer( editor );
 	}
 }
 
@@ -458,6 +459,114 @@ function addTableCellTypeReconversionHandler( editor: Editor ) {
 				editing.reconvertItem( tableCell );
 			}
 		}
+	} );
+}
+
+/**
+ * Adds a postfixer that automatically increments `headingRows` or `headingColumns` attributes
+ * when they change and the next row/column contains only header cells.
+ *
+ * @param editor The editor instance.
+ */
+function addHeadingAttributeAutoIncrementPostfixer( editor: Editor ) {
+	const model = editor.model;
+
+	model.document.registerPostFixer( writer => {
+		let changed = false;
+
+		for ( const change of model.document.differ.getChanges() ) {
+			// Check if headingRows or headingColumns attribute changed on a table.
+			if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
+				continue;
+			}
+
+			const element = change.range.start.nodeAfter;
+
+			if ( !element?.is( 'element', 'table' ) ) {
+				continue;
+			}
+
+			if ( change.attributeKey !== 'headingRows' && change.attributeKey !== 'headingColumns' ) {
+				continue;
+			}
+
+			const oldValue = change.attributeOldValue as number || 0;
+			let headingRows = element.getAttribute( 'headingRows' ) as number || 0;
+			let headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
+
+			// Only process if the attribute value increased.
+			if ( change.attributeKey === 'headingRows' && headingRows <= oldValue ) {
+				continue;
+			}
+
+			if ( change.attributeKey === 'headingColumns' && headingColumns <= oldValue ) {
+				continue;
+			}
+
+			// Auto-increment headingRows if next rows contain only header cells.
+			if ( change.attributeKey === 'headingRows' ) {
+				const tableWalker = new TableWalker( element );
+				const rowCount = Array.from( tableWalker ).reduce( ( max, { row } ) => Math.max( max, row + 1 ), 0 );
+
+				while ( headingRows < rowCount ) {
+					let allHeadersInRow = true;
+
+					for ( const { cell, row } of new TableWalker( element, { row: headingRows } ) ) {
+						if ( row !== headingRows ) {
+							continue;
+						}
+
+						const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+
+						if ( cellType !== 'header' ) {
+							allHeadersInRow = false;
+							break;
+						}
+					}
+
+					if ( allHeadersInRow ) {
+						headingRows++;
+						writer.setAttribute( 'headingRows', headingRows, element );
+						changed = true;
+					} else {
+						break;
+					}
+				}
+			}
+
+			// Auto-increment headingColumns if next columns contain only header cells.
+			if ( change.attributeKey === 'headingColumns' ) {
+				const tableWalker = new TableWalker( element );
+				const columnCount = Array.from( tableWalker ).reduce( ( max, { column } ) => Math.max( max, column + 1 ), 0 );
+
+				while ( headingColumns < columnCount ) {
+					let allHeadersInColumn = true;
+
+					for ( const { cell, column } of new TableWalker( element, { column: headingColumns } ) ) {
+						if ( column !== headingColumns ) {
+							continue;
+						}
+
+						const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+
+						if ( cellType !== 'header' ) {
+							allHeadersInColumn = false;
+							break;
+						}
+					}
+
+					if ( allHeadersInColumn ) {
+						headingColumns++;
+						writer.setAttribute( 'headingColumns', headingColumns, element );
+						changed = true;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+
+		return changed;
 	} );
 }
 
