@@ -203,7 +203,7 @@ jobs:
             fi
       - run:
           name: Trigger CKEditor 5 release job
-          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5 --release-branch << pipeline.git.branch >>
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5-commercial --trigger-repository-slug ckeditor/ckeditor5 --release-branch << pipeline.git.branch >>
 
   cke5_trigger_uber_ci:
     docker:
@@ -214,8 +214,8 @@ jobs:
       - checkout_command
       - bootstrap_repository_command
       - run:
-          name: Trigger the Uber CI
-          command: pnpm ckeditor5-dev-ci-trigger-circle-build
+          name: Trigger the Commercial CI
+          command: pnpm ckeditor5-dev-ci-trigger-circle-build --slug ckeditor/ckeditor5-commercial --trigger-repository-slug ckeditor/ckeditor5
 
   release_prepare:
     docker:
