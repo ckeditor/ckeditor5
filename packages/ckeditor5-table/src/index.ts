@@ -17,6 +17,7 @@ export { TableCellProperties } from './tablecellproperties.js';
 export { TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting.js';
 export { TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 export { TableCellPropertiesView, type TableCellPropertiesViewOptions } from './tablecellproperties/ui/tablecellpropertiesview.js';
+export { TableCellTypeEditing } from './tablecellproperties/tablecelltypeediting.js';
 export { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 export { TableLayout } from './tablelayout.js';
 export { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
