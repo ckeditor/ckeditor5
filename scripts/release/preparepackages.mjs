@@ -7,7 +7,7 @@
 
 import upath from 'upath';
 import fs from 'fs-extra';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { Listr } from 'listr2';

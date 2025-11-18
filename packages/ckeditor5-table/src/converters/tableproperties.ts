@@ -7,7 +7,14 @@
  * @module table/converters/tableproperties
  */
 
-import type { Conversion, UpcastConversionApi, UpcastConversionData, ViewElement } from 'ckeditor5/src/engine.js';
+import type { Editor } from 'ckeditor5/src/core.js';
+import type {
+	Conversion,
+	UpcastConversionApi,
+	UpcastConversionData,
+	ViewElement,
+	UpcastElementEvent
+} from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
@@ -131,6 +138,7 @@ export interface StyleValues {
 /**
  * Conversion helper for upcasting border styles for view elements.
  *
+ * @param editor The editor instance.
  * @param defaultBorder The default border values.
  * @param defaultBorder.color The default `borderColor` value.
  * @param defaultBorder.style The default `borderStyle` value.
@@ -138,11 +146,13 @@ export interface StyleValues {
  * @internal
  */
 export function upcastBorderStyles(
-	conversion: Conversion,
+	editor: Editor,
 	viewElementName: string,
 	modelAttributes: StyleValues,
 	defaultBorder: StyleValues
 ): void {
+	const { conversion } = editor;
+
 	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:' + viewElementName, ( evt, data, conversionApi ) => {
 		// If the element was not converted by element-to-element converter,
 		// we should not try to convert the style. See #8393.
@@ -219,6 +229,45 @@ export function upcastBorderStyles(
 			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
 		}
 	} ) );
+
+	if ( editor.config.get( 'experimentalFlags.upcastTableBorderZeroAttributes' ) ) {
+		// If parent table has `border="0"` attribute then set border style to `none`
+		// all table cells of that table and table itself.
+		conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on<UpcastElementEvent>( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+				const { modelRange, viewItem } = data;
+
+				const viewTable = (
+					viewItem.is( 'element', 'table' ) ?
+						viewItem :
+						viewItem.findAncestor( 'table' )
+				)!;
+
+				// If something already consumed the border attribute on the nearest table element, skip the conversion.
+				if ( !conversionApi.consumable.test( viewTable, { attributes: 'border' } ) ) {
+					return;
+				}
+
+				// Ignore tables with border different than "0".
+				if ( viewTable.getAttribute( 'border' ) !== '0' ) {
+					return;
+				}
+
+				const modelElement = modelRange?.start?.nodeAfter;
+
+				// If model element has already border style attribute, skip the conversion.
+				if ( !modelElement || modelElement.hasAttribute( modelAttributes.style ) ) {
+					return;
+				}
+
+				conversionApi.writer.setAttribute( modelAttributes.style, 'none', modelElement );
+
+				if ( viewItem.is( 'element', 'table' ) ) {
+					conversionApi.consumable.consume( viewItem, { attributes: 'border' } );
+				}
+			} );
+		} );
+	}
 }
 
 /**

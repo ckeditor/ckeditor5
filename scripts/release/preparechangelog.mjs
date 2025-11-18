@@ -5,8 +5,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { styleText } from 'util';
-import fs from 'fs';
+import { styleText } from 'node:util';
+import fs from 'node:fs';
 import { generateChangelogForMonoRepository } from '@ckeditor/ckeditor5-dev-changelog';
 import { CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
 import getChangelogOptions from './utils/getchangelogoptions.mjs';

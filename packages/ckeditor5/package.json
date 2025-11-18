@@ -31,9 +31,6 @@
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
-  "engines": {
-    "node": ">=22.0.0"
-  },
   "files": [
     "dist",
     "src/*.js",
@@ -116,8 +113,8 @@
     "@ckeditor/ckeditor5-word-count": "workspace:*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-translations": "^53.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-translations": "^54.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^54.0.0",
     "@wiris/mathtype-ckeditor5": "^8.13.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.3.3",

@@ -26,7 +26,7 @@ parameters:
     default: false
   chromeVersion:
     type: string
-    default: "141.0.7390.54"
+    default: "142.0.7444.59"
 
 orbs:
   continuation: circleci/continuation@0.1.2
@@ -54,7 +54,7 @@ commands:
 jobs:
   generate_configuration:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     parameters:
       isNightly:

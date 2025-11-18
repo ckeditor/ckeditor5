@@ -4,7 +4,7 @@
  */
 
 import { glob } from 'glob';
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 import semver from 'semver';
 import upath from 'upath';
 import isCKEditor5PackageFactory from './isckeditor5packagefactory.mjs';

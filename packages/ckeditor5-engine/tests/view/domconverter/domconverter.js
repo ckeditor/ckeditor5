@@ -906,21 +906,21 @@ describe( 'ViewDomConverter', () => {
 		it( 'should not render the attribute with invalid name', () => {
 			const domElement = document.createElement( 'p' );
 
-			converter.setDomElementAttribute( domElement, '200', 'foo' );
+			converter.setDomElementAttribute( domElement, 'space inside', 'foo' );
 			expect( domElement.outerHTML ).to.equal( '<p></p>' );
 		} );
 
 		it( 'should warn when the attribute has invalid name', () => {
 			const domElement = document.createElement( 'p' );
 
-			converter.setDomElementAttribute( domElement, '200', 'foo' );
+			converter.setDomElementAttribute( domElement, 'space inside', 'foo' );
 
 			sinon.assert.calledOnce( warnStub );
 			sinon.assert.calledWithExactly( warnStub,
 				sinon.match( /^domconverter-invalid-attribute-detected/ ),
 				{
 					domElement,
-					key: '200',
+					key: 'space inside',
 					value: 'foo'
 				},
 				sinon.match.string // Link to the documentation

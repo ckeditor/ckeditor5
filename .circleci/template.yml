@@ -105,7 +105,7 @@ commands:
 jobs:
   cke5_manual:
     docker:
-      - image: cimg/node:22.12.0-browsers
+      - image: cimg/node:24.11.0-browsers
     resource_class: large
     steps:
       - checkout_command
@@ -124,7 +124,7 @@ jobs:
 
   cke5_validators:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - checkout_command
@@ -151,6 +151,10 @@ jobs:
           command: node scripts/ci/check-manual-tests-directory-structure.mjs
       - run:
           when: always
+          name: Validate license files
+          command: pnpm run validate-license-files --verbose
+      - run:
+          when: always
           name: Execute ESLint
           command: pnpm run lint
       - run:
@@ -172,7 +176,7 @@ jobs:
 
   cke5_coverage:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -189,7 +193,7 @@ jobs:
 
   cke5_trigger_release_process:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -218,7 +222,7 @@ jobs:
 
   cke5_trigger_uber_ci:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - community_verification_command
@@ -230,7 +234,7 @@ jobs:
 
   release_prepare:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: large
     steps:
       - checkout_command
@@ -248,7 +252,7 @@ jobs:
 
   notify_ci_failure:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     parameters:
       hideAuthor:
@@ -268,7 +272,7 @@ jobs:
 
   stale_bot:
     docker:
-      - image: cimg/node:22.12.0
+      - image: cimg/node:24.11.0
     resource_class: medium
     steps:
       - checkout_command

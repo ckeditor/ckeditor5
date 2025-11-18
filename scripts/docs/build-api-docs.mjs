@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
+import path from 'node:path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
