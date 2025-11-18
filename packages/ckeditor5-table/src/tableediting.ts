@@ -8,11 +8,10 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelPositionOffset, ViewElement, DowncastSlotFilter, ModelElement } from 'ckeditor5/src/engine.js';
+import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
-import type { TableSlot } from './tablewalker.js';
 
 import { InsertTableCommand } from './commands/inserttablecommand.js';
 import { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -242,18 +241,6 @@ function upcastCellSpan( type: string ) {
 		return span;
 	};
 }
-
-/**
- * Callback for determining the cell element name during downcast.
- * Returns 'td' or 'th' based on the model element, or null to use default logic.
- */
-export type TableCellElementNameCallback = (
-	data: {
-		tableCell: ModelElement;
-		table: ModelElement;
-		tableSlot: TableSlot;
-	}
-) => 'td' | 'th' | null;
 
 /**
  * By default, only the `tableRow` elements from the `table` model are downcast inside the `<table>` and
