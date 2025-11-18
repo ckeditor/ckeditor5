@@ -183,7 +183,7 @@ export class TablePropertiesEditing extends Plugin {
 
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( documentFragment ) );
 			} );
-		}, { priority: 'low' } );
+		}, { priority: 'lowest' } );
 	}
 }
 
@@ -192,8 +192,7 @@ export class TablePropertiesEditing extends Plugin {
  */
 function wrapInDivIfNeeded( viewElement: ViewElement, writer: ViewDowncastWriter ): ViewElement {
 	const alignAttribute = viewElement.getAttribute( 'align' ) as string | undefined;
-	const floatAttribute = viewElement.getAttribute( 'float' ) as string | undefined;
-
+	const floatAttribute = viewElement.getStyle( 'float' ) as string | undefined;
 	const marginLeft = viewElement.getStyle( 'margin-left' );
 	const marginRight = viewElement.getStyle( 'margin-right' );
 
