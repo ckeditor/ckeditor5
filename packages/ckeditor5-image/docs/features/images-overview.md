@@ -92,6 +92,18 @@ You can also use the **Insert paragraph** handles on the bottom or top edge of t
 
 While the image feature does not provide native image editing support, the {@link features/ckbox CKBox} and Uploadcare {@link features/uploadcare} premium features provide {@link features/images-image-optimizer editing capabilities} such as cropping to presets, flipping, or rotating.
 
+## Common API
+
+The `Image` plugin registers:
+
+* The {@link module:image/image/insertimagecommand~InsertImageCommand `insertImage`} command (alias: `imageInsert`). 
+* The {@link module:image/imageconfig~ImageInsertConfig `insertImage`} dropdown component (to use in the toolbar). 
+
+<info-box note>
+	The basic image plugin is minimal and provides the foundation for the image ecosystem. Most UI components (buttons, toolbars) and additional commands are registered by subplugins. See the respective feature guides linked in the [Image features](#image-features) section to learn more about their APIs.
+</info-box>
+
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image).
