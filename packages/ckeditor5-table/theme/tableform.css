@@ -11,6 +11,11 @@
 			flex-wrap: wrap;
 		}
 
+		&.ck-table-form__background-row,
+		&.ck-table-form__cell-type-row {
+			flex: 50%;
+		}
+
 		&.ck-table-form__dimensions-row {
 			flex-wrap: wrap;
 			align-items: center;
