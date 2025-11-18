@@ -43,6 +43,7 @@ export class StandardEditingModeUI extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 
+		// Dropdown button with inline/block buttons.
 		componentFactory.add( 'restrictedEditingException:dropdown', locale => {
 			const dropdownView = createDropdown( locale );
 			const t = locale.t;
@@ -94,34 +95,49 @@ export class StandardEditingModeUI extends Plugin {
 			return dropdownView;
 		} );
 
+		// Inline exception button.
 		componentFactory.add( 'restrictedEditingException:inline', () => {
 			const button = this._createButton( 'restrictedEditingException', ButtonView );
 
 			button.set( {
-				tooltip: true,
-				isToggleable: true
+				tooltip: true
 			} );
 
 			return button;
 		} );
 
+		// Block exception button.
 		componentFactory.add( 'restrictedEditingException:block', () => {
 			const button = this._createButton( 'restrictedEditingExceptionBlock', ButtonView );
 
 			button.set( {
-				tooltip: true,
-				isToggleable: true
+				tooltip: true
 			} );
 
 			return button;
 		} );
 
+		// Menu bar inline/block buttons.
 		componentFactory.add( 'menuBar:restrictedEditingException:inline', () => {
 			return this._createButton( 'restrictedEditingException', MenuBarMenuListItemButtonView );
 		} );
 
 		componentFactory.add( 'menuBar:restrictedEditingException:block', () => {
 			return this._createButton( 'restrictedEditingExceptionBlock', MenuBarMenuListItemButtonView );
+		} );
+
+		// Auto button - triggers inline or block exception command.
+		componentFactory.add( 'restrictedEditingException:auto', () => {
+			const button = this._createButton( 'restrictedEditingExceptionAuto', ButtonView );
+
+			button.set( {
+				tooltip: true
+			} );
+
+			return button;
+		} );
+		componentFactory.add( 'menuBar:restrictedEditingException:auto', () => {
+			return this._createButton( 'restrictedEditingExceptionAuto', MenuBarMenuListItemButtonView );
 		} );
 
 		// Aliases for backward compatibility.
@@ -137,7 +153,7 @@ export class StandardEditingModeUI extends Plugin {
 	 * Creates a button for restricted editing exception command to use either in toolbar or in menu bar.
 	 */
 	private _createButton<T extends typeof ButtonView>(
-		commandName: 'restrictedEditingException' | 'restrictedEditingExceptionBlock',
+		commandName: 'restrictedEditingException' | 'restrictedEditingExceptionBlock' | 'restrictedEditingExceptionAuto',
 		ButtonClass: T
 	): InstanceType<T> {
 		const editor = this.editor;
@@ -147,10 +163,15 @@ export class StandardEditingModeUI extends Plugin {
 		const t = locale.t;
 
 		view.icon = IconContentUnlock;
+		view.isToggleable = true;
 
 		view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-		if ( commandName == 'restrictedEditingExceptionBlock' ) {
+		if ( commandName == 'restrictedEditingExceptionAuto' ) {
+			view.bind( 'label' ).to( command, 'value', value => {
+				return value ? t( 'Disable editing' ) : t( 'Enable editing' );
+			} );
+		} else if ( commandName == 'restrictedEditingExceptionBlock' ) {
 			view.bind( 'label' ).to( command, 'value', value => {
 				return value ? t( 'Disable block editing' ) : t( 'Enable block editing' );
 			} );
