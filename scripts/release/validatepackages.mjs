@@ -5,8 +5,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { existsSync, readdirSync } from 'fs';
-import { execSync } from 'child_process';
+import { existsSync, readdirSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import upath from 'upath';
 import chalk from 'chalk';
 import { RELEASE_NPM_DIRECTORY } from './utils/constants.mjs';

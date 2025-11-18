@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
+import path from 'node:path';
 import { glob } from 'glob';
 import { rimraf } from 'rimraf';
 import minimist from 'minimist';

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const http = require( 'http' );
-const fs = require( 'fs' );
-const querystring = require( 'querystring' );
-const url = require( 'url' );
+const http = require( 'node:http' );
+const fs = require( 'node:fs' );
+const querystring = require( 'node:querystring' );
+const url = require( 'node:url' );
 const { upperFirst } = require( 'es-toolkit/compat' );
 
 const hostname = '127.0.0.1';
