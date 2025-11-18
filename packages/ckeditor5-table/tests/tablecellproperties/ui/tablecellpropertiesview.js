@@ -304,7 +304,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'background row', () => {
 					it( 'should be defined', () => {
-						const row = view.element.childNodes[ 2 ];
+						const row = view.element.childNodes[ 2 ].childNodes[ 1 ];
 
 						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
 						expect( row.classList.contains( 'ck-table-form__background-row' ) ).to.be.true;
@@ -708,6 +708,7 @@ describe( 'table cell properties', () => {
 					view.borderStyleDropdown,
 					view.borderColorInput,
 					view.borderWidthInput,
+					view.cellTypeDropdown,
 					view.backgroundInput,
 					view.widthInput,
 					view.heightInput,
@@ -727,6 +728,7 @@ describe( 'table cell properties', () => {
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
 				sinon.assert.calledWith( spy, view.borderColorInput.element );
 				sinon.assert.calledWith( spy, view.borderWidthInput.element );
+				sinon.assert.calledWith( spy, view.cellTypeDropdown.element );
 				sinon.assert.calledWith( spy, view.backgroundInput.element );
 				sinon.assert.calledWith( spy, view.paddingInput.element );
 				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );

@@ -3985,11 +3985,16 @@ describe( 'table clipboard', () => {
 			data.dataTransfer.setData( 'text/html', pastedTable );
 			viewDocument.fire( 'paste', data );
 
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ 'aa', 'ab', '02' ],
-				[ 'ba', 'bb', '12' ],
-				[ '02', '21', '22' ]
-			] ) );
+			const modelData = modelTable(
+				[
+					[ 'aa', 'ab', '02' ],
+					[ 'ba', 'bb', '12' ],
+					[ '02', '21', '22' ]
+				]
+					.map( arr => arr.map( contents => ( { contents, tableCellType: 'data' } ) ) )
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelData );
 		} );
 
 		it( 'removes block fillers from empty cells (both td and th)', async () => {
@@ -4052,12 +4057,13 @@ describe( 'table clipboard', () => {
 					contents: '<paragraph>Test</paragraph>',
 					tableCellBorderColor: color,
 					tableCellBorderStyle: style,
-					tableCellBorderWidth: width
+					tableCellBorderWidth: width,
+					tableCellType: 'data'
 				} ]
 			] );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
-				[ tableModelData ]
+				[ { contents: tableModelData, tableCellType: 'data' } ]
 			] ) );
 		} );
 	} );
