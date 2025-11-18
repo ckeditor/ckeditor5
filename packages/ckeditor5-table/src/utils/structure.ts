@@ -7,7 +7,7 @@
  * @module table/utils/structure
  */
 
-import type { ModelElement, ModelNode, ModelWriter } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode, ModelWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './common.js';
@@ -565,4 +565,17 @@ export function adjustLastColumnIndex(
 	// Otherwise get any cell's colspan and adjust the last column index.
 	const colspanAdjustment = lastColumnMap[ 0 ].cellWidth - 1;
 	return dimensions.lastColumn + colspanAdjustment;
+}
+
+/**
+ * Get view `<table>` element from the wrapper.
+ */
+export function getViewTableFromWrapper( figureView: ViewElement ): ViewElement | undefined {
+	for ( const figureChild of figureView.getChildren() ) {
+		if ( figureChild.is( 'element', 'table' ) ) {
+			return figureChild;
+		}
+	}
+
+	return undefined;
 }
