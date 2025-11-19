@@ -2888,6 +2888,38 @@ describe( 'table properties', () => {
 
 				editor.setData( '<div align="right"><table>xyz</table></div>' );
 			} );
+
+			describe( 'in limited container allowing only inline content', () => {
+				beforeEach( () => {
+					model.schema.register( 'limitContainer', {
+						allowWhere: '$block',
+						allowContentOf: '$block',
+						isLimit: true
+					} );
+					editor.conversion.elementToElement( {
+						model: 'limitContainer',
+						view: 'section'
+					} );
+				} );
+
+				it( 'should strip table in section if parent does not allow it', () => {
+					editor.setData(
+						'<section>' +
+							'123' +
+							'<div align="right">' +
+								'<table>' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>' +
+							'</div>' +
+							'456' +
+						'</section>'
+					);
+
+					expect( _getModelData( editor.model ) ).to.equal( '<limitContainer>[]123foo456</limitContainer>' );
+				} );
+			} );
 		} );
 
 		describe( 'conversion in clipboard pipeline', () => {
@@ -3078,6 +3110,44 @@ describe( 'table properties', () => {
 						'style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);" align="left">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should wrap only table in div with align="right" attribute for `blockRight` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<paragraph>bar</paragraph>' +
+					'<table tableAlignment="blockRight">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<p>bar</p>' +
+						'<div align="right">' +
+							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
+								'<tbody><tr><td>foo</td></tr></tbody>' +
+							'</table>' +
+						'</div>'
 					);
 
 					done();
