@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { ModelElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { TableEditing } from '../tableediting.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
@@ -103,9 +103,9 @@ export class TableCellTypeEditing extends Plugin {
 
 		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 
+		this._addInsertedTableCellTypePostfixer();
 		this._addHeadingAttributeChangePostfixer();
 		this._addAutoIncrementHeadingPostfixer();
-		this._addInsertedTableCellTypePostfixer();
 		this._addTableCellTypeReconversionHandler();
 	}
 
@@ -244,16 +244,16 @@ export class TableCellTypeEditing extends Plugin {
 				}
 
 				const isRow = change.attributeKey === 'headingRows';
-				let currentValue = newValue;
 
 				// Calculate the limit (row count or column count).
-				const tableWalker = new TableWalker( element );
-				const limit = Array.from( tableWalker )
+				const limit = Array
+					.from( new TableWalker( element ) )
 					.reduce( ( max, { row, column } ) => Math.max( max, ( isRow ? row : column ) + 1 ), 0 );
+
+				let currentValue = newValue;
 
 				while ( currentValue < limit ) {
 					let allHeaders = true;
-
 					const walkerOptions = isRow ? { row: currentValue } : { column: currentValue };
 
 					for ( const { cell, row, column } of new TableWalker( element, walkerOptions ) ) {
@@ -292,53 +292,48 @@ export class TableCellTypeEditing extends Plugin {
 		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
-			const tablesToUpdate = new Set<any>();
+			const tablesCellsToUpdate = new Map<ModelElement, Array<ModelElement>>();
 
 			for ( const change of model.document.differ.getChanges() ) {
-				// Check if something was inserted.
-				if ( change.type !== 'insert' || change.name === '$text' || change.position.root.rootName === '$graveyard' ) {
+				if (
+					change.type !== 'insert' ||
+					change.name === '$text' ||
+					change.position.root.rootName === '$graveyard' ||
+					!change.position.nodeAfter
+				) {
 					continue;
 				}
 
-				const node = change.position.nodeAfter;
+				const range = writer.createRangeOn( change.position.nodeAfter );
 
-				if ( !node ) {
-					continue;
-				}
-
-				// Check if the inserted node is a table or is inside a table.
-				if ( node.is( 'element', 'table' ) ) {
-					tablesToUpdate.add( node );
-				} else {
-					const table = ( node as any ).findAncestor( 'table' );
-
-					if ( table ) {
-						// Check if the inserted range contains any table cells.
-						const range = model.createRangeOn( node );
-
-						for ( const item of range.getItems() ) {
-							if ( item.is( 'element', 'tableCell' ) ) {
-								tablesToUpdate.add( table );
-								break;
-							}
-						}
+				for ( const item of range.getItems() ) {
+					if ( !item.is( 'element', 'tableCell' ) || item.hasAttribute( 'tableCellType' ) ) {
+						continue;
 					}
+
+					const table = item.findAncestor( 'table' ) as ModelElement;
+
+					if ( !tablesCellsToUpdate.has( table ) ) {
+						tablesCellsToUpdate.set( table, [] );
+					}
+
+					tablesCellsToUpdate.get( table )!.push( item );
 				}
 			}
 
 			let changed = false;
 
-			for ( const table of tablesToUpdate ) {
+			for ( const [ table, cells ] of tablesCellsToUpdate.entries() ) {
+				const tableSlots = Array.from( new TableWalker( table ) );
 				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 				const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
-				for ( const { cell, row, column } of new TableWalker( table ) ) {
-					if ( !cell.hasAttribute( 'tableCellType' ) ) {
-						const cellType = ( row < headingRows || column < headingColumns ) ? 'header' : 'data';
+				for ( const cell of cells ) {
+					const { row, column } = tableSlots.find( slot => slot.cell === cell )!;
+					const cellType = ( row < headingRows || column < headingColumns ) ? 'header' : 'data';
 
-						writer.setAttribute( 'tableCellType', cellType, cell );
-						changed = true;
-					}
+					writer.setAttribute( 'tableCellType', cellType, cell );
+					changed = true;
 				}
 			}
 
