@@ -48,7 +48,7 @@ You can move tables horizontally to create a desired document layout. There are 
 * Left (block): A table aligns to the left. The table does not influence the flow of other content.
 * Right (block): A table is aligned to the right. The table does not influence the flow of other content.
 
-{@img assets/img/table-alignment-options.png 824 Table alignment options}
+{@img assets/img/table-alignment-options.png 600 Table alignment options}
 
 You can find all of those options in the [table properties balloon](#table-contextual-toolbar). The balloon displays after you click on a table. Use the [demo above](#demo) to test all those options.
 
