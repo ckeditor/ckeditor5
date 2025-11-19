@@ -105,7 +105,12 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 			if (
 				changedRowsSet.has( headingRows ) &&
 				headingRows < tableRowCount &&
-				isEntireRowOfType( table, headingRows, 'header', cells )
+				isEntireLineHeader( {
+					table,
+					index: headingRows,
+					cellsBeingChanged: cells,
+					lineType: 'row'
+				} )
 			) {
 				writer.setAttribute( 'headingRows', headingRows + 1, table );
 			}
@@ -115,7 +120,12 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 			if (
 				changedColumnsSet.has( headingColumns ) &&
 				headingColumns < tableColumnCount &&
-				isEntireColumnOfType( table, headingColumns, 'header', cells )
+				isEntireLineHeader( {
+					table,
+					index: headingColumns,
+					cellsBeingChanged: cells,
+					lineType: 'column'
+				} )
 			) {
 				writer.setAttribute( 'headingColumns', headingColumns + 1, table );
 			}
@@ -159,42 +169,40 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 
 			// Update headingRows if necessary.
 			if ( minHeadingRow < headingRows ) {
-				if ( minHeadingRow === 0 ) {
-					writer.removeAttribute( 'headingRows', table );
-				} else {
-					writer.setAttribute( 'headingRows', minHeadingRow, table );
-				}
+				setOrRemoveAttribute( writer, 'headingRows', minHeadingRow, table );
 			}
 
 			// Update headingColumns if necessary.
 			if ( minHeadingColumn < headingColumns ) {
-				if ( minHeadingColumn === 0 ) {
-					writer.removeAttribute( 'headingColumns', table );
-				} else {
-					writer.setAttribute( 'headingColumns', minHeadingColumn, table );
-				}
+				setOrRemoveAttribute( writer, 'headingColumns', minHeadingColumn, table );
 			}
 		}
 	}
 }
 
 /**
- * Checks if all cells in a given row are of the specified type.
- * Takes into account cells that are being changed in the current operation.
+ * Checks if all cells in a given row or column are header cells.
  */
-function isEntireRowOfType(
-	table: ModelElement,
-	rowIndex: number,
-	type: string,
-	cellsBeingChanged: Array<ModelElement>
+function isEntireLineHeader(
+	{
+		table,
+		index,
+		cellsBeingChanged,
+		lineType
+	}: {
+		table: ModelElement;
+		index: number;
+		cellsBeingChanged: Array<ModelElement>;
+		lineType: 'row' | 'column';
+	}
 ): boolean {
-	const tableWalker = new TableWalker( table, { row: rowIndex } );
+	const tableWalker = new TableWalker( table, { [ lineType ]: index } );
 
 	for ( const { cell } of tableWalker ) {
 		const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
 		const isBeingChangedToType = cellsBeingChanged.includes( cell );
 
-		if ( cellType !== type && !isBeingChangedToType ) {
+		if ( cellType !== 'header' && !isBeingChangedToType ) {
 			return false;
 		}
 	}
@@ -203,27 +211,20 @@ function isEntireRowOfType(
 }
 
 /**
- * Checks if all cells in a given column are of the specified type.
- * Takes into account cells that are being changed in the current operation.
+ * Sets or removes an attribute on the table depending on the value.
+ * If value is 0, removes the attribute; otherwise sets it.
  */
-function isEntireColumnOfType(
-	table: ModelElement,
-	columnIndex: number,
-	type: string,
-	cellsBeingChanged: Array<ModelElement>
-): boolean {
-	const tableWalker = new TableWalker( table, { column: columnIndex } );
-
-	for ( const { cell } of tableWalker ) {
-		const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
-		const isBeingChangedToType = cellsBeingChanged.includes( cell );
-
-		if ( cellType !== type && !isBeingChangedToType ) {
-			return false;
-		}
+function setOrRemoveAttribute(
+	writer: ModelWriter,
+	attributeName: string,
+	value: number,
+	table: ModelElement
+): void {
+	if ( value === 0 ) {
+		writer.removeAttribute( attributeName, table );
+	} else {
+		writer.setAttribute( attributeName, value, table );
 	}
-
-	return true;
 }
 
 /**
