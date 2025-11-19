@@ -31,8 +31,12 @@
 		}
 
 		&.ck-table-form__dimensions-row {
+			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large));
+
+			width: var(--ck-table-form-dimensions-input-width);
+			max-width: var(--ck-table-form-dimensions-input-width);
+			min-width: var(--ck-table-form-dimensions-input-width);
 			padding: 0;
-			max-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large));
 
 			& .ck-table-form__dimensions-row__width,
 			& .ck-table-form__dimensions-row__height {
