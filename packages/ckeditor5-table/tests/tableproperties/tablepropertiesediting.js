@@ -575,6 +575,164 @@ describe( 'table properties', () => {
 						} );
 					} );
 				} );
+
+				describe( 'border="0" attribute handling', () => {
+					beforeEach( async () => {
+						await editor.destroy();
+
+						editor = await VirtualTestEditor.create( {
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+							experimentalFlags: {
+								upcastTableBorderZeroAttributes: true
+							}
+						} );
+
+						model = editor.model;
+					} );
+
+					it( 'should convert border="0" to tableBorderStyle="none"', () => {
+						editor.setData(
+							'<table border="0">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						const table = model.document.getRoot().getChild( 0 );
+						expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'none' );
+					} );
+
+					it( 'should consume border attribute', () => {
+						let borderConsumed = false;
+
+						editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+							borderConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'border' } );
+						}, { priority: 'lowest' } );
+
+						editor.setData(
+							'<table border="0">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						expect( borderConsumed ).to.be.true;
+					} );
+
+					it( 'should not consume border attribute if value is not "0"', () => {
+						let borderConsumed = false;
+
+						editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+							borderConsumed = !conversionApi.consumable.test( data.viewItem, { attributes: 'border' } );
+						}, { priority: 'lowest' } );
+
+						editor.setData(
+							'<table border="1">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						expect( borderConsumed ).to.be.false;
+					} );
+
+					it( 'should not convert border="1" or other non-zero values', () => {
+						editor.setData(
+							'<table border="1">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						expectModel(
+							'<table>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>foo</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+
+					it( 'should not override existing tableBorderStyle attribute', () => {
+						editor.setData(
+							'<table border="0" style="border-style: solid;">' +
+								'<tr>' +
+									'<td>foo</td>' +
+								'</tr>' +
+							'</table>'
+						);
+
+						expectModel(
+							'<table tableBorderStyle="solid">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>foo</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+
+					it( 'should work with tables in figures', () => {
+						editor.setData(
+							'<figure class="table">' +
+								'<table border="0">' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</table>' +
+							'</figure>'
+						);
+
+						expectModel(
+							'<table tableBorderStyle="none">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>foo</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+
+					it( 'should work with tables with heading rows', () => {
+						editor.setData(
+							'<table border="0">' +
+								'<thead>' +
+									'<tr>' +
+										'<th>header</th>' +
+									'</tr>' +
+								'</thead>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>body</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>'
+						);
+
+						expectModel(
+							'<table headingRows="1" tableBorderStyle="none">' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>header</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+								'<tableRow>' +
+									'<tableCell>' +
+										'<paragraph>body</paragraph>' +
+									'</tableCell>' +
+								'</tableRow>' +
+							'</table>'
+						);
+					} );
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -3187,6 +3345,10 @@ describe( 'table properties', () => {
 					return store.get( type );
 				}
 			};
+		}
+
+		function expectModel( data ) {
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( data );
 		}
 	} );
 } );

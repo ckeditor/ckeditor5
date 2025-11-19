@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import webpack from 'webpack';
 import { builds } from '@ckeditor/ckeditor5-dev-utils';
 

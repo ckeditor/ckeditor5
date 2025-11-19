@@ -13,7 +13,8 @@ import type {
 	RestrictedEditingConfig,
 	RestrictedEditingExceptionCommand,
 	RestrictedEditingModeNavigationCommand,
-	RestrictedEditingExceptionBlockCommand
+	RestrictedEditingExceptionBlockCommand,
+	RestrictedEditingExceptionAutoCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -31,6 +32,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		goToPreviousRestrictedEditingException: RestrictedEditingModeNavigationCommand;
 		goToNextRestrictedEditingException: RestrictedEditingModeNavigationCommand;
 		restrictedEditingExceptionBlock: RestrictedEditingExceptionBlockCommand;
+		restrictedEditingExceptionAuto: RestrictedEditingExceptionAutoCommand;
 	}
 
 	interface EditorConfig {

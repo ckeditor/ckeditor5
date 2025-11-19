@@ -287,9 +287,9 @@ class Insertion {
 	private _lastAutoParagraph: ModelElement | null = null;
 
 	/**
-	 * The array of nodes that should be cleaned of not allowed attributes.
+	 * The array of nodes that should be cleaned of not allowed attributes and sub-nodes.
 	 */
-	private _filterAttributesOf: Array<ModelNode> = [];
+	private _filterAttributesAndChildrenOf: Array<ModelNode> = [];
 
 	/**
 	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
@@ -340,8 +340,61 @@ class Insertion {
 		this._mergeOnRight();
 
 		// TMP this will become a post-fixer.
-		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
-		this._filterAttributesOf = [];
+		this.schema.removeDisallowedAttributes( this._filterAttributesAndChildrenOf, this.writer );
+
+		if ( this.model._config?.get( 'experimentalFlags.modelInsertContentDeepSchemaVerification' ) ) {
+			this._removeDisallowedChildren( this._filterAttributesAndChildrenOf );
+		}
+
+		this._filterAttributesAndChildrenOf = [];
+	}
+
+	/**
+	 * Removes disallowed children from nodes that were inserted or modified during insertion.
+	 */
+	private _removeDisallowedChildren( nodes: Iterable<ModelNode> ): void {
+		// Make sure we do not modify the original iterable.
+		const nodesArray = Array.from( nodes );
+
+		// Check all sub-nodes of top level inserted nodes.
+		// We do it at this point so node is already in the model tree and schema checks will be correct.
+		for ( const node of nodesArray ) {
+			if ( !node.is( 'element' ) ) {
+				continue;
+			}
+
+			const remove = [];
+			const unwrap = [];
+			const walker = this.writer.createRangeIn( node ).getWalker( { ignoreElementEnd: true } );
+
+			for ( const { item } of walker ) {
+				const itemParent = item.parent as ModelElement;
+
+				if ( !this.schema.checkChild( itemParent, item as ModelNode ) ) {
+					if ( item.is( 'element' ) && !this.schema.isObject( item ) ) {
+						// Unwrap non-object element.
+						unwrap.push( item );
+
+						// Store the parent for re-checking children after unwrap.
+						nodesArray.push( itemParent );
+					} else {
+						// Remove object with children, or text.
+						remove.push( item );
+					}
+
+					// Skip the whole subtree as it will be removed or processed later.
+					walker.jumpTo( this.writer.createPositionAfter( item ) );
+				}
+			}
+
+			for ( const item of unwrap ) {
+				this.writer.unwrap( item );
+			}
+
+			for ( const item of remove ) {
+				this.writer.remove( item );
+			}
+		}
 	}
 
 	/**
@@ -520,7 +573,7 @@ class Insertion {
 			this._nodeToSelect = null;
 		}
 
-		this._filterAttributesOf.push( node );
+		this._filterAttributesAndChildrenOf.push( node );
 
 		return node;
 	}
@@ -626,7 +679,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosLeft.detach();
 	}
@@ -710,7 +763,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosRight.detach();
 	}

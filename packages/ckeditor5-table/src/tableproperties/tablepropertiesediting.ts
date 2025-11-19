@@ -7,7 +7,7 @@
  * @module table/tableproperties/tablepropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	addBackgroundStylesRules,
 	addBorderStylesRules,
@@ -120,7 +120,7 @@ export class TablePropertiesEditing extends Plugin {
 
 		editor.data.addStyleProcessorRules( addMarginStylesRules );
 		editor.data.addStyleProcessorRules( addBorderStylesRules );
-		enableBorderProperties( schema, conversion, {
+		enableBorderProperties( editor, {
 			color: defaultTableProperties.borderColor,
 			style: defaultTableProperties.borderStyle,
 			width: defaultTableProperties.borderWidth
@@ -223,10 +223,12 @@ function wrapInDivIfNeeded( viewElement: ViewElement, writer: ViewDowncastWriter
  * @param defaultBorder.width The default `tableBorderWidth` value.
  */
 function enableBorderProperties(
-	schema: ModelSchema,
-	conversion: Conversion,
+	editor: Editor,
 	defaultBorder: { color: string; style: string; width: string }
 ) {
+	const { conversion } = editor;
+	const { schema } = editor.model;
+
 	const modelAttributes = {
 		width: 'tableBorderWidth',
 		color: 'tableBorderColor',
@@ -241,7 +243,7 @@ function enableBorderProperties(
 		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
 	}
 
-	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
+	upcastBorderStyles( editor, 'table', modelAttributes, defaultBorder );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );

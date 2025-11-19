@@ -64,7 +64,7 @@ async function startStandardEditingMode() {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'restrictedEditingException:dropdown',
+				'restrictedEditingException:auto',
 				'|', 'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
