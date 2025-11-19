@@ -237,68 +237,46 @@ export class TableCellTypeEditing extends Plugin {
 				}
 
 				const oldValue = change.attributeOldValue as number || 0;
-				let headingRows = element.getAttribute( 'headingRows' ) as number || 0;
-				let headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
+				const newValue = element.getAttribute( change.attributeKey ) as number || 0;
 
-				// Auto-increment headingRows if next rows contain only header cells.
-				if ( change.attributeKey === 'headingRows' && headingRows > oldValue ) {
-					const tableWalker = new TableWalker( element );
-					const rowCount = Array.from( tableWalker ).reduce( ( max, { row } ) => Math.max( max, row + 1 ), 0 );
+				if ( newValue <= oldValue ) {
+					continue;
+				}
 
-					while ( headingRows < rowCount ) {
-						let allHeadersInRow = true;
+				const isRow = change.attributeKey === 'headingRows';
+				let currentValue = newValue;
 
-						for ( const { cell, row } of new TableWalker( element, { row: headingRows } ) ) {
-							if ( row !== headingRows ) {
-								continue;
-							}
+				// Calculate the limit (row count or column count).
+				const tableWalker = new TableWalker( element );
+				const limit = Array.from( tableWalker )
+					.reduce( ( max, { row, column } ) => Math.max( max, ( isRow ? row : column ) + 1 ), 0 );
 
-							const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+				while ( currentValue < limit ) {
+					let allHeaders = true;
 
-							if ( cellType !== 'header' ) {
-								allHeadersInRow = false;
-								break;
-							}
+					const walkerOptions = isRow ? { row: currentValue } : { column: currentValue };
+
+					for ( const { cell, row, column } of new TableWalker( element, walkerOptions ) ) {
+						const currentDimension = isRow ? row : column;
+
+						if ( currentDimension !== currentValue ) {
+							continue;
 						}
 
-						if ( allHeadersInRow ) {
-							headingRows++;
-							writer.setAttribute( 'headingRows', headingRows, element );
-							changed = true;
-						} else {
+						const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
+
+						if ( cellType !== 'header' ) {
+							allHeaders = false;
 							break;
 						}
 					}
-				}
 
-				// Auto-increment headingColumns if next columns contain only header cells.
-				if ( change.attributeKey === 'headingColumns' && headingColumns > oldValue ) {
-					const tableWalker = new TableWalker( element );
-					const columnCount = Array.from( tableWalker ).reduce( ( max, { column } ) => Math.max( max, column + 1 ), 0 );
-
-					while ( headingColumns < columnCount ) {
-						let allHeadersInColumn = true;
-
-						for ( const { cell, column } of new TableWalker( element, { column: headingColumns } ) ) {
-							if ( column !== headingColumns ) {
-								continue;
-							}
-
-							const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
-
-							if ( cellType !== 'header' ) {
-								allHeadersInColumn = false;
-								break;
-							}
-						}
-
-						if ( allHeadersInColumn ) {
-							headingColumns++;
-							writer.setAttribute( 'headingColumns', headingColumns, element );
-							changed = true;
-						} else {
-							break;
-						}
+					if ( allHeaders ) {
+						currentValue++;
+						writer.setAttribute( change.attributeKey, currentValue, element );
+						changed = true;
+					} else {
+						break;
 					}
 				}
 			}
@@ -314,7 +292,7 @@ export class TableCellTypeEditing extends Plugin {
 		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
-			let changed = false;
+			const tablesToUpdate = new Set<any>();
 
 			for ( const change of model.document.differ.getChanges() ) {
 				// Check if something was inserted.
@@ -322,51 +300,45 @@ export class TableCellTypeEditing extends Plugin {
 					continue;
 				}
 
-				if ( !change.position.nodeAfter ) {
+				const node = change.position.nodeAfter;
+
+				if ( !node ) {
 					continue;
 				}
 
-				// Create a range over the inserted element to find all tableCell elements within.
-				const range = model.createRangeOn( change.position.nodeAfter );
+				// Check if the inserted node is a table or is inside a table.
+				if ( node.is( 'element', 'table' ) ) {
+					tablesToUpdate.add( node );
+				} else {
+					const table = ( node as any ).findAncestor( 'table' );
 
-				for ( const item of range.getItems() ) {
-					if ( !item.is( 'element', 'tableCell' ) ) {
-						continue;
-					}
+					if ( table ) {
+						// Check if the inserted range contains any table cells.
+						const range = model.createRangeOn( node );
 
-					// Check if the tableCell already has tableCellType attribute.
-					if ( item.hasAttribute( 'tableCellType' ) ) {
-						continue;
-					}
-
-					// Find the parent table to determine heading rows and columns.
-					const table = item.findAncestor( 'table' );
-
-					if ( !table ) {
-						continue;
-					}
-
-					const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-					const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-
-					// Determine the position of the cell in the table.
-					const tableWalker = new TableWalker( table );
-					let cellRow = 0;
-					let cellColumn = 0;
-
-					for ( const { cell, row, column } of tableWalker ) {
-						if ( cell === item ) {
-							cellRow = row;
-							cellColumn = column;
-							break;
+						for ( const item of range.getItems() ) {
+							if ( item.is( 'element', 'tableCell' ) ) {
+								tablesToUpdate.add( table );
+								break;
+							}
 						}
 					}
+				}
+			}
 
-					// Determine the cell type based on its position.
-					const cellType = ( cellRow < headingRows || cellColumn < headingColumns ) ? 'header' : 'data';
+			let changed = false;
 
-					writer.setAttribute( 'tableCellType', cellType, item );
-					changed = true;
+			for ( const table of tablesToUpdate ) {
+				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+				const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+				for ( const { cell, row, column } of new TableWalker( table ) ) {
+					if ( !cell.hasAttribute( 'tableCellType' ) ) {
+						const cellType = ( row < headingRows || column < headingColumns ) ? 'header' : 'data';
+
+						writer.setAttribute( 'tableCellType', cellType, cell );
+						changed = true;
+					}
 				}
 			}
 
