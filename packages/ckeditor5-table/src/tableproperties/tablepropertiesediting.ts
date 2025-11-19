@@ -13,6 +13,7 @@ import {
 	addBorderStylesRules,
 	addMarginStylesRules,
 	type ViewElement,
+	type ViewNode,
 	type Conversion,
 	type ModelSchema,
 	type ModelElement,
@@ -168,17 +169,7 @@ export class TablePropertiesEditing extends Plugin {
 		const viewDoc = editor.editing.view.document;
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			editor.editing.view.change( writer => {
-				const children = [];
-
-				for ( const item of Array.from( data.content.getChildren() ) ) {
-					if ( item.is( 'element', 'table' ) ) {
-						const element = wrapInDivIfNeeded( item, writer );
-
-						children.push( element );
-					} else {
-						children.push( item );
-					}
-				}
+				const children = Array.from( data.content.getChildren() ).map( item => wrapInDivIfNeeded( item, writer ) );
 				const documentFragment = writer.createDocumentFragment( children );
 
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( documentFragment ) );
@@ -188,30 +179,35 @@ export class TablePropertiesEditing extends Plugin {
 }
 
 /**
- * Wraps the table in a div with alignment if needed.
+ * Checks whether the view node is a table and if it needs to be wrapped in a div for alignment purposes.
+ * If so, it wraps it in a div and returns the new element. Otherwise, it returns the original view node.
  */
-function wrapInDivIfNeeded( viewElement: ViewElement, writer: ViewDowncastWriter ): ViewElement {
-	const alignAttribute = viewElement.getAttribute( 'align' ) as string | undefined;
-	const floatAttribute = viewElement.getStyle( 'float' ) as string | undefined;
-	const marginLeft = viewElement.getStyle( 'margin-left' );
-	const marginRight = viewElement.getStyle( 'margin-right' );
+function wrapInDivIfNeeded( ViewNode: ViewNode, writer: ViewDowncastWriter ): ViewNode {
+	if ( !ViewNode.is( 'element', 'table' ) ) {
+		return ViewNode;
+	}
+
+	const alignAttribute = ViewNode.getAttribute( 'align' ) as string | undefined;
+	const floatAttribute = ViewNode.getStyle( 'float' ) as string | undefined;
+	const marginLeft = ViewNode.getStyle( 'margin-left' );
+	const marginRight = ViewNode.getStyle( 'margin-right' );
 
 	// Align right with text wrapping.
 	if ( floatAttribute && floatAttribute === 'right' && alignAttribute && alignAttribute === 'right' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, viewElement );
+		return writer.createContainerElement( 'div', { align: alignAttribute }, ViewNode );
 	}
 
 	// Align center.
 	if ( alignAttribute && alignAttribute === 'center' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, viewElement );
+		return writer.createContainerElement( 'div', { align: alignAttribute }, ViewNode );
 	}
 
 	// Align right with no text wrapping.
 	if ( floatAttribute === undefined && marginLeft === 'auto' && marginRight === '0' ) {
-		return writer.createContainerElement( 'div', { align: 'right' }, viewElement );
+		return writer.createContainerElement( 'div', { align: 'right' }, ViewNode );
 	}
 
-	return viewElement;
+	return ViewNode;
 }
 
 /**
