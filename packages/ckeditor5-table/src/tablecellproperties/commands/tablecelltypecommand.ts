@@ -102,22 +102,22 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 
 			// Check if we should increment headingRows.
 			// We only increment if the changed row index equals the current headingRows value.
-			if ( changedRowsSet.has( headingRows ) && headingRows < tableRowCount ) {
-				const rowIndex = headingRows;
-
-				if ( isEntireRowOfType( table, rowIndex, 'header', cells ) ) {
-					writer.setAttribute( 'headingRows', headingRows + 1, table );
-				}
+			if (
+				changedRowsSet.has( headingRows ) &&
+				headingRows < tableRowCount &&
+				isEntireRowOfType( table, headingRows, 'header', cells )
+			) {
+				writer.setAttribute( 'headingRows', headingRows + 1, table );
 			}
 
 			// Check if we should increment headingColumns.
 			// We only increment if the changed column index equals the current headingColumns value.
-			if ( changedColumnsSet.has( headingColumns ) && headingColumns < tableColumnCount ) {
-				const colIndex = headingColumns;
-
-				if ( isEntireColumnOfType( table, colIndex, 'header', cells ) ) {
-					writer.setAttribute( 'headingColumns', headingColumns + 1, table );
-				}
+			if (
+				changedColumnsSet.has( headingColumns ) &&
+				headingColumns < tableColumnCount &&
+				isEntireColumnOfType( table, headingColumns, 'header', cells )
+			) {
+				writer.setAttribute( 'headingColumns', headingColumns + 1, table );
 			}
 		}
 	}
