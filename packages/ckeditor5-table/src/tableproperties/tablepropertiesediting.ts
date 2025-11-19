@@ -355,7 +355,7 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 /**
  * Returns a function that converts the table view representation:
  *
-  * ```html
+ * ```html
  * <div align="right"><table>...</table></div>
  * <!-- or -->
  * <div align="center"><table>...</table></div>
@@ -398,8 +398,8 @@ export function upcastTableAlignedDiv( defaultValue: string ) {
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable || !modelTable.is( 'element', 'table' ) ) {
-				// Revert consumed figure so other features can convert it.
-				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+				// Revert consumed div so other features can convert it.
+				conversionApi.consumable.revert( data.viewItem, { name: true, attributes: 'align' } );
 
 				// If anyway some table content was converted, we have to pass the model range and cursor.
 				if ( conversionResult.modelRange && !conversionResult.modelRange.isCollapsed ) {

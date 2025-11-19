@@ -4,12 +4,17 @@
  */
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { ImageBlockEditing, ImageResizeEditing } from '@ckeditor/ckeditor5-image';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
 import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
+
+import { Table } from '../../src/table.js';
+import { TableProperties } from '../../src/tableproperties.js';
 
 import { TableBorderColorCommand } from '../../src/tableproperties/commands/tablebordercolorcommand.js';
 import { TableBorderStyleCommand } from '../../src/tableproperties/commands/tableborderstylecommand.js';
@@ -2491,7 +2496,8 @@ describe( 'table properties', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+						// plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+						plugins: [ Paragraph, TableEditing, TableLayoutEditing, TablePropertiesEditing ],
 						table: {
 							tableProperties: {
 								defaultProperties: {
@@ -2739,6 +2745,351 @@ describe( 'table properties', () => {
 			} );
 		} );
 
+		describe( 'upcast table wrapped by div', () => {
+			it( 'should upcast align `left` attribute from div wrapped on table', () => {
+				editor.setData(
+					'<div align="right">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockRight' );
+			} );
+
+			it( 'should upcast align `center` attribute from div wrapped on table', () => {
+				editor.setData(
+					'<div align="center">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+			} );
+
+			it( 'should upcast align `right` attribute from div wrapped on table with align `right`', () => {
+				editor.setData(
+					'<div align="right">' +
+						'<table align="right">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast the table alignment to default alignment value when align value is not recognized', () => {
+				editor.setData(
+					'<div align="foo">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+			} );
+
+			it( 'should upcast the table alignment to the one set in config when align value is not recognized', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+					table: {
+						tableProperties: {
+							defaultProperties: {
+								alignment: 'right'
+							}
+						}
+					}
+				} );
+				const model = editor.model;
+
+				editor.setData(
+					'<div align="foo">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+
+				await editor.destroy();
+			} );
+
+			it( 'should not upcast alignment when align value is empty', () => {
+				editor.setData(
+					'<div align="">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+			} );
+
+			it( 'should not upcast alignment when align value is not set', () => {
+				editor.setData(
+					'<div>' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+			} );
+
+			it( 'should not convert empty div', () => {
+				editor.setData(
+					'<div align="right"></div>'
+				);
+
+				expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'should not consume if the div element was not converted', () => {
+				// Test a case when a conversion of a table inside a div is not returning anything.
+				// Either because of a failed conversion or if the table was already consumed.
+				editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true } );
+					data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+				}, { priority: 'highest' } );
+
+				editor.data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { name: true, attributes: 'align' } ) ).to.be.true;
+				} );
+
+				editor.setData( '<div align="right"><table>xyz</table></div>' );
+			} );
+		} );
+
+		describe( 'conversion in clipboard pipeline', () => {
+			let editor, editorElement, model, viewDocument;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Paragraph, Table, TableProperties, ClipboardPipeline ]
+				} );
+
+				model = editor.model;
+				viewDocument = editor.editing.view.document;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+				await editor.destroy();
+			} );
+
+			it( 'should wrap table in div with align="right" attribute for `blockRight` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="blockRight">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<div align="right">' +
+							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
+								'<tbody><tr><td>foo</td></tr></tbody>' +
+							'</table>' +
+						'</div>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should wrap table in div with align="right" attribute for `right` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="right">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<div align="right">' +
+							'<table class="table table-style-align-right" ' +
+							'style="float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);" align="right">' +
+								'<tbody><tr><td>foo</td></tr></tbody>' +
+							'</table>' +
+						'</div>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should wrap table in div with align="center" attribute for `center` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="center">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<div align="center">' +
+							'<table class="table table-style-align-center" ' +
+							'style="margin-left:auto;margin-right:auto;" align="center">' +
+								'<tbody><tr><td>foo</td></tr></tbody>' +
+							'</table>' +
+						'</div>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should not wrap table in div for `blockLeft` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="blockLeft">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<table class="table table-style-block-align-left" style="margin-left:0;margin-right:auto;">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'should not wrap table in div for `left` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="left">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<table class="table table-style-align-left" ' +
+						'style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);" align="left">' +
+							'<tbody><tr><td>foo</td></tr></tbody>' +
+						'</table>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+		} );
+
 		function createEmptyTable() {
 			_setModelData(
 				model,
@@ -2752,6 +3103,20 @@ describe( 'table properties', () => {
 			);
 
 			return model.document.getRoot().getNodeByPath( [ 0 ] );
+		}
+
+		function createDataTransfer() {
+			const store = new Map();
+
+			return {
+				setData( type, data ) {
+					store.set( type, data );
+				},
+
+				getData( type ) {
+					return store.get( type );
+				}
+			};
 		}
 	} );
 } );
