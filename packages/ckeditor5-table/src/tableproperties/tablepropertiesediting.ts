@@ -13,7 +13,7 @@ import {
 	addBorderStylesRules,
 	addMarginStylesRules,
 	type ViewElement,
-	type ViewNode,
+	type ViewItem,
 	type Conversion,
 	type ModelSchema,
 	type ModelElement,
@@ -170,45 +170,52 @@ export class TablePropertiesEditing extends Plugin {
 		// Adjust clipboard output to wrap tables in divs if needed (for alignment).
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			editor.editing.view.change( writer => {
-				const children = Array.from( data.content.getChildren() ).map( item => wrapInDivIfNeeded( item, writer ) );
-				const documentFragment = writer.createDocumentFragment( children );
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					wrapInDivIfNeeded( item, writer );
+				}
 
-				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( documentFragment ) );
+				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
 			} );
 		}, { priority: 'lowest' } );
 	}
 }
 
 /**
- * Checks whether the view node is a table and if it needs to be wrapped in a div for alignment purposes.
- * If so, it wraps it in a div and returns the new element. Otherwise, it returns the original view node.
+ * Checks whether the view element is a table and if it needs to be wrapped in a div for alignment purposes.
+ * If so, it wraps it in a div and inserts it into the data content.
  */
-function wrapInDivIfNeeded( viewNode: ViewNode, writer: ViewDowncastWriter ): ViewNode {
-	if ( !viewNode.is( 'element', 'table' ) ) {
-		return viewNode;
+function wrapInDivIfNeeded( viewItem: ViewItem, writer: ViewDowncastWriter ): void {
+	if ( !viewItem.is( 'element', 'table' ) ) {
+		return;
 	}
 
-	const alignAttribute = viewNode.getAttribute( 'align' ) as string | undefined;
-	const floatAttribute = viewNode.getStyle( 'float' ) as string | undefined;
-	const marginLeft = viewNode.getStyle( 'margin-left' );
-	const marginRight = viewNode.getStyle( 'margin-right' );
+	const alignAttribute = viewItem.getAttribute( 'align' ) as string | undefined;
+	const floatAttribute = viewItem.getStyle( 'float' ) as string | undefined;
+	const marginLeft = viewItem.getStyle( 'margin-left' );
+	const marginRight = viewItem.getStyle( 'margin-right' );
 
-	// Align right with text wrapping.
-	if ( floatAttribute && floatAttribute === 'right' && alignAttribute && alignAttribute === 'right' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, viewNode );
-	}
+	if (
+		// Align center.
+		( alignAttribute && alignAttribute === 'center' ) ||
+		// Align right with text wrapping.
+		( floatAttribute && floatAttribute === 'right' && alignAttribute && alignAttribute === 'right' )
+	) {
+		insertWrapperWithAlignment( writer, alignAttribute, viewItem );
 
-	// Align center.
-	if ( alignAttribute && alignAttribute === 'center' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, viewNode );
+		return;
 	}
 
 	// Align right with no text wrapping.
 	if ( floatAttribute === undefined && marginLeft === 'auto' && marginRight === '0' ) {
-		return writer.createContainerElement( 'div', { align: 'right' }, viewNode );
+		insertWrapperWithAlignment( writer, 'right', viewItem );
 	}
+}
 
-	return viewNode;
+function insertWrapperWithAlignment( writer: ViewDowncastWriter, align: string, table: ViewElement ): void {
+	const position = writer.createPositionBefore( table );
+	const wrapper = writer.createContainerElement( 'div', { align }, table );
+
+	writer.insert( position, wrapper );
 }
 
 /**

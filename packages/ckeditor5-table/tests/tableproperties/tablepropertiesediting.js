@@ -3316,6 +3316,54 @@ describe( 'table properties', () => {
 					preventDefault: preventDefaultSpy
 				} );
 			} );
+
+			it( 'should wrap nested tables in div with align="right" attribute for `blockRight` table alignment', done => {
+				const dataTransferMock = createDataTransfer();
+				const preventDefaultSpy = sinon.spy();
+
+				_setModelData(
+					model,
+					'[<table tableAlignment="blockRight">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<table tableAlignment="blockRight">' +
+									'<tableRow>' +
+										'<tableCell>' +
+											'<paragraph>foo</paragraph>' +
+										'</tableCell>' +
+									'</tableRow>' +
+								'</table>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				viewDocument.on( 'clipboardOutput', ( evt, data ) => {
+					expect( data.method ).to.equal( 'copy' );
+					expect( preventDefaultSpy.called ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
+						'<div align="right">' +
+							'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
+								'<tbody><tr><td>' +
+									'<div align="right">' +
+										'<table class="table table-style-block-align-right" style="margin-left:auto;margin-right:0;">' +
+											'<tbody><tr><td>foo</td></tr></tbody>' +
+										'</table>' +
+									'</div>' +
+								'</td></tr></tbody>' +
+							'</table>' +
+						'</div>'
+					);
+
+					done();
+				}, { priority: 'lowest' } );
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
 		} );
 
 		function createEmptyTable() {
