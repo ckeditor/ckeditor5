@@ -24,7 +24,7 @@ import { convertCssLengthToPx } from './utils.js';
 export function transformTables(
 	documentFragment: ViewDocumentFragment,
 	writer: ViewUpcastWriter,
-	hasTablePropertiesPlugin: boolean
+	hasTablePropertiesPlugin: boolean = false
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (
