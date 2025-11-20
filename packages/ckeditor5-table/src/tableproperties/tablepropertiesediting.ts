@@ -13,11 +13,18 @@ import {
 	addBorderStylesRules,
 	addMarginStylesRules,
 	type ViewElement,
+	type ViewItem,
 	type Conversion,
 	type ModelSchema,
+	type ModelElement,
 	type UpcastConversionApi,
-	type UpcastConversionData
+	type UpcastConversionData,
+	type UpcastDispatcher,
+	type UpcastElementEvent,
+	type ViewDowncastWriter
 } from 'ckeditor5/src/engine.js';
+import { first } from 'ckeditor5/src/utils.js';
+import type { ViewDocumentClipboardOutputEvent } from 'ckeditor5/src/clipboard.js';
 
 import { TableEditing } from '../tableediting.js';
 import {
@@ -37,6 +44,7 @@ import { TableWidthCommand } from './commands/tablewidthcommand.js';
 import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
+import { getViewTableFromWrapper } from '../utils/structure.js';
 
 /**
  * The table properties editing feature.
@@ -156,7 +164,58 @@ export class TablePropertiesEditing extends Plugin {
 			'tableBackgroundColor',
 			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
+
+		const viewDoc = editor.editing.view.document;
+
+		// Adjust clipboard output to wrap tables in divs if needed (for alignment).
+		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
+			editor.editing.view.change( writer => {
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					wrapInDivIfNeeded( item, writer );
+				}
+
+				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
+			} );
+		}, { priority: 'lowest' } );
 	}
+}
+
+/**
+ * Checks whether the view element is a table and if it needs to be wrapped in a div for alignment purposes.
+ * If so, it wraps it in a div and inserts it into the data content.
+ */
+function wrapInDivIfNeeded( viewItem: ViewItem, writer: ViewDowncastWriter ): void {
+	if ( !viewItem.is( 'element', 'table' ) ) {
+		return;
+	}
+
+	const alignAttribute = viewItem.getAttribute( 'align' ) as string | undefined;
+	const floatAttribute = viewItem.getStyle( 'float' ) as string | undefined;
+	const marginLeft = viewItem.getStyle( 'margin-left' );
+	const marginRight = viewItem.getStyle( 'margin-right' );
+
+	if (
+		// Align center.
+		( alignAttribute && alignAttribute === 'center' ) ||
+		// Align right with text wrapping.
+		( floatAttribute && floatAttribute === 'right' && alignAttribute && alignAttribute === 'right' )
+	) {
+		insertWrapperWithAlignment( writer, alignAttribute, viewItem );
+
+		return;
+	}
+
+	// Align right with no text wrapping.
+	if ( floatAttribute === undefined && marginLeft === 'auto' && marginRight === '0' ) {
+		insertWrapperWithAlignment( writer, 'right', viewItem );
+	}
+}
+
+function insertWrapperWithAlignment( writer: ViewDowncastWriter, align: string, table: ViewElement ): void {
+	const position = writer.createPositionBefore( table );
+	const wrapper = writer.createContainerElement( 'div', { align }, table );
+
+	writer.insert( position, wrapper );
 }
 
 /**
@@ -295,6 +354,112 @@ function enableAlignmentProperty( schema: ModelSchema, conversion: Conversion, d
 			}
 		} );
 	} );
+
+	conversion.for( 'upcast' ).add( upcastTableAlignedDiv( defaultValue ) );
+}
+
+/**
+ * Returns a function that converts the table view representation:
+ *
+ * ```html
+ * <div align="right"><table>...</table></div>
+ * <!-- or -->
+ * <div align="center"><table>...</table></div>
+ * <!-- or -->
+ * <div align="left"><table>...</table></div>
+ * ```
+ *
+ * to the model representation:
+ *
+ * ```xml
+ * <table tableAlignment="right|center|left"></table>
+ * ```
+ *
+ * @internal
+ */
+export function upcastTableAlignedDiv( defaultValue: string ) {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:div', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not a "table wrapped in div with align attribute".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, attributes: 'align' } ) ) {
+				return;
+			}
+
+			// Find a table element inside the div element.
+			const viewTable = getViewTableFromWrapper( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Consume the div to prevent other converters from processing it again.
+			conversionApi.consumable.consume( data.viewItem, { name: true, attributes: 'align' } );
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable || !modelTable.is( 'element', 'table' ) ) {
+				// Revert consumed div so other features can convert it.
+				conversionApi.consumable.revert( data.viewItem, { name: true, attributes: 'align' } );
+
+				// If anyway some table content was converted, we have to pass the model range and cursor.
+				if ( conversionResult.modelRange && !conversionResult.modelRange.isCollapsed ) {
+					data.modelRange = conversionResult.modelRange;
+					data.modelCursor = conversionResult.modelCursor;
+				}
+
+				return;
+			}
+
+			const alignAttributeFromDiv = data.viewItem.getAttribute( 'align' ) as string;
+			const alignAttributeFromTable = viewTable.getAttribute( 'align' ) as string;
+			const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
+			const align = convertToTableAlignment( alignAttributeFromDiv, alignAttributeFromTable, localDefaultValue );
+
+			if ( align ) {
+				conversionApi.writer.setAttribute( 'tableAlignment', align, modelTable );
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
+	};
+}
+
+/**
+ * Converts div `align` and table `align` attributes to the model `tableAlignment` attribute.
+ *
+ * @param divAlign The value of the div `align` attribute.
+ * @param tableAlign The value of the table `align` attribute.
+ * @param defaultValue The default alignment value.
+ * @returns The model `tableAlignment` value or `undefined` if no conversion is needed.
+ */
+function convertToTableAlignment( divAlign: string, tableAlign: string, defaultValue: string ): string | undefined {
+	if ( divAlign ) {
+		switch ( divAlign ) {
+			case 'right':
+				if ( tableAlign === 'right' ) {
+					return 'right';
+				} else if ( tableAlign === 'left' ) {
+					return 'left';
+				} else {
+					return 'blockRight';
+				}
+			case 'center':
+				return 'center';
+			case 'left':
+				return tableAlign === undefined ? 'blockLeft' : 'left';
+			default:
+				return defaultValue;
+		}
+	}
+
+	return undefined;
 }
 
 /**
