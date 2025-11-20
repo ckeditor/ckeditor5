@@ -28,14 +28,17 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 
 	public readonly hasMultiLevelListPlugin: boolean;
 
+	public readonly hasTablePropertiesPlugin: boolean;
+
 	/**
 	 * Creates a new `PasteFromOfficeMSWordNormalizer` instance.
 	 *
 	 * @param document View document.
 	 */
-	constructor( document: ViewDocument, hasMultiLevelListPlugin: boolean = false ) {
+	constructor( document: ViewDocument, hasMultiLevelListPlugin: boolean = false, hasTablePropertiesPlugin: boolean = false ) {
 		this.document = document;
 		this.hasMultiLevelListPlugin = hasMultiLevelListPlugin;
+		this.hasTablePropertiesPlugin = hasTablePropertiesPlugin;
 	}
 
 	/**
@@ -55,7 +58,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 		transformBookmarks( documentFragment, writer );
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-		transformTables( documentFragment, writer );
+		transformTables( documentFragment, writer, this.hasTablePropertiesPlugin );
 		removeInvalidTableWidth( documentFragment, writer );
 		replaceMSFootnotes( documentFragment, writer );
 		removeMSAttributes( documentFragment );

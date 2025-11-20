@@ -17,12 +17,14 @@ import { convertCssLengthToPx } from './utils.js';
 /**
  * Applies border none for table and cells without a border specified.
  * Normalizes style length units to px.
+ * Handles left block table alignment.
  *
  * @internal
  */
 export function transformTables(
 	documentFragment: ViewDocumentFragment,
-	writer: ViewUpcastWriter
+	writer: ViewUpcastWriter,
+	hasTablePropertiesPlugin: boolean = false
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (
@@ -31,6 +33,18 @@ export function transformTables(
 			!item.is( 'element', 'th' )
 		) {
 			continue;
+		}
+
+		// In MS Word, left aligned tables (default) have no align attribute on table and are not wrapped in a div.
+		// In such case we need to set margin-left: 0 and margin-right: auto to let the editor know that the table is left block aligned.
+		// Other alignments are handled by dedicated upcast converters in Table feature.
+		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
+			const hasDivParent = item.parent && item.parent.is( 'element', 'div' );
+
+			if ( !item.getAttribute( 'align' ) && !hasDivParent ) {
+				writer.setStyle( 'margin-left', '0', item );
+				writer.setStyle( 'margin-right', 'auto', item );
+			}
 		}
 
 		const sides = [ 'left', 'top', 'right', 'bottom' ];
