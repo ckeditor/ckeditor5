@@ -330,6 +330,34 @@ ClassicEditor
 	If you want add the `target` and `rel` attributes to all external links in your content, we prepared a [dedicated configuration](#adding-target-and-rel-attributes-to-external-links) for that purpose. Thanks to this, you do not have to define the automatic decorator by yourself.
 </info-box>
 
+#### Adding classes and styles to links
+
+In addition to adding custom HTML attributes, link decorators can also apply CSS classes and inline styles to a link. This works for both **automatic** decorators (based on rules) and **manual** decorators (toggled in the UI). Classes and styles must be provided through the dedicated `classes` and `styles` properties in the decorator configuration.
+
+Manual decorators add a toggle to the link UI, allowing the user to enable or disable additional link features. The decorator properties are applied to the link element whenever the toggle is enabled.
+
+``` js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			decorators: {
+				highlighted: {
+					mode: 'manual',
+					label: 'Highlighted link',
+					defaultValue: false,
+					classes: 'link-highlighted',
+					styles: {
+						background: 'yellow',
+						'font-weight': 'bold'
+					}
+				}
+			}
+		}
+	} );
+```
+
+When the "Highlighted link" toggle is enabled, the class and styles are added to the link element in the editor output.
+
 #### Adding attributes to links using the UI (manual decorators)
 
 Manual link decorators are represented in the link editing balloon as switch buttons. The users can use them to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/linkconfig~LinkDecoratorManualDefinition definition} has a human-readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
@@ -365,79 +393,9 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-## Adding classes and styles to links
+#### Deprecated syntax
 
-In addition to adding custom HTML attributes, link decorators can also apply CSS classes and inline styles to a link. This works for both **automatic** decorators (based on rules) and **manual** decorators (toggled in the UI).
-
-Since CKEditor 5 v29, classes and styles must be provided through the dedicated `classes` and `styles` properties in the decorator configuration.
-
-Using `class` or `style` inside the `attributes` object is deprecated and triggers a console warning.
-
-The examples below show how to configure decorators using the recommended, non-deprecated syntax.
-
-### Automatic decorators with classes and styles
-
-Automatic decorators apply additional link properties if a given rule evaluates to `true`. You can apply attributes, classes, and styles at the same time:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				externalLink: {
-					mode: 'automatic',
-					callback: url => url.startsWith( 'http' ),
-					attributes: {
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					},
-					classes: 'external-link',
-					styles: {
-						color: 'green',
-						'text-decoration': 'underline'
-					}
-				}
-			}
-		}
-	} );
-```
-
-In this example:
-
-*  `attributes` contains regular HTML attributes.
-*  `classes` adds one or more space-separated CSS class names.
-*  `styles` is an object where keys are CSS properties and values are style values.
-
-### Manual decorators with classes and styles
-
-Manual decorators add a toggle to the link UI, allowing the user to enable or disable additional link features. The decorator properties are applied to the link element whenever the toggle is enabled.
-
-``` js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		link: {
-			decorators: {
-				highlighted: {
-					mode: 'manual',
-					label: 'Highlighted link',
-					defaultValue: false,
-					classes: 'link-highlighted',
-					styles: {
-						background: 'yellow',
-						'font-weight': 'bold'
-					}
-				}
-			}
-		}
-	} );
-```
-
-When the "Highlighted link" toggle is enabled, the class and styles are added to the link element in the editor output.
-
-### Deprecated syntax
-
-Older versions of CKEditor 5 allowed classes and styles to be placed
-inside the `attributes` field:
+Older versions of CKEditor&nbsp;5 allowed classes and styles to be placed inside the `attributes` field:
 
 ``` js
 // Deprecated – do not use:
@@ -447,7 +405,7 @@ attributes: {
 }
 ```
 
-This syntax still works for backward compatibility but is deprecated and will be removed in a future release. UUse the `classes` and `styles` properties instead.
+This syntax still works for backward compatibility but is deprecated and triggers a console warnin. Use the `classes` and `styles` properties instead.
 
 ## Autolink feature
 
