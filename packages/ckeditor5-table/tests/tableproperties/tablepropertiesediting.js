@@ -2934,6 +2934,21 @@ describe( 'table properties', () => {
 				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
 			} );
 
+			it( 'should upcast align `left` attribute from div wrapped on table', () => {
+				editor.setData(
+					'<div align="left">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
+			} );
+
 			it( 'should upcast align `right` attribute from div wrapped on table with align `right`', () => {
 				editor.setData(
 					'<div align="right">' +
@@ -2947,6 +2962,21 @@ describe( 'table properties', () => {
 				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+			} );
+
+			it( 'should upcast align `left` attribute from div wrapped on table with align `left`', () => {
+				editor.setData(
+					'<div align="left">' +
+						'<table align="left">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
 			} );
 
 			it( 'should upcast the table alignment to default alignment value when align value is not recognized', () => {

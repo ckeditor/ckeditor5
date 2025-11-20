@@ -450,6 +450,12 @@ function convertToTableAlignment( divAlign: string, tableAlign: string, defaultV
 				}
 			case 'center':
 				return 'center';
+			case 'left':
+				if ( tableAlign === 'left' ) {
+					return 'left';
+				} else {
+					return 'blockLeft';
+				}
 			default:
 				return defaultValue;
 		}
