@@ -27,7 +27,7 @@ import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
 export interface TableConfig {
 
 	/**
-	 * Number of rows and columns to render by table heading when inserting new tables.
+	 * Number of rows and columns to render by the table heading when inserting new tables.
 	 *
 	 * You can configure it like this:
 	 *
@@ -40,7 +40,7 @@ export interface TableConfig {
 	 * };
 	 * ```
 	 *
-	 * Both rows and columns properties are optional defaulting to 0 (no heading).
+	 * Both rows and columns properties are optional, defaulting to 0 (no heading).
 	 */
 	defaultHeadings?: {
 		rows?: number;
@@ -93,7 +93,7 @@ export interface TableConfig {
 	tableToolbar?: Array<ToolbarConfigItem>;
 
 	/**
-	 * The configuration of the table properties user interface (balloon). It allows to define:
+	 * The configuration of the table properties user interface (balloon). It allows us to define:
 	 *
 	 * * The color palette for the table border color style field (`tableProperties.borderColors`),
 	 * * The color palette for the table background style field (`tableProperties.backgroundColors`).
@@ -137,9 +137,9 @@ export interface TableConfig {
 	 * {@link module:table/tableconfig~TablePropertiesOptions Read more about the supported properties.}
 	 *
 	 * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
-	 * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
-	 * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
-	 * Default values will not be kept in the editor model.
+	 * i.e., they do not limit or filter the colors in the data. They are used only in the user interface,
+	 * allowing users to pick colors more conveniently. The `defaultProperties` option does impact the data.
+	 * The editor model will not keep the default values.
 	 *
 	 * The default color palettes for the table background and the table border are the same
 	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
@@ -152,7 +152,7 @@ export interface TableConfig {
 	tableProperties?: TablePropertiesConfig;
 
 	/**
-	 * The configuration of the table cell properties user interface (balloon). It allows to define:
+	 * The configuration of the table cell properties user interface (balloon). It allows us to define:
 	 *
 	 * * The color palette for the cell border color style field (`tableCellProperties.borderColors`),
 	 * * The color palette for the cell background style field (`tableCellProperties.backgroundColors`).
@@ -195,11 +195,11 @@ export interface TableConfig {
 	 * {@link module:table/tableconfig~TablePropertiesOptions Read more about the supported properties.}
 	 *
 	 * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
-	 * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
+	 * i.e., they do not limit or filter the colors in the data. They are used only in the user interface,
 	 * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
-	 * Default values will not be kept in the editor model.
+	 * The editor model will not keep the default values.
 	 *
-	 * The default color palettes for the cell background and the cell border are the same
+	 * The default color palettes for the cell background and the cell border are identical
 	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
 	 *
 	 * Both color palette configurations must follow the
