@@ -716,32 +716,32 @@ Because of the breaking changes in the Angular library output format, the `@cked
     <tr>
       <td><code>^8</code></td>
       <td><code>13+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a>.</td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
     </tr>
     <tr>
       <td><code>^7</code></td>
       <td><code>13+</code></td>
-      <td>Changes in peer dependencies. (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>)</td>
+      <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
     </tr>
     <tr>
       <td><code>^6</code></td>
       <td><code>13+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a>.</td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
     </tr>
     <tr>
       <td><code>^5</code></td>
       <td><code>13+</code></td>
-      <td>Requires Angular at least in version 13+. Lower versions are no longer maintained.</td>
+      <td>Requires Angular in version 13+ or higher.</td>
     </tr>
     <tr>
       <td><code>^4</code></td>
       <td><code>9.1+</code></td>
-      <td>Requires CKEditor&nbsp;5 at least in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a>.</td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
     </tr>
     <tr>
       <td><code>^3</code></td>
       <td><code>9.1+</code></td>
-      <td>Requires Node.js at least in version 14.</td>
+      <td>Requires Node.js in version 14 or higher.</td>
     </tr>
     <tr>
       <td><code>^2</code></td>
@@ -751,7 +751,7 @@ Because of the breaking changes in the Angular library output format, the `@cked
     <tr>
       <td><code>^1</code></td>
       <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-      <td>Angular versions are no longer maintained.</td>
+      <td>Angular versions no longer maintained.</td>
     </tr>
   </tbody>
 </table>
