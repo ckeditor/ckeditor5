@@ -570,12 +570,10 @@ export function adjustLastColumnIndex(
 /**
  * Get view `<table>` element from the wrapper.
  */
-export function getViewTableFromWrapper( figureView: ViewElement ): ViewElement | undefined {
-	for ( const figureChild of figureView.getChildren() ) {
-		if ( figureChild.is( 'element', 'table' ) ) {
-			return figureChild;
+export function getViewTableFromWrapper( wrapperView: ViewElement ): ViewElement | undefined {
+	for ( const wrapperChild of wrapperView.getChildren() ) {
+		if ( wrapperChild.is( 'element', 'table' ) ) {
+			return wrapperChild;
 		}
 	}
-
-	return undefined;
 }

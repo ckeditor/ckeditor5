@@ -165,8 +165,9 @@ export class TablePropertiesEditing extends Plugin {
 			new TableBackgroundColorCommand( editor, defaultTableProperties.backgroundColor )
 		);
 
-		// Adjust clipboard output to wrap tables in divs if needed (for alignment).
 		const viewDoc = editor.editing.view.document;
+
+		// Adjust clipboard output to wrap tables in divs if needed (for alignment).
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDoc, 'clipboardOutput', ( evt, data ) => {
 			editor.editing.view.change( writer => {
 				const children = Array.from( data.content.getChildren() ).map( item => wrapInDivIfNeeded( item, writer ) );
@@ -182,32 +183,32 @@ export class TablePropertiesEditing extends Plugin {
  * Checks whether the view node is a table and if it needs to be wrapped in a div for alignment purposes.
  * If so, it wraps it in a div and returns the new element. Otherwise, it returns the original view node.
  */
-function wrapInDivIfNeeded( ViewNode: ViewNode, writer: ViewDowncastWriter ): ViewNode {
-	if ( !ViewNode.is( 'element', 'table' ) ) {
-		return ViewNode;
+function wrapInDivIfNeeded( viewNode: ViewNode, writer: ViewDowncastWriter ): ViewNode {
+	if ( !viewNode.is( 'element', 'table' ) ) {
+		return viewNode;
 	}
 
-	const alignAttribute = ViewNode.getAttribute( 'align' ) as string | undefined;
-	const floatAttribute = ViewNode.getStyle( 'float' ) as string | undefined;
-	const marginLeft = ViewNode.getStyle( 'margin-left' );
-	const marginRight = ViewNode.getStyle( 'margin-right' );
+	const alignAttribute = viewNode.getAttribute( 'align' ) as string | undefined;
+	const floatAttribute = viewNode.getStyle( 'float' ) as string | undefined;
+	const marginLeft = viewNode.getStyle( 'margin-left' );
+	const marginRight = viewNode.getStyle( 'margin-right' );
 
 	// Align right with text wrapping.
 	if ( floatAttribute && floatAttribute === 'right' && alignAttribute && alignAttribute === 'right' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, ViewNode );
+		return writer.createContainerElement( 'div', { align: alignAttribute }, viewNode );
 	}
 
 	// Align center.
 	if ( alignAttribute && alignAttribute === 'center' ) {
-		return writer.createContainerElement( 'div', { align: alignAttribute }, ViewNode );
+		return writer.createContainerElement( 'div', { align: alignAttribute }, viewNode );
 	}
 
 	// Align right with no text wrapping.
 	if ( floatAttribute === undefined && marginLeft === 'auto' && marginRight === '0' ) {
-		return writer.createContainerElement( 'div', { align: 'right' }, ViewNode );
+		return writer.createContainerElement( 'div', { align: 'right' }, viewNode );
 	}
 
-	return ViewNode;
+	return viewNode;
 }
 
 /**

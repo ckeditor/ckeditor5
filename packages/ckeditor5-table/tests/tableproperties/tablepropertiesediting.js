@@ -2904,7 +2904,7 @@ describe( 'table properties', () => {
 		} );
 
 		describe( 'upcast table wrapped by div', () => {
-			it( 'should upcast align `left` attribute from div wrapped on table', () => {
+			it( 'should upcast align `right` attribute from div wrapped on table', () => {
 				editor.setData(
 					'<div align="right">' +
 						'<table>' +
