@@ -236,8 +236,87 @@ export interface TableConfig {
  * The configuration of the table properties user interface (balloon).
  */
 export interface TablePropertiesConfig {
+
+	/**
+	 * The color palette for the table border color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		borderColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 0%)',
+	 * 				label: 'Black'
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	borderColors?: TableColorConfig;
+
+	/**
+	 * The color palette for the table background color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		backgroundColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(120, 75%, 60%)',
+	 * 				label: 'Green'
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	backgroundColors?: TableColorConfig;
+
+	/**
+	 * Default styles for newly created tables.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		defaultProperties: {
+	 * 			borderStyle: 'dashed',
+	 * 			borderColor: 'hsl(0, 0%, 90%)',
+	 * 			borderWidth: '3px',
+	 * 			alignment: 'left',
+	 * 			width: '550px',
+	 * 			height: '450px'
+	 * 		}
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * **Note**: The model does not store the default values. The editor will only keep values that differ from the defaults.
+	 *
+	 * See {@link module:table/tableconfig~TablePropertiesOptions} for the full list of properties.
+	 */
 	defaultProperties?: TablePropertiesOptions;
 
 	/**
