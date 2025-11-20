@@ -376,8 +376,87 @@ export interface TablePropertiesOptions {
  * The configuration of the table cell properties user interface (balloon).
  */
 export interface TableCellPropertiesConfig {
+
+	/**
+	 * The color palette for the table cell border color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		borderColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 0%)',
+	 * 				label: 'Black'
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	borderColors?: TableColorConfig;
+
+	/**
+	 * The color palette for the table cell background color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		backgroundColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(120, 75%, 60%)',
+	 * 				label: 'Green'
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	backgroundColors?: TableColorConfig;
+
+	/**
+	 * Default styles for newly created table cells.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		defaultProperties: {
+	 * 			borderStyle: 'dashed',
+	 * 			borderColor: 'hsl(0, 0%, 90%)',
+	 * 			borderWidth: '3px',
+	 * 			horizontalAlignment: 'center',
+	 * 			verticalAlignment: 'middle',
+	 * 			padding: '10px'
+	 * 		}
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * **Note**: The model does not store the default values. The editor will only keep values that differ from the defaults.
+	 *
+	 * See {@link module:table/tableconfig~TableCellPropertiesOptions} for the full list of properties.
+	 */
 	defaultProperties?: TableCellPropertiesOptions;
 
 	/**
