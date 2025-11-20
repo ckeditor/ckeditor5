@@ -2964,9 +2964,9 @@ describe( 'table properties', () => {
 				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
 			} );
 
-			it( 'should upcast align `left` attribute from div wrapped on table with align `left`', () => {
+			it( 'should upcast align `right` attribute from div wrapped on table with align `left`', () => {
 				editor.setData(
-					'<div align="left">' +
+					'<div align="right">' +
 						'<table align="left">' +
 							'<tr>' +
 								'<td>foo</td>' +

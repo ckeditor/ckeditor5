@@ -445,17 +445,18 @@ function convertToTableAlignment( divAlign: string, tableAlign: string, defaultV
 			case 'right':
 				if ( tableAlign === 'right' ) {
 					return 'right';
+				} else if ( tableAlign === 'left' ) {
+					return 'left';
 				} else {
 					return 'blockRight';
 				}
 			case 'center':
 				return 'center';
 			case 'left':
-				if ( tableAlign === 'left' ) {
-					return 'left';
-				} else {
+				if ( tableAlign === undefined ) {
 					return 'blockLeft';
 				}
+				break;
 			default:
 				return defaultValue;
 		}
