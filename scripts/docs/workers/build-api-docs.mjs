@@ -5,28 +5,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { workerData } from 'node:worker_threads';
 import path from 'node:path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 
-buildApiDocs()
-	.catch( err => {
-		console.error( err );
-		process.exitCode = 1;
-	} );
-
-async function buildApiDocs() {
+try {
 	console.log( 'Started building API.' );
 
 	await build( {
 		cwd: CKEDITOR5_ROOT_PATH,
 		outputPath: path.join( CKEDITOR5_ROOT_PATH, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
-		validateOnly: process.argv.includes( '--validate-only' ),
+		validateOnly: workerData.validateOnly,
 		validatorOptions: {
-			strict: process.argv.includes( '--strict' )
+			strict: workerData.strict
 		},
-		verbose: process.argv.includes( '--verbose' ),
+		verbose: workerData.verbose,
 		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.
@@ -55,4 +50,7 @@ async function buildApiDocs() {
 	} );
 
 	console.log( 'Finished building API.' );
+} catch ( error ) {
+	console.error( error );
+	process.exitCode = 1;
 }
