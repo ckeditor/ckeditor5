@@ -453,10 +453,7 @@ function convertToTableAlignment( divAlign: string, tableAlign: string, defaultV
 			case 'center':
 				return 'center';
 			case 'left':
-				if ( tableAlign === undefined ) {
-					return 'blockLeft';
-				}
-				break;
+				return tableAlign === undefined ? 'blockLeft' : 'left';
 			default:
 				return defaultValue;
 		}

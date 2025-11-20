@@ -2949,6 +2949,21 @@ describe( 'table properties', () => {
 				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'blockLeft' );
 			} );
 
+			it( 'should upcast align `left` attribute from div wrapped on table on table with align `left` to `left`', () => {
+				editor.setData(
+					'<div align="left">' +
+						'<table align="left">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</div>'
+				);
+				const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+				expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+			} );
+
 			it( 'should upcast align `right` attribute from div wrapped on table with align `right`', () => {
 				editor.setData(
 					'<div align="right">' +
