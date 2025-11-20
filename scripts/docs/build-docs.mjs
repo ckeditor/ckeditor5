@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { spawn } from 'node:child_process';
+import { Worker } from 'node:worker_threads';
 import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
@@ -18,34 +18,40 @@ const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package
 
 const DOCS_DIRECTORY = 'docs';
 
-buildDocs()
-	.catch( err => {
-		console.error( err );
-
-		process.exitCode = 1;
-	} );
-
-async function buildDocs() {
+try {
 	const options = parseArguments( process.argv.slice( 2 ) );
+	const workers = [];
 
+	// Build API docs in a separate thread.
 	if ( !options.skipApi ) {
-		await spawnAsync( 'pnpm', [
-			'run',
-			'docs:api',
-			options.strict && '--strict',
-			options.verbose && '--verbose'
-		].filter( Boolean ) );
+		const apiDocsWorker = spawnWorker( './workers/build-api-docs.mjs', {
+			strict: options.strict,
+			verbose: options.verbose
+		} );
+
+		workers.push( apiDocsWorker );
 	}
 
+	// Build CKEditor 5 assets in a separate threads.
 	if ( shouldBuildCKEditorAssets( options ) ) {
-		await spawnAsync( 'pnpm', [
-			'run',
-			'docs:ckeditor5',
-			options.skipCommercial && '--skip-commercial',
-			options.dev && '--skip-obfuscation'
-		].filter( Boolean ) );
+		const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' );
+
+		await fs.emptyDir( basePath );
+
+		const corePackageWorker = spawnWorker( './workers/build-core.mjs', { basePath } );
+		const commercialPackageWorker = spawnWorker( './workers/build-commercial.mjs', {
+			basePath,
+			skipCommercial: options.skipCommercial,
+			skipObfuscation: options.skipObfuscation
+		} );
+
+		workers.push( corePackageWorker, commercialPackageWorker );
 	}
 
+	// Wait for all workers to finish.
+	await Promise.all( workers );
+
+	// Build the rest of the docs.
 	await umberto.buildSingleProject( {
 		configDir: DOCS_DIRECTORY,
 		clean: true,
@@ -83,22 +89,21 @@ async function buildDocs() {
 	}
 
 	if ( IS_ISOLATED_REPOSITORY ) {
-		printWarningIsolatedRepository();
+		const warning = styleText(
+			'yellow',
+			'\nThis repository is typically used in conjunction with a private project.\n\n' +
+			'Since the project is not present here, some documentation links may not resolve - ' +
+			'this is expected and does not indicate a problem.\n\n' +
+			'The purpose of this task is to create the API reference and contributor-facing ' +
+			'guides for this repository independently.\n\n' +
+			'If you still want to run full documentation validation, use "--skip-validation=false".'
+		);
+
+		console.log( warning );
 	}
-}
-
-function printWarningIsolatedRepository() {
-	const warning = styleText(
-		'yellow',
-		'\nThis repository is typically used in conjunction with a private project.\n\n' +
-		'Since the project is not present here, some documentation links may not resolve - ' +
-		'this is expected and does not indicate a problem.\n\n' +
-		'The purpose of this task is to create the API reference and contributor-facing ' +
-		'guides for this repository independently.\n\n' +
-		'If you still want to run full documentation validation, use "--skip-validation=false".'
-	);
-
-	console.log( warning );
+} catch ( err ) {
+	console.error( err );
+	process.exitCode = 1;
 }
 
 function shouldBuildCKEditorAssets( options ) {
@@ -113,20 +118,20 @@ function shouldBuildCKEditorAssets( options ) {
 	return true;
 }
 
-function spawnAsync( command, args ) {
+function spawnWorker( path, workerData ) {
 	return new Promise( ( resolve, reject ) => {
-		const process = spawn( command, args, {
-			cwd: CKEDITOR5_ROOT_PATH,
-			stdio: 'inherit',
-			shell: true
-		} );
+		const worker = new Worker(
+			new URL( path, import.meta.url ),
+			{ workerData }
+		);
 
-		process.on( 'close', code => {
+		worker.on( 'error', reject );
+		worker.on( 'exit', code => {
 			if ( code === 0 ) {
 				resolve();
 			} else {
-				reject( new Error( `Process exited with code ${ code }` ) );
+				reject( new Error( `Worker stopped with exit code ${ code }` ) );
 			}
 		} );
 	} );
-}
+};
