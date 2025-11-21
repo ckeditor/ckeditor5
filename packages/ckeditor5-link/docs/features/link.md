@@ -395,17 +395,19 @@ ClassicEditor
 
 #### Deprecated syntax
 
-Older versions of CKEditor&nbsp;5 allowed classes and styles to be placed inside the `attributes` field:
+Older versions of CKEditor&nbsp;5 allowed classes and styles inside the `attributes` field:
 
 ``` js
-// Deprecated – do not use:
+// ❌ Deprecated – do not use:
 attributes: {
 	class: 'my-class',
 	style: 'color: red'
 }
 ```
 
-This syntax still works for backward compatibility but is deprecated and triggers a console warnin. Use the `classes` and `styles` properties instead.
+<info-box warning>
+	This syntax remains compatible for backward purposes but is deprecated and triggers a console warning. Use the `classes` and `styles` properties instead.
+</info-box>
 
 ## Autolink feature
 
