@@ -5,7 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { workerData } from 'node:worker_threads';
 import path from 'node:path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
 import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
@@ -17,11 +16,11 @@ try {
 		cwd: CKEDITOR5_ROOT_PATH,
 		outputPath: path.join( CKEDITOR5_ROOT_PATH, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
-		validateOnly: workerData.validateOnly,
+		validateOnly: process.argv.includes( '--validate-only' ),
 		validatorOptions: {
-			strict: workerData.strict
+			strict: process.argv.includes( '--strict' )
 		},
-		verbose: workerData.verbose,
+		verbose: process.argv.includes( '--verbose' ),
 		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.
