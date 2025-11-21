@@ -5,55 +5,63 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Worker } from 'node:worker_threads';
+import { styleText } from 'node:util';
+import { spawn } from 'node:child_process';
 import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
-import { CKEDITOR5_ROOT_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
-import { styleText } from 'node:util';
+import {
+	CKEDITOR5_ROOT_PATH,
+	DOCUMENTATION_PATH,
+	DOCUMENTATION_ASSETS_PATH,
+	IS_ISOLATED_REPOSITORY
+} from '../constants.mjs';
 
 const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
-const DOCS_DIRECTORY = 'docs';
-
 try {
 	const options = parseArguments( process.argv.slice( 2 ) );
-	const workers = [];
+	const processes = [];
 
-	// Build API docs in a separate thread.
+	// Build API docs in a separate process.
 	if ( !options.skipApi ) {
-		const apiDocsWorker = spawnWorker( './workers/build-api-docs.mjs', {
-			strict: options.strict,
-			verbose: options.verbose
-		} );
+		const apiDocsProcess = spawnAsync( 'pnpm', [
+			'run',
+			'docs:api',
+			options.strict && '--strict',
+			options.verbose && '--verbose'
+		].filter( Boolean ) );
 
-		workers.push( apiDocsWorker );
+		processes.push( apiDocsProcess );
 	}
 
-	// Build CKEditor 5 assets in a separate threads.
+	// Build CKEditor 5 assets in a separate process.
 	if ( shouldBuildCKEditorAssets( options ) ) {
-		const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' );
+		await fs.emptyDir( DOCUMENTATION_ASSETS_PATH );
 
-		await fs.emptyDir( basePath );
+		const corePackageProcess = spawnAsync( 'pnpm', [
+			'run',
+			'docs:ckeditor5'
+		] );
 
-		const corePackageWorker = spawnWorker( './workers/build-core.mjs', { basePath } );
-		const commercialPackageWorker = spawnWorker( './workers/build-commercial.mjs', {
-			basePath,
-			skipCommercial: options.skipCommercial,
-			skipObfuscation: options.skipObfuscation
-		} );
+		const commercialPackageProcess = spawnAsync( 'pnpm', [
+			'run',
+			'docs:ckeditor5-premium-features',
+			options.skipCommercial && '--skip-commercial',
+			options.skipObfuscation && '--skip-obfuscation'
+		].filter( Boolean ) );
 
-		workers.push( corePackageWorker, commercialPackageWorker );
+		processes.push( corePackageProcess, commercialPackageProcess );
 	}
 
 	// Wait for all workers to finish.
-	await Promise.all( workers );
+	await Promise.all( processes );
 
 	// Build the rest of the docs.
 	await umberto.buildSingleProject( {
-		configDir: DOCS_DIRECTORY,
+		configDir: DOCUMENTATION_PATH,
 		clean: true,
 		dev: options.dev,
 		skipLiveSnippets: options.skipSnippets,
@@ -71,11 +79,11 @@ try {
 
 	if ( !options.skipSnippets ) {
 		const assetsPaths = await glob( '*/', {
-			cwd: upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' ),
+			cwd: DOCUMENTATION_ASSETS_PATH,
 			absolute: true
 		} );
 
-		const destinationPath = upath.join( CKEDITOR5_ROOT_PATH, 'build', DOCS_DIRECTORY, 'ckeditor5', version, 'assets' );
+		const destinationPath = upath.join( DOCUMENTATION_PATH, 'ckeditor5', version, 'assets' );
 
 		if ( !assetsPaths.length ) {
 			throw new Error( 'CKEditor 5 assets needed to run snippets are not detected. Snippets will not work.' );
@@ -118,20 +126,20 @@ function shouldBuildCKEditorAssets( options ) {
 	return true;
 }
 
-function spawnWorker( path, workerData ) {
+function spawnAsync( command, args ) {
 	return new Promise( ( resolve, reject ) => {
-		const worker = new Worker(
-			new URL( path, import.meta.url ),
-			{ workerData }
-		);
+		const process = spawn( command, args, {
+			cwd: CKEDITOR5_ROOT_PATH,
+			stdio: 'inherit',
+			shell: true
+		} );
 
-		worker.on( 'error', reject );
-		worker.on( 'exit', code => {
+		process.on( 'close', code => {
 			if ( code === 0 ) {
 				resolve();
 			} else {
-				reject( new Error( `Worker stopped with exit code ${ code }` ) );
+				reject( new Error( `Process exited with code ${ code }` ) );
 			}
 		} );
 	} );
-};
+}

@@ -6,12 +6,11 @@
  */
 
 import url from 'node:url';
-import { workerData } from 'node:worker_threads';
 import upath from 'upath';
-import { CKEDITOR5_COMMERCIAL_PATH, IS_ISOLATED_REPOSITORY } from '../../constants.mjs';
+import { CKEDITOR5_COMMERCIAL_PATH, DOCUMENTATION_ASSETS_PATH, IS_ISOLATED_REPOSITORY } from '../../constants.mjs';
 
 try {
-	if ( workerData.skipCommercial || IS_ISOLATED_REPOSITORY ) {
+	if ( process.argv.includes( '--skip-commercial' ) || IS_ISOLATED_REPOSITORY ) {
 		console.log( 'Skipping `ckeditor5-premium-features`.' );
 	} else {
 		console.log( 'Started building `ckeditor5-premium-features`.' );
@@ -21,8 +20,8 @@ try {
 		const { default: generateCKEditor5PremiumFeaturesDocsBuild } = await import( href );
 
 		await generateCKEditor5PremiumFeaturesDocsBuild(
-			upath.join( workerData.basePath, 'ckeditor5-premium-features/ckeditor5-premium-features.js' ),
-			workerData.skipObfuscation
+			upath.join( DOCUMENTATION_ASSETS_PATH, 'ckeditor5-premium-features', 'ckeditor5-premium-features.js' ),
+			process.argv.includes( '--skip-obfuscation' )
 		);
 
 		console.log( 'Finished building `ckeditor5-premium-features`.' );
