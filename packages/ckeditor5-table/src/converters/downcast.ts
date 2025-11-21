@@ -11,7 +11,7 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
-import { type TableUtils } from '../tableutils.js';
+import type { TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
 
 /**
@@ -97,7 +97,11 @@ export function downcastRow(): DowncastElementCreatorFunction {
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
+export function downcastCell(
+	options: {
+		asWidget?: boolean;
+	} = {}
+): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
@@ -112,8 +116,19 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastEl
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-				const cellElementName = isHeading ? 'th' : 'td';
+				let cellElementName: 'td' | 'th' | null = null;
+
+				if ( tableSlot.cell.hasAttribute( 'tableCellType' ) ) {
+					const cellType = tableCell.getAttribute( 'tableCellType' )!;
+
+					cellElementName = cellType === 'header' ? 'th' : 'td';
+				}
+
+				if ( !cellElementName ) {
+					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+
+					cellElementName = isHeading ? 'th' : 'td';
+				}
 
 				result = options.asWidget ?
 					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :

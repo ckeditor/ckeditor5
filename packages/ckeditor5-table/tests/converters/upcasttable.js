@@ -539,13 +539,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel(
-				'<table headingColumns="1" headingRows="2">' +
-				'<tableRow>' +
-					'<tableCell><paragraph>11</paragraph></tableCell>' +
-					'<tableCell><paragraph>12</paragraph></tableCell>' +
-					'<tableCell><paragraph>13</paragraph></tableCell>' +
-					'<tableCell><paragraph>14</paragraph></tableCell>' +
-				'</tableRow>' +
+				'<table headingColumns="1" headingRows="1">' +
 				'<tableRow>' +
 					'<tableCell><paragraph>21</paragraph></tableCell>' +
 					'<tableCell><paragraph>22</paragraph></tableCell>' +
@@ -569,6 +563,12 @@ describe( 'upcastTable()', () => {
 					'<tableCell><paragraph>52</paragraph></tableCell>' +
 					'<tableCell><paragraph>53</paragraph></tableCell>' +
 					'<tableCell><paragraph>54</paragraph></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'<tableCell><paragraph>14</paragraph></tableCell>' +
 				'</tableRow>' +
 				'</table>'
 			);
