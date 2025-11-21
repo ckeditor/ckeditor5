@@ -10,6 +10,7 @@
 import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 
 import { createEmptyTableCell } from '../utils/common.js';
+import { getViewTableFromWrapper } from '../utils/structure.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
@@ -36,7 +37,7 @@ export function upcastTableFigure() {
 			}
 
 			// Find a table element inside the figure element.
-			const viewTable = getViewTableFromFigure( data.viewItem );
+			const viewTable = getViewTableFromWrapper( data.viewItem );
 
 			// Do not convert if table element is absent or was already converted.
 			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
@@ -191,17 +192,6 @@ export function ensureParagraphInTableCell( elementName: string ) {
 			}
 		}, { priority: 'low' } );
 	};
-}
-
-/**
- * Get view `<table>` element from the view widget (`<figure>`).
- */
-function getViewTableFromFigure( figureView: ViewElement ) {
-	for ( const figureChild of figureView.getChildren() ) {
-		if ( figureChild.is( 'element', 'table' ) ) {
-			return figureChild;
-		}
-	}
 }
 
 /**

@@ -552,7 +552,7 @@ describe( 'Drag and Drop', () => {
 			} );
 
 			expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-				'<figure class="table"><table><tbody><tr><td>bar</td></tr></tbody></table></figure>'
+				'<table class="table"><tbody><tr><td>bar</td></tr></tbody></table>'
 			);
 
 			const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
@@ -890,7 +890,7 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
+					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
 				);
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
@@ -899,7 +899,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
+					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
 				);
 
 				dataTransferMock.dropEffect = 'move';
@@ -957,7 +957,7 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
+					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
 				);
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
@@ -966,7 +966,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
+					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
 				);
 			} );
 

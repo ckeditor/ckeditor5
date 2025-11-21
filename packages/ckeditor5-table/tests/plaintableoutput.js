@@ -234,7 +234,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
 				} );
 
 				it( 'tableWidth', () => {
@@ -311,7 +311,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;' );
+					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 

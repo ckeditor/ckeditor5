@@ -13,9 +13,13 @@ import type {
 	UpcastConversionApi,
 	UpcastConversionData,
 	ViewElement,
-	UpcastElementEvent
+	UpcastElementEvent,
+	Consumables
 } from 'ckeditor5/src/engine.js';
 import { first } from 'ckeditor5/src/utils.js';
+
+const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
+const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
 
 /**
  * Conversion helper for upcasting attributes using normalized styles.
@@ -378,3 +382,207 @@ function reduceBoxSidesValue( style?: Style ): undefined | string | Style {
 
 	return topSideStyle;
 }
+
+/**
+ * Default table alignment options.
+ */
+export const DEFAULT_TABLE_ALIGNMENT_OPTIONS = {
+	left: { className: 'table-style-align-left' },
+	center: { className: 'table-style-align-center' },
+	right: { className: 'table-style-align-right' },
+	blockLeft: { className: 'table-style-block-align-left' },
+	blockRight: { className: 'table-style-block-align-right' }
+};
+
+/**
+ * Configuration for upcasting table alignment from view to model.
+ */
+export const upcastTableAlignmentConfig: Array<UpcastTableAlignmentConfig> = [
+	// Support for the `float:*;` CSS definition for the table alignment.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			styles: {
+				float: FLOAT_VALUES_REG_EXP
+			}
+		},
+		getAlign: ( viewElement: ViewElement ): string | undefined => {
+			let align = viewElement.getStyle( 'float' );
+
+			if ( align === 'none' ) {
+				align = 'center';
+			}
+
+			return align;
+		},
+		getConsumables( viewElement: ViewElement ): Consumables {
+			const float = viewElement.getStyle( 'float' );
+			const styles: Array<string> = [ 'float' ];
+
+			if ( float === 'left' && viewElement.hasStyle( 'margin-right' ) ) {
+				styles.push( 'margin-right' );
+			} else if ( float === 'right' && viewElement.hasStyle( 'margin-left' ) ) {
+				styles.push( 'margin-left' );
+			}
+
+			return { styles };
+		}
+	},
+	// Support for the `margin-left:auto; margin-right:auto;` CSS definition for the table alignment.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			styles: {
+				'margin-left': 'auto',
+				'margin-right': 'auto'
+			}
+		},
+		getAlign: (): string => 'center',
+		getConsumables: (): Consumables => {
+			return { styles: [ 'margin-left', 'margin-right' ] };
+		}
+	},
+	// Support for the left alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: 'table-style-align-left'
+		},
+		getAlign: (): string => 'left',
+		getConsumables(): Consumables {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.left.className };
+		}
+	},
+	// Support for the right alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className
+		},
+		getAlign: (): string => 'right',
+		getConsumables(): Consumables {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.right.className };
+		}
+	},
+	// Support for the center alignment using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className
+		},
+		getAlign: (): string => 'center',
+		getConsumables(): Consumables {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.center.className };
+		}
+	},
+	// Support for the block alignment left using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
+		},
+		getAlign: (): string => 'blockLeft',
+		getConsumables(): Consumables {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className };
+		}
+	},
+	// Support for the block alignment right using CSS classes.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			key: 'class',
+			value: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
+		},
+		getAlign: (): string => 'blockRight',
+		getConsumables(): Consumables {
+			return { classes: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className };
+		}
+	},
+	// Support for the block alignment left using margin CSS styles.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			styles: {
+				'margin-left': '0',
+				'margin-right': 'auto'
+			}
+		},
+		getAlign: (): string => 'blockLeft',
+		getConsumables(): Consumables {
+			return { styles: [ 'margin-left', 'margin-right' ] };
+		}
+	},
+	// Support for the block alignment right using margin CSS styles.
+	{
+		view: {
+			name: /^(table|figure)$/,
+			styles: {
+				'margin-left': 'auto',
+				'margin-right': '0'
+			}
+		},
+		getAlign: (): string => 'blockRight',
+		getConsumables(): Consumables {
+			return { styles: [ 'margin-left', 'margin-right' ] };
+		}
+	},
+	// Support for the `align` attribute as the backward compatibility while pasting from other sources.
+	{
+		view: {
+			name: 'table',
+			attributes: {
+				align: ALIGN_VALUES_REG_EXP
+			}
+		},
+		getAlign: ( viewElement: ViewElement ): string | undefined => viewElement.getAttribute( 'align' ),
+		getConsumables(): Consumables {
+			return { attributes: 'align' };
+		}
+	}
+];
+
+export const downcastTableAlignmentConfig: Record<TableAlignmentValues, { align: string | undefined; style: string; className: string }> = {
+	center: {
+		align: 'center',
+		style: 'margin-left: auto; margin-right: auto;',
+		className: 'table-style-align-center'
+	},
+	left: {
+		align: 'left',
+		style: 'float: left;',
+		className: 'table-style-align-left'
+	},
+	right: {
+		align: 'right',
+		style: 'float: right;',
+		className: 'table-style-align-right'
+	},
+	blockLeft: {
+		align: undefined,
+		style: 'margin-left: 0; margin-right: auto;',
+		className: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockLeft.className
+	},
+	blockRight: {
+		align: undefined,
+		style: 'margin-left: auto; margin-right: 0;',
+		className: DEFAULT_TABLE_ALIGNMENT_OPTIONS.blockRight.className
+	}
+};
+
+type UpcastTableAlignmentConfig = {
+	view: {
+		name: RegExp | string;
+		styles?: Record<string, RegExp | string>;
+		attributes?: Record<string, RegExp | string>;
+		key?: string;
+		value?: RegExp | string;
+	};
+	getAlign: ( ( viewElement: ViewElement ) => string | undefined ) | ( () => string );
+	getConsumables: ( viewElement: ViewElement ) => Consumables;
+};
+
+export type TableAlignmentValues = 'left' | 'center' | 'right' | 'blockLeft' | 'blockRight';

@@ -11,7 +11,15 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { ModelPositionOffset, ViewElement, DowncastSlotFilter } from 'ckeditor5/src/engine.js';
 
 import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
-import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
+import {
+	convertParagraphInTableCell,
+	downcastCell,
+	downcastRow,
+	downcastTable,
+	downcastTableBorderAndBackgroundAttributes,
+	convertPlainTable,
+	convertPlainTableCaption
+} from './converters/downcast.js';
 
 import { InsertTableCommand } from './commands/inserttablecommand.js';
 import { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -177,6 +185,9 @@ export class TableEditing extends Plugin {
 			view: 'rowspan'
 		} );
 
+		// Plain table output converters (also used in the clipboard pipeline).
+		this._addPlainTableOutputConverters();
+
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
 		editor.config.define( 'table.defaultHeadings.columns', 0 );
@@ -221,6 +232,35 @@ export class TableEditing extends Plugin {
 	 */
 	public registerAdditionalSlot( slotHandler: TableConversionAdditionalSlot ): void {
 		this._additionalSlots.push( slotHandler );
+	}
+
+	/**
+	 * Adds converters for plain table output. These converters are used either when the `PlainTableOutput` plugin is loaded
+	 * or when content is processed by the clipboard pipeline, ensuring that pasted tables are not wrapped in a <figure> element.
+	 */
+	private _addPlainTableOutputConverters(): void {
+		const editor = this.editor;
+
+		// Override default table data downcast converter.
+		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
+			model: 'table',
+			view: convertPlainTable( editor ),
+			converterPriority: 'high'
+		} );
+
+		// Make sure table <caption> is downcasted into <caption> in the data pipeline when necessary.
+		if ( editor.plugins.has( 'TableCaption' ) ) {
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'caption',
+				view: convertPlainTableCaption( editor ),
+				converterPriority: 'high'
+			} );
+		}
+
+		// Handle border-style, border-color, border-width and background-color table attributes.
+		if ( editor.plugins.has( 'TableProperties' ) ) {
+			downcastTableBorderAndBackgroundAttributes( editor );
+		}
 	}
 }
 
