@@ -12,6 +12,9 @@ export const CKEDITOR5_COMMERCIAL_PATH = upath.join( CKEDITOR5_ROOT_PATH, '..', 
 export const CKEDITOR5_COMMERCIAL_PACKAGES_PATH = upath.join( CKEDITOR5_COMMERCIAL_PATH, PACKAGES_DIRECTORY );
 export const IS_ISOLATED_REPOSITORY = upath.basename( upath.join( CKEDITOR5_ROOT_PATH, '..' ) ) !== 'external';
 
+export const DOCUMENTATION_PATH = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs' );
+export const DOCUMENTATION_ASSETS_PATH = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' );
+
 export const CKEDITOR5_MAIN_PACKAGE_PATH = upath.join( CKEDITOR5_PACKAGES_PATH, 'ckeditor5' );
 export const CKEDITOR5_PREMIUM_FEATURES_PATH = upath.join( CKEDITOR5_COMMERCIAL_PACKAGES_PATH, 'ckeditor5-premium-features' );
 

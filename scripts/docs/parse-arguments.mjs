@@ -40,6 +40,10 @@ export default function parseArguments( args ) {
 				type: 'boolean',
 				default: false
 			},
+			'skip-obfuscation': {
+				type: 'boolean',
+				default: false
+			},
 			dev: {
 				type: 'boolean',
 				default: false
@@ -94,7 +98,8 @@ export default function parseArguments( args ) {
 		'skip-validation',
 		'skip-guides',
 		'skip-ckeditor5',
-		'skip-commercial'
+		'skip-commercial',
+		'skip-obfuscation'
 	] );
 
 	return values;
