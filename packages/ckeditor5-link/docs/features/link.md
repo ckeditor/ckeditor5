@@ -332,7 +332,7 @@ ClassicEditor
 
 #### Adding classes and styles to links
 
-In addition to adding custom HTML attributes, link decorators can also apply CSS classes and inline styles to a link. This works for both **automatic** decorators (based on rules) and **manual** decorators (toggled in the UI). Classes and styles must be provided through the dedicated `classes` and `styles` properties in the decorator configuration.
+In addition to adding custom HTML attributes, link decorators can also apply CSS classes and inline styles to a link. It works for both **automatic** decorators (based on rules) and **manual** decorators (toggled in the UI). You must provide classes and styles through the dedicated `classes` and `styles` properties in the decorator configuration.
 
 Manual decorators add a toggle to the link UI, allowing the user to enable or disable additional link features. The decorator properties are applied to the link element whenever the toggle is enabled.
 
@@ -356,7 +356,7 @@ ClassicEditor
 	} );
 ```
 
-When the "Highlighted link" toggle is enabled, the class and styles are added to the link element in the editor output.
+When you enable the "Highlighted link" toggle, the editor output adds the class and styles to the link element.
 
 #### Adding attributes to links using the UI (manual decorators)
 
