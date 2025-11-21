@@ -320,6 +320,37 @@ export interface TablePropertiesConfig {
 	defaultProperties?: TablePropertiesOptions;
 
 	/**
+	 * Configuration of the table alignment behavior in the editor output.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		alignment: {
+	 * 			useInlineStyles: false // Use CSS classes instead of inline styles
+	 * 		}
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: By default, table alignment is rendered using inline styles.
+	 * When `useInlineStyles` is set to `false`, CSS classes are used instead.
+	 *
+	 * This applies to all five alignment options: `'left'`, `'center'`, `'right'`, `'blockLeft'`, and `'blockRight'`.
+	 */
+	alignment?: {
+
+		/**
+		 * Whether to use inline styles for table alignment in the editor output.
+		 *
+		 * * When `true` (default), the alignment is rendered as inline styles.
+		 * * When `false`, the alignment is rendered as CSS classes.
+		 *
+		 * @default true
+		 */
+		useInlineStyles?: boolean;
+	};
+
+	/**
 	 * Configuration of the color picker in the table properties balloon.
 	 *
 	 * If set to `false` the picker will not appear.
