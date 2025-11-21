@@ -18,7 +18,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _parseModel, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _parseModel, _setModelData, _getViewData, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
@@ -798,6 +798,137 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 			'<ul data-foo="123">' +
 				'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'<li><span class="ck-list-bogus-paragraph">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'strategy defined with consume: false should not consume the attribute', async () => {
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'ListEditing' ).registerDowncastStrategy( {
+					scope: 'item',
+					attributeName: 'someFoo',
+					consume: false,
+
+					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+						writer.setAttribute( 'data-foo', attributeValue, viewElement );
+					}
+				} );
+
+				this.editor.conversion.for( 'downcast' ).attributeToAttribute( {
+					model: 'someFoo',
+					view: 'data-bar'
+				} );
+			}
+		} );
+
+		_setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="321">bar</paragraph>
+		` ) );
+
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul>' +
+				'<li data-foo="123"><span class="ck-list-bogus-paragraph" data-bar="123">foo</span></li>' +
+				'<li data-foo="321"><span class="ck-list-bogus-paragraph" data-bar="321">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'strategy defined with consume: true should consume the attribute', async () => {
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'ListEditing' ).registerDowncastStrategy( {
+					scope: 'item',
+					attributeName: 'someFoo',
+					consume: true,
+
+					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+						writer.setAttribute( 'data-foo', attributeValue, viewElement );
+					}
+				} );
+
+				this.editor.conversion.for( 'downcast' ).attributeToAttribute( {
+					model: 'someFoo',
+					view: 'data-bar',
+					converterPriority: 'lowest'
+				} );
+			}
+		} );
+
+		_setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="321">bar</paragraph>
+		` ) );
+
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul>' +
+				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'consume option should default to true', async () => {
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'ListEditing' ).registerDowncastStrategy( {
+					scope: 'item',
+					attributeName: 'someFoo',
+
+					setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+						writer.setAttribute( 'data-foo', attributeValue, viewElement );
+					}
+				} );
+
+				this.editor.conversion.for( 'downcast' ).attributeToAttribute( {
+					model: 'someFoo',
+					view: 'data-bar',
+					converterPriority: 'lowest'
+				} );
+			}
+		} );
+
+		_setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="321">bar</paragraph>
+		` ) );
+
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul>' +
+				'<li data-foo="123"><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'<li data-foo="321"><span class="ck-list-bogus-paragraph">bar</span></li>' +
+			'</ul>'
+		);
+	} );
+
+	it( 'should pass model element to setAttributeOnDowncast as the last argument', async () => {
+		const setAttributeOnDowncast = sinon.spy( ( writer, attributeValue, viewElement, options, modelElement ) => {
+			expect( modelElement ).to.be.instanceOf( ModelElement );
+
+			writer.setAttribute( 'data-foo', attributeValue + '-' + modelElement.name, viewElement );
+		} );
+
+		await createEditor( class CustomPlugin extends Plugin {
+			init() {
+				this.editor.plugins.get( 'ListEditing' ).registerDowncastStrategy( {
+					scope: 'item',
+					attributeName: 'someFoo',
+					setAttributeOnDowncast
+				} );
+			}
+		} );
+
+		_setModelData( model, modelList( `
+			* <paragraph someFoo="123">foo</paragraph>
+			* <paragraph someFoo="321">bar</paragraph>
+		` ) );
+
+		expect( setAttributeOnDowncast ).to.be.calledTwice;
+		expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			'<ul>' +
+				'<li data-foo="123-paragraph"><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'<li data-foo="321-paragraph"><span class="ck-list-bogus-paragraph">bar</span></li>' +
 			'</ul>'
 		);
 	} );
