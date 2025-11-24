@@ -35,13 +35,35 @@ export function transformTables(
 			continue;
 		}
 
-		// In MS Word, left aligned tables (default) have no align attribute on table and are not wrapped in a div.
-		// In such case we need to set margin-left: 0 and margin-right: auto to let the editor know that the table is left block aligned.
-		// Other alignments are handled by dedicated upcast converters in Table feature.
-		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
-			const hasDivParent = item.parent && item.parent.is( 'element', 'div' );
+		// In MS Word, left-aligned tables (default) have no align attribute on the table and are not wrapped in a div.
+		// In such cases, we need to set `margin-left: 0` and `margin-right: auto` to indicate to the editor that
+		// the table is block-aligned to the left.
+		//
+		// Center- and right-aligned tables in MS Word are wrapped in a div with the `align` attribute set to
+		// `center` or `right`, respectively with no align attribute on the table itself.
+		//
+		// Additionally, the structure may change when pasting content from MS Word.
+		// Some browsers (e.g., Safari) may insert extra elements around the table (e.g., a <span>),
+		// so the surrounding div with the `align` attribute may end up being the table's grandparent.
 
-			if ( !item.getAttribute( 'align' ) && !hasDivParent ) {
+		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
+			const directParent = item.parent && item.parent.is( 'element', 'div' ) ? item.parent : null;
+			const grandParent = item.parent && item.parent.parent && item.parent.parent.is( 'element', 'div' ) ?
+				item.parent.parent : null;
+			const divParent = directParent || grandParent;
+
+			// Center block table alignment.
+			if ( divParent && divParent.getAttribute( 'align' ) === 'center' && !item.getAttribute( 'align' ) ) {
+				writer.setStyle( 'margin-left', 'auto', item );
+				writer.setStyle( 'margin-right', 'auto', item );
+			}
+			// Right block table alignment.
+			else if ( divParent && divParent.getAttribute( 'align' ) === 'right' && !item.getAttribute( 'align' ) ) {
+				writer.setStyle( 'margin-left', 'auto', item );
+				writer.setStyle( 'margin-right', '0', item );
+			}
+			// Left block table alignment.
+			else if ( !divParent && !item.getAttribute( 'align' ) ) {
 				writer.setStyle( 'margin-left', '0', item );
 				writer.setStyle( 'margin-right', 'auto', item );
 			}

@@ -297,4 +297,242 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 			);
 		} );
 	} );
+
+	describe( 'block table alignment', () => {
+		it( 'should set left block alignment styles on table without align attribute and not wrapped in div', () => {
+			const inputData =
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<table style="border-style:none;margin-left:0;margin-right:auto;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td style="border-style:none;">123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should not set left block alignment styles if there is no TableProperties plugin', () => {
+			const inputData =
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<table style="border-style:none;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td style="border-style:none;">123</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should set right block alignment styles on table without align attribute and wrapped in div with align="right"', () => {
+			const inputData =
+				'<div align="right">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<div align="right">' +
+					'<table style="border-style:none;margin-left:auto;margin-right:0;">' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="border-style:none;">123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>'
+			);
+		} );
+
+		it( 'should not set right block alignment styles if there is no TableProperties plugin', () => {
+			const inputData =
+				'<div align="right">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<div align="right">' +
+					'<table style="border-style:none;">' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="border-style:none;">123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>'
+			);
+		} );
+
+		it( 'should set center block alignment styles on table without align attribute and wrapped in div with align="center"', () => {
+			const inputData =
+				'<div align="center">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<div align="center">' +
+					'<table style="border-style:none;margin-left:auto;margin-right:auto;">' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="border-style:none;">123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>'
+			);
+		} );
+
+		it( 'should not set center block alignment styles if there is no TableProperties plugin', () => {
+			const inputData =
+				'<div align="center">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>';
+
+			const documentFragment = htmlDataProcessor.toView( inputData );
+
+			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+
+			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+				'<div align="center">' +
+					'<table style="border-style:none;">' +
+						'<tbody>' +
+							'<tr>' +
+								'<td style="border-style:none;">123</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</div>'
+			);
+		} );
+
+		describe( 'in Safari', () => {
+			it( 'should set right block alignment styles on table without align attribute' +
+				'and wrapped in a span and div with align="right"', () => {
+				const inputData =
+					'<div align="right">' +
+						'<span>' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>123</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</span>' +
+					'</div>';
+
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+					'<div align="right">' +
+						'<span>' +
+							'<table style="border-style:none;margin-left:auto;margin-right:0;">' +
+								'<tbody>' +
+									'<tr>' +
+										'<td style="border-style:none;">123</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</span>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should set center block alignment styles on table without align attribute' +
+				'and wrapped in a span and div with align="center"', () => {
+				const inputData =
+					'<div align="center">' +
+						'<span>' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>123</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</span>' +
+					'</div>';
+
+				const documentFragment = htmlDataProcessor.toView( inputData );
+
+				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+
+				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
+					'<div align="center">' +
+						'<span>' +
+							'<table style="border-style:none;margin-left:auto;margin-right:auto;">' +
+								'<tbody>' +
+									'<tr>' +
+										'<td style="border-style:none;">123</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</span>' +
+					'</div>'
+				);
+			} );
+		} );
+	} );
 } );
