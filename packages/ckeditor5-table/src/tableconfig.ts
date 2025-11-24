@@ -332,21 +332,15 @@ export interface TablePropertiesConfig {
 	 * };
 	 * ```
 	 *
-	 * **Note**: By default, table alignment is rendered using inline styles.
-	 * When `useInlineStyles` is set to `false`, CSS classes are used instead.
+	 * Whether to use inline styles for table alignment in the editor output.
+	 *
+	 * * When `true` (default), the alignment is rendered as inline styles.
+	 * * When `false`, the alignment is rendered as CSS classes.
 	 *
 	 * This applies to all five alignment options: `'left'`, `'center'`, `'right'`, `'blockLeft'`, and `'blockRight'`.
+	 *
 	 */
 	alignment?: {
-
-		/**
-		 * Whether to use inline styles for table alignment in the editor output.
-		 *
-		 * * When `true` (default), the alignment is rendered as inline styles.
-		 * * When `false`, the alignment is rendered as CSS classes.
-		 *
-		 * @default true
-		 */
 		useInlineStyles?: boolean;
 	};
 
