@@ -75,6 +75,7 @@ export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent 
 
 export type {
 	TableConfig,
+	TableAlignmentConfig,
 	TablePropertiesConfig,
 	TablePropertiesOptions,
 	TableCellPropertiesConfig,
