@@ -54,7 +54,7 @@
     "glob": "^11.0.2",
     "globals": "^16.1.0",
     "husky": "^9.1.7",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "lint-staged": "^16.1.0",
     "listr2": "^8.0.0",
     "local-web-server": "^5.4.0",
