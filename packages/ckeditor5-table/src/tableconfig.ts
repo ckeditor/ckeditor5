@@ -331,18 +331,8 @@ export interface TablePropertiesConfig {
 	 * 	}
 	 * };
 	 * ```
-	 *
-	 * Whether to use inline styles for table alignment in the editor output.
-	 *
-	 * * When `true` (default), the alignment is rendered as inline styles.
-	 * * When `false`, the alignment is rendered as CSS classes.
-	 *
-	 * This applies to all five alignment options: `'left'`, `'center'`, `'right'`, `'blockLeft'`, and `'blockRight'`.
-	 *
 	 */
-	alignment?: {
-		useInlineStyles?: boolean;
-	};
+	alignment?: TableAlignmentConfig;
 
 	/**
 	 * Configuration of the color picker in the table properties balloon.
@@ -654,3 +644,16 @@ export interface TableCaptionConfig {
  * The type of the table.
  */
 export type TableType = 'content' | 'layout';
+
+export interface TableAlignmentConfig {
+
+	/**
+	 * Whether to use inline styles for table alignment in the editor output.
+	 *
+	 * * When `true` (default), the alignment is rendered as inline styles.
+	 * * When `false`, the alignment is rendered as CSS classes.
+	 *
+	 * @default true
+	 */
+	useInlineStyles?: boolean;
+}
