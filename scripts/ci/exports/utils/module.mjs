@@ -42,7 +42,8 @@ export class Module {
 
 	constructor( fileName, ast, { publicApiTag }, errorCollector ) {
 		this.fileName = fileName.replace( /\.d\.ts$/, '.ts' );
-		this.isPublicApi = this._isFromPublicPackages( fileName ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
+		this.isPublicPackage = this._isFromPublicPackages( fileName );
+		this.isPublicApi = this.isPublicPackage || this.relativeFileName === 'index.ts' ? true : publicApiTag;
 		this.exports = [];
 		this.imports = [];
 		this.declarations = [];

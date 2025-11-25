@@ -128,10 +128,6 @@ function getFixingAction( pkg, module, exportItem ) {
 	const isInternal = exportItem.internal;
 	const reExportStartsWithUnderscore = exportItem.reExported.every( re => re.name.startsWith( '_' ) );
 
-	if ( isPublicInternalReExport( pkg, exportItem ) ) {
-		return 'Remove from index or @internal.';
-	}
-
 	if ( isRenamed && !isInternal && !reExportStartsWithUnderscore ) {
 		return 'Unify local name with re-exported name';
 	}
@@ -144,6 +140,10 @@ function getFixingAction( pkg, module, exportItem ) {
 		return 'Add @internal and re-export with `_` suffix';
 	}
 
+	if ( isInternal && isReExported && !allowsReexportInternals( pkg ) ) {
+		return 'Remove from index or @internal.';
+	}
+
 	const namingCheck = validateNaming( { pkg, module, item: exportItem } );
 
 	if ( !namingCheck.ok ) {
@@ -151,34 +151,6 @@ function getFixingAction( pkg, module, exportItem ) {
 	}
 
 	return null;
-}
-
-function isPublicInternalReExport( pkg, exportItem ) {
-	// TODO: Repository context.
-	const isAvailableInEntryPoint = pkg.index.exports.some( item => {
-		// To match renamed internal re-exports...
-		if ( item.localName !== exportItem.name ) {
-			return false;
-		}
-
-		// ...that does not start with underscore (which is acceptable).
-		if ( item.name.startsWith( '_' ) ) {
-			return false;
-		}
-
-		return true;
-	} );
-
-	if ( !isAvailableInEntryPoint ) {
-		return false;
-	}
-
-	// Private API.
-	if ( exportItem.name.startsWith( '_' ) ) {
-		return false;
-	}
-
-	return exportItem.references.some( re => re.internal );
 }
 
 function getModules( pkg ) {
@@ -207,4 +179,8 @@ function removeExpectedExceptions( data ) {
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-image', 'isHtmlInDataTransfer' ) )
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-find-and-replace', 'FindReplaceCommandBase' ) )
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-utils', 'globalVar' ) );
+}
+
+function allowsReexportInternals( pkg ) {
+	return pkg.isPublicPackage;
 }
