@@ -2196,6 +2196,13 @@ describe( 'table properties', () => {
 					);
 				} );
 
+				it( 'should upcast style="float:none;" to undefined when default value is `center`', () => {
+					editor.setData( '<table style="float: none;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+				} );
+
 				it( 'should upcast style="margin-left: 0; margin-right: auto;" attribute', () => {
 					editor.setData( '<table style="margin-left: 0; margin-right: auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
