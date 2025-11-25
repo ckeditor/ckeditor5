@@ -47,10 +47,9 @@ export function transformTables(
 		// so the surrounding `<div>` with the `align` attribute may end up being the table's grandparent.
 
 		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
-			const directParent = item.parent && item.parent.is( 'element', 'div' ) ? item.parent : null;
-			const grandParent = item.parent && item.parent.parent && item.parent.parent.is( 'element', 'div' ) ?
-				item.parent.parent : null;
-			const divParent = directParent || grandParent;
+			const directParent = item.parent?.is( 'element', 'div' ) ? item.parent : null;
+			const grandParent = item.parent?.parent?.is( 'element', 'div' ) ? item.parent.parent : null;
+			const divParent = directParent ?? grandParent;
 
 			// Center block table alignment.
 			if ( divParent && divParent.getAttribute( 'align' ) === 'center' && !item.getAttribute( 'align' ) ) {
