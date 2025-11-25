@@ -185,10 +185,8 @@ export class TableEditing extends Plugin {
 			view: 'rowspan'
 		} );
 
-		if ( editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) ) {
-			// Plain table output converters (also used in the clipboard pipeline).
-			this._addPlainTableOutputConverters();
-		}
+		// Plain table output converters (also used in the clipboard pipeline).
+		this._addPlainTableOutputConverters();
 
 		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
