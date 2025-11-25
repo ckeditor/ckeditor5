@@ -637,7 +637,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 			To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.
 		</ck:card-description>
 		<ck:card-footer>
-			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-installation#default-table-headers}'>
+			<ck:button-link size='sm' variant='secondary' href='{@link features/tables#default-table-headers}'>
 				Feature page
 			</ck:button-link>
 		</ck:card-footer>
