@@ -24,7 +24,8 @@ import { convertCssLengthToPx } from './utils.js';
 export function transformTables(
 	documentFragment: ViewDocumentFragment,
 	writer: ViewUpcastWriter,
-	hasTablePropertiesPlugin: boolean = false
+	hasTablePropertiesPlugin: boolean = false,
+	hasExtendedTableBlockAlignment: boolean = false
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (
@@ -46,7 +47,7 @@ export function transformTables(
 		// Some browsers (e.g., Safari) may insert extra elements around the table (e.g., a <span>),
 		// so the surrounding `<div>` with the `align` attribute may end up being the table's grandparent.
 
-		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
+		if ( hasTablePropertiesPlugin && hasExtendedTableBlockAlignment && item.is( 'element', 'table' ) ) {
 			const directParent = item.parent?.is( 'element', 'div' ) ? item.parent : null;
 			const grandParent = item.parent?.parent?.is( 'element', 'div' ) ? item.parent.parent : null;
 			const divParent = directParent ?? grandParent;

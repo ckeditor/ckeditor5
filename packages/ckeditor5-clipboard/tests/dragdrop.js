@@ -552,7 +552,7 @@ describe( 'Drag and Drop', () => {
 			} );
 
 			expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-				'<table class="table"><tbody><tr><td>bar</td></tr></tbody></table>'
+				'<figure class="table"><table><tbody><tr><td>bar</td></tr></tbody></table></figure>'
 			);
 
 			const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
@@ -890,7 +890,7 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
 				);
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
@@ -899,7 +899,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
+					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
 				);
 
 				dataTransferMock.dropEffect = 'move';
@@ -957,7 +957,7 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-					'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
 				);
 
 				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
@@ -966,7 +966,7 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
 				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
 				expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
-					'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
+					'<figure class="table"><table><tbody><tr><td><p>abc</p></td></tr></tbody></table></figure>'
 				);
 			} );
 
@@ -1702,6 +1702,217 @@ describe( 'Drag and Drop', () => {
 				} );
 
 				sinon.assert.notCalled( spy );
+			} );
+
+			describe( 'when useExtendedTableBlockAlignment is true [experimental]', () => {
+				let editorElement, editor;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [
+							DragDrop,
+							PastePlainText,
+							Paragraph,
+							Table,
+							HorizontalLine,
+							ShiftEnter,
+							BlockQuote,
+							Bold,
+							Image,
+							ImageCaption,
+							CustomTitle
+						],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
+					} );
+
+					model = editor.model;
+					root = model.document.getRoot();
+					mapper = editor.editing.mapper;
+					view = editor.editing.view;
+					viewDocument = view.document;
+					domConverter = view.domConverter;
+				} );
+
+				afterEach( async () => {
+					await editor.destroy();
+					editorElement.remove();
+				} );
+
+				// [experimental] Convert to regular test (remove describe) in v48.
+				it( 'should not remove dragged range if insert into drop target was not allowed', () => {
+					editor.model.schema.extend( 'caption', {
+						allowIn: '$root'
+					} );
+
+					editor.conversion.elementToElement( {
+						view: 'caption',
+						model: 'caption'
+					} );
+
+					_setModelData( model,
+						'<caption>foo</caption>' +
+						'[<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>]'
+					);
+
+					const dataTransferMock = createDataTransfer();
+					const viewElement = viewDocument.getRoot().getChild( 1 );
+					const domNode = domConverter.mapViewToDom( viewElement );
+
+					const eventData = {
+						domTarget: domNode,
+						target: viewElement,
+						domEvent: {
+							isPrimary: true
+						}
+					};
+
+					viewDocument.fire( 'pointerdown', {
+						...eventData
+					} );
+
+					viewDocument.fire( 'dragstart', {
+						...eventData,
+						dataTransfer: dataTransferMock,
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<table class="table"><tbody><tr><td>bar</td></tr></tbody></table>'
+					);
+
+					const targetPosition = model.createPositionAt( root.getChild( 0 ), 2 );
+					fireDrop( dataTransferMock, targetPosition );
+
+					expect( _getModelData( model ) ).to.equal(
+						'<caption>foo</caption>' +
+						'[<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>]'
+					);
+				} );
+
+				// [experimental] Convert to regular test (remove describe) in v48.
+				it( 'should start dragging by grabbing the widget selection handle', () => {
+					_setModelData( model,
+						'<paragraph>[]foobar</paragraph>' +
+						'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+					);
+
+					const dataTransferMock = createDataTransfer();
+					const spyClipboardOutput = sinon.spy();
+					const spyClipboardInput = sinon.spy();
+
+					viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+					viewDocument.on( 'clipboardInput', ( event, data ) => spyClipboardInput( data ) );
+
+					const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
+					const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+					const selectionHandleElement = widgetViewElement.getChild( 0 );
+
+					expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+
+					const eventData = {
+						domTarget: domNode,
+						target: selectionHandleElement,
+						domEvent: {
+							isPrimary: true
+						}
+					};
+
+					viewDocument.fire( 'pointerdown', {
+						...eventData
+					} );
+
+					viewDocument.fire( 'dragstart', {
+						...eventData,
+						dataTransfer: dataTransferMock,
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+					);
+
+					expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+					expect( spyClipboardOutput.called ).to.be.true;
+					expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+					expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+					expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
+						'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
+					);
+
+					dataTransferMock.dropEffect = 'move';
+					const targetPosition = model.createPositionAt( root.getChild( 0 ), 3 );
+					fireDrop( dataTransferMock, targetPosition );
+
+					expect( spyClipboardInput.called ).to.be.true;
+					expect( spyClipboardInput.firstCall.firstArg.method ).to.equal( 'drop' );
+					expect( spyClipboardInput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+
+					fireDragEnd( dataTransferMock );
+					expectFinalized();
+
+					expect( _getModelData( model ) ).to.equal(
+						'<paragraph>foobar</paragraph>' +
+						'[<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>]'
+					);
+				} );
+
+				// [experimental] Convert to regular test (remove describe) in v48.
+				it( 'should start dragging by grabbing the widget selection handle (in read only mode) [experimental]', () => {
+					_setModelData( model,
+						'<paragraph>[]foobar</paragraph>' +
+						'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+					);
+
+					editor.enableReadOnlyMode( 'unit-test' );
+
+					const dataTransferMock = createDataTransfer();
+					const spyClipboardOutput = sinon.spy();
+
+					viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+
+					const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
+					const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+					const selectionHandleElement = widgetViewElement.getChild( 0 );
+
+					expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+
+					const eventData = {
+						domTarget: domNode,
+						target: selectionHandleElement,
+						domEvent: {
+							isPrimary: true
+						}
+					};
+
+					viewDocument.fire( 'pointerdown', {
+						...eventData
+					} );
+
+					viewDocument.fire( 'dragstart', {
+						...eventData,
+						dataTransfer: dataTransferMock,
+						stopPropagation: () => {}
+					} );
+
+					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+						'<table class="table"><tbody><tr><td>abc</td></tr></tbody></table>'
+					);
+
+					expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+					expect( spyClipboardOutput.called ).to.be.true;
+					expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+					expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+					expect( _stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
+						'<table class="table"><tbody><tr><td><p>abc</p></td></tr></tbody></table>'
+					);
+				} );
 			} );
 		} );
 

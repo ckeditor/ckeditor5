@@ -228,7 +228,11 @@ function hasAnyAttribute( element: ModelNode ): boolean {
  */
 export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunction {
 	return ( table, conversionApi ) => {
-		if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
 			return null;
 		}
 
@@ -241,7 +245,11 @@ export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunct
  */
 export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer, options } ) => {
-		if ( !options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = options.isClipboardPipeline;
+		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
 			return null;
 		}
 
@@ -360,7 +368,11 @@ export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): vo
 				const { item, attributeNewValue } = data;
 				const { mapper, writer } = conversionApi;
 
-				if ( !conversionApi.options.isClipboardPipeline && !editor.plugins.has( 'PlainTableOutput' ) ) {
+				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+				if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
 					return;
 				}
 
