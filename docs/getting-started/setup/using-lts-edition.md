@@ -113,6 +113,12 @@ Due to the rapid development of the {@link features/ckeditor-ai-overview CKEdito
 
 The {@link features/ai-assistant-overview CKEditor&nbsp;5 AI Assistant} feature (introduced in `v40.0.0`) is not affected by this exception.
 
+### Experimental flags and plugins
+
+Throughout the life cycle of the LTS version, some experimental features may be backported from the current releases. These can take the form of experimental flags or separate plugins. They can be enabled to unblock certain users who rely on the LTS build but do not have an active LTS subscription. Such features may include security-related fixes, browser-specific adjustments, or other forms of official support available during the Maintenance phase.
+
+However, these experimental additions are not covered by LTS guarantees, meaning they may change, evolve, or be removed without the stability or compatibility assurances provided for core LTS features.
+
 ## Installing the LTS Edition
 
 The LTS Edition releases of CKEditor&nbsp;5 are available through standard distribution channels: npm, ZIP, and CDN. Using the editor versions released in the Maintenance phase requires a subscription, which includes the CKEditor&nbsp;5 LTS Edition add-on. [Contact sales](https://ckeditor.com/contact-sales/) to learn more.
