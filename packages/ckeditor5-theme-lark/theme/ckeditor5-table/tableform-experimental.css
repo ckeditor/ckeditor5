@@ -10,7 +10,9 @@
 	--ck-table-properties-min-error-width: 150px;
 }
 
-.ck.ck-table-form {
+.ck.ck-table-form.ck-table-properties-form_experimental {
+	--ck-table-form-default-input-width: 80px;
+
 	& .ck-form__row {
 		&.ck-table-form__border-row {
 			& .ck-labeled-field-view {
@@ -22,21 +24,33 @@
 
 			& .ck-table-form__border-style,
 			& .ck-table-form__border-width {
-				width: 80px;
-				min-width: 80px;
-				max-width: 80px;
+				width: var(--ck-table-form-default-input-width);
+				min-width: var(--ck-table-form-default-input-width);
+				max-width: var(--ck-table-form-default-input-width);
 			}
 		}
 
 		&.ck-table-form__dimensions-row {
+			--ck-table-form-dimensions-input-width: calc(var(--ck-table-form-default-input-width) * 2 + var(--ck-spacing-large));
+
+			width: var(--ck-table-form-dimensions-input-width);
+			max-width: var(--ck-table-form-dimensions-input-width);
+			min-width: var(--ck-table-form-dimensions-input-width);
 			padding: 0;
 
 			& .ck-table-form__dimensions-row__width,
 			& .ck-table-form__dimensions-row__height {
+				width: var(--ck-table-form-default-input-width);
+				min-width: var(--ck-table-form-default-input-width);
+				max-width: var(--ck-table-form-default-input-width);
 				margin: 0
 			}
 
 			& .ck-table-form__dimension-operator {
+				position: relative;
+				left: -0.5ch;
+				width: 0;
+				overflow: visible;
 				align-self: flex-end;
 				display: inline-block;
 				height: var(--ck-ui-component-min-height);

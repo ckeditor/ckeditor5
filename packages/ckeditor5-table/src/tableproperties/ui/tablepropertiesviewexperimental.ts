@@ -51,9 +51,9 @@ import type { TablePropertiesOptions } from '../../tableconfig.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
-import '../../../theme/formrow.css';
-import '../../../theme/tableform.css';
-import '../../../theme/tableproperties.css';
+import '../../../theme/formrow-experimental.css';
+import '../../../theme/tableform-experimental.css';
+import '../../../theme/tableproperties-experimental.css';
 
 /**
  * Additional configuration of the view.
@@ -358,7 +358,8 @@ export class TablePropertiesViewExperimental extends View {
 					'ck',
 					'ck-form',
 					'ck-table-form',
-					'ck-table-properties-form'
+					'ck-table-properties-form',
+					'ck-table-properties-form_experimental'
 				],
 				// https://github.com/ckeditor/ckeditor5-link/issues/90
 				tabindex: '-1'
