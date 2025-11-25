@@ -9,7 +9,6 @@
 	& .ck-form__row {
 		&.ck-table-properties-form__alignment-row {
 			align-self: flex-end;
-			padding: 0;
 
 			& .ck.ck-toolbar {
 				background: none;
@@ -18,7 +17,27 @@
 				margin-top: var(--ck-spacing-standard);
 
 				& .ck-toolbar__items > * {
-					width: 40px;
+					flex: 1;
+				}
+			}
+		}
+	}
+
+	&.ck-table-properties-form_experimental {
+		& .ck-form__row {
+			&.ck-table-properties-form__alignment-row {
+				padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+			}
+
+			&.ck-table-form__action-row {
+				justify-content: flex-end;
+
+				& > .ck.ck-button {
+					flex-grow: initial;
+
+					& .ck-button__label {
+						color: currentColor;
+					}
 				}
 			}
 		}
