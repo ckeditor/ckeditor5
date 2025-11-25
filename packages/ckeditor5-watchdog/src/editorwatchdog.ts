@@ -446,7 +446,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 		// To be more certain, we can probe subnodes of the error context and see if they contain any editor-specific objects such as
 		// the model document, UI view, or editing view. If we find any of these objects, we can be more confident that the error is indeed
 		// coming from this editor, however, this is still not a 100% guarantee. The exception might happen within context plugins
-		// that have access to multiple editors. We can group these objects, and if only one of them is found, we can be more certain.
+		// that have access to multiple editors.
 		const subNodes = getSubNodes( error.context, this._excludedProps );
 		const editorSpecificEntries = getEditorSpecificEntries( this._editor! );
 
