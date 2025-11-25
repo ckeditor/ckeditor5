@@ -2199,7 +2199,7 @@ describe( 'downcast converters', () => {
 		}
 	} );
 
-	describe( 'conversion in clipboard pipeline', () => {
+	describe( 'conversion in clipboard pipeline [experimental]', () => {
 		let editor, editorElement, model;
 
 		beforeEach( async () => {
@@ -2207,7 +2207,10 @@ describe( 'downcast converters', () => {
 			document.body.appendChild( editorElement );
 
 			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ Paragraph, Table, TableCaption, TableProperties, ClipboardPipeline ]
+				plugins: [ Paragraph, Table, TableCaption, TableProperties, ClipboardPipeline ],
+				experimentalFlags: {
+					useExtendedTableBlockAlignment: true
+				}
 			} );
 
 			model = editor.model;
@@ -2330,7 +2333,10 @@ describe( 'downcast converters', () => {
 
 			it( 'should not create caption element without TableCaption plugin', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ Paragraph, Table, ClipboardPipeline ]
+					plugins: [ Paragraph, Table, ClipboardPipeline ],
+					experimentalFlags: {
+						useExtendedTableBlockAlignment: true
+					}
 				} );
 
 				testEditor.setData(
@@ -2460,7 +2466,10 @@ describe( 'downcast converters', () => {
 
 				it( 'tableAlignment right with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
 					} );
 
 					_setModelData(
@@ -2492,7 +2501,10 @@ describe( 'downcast converters', () => {
 
 				it( 'tableAlignment blockRight with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
 					} );
 
 					_setModelData(
@@ -2523,7 +2535,10 @@ describe( 'downcast converters', () => {
 
 				it( 'tableAlignment left with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
 					} );
 
 					_setModelData(
@@ -2554,7 +2569,10 @@ describe( 'downcast converters', () => {
 
 				it( 'tableAlignment blockLeft with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
+						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
 					} );
 
 					_setModelData(
@@ -2814,7 +2832,10 @@ describe( 'downcast converters', () => {
 
 				beforeEach( async () => {
 					testEditor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, Table, ClipboardPipeline ]
+						plugins: [ Paragraph, Table, ClipboardPipeline ],
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true
+						}
 					} );
 
 					model = testEditor.model;
@@ -2899,7 +2920,10 @@ describe( 'downcast converters', () => {
 			it( 'should not convert image captions', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet, Table, TableCaption, ClipboardPipeline ],
-					image: { toolbar: [ '|' ] }
+					image: { toolbar: [ '|' ] },
+					experimentalFlags: {
+						useExtendedTableBlockAlignment: true
+					}
 				} );
 
 				testEditor.setData(
@@ -2923,7 +2947,10 @@ describe( 'downcast converters', () => {
 			it( 'should allow overriding image caption converters', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ ArticlePluginSet, Table, TableCaption, ClipboardPipeline ],
-					image: { toolbar: [ '|' ] }
+					image: { toolbar: [ '|' ] },
+					experimentalFlags: {
+						useExtendedTableBlockAlignment: true
+					}
 				} );
 
 				testEditor.conversion.for( 'dataDowncast' ).elementToElement( {

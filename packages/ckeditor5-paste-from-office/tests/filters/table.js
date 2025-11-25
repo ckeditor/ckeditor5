@@ -298,7 +298,22 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 		} );
 	} );
 
-	describe( 'block table alignment', () => {
+	describe( 'block table alignment [experimental]', () => {
+		let writer, viewDocument, htmlDataProcessor;
+
+		beforeEach( () => {
+			viewDocument = new ViewDocument( new StylesProcessor() );
+			writer = new ViewUpcastWriter( viewDocument );
+			htmlDataProcessor = new HtmlDataProcessor( viewDocument );
+
+			addBorderStylesRules( viewDocument.stylesProcessor );
+			addPaddingStylesRules( viewDocument.stylesProcessor );
+		} );
+
+		afterEach( () => {
+			viewDocument.destroy();
+		} );
+
 		it( 'should set left block alignment styles on table without align attribute and not wrapped in div', () => {
 			const inputData =
 				'<table>' +
@@ -311,7 +326,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			// transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			transformTables( documentFragment, writer, true, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<table style="border-style:none;margin-left:0;margin-right:auto;">' +
@@ -336,7 +352,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			// transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			transformTables( documentFragment, writer, false, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<table style="border-style:none;">' +
@@ -363,7 +380,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			// transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			transformTables( documentFragment, writer, true, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="right">' +
@@ -392,7 +410,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			// transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			transformTables( documentFragment, writer, false, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="right">' +
@@ -421,7 +440,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			// transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+			transformTables( documentFragment, writer, true, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="center">' +
@@ -450,7 +470,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 			const documentFragment = htmlDataProcessor.toView( inputData );
 
-			transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			// transformTables( documentFragment, writer ); // Simulate that TableProperties plugin is absent.
+			transformTables( documentFragment, writer, false, true ); // [experimental] Change to above in v48.
 
 			expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 				'<div align="center">' +
@@ -483,7 +504,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+				// transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+				transformTables( documentFragment, writer, true, true ); // [experimental] Change to above in v48.
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<div align="right">' +
@@ -517,7 +539,8 @@ describe( 'PasteFromOffice - filters - transformTables', () => {
 
 				const documentFragment = htmlDataProcessor.toView( inputData );
 
-				transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+				// transformTables( documentFragment, writer, true ); // Simulate that TableProperties plugin is present.
+				transformTables( documentFragment, writer, true, true ); // [experimental] Change to above in v48.
 
 				expect( htmlDataProcessor.toData( documentFragment ) ).to.equal(
 					'<div align="center">' +
