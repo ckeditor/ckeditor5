@@ -455,9 +455,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 
 		for ( const node of subNodes ) {
 			for ( const instance of editorSpecificEntries ) {
-				const Constructor = instance.constructor;
-
-				if ( node && typeof node === 'object' && node instanceof Constructor ) {
+				if ( node && typeof node === 'object' && node instanceof instance.constructor ) {
 					if ( node === instance ) {
 						isAssociatedWithThisEditor = true;
 					} else {
