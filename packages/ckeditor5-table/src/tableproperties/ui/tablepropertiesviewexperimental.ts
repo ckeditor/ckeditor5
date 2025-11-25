@@ -58,7 +58,7 @@ import '../../../theme/tableproperties.css';
 /**
  * Additional configuration of the view.
  */
-export interface TablePropertiesViewOptions {
+export interface TablePropertiesViewOptionsExperimental {
 
 	/**
 	 * A configuration of the border color palette used by the
@@ -147,7 +147,7 @@ export class TablePropertiesViewExperimental extends View {
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
 	 */
-	public readonly options: TablePropertiesViewOptions;
+	public readonly options: TablePropertiesViewOptionsExperimental;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -228,7 +228,7 @@ export class TablePropertiesViewExperimental extends View {
 	 * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param options Additional configuration of the view.
 	 */
-	constructor( locale: Locale, options: TablePropertiesViewOptions ) {
+	constructor( locale: Locale, options: TablePropertiesViewOptionsExperimental ) {
 		super( locale );
 
 		this.set( {
