@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-const fs = require( 'fs' );
-const path = require( 'path' );
+const fs = require( 'node:fs' );
+const path = require( 'node:path' );
 const glob = require( 'glob' );
 const { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } = require( '../../constants.mjs' );
 

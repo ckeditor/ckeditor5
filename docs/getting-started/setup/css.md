@@ -9,17 +9,16 @@ modified_at: 2024-06-25
 
 # Editor and content styles
 
-CKEditor&nbsp;5 is distributed with two types of styles:
+We distribute CKEditor&nbsp;5 with two types of styles:
 
-* Editor styles, used to style the editor's user interface.
-* Content styles, used to style the content in the editor.
+* Editor styles to style the editor’s user interface.
+* Content styles for styling content in the editor.
 
-If you went through our {@link getting-started/integrations-cdn/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined:
+If you went through our {@link getting-started/integrations-cdn/quick-start Quick start}, you probably noticed that attaching the styles in JavaScript is pretty standard, and we provide CSS style sheets that have both the editor and content styles combined. There are separate styles for open-source and premium features:
 
 ```js
 import 'ckeditor5/ckeditor5.css';
 
-// If you are using premium features:
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 ```
 
@@ -28,35 +27,61 @@ It is as easy in HTML if you decide to use our CDN:
 ```html
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
 ```
 
 ## Why do I need content styles?
 
-Some {@link features/index core editor features} bring additional CSS to control the look of the content they produce. One of such examples is the {@link features/images-overview image feature} that needs special content styles to render images and their captions in the content. Another would be the {@link features/block-quote block quote} feature that displays quotes in italics with a subtle border on the side. You can see both of these pictured below.
+Some {@link features/index core editor features} bring additional CSS to control the look of the content they produce. One such example is the {@link features/images-overview image feature}, which requires special content styles to render images and their captions within the content. Another would be the {@link features/block-quote block quote} feature that displays quotes in italics with a subtle border on the side. You can see both of these pictured below.
 
 {@img assets/img/builds-content-styles.png 823 Editor content styles.}
 
-
 ## Customizing the editor's look
 
-The [`@ckeditor/ckeditor5-theme-lark`](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) package contains the default theme of CKEditor&nbsp;5. Lark is modular, [BEM–friendly](https://en.bem.info/methodology/css/) and built using [PostCSS](http://postcss.org/).
+CKEditor&nbsp;5 comes with a [predefined theme](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-theme-lark). But you can easily adjust the editor's appearance to match your product's visual identity or design system. Colors, typography, spacing, borders, and other visual aspects of the editor are defined with CSS variables that you can override in your application.
 
-Although it was designed with versatility and the most common editor use cases in mind, some integrations may require adjustments to make it match the style guidelines of their ecosystems. This kind of customization can be done by importing an extra `.css` file and overriding the [native CSS variables](https://www.w3.org/TR/css-variables/).
-
-For example, the override below will tweak the border radius of several elements in the editor, such as toolbar or contextual balloons.
+The example below shows how the customized variables affect the editor's appearance.
 
 ```css
 :root {
-	/* Overrides the border radius setting in the theme. */
-	--ck-border-radius: 4px;
+	--ck-color-focus-border: hsl(263, 59%, 52%);
+	--ck-color-toolbar-background: hsl(210, 33%, 99%);
+	--ck-color-button-on-background: hsl(210, 8%, 95%);
+	--ck-color-button-on-color: hsl(263, 59%, 52%);
+	--ck-font-size-base: 16px;
+	--ck-spacing-unit: 1em;
+	--ck-border-radius: 16px;
 }
 ```
 
+The default editor's look:
+
+{@img assets/img/customizing-the-editor-look-before.png The editor's look before customization.}
+
+The editor's look after customization:
+
+{@img assets/img/customizing-the-editor-look-after.png The editor's look after customization.}
+
+Here are some essential CSS variables for customizing the editor:
+
+| Variable                                      | Description                                             |
+|-----------------------------------------------|---------------------------------------------------------|
+| `--ck-border-radius`                          | Border radius for rounded corners throughout the editor.|
+| `--ck-spacing-unit`                           | Base spacing unit that controls all spacing in the UI.  |
+| `--ck-font-size-base`                         | Base font size for the editor UI.                       |
+| `--ck-font-face`                              | Font family used throughout the editor UI.              |
+| `--ck-color-focus-border`                     | Border color when elements are focused.                 |
+| `--ck-color-toolbar-background`               | Background color of the toolbar.                        |
+| `--ck-color-base-border`                      | Primary border color used throughout the UI.            |
+| `--ck-color-button-on-background`             | Background color for active/selected buttons.           |
+| `--ck-color-button-on-color`                  | Text color for active/selected buttons.                 |
+| `--ck-color-button-default-hover-background`  | Background color when hovering over buttons.            |
+
 <info-box hint>
-	Check out the [color sheet](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals/_colors.css) for a full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to learn about other useful tools.
+	You can also browse [CSS files](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-theme-lark/theme/ckeditor5-ui/globals) to find more available variables.
 </info-box>
+
+Knowing the variables, you can push the customization even further and create your own themes, as in this {@link examples/theme-customization dark theme example}.
 
 ## Customizing the look of the features
 
@@ -113,10 +138,8 @@ Below is an example with placeholder paths showing how to load the `ckeditor5-co
 ```html
 <link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
 
-<!-- If you are using premium features: -->
 <link rel="stylesheet" href="path/to/assets/ckeditor5-premium-features-content.css">
 
-<!-- If you have other style sheet that changes the look of the content: -->
 <link rel="stylesheet" href="path/to/assets/styles.css">
 ```
 

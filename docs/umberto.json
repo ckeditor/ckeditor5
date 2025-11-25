@@ -11,7 +11,6 @@
 		"localhost",
 		"127.0.0.1"
 	],
-	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
 	"packagesDir": [
 		"packages/*",
@@ -421,6 +420,11 @@
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
 		"import-path": "../scripts/docs/getrealimportpath.mjs"
 	},
+	"hooks": {
+		"beforeHexo":[
+			"../scripts/docs/fetch-ckeditor5-lts-version.mjs"
+		]
+	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
 		"appId": "BH4D9OD16A",
@@ -464,6 +468,10 @@
 		"config": {
 			"trackingId": "G-H2PK3PSE3F"
 		}
+	},
+	"sentry": {
+		"src": "https://js-de.sentry-cdn.com/12b5ff4d03626bea09113fa6770907d9.min.js",
+		"environment": "nightly"
 	},
 	"promobar": {
 		"prefix": {
@@ -584,7 +592,7 @@
 					],
 					"categories":[
 						{
-							"name": "AI Assistant (previous version)",
+							"name": "AI Assistant (legacy)",
 							"id": "ai-assistant",
 							"slug": "ai-assistant",
 							"order": 100,
@@ -912,5 +920,8 @@
 			"navigationIncludeIndex": true,
 			"slug": "support"
 		}
-	]
+	],
+	"variables": {
+		"CKBOX_VERSION": "2.9.2"
+	}
 }

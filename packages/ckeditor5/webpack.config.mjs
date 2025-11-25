@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import path from 'upath';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';

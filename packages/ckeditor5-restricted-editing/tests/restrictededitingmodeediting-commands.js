@@ -30,7 +30,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restrictedEditingException:1', {
+				writer.addMarker( 'restrictedEditingException:inline:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),
@@ -47,7 +47,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 		describe( 'always enabled commands', () => {
 			describe( 'undo', () => {
 				beforeEach( () => {
-					editor.commands.add( 'undo', buildFakeCommand( editor ) );
+					editor.commands.add( 'undo', buildFakeCommand( editor, false ) );
 				} );
 
 				it( 'should be enabled outside exception marker', () => {
@@ -69,7 +69,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 
 			describe( 'redo', () => {
 				beforeEach( () => {
-					editor.commands.add( 'redo', buildFakeCommand( editor ) );
+					editor.commands.add( 'redo', buildFakeCommand( editor, false ) );
 				} );
 
 				it( 'should be enabled outside exception marker', () => {
@@ -585,7 +585,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restrictedEditingException:1', {
+				writer.addMarker( 'restrictedEditingException:inline:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),
@@ -750,7 +750,7 @@ describe( 'RestrictedEditingEditing - commands', () => {
 			firstParagraph = model.document.getRoot().getChild( 0 );
 
 			model.change( writer => {
-				writer.addMarker( 'restrictedEditingException:1', {
+				writer.addMarker( 'restrictedEditingException:inline:1', {
 					range: writer.createRange(
 						writer.createPositionAt( firstParagraph, 4 ),
 						writer.createPositionAt( firstParagraph, 7 ) ),
@@ -779,12 +779,19 @@ describe( 'RestrictedEditingEditing - commands', () => {
 	} );
 
 	class FakeCommand extends Command {
+		constructor( editor, isEnabledBasedOnSelection ) {
+			super( editor );
+
+			if ( isEnabledBasedOnSelection !== undefined ) {
+				this._isEnabledBasedOnSelection = isEnabledBasedOnSelection;
+			}
+		}
 		refresh() {
 			this.isEnabled = true;
 		}
 	}
 
-	function buildFakeCommand( editor ) {
-		return new FakeCommand( editor );
+	function buildFakeCommand( editor, isEnabledBasedOnSelection = undefined ) {
+		return new FakeCommand( editor, isEnabledBasedOnSelection );
 	}
 } );

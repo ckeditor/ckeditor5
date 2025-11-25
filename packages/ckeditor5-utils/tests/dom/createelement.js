@@ -46,4 +46,40 @@ describe( 'createElement', () => {
 		expect( p.childNodes[ 0 ].data ).to.equal( 'foo' );
 		expect( p.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'img' );
 	} );
+
+	const validTestCases = [
+		'foo-bar-baz',
+		'Custom-Element'
+		// Uncomment last valid test case when every major browser (Chrome, Firefox, Safari) will support creating elements with this value.
+		// Currently, only Chrome supports it since v143.
+		// See details:
+		// [x] Chrome: bugs.chromium.org/p/chromium/issues/detail?id=1334640
+		// [ ] Firefox: bugzilla.mozilla.org/show_bug.cgi?id=1773312
+		// [ ] Safari: bugs.webkit.org/show_bug.cgi?id=241419
+		// '🙂'
+	];
+
+	for ( const name of validTestCases ) {
+		it( `should create element for name: '${ name }'`, () => {
+			expect( createElement( document, name ) ).to.be.instanceOf( HTMLElement );
+		} );
+	}
+
+	const invalidTestCases = [
+		'200',
+		'<',
+		'>',
+		'!',
+		'"',
+		// eslint-disable-next-line @stylistic/quotes
+		"'",
+		'`',
+		200
+	];
+
+	for ( const name of invalidTestCases ) {
+		it( `should throw an error for name: '${ name }'`, () => {
+			expect( () => createElement( document, name ) ).to.throw();
+		} );
+	}
 } );
