@@ -681,6 +681,9 @@ export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
  */
 function getEditorSpecificEntries( editor: Editor ) {
 	return [
+		editor.data,
+		editor.plugins,
+		editor.config,
 		editor.conversion,
 		editor.commands,
 		editor.plugins,
