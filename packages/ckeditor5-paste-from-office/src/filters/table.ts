@@ -35,16 +35,16 @@ export function transformTables(
 			continue;
 		}
 
-		// In MS Word, left-aligned tables (default) have no align attribute on the table and are not wrapped in a div.
+		// In MS Word, left-aligned tables (default) have no align attribute on the `<table>` and are not wrapped in a `<div>`.
 		// In such cases, we need to set `margin-left: 0` and `margin-right: auto` to indicate to the editor that
 		// the table is block-aligned to the left.
 		//
-		// Center- and right-aligned tables in MS Word are wrapped in a div with the `align` attribute set to
-		// `center` or `right`, respectively with no align attribute on the table itself.
+		// Center- and right-aligned tables in MS Word are wrapped in a `<div>` with the `align` attribute set to
+		// `center` or `right`, respectively with no align attribute on the `<table>` itself.
 		//
 		// Additionally, the structure may change when pasting content from MS Word.
 		// Some browsers (e.g., Safari) may insert extra elements around the table (e.g., a <span>),
-		// so the surrounding div with the `align` attribute may end up being the table's grandparent.
+		// so the surrounding `<div>` with the `align` attribute may end up being the table's grandparent.
 
 		if ( hasTablePropertiesPlugin && item.is( 'element', 'table' ) ) {
 			const directParent = item.parent && item.parent.is( 'element', 'div' ) ? item.parent : null;
