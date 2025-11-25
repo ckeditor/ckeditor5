@@ -59,7 +59,7 @@ import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
 
-export interface TableCellPropertiesViewOptions {
+export interface TableCellPropertiesViewOptionsExperimental {
 	borderColors: Array<NormalizedColorOption>;
 	backgroundColors: Array<NormalizedColorOption>;
 	defaultTableCellProperties: TableCellPropertiesOptions;
@@ -146,7 +146,7 @@ export class TableCellPropertiesViewExperimental extends View {
 	/**
 	 * Options passed to the view. See {@link #constructor} to learn more.
 	 */
-	public readonly options: TableCellPropertiesViewOptions;
+	public readonly options: TableCellPropertiesViewOptionsExperimental;
 
 	/**
 	 * Tracks information about the DOM focus in the form.
@@ -242,7 +242,7 @@ export class TableCellPropertiesViewExperimental extends View {
 	 * {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView#backgroundInput}.
 	 * @param options.defaultTableCellProperties The default table cell properties.
 	 */
-	constructor( locale: Locale, options: TableCellPropertiesViewOptions ) {
+	constructor( locale: Locale, options: TableCellPropertiesViewOptionsExperimental ) {
 		super( locale );
 
 		this.set( {

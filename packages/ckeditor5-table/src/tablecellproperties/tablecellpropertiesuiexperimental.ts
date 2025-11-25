@@ -7,6 +7,8 @@
  * @module table/tablecellproperties/tablecellpropertiesuiexperimental
  */
 
+/* istanbul ignore file -- @preserve */
+
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
 import {

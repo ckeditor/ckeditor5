@@ -7,6 +7,8 @@
  * @module table/tableproperties/tablepropertiesuiexperimental
  */
 
+/* istanbul ignore file -- @preserve */
+
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconTableProperties } from 'ckeditor5/src/icons.js';
 import {
