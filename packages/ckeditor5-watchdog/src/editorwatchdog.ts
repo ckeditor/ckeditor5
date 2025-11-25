@@ -434,7 +434,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 */
 	public _isErrorComingFromThisItem( error: CKEditorError ): boolean {
 		// If here are no matching properties, the error is definitely not coming from this editor (or any other editor at all).
-		if ( !areConnectedThroughProperties( this._editor, error.context, this._excludedProps ) ) {
+		if ( !this._editor || !areConnectedThroughProperties( this._editor, error.context, this._excludedProps ) ) {
 			return false;
 		}
 
@@ -448,7 +448,7 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 		// coming from this editor, however, this is still not a 100% guarantee. The exception might happen within context plugins
 		// that have access to multiple editors.
 		const subNodes = getSubNodes( error.context, this._excludedProps );
-		const editorSpecificEntries = getEditorSpecificEntries( this._editor! );
+		const editorSpecificEntries = getEditorSpecificEntries( this._editor );
 
 		let isAssociatedWithThisEditor = false;
 		let isAssociatedWithOtherEditor = false;
