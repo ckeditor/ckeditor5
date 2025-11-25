@@ -476,9 +476,9 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 		}
 
 		// If no editor-specific objects were found, we cannot be sure whether the error is coming from this editor or not.
-		// The problem is, that some matching properties was found in the first step, so there is some connection
-		// between the editor and the error context. If we cannot disprove that the error is coming from this editor,
-		// we restart all editors that have matching properties.
+		// The problem is, that some matching properties were found in the first step, so there is some connection
+		// between the editor and the error context. It's safer to restart all associated editors than risk not restarting
+		// an editor that is actually broken.
 		return true;
 	}
 
