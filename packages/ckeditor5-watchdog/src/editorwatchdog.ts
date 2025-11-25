@@ -9,6 +9,7 @@
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunc } from 'es-toolkit/compat';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
+import { getSubNodes } from './utils/getsubnodes.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { ModelNode, ModelText, ModelElement, ModelWriter } from '@ckeditor/ckeditor5-engine';
@@ -432,7 +433,53 @@ export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	 * @internal
 	 */
 	public _isErrorComingFromThisItem( error: CKEditorError ): boolean {
-		return areConnectedThroughProperties( this._editor, error.context, this._excludedProps );
+		// If here are no matching properties, the error is definitely not coming from this editor (or any other editor at all).
+		if ( !areConnectedThroughProperties( this._editor, error.context, this._excludedProps ) ) {
+			return false;
+		}
+
+		// ... however, even if there are some matching properties, we still cannot be 100% sure that the error is coming from this editor.
+		//
+		// For example, two different editors may share some plugins or other global objects in configuration. While these objects
+		// are connected through properties, the error may still come from a different editor instance.
+		//
+		// To be more certain, we can probe subnodes of the error context and see if they contain any editor-specific objects such as
+		// the model document, UI view, or editing view. If we find any of these objects, we can be more confident that the error is indeed
+		// coming from this editor, however, this is still not a 100% guarantee. The exception might happen within context plugins
+		// that have access to multiple editors. We can group these objects, and if only one of them is found, we can be more certain.
+		const subNodes = getSubNodes( error.context, this._excludedProps );
+		const editorSpecificEntries = getEditorSpecificEntries( this._editor! );
+
+		let isAssociatedWithThisEditor = false;
+		let isAssociatedWithOtherEditor = false;
+
+		for ( const node of subNodes ) {
+			for ( const instance of editorSpecificEntries ) {
+				const Constructor = instance.constructor;
+
+				if ( node && typeof node === 'object' && node instanceof Constructor ) {
+					if ( node === instance ) {
+						isAssociatedWithThisEditor = true;
+					} else {
+						isAssociatedWithOtherEditor = true;
+					}
+				}
+			}
+		}
+
+		if ( isAssociatedWithThisEditor ) {
+			return true;
+		}
+
+		if ( isAssociatedWithOtherEditor ) {
+			return false;
+		}
+
+		// If no editor-specific objects were found, we cannot be sure whether the error is coming from this editor or not.
+		// The problem is, that some matching properties was found in the first step, so there is some connection
+		// between the editor and the error context. If we cannot disprove that the error is coming from this editor,
+		// we restart all editors that have matching properties.
+		return true;
 	}
 
 	/**
@@ -628,3 +675,19 @@ export type EditorWatchdogCreatorFunction<TEditor = Editor> = (
 	elementOrData: HTMLElement | string | Record<string, string> | Record<string, HTMLElement>,
 	config: EditorConfig
 ) => Promise<TEditor>;
+
+/**
+ * Returns editor-specific entries that can be used to identify whether an error context is connected to the editor.
+ */
+function getEditorSpecificEntries( editor: Editor ) {
+	return [
+		editor.conversion,
+		editor.commands,
+		editor.plugins,
+		editor.model.document,
+		editor.model,
+		editor.model.schema,
+		editor.ui?.view,
+		editor.editing?.view
+	].filter( Boolean );
+};
