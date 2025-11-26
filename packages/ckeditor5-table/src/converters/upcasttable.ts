@@ -8,6 +8,7 @@
  */
 
 import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
+import type { Editor } from 'ckeditor5/src/core.js';
 
 import { createEmptyTableCell } from '../utils/common.js';
 import { getViewTableFromWrapper } from '../utils/structure.js';
@@ -81,7 +82,9 @@ export function upcastTableFigure() {
  * @returns Conversion helper.
  * @internal
  */
-export function upcastTable() {
+export function upcastTable( editor: Editor ) {
+	const ignoreHeaderRowMoveIfNormalRowsBefore = !!editor.config.get( 'experimentalFlags.tableCellTypeSupport' );
+
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -91,7 +94,7 @@ export function upcastTable() {
 				return;
 			}
 
-			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+			const { rows, headingRows, headingColumns } = scanTable( viewTable, ignoreHeaderRowMoveIfNormalRowsBefore );
 
 			// Only set attributes if values is greater then 0.
 			const attributes: { headingColumns?: number; headingRows?: number } = {};
@@ -200,10 +203,16 @@ export function ensureParagraphInTableCell( elementName: string ) {
  * headingRows    - The number of rows that go as table headers.
  * headingColumns - The maximum number of row headings.
  * rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
+ *
+ * @param viewTable The view table element.
+ * @param ignoreHeaderRowMoveIfNormalRowsBefore If set to `true`, then heading rows detection will stop
+ * once a normal row is found between heading rows. If set to `false`, then heading rows will be detected
+ * even if normal rows are between them.
+ * @returns The table metadata.
  */
-function scanTable( viewTable: ViewElement ) {
-	let headingRows = 0;
+function scanTable( viewTable: ViewElement, ignoreHeaderRowMoveIfNormalRowsBefore: boolean ) {
 	let headingColumns: number | undefined = undefined;
+	let shouldAccumulateHeadingRows: boolean | null = null;
 
 	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
 	// of them.
@@ -232,8 +241,9 @@ function scanTable( viewTable: ViewElement ) {
 		}
 
 		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
-		if ( tableChild.name === 'thead' && !firstTheadElement ) {
-			firstTheadElement = tableChild;
+		if ( tableChild.name === 'thead' ) {
+			shouldAccumulateHeadingRows = null;
+			firstTheadElement ||= tableChild;
 		}
 
 		// There might be some extra empty text nodes between the `<tr>`s.
@@ -261,13 +271,17 @@ function scanTable( viewTable: ViewElement ) {
 					// of the cell span from the previous row.
 					// Issue: https://github.com/ckeditor/ckeditor5/issues/17556
 					( maxPrevColumns === null || trColumns.length === maxPrevColumns ) &&
-					trColumns.every( e => e.is( 'element', 'th' ) )
+					trColumns.every( e => e.is( 'element', 'th' ) ) &&
+					// If there is at least one "normal" table row between heading rows, then stop accumulating heading rows.
+					// However, if flag `ignoreHeaderRowMoveIfNormalRowsBefore` is set to `false`, then ignore this rule.
+					( !ignoreHeaderRowMoveIfNormalRowsBefore || shouldAccumulateHeadingRows === null || shouldAccumulateHeadingRows )
 				)
 			) {
-				headingRows++;
 				headRows.push( tr );
+				shouldAccumulateHeadingRows = true;
 			} else {
 				bodyRows.push( tr );
+				shouldAccumulateHeadingRows = false;
 			}
 
 			// We use the maximum number of columns to avoid false positives when detecting
@@ -299,7 +313,7 @@ function scanTable( viewTable: ViewElement ) {
 	}
 
 	return {
-		headingRows,
+		headingRows: headRows.length,
 		headingColumns: headingColumns || 0,
 		rows: [ ...headRows, ...bodyRows ]
 	};
