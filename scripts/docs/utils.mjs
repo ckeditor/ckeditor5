@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
-import fs from 'fs/promises';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import { loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';

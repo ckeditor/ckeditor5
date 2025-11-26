@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'url';
-import fs from 'fs/promises';
-import path from 'path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { mkdirp } from 'mkdirp';
 import webpack from 'webpack';
 import { styles, loaders } from '@ckeditor/ckeditor5-dev-utils';

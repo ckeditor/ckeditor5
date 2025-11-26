@@ -9,9 +9,12 @@ import { _getViewData, _getModelData, _setModelData, _parseModel } from '@ckedit
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 
-import { StandardEditingModeEditing } from '../src/standardeditingmodeediting.js';
-import { RestrictedEditingExceptionCommand } from '../src/restrictededitingexceptioncommand.js';
-import { RestrictedEditingExceptionBlockCommand } from '../src/index.js';
+import {
+	StandardEditingModeEditing,
+	RestrictedEditingExceptionCommand,
+	RestrictedEditingExceptionBlockCommand,
+	RestrictedEditingExceptionAutoCommand
+} from '../src/index.js';
 
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
@@ -113,6 +116,12 @@ describe( 'StandardEditingModeEditing', () => {
 			const command = editor.commands.get( 'restrictedEditingExceptionBlock' );
 
 			expect( command ).to.be.instanceof( RestrictedEditingExceptionBlockCommand );
+		} );
+
+		it( 'should register the auto command', () => {
+			const command = editor.commands.get( 'restrictedEditingExceptionAuto' );
+
+			expect( command ).to.be.instanceof( RestrictedEditingExceptionAutoCommand );
 		} );
 	} );
 

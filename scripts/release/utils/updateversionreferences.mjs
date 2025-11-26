@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import upath from 'upath';
 import { CKEDITOR5_ROOT_PATH } from '../../constants.mjs';
 

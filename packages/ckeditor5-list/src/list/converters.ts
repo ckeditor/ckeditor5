@@ -366,7 +366,7 @@ export function listItemDowncastConverter(
 	model: Model,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
-	const consumer = createAttributesConsumer( attributeNames );
+	const consumer = createAttributesConsumer( attributeNames, strategies );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
@@ -681,7 +681,7 @@ function wrapListItemBlock(
 	viewRange: ViewRange,
 	strategies: Array<ListDowncastStrategy>,
 	writer: ViewDowncastWriter,
-	options?: Record<string, unknown>
+	options: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -703,7 +703,8 @@ function wrapListItemBlock(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
 					strategy.scope == 'list' ? listViewElement : listItemViewElement,
-					options
+					options,
+					currentListItem
 				);
 			}
 		}
@@ -726,13 +727,17 @@ function wrapListItemBlock(
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
-function createAttributesConsumer( attributeNames: Array<string> ) {
+function createAttributesConsumer( attributeNames: Array<string>, strategies: Array<ListDowncastStrategy> ) {
+	const nonConsumingAttributes = strategies
+		.filter( strategy => strategy.consume === false )
+		.map( strategy => strategy.attributeName );
+
 	return ( node: ModelNode, consumable: ModelConsumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
 		for ( const attributeName of attributeNames ) {
-			if ( node.hasAttribute( attributeName ) ) {
+			if ( node.hasAttribute( attributeName ) && !nonConsumingAttributes.includes( attributeName ) ) {
 				events.push( `attribute:${ attributeName }` );
 			}
 		}

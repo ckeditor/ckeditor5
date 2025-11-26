@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	addBorderStylesRules,
 	addPaddingStylesRules,
@@ -113,7 +113,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		editor.data.addStyleProcessorRules( addBorderStylesRules );
-		enableBorderProperties( schema, conversion, {
+		enableBorderProperties( editor, {
 			color: defaultTableCellProperties.borderColor,
 			style: defaultTableCellProperties.borderStyle,
 			width: defaultTableCellProperties.borderWidth
@@ -170,16 +170,19 @@ export class TableCellPropertiesEditing extends Plugin {
 /**
  * Enables the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` attributes for table cells.
  *
+ * @param editor The editor instance.
  * @param defaultBorder The default border values.
  * @param defaultBorder.color The default `tableCellBorderColor` value.
  * @param defaultBorder.style The default `tableCellBorderStyle` value.
  * @param defaultBorder.width The default `tableCellBorderWidth` value.
  */
 function enableBorderProperties(
-	schema: ModelSchema,
-	conversion: Conversion,
+	editor: Editor,
 	defaultBorder: { color: string; style: string; width: string }
 ) {
+	const { conversion } = editor;
+	const { schema } = editor.model;
+
 	const modelAttributes = {
 		width: 'tableCellBorderWidth',
 		color: 'tableCellBorderColor',
@@ -194,8 +197,8 @@ function enableBorderProperties(
 		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
 	}
 
-	upcastBorderStyles( conversion, 'td', modelAttributes, defaultBorder );
-	upcastBorderStyles( conversion, 'th', modelAttributes, defaultBorder );
+	upcastBorderStyles( editor, 'td', modelAttributes, defaultBorder );
+	upcastBorderStyles( editor, 'th', modelAttributes, defaultBorder );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.style, styleName: 'border-style' } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.color, styleName: 'border-color' } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.width, styleName: 'border-width' } );

@@ -42,3 +42,7 @@ msgstr "Blockbearbeitung deaktivieren"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "Blockbearbeitung aktivieren"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr ""
