@@ -114,7 +114,7 @@ export class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastTable() );
+		conversion.for( 'upcast' ).add( upcastTable( editor ) );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
