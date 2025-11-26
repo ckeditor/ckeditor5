@@ -96,7 +96,7 @@ declare module '@ckeditor/ckeditor5-engine' {
 		 *
 		 * This will be enabled by default in the future CKEditor 5 releases.
 		 */
-		tableCellTypeSelector?: boolean;
+		tableCellTypeSupport?: boolean;
 	}
 }
 
