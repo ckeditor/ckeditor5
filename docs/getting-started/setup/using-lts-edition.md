@@ -115,7 +115,7 @@ The {@link features/ai-assistant-overview CKEditor&nbsp;5 AI Assistant} feature 
 
 ### Experimental flags and plugins
 
-Throughout the life cycle of the LTS version, some experimental features may be backported from the current releases. These can take the form of experimental flags or separate plugins. They can be enabled to unblock certain users who rely on the LTS build but do not have an active LTS subscription. Such features may include security-related fixes, browser-specific adjustments, or other forms of official support available during the Maintenance phase.
+Throughout the life cycle of the LTE version, some experimental features may be added durign the Active LTS phase. These can take the form of experimental flags or separate plugins. They would be typically be added to test changes coming in ht enext major release.
 
 However, these experimental additions are not covered by LTS guarantees, meaning they may change, evolve, or be removed without the stability or compatibility assurances provided for core LTS features.
 
