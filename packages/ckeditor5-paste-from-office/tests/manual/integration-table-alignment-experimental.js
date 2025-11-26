@@ -8,7 +8,15 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 
 import { ListProperties } from '@ckeditor/ckeditor5-list';
 import { Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { Table, TableToolbar, TableProperties, TableCellProperties, TableColumnResize } from '@ckeditor/ckeditor5-table';
+import {
+	Table,
+	TableToolbar,
+	TableProperties,
+	TableCellProperties,
+	TableColumnResize,
+	TablePropertiesUIExperimental,
+	TableCellPropertiesUIExperimental
+} from '@ckeditor/ckeditor5-table';
 import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
 import { FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
@@ -42,6 +50,8 @@ ClassicEditor
 			TableProperties,
 			TableCellProperties,
 			TableColumnResize,
+			TablePropertiesUIExperimental,
+			TableCellPropertiesUIExperimental,
 			ImageUpload,
 			CloudServices,
 			EasyImage,
