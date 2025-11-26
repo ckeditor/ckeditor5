@@ -33,6 +33,16 @@
 		&:not(.ck-table-form__action-row) > *:not(.ck-label, .ck-table-form__dimension-operator) {
 			flex-grow: 1;
 		}
+
+		/* &.ck-table-form__action-row {
+			& > .ck.ck-button {
+				flex-grow: initial;
+
+				& .ck-button__label {
+					color: currentColor;
+				}
+			}
+		} */
 	}
 
 	& .ck.ck-labeled-field-view {
@@ -55,6 +65,18 @@
 				top: calc( -1 * var(--ck-table-properties-error-arrow-size) );
 				left: 50%;
 				transform: translateX( -50% );
+			}
+		}
+	}
+
+	&:has( .ck-form__header > .ck-button-back ) {
+		& .ck-form__row.ck-table-form__action-row {
+			& > .ck.ck-button {
+				flex-grow: initial;
+
+				& .ck-button__label {
+					color: currentColor;
+				}
 			}
 		}
 	}
