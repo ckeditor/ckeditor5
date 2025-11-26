@@ -54,7 +54,7 @@ You can find all of those options in the [table properties balloon](#table-conte
 
 You can also control how the alignment appears in the editor's output. Learn more about it in the {@link features/tables-installation#table-alignment-in-output Table alignment in output} section.
 
-## Tabkle cell type
+## Table cell type
 
 TODO
 
