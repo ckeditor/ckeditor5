@@ -88,6 +88,15 @@ declare module '@ckeditor/ckeditor5-engine' {
 		 * This will be enabled by default in the future CKEditor 5 releases.
 		 */
 		useExtendedTableBlockAlignment?: boolean;
+
+		/**
+		 * When enabled, the
+		 * {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table cell properties feature}
+		 * will introduce a special selector for table cell types (i.e. header and data cells) in the cell properties dropdown.
+		 *
+		 * This will be enabled by default in the future CKEditor 5 releases.
+		 */
+		tableCellTypeSelector?: boolean;
 	}
 }
 
