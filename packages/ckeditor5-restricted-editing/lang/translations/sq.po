@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "Pamundëso redaktimin"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "Munëso redaktimin"
@@ -30,3 +26,23 @@ msgstr "Rajoni i redaktueshëm i radhës"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "Navigo rajonet e redaktueshme"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr ""
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr ""
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr ""
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr ""
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr ""

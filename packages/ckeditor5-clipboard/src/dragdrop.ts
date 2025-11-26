@@ -294,7 +294,9 @@ export class DragDrop extends Plugin {
 
 			this._draggingUid = uid();
 
-			data.dataTransfer.effectAllowed = this.isEnabled ? 'copyMove' : 'copy';
+			const canEditAtDraggedRange = this.isEnabled && editor.model.canEditAt( this._draggedRange );
+
+			data.dataTransfer.effectAllowed = canEditAtDraggedRange ? 'copyMove' : 'copy';
 			data.dataTransfer.setData( 'application/ckeditor5-dragging-uid', this._draggingUid );
 
 			const draggedSelection = model.createSelection( this._draggedRange.toRange() );
@@ -309,7 +311,7 @@ export class DragDrop extends Plugin {
 
 			data.stopPropagation();
 
-			if ( !this.isEnabled ) {
+			if ( !canEditAtDraggedRange ) {
 				this._draggedRange.detach();
 				this._draggedRange = null;
 				this._draggingUid = '';
@@ -354,7 +356,7 @@ export class DragDrop extends Plugin {
 
 			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
 
-			dragDropTarget.updateDropMarker(
+			const targetRange = dragDropTarget.updateDropMarker(
 				data.target,
 				data.targetRanges,
 				clientX,
@@ -362,6 +364,13 @@ export class DragDrop extends Plugin {
 				this._blockMode,
 				this._draggedRange
 			);
+
+			// Do not allow dropping if there is no valid target range (e.g., dropping on non-editable place).
+			if ( !targetRange ) {
+				data.dataTransfer.dropEffect = 'none';
+
+				return;
+			}
 
 			// If this is content being dragged from another editor, moving out of current editor instance
 			// is not possible until 'dragend' event case will be fixed.

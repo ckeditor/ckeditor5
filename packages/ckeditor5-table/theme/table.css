@@ -102,9 +102,9 @@
 		 * 	* The table has `display: table` style set.
 		 * 	* The block element is placed directly after the table.
 		 */
-		&:not(.layout-table):not(:has(> figcaption)) {
-			display: block;
+		&:not(.layout-table) {
 			width: fit-content;
+			height: fit-content;
 		}
 
 		/**

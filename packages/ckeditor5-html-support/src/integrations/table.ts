@@ -148,6 +148,9 @@ function viewToModelTableAttributeConverter( dataFilter: DataFilter ) {
 
 			const viewTableElement = data.viewItem;
 
+			// Prevent `table` class on both <table> and <figure> elements simultaneously.
+			conversionApi.consumable.consume( viewTableElement, { classes: 'table' } );
+
 			preserveElementAttributes( viewTableElement, 'htmlTableAttributes' );
 
 			for ( const childNode of viewTableElement.getChildren() ) {

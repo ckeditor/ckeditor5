@@ -77,8 +77,17 @@ export class PasteFromOffice extends Plugin {
 		const viewDocument = editor.editing.view.document;
 		const normalizers: Array<PasteFromOfficeNormalizer> = [];
 		const hasMultiLevelListPlugin = this.editor.plugins.has( 'MultiLevelList' );
+		const hasTablePropertiesPlugin = this.editor.plugins.has( 'TableProperties' );
+		const hasExtendedTableBlockAlignment = !!this.editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' );
 
-		normalizers.push( new PasteFromOfficeMSWordNormalizer( viewDocument, hasMultiLevelListPlugin ) );
+		normalizers.push(
+			new PasteFromOfficeMSWordNormalizer(
+				viewDocument,
+				hasMultiLevelListPlugin,
+				hasTablePropertiesPlugin,
+				hasExtendedTableBlockAlignment
+			)
+		);
 		normalizers.push( new GoogleDocsNormalizer( viewDocument ) );
 		normalizers.push( new GoogleSheetsNormalizer( viewDocument ) );
 

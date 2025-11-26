@@ -5,49 +5,63 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { spawn } from 'child_process';
+import { styleText } from 'node:util';
+import { spawn } from 'node:child_process';
 import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
-import { CKEDITOR5_ROOT_PATH, IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
-import { styleText } from 'util';
+import {
+	CKEDITOR5_ROOT_PATH,
+	DOCUMENTATION_PATH,
+	DOCUMENTATION_ASSETS_PATH,
+	IS_ISOLATED_REPOSITORY
+} from '../constants.mjs';
 
 const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
-const DOCS_DIRECTORY = 'docs';
-
-buildDocs()
-	.catch( err => {
-		console.error( err );
-
-		process.exitCode = 1;
-	} );
-
-async function buildDocs() {
+try {
 	const options = parseArguments( process.argv.slice( 2 ) );
+	const processes = [];
 
+	// Build API docs in a separate process.
 	if ( !options.skipApi ) {
-		await spawnAsync( 'pnpm', [
+		const apiDocsProcess = spawnAsync( 'pnpm', [
 			'run',
 			'docs:api',
 			options.strict && '--strict',
 			options.verbose && '--verbose'
 		].filter( Boolean ) );
+
+		processes.push( apiDocsProcess );
 	}
 
+	// Build CKEditor 5 assets in a separate process.
 	if ( shouldBuildCKEditorAssets( options ) ) {
-		await spawnAsync( 'pnpm', [
+		await fs.emptyDir( DOCUMENTATION_ASSETS_PATH );
+
+		const corePackageProcess = spawnAsync( 'pnpm', [
 			'run',
-			'docs:ckeditor5',
+			'docs:ckeditor5'
+		] );
+
+		const commercialPackageProcess = spawnAsync( 'pnpm', [
+			'run',
+			'docs:ckeditor5-premium-features',
 			options.skipCommercial && '--skip-commercial',
-			options.dev && '--skip-obfuscation'
+			options.skipObfuscation && '--skip-obfuscation'
 		].filter( Boolean ) );
+
+		processes.push( corePackageProcess, commercialPackageProcess );
 	}
 
+	// Wait for all workers to finish.
+	await Promise.all( processes );
+
+	// Build the rest of the docs.
 	await umberto.buildSingleProject( {
-		configDir: DOCS_DIRECTORY,
+		configDir: DOCUMENTATION_PATH,
 		clean: true,
 		dev: options.dev,
 		skipLiveSnippets: options.skipSnippets,
@@ -65,11 +79,11 @@ async function buildDocs() {
 
 	if ( !options.skipSnippets ) {
 		const assetsPaths = await glob( '*/', {
-			cwd: upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' ),
+			cwd: DOCUMENTATION_ASSETS_PATH,
 			absolute: true
 		} );
 
-		const destinationPath = upath.join( CKEDITOR5_ROOT_PATH, 'build', DOCS_DIRECTORY, 'ckeditor5', version, 'assets' );
+		const destinationPath = upath.join( DOCUMENTATION_PATH, 'ckeditor5', version, 'assets' );
 
 		if ( !assetsPaths.length ) {
 			throw new Error( 'CKEditor 5 assets needed to run snippets are not detected. Snippets will not work.' );
@@ -83,22 +97,21 @@ async function buildDocs() {
 	}
 
 	if ( IS_ISOLATED_REPOSITORY ) {
-		printWarningIsolatedRepository();
+		const warning = styleText(
+			'yellow',
+			'\nThis repository is typically used in conjunction with a private project.\n\n' +
+			'Since the project is not present here, some documentation links may not resolve - ' +
+			'this is expected and does not indicate a problem.\n\n' +
+			'The purpose of this task is to create the API reference and contributor-facing ' +
+			'guides for this repository independently.\n\n' +
+			'If you still want to run full documentation validation, use "--skip-validation=false".'
+		);
+
+		console.log( warning );
 	}
-}
-
-function printWarningIsolatedRepository() {
-	const warning = styleText(
-		'yellow',
-		'\nThis repository is typically used in conjunction with a private project.\n\n' +
-		'Since the project is not present here, some documentation links may not resolve - ' +
-		'this is expected and does not indicate a problem.\n\n' +
-		'The purpose of this task is to create the API reference and contributor-facing ' +
-		'guides for this repository independently.\n\n' +
-		'If you still want to run full documentation validation, use "--skip-validation=false".'
-	);
-
-	console.log( warning );
+} catch ( err ) {
+	console.error( err );
+	process.exitCode = 1;
 }
 
 function shouldBuildCKEditorAssets( options ) {

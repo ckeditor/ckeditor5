@@ -7,9 +7,10 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { BodyCollection, DialogViewPosition } from 'ckeditor5/src/ui.js';
-import { global, createElement, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
+import { BodyCollection, ButtonView, DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { global, createElement, Rect, type EventInfo, ResizeObserver } from 'ckeditor5/src/utils.js';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import { IconDocumentOutlineToggle, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 const DIALOG_OFFSET = 28;
 
@@ -36,21 +37,24 @@ const DIALOG_OFFSET = 28;
  * 	editable, toolbar, menu bar.
  * 	Use {@link #moveToFullscreen} method for this purpose to ensure they are automatically cleaned up after leaving the fullscreen mode.
  * 3. Adds proper classes to the `<body>` and `<html>` elements to block page scrolling, adjust `z-index` etc.
- * 4. Changes the position of some dialogs to utilize the empty space on the right side of the editable element.
  *
- * Steps 5-11 are only executed if the corresponding features are used.
+ * Steps 4-12 are only executed if the corresponding features are used.
  *
- * 5. If presence list is used, moves it to the fullscreen mode container.
- * 6. If document outline is used, moves it to the fullscreen mode.
- * 7. If pagination is used, adjusts it's configuration for the changed view.
- * 8. If annotations are used, moves them to the fullscreen mode.
- * 9. If revision history is used, overrides the callbacks to show the revision viewer in the fullscreen mode.
- * 10. If source editing and document outline are both used, hides the document outline header.
- * 11. If custom container is used, hides all other elements in it to ensure they don't create an empty unscrollable space.
+ * 4. If presence list is used, moves it to the fullscreen mode container.
+ * 5. If document outline is used, moves it to the fullscreen mode.
+ * 6. If pagination is used, adjusts it's configuration for the changed view.
+ * 7. If annotations are used, moves them to the fullscreen mode.
+ * 8. If revision history is used, overrides the callbacks to show the revision viewer in the fullscreen mode.
+ * 9. If AI Tabs is used, moves it to the fullscreen mode.
+ * 10. If source editing and document outline are both used, registers a callback hiding the document outline header in source editing mode.
+ * 11. Changes the position of some dialogs to utilize the empty space on the right side of the editable element.
+ * 12. If custom container is used, hides all other elements in it to ensure they don't create an empty unscrollable space.
  *
  * Then finally:
  *
- * 12. Executes the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onEnterCallback
+ * 13. Adjusts the visibility of the left and right sidebars based on the available space.
+ * 14. Sets up a resize observer to adjust the visibility of the left and right sidebars dynamically.
+ * 15. Executes the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onEnterCallback
  * 	`config.fullscreen.onEnterCallback`} function.
  * 	By default, it returns the fullscreen mode container element so it can be further customized.
  *
@@ -62,14 +66,15 @@ const DIALOG_OFFSET = 28;
  * 3. If document outline is used, restore its default container.
  * 4. If annotations are used, restore their original state (UI, filters etc).
  * 5. If revision history is used, restore the original callbacks.
- * 6. If source editing and document outline are both used, restore the document outline header.
- * 7. Restore all moved elements to their original place.
- * 8. Destroy the fullscreen mode container.
- * 9. If the editor has a toolbar, switch its behavior to the one configured in the
+ * 7. If AI Tabs is used, restore it to the original state.
+ * 8. If source editing and document outline are both used, restore the document outline header.
+ * 9. Restore all moved elements to their original place.
+ * 10. Destroy the fullscreen mode container.
+ * 11. If the editor has a toolbar, switch its behavior to the one configured in the
  * 	{@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} property.
- * 10. Restore the scroll positions of all ancestors of the editable element.
- * 11. If pagination is used, restore its default configuration.
- * 12. Restore default dialogs positions.
+ * 12. Restore the scroll positions of all ancestors of the editable element.
+ * 13. If pagination is used, restore its default configuration.
+ * 14. Restore default dialogs positions.
  *
  * This class is exported to allow for custom extensions.
  */
@@ -99,6 +104,38 @@ export class FullscreenAbstractEditorHandler {
 	 * If we don't move pagination lines to the fullscreen container, they won't be visible.
 	 */
 	private _paginationBodyCollection: BodyCollection | null = null;
+
+	/**
+	 * Whether the left sidebar collapse button is created.
+	 */
+	private _hasLeftCollapseButton: boolean = false;
+
+	/**
+	 * The button that toggles the visibility of the left sidebar.
+	 */
+	private _collapseLeftSidebarButton: ButtonView | null = null;
+
+	/**
+	 * The resize observer that is used to adjust the visibility of the left and right sidebars dynamically.
+	 */
+	private _resizeObserver: ResizeObserver | null = null;
+
+	/**
+	 * The width of the expanded left and right sidebars in the fullscreen mode. Necessary for logic checking if they should be visible.
+	 */
+	private _sidebarsWidths: { left: number; right: number } = { left: 0, right: 0 };
+
+	/**
+	 * Whether the left sidebar should be kept hidden even if there is enough space for it. It's set to `true` when user
+	 * collapses the left sidebar with a button. Behavior is reset when exiting the fullscreen mode.
+	 */
+	private _keepLeftSidebarHidden: boolean = false;
+
+	/**
+	 * Temporary flag used to ignore the first automatic layout adjustment logic when user collapses the left sidebar with a button.
+	 * It is then immediately set back to `false`.
+	 */
+	private _forceShowLeftSidebar: boolean = false;
 
 	/**
 	 * A callback that hides the document outline header when the source editing mode is enabled.
@@ -138,6 +175,11 @@ export class FullscreenAbstractEditorHandler {
 	declare protected _editor: Editor & Partial<ElementApi>;
 
 	/**
+	 * A map of AI Tabs data that were set before entering the fullscreen mode.
+	 */
+	private _aiTabsData: { side: 'right' | 'left'; type: 'sidebar' | 'overlay' | 'custom' } | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
@@ -155,6 +197,10 @@ export class FullscreenAbstractEditorHandler {
 		editor.on( 'destroy', () => {
 			if ( this._wrapper ) {
 				this.destroy();
+			}
+
+			if ( this._resizeObserver ) {
+				this._resizeObserver.destroy();
 			}
 		} );
 	}
@@ -214,6 +260,7 @@ export class FullscreenAbstractEditorHandler {
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__right-edge" data-ck-fullscreen="right-edge"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
@@ -239,10 +286,6 @@ export class FullscreenAbstractEditorHandler {
 			this._document.body.parentElement!.classList.add( 'ck-fullscreen' );
 		}
 
-		if ( this._editor.plugins.has( 'Dialog' ) ) {
-			this._registerFullscreenDialogPositionAdjustments();
-		}
-
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'PresenceListUI' ) ) {
@@ -253,6 +296,10 @@ export class FullscreenAbstractEditorHandler {
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			this._generateDocumentOutlineContainer();
+		}
+
+		if ( this._hasLeftCollapseButton ) {
+			this._generateCollapseButton();
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -291,8 +338,20 @@ export class FullscreenAbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'AITabs' ) ) {
+			this._handleAITabsTransfer();
+		}
+
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			// Register a callback to hide the document outline header in source editing mode.
 			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+		}
+
+		// Dialog position should be done after all known elements are moved to the fullscreen container.
+		if ( this._editor.plugins.has( 'Dialog' ) ) {
+			this._registerFullscreenDialogPositionAdjustments();
 		}
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
@@ -309,6 +368,16 @@ export class FullscreenAbstractEditorHandler {
 				( element as HTMLElement ).style.display = 'none';
 			}
 		}
+
+		// Save the information about the width of the left and right sidebars before they possibly get hidden.
+		// It will be used for math checking if they should be visible or not dynamically.
+		this._sidebarsWidths = {
+			left: this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' )!.scrollWidth,
+			right: this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.scrollWidth
+		};
+
+		this._adjustVisibleElements();
+		this._setupResizeObserver();
 
 		if ( this._editor.config.get( 'fullscreen.onEnterCallback' ) ) {
 			this._editor.config.get( 'fullscreen.onEnterCallback' )!( this.getWrapper() );
@@ -340,6 +409,12 @@ export class FullscreenAbstractEditorHandler {
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			this._restoreRevisionHistoryCallbacks();
+		}
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'AITabs' ) ) {
+			this._restoreAITabs();
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
@@ -390,6 +465,11 @@ export class FullscreenAbstractEditorHandler {
 		if ( this._editor.plugins.has( 'Dialog' ) ) {
 			this._unregisterFullscreenDialogPositionAdjustments();
 		}
+
+		// Reset the behavior of the left sidebar.
+		this._keepLeftSidebarHidden = false;
+
+		this._resizeObserver?.destroy();
 	}
 
 	/**
@@ -467,6 +547,8 @@ export class FullscreenAbstractEditorHandler {
 		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as any;
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
+
+		this._hasLeftCollapseButton = true;
 	}
 
 	/**
@@ -509,6 +591,8 @@ export class FullscreenAbstractEditorHandler {
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
+
+		this._hasLeftCollapseButton = true;
 	}
 
 	/**
@@ -521,6 +605,48 @@ export class FullscreenAbstractEditorHandler {
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _generateCollapseButton(): void {
+		const button = new ButtonView( this._editor.locale );
+		const leftSidebarContainer = document.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+		const t = this._editor.t;
+
+		button.set( {
+			label: t( 'Toggle sidebar' ),
+			class: 'ck-fullscreen__left-sidebar-toggle-button',
+			tooltip: t( 'Hide left sidebar' ),
+			tooltipPosition: 'se',
+			icon: IconPreviousArrow
+		} );
+
+		button.on( 'execute', () => {
+			// Change the look of the button to reflect the state of the left sidebar.
+			if ( leftSidebarContainer.classList.contains( 'ck-fullscreen__left-sidebar--collapsed' ) ) {
+				// Enable automatic left sidebar toggling.
+				this._forceShowLeftSidebar = true;
+				this._keepLeftSidebarHidden = false;
+
+				this._showLeftSidebar();
+			} else {
+				// Disable automatic left sidebar toggling.
+				this._keepLeftSidebarHidden = true;
+
+				this._hideLeftSidebar();
+			}
+
+			// Keep the focus in the editor whenever the button is clicked.
+			this._editor.editing.view.focus();
+		} );
+
+		button.render();
+
+		this._collapseLeftSidebarButton = button;
+
+		// Append the button at the top of the left sidebar.
+		leftSidebarContainer.prepend( button.element! );
+	}
+
 	/**
 	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode and switches the UI to the wide sidebar.
 	 */
@@ -530,15 +656,6 @@ export class FullscreenAbstractEditorHandler {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		this._annotationsUIsData = new Map( annotationsUIs.uisData );
-
-		const annotationsFilters = new Map<string, ( annotation: any ) => boolean>();
-
-		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
-			// Default filter is `() => true`. Only store filters that are different.
-			if ( data.filter !== annotationsUIs.defaultFilter ) {
-				annotationsFilters.set( uiName, data.filter );
-			}
-		}
 
 		annotationsUIs.deactivateAll();
 
@@ -552,7 +669,7 @@ export class FullscreenAbstractEditorHandler {
 		if ( !sidebarPlugin.container ) {
 			sidebarPlugin.setContainer( this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement );
 
-			switchToWideSidebar();
+			this._switchAnnotationsUI( 'wideSidebar' );
 
 			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 		}
@@ -563,31 +680,13 @@ export class FullscreenAbstractEditorHandler {
 		// If we set the container before moving the sidebar, we lose the reference to the original sidebar container and it won't be
 		// moved back to the correct position after leaving fullscreen.
 		else {
-			switchToWideSidebar();
+			this._switchAnnotationsUI( 'wideSidebar' );
 
 			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 
 			sidebarPlugin.setContainer(
 				this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
 			);
-		}
-
-		function switchToWideSidebar() {
-			// First, check if someone has a filter defined for `wideSidebar`. If so, retrieve and apply it in fullscreen.
-			if ( annotationsFilters.has( 'wideSidebar' ) ) {
-				annotationsUIs.activate( 'wideSidebar', annotationsFilters.get( 'wideSidebar' ) );
-			}
-			// If no filter is defined for `wideSidebar`, read the filters for the active display(s) mode and apply them on wide sidebar.
-			// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
-			else if ( annotationsFilters.size ) {
-				annotationsUIs.activate( 'wideSidebar',
-					( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
-				);
-			}
-			// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
-			else {
-				annotationsUIs.switchTo( 'wideSidebar' );
-			}
 		}
 	}
 
@@ -754,18 +853,28 @@ export class FullscreenAbstractEditorHandler {
 			return;
 		}
 
-		const fullscreenViewContainerRect = new Rect( this._wrapper! ).getVisible();
+		// It's possible that the right edge container is used but not visible. We then fallback to the wrapper.
+		const keepRightEdgeContainerVisible =
+			new Rect( this._wrapper!.querySelector( '.ck-fullscreen__right-edge' ) as HTMLElement ).getVisible();
+		const relativeContainer = keepRightEdgeContainerVisible ?
+			this._wrapper!.querySelector( '.ck-fullscreen__right-edge' ) as HTMLElement :
+			this._wrapper!;
+		const relativeContainerRect = new Rect( relativeContainer ).getVisible();
 		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
 		const scrollOffset = new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
 			.excludeScrollbarsAndBorders().getVisible()!.width -
 			new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement ).getVisible()!.width;
 
-		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
+		if ( relativeContainerRect && editorContainerRect && dialogRect ) {
 			dialogView.position = null;
 
+			const leftOffset = keepRightEdgeContainerVisible ?
+				relativeContainerRect.left - dialogRect.width - DIALOG_OFFSET :
+				relativeContainerRect.left + relativeContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset;
+
 			dialogView.moveTo(
-				fullscreenViewContainerRect.left + fullscreenViewContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset,
+				leftOffset,
 				editorContainerRect.top
 			);
 		}
@@ -804,6 +913,208 @@ export class FullscreenAbstractEditorHandler {
 			}
 
 			element = element.parentElement;
+		}
+	}
+
+	/**
+	 * Stores the current state of the AI Tabs and moves it to the fullscreen mode.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _handleAITabsTransfer(): void {
+		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
+
+		this._aiTabsData = {
+			side: aiTabs.side,
+			type: aiTabs.type
+		};
+
+		this.moveToFullscreen( aiTabs.view.element!, 'right-edge' );
+
+		aiTabs.side = 'right';
+		aiTabs.type = 'sidebar';
+
+		// Adjust the visible elements when the transition (changing the size of the AI tabs) ends. Earlier we do not have the
+		// correct sizes of elements.
+		aiTabs.view.element.addEventListener( 'transitionend', ( evt: TransitionEvent ) => this._handleAISidebarTransitions( evt ) );
+	}
+
+	/**
+	 * Checks the transition event to see if it's changing the width of the AI tabs and if so, adjusts the visible fullscreen mode elements.
+	 */
+	private _handleAISidebarTransitions( evt: TransitionEvent ): void {
+		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
+
+		// Transition may occur on any element inside the AI tabs (e.g. changing the box-shadow in review mode),
+		// so we need to check the target and the property name.
+		if ( evt.target === aiTabs.view.element && evt.propertyName.includes( 'width' ) ) {
+			this._adjustVisibleElements();
+		}
+	}
+
+	/**
+	 * Restores the state of the AI Tabs to the original values.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _restoreAITabs(): void {
+		const aiTabs = this._editor.plugins.get( 'AITabs' ) as any;
+
+		aiTabs.side = this._aiTabsData?.side;
+		aiTabs.type = this._aiTabsData?.type;
+
+		this._aiTabsData = null;
+
+		aiTabs.view.element.removeEventListener( 'transitionend', this._handleAISidebarTransitions );
+	}
+
+	/**
+	 * Adjusts the visibility of the left and right sidebars based on the available space.
+	 */
+	private _adjustVisibleElements(): void {
+		const editableWrapper = this._wrapper!.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement;
+
+		// If user has explicitly opened the left sidebar, don't try to hide it automatically - but only once. Any later
+		// resizes will affect the sidebar visibility.
+		if ( this._forceShowLeftSidebar ) {
+			this._forceShowLeftSidebar = false;
+
+			return;
+		}
+
+		// First of all, check if we need to collapse something or not.
+		if ( editableWrapper.scrollWidth > editableWrapper.clientWidth ) {
+			// If we do, collapse left sidebar first.
+			this._hideLeftSidebar();
+
+			// If we still need more space, collapse right sidebar.
+			if ( editableWrapper.scrollWidth > editableWrapper.clientWidth ) {
+				this._hideRightSidebar();
+			}
+		}
+		// If we don't need more space, maybe we could expand sidebars instead.
+		else {
+			// Try to expand right sidebar first. It's not enough to check if scrollWidth + rightSidebarWidth < clientWidth,
+			// because the wrapper will always stretch to the full available width.
+			// We need to check the sum of its children widths instead.
+			let actualWidth = [ ...editableWrapper.children ].reduce( ( acc, child ) => acc + child.scrollWidth, 0 );
+
+			// If adding right sidebar width to the factual width of the wrapper
+			// would still be less than the client width, expand right sidebar.
+			if ( actualWidth + this._sidebarsWidths.right < editableWrapper.clientWidth ) {
+				this._showRightSidebar();
+
+				actualWidth = [ ...editableWrapper.children ].reduce( ( acc, child ) => acc + child.scrollWidth, 0 );
+			}
+
+			// Then follow the same logic for left sidebar - but only if we are controlling it
+			// (i.e. user hasn't explicitly collapsed the sidebar with a button).
+			if ( actualWidth + this._sidebarsWidths.left < editableWrapper.clientWidth && !this._keepLeftSidebarHidden ) {
+				this._showLeftSidebar();
+			}
+		}
+	}
+
+	/**
+	 * Switches the annotations UI to the requested one.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _switchAnnotationsUI( uiName: string ) {
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
+		annotationsUIs.deactivateAll();
+		const annotationsFilters = new Map<string, ( annotation: any ) => boolean>();
+
+		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
+			// Default filter is `() => true`. Only store filters that are different.
+			if ( data.filter !== annotationsUIs.defaultFilter ) {
+				annotationsFilters.set( uiName, data.filter );
+			}
+		}
+
+		// First, check if someone has a filter defined for requested UI. If so, retrieve and apply it in fullscreen.
+		if ( annotationsFilters.has( uiName ) ) {
+			annotationsUIs.activate( uiName, annotationsFilters.get( uiName ) );
+		}
+		// If no filter is defined for requested UI, read the filters for the active display(s) mode and apply them.
+		// It's possible there are filters for modes other than selected, so display annotations that match any of them.
+		else if ( annotationsFilters.size ) {
+			annotationsUIs.activate( uiName,
+				( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+			);
+		}
+		// If no filters are defined for the active display mode(s), simply display all annotations in the requested UI.
+		else {
+			annotationsUIs.switchTo( uiName );
+		}
+	}
+
+	/**
+	 * Sets up a resize observer to adjust the visibility of the left and right sidebars dynamically.
+	 */
+	private _setupResizeObserver(): void {
+		const wrapper = this._wrapper!.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement;
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+		}
+
+		this._resizeObserver = new ResizeObserver( wrapper, () => {
+			this._adjustVisibleElements();
+		} );
+	}
+
+	/**
+	 * Hides the left sidebar. Works only if there is anything to hide.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _hideLeftSidebar() {
+		const t = this._editor.t;
+
+		if ( this._collapseLeftSidebarButton ) {
+			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+
+			leftSidebar.classList.add( 'ck-fullscreen__left-sidebar--collapsed' );
+			this._collapseLeftSidebarButton.icon = IconDocumentOutlineToggle;
+			this._collapseLeftSidebarButton.tooltip = t( 'Show left sidebar' );
+		}
+	}
+
+	/**
+	 * Shows the left sidebar. Works only if there is anything to show.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _showLeftSidebar() {
+		const t = this._editor.t;
+
+		if ( this._collapseLeftSidebarButton ) {
+			const leftSidebar = this._wrapper!.querySelector( '.ck-fullscreen__left-sidebar' ) as HTMLElement;
+
+			leftSidebar.classList.remove( 'ck-fullscreen__left-sidebar--collapsed' );
+			this._collapseLeftSidebarButton.icon = IconPreviousArrow;
+			this._collapseLeftSidebarButton.tooltip = t( 'Hide left sidebar' );
+		}
+	}
+
+	/**
+	 * Hides the right sidebar. Works only if there is anything to hide.
+	 */
+	private _hideRightSidebar() {
+		if ( this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.firstChild ) {
+			this._switchAnnotationsUI( 'narrowSidebar' );
+			this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.classList.add( 'ck-fullscreen__right-sidebar--collapsed' );
+		}
+	}
+
+	/**
+	 * Shows the right sidebar. Works only if there is anything to show.
+	 */
+	private _showRightSidebar() {
+		if ( this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.firstChild ) {
+			this._switchAnnotationsUI( 'wideSidebar' );
+			this._wrapper!.querySelector( '.ck-fullscreen__right-sidebar' )!.classList.remove( 'ck-fullscreen__right-sidebar--collapsed' );
 		}
 	}
 }

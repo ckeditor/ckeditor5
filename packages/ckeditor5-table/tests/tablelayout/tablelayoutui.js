@@ -4,6 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ListItemView, DropdownView, SplitButtonView } from '@ckeditor/ckeditor5-ui';
@@ -27,7 +28,7 @@ describe( 'TableLayoutUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing ]
+				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

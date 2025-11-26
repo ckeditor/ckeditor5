@@ -7,9 +7,12 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { Matcher, type ModelElement, type UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
+import { RestrictedEditingExceptionBlockCommand } from './restrictededitingexceptionblockcommand.js';
+import { RestrictedEditingExceptionAutoCommand } from './restrictededitingexceptionautocommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -38,28 +41,149 @@ export class StandardEditingModeEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const schema = editor.model.schema;
 
-		editor.model.schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
+		schema.extend( '$text', { allowAttributes: [ 'restrictedEditingException' ] } );
 
-		editor.conversion.for( 'upcast' ).elementToAttribute( {
-			model: 'restrictedEditingException',
-			view: {
-				name: 'span',
-				classes: 'restricted-editing-exception'
-			}
+		schema.register( 'restrictedEditingException', {
+			allowWhere: '$container',
+			allowContentOf: '$container'
 		} );
 
-		editor.conversion.for( 'downcast' ).attributeToElement( {
-			model: 'restrictedEditingException',
-			view: ( modelAttributeValue, { writer } ) => {
-				if ( modelAttributeValue ) {
-					// Make the restricted editing <span> outer-most in the view.
-					return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+		// Don't allow nesting of block exceptions.
+		schema.addChildCheck( context => {
+			for ( const item of context ) {
+				if ( item.name == 'restrictedEditingException' ) {
+					return false;
 				}
 			}
+		}, 'restrictedEditingException' );
+
+		// Don't allow nesting inline exceptions inside block exceptions.
+		schema.addAttributeCheck( context => {
+			for ( const item of context ) {
+				if ( item.name == 'restrictedEditingException' ) {
+					return false;
+				}
+			}
+		}, 'restrictedEditingException' );
+
+		// Post-fixer to ensure proper structure.
+		editor.model.document.registerPostFixer( writer => {
+			const changes = editor.model.document.differ.getChanges();
+			const unwrap = new Set<ModelElement>();
+			const remove = new Set<ModelElement>();
+			const merge = new Set<ModelElement>();
+			let changed = false;
+
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' ) {
+					const range = writer.createRange( entry.position, entry.position.getShiftedBy( entry.length ) );
+
+					for ( const child of range.getItems() ) {
+						if ( child.is( 'element', 'restrictedEditingException' ) ) {
+							// Make sure that block exception is not nested or added in invalid place.
+							if ( !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
+								unwrap.add( child );
+							} else if ( child.isEmpty ) {
+								remove.add( child );
+							} else {
+								merge.add( child );
+							}
+						} else if (
+							child.is( '$textProxy' ) &&
+							child.hasAttribute( 'restrictedEditingException' ) &&
+							!schema.checkAttribute( child, 'restrictedEditingException' )
+						) {
+							writer.removeAttribute( 'restrictedEditingException', child );
+							changed = true;
+						}
+					}
+				} else if ( entry.type == 'remove' ) {
+					const parent = entry.position.parent;
+
+					if ( parent.is( 'element', 'restrictedEditingException' ) && parent.isEmpty ) {
+						remove.add( parent );
+					}
+
+					// Verify if some block exceptions are siblings now after element removed between.
+					for ( const child of parent.getChildren() ) {
+						if ( child.is( 'element', 'restrictedEditingException' ) ) {
+							merge.add( child );
+						}
+					}
+				}
+			}
+
+			for ( const child of unwrap ) {
+				writer.unwrap( child );
+				changed = true;
+			}
+
+			for ( const child of remove ) {
+				writer.remove( child );
+				changed = true;
+			}
+
+			for ( const child of merge ) {
+				if ( child.root.rootName == '$graveyard' ) {
+					continue;
+				}
+
+				const nodeBefore = child.previousSibling;
+				const nodeAfter = child.nextSibling;
+
+				if ( nodeBefore && nodeBefore.is( 'element', 'restrictedEditingException' ) ) {
+					writer.merge( writer.createPositionBefore( child ) );
+				}
+
+				if ( nodeAfter && nodeAfter.is( 'element', 'restrictedEditingException' ) ) {
+					writer.merge( writer.createPositionAfter( child ) );
+				}
+			}
+
+			return changed;
 		} );
 
+		editor.conversion.for( 'upcast' )
+			.elementToAttribute( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'span',
+					classes: 'restricted-editing-exception'
+				}
+			} )
+			.elementToElement( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'div',
+					classes: 'restricted-editing-exception'
+				}
+			} );
+
+		registerFallbackUpcastConverter( editor );
+
+		editor.conversion.for( 'downcast' )
+			.attributeToElement( {
+				model: 'restrictedEditingException',
+				view: ( modelAttributeValue, { writer } ) => {
+					if ( modelAttributeValue ) {
+						// Make the restricted editing <span> outer-most in the view.
+						return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+					}
+				}
+			} )
+			.elementToElement( {
+				model: 'restrictedEditingException',
+				view: {
+					name: 'div',
+					classes: 'restricted-editing-exception'
+				}
+			} );
+
 		editor.commands.add( 'restrictedEditingException', new RestrictedEditingExceptionCommand( editor ) );
+		editor.commands.add( 'restrictedEditingExceptionBlock', new RestrictedEditingExceptionBlockCommand( editor ) );
+		editor.commands.add( 'restrictedEditingExceptionAuto', new RestrictedEditingExceptionAutoCommand( editor ) );
 
 		editor.editing.view.change( writer => {
 			for ( const root of editor.editing.view.document.roots ) {
@@ -67,4 +191,42 @@ export class StandardEditingModeEditing extends Plugin {
 			}
 		} );
 	}
+}
+
+/**
+ * Fallback upcast converter for empty exception span inside a table cell.
+ */
+function registerFallbackUpcastConverter( editor: Editor ) {
+	const matcher = new Matcher( { name: 'span', classes: 'restricted-editing-exception' } );
+
+	// See: https://github.com/ckeditor/ckeditor5/issues/16376.
+	editor.conversion.for( 'upcast' ).add(
+		dispatcher => dispatcher.on<UpcastElementEvent>( 'element:span', ( evt, data, conversionApi ) => {
+			const matcherResult = matcher.match( data.viewItem );
+
+			if ( !matcherResult ) {
+				return;
+			}
+
+			const match = matcherResult.match;
+
+			if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
+				return;
+			}
+
+			const modelText = conversionApi.writer.createText( ' ', { restrictedEditingException: true } );
+
+			if ( !conversionApi.safeInsert( modelText, data.modelCursor ) ) {
+				return;
+			}
+
+			conversionApi.consumable.consume( data.viewItem, match );
+
+			data.modelRange = conversionApi.writer.createRange(
+				data.modelCursor,
+				data.modelCursor.getShiftedBy( modelText.offsetSize )
+			);
+			data.modelCursor = data.modelRange.end;
+		}, { priority: 'low' } )
+	);
 }

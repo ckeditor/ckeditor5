@@ -9,6 +9,7 @@
 
 import type { Model, ModelRange } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { getExceptionRange } from './restrictededitingmode/utils.js';
 
 /**
  * The command that allows navigation across the exceptions in the edited document.
@@ -77,7 +78,7 @@ function getNearestExceptionRange( model: Model, direction: RestrictedEditingMod
 
 	// Get all exception marker positions that start after/before the selection position.
 	for ( const marker of model.markers.getMarkersGroup( 'restrictedEditingException' ) ) {
-		const markerRange = marker.getRange();
+		const markerRange = getExceptionRange( marker, model );
 
 		// Checking parent because there two positions <paragraph>foo^</paragraph><paragraph>^bar</paragraph>
 		// are touching but they will represent different markers.

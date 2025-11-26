@@ -34,3 +34,15 @@ msgstr "Struktura dokumenta"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "Povezani korisnici"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "Prikaži levu bočnu traku"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "Sakrij levu bočnu traku"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "Prebaci na bočnu traku"

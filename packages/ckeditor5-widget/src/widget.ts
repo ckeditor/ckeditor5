@@ -30,7 +30,10 @@ import {
 	type ViewNode,
 	type ViewRange,
 	type ViewPosition,
-	type ModelRange
+	type ModelRange,
+	type Model,
+	type ModelSelection,
+	type ModelDocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -46,6 +49,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
@@ -396,68 +400,85 @@ export class Widget extends Plugin {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
-		const objectElement = modelSelection.getSelectedElement();
+		const selectedElement = modelSelection.getSelectedElement();
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, this.editor.locale.contentLanguageDirection );
 		const isForward = direction == 'down' || direction == 'right';
 		const isVerticalNavigation = direction == 'up' || direction == 'down';
 
-		// If object element is selected.
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = schema.getNearestSelectionRange( position!, isForward ? 'forward' : 'backward' );
+		// Collapsing a non-collapsed selection.
+		if ( !domEventData.shiftKey && !modelSelection.isCollapsed ) {
+			// If object element is selected or object is at the edge of selection.
+			if ( hasObjectAtEdge( modelSelection, schema ) ) {
+				const position = isForward ? modelSelection.getLastPosition()! : modelSelection.getFirstPosition()!;
+				const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
-			if ( newRange ) {
+				if ( newRange ) {
+					model.change( writer => {
+						writer.setSelection( newRange );
+					} );
+
+					domEventData.preventDefault();
+					eventInfo.stop();
+				}
+			}
+
+			// Else is handled by the browser.
+			return;
+		}
+
+		// Adjust selection for fake caret and for selection direction when single object is selected.
+		const originalSelection = getModelSelectionAdjusted( model, isForward );
+
+		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
+		// to its current state after undo.
+		const probe = model.createSelection( originalSelection );
+
+		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+
+		// The selection didn't change so there is nothing there.
+		if ( probe.isEqual( originalSelection ) ) {
+			return;
+		}
+
+		// Move probe one step further to make it visually recognizable.
+		if ( probe.focus!.isTouching( originalSelection.focus! ) ) {
+			model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+		}
+
+		const lastSelectedNode = isForward ? originalSelection.focus!.nodeBefore : originalSelection.focus!.nodeAfter;
+
+		const nodeBeforeProbe = probe.focus!.nodeBefore;
+		const nodeAfterProbe = probe.focus!.nodeAfter;
+		const lastProbeNode = isForward ? nodeBeforeProbe : nodeAfterProbe;
+
+		if ( domEventData.shiftKey ) {
+			// Expand selection from a selected object or include object in selection.
+			if (
+				selectedElement && schema.isObject( selectedElement ) ||
+				lastProbeNode && schema.isObject( lastProbeNode ) ||
+				lastSelectedNode && schema.isObject( lastSelectedNode )
+			) {
 				model.change( writer => {
-					writer.setSelection( newRange );
+					writer.setSelection( probe );
 				} );
 
 				domEventData.preventDefault();
 				eventInfo.stop();
 			}
+		} else {
+			// Select an object when moving caret over it.
+			if ( lastProbeNode && schema.isObject( lastProbeNode ) ) {
+				if ( schema.isInline( lastProbeNode ) && isVerticalNavigation ) {
+					return;
+				}
 
-			return;
-		}
-
-		// Handle collapsing of the selection when there is any widget on the edge of selection.
-		// This is needed because browsers have problems with collapsing such selection.
-		if ( !modelSelection.isCollapsed && !domEventData.shiftKey ) {
-			const firstPosition = modelSelection.getFirstPosition();
-			const lastPosition = modelSelection.getLastPosition();
-
-			const firstSelectedNode = firstPosition!.nodeAfter;
-			const lastSelectedNode = lastPosition!.nodeBefore;
-
-			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
 				model.change( writer => {
-					writer.setSelection( isForward ? lastPosition : firstPosition );
+					writer.setSelection( lastProbeNode, 'on' );
 				} );
 
 				domEventData.preventDefault();
 				eventInfo.stop();
 			}
-
-			return;
-		}
-
-		// Return if not collapsed.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
-
-		// If selection is next to object element.
-
-		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
-
-		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
-			// Do not select an inline widget while handling up/down arrow.
-			if ( schema.isInline( objectElementNextToSelection ) && isVerticalNavigation ) {
-				return;
-			}
-
-			this._setSelectionOverElement( objectElementNextToSelection );
-
-			domEventData.preventDefault();
-			eventInfo.stop();
 		}
 	}
 
@@ -557,7 +578,7 @@ export class Widget extends Plugin {
 
 		const objectElement = forward ? probe.focus!.nodeBefore : probe.focus!.nodeAfter;
 
-		if ( !!objectElement && schema.isObject( objectElement ) ) {
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			return objectElement as ModelElement;
 		}
 
@@ -729,6 +750,44 @@ export class Widget extends Plugin {
 
 		return true;
 	}
+}
+
+/**
+ * Returns true if there is an object on an edge of the given selection.
+ */
+function hasObjectAtEdge( modelSelection: ModelSelection | ModelDocumentSelection, schema: ModelSchema ): boolean {
+	const firstPosition = modelSelection.getFirstPosition()!;
+	const lastPosition = modelSelection.getLastPosition()!;
+
+	const firstSelectedNode = firstPosition.nodeAfter;
+	const lastSelectedNode = lastPosition.nodeBefore;
+
+	return (
+		!!firstSelectedNode && schema.isObject( firstSelectedNode ) ||
+		!!lastSelectedNode && schema.isObject( lastSelectedNode )
+	);
+}
+
+/**
+ * Returns new instance of the model selection adjusted for fake caret and selection direction on widgets.
+ */
+function getModelSelectionAdjusted( model: Model, isForward: boolean ): ModelSelection {
+	const modelSelection = model.document.selection;
+	const selectedElement = modelSelection.getSelectedElement();
+
+	// Adjust selection for fake caret.
+	const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( modelSelection );
+
+	if ( selectedElement && typeAroundFakeCaretPosition == 'before' ) {
+		return model.createSelection( selectedElement, 'before' );
+	} else if ( selectedElement && typeAroundFakeCaretPosition == 'after' ) {
+		return model.createSelection( selectedElement, 'after' );
+	}
+
+	// Make a copy of selection with adjusted direction for object selected.
+	return model.createSelection( modelSelection.getRanges(), {
+		backward: !!selectedElement && model.schema.isObject( selectedElement ) ? !isForward : modelSelection.isBackward
+	} );
 }
 
 /**

@@ -11,31 +11,31 @@ Licensed under a dual-license model, this software is available under:
 
 For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
 
-Sources of Intellectual Property Included in CKEditor
------------------------------------------------------
+Sources of Intellectual Property Included in CKEditor&nbsp;5
+------------------------------------------------------------
 
-Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
+Where not otherwise indicated, all CKEditor&nbsp;5 content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor&nbsp;5 will incorporate work done by developers outside of CKSource with their express permission.
 
-The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
+The following libraries are included in CKEditor&nbsp;5 under the [ISC license](https://opensource.org/licenses/ISC):
+
+* hast-util-from-dom - Copyright (c) Keith McKnight <keith@mcknig.ht>.
+* rehype-dom-parse - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>.
+* rehype-dom-stringify - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>.
+
+The following libraries are included in CKEditor&nbsp;5 under the [MIT license](https://opensource.org/licenses/MIT):
 
 * @types/hast - Copyright (c) Microsoft Corporation.
-* hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>
-* hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>
-* hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>
-* rehype-remark - Copyright (c) Titus Wormer <tituswormer@gmail.com>
-* remark-breaks - Copyright (c) 2017 Titus Wormer <tituswormer@gmail.com>
-* remark-gfm - Copyright (c) Titus Wormer <tituswormer@gmail.com>
-* remark-parse - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>
-* remark-rehype - Copyright (c) Titus Wormer <tituswormer@gmail.com>
-* remark-stringify - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>
-* unified - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
-* unist-util-visit - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
-
-The following libraries are included in CKEditor under the [ISC license](https://opensource.org/license/isc-license-txt):
-
-* hast-util-from-dom - Copyright (c) Keith McKnight <keith@mcknig.ht>
-* rehype-dom-parse - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>
-* rehype-dom-stringify - Copyright (c) 2018 Keith McKnight <keith@mcknig.ht>
+* hast-util-to-html - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
+* hast-util-to-mdast - Copyright (c) Titus Wormer <tituswormer@gmail.com> and Copyright (c) Seth Vincent <sethvincent@gmail.com>.
+* hastscript - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
+* rehype-remark - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
+* remark-breaks - Copyright (c) 2017 Titus Wormer <tituswormer@gmail.com>.
+* remark-gfm - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
+* remark-parse - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>.
+* remark-rehype - Copyright (c) Titus Wormer <tituswormer@gmail.com>.
+* remark-stringify - Copyright (c) 2014 Titus Wormer <tituswormer@gmail.com>.
+* unified - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>.
+* unist-util-visit - Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>.
 
 Trademarks
 ----------

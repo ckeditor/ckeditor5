@@ -6,7 +6,7 @@ category: features
 modified_at: 2025-04-07
 ---
 
-The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically become working links.
+The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses are automatically converted into working links.
 
 ## Demo
 
@@ -330,6 +330,34 @@ ClassicEditor
 	If you want add the `target` and `rel` attributes to all external links in your content, we prepared a [dedicated configuration](#adding-target-and-rel-attributes-to-external-links) for that purpose. Thanks to this, you do not have to define the automatic decorator by yourself.
 </info-box>
 
+#### Adding classes and styles to links
+
+In addition to adding custom HTML attributes, link decorators can also apply CSS classes and inline styles to a link. It works for both **automatic** decorators (based on rules) and **manual** decorators (toggled in the UI). You must provide classes and styles through the dedicated `classes` and `styles` properties in the decorator configuration.
+
+Manual decorators add a toggle to the link UI, allowing the user to enable or disable additional link features. The decorator properties are applied to the link element whenever the toggle is enabled.
+
+``` js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			decorators: {
+				highlighted: {
+					mode: 'manual',
+					label: 'Highlighted link',
+					defaultValue: false,
+					classes: 'link-highlighted',
+					styles: {
+						background: 'yellow',
+						'font-weight': 'bold'
+					}
+				}
+			}
+		}
+	} );
+```
+
+When you enable the "Highlighted link" toggle, the editor output adds the class and styles to the link element.
+
 #### Adding attributes to links using the UI (manual decorators)
 
 Manual link decorators are represented in the link editing balloon as switch buttons. The users can use them to control the presence of attributes of a particular link (check out the [demo](#demo) to learn more). Each manual decorator {@link module:link/linkconfig~LinkDecoratorManualDefinition definition} has a human-readable label displayed next to the switch button in the link editing balloon. Make sure it is compact and precise for the convenience of the users.
@@ -364,6 +392,22 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+#### Deprecated syntax
+
+Older versions of CKEditor&nbsp;5 allowed classes and styles inside the `attributes` field:
+
+``` js
+// ❌ Deprecated – do not use:
+attributes: {
+	class: 'my-class',
+	style: 'color: red'
+}
+```
+
+<info-box warning>
+	This syntax remains compatible for backward purposes but is deprecated and triggers a console warning. Use the `classes` and `styles` properties instead.
+</info-box>
 
 ## Autolink feature
 
