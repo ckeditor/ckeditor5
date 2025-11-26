@@ -45,4 +45,4 @@ msgstr "ব্লক ইডিটিং সষ্ক্রিয় করুন"
 
 msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
 msgid "Disable editing"
-msgstr ""
+msgstr "সম্পাদনা নিষ্ক্রিয় করুন"

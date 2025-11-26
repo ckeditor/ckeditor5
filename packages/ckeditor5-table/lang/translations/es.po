@@ -297,24 +297,24 @@ msgstr "Opciones del tipo de tabla"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Table Alignment"
-msgstr ""
+msgstr "Alineación de la tabla"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as an inline element, allowing text to wrap around it."
 msgid "Align table to the left with text wrapping"
-msgstr ""
+msgstr "Alinear la tabla a la izquierda con ajuste de texto"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table as a block element with no text wrapping."
 msgid "Center table with no text wrapping"
-msgstr ""
+msgstr "Centrar la tabla sin ajuste de texto"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as an inline element, allowing text to wrap around it."
 msgid "Align table to the right with text wrapping"
-msgstr ""
+msgstr "Alinear la tabla a la derecha con ajuste de texto"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as a block element with no text wrapping."
 msgid "Align table to the left with no text wrapping"
-msgstr ""
+msgstr "Alinear la tabla a la izquierda sin ajuste de texto"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
 msgid "Align table to the right with no text wrapping"
-msgstr ""
+msgstr "Alinear la tabla a la derecha sin ajuste de texto"
