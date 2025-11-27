@@ -39,32 +39,6 @@ describe( 'table properties', () => {
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
 				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-				assertTableStyle( editor, null, 'float:right;' );
-			} );
-
-			it( 'Alignment command should be disabled when table is selected', () => {
-				model.change( writer => {
-					writer.setSelection( table, 'on' );
-				} );
-
-				expect( editor.commands.get( 'alignment' ).isEnabled ).to.be.false;
-			} );
-		} );
-
-		describe( 'Alignment [experimental]', () => {
-			let table;
-
-			beforeEach( async () => {
-				editor = await createEditorWithAdditionalPlugins( [ AlignmentEditing ], true );
-
-				model = editor.model;
-
-				table = createEmptyTable();
-			} );
-
-			it( 'should properly downcast table with Alignment plugin enabled', () => {
-				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
-
 				assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
 			} );
 
@@ -131,13 +105,9 @@ describe( 'table properties', () => {
 		}
 	} );
 
-	// [experimental] Update function params in v48.
-	function createEditorWithAdditionalPlugins( plugins, useExtendedTableBlockAlignment = false ) {
+	function createEditorWithAdditionalPlugins( plugins ) {
 		return VirtualTestEditor.create( {
-			plugins: [ ...plugins, TablePropertiesEditing, Paragraph, TableEditing ],
-			experimentalFlags: {
-				useExtendedTableBlockAlignment
-			}
+			plugins: [ ...plugins, TablePropertiesEditing, Paragraph, TableEditing ]
 		} );
 	}
 } );
