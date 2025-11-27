@@ -9,7 +9,6 @@
 	& .ck-form__row {
 		&.ck-table-properties-form__alignment-row {
 			align-self: flex-end;
-			padding: 0;
 
 			& .ck.ck-toolbar {
 				background: none;
@@ -18,7 +17,7 @@
 				margin-top: var(--ck-spacing-standard);
 
 				& .ck-toolbar__items > * {
-					width: 40px;
+					flex: 1;
 				}
 			}
 		}

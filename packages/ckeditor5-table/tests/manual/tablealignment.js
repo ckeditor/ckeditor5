@@ -10,8 +10,6 @@ import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
 import { TableProperties } from '../../src/tableproperties.js';
 import { TableCellProperties } from '../../src/tablecellproperties.js';
-import { TablePropertiesUIExperimental } from '../../src/tableproperties/tablepropertiesuiexperimental.js';
-import { TableCellPropertiesUIExperimental } from '../../src/tablecellproperties/tablecellpropertiesuiexperimental.js';
 
 const sourceElement = document.querySelector( '#editor-table-alignment' );
 
@@ -24,9 +22,7 @@ ClassicEditor
 			Indent,
 			IndentBlock,
 			TableProperties,
-			TableCellProperties,
-			TablePropertiesUIExperimental,
-			TableCellPropertiesUIExperimental
+			TableCellProperties
 		],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
@@ -34,9 +30,6 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties' ],
 			tableToolbar: [ 'bold', 'italic' ]
-		},
-		experimentalFlags: {
-			useExtendedTableBlockAlignment: true
 		}
 	} )
 	.then( editor => {
