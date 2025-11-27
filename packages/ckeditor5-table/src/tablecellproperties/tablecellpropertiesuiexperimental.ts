@@ -178,7 +178,8 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 			this.listenTo( view, 'execute', () => this._showView() );
 
 			const commands = Object.values( propertyToCommandMap )
-				.map( commandName => editor.commands.get( commandName )! );
+				.map( commandName => editor.commands.get( commandName )! )
+				.filter( Boolean );
 
 			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
 				areEnabled.some( isCommandEnabled => isCommandEnabled )
@@ -338,6 +339,12 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
+				const command = commands.get( commandName );
+
+				if ( !command ) {
+					return null;
+				}
+
 				const propertyKey = property as keyof typeof propertyToCommandMap;
 				let defaultValue: string;
 
@@ -351,9 +358,10 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 
 				return [
 					property as keyof typeof propertyToCommandMap,
-					commands.get( commandName )!.value as string || defaultValue
+					command.value as string || defaultValue
 				] as const;
 			} )
+			.filter( val => !!val )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
 				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
