@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { mkdirp } from 'mkdirp';
-import webpack from 'webpack';
+import rspack from '@rspack/core';
 import { styles, loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { getLastFromChangelog } from '@ckeditor/ckeditor5-dev-release-tools';
 
@@ -217,7 +217,7 @@ function getWebpackConfig() {
  */
 function runWebpack( webpackConfig ) {
 	return new Promise( ( resolve, reject ) => {
-		webpack( webpackConfig, ( err, stats ) => {
+		rspack( webpackConfig, ( err, stats ) => {
 			if ( err ) {
 				reject( err );
 			} else if ( stats.hasErrors() ) {

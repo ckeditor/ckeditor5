@@ -5,8 +5,7 @@
 
 import { fileURLToPath } from 'node:url';
 import path from 'upath';
-import webpack from 'webpack';
-import TerserPlugin from 'terser-webpack-plugin';
+import rspack from '@rspack/core';
 import { bundler, loaders } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations';
 import FooterPlugin from '../../scripts/dll/webpack-footer-plugin.mjs';
@@ -50,6 +49,7 @@ function loadCKEditor5modules( window ) {
 }
 
 const webpackConfig = {
+	context: import.meta.dirname,
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	performance: { hints: false },
 	entry: [
@@ -91,11 +91,11 @@ const webpackConfig = {
 			additionalLanguages: 'all',
 			includeCorePackageTranslations: true
 		} ),
-		new webpack.BannerPlugin( {
+		new rspack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
 			raw: true
 		} ),
-		new webpack.DllPlugin( {
+		new rspack.DllPlugin( {
 			name: 'CKEditor5.dll',
 			context: 'src',
 			path: path.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'build', 'ckeditor5-dll.manifest.json' ),
@@ -130,13 +130,7 @@ if ( !IS_DEVELOPMENT_MODE ) {
 	webpackConfig.optimization.minimize = true;
 
 	webpackConfig.optimization.minimizer = [
-		new TerserPlugin( {
-			terserOptions: {
-				output: {
-					// Preserve CKEditor 5 license comments.
-					comments: /^!/
-				}
-			},
+		new rspack.SwcJsMinimizerRspackPlugin( {
 			extractComments: false
 		} )
 	];

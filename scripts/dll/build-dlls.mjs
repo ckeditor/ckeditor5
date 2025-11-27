@@ -11,8 +11,14 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import minimist from 'minimist';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import { rspack } from '@rspack/core';
+import { pathToFileURL } from 'node:url';
+import { styleText } from 'node:util';
 
-const COLLABORATION_DLL_PACKAGE_NAME = 'ckeditor5-collaboration';
+const PRIORITY_PACKAGES = [
+	'ckeditor5',
+	'ckeditor5-collaboration'
+];
 
 const argv = minimist( process.argv.slice( 2 ) );
 
@@ -20,37 +26,54 @@ const ROOT_DIRECTORY = argv.cwd ? path.resolve( argv.cwd ) : CKEDITOR5_ROOT_PATH
 const DEVELOPMENT_MODE = argv.dev;
 const VERBOSE_MODE = argv.verbose;
 
-// Lets highlight and space out the messages in the verbose mode to
-// make them stand out from the wall of text that webpack spits out.
-const prefix = VERBOSE_MODE ? '\n📍 ' : '';
+console.log( '📍 Building DLL package in ' + styleText( 'blue', ROOT_DIRECTORY ) );
 
-console.log( prefix + chalk.bold( 'Creating DLL-compatible package builds...' ) );
+execute( {
+	cwd: ROOT_DIRECTORY,
+	command: [ 'pnpm', '-r', 'predll:build' ]
+} );
 
-let exitCode = 0;
-
-getPackageNames( ROOT_DIRECTORY )
-	.filter( isNotBaseDll )
+const { priorityPackages, packages } = getPackageNames( ROOT_DIRECTORY )
 	.filter( hasDLLBuildScript )
-	.sort( packageName => packageName === COLLABORATION_DLL_PACKAGE_NAME ? -1 : 1 )
-	.forEach( fullPackageName => {
-		console.log( prefix + `Building ${ fullPackageName }...` );
-
-		const status = execute( {
-			command: [ 'pnpm', 'run', 'dll:build' ],
-			cwd: path.join( ROOT_DIRECTORY, 'packages', fullPackageName )
-		} );
-
-		const colorFn = chalk.bold.red;
-
-		if ( status ) {
-			console.log( colorFn( 'Script will continue the execution for other packages, but the failed build will be missing.' ) );
-			console.log( colorFn( 'If the missing build is built manually, the entire script does not have to be repeated.' ) );
-
-			exitCode = 1;
+	.reduce( ( result, packageName ) => {
+		if ( PRIORITY_PACKAGES.includes( packageName ) ) {
+			result.priorityPackages.push( packageName );
+		} else {
+			result.packages.push( packageName );
 		}
-	} );
 
-process.exit( exitCode );
+		return result;
+	}, { priorityPackages: [], packages: [] } );
+
+await runRspack(
+	await Promise.all( priorityPackages.map( getPackageWebpackConfig ) )
+);
+
+await runRspack(
+	await Promise.all( packages.map( getPackageWebpackConfig ) )
+);
+
+function getPackageWebpackConfig( packageName ) {
+	const configPath = path.join( ROOT_DIRECTORY, 'packages', packageName, 'webpack.config.mjs' );
+
+	return import( pathToFileURL( configPath ).href ).then( module => module.default );
+}
+
+function runRspack( configs ) {
+	return new Promise( ( resolve, reject ) => {
+		rspack( configs, ( err, stats ) => {
+			if ( err ) {
+				return reject( err );
+			}
+
+			if ( stats?.hasErrors?.() ) {
+				return reject( new Error( stats.toString( { all: false, errors: true } ) ) );
+			}
+
+			resolve();
+		} );
+	} );
+}
 
 /**
  * @param {String} cwd
@@ -61,14 +84,6 @@ function getPackageNames( cwd ) {
 		encoding: 'utf8',
 		cwd
 	} ).toString().trim().split( '\n' );
-}
-
-/**
- * @param {String} name
- * @returns {Boolean}
- */
-function isNotBaseDll( name ) {
-	return name !== 'ckeditor5-dll';
 }
 
 /**

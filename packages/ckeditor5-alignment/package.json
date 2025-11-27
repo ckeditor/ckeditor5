@@ -55,7 +55,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dll:build": "webpack",
+    "dll:build": "rspack --config webpack.config.mjs",
     "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }

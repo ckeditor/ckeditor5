@@ -45,7 +45,7 @@
   ],
   "scripts": {
     "predll:build": "pnpm run build",
-    "dll:build": "webpack",
+    "dll:build": "rspack --config webpack.config.mjs",
     "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
   },

@@ -38,6 +38,7 @@
     "@ckeditor/ckeditor5-react": "^9.5.0",
     "@inquirer/prompts": "^7.5.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.16",
+    "@rspack/cli": "^1.6.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@webspellchecker/wproofreader-ckeditor5": "^3.0.0",
     "acorn": "^8.11.3",
