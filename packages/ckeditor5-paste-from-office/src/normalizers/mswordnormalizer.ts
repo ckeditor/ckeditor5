@@ -30,8 +30,6 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 
 	public readonly hasTablePropertiesPlugin: boolean;
 
-	public readonly hasExtendedTableBlockAlignment: boolean;
-
 	/**
 	 * Creates a new `PasteFromOfficeMSWordNormalizer` instance.
 	 *
@@ -40,13 +38,11 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 	constructor(
 		document: ViewDocument,
 		hasMultiLevelListPlugin: boolean = false,
-		hasTablePropertiesPlugin: boolean = false,
-		hasExtendedTableBlockAlignment: boolean = false
+		hasTablePropertiesPlugin: boolean = false
 	) {
 		this.document = document;
 		this.hasMultiLevelListPlugin = hasMultiLevelListPlugin;
 		this.hasTablePropertiesPlugin = hasTablePropertiesPlugin;
-		this.hasExtendedTableBlockAlignment = hasExtendedTableBlockAlignment;
 	}
 
 	/**
@@ -66,7 +62,7 @@ export class PasteFromOfficeMSWordNormalizer implements PasteFromOfficeNormalize
 		transformBookmarks( documentFragment, writer );
 		transformListItemLikeElementsIntoLists( documentFragment, stylesString, this.hasMultiLevelListPlugin );
 		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
-		transformTables( documentFragment, writer, this.hasTablePropertiesPlugin, this.hasExtendedTableBlockAlignment );
+		transformTables( documentFragment, writer, this.hasTablePropertiesPlugin );
 		removeInvalidTableWidth( documentFragment, writer );
 		replaceMSFootnotes( documentFragment, writer );
 		removeMSAttributes( documentFragment );
