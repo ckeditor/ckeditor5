@@ -42,11 +42,11 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 
 You can move tables horizontally to create a desired document layout. There are five alignment options in tables:
 
-* Left (wrap) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-left.svg Table cell aligment}: A table aligns to the left, and other content wraps around it.
+* Left (block) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-left.svg Table cell aligment}: A table aligns to the left. The table does not influence the flow of other content.
 * Center {@icon @ckeditor/ckeditor5-icons/theme/icons/object-center.svg Table cell aligment}: A table is horizontally centered, with equal amounts of space on both sides.
-* Right (wrap) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-right.svg Table cell aligment}: A table aligns to the right, and other content wraps around it.
-* Left (block) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-left.svg Table cell aligment}: A table aligns to the left. The table does not influence the flow of other content.
-* Right (block) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-right.svg Table cell aligment}: A table is aligned to the right. The table does not influence the flow of other content.
+* Right (block) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-right.svg Table cell aligment}: A table is aligned to the right. The table does not influence the flow of other content.
+* Left (wrap) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-left.svg Table cell aligment}: A table aligns to the left, and other content wraps around it.
+* Right (wrap) {@icon @ckeditor/ckeditor5-icons/theme/icons/object-inline-right.svg Table cell aligment}: A table aligns to the right, and other content wraps around it.
 
 {@img assets/img/table-alignment-options.png 600 Table alignment options}
 
