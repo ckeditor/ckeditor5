@@ -21,6 +21,7 @@ import {
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
+import { TableCellTypeEditing } from '../tablecelltype/tablecelltypeediting.js';
 import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
 import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
 import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
@@ -89,7 +90,7 @@ export class TableCellPropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ TableEditing, TableCellWidthEditing ] as const;
+		return [ TableEditing, TableCellWidthEditing, TableCellTypeEditing ] as const;
 	}
 
 	/**

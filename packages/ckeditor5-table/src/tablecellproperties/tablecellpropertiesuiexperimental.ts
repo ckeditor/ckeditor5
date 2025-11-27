@@ -54,7 +54,8 @@ const propertyToCommandMap = {
 	padding: 'tableCellPadding',
 	backgroundColor: 'tableCellBackgroundColor',
 	horizontalAlignment: 'tableCellHorizontalAlignment',
-	verticalAlignment: 'tableCellVerticalAlignment'
+	verticalAlignment: 'tableCellVerticalAlignment',
+	cellType: 'tableCellType'
 } as const;
 
 /**
@@ -315,6 +316,10 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 			'change:verticalAlignment',
 			this._getPropertyChangeCallback( 'tableCellVerticalAlignment' )
 		);
+		view.on<ObservableChangeEvent<string>>(
+			'change:cellType',
+			this._getPropertyChangeCallback( 'tableCellType' )
+		);
 
 		return view;
 	}
@@ -334,9 +339,15 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
 				const propertyKey = property as keyof typeof propertyToCommandMap;
-				const defaultValue = this.view === this._viewWithContentTableDefaults ?
-					this._defaultContentTableCellProperties[ propertyKey ] || '' :
-					this._defaultLayoutTableCellProperties[ propertyKey ] || '';
+				let defaultValue: string;
+
+				if ( propertyKey === 'cellType' ) {
+					defaultValue = 'data';
+				} else {
+					defaultValue = this.view === this._viewWithContentTableDefaults ?
+						this._defaultContentTableCellProperties[ propertyKey ] || '' :
+						this._defaultLayoutTableCellProperties[ propertyKey ] || '';
+				}
 
 				return [
 					property as keyof typeof propertyToCommandMap,
@@ -452,7 +463,7 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 	 * @param commandName The default value of the command.
 	 */
 	private _getPropertyChangeCallback(
-		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment'
+		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment' | 'tableCellType'
 	): GetCallback<ObservableChangeEvent<string>> {
 		return ( evt, propertyName, newValue ) => {
 			if ( !this._isReady ) {

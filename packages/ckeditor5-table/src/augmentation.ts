@@ -15,6 +15,7 @@ import type {
 	TableCellProperties,
 	TableCellPropertiesEditing,
 	TableCellPropertiesUI,
+	TableCellTypeEditing,
 	TableCellWidthEditing,
 	TableClipboard,
 	TableColumnResize,
@@ -64,7 +65,8 @@ import type {
 	TableBorderStyleCommand,
 	TableBorderWidthCommand,
 	TableHeightCommand,
-	TableWidthCommand
+	TableWidthCommand,
+	TableCellTypeCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-engine' {
@@ -120,6 +122,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableCellPropertiesEditing.pluginName ]: TableCellPropertiesEditing;
 		[ TableCellPropertiesUI.pluginName ]: TableCellPropertiesUI;
 		[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
+		[ TableCellTypeEditing.pluginName ]: TableCellTypeEditing;
 		[ TableClipboard.pluginName ]: TableClipboard;
 		[ TableColumnResize.pluginName ]: TableColumnResize;
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
@@ -168,6 +171,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		tableCellPadding: TableCellPaddingCommand;
 		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
 		tableCellWidth: TableCellWidthCommand;
+		tableCellType: TableCellTypeCommand;
 		tableAlignment: TableAlignmentCommand;
 		tableBackgroundColor: TableBackgroundColorCommand;
 		tableBorderColor: TableBorderColorCommand;
