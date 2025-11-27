@@ -42,3 +42,7 @@ msgstr "Blok düzenlemeyi devre dışı bırak"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "Blok düzenlemeyi etkinleştir"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr ""
