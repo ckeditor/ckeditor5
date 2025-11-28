@@ -9,7 +9,7 @@
 
 /* istanbul ignore file -- @preserve */
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { type Command, Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
@@ -177,9 +177,12 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 
 			this.listenTo( view, 'execute', () => this._showView() );
 
-			const commands = Object.values( propertyToCommandMap )
-				.map( commandName => editor.commands.get( commandName )! )
-				.filter( Boolean );
+			const commands = (
+				Object
+					.values( propertyToCommandMap )
+					.map( commandName => editor.commands.get( commandName ) )
+					.filter( val => !!val )
+			) as Array<Command>;
 
 			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
 				areEnabled.some( isCommandEnabled => isCommandEnabled )
@@ -337,12 +340,13 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 		const commands = this.editor.commands;
 		const borderStyleCommand: TableCellBorderStyleCommand = commands.get( 'tableCellBorderStyle' )!;
 
-		Object.entries( propertyToCommandMap )
-			.map( ( [ property, commandName ] ) => {
+		Object
+			.entries( propertyToCommandMap )
+			.flatMap( ( [ property, commandName ] ) => {
 				const command = commands.get( commandName );
 
 				if ( !command ) {
-					return null;
+					return [];
 				}
 
 				const propertyKey = property as keyof typeof propertyToCommandMap;
@@ -356,12 +360,13 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 						this._defaultLayoutTableCellProperties[ propertyKey ] || '';
 				}
 
-				return [
+				const entry = [
 					property as keyof typeof propertyToCommandMap,
-					command.value as string || defaultValue
+					( command.value as string ) || defaultValue
 				] as const;
+
+				return [ entry ];
 			} )
-			.filter( val => !!val )
 			.forEach( ( [ property, value ] ) => {
 				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
 				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
