@@ -181,6 +181,11 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 				shouldDropCellTypeAttribute = allLeavingCellsAreHeaders;
 			}
 
+			// No need to change anything if we're shrinking but not dropping cell type attributes.
+			if ( !isExpanding && !shouldDropCellTypeAttribute ) {
+				continue;
+			}
+
 			// Apply changes.
 			for ( const { cell, row, column } of new TableWalker( table ) ) {
 				if ( !isCellAffected( row, column ) ) {
