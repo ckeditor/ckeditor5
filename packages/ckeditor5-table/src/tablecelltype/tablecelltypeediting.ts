@@ -137,6 +137,8 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 
 			const oldValue = change.attributeOldValue as number || 0;
 			const newValue = change.attributeNewValue as number || 0;
+
+			// If if heading rows attribute changed, get the columns rows limit and vice versa.
 			const otherHeadingLimit = table.getAttribute(
 				attributeKey === 'headingRows' ? 'headingColumns' : 'headingRows'
 			) as number || 0;
@@ -164,12 +166,15 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 
 				for ( const { cell, row, column } of new TableWalker( table ) ) {
 					// Check if the cell is in the affected range and NOT covered by the other heading dimension.
-					if ( isCellAffected( row, column ) ) {
-						const cellType = cell.getAttribute( 'tableCellType' );
-						if ( cellType !== 'header' ) {
-							allLeavingCellsAreHeaders = false;
-							break;
-						}
+					if ( !isCellAffected( row, column ) ) {
+						continue;
+					}
+
+					const cellType = cell.getAttribute( 'tableCellType' );
+
+					if ( cellType !== 'header' ) {
+						allLeavingCellsAreHeaders = false;
+						break;
 					}
 				}
 
