@@ -20,10 +20,6 @@ export function groupCellsByTable( tableCells: Array<ModelElement> ): Map<ModelE
 	for ( const tableCell of tableCells ) {
 		const table = tableCell.findAncestor( 'table' ) as ModelElement;
 
-		if ( !table ) {
-			continue;
-		}
-
 		if ( !tableMap.has( table ) ) {
 			tableMap.set( table, [] );
 		}

@@ -148,13 +148,13 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 			const end = Math.max( oldValue, newValue );
 			const isExpanding = newValue > oldValue;
 
-			const isCellAffected = ( row: number, column: number ) => {
-				if ( attributeKey === 'headingRows' ) {
-					return row >= start && row < end && column >= otherHeadingLimit;
-				}
+			const walkerOptions = attributeKey === 'headingRows' ?
+				{ startRow: start, endRow: end - 1, startColumn: otherHeadingLimit } :
+				{ startColumn: start, endColumn: end - 1, startRow: otherHeadingLimit };
 
-				return column >= start && column < end && row >= otherHeadingLimit;
-			};
+			if ( walkerOptions.startRow >= table.childCount ) {
+				continue;
+			}
 
 			// If shrinking, we need to decide whether to convert cells back to 'data'.
 			// We only convert back to 'data' if ALL cells in the leaving range were 'header'.
@@ -164,12 +164,7 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 			if ( !isExpanding ) {
 				let allLeavingCellsAreHeaders = true;
 
-				for ( const { cell, row, column } of new TableWalker( table ) ) {
-					// Check if the cell is in the affected range and NOT covered by the other heading dimension.
-					if ( !isCellAffected( row, column ) ) {
-						continue;
-					}
-
+				for ( const { cell } of new TableWalker( table, walkerOptions ) ) {
 					const cellType = cell.getAttribute( 'tableCellType' );
 
 					if ( cellType !== 'header' ) {
@@ -187,11 +182,7 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 			}
 
 			// Apply changes.
-			for ( const { cell, row, column } of new TableWalker( table ) ) {
-				if ( !isCellAffected( row, column ) ) {
-					continue;
-				}
-
+			for ( const { cell } of new TableWalker( table, walkerOptions ) ) {
 				if ( isExpanding ) {
 					// Entering heading section -> always 'header'.
 					if ( !cell.hasAttribute( 'tableCellType' ) ) {
@@ -269,16 +260,10 @@ function registerAutoIncrementHeadingPostfixer( editor: Editor ): void {
 				// Check the row/column at `currentValue`.
 				const walkerOptions = isRow ? { row: currentValue } : { column: currentValue };
 
-				for ( const { cell, row, column } of new TableWalker( table, walkerOptions ) ) {
-					const currentDimension = isRow ? row : column;
-
-					if ( currentDimension !== currentValue ) {
-						// We moved past the target row/column.
-						break;
-					}
+				for ( const { cell } of new TableWalker( table, walkerOptions ) ) {
+					const cellType = cell.getAttribute( 'tableCellType' );
 
 					hasCells = true;
-					const cellType = cell.getAttribute( 'tableCellType' );
 
 					if ( cellType !== 'header' ) {
 						allHeaders = false;
@@ -339,8 +324,11 @@ function registerInsertedCellTypePostfixer( model: Model ): void {
 			}
 
 			const cellsSet = new Set( cells );
+			const rowIndices = cells.map( cell => ( cell.parent as ModelElement ).index! );
+			const startRow = Math.min( ...rowIndices );
+			const endRow = Math.max( ...rowIndices );
 
-			for ( const { cell, row, column } of new TableWalker( table ) ) {
+			for ( const { cell, row, column } of new TableWalker( table, { startRow, endRow } ) ) {
 				if ( !cellsSet.has( cell ) ) {
 					continue;
 				}

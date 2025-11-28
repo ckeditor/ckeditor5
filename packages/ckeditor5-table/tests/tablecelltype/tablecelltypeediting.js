@@ -314,4 +314,249 @@ describe( 'TableCellTypeEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'auto increment of heading attributes', () => {
+		it( 'should increment headingRows when the next row is all headers', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				],
+				[ '20', '21' ]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', tableCellType: 'header' }
+					],
+					[ '20', '21' ]
+				], { headingRows: 2 } )
+			);
+		} );
+
+		it( 'should increment headingColumns when the next column is all headers', () => {
+			_setModelData( model, modelTable( [
+				[
+					'00',
+					{ contents: '01', tableCellType: 'header' },
+					'02'
+				],
+				[
+					'10',
+					{ contents: '11', tableCellType: 'header' },
+					'12'
+				]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingColumns', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' },
+						'02'
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', tableCellType: 'header' },
+						'12'
+					]
+				], { headingColumns: 2 } )
+			);
+		} );
+
+		it( 'should stop incrementing headingRows when a row contains non-header cell', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				],
+				[
+					{ contents: '20', tableCellType: 'header' },
+					'21'
+				],
+				[
+					{ contents: '30', tableCellType: 'header' },
+					{ contents: '31', tableCellType: 'header' }
+				]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+		} );
+
+		it( 'should stop incrementing headingColumns when a column contains non-header cell', () => {
+			_setModelData( model, modelTable( [
+				[
+					'00',
+					{ contents: '01', tableCellType: 'header' },
+					{ contents: '02', tableCellType: 'header' },
+					{ contents: '03', tableCellType: 'header' }
+				],
+				[
+					'10',
+					{ contents: '11', tableCellType: 'header' },
+					'12',
+					{ contents: '13', tableCellType: 'header' }
+				]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingColumns', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
+		} );
+
+		it( 'should not increment if the next row is not all headers', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					'11'
+				]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+		} );
+
+		it( 'should not increment heading attributes when other table attributes change', () => {
+			schema.extend( 'table', { allowAttributes: 'foo' } );
+
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				],
+				[ '20', '21' ]
+			], { headingRows: 1 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'foo', 'bar', table );
+			} );
+
+			expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+		} );
+
+		it( 'should not increment headingRows when decreasing it, even if the next row contains headers (due to headingColumns)', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				]
+			], { headingRows: 2, headingColumns: 2 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+		} );
+
+		it( 'should not increment headingColumns when decreasing it, even if the next column contains headers (due to headingRows)', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				]
+			], { headingRows: 2, headingColumns: 2 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingColumns', 1, table );
+			} );
+
+			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+		} );
+
+		it( 'should handle removing headingRows attribute (newValue defaults to 0)', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				]
+			], { headingRows: 2 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.removeAttribute( 'headingRows', table );
+			} );
+
+			expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+		} );
+
+		it( 'should handle removing headingColumns attribute (newValue defaults to 0)', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					{ contents: '11', tableCellType: 'header' }
+				]
+			], { headingColumns: 2 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.removeAttribute( 'headingColumns', table );
+			} );
+
+			expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+		} );
+	} );
 } );
