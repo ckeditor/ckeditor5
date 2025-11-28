@@ -78,7 +78,7 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 /**
  * Type of the table cell.
  */
-type TableCellType = 'data' | 'header';
+export type TableCellType = 'data' | 'header';
 
 /**
  * Increments the `headingRows` and `headingColumns` attributes of the tables
