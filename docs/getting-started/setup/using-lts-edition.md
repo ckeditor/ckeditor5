@@ -115,7 +115,7 @@ The {@link features/ai-assistant-overview CKEditor&nbsp;5 AI Assistant} feature 
 
 ### Experimental flags and plugins
 
-Throughout the life cycle of the LTE version, some experimental features may be added durign the Active LTS phase. These can take the form of experimental flags or separate plugins. They would be typically be added to test changes coming in ht enext major release.
+Throughout the life cycle of the LTE version, some experimental features may be added during the Active LTS phase. These can take the form of experimental flags or separate plugins. They would typically be added to test changes coming in the next major release.
 
 However, these experimental additions are not covered by LTS guarantees, meaning they may change, evolve, or be removed without the stability or compatibility assurances provided for core LTS features.
 
