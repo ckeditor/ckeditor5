@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _getViewData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableCellTypeEditing } from '../../src/tablecelltype/tablecelltypeediting.js';
 import { TableCellTypeCommand } from '../../src/tablecelltype/commands/tablecelltypecommand.js';
@@ -100,6 +100,183 @@ describe( 'TableCellTypeEditing', () => {
 					[ '10', '11' ]
 				], { asWidget: true } )
 			);
+		} );
+	} );
+
+	describe( 'various scenarios', () => {
+		describe( 'inserting rows to tables with heading columns', () => {
+			it( 'should properly set `tableCellType=header` to first cell of heading columns ' +
+					'when appending new row below (single header column)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						'01'
+					]
+				], { headingColumns: 1 } ) );
+
+				editor.execute( 'insertTableRowBelow' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							'01'
+						],
+						[
+							{ contents: '', tableCellType: 'header' },
+							''
+						]
+					], { headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should properly set `tableCellType=header` to cells of heading columns ' +
+					'when appending new row below (multiple header columns)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						{ contents: '01', tableCellType: 'header' },
+						'02'
+					]
+				], { headingColumns: 2 } ) );
+
+				editor.execute( 'insertTableRowBelow' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' },
+							'02'
+						],
+						[
+							{ contents: '', tableCellType: 'header' },
+							{ contents: '', tableCellType: 'header' },
+							''
+						]
+					], { headingColumns: 2 } )
+				);
+			} );
+
+			it( 'should properly set `tableCellType=header` to first cell of heading columns ' +
+					'when inserting new row above (single header column)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						'01'
+					]
+				], { headingColumns: 1 } ) );
+
+				editor.execute( 'insertTableRowAbove' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '', tableCellType: 'header' },
+							''
+						],
+						[
+							{ contents: '00', tableCellType: 'header' },
+							'01'
+						]
+					], { headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should properly set `tableCellType=header` to cells of heading columns ' +
+					'when inserting new row above (multiple header columns)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						{ contents: '01', tableCellType: 'header' },
+						'02'
+					]
+				], { headingColumns: 2 } ) );
+
+				editor.execute( 'insertTableRowAbove' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '', tableCellType: 'header' },
+							{ contents: '', tableCellType: 'header' },
+							''
+						],
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' },
+							'02'
+						]
+					], { headingColumns: 2 } )
+				);
+			} );
+		} );
+
+		describe( 'inserting columns to tables with heading rows', () => {
+			it( 'should properly set `tableCellType=header` to second cell of heading row ' +
+					'when appending new column to the right (single header row)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				editor.execute( 'insertTableColumnRight' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							'10',
+							'',
+							'11'
+						]
+					], { headingRows: 1 } )
+				);
+			} );
+
+			it( 'should properly set `tableCellType=header` to cells of heading rows ' +
+					'when appending new column to the right (multiple header rows)', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', isSelected: true },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', tableCellType: 'header' }
+					],
+					[ '20', '21' ]
+				], { headingRows: 2 } ) );
+
+				editor.execute( 'insertTableColumnRight' );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+					modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '', tableCellType: 'header' },
+							{ contents: '11', tableCellType: 'header' }
+						],
+						[
+							'20',
+							'',
+							'21'
+						]
+					], { headingRows: 2 } )
+				);
+			} );
 		} );
 	} );
 } );
