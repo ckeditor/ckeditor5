@@ -94,7 +94,7 @@ export class TableCellTypeEditing extends Plugin {
 			const { modelRange } = data;
 			const modelElement = modelRange?.start.nodeAfter;
 
-			if ( modelElement && modelElement.is( 'element', 'tableCell' ) ) {
+			if ( modelElement?.is( 'element', 'tableCell' ) ) {
 				writer.setAttribute( 'tableCellType', 'header', modelElement );
 			}
 		} ) );
@@ -391,14 +391,14 @@ function registerTableCellTypeReconversionHandler( model: Model, editing: Editin
 			// Get the table cell element.
 			const tableCell = change.range.start.nodeAfter;
 
-			if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+			if ( !tableCell?.is( 'element', 'tableCell' ) ) {
 				continue;
 			}
 
 			// Get the view element for this table cell.
 			const viewElement = editing.mapper.toViewElement( tableCell );
 
-			if ( !viewElement || !viewElement.is( 'element' ) ) {
+			if ( !viewElement?.is( 'element' ) ) {
 				continue;
 			}
 

@@ -5,12 +5,12 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { _getModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
 
 import { TableCellTypeEditing } from '../../src/tablecelltype/tablecelltypeediting.js';
 import { TableCellTypeCommand } from '../../src/tablecelltype/commands/tablecelltypecommand.js';
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable, viewTable } from '../_utils/utils.js';
-import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'TableCellTypeEditing', () => {
 	let editor, model, schema;
@@ -75,6 +75,30 @@ describe( 'TableCellTypeEditing', () => {
 					[ { contents: '00', tableCellType: 'header' }, '01' ],
 					[ '10', '11' ]
 				] )
+			);
+		} );
+	} );
+
+	describe( 'editing', () => {
+		it( 'should reconvert table cell when tableCellType attribute changes', () => {
+			editor.setData(
+				viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] )
+			);
+
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'tableCellType', 'header', tableCell );
+			} );
+
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				viewTable( [
+					[ { contents: '00', isHeading: true }, '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } )
 			);
 		} );
 	} );
