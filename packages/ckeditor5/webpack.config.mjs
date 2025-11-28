@@ -52,6 +52,7 @@ const webpackConfig = {
 	context: import.meta.dirname,
 	mode: IS_DEVELOPMENT_MODE ? 'development' : 'production',
 	performance: { hints: false },
+	devtool: false,
 	entry: [
 		// This list must be synced with the `loadCKEditor5modules()` function.
 		// The base of the CKEditor 5 framework, in order of appearance:
