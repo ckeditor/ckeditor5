@@ -4,15 +4,17 @@
  */
 
 /**
- * @module table/tablecellproperties/commands/tablecelltypecommand
+ * @module table/tablecelltype/commands/tablecelltypecommand
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { Batch, ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 
 import { TableCellPropertyCommand } from '../../tablecellproperties/commands/tablecellpropertycommand.js';
-import type { TableUtils } from '../../tableutils.js';
 import { TableWalker } from '../../tablewalker.js';
+import type { TableUtils } from '../../tableutils.js';
+
+import { groupCellsByTable } from '../utils.js';
 
 /**
  * The table cell type command.
@@ -229,29 +231,6 @@ function isEntireLineHeader(
 	}
 
 	return true;
-}
-
-/**
- * Groups table cells by their parent table.
- */
-function groupCellsByTable( tableCells: Array<ModelElement> ): Map<ModelElement, Array<ModelElement>> {
-	const tableMap = new Map<ModelElement, Array<ModelElement>>();
-
-	for ( const tableCell of tableCells ) {
-		const table = tableCell.findAncestor( 'table' ) as ModelElement;
-
-		if ( !table ) {
-			continue;
-		}
-
-		if ( !tableMap.has( table ) ) {
-			tableMap.set( table, [] );
-		}
-
-		tableMap.get( table )!.push( tableCell );
-	}
-
-	return tableMap;
 }
 
 /**

@@ -4,15 +4,17 @@
  */
 
 /**
- * @module table/tablecellproperties/tablecelltypeediting
+ * @module table/tablecelltype/tablecelltypeediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent, Model, EditingController } from 'ckeditor5/src/engine.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import type { UpcastElementEvent, Model, EditingController, ModelElement } from 'ckeditor5/src/engine.js';
 
 import { TableEditing } from '../tableediting.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { TableWalker } from '../tablewalker.js';
+import { TableUtils } from '../tableutils.js';
+import { groupCellsByTable } from './utils.js';
 
 /**
  * The table cell type editing feature.
@@ -57,7 +59,9 @@ export class TableCellTypeEditing extends Plugin {
 		this._defineConversion();
 
 		registerHeadingAttributeChangePostfixer( model );
-		registerAutoIncrementHeadingPostfixer( model );
+		registerAutoIncrementHeadingPostfixer( editor );
+		registerInsertedCellTypePostfixer( model );
+
 		registerTableCellTypeReconversionHandler( model, editing );
 
 		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
@@ -92,31 +96,6 @@ export class TableCellTypeEditing extends Plugin {
 
 			if ( modelElement && modelElement.is( 'element', 'tableCell' ) ) {
 				writer.setAttribute( 'tableCellType', 'header', modelElement );
-			}
-		} ) );
-
-		// Set tableCellType based on headingRows/headingColumns during upcast.
-		conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
-			const { writer } = conversionApi;
-			const { modelRange } = data;
-
-			const table = modelRange?.start?.nodeAfter;
-
-			if ( !table?.is( 'element', 'table' ) ) {
-				return;
-			}
-
-			const headingRows = table.getAttribute( 'headingRows' ) as number;
-			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-
-			if ( headingRows + headingColumns === 0 ) {
-				return;
-			}
-
-			for ( const { cell, row, column } of new TableWalker( table ) ) {
-				if ( row < headingRows || column < headingColumns ) {
-					writer.setAttribute( 'tableCellType', 'header', cell );
-				}
 			}
 		} ) );
 	}
@@ -233,9 +212,12 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
  * This creates intuitive behavior where manually changing multiple cells to 'header' and then
  * toggling the heading section will include all consecutive header rows/columns.
  *
- * @param model The editor model.
+ * @param editor The editor instance.
  */
-function registerAutoIncrementHeadingPostfixer( model: Model ): void {
+function registerAutoIncrementHeadingPostfixer( editor: Editor ): void {
+	const { model } = editor;
+	const tableUtils = editor.plugins.get( TableUtils );
+
 	model.document.registerPostFixer( writer => {
 		let changed = false;
 
@@ -265,11 +247,12 @@ function registerAutoIncrementHeadingPostfixer( model: Model ): void {
 			}
 
 			const isRow = attributeKey === 'headingRows';
+			const maxDimension = isRow ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
 
 			// Check consecutive rows/columns.
 			let currentValue = newValue;
 
-			while ( true ) {
+			while ( currentValue < maxDimension ) {
 				let hasCells = false;
 				let allHeaders = true;
 
@@ -309,6 +292,75 @@ function registerAutoIncrementHeadingPostfixer( model: Model ): void {
 }
 
 /**
+ * Registers a postfixer that ensures newly added table cells have the correct `tableCellType` attribute
+ * based on the table's `headingRows` and `headingColumns` attributes.
+ *
+ * @param model The editor model.
+ */
+function registerInsertedCellTypePostfixer( model: Model ): void {
+	model.document.registerPostFixer( writer => {
+		const addedCells = new Set<ModelElement>();
+
+		for ( const change of model.document.differ.getChanges() ) {
+			if ( change.type !== 'insert' || change.name === '$text' || !change.position.nodeAfter ) {
+				continue;
+			}
+
+			for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
+				if ( item.is( 'element', 'tableCell' ) ) {
+					addedCells.add( item );
+				}
+			}
+		}
+
+		if ( !addedCells.size ) {
+			return false;
+		}
+
+		const cellsByTable = groupCellsByTable( Array.from( addedCells ) );
+		let changed = false;
+
+		for ( const [ table, cells ] of cellsByTable ) {
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+			if ( !headingRows && !headingColumns ) {
+				continue;
+			}
+
+			const cellsSet = new Set( cells );
+
+			for ( const { cell, row, column } of new TableWalker( table ) ) {
+				if ( !cellsSet.has( cell ) ) {
+					continue;
+				}
+
+				const shouldBeHeader = row < headingRows || column < headingColumns;
+				const currentType = cell.getAttribute( 'tableCellType' );
+
+				if ( shouldBeHeader && currentType !== 'header' ) {
+					writer.setAttribute( 'tableCellType', 'header', cell );
+					changed = true;
+				}
+
+				if ( !shouldBeHeader && currentType === 'header' ) {
+					writer.removeAttribute( 'tableCellType', cell );
+					changed = true;
+				}
+
+				cellsSet.delete( cell );
+
+				if ( !cellsSet.size ) {
+					break;
+				}
+			}
+		}
+
+		return changed;
+	} );
+}
+
+/**
  * Registers a handler that forces reconversion of table cells when their `tableCellType` attribute changes.
  * This is necessary because changing from `<td>` to `<th>` (or vice versa) requires rebuilding the element.
  *
@@ -317,7 +369,8 @@ function registerAutoIncrementHeadingPostfixer( model: Model ): void {
  */
 function registerTableCellTypeReconversionHandler( model: Model, editing: EditingController ): void {
 	model.document.on( 'change:data', () => {
-		const differ = model.document.differ;
+		const cellsToReconvert: Set<ModelElement> = new Set();
+		const { differ } = model.document;
 
 		for ( const change of differ.getChanges() ) {
 			// Only process attribute changes.
@@ -345,9 +398,12 @@ function registerTableCellTypeReconversionHandler( model: Model, editing: Editin
 
 			// Only reconvert if the element name actually needs to change.
 			if ( viewElement.name !== expectedElementName ) {
-				editing.reconvertItem( tableCell );
+				cellsToReconvert.add( tableCell );
 			}
+		}
+
+		for ( const cell of cellsToReconvert ) {
+			editing.reconvertItem( cell );
 		}
 	} );
 }
-
