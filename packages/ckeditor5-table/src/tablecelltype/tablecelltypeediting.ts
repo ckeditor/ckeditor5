@@ -58,8 +58,8 @@ export class TableCellTypeEditing extends Plugin {
 		this._defineSchema();
 		this._defineConversion();
 
-		registerHeadingAttributeChangePostfixer( model );
-		registerAutoIncrementHeadingPostfixer( editor );
+		registerSyncCellTypeWithHeadingAttributesPostfixer( model );
+		registerAutoIncrementHeadingAttributesPostfixer( editor );
 		registerInsertedCellTypePostfixer( model );
 
 		registerTableCellTypeReconversionHandler( model, editing );
@@ -112,9 +112,21 @@ export class TableCellTypeEditing extends Plugin {
  * This ensures that cell types stay in sync with the structural heading boundaries while
  * respecting user's manual modifications to cell types.
  *
+ * ```
+ * +---+---+---+                   +---+---+---+
+ * | H | H | H |                   | H | H | H |
+ * +---+---+---+                   +---+---+---+
+ * | H | H | H |   headingRows     | H | H | H |
+ * +===+===+===+   increased       +---+---+---+
+ * | D | D | D |   to 3            | H | H | H |  <-- Cells synced to 'header'
+ * +---+---+---+   ----------->    +===+===+===+
+ *
+ * headingRows: 2                  headingRows: 3
+ * ```
+ *
  * @param model The editor model.
  */
-function registerHeadingAttributeChangePostfixer( model: Model ): void {
+function registerSyncCellTypeWithHeadingAttributesPostfixer( model: Model ): void {
 	model.document.registerPostFixer( writer => {
 		let changed = false;
 
@@ -213,9 +225,21 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
  * This creates intuitive behavior where manually changing multiple cells to 'header' and then
  * toggling the heading section will include all consecutive header rows/columns.
  *
+ * ```
+ * +---+---+---+                   +---+---+---+
+ * | H | H | H |                   | H | H | H |
+ * +===+===+===+                   +---+---+---+
+ * | H | H | H |   headingRows     | H | H | H |
+ * +---+---+---+   increased       +---+---+---+
+ * | H | H | H |   to 2            | H | H | H |
+ * +---+---+---+   ----------->    +===+===+===+  <-- Auto-incremented to cover all headers
+ *
+ * headingRows: 1                  headingRows: 3
+ * ```
+ *
  * @param editor The editor instance.
  */
-function registerAutoIncrementHeadingPostfixer( editor: Editor ): void {
+function registerAutoIncrementHeadingAttributesPostfixer( editor: Editor ): void {
 	const { model } = editor;
 	const tableUtils = editor.plugins.get( TableUtils );
 
@@ -289,6 +313,16 @@ function registerAutoIncrementHeadingPostfixer( editor: Editor ): void {
 /**
  * Registers a postfixer that ensures newly added table cells have the correct `tableCellType` attribute
  * based on the table's `headingRows` and `headingColumns` attributes.
+ *
+ * ```
+ * +===+---+---+                   +===+---+---+
+ * | H | D | D |                   | H | D | D |
+ * +---+---+---+   insert row      +---+---+---+
+ * | H | D | D |   at index 2      | H | D | D |
+ * +---+---+---+   ----------->    +---+---+---+
+ *                                 | H | D | D |  <-- New row inserted
+ * headingColumns: 1               +---+---+---+      1st cell inherits 'header'
+ * ```
  *
  * @param model The editor model.
  */

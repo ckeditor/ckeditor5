@@ -88,6 +88,18 @@ export type TableCellType = 'data' | 'header';
  * but only if the entire row/column is of header type and the heading attributes
  * are directly preceding the changed cell.
  *
+ * ```
+ * +---+---+---+                   +---+---+---+
+ * | H | H | H |                   | H | H | H |
+ * +===+===+===+                   +---+---+---+
+ * | D | D | D |   change cells    | H | H | H |
+ * +---+---+---+   to 'header'     +===+===+===+  <-- headingRows incremented
+ * | D | D | D |   ----------->    | D | D | D |
+ * +---+---+---+                   +---+---+---+
+ *
+ * headingRows: 1                  headingRows: 2
+ * ```
+ *
  * @param tableCells The table cells being changed.
  * @param writer The model writer.
  * @param tableUtils The table utils plugin instance.
@@ -153,6 +165,18 @@ function adjustHeadingAttributesWhenChangingToHeader(
 /**
  * Decrements the `headingRows` and `headingColumns` attributes of the tables
  * containing the given table cells being changed to `data` cell type.
+ *
+ * ```
+ * +---+---+---+                   +---+---+---+
+ * | H | H | H |                   | H | H | H |
+ * +---+---+---+   change cell     +===+===+===+
+ * | H | H | H |   to 'data'       | H | D | H |  <-- headingRows decremented
+ * +===+===+===+   ----------->    +---+---+---+
+ * | D | D | D |                   | D | D | D |
+ * +---+---+---+                   +---+---+---+
+ *
+ * headingRows: 2                  headingRows: 1
+ * ```
  *
  * @param tableCells The table cells being changed.
  * @param writer The model writer.
