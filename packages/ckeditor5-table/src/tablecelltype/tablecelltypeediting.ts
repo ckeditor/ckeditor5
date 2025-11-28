@@ -380,7 +380,7 @@ function registerTableCellTypeReconversionHandler( model: Model, editing: Editin
 			const expectedElementName = cellType === 'header' ? 'th' : 'td';
 
 			// Only reconvert if the element name actually needs to change.
-			if ( viewElement.name !== expectedElementName ) {
+			if ( viewElement?.name !== expectedElementName ) {
 				cellsToReconvert.add( tableCell );
 			}
 		}

@@ -17,10 +17,8 @@ describe( 'TableCellTypeCommand', () => {
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
 			plugins: [ Paragraph, TableCellTypeEditing ],
-			config: {
-				experimentalFlags: {
-					tableCellTypeSupport: true
-				}
+			experimentalFlags: {
+				tableCellTypeSupport: true
 			}
 		} );
 
@@ -256,7 +254,7 @@ describe( 'TableCellTypeCommand', () => {
 				] ) );
 			} );
 
-			it.skip( 'should increment headingRows if setting all header cells in the previous row to header', () => {
+			it( 'should increment headingRows if setting all header cells in the previous row to header', () => {
 				_setModelData( model, modelTable( [
 					[ { contents: '00[]' }, { contents: '01', tableCellType: 'header' } ],
 					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
