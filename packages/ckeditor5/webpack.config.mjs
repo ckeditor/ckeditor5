@@ -98,7 +98,6 @@ const webpackConfig = {
 		} ),
 		new rspack.DllPlugin( {
 			name: 'CKEditor5.dll',
-			context: 'src',
 			path: path.join( CKEDITOR5_MAIN_PACKAGE_PATH, 'build', 'ckeditor5-dll.manifest.json' ),
 			format: true,
 			entryOnly: true

@@ -4,10 +4,9 @@
  */
 
 import { fileURLToPath } from 'node:url';
-import rspack from '@rspack/core';
 import { builds } from '@ckeditor/ckeditor5-dev-utils';
 
-export default builds.getDllPluginWebpackConfig( rspack, {
+export default builds.getDllPluginWebpackConfig( {
 	themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) ),
 	packagePath: import.meta.dirname,
 	manifestPath: fileURLToPath( import.meta.resolve( 'ckeditor5/build/ckeditor5-dll.manifest.json' ) ),
