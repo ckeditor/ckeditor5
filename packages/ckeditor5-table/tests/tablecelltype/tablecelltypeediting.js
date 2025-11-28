@@ -318,7 +318,7 @@ describe( 'TableCellTypeEditing', () => {
 	describe( 'auto increment of heading attributes', () => {
 		it( 'should increment headingRows when the next row is all headers', () => {
 			_setModelData( model, modelTable( [
-				[ '00', '01' ],
+				[ { contents: '00', isSelected: true }, '01' ],
 				[
 					{ contents: '10', tableCellType: 'header' },
 					{ contents: '11', tableCellType: 'header' }
@@ -328,9 +328,7 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -351,7 +349,7 @@ describe( 'TableCellTypeEditing', () => {
 		it( 'should increment headingColumns when the next column is all headers', () => {
 			_setModelData( model, modelTable( [
 				[
-					'00',
+					{ contents: '00', isSelected: true },
 					{ contents: '01', tableCellType: 'header' },
 					'02'
 				],
@@ -364,9 +362,7 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
-			} );
+			editor.execute( 'setTableColumnHeader' );
 
 			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -387,7 +383,7 @@ describe( 'TableCellTypeEditing', () => {
 
 		it( 'should stop incrementing headingRows when a row contains non-header cell', () => {
 			_setModelData( model, modelTable( [
-				[ '00', '01' ],
+				[ { contents: '00', isSelected: true }, '01' ],
 				[
 					{ contents: '10', tableCellType: 'header' },
 					{ contents: '11', tableCellType: 'header' }
@@ -404,9 +400,7 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
 		} );
@@ -414,7 +408,7 @@ describe( 'TableCellTypeEditing', () => {
 		it( 'should stop incrementing headingColumns when a column contains non-header cell', () => {
 			_setModelData( model, modelTable( [
 				[
-					'00',
+					{ contents: '00', isSelected: true },
 					{ contents: '01', tableCellType: 'header' },
 					{ contents: '02', tableCellType: 'header' },
 					{ contents: '03', tableCellType: 'header' }
@@ -429,16 +423,14 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
-			} );
+			editor.execute( 'setTableColumnHeader' );
 
 			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
 		} );
 
 		it( 'should not increment if the next row is not all headers', () => {
 			_setModelData( model, modelTable( [
-				[ '00', '01' ],
+				[ { contents: '00', isSelected: true }, '01' ],
 				[
 					{ contents: '10', tableCellType: 'header' },
 					'11'
@@ -447,9 +439,7 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
 		} );
@@ -482,16 +472,14 @@ describe( 'TableCellTypeEditing', () => {
 					{ contents: '01', tableCellType: 'header' }
 				],
 				[
-					{ contents: '10', tableCellType: 'header' },
+					{ contents: '10', tableCellType: 'header', isSelected: true },
 					{ contents: '11', tableCellType: 'header' }
 				]
 			], { headingRows: 2, headingColumns: 2 } ) );
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
 		} );
@@ -500,7 +488,7 @@ describe( 'TableCellTypeEditing', () => {
 			_setModelData( model, modelTable( [
 				[
 					{ contents: '00', tableCellType: 'header' },
-					{ contents: '01', tableCellType: 'header' }
+					{ contents: '01', tableCellType: 'header', isSelected: true }
 				],
 				[
 					{ contents: '10', tableCellType: 'header' },
@@ -510,9 +498,7 @@ describe( 'TableCellTypeEditing', () => {
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
-			} );
+			editor.execute( 'setTableColumnHeader' );
 
 			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
 		} );
@@ -521,15 +507,11 @@ describe( 'TableCellTypeEditing', () => {
 	describe( 'syncing tableCellType with heading attributes', () => {
 		it( 'should set `tableCellType=header` when increasing `headingRows`', () => {
 			_setModelData( model, modelTable( [
-				[ '00', '01' ],
+				[ { contents: '00', isSelected: true }, '01' ],
 				[ '10', '11' ]
 			] ) );
 
-			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 1, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				modelTable( [
@@ -545,37 +527,29 @@ describe( 'TableCellTypeEditing', () => {
 		it( 'should remove `tableCellType` when decreasing `headingRows`', () => {
 			_setModelData( model, modelTable( [
 				[
-					{ contents: '00', tableCellType: 'header' },
+					{ contents: '00', tableCellType: 'header', isSelected: true },
 					{ contents: '01', tableCellType: 'header' }
 				],
 				[ '10', '11' ]
 			], { headingRows: 1 } ) );
 
-			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 0, table );
-			} );
+			editor.execute( 'setTableRowHeader' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
-				], { headingRows: 0 } )
+				] )
 			);
 		} );
 
 		it( 'should set `tableCellType=header` when increasing `headingColumns`', () => {
 			_setModelData( model, modelTable( [
-				[ '00', '01' ],
+				[ { contents: '00', isSelected: true }, '01' ],
 				[ '10', '11' ]
 			] ) );
 
-			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 1, table );
-			} );
+			editor.execute( 'setTableColumnHeader' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				modelTable( [
@@ -591,36 +565,10 @@ describe( 'TableCellTypeEditing', () => {
 			);
 		} );
 
-		it( 'should remove `tableCellType` when decreasing `headingColumns`', () => {
-			_setModelData( model, modelTable( [
-				[
-					{ contents: '00', tableCellType: 'header' },
-					'01'
-				],
-				[
-					{ contents: '10', tableCellType: 'header' },
-					'11'
-				]
-			], { headingColumns: 1 } ) );
-
-			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingColumns', 0, table );
-			} );
-
-			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-				modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingColumns: 0 } )
-			);
-		} );
-
 		it( 'should remove `tableCellType` when removing `headingColumns`', () => {
 			_setModelData( model, modelTable( [
 				[
-					{ contents: '00', tableCellType: 'header' },
+					{ contents: '00', tableCellType: 'header', isSelected: true },
 					'01'
 				],
 				[
@@ -629,11 +577,7 @@ describe( 'TableCellTypeEditing', () => {
 				]
 			], { headingColumns: 1 } ) );
 
-			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-			model.change( writer => {
-				writer.removeAttribute( 'headingColumns', table );
-			} );
+			editor.execute( 'setTableColumnHeader' );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 				modelTable( [
