@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { UpcastElementEvent, Model, EditingController } from 'ckeditor5/src/engine.js';
 
 import { TableEditing } from '../tableediting.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
@@ -46,13 +46,28 @@ export class TableCellTypeEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const editor = this.editor;
-		const { conversion, model, config } = editor;
-		const { schema } = model;
+		const { editor } = this;
+		const { model, config, editing } = editor;
 
 		if ( !config.get( 'experimentalFlags.tableCellTypeSupport' ) ) {
 			return;
 		}
+
+		this._defineSchema();
+		this._defineConversion();
+
+		registerHeadingAttributeChangePostfixer( model );
+		registerAutoIncrementHeadingPostfixer( model );
+		registerTableCellTypeReconversionHandler( model, editing );
+
+		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
+	}
+
+	/**
+	 * Defines the schema for the `tableCellType` attribute.
+	 */
+	private _defineSchema() {
+		const { schema } = this.editor.model;
 
 		schema.extend( 'tableCell', {
 			allowAttributes: [ 'tableCellType' ]
@@ -61,6 +76,14 @@ export class TableCellTypeEditing extends Plugin {
 		schema.setAttributeProperties( 'tableCellType', {
 			isFormatting: true
 		} );
+	}
+
+	/**
+	 * Defines the conversion for the `tableCellType` attribute.
+	 */
+	private _defineConversion() {
+		const { editor } = this;
+		const { conversion } = editor;
 
 		// Upcast conversion for td/th elements.
 		conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
@@ -97,230 +120,239 @@ export class TableCellTypeEditing extends Plugin {
 				}
 			}
 		} ) );
-
-		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
-
-		this._addHeadingAttributeChangePostfixer();
-		this._addAutoIncrementHeadingPostfixer();
-		this._addTableCellTypeReconversionHandler();
 	}
+}
 
-	/**
-	 * Adds a postfixer that synchronizes `tableCellType` attribute with heading section boundaries.
-	 *
-	 * When `headingRows` or `headingColumns` attributes change on a table, this postfixer:
-	 * - Updates cell types for cells entering the heading section (always changes to 'header')
-	 * - Updates cell types for cells leaving the heading section (changes to 'data' only if all
-	 *   leaving cells were 'header', otherwise preserves current type to respect manual changes)
-	 *
-	 * This ensures that cell types stay in sync with the structural heading boundaries while
-	 * respecting user's manual modifications to cell types.
-	 */
-	private _addHeadingAttributeChangePostfixer(): void {
-		const model = this.editor.model;
+/**
+ * Registers a postfixer that synchronizes `tableCellType` attribute with heading section boundaries.
+ *
+ * When `headingRows` or `headingColumns` attributes change on a table, this postfixer:
+ * - Updates cell types for cells entering the heading section (always changes to 'header').
+ * - Updates cell types for cells leaving the heading section (changes to 'data' only if all
+ *   leaving cells were 'header', otherwise preserves current type to respect manual changes).
+ *
+ * This ensures that cell types stay in sync with the structural heading boundaries while
+ * respecting user's manual modifications to cell types.
+ *
+ * @param model The editor model.
+ */
+function registerHeadingAttributeChangePostfixer( model: Model ): void {
+	model.document.registerPostFixer( writer => {
+		let changed = false;
 
-		model.document.registerPostFixer( writer => {
-			let changed = false;
+		for ( const change of model.document.differ.getChanges() ) {
+			if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
+				continue;
+			}
 
-			for ( const change of model.document.differ.getChanges() ) {
-				// Check if headingRows or headingColumns attribute changed on a table.
-				if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
-					continue;
-				}
+			const table = change.range.start.nodeAfter;
 
-				const element = change.range.start.nodeAfter;
+			if ( !table?.is( 'element', 'table' ) ) {
+				continue;
+			}
 
-				if ( !element?.is( 'element', 'table' ) ) {
-					continue;
-				}
+			const attributeKey = change.attributeKey;
 
-				if ( change.attributeKey !== 'headingRows' && change.attributeKey !== 'headingColumns' ) {
-					continue;
-				}
+			if ( attributeKey !== 'headingRows' && attributeKey !== 'headingColumns' ) {
+				continue;
+			}
 
-				const oldValue = change.attributeOldValue as number || 0;
-				const headingRows = element.getAttribute( 'headingRows' ) as number || 0;
-				const headingColumns = element.getAttribute( 'headingColumns' ) as number || 0;
+			const oldValue = change.attributeOldValue as number || 0;
+			const newValue = change.attributeNewValue as number || 0;
+			const otherDimensionLimit = table.getAttribute(
+				attributeKey === 'headingRows' ? 'headingColumns' : 'headingRows'
+			) as number || 0;
 
-				// Helper function to determine if a cell was in the heading section before the change.
-				const wasInHeadingSection = ( row: number, column: number ): boolean => {
-					if ( change.attributeKey === 'headingRows' ) {
-						return row < oldValue || column < headingColumns;
-					} else {
-						return row < headingRows || column < oldValue;
-					}
-				};
+			// Range of rows/columns that are changing status.
+			const start = Math.min( oldValue, newValue );
+			const end = Math.max( oldValue, newValue );
+			const isExpanding = newValue > oldValue;
 
-				// Check if all cells leaving the heading section still have the 'header' type.
-				// This prevents unwanted type changes when the user manually changed some cells to 'data'.
-				let allLeavingCellsWereHeaders = true;
+			// If shrinking, we need to decide whether to convert cells back to 'data'.
+			// We only convert back to 'data' if ALL cells in the leaving range were 'header'.
+			// If the user manually changed some to 'data' (mixed content), we preserve the state.
+			let shouldDropCellTypeAttribute = false;
 
-				for ( const { cell, row, column } of new TableWalker( element ) ) {
-					const isInHeadingSection = row < headingRows || column < headingColumns;
+			if ( !isExpanding ) {
+				let allLeavingCellsAreHeaders = true;
 
-					// Check only cells that are leaving the heading section.
-					if ( wasInHeadingSection( row, column ) && !isInHeadingSection ) {
-						const currentCellType = cell.getAttribute( 'tableCellType' );
+				for ( const { cell, row, column } of new TableWalker( table ) ) {
+					// Check if the cell is in the affected range and NOT covered by the other heading dimension.
+					const isAffected = (
+						attributeKey === 'headingRows' ?
+							( row >= start && row < end && column >= otherDimensionLimit ) :
+							( column >= start && column < end && row >= otherDimensionLimit )
+					);
 
-						if ( currentCellType !== 'header' ) {
-							allLeavingCellsWereHeaders = false;
+					if ( isAffected ) {
+						const cellType = cell.getAttribute( 'tableCellType' );
+						if ( cellType !== 'header' ) {
+							allLeavingCellsAreHeaders = false;
 							break;
 						}
 					}
 				}
 
-				// Update cell types based on whether they're entering or leaving the heading section.
-				for ( const { cell, row, column } of new TableWalker( element ) ) {
-					const isInHeadingSection = row < headingRows || column < headingColumns;
+				shouldDropCellTypeAttribute = allLeavingCellsAreHeaders;
+			}
 
-					// Only update cells whose heading section status actually changed.
-					if ( wasInHeadingSection( row, column ) !== isInHeadingSection ) {
-						const currentCellType = cell.getAttribute( 'tableCellType' );
-						let expectedCellType;
+			// Apply changes.
+			for ( const { cell, row, column } of new TableWalker( table ) ) {
+				const isAffected = (
+					attributeKey === 'headingRows' ?
+						( row >= start && row < end && column >= otherDimensionLimit ) :
+						( column >= start && column < end && row >= otherDimensionLimit )
+				);
 
-						if ( isInHeadingSection ) {
-							// Cell is entering heading section - always change to 'header'.
-							expectedCellType = 'header';
-						} else {
-							// Cell is leaving heading section.
-							// Only change to 'data' if ALL leaving cells were 'header' (no manual changes by user).
-							// Otherwise preserve the current type to respect user's manual modifications.
-							expectedCellType = allLeavingCellsWereHeaders ? 'data' : currentCellType;
-						}
+				if ( !isAffected ) {
+					continue;
+				}
 
-						if ( currentCellType !== expectedCellType ) {
-							writer.setAttribute( 'tableCellType', expectedCellType, cell );
-							changed = true;
-						}
+				if ( isExpanding ) {
+					// Entering heading section -> always 'header'.
+					if ( !cell.hasAttribute( 'tableCellType' ) ) {
+						writer.setAttribute( 'tableCellType', 'header', cell );
+						changed = true;
+					}
+				} else if ( shouldDropCellTypeAttribute ) {
+					// Leaving heading section and safe remove attribute.
+					if ( cell.hasAttribute( 'tableCellType' ) ) {
+						writer.removeAttribute( 'tableCellType', cell );
+						changed = true;
 					}
 				}
 			}
+		}
 
-			return changed;
-		} );
-	}
+		return changed;
+	} );
+}
 
-	/**
-	 * Adds a postfixer that automatically expands heading section when adjacent rows/columns contain only headers.
-	 *
-	 * When `headingRows` or `headingColumns` increase (e.g., via table header commands), this postfixer
-	 * checks if the immediately following rows/columns consist entirely of header cells. If so, it
-	 * automatically increments the heading attribute to include those rows/columns.
-	 *
-	 * This creates intuitive behavior where manually changing multiple cells to 'header' and then
-	 * toggling the heading section will include all consecutive header rows/columns.
-	 */
-	private _addAutoIncrementHeadingPostfixer(): void {
-		const model = this.editor.model;
+/**
+ * Registers a postfixer that automatically expands heading section when adjacent rows/columns contain only headers.
+ *
+ * When `headingRows` or `headingColumns` increase (e.g., via table header commands), this postfixer
+ * checks if the immediately following rows/columns consist entirely of header cells. If so, it
+ * automatically increments the heading attribute to include those rows/columns.
+ *
+ * This creates intuitive behavior where manually changing multiple cells to 'header' and then
+ * toggling the heading section will include all consecutive header rows/columns.
+ *
+ * @param model The editor model.
+ */
+function registerAutoIncrementHeadingPostfixer( model: Model ): void {
+	model.document.registerPostFixer( writer => {
+		let changed = false;
 
-		model.document.registerPostFixer( writer => {
-			let changed = false;
+		for ( const change of model.document.differ.getChanges() ) {
+			if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
+				continue;
+			}
 
-			for ( const change of model.document.differ.getChanges() ) {
-				// Check if headingRows or headingColumns attribute changed on a table.
-				if ( change.type !== 'attribute' || change.range.root.rootName === '$graveyard' ) {
-					continue;
-				}
+			const table = change.range.start.nodeAfter;
 
-				const element = change.range.start.nodeAfter;
+			if ( !table?.is( 'element', 'table' ) ) {
+				continue;
+			}
 
-				if ( !element?.is( 'element', 'table' ) ) {
-					continue;
-				}
+			const attributeKey = change.attributeKey;
 
-				if ( change.attributeKey !== 'headingRows' && change.attributeKey !== 'headingColumns' ) {
-					continue;
-				}
+			if ( attributeKey !== 'headingRows' && attributeKey !== 'headingColumns' ) {
+				continue;
+			}
 
-				const oldValue = change.attributeOldValue as number || 0;
-				const newValue = element.getAttribute( change.attributeKey ) as number || 0;
+			const oldValue = change.attributeOldValue as number || 0;
+			const newValue = change.attributeNewValue as number || 0;
 
-				if ( newValue <= oldValue ) {
-					continue;
-				}
+			// Only trigger on increase.
+			if ( newValue <= oldValue ) {
+				continue;
+			}
 
-				const isRow = change.attributeKey === 'headingRows';
+			const isRow = attributeKey === 'headingRows';
 
-				// Calculate the limit (row count or column count).
-				const limit = Array
-					.from( new TableWalker( element ) )
-					.reduce( ( max, { row, column } ) => Math.max( max, ( isRow ? row : column ) + 1 ), 0 );
+			// Check consecutive rows/columns.
+			let currentValue = newValue;
 
-				let currentValue = newValue;
+			while ( true ) {
+				let hasCells = false;
+				let allHeaders = true;
 
-				while ( currentValue < limit ) {
-					let allHeaders = true;
-					const walkerOptions = isRow ? { row: currentValue } : { column: currentValue };
+				// Check the row/column at `currentValue`.
+				const walkerOptions = isRow ? { row: currentValue } : { column: currentValue };
 
-					for ( const { cell, row, column } of new TableWalker( element, walkerOptions ) ) {
-						const currentDimension = isRow ? row : column;
+				for ( const { cell, row, column } of new TableWalker( table, walkerOptions ) ) {
+					const currentDimension = isRow ? row : column;
 
-						if ( currentDimension !== currentValue ) {
-							continue;
-						}
-
-						const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
-
-						if ( cellType !== 'header' ) {
-							allHeaders = false;
-							break;
-						}
+					if ( currentDimension !== currentValue ) {
+						// We moved past the target row/column.
+						break;
 					}
 
-					if ( allHeaders ) {
-						currentValue++;
-						writer.setAttribute( change.attributeKey, currentValue, element );
-						changed = true;
-					} else {
+					hasCells = true;
+					const cellType = cell.getAttribute( 'tableCellType' );
+
+					if ( cellType !== 'header' ) {
+						allHeaders = false;
 						break;
 					}
 				}
-			}
 
-			return changed;
-		} );
-	}
-
-	/**
-	 * Adds a handler that forces reconversion of table cells when their `tableCellType` attribute changes.
-	 * This is necessary because changing from `<td>` to `<th>` (or vice versa) requires rebuilding the element.
-	 */
-	private _addTableCellTypeReconversionHandler(): void {
-		const model = this.editor.model;
-		const editing = this.editor.editing;
-
-		model.document.on( 'change:data', () => {
-			const differ = model.document.differ;
-
-			for ( const change of differ.getChanges() ) {
-				// Only process attribute changes.
-				if ( change.type !== 'attribute' || change.attributeKey !== 'tableCellType' ) {
-					continue;
-				}
-
-				// Get the table cell element.
-				const tableCell = change.range.start.nodeAfter;
-
-				if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
-					continue;
-				}
-
-				// Get the view element for this table cell.
-				const viewElement = editing.mapper.toViewElement( tableCell );
-
-				if ( !viewElement || !viewElement.is( 'element' ) ) {
-					continue;
-				}
-
-				// Determine the expected element name based on the new attribute value.
-				const cellType = tableCell.getAttribute( 'tableCellType' );
-				const expectedElementName = cellType === 'header' ? 'th' : 'td';
-
-				// Only reconvert if the element name actually needs to change.
-				if ( viewElement.name !== expectedElementName ) {
-					editing.reconvertItem( tableCell );
+				// If we found a row/column and it's all headers, increment and continue.
+				if ( hasCells && allHeaders ) {
+					currentValue++;
+					writer.setAttribute( attributeKey, currentValue, table );
+					changed = true;
+				} else {
+					break;
 				}
 			}
-		} );
-	}
+		}
+
+		return changed;
+	} );
 }
+
+/**
+ * Registers a handler that forces reconversion of table cells when their `tableCellType` attribute changes.
+ * This is necessary because changing from `<td>` to `<th>` (or vice versa) requires rebuilding the element.
+ *
+ * @param model The editor model.
+ * @param editing The editing controller.
+ */
+function registerTableCellTypeReconversionHandler( model: Model, editing: EditingController ): void {
+	model.document.on( 'change:data', () => {
+		const differ = model.document.differ;
+
+		for ( const change of differ.getChanges() ) {
+			// Only process attribute changes.
+			if ( change.type !== 'attribute' || change.attributeKey !== 'tableCellType' ) {
+				continue;
+			}
+
+			// Get the table cell element.
+			const tableCell = change.range.start.nodeAfter;
+
+			if ( !tableCell || !tableCell.is( 'element', 'tableCell' ) ) {
+				continue;
+			}
+
+			// Get the view element for this table cell.
+			const viewElement = editing.mapper.toViewElement( tableCell );
+
+			if ( !viewElement || !viewElement.is( 'element' ) ) {
+				continue;
+			}
+
+			// Determine the expected element name based on the new attribute value.
+			const cellType = tableCell.getAttribute( 'tableCellType' );
+			const expectedElementName = cellType === 'header' ? 'th' : 'td';
+
+			// Only reconvert if the element name actually needs to change.
+			if ( viewElement.name !== expectedElementName ) {
+				editing.reconvertItem( tableCell );
+			}
+		}
+	} );
+}
+
