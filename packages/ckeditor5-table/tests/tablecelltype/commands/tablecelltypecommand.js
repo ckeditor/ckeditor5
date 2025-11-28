@@ -242,6 +242,20 @@ describe( 'TableCellTypeCommand', () => {
 				] ) );
 			} );
 
+			it( 'should NOT increment headingRows if not all cells in the previous row are changed to header', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, '01' ],
+					[ { contents: '10', tableCellType: 'header' }, { contents: '11', isSelected: true } ]
+				] ) );
+
+				command.execute( { value: 'header' } );
+
+				expect( editor.getData() ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '00' }, '01' ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' } ]
+				] ) );
+			} );
+
 			it( 'should decrement headingRows when changing a single cell in a header row to data', () => {
 				_setModelData( model, modelTable( [
 					[
