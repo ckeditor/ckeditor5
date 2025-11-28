@@ -82,8 +82,7 @@ export class TableCellTypeEditing extends Plugin {
 	 * Defines the conversion for the `tableCellType` attribute.
 	 */
 	private _defineConversion() {
-		const { editor } = this;
-		const { conversion } = editor;
+		const { conversion } = this.editor;
 
 		// Upcast conversion for td/th elements.
 		conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
