@@ -80,7 +80,7 @@ describe( 'TableCellTypeEditing', () => {
 	} );
 
 	describe( 'editing', () => {
-		it( 'should reconvert table cell when tableCellType attribute changes', () => {
+		it( 'should reconvert table cell when `tableCellType` attribute changes to `header`', () => {
 			editor.setData(
 				viewTable( [
 					[ '00', '01' ],
@@ -101,9 +101,31 @@ describe( 'TableCellTypeEditing', () => {
 				], { asWidget: true } )
 			);
 		} );
+
+		it( 'should reconvert table cell when removing `tableCellType` ', () => {
+			editor.setData(
+				viewTable( [
+					[ { contents: '00', isHeading: true }, '01' ],
+					[ '10', '11' ]
+				] )
+			);
+
+			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+			model.change( writer => {
+				writer.removeAttribute( 'tableCellType', tableCell );
+			} );
+
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				viewTable( [
+					[ { contents: '00' }, '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } )
+			);
+		} );
 	} );
 
-	describe( 'various scenarios', () => {
+	describe( 'inserting rows / columns', () => {
 		describe( 'inserting rows to tables with heading columns', () => {
 			it( 'should properly set `tableCellType=header` to first cell of heading columns ' +
 					'when appending new row below (single header column)', () => {

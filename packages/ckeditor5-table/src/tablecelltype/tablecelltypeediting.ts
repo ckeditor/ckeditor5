@@ -388,19 +388,9 @@ function registerTableCellTypeReconversionHandler( model: Model, editing: Editin
 				continue;
 			}
 
-			// Get the table cell element.
-			const tableCell = change.range.start.nodeAfter;
-
-			if ( !tableCell?.is( 'element', 'tableCell' ) ) {
-				continue;
-			}
-
-			// Get the view element for this table cell.
-			const viewElement = editing.mapper.toViewElement( tableCell );
-
-			if ( !viewElement?.is( 'element' ) ) {
-				continue;
-			}
+			// Get the table cell element and get the view element for this table cell.
+			const tableCell = change.range.start.nodeAfter as ModelElement;
+			const viewElement = editing.mapper.toViewElement( tableCell )!;
 
 			// Determine the expected element name based on the new attribute value.
 			const cellType = tableCell.getAttribute( 'tableCellType' );
