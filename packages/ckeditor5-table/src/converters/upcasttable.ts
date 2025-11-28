@@ -307,7 +307,7 @@ function scanTable( viewTable: ViewElement, ignoreHeaderRowMoveIfNormalRowsBefor
 		}
 
 		// Update headingColumns.
-		if ( !headingColumns || index < headingColumns ) {
+		if ( headingColumns === undefined || index < headingColumns ) {
 			headingColumns = index;
 		}
 	}

@@ -90,6 +90,34 @@ describe( 'TableCellTypeEditing', () => {
 				] )
 			);
 		} );
+
+		it( 'should upcast whole table made of `th` except for first cell', () => {
+			editor.setData(
+				viewTable( [
+					[
+						'00',
+						{ contents: '01', isHeading: true }
+					],
+					[
+						{ contents: '10', isHeading: true },
+						{ contents: '11', isHeading: true }
+					]
+				] )
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[
+						'00',
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', tableCellType: 'header' }
+					]
+				] )
+			);
+		} );
 	} );
 
 	describe( 'downcast conversion', () => {
