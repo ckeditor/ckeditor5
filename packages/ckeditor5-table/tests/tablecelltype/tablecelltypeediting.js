@@ -516,39 +516,118 @@ describe( 'TableCellTypeEditing', () => {
 
 			expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
 		} );
+	} );
 
-		it( 'should handle removing headingRows attribute (newValue defaults to 0)', () => {
+	describe( 'syncing tableCellType with heading attributes', () => {
+		it( 'should set `tableCellType=header` when increasing `headingRows`', () => {
 			_setModelData( model, modelTable( [
-				[
-					{ contents: '00', tableCellType: 'header' },
-					{ contents: '01', tableCellType: 'header' }
-				],
-				[
-					{ contents: '10', tableCellType: 'header' },
-					{ contents: '11', tableCellType: 'header' }
-				]
-			], { headingRows: 2 } ) );
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 			model.change( writer => {
-				writer.removeAttribute( 'headingRows', table );
+				writer.setAttribute( 'headingRows', 1, table );
 			} );
 
-			expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[ '10', '11' ]
+				], { headingRows: 1 } )
+			);
 		} );
 
-		it( 'should handle removing headingColumns attribute (newValue defaults to 0)', () => {
+		it( 'should remove `tableCellType` when decreasing `headingRows`', () => {
 			_setModelData( model, modelTable( [
 				[
 					{ contents: '00', tableCellType: 'header' },
 					{ contents: '01', tableCellType: 'header' }
 				],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 0, table );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 0 } )
+			);
+		} );
+
+		it( 'should set `tableCellType=header` when increasing `headingColumns`', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingColumns', 1, table );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						'01'
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						'11'
+					]
+				], { headingColumns: 1 } )
+			);
+		} );
+
+		it( 'should remove `tableCellType` when decreasing `headingColumns`', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					'01'
+				],
 				[
 					{ contents: '10', tableCellType: 'header' },
-					{ contents: '11', tableCellType: 'header' }
+					'11'
 				]
-			], { headingColumns: 2 } ) );
+			], { headingColumns: 1 } ) );
+
+			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingColumns', 0, table );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingColumns: 0 } )
+			);
+		} );
+
+		it( 'should remove `tableCellType` when removing `headingColumns`', () => {
+			_setModelData( model, modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					'01'
+				],
+				[
+					{ contents: '10', tableCellType: 'header' },
+					'11'
+				]
+			], { headingColumns: 1 } ) );
 
 			const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
@@ -556,7 +635,12 @@ describe( 'TableCellTypeEditing', () => {
 				writer.removeAttribute( 'headingColumns', table );
 			} );
 
-			expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+				modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] )
+			);
 		} );
 	} );
 } );
