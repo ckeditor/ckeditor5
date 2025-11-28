@@ -256,6 +256,23 @@ describe( 'TableCellTypeCommand', () => {
 				] ) );
 			} );
 
+			it.skip( 'should increment headingRows if setting all header cells in the previous row to header', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00[]' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+				] ) );
+
+				command.execute( { value: 'header' } );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+				expect( editor.getData() ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' } ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' } ]
+				], { headingRows: 2 } ) );
+			} );
+
 			it( 'should decrement headingRows when changing a single cell in a header row to data', () => {
 				_setModelData( model, modelTable( [
 					[

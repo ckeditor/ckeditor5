@@ -113,6 +113,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 
 		for ( const cell of cells ) {
 			const { row, column } = tableUtils.getCellLocation( cell );
+
 			changedRowsSet.add( row );
 			changedColumnsSet.add( column );
 		}

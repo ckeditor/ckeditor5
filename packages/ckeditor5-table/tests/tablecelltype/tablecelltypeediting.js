@@ -92,6 +92,24 @@ describe( 'TableCellTypeEditing', () => {
 		} );
 	} );
 
+	describe( 'downcast conversion', () => {
+		it( 'should downcast `tableCellType=header` attribute to `th`', () => {
+			_setModelData( model,
+				modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, '01' ],
+					[ '10', '11' ]
+				] )
+			);
+
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				viewTable( [
+					[ { contents: '00', isHeading: true }, '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } )
+			);
+		} );
+	} );
+
 	describe( 'editing', () => {
 		it( 'should reconvert table cell when `tableCellType` attribute changes to `header`', () => {
 			editor.setData(
