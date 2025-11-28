@@ -159,7 +159,7 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 
 			const oldValue = change.attributeOldValue as number || 0;
 			const newValue = change.attributeNewValue as number || 0;
-			const otherDimensionLimit = table.getAttribute(
+			const otherHeadingLimit = table.getAttribute(
 				attributeKey === 'headingRows' ? 'headingColumns' : 'headingRows'
 			) as number || 0;
 
@@ -167,6 +167,14 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 			const start = Math.min( oldValue, newValue );
 			const end = Math.max( oldValue, newValue );
 			const isExpanding = newValue > oldValue;
+
+			const isCellAffected = ( row: number, column: number ) => {
+				if ( attributeKey === 'headingRows' ) {
+					return row >= start && row < end && column >= otherHeadingLimit;
+				}
+
+				return column >= start && column < end && row >= otherHeadingLimit;
+			};
 
 			// If shrinking, we need to decide whether to convert cells back to 'data'.
 			// We only convert back to 'data' if ALL cells in the leaving range were 'header'.
@@ -178,13 +186,7 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 
 				for ( const { cell, row, column } of new TableWalker( table ) ) {
 					// Check if the cell is in the affected range and NOT covered by the other heading dimension.
-					const isAffected = (
-						attributeKey === 'headingRows' ?
-							( row >= start && row < end && column >= otherDimensionLimit ) :
-							( column >= start && column < end && row >= otherDimensionLimit )
-					);
-
-					if ( isAffected ) {
+					if ( isCellAffected( row, column ) ) {
 						const cellType = cell.getAttribute( 'tableCellType' );
 						if ( cellType !== 'header' ) {
 							allLeavingCellsAreHeaders = false;
@@ -198,13 +200,7 @@ function registerHeadingAttributeChangePostfixer( model: Model ): void {
 
 			// Apply changes.
 			for ( const { cell, row, column } of new TableWalker( table ) ) {
-				const isAffected = (
-					attributeKey === 'headingRows' ?
-						( row >= start && row < end && column >= otherDimensionLimit ) :
-						( column >= start && column < end && row >= otherDimensionLimit )
-				);
-
-				if ( !isAffected ) {
+				if ( !isCellAffected( row, column ) ) {
 					continue;
 				}
 
