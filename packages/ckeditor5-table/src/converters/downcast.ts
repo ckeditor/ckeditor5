@@ -124,8 +124,15 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastEl
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
 			if ( tableSlot.cell == tableCell ) {
-				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-				const cellElementName = isHeading ? 'th' : 'td';
+				let cellElementName: 'td' | 'th' | null = null;
+
+				if ( tableCell.getAttribute( 'tableCellType' ) === 'header' ) {
+					cellElementName = 'th';
+				} else {
+					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+
+					cellElementName = isHeading ? 'th' : 'td';
+				}
 
 				result = options.asWidget ?
 					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :

@@ -120,6 +120,7 @@ describe( 'table cell properties', () => {
 				expect( experimentalView.borderColorInput ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.backgroundInput ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.paddingInput ).to.be.instanceOf( LabeledFieldView );
+				expect( experimentalView.cellTypeDropdown ).to.be.instanceOf( LabeledFieldView );
 				expect( experimentalView.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 				expect( experimentalView.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 
@@ -797,6 +798,7 @@ describe( 'table cell properties', () => {
 					experimentalView.borderStyleDropdown,
 					experimentalView.borderColorInput,
 					experimentalView.borderWidthInput,
+					experimentalView.cellTypeDropdown,
 					experimentalView.backgroundInput,
 					experimentalView.widthInput,
 					experimentalView.heightInput,
@@ -817,6 +819,25 @@ describe( 'table cell properties', () => {
 				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
 				sinon.assert.calledWith( spy, view.borderColorInput.element );
 				sinon.assert.calledWith( spy, view.borderWidthInput.element );
+				sinon.assert.calledWith( spy, view.backgroundInput.element );
+				sinon.assert.calledWith( spy, view.paddingInput.element );
+				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );
+				sinon.assert.calledWith( spy, view.verticalAlignmentToolbar.element );
+				sinon.assert.calledWith( spy, view.saveButtonView.element );
+				sinon.assert.calledWith( spy, view.cancelButtonView.element );
+
+				view.destroy();
+			} );
+
+			it( 'should register child views\' #element in #focusTracker [experimental]', () => {
+				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+				const view = new TableCellPropertiesViewExperimental( { t: val => val }, VIEW_OPTIONS );
+				view.render();
+
+				sinon.assert.calledWith( spy, view.borderStyleDropdown.element );
+				sinon.assert.calledWith( spy, view.borderColorInput.element );
+				sinon.assert.calledWith( spy, view.borderWidthInput.element );
+				sinon.assert.calledWith( spy, view.cellTypeDropdown.element );
 				sinon.assert.calledWith( spy, view.backgroundInput.element );
 				sinon.assert.calledWith( spy, view.paddingInput.element );
 				sinon.assert.calledWith( spy, view.horizontalAlignmentToolbar.element );
