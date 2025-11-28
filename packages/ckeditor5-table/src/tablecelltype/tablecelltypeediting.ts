@@ -353,11 +353,6 @@ function registerInsertedCellTypePostfixer( model: Model ): void {
 					changed = true;
 				}
 
-				if ( !shouldBeHeader && currentType === 'header' ) {
-					writer.removeAttribute( 'tableCellType', cell );
-					changed = true;
-				}
-
 				cellsSet.delete( cell );
 
 				if ( !cellsSet.size ) {

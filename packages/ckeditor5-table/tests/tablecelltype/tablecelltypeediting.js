@@ -51,6 +51,19 @@ describe( 'TableCellTypeEditing', () => {
 		expect( editor.commands.get( 'tableCellType' ) ).to.be.instanceOf( TableCellTypeCommand );
 	} );
 
+	it( 'should not register attribute or any conversion when experimental flag is disabled', async () => {
+		const testEditor = await VirtualTestEditor.create( {
+			plugins: [ TableCellTypeEditing, Paragraph ]
+		} );
+
+		const testModel = testEditor.model;
+		const testSchema = testModel.schema;
+
+		expect( testSchema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellType' ) ).to.be.false;
+
+		await testEditor.destroy();
+	} );
+
 	describe( 'schema', () => {
 		it( 'should register tableCellType attribute in the schema', () => {
 			expect( schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellType' ) ).to.be.true;
