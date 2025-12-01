@@ -218,12 +218,14 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors! );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
 		const hasColorPicker = config.colorPicker !== false;
+		const isTableCellTypeSupported = !!editor.config.get( 'experimentalFlags.tableCellTypeSupport' );
 
 		const view = new TableCellPropertiesViewExperimental( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
 			defaultTableCellProperties,
-			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
+			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false,
+			isTableCellTypeSupported
 		} );
 		const t = editor.t;
 

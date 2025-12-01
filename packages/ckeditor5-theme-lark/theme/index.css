@@ -103,6 +103,7 @@
 @import "./ckeditor5-table/tableproperties-experimental.css";
 @import "./ckeditor5-table/tableform-experimental.css";
 @import "./ckeditor5-table/formrow-experimental.css";
+@import "./ckeditor5-table/tablecellproperties-experimental.css";
 @import "./ckeditor5-widget/widget.css";
 @import "./ckeditor5-widget/widgetresize.css";
 @import "./ckeditor5-widget/widgettypearound.css";
