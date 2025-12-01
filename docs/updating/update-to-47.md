@@ -37,18 +37,19 @@ We continue to keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest
 To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
 
 * **New table alignment options**
-		
-		Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be introduced as a default in version 48.0.0.
-		
+
+	Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be introduced as a default in version 48.0.0.
+
 * **Improved table border normalization**
-		
-		Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be introduced as a default in version 48.0.0.
+
+	Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be introduced as a default in version 48.0.0.
 		
 * **Better deep schema validation**
-		
-		After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be introduced as default in version 48.0.0.
+
+	After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be introduced as default in version 48.0.0.
 
 * **Configuration**
+
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
