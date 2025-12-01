@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2025-10-16
+modified_at: 2025-12-01
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,40 @@ modified_at: 2025-10-16
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.3.0
+
+Released on 3 December, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.3.0))
+
+### CKEditor AI improvements and bug fixes
+
+Finding a specific AI Quick Action in a large list with multiple groups can be difficult. To improve this, we’re adding a filter input that lets users search for quick actions directly within the dropdown.
+
+Visibility of the input can be easily configured using the `config.ai.quickActions.isSearchEnabled` configuration option.
+
+This release also brings several smaller but important enhancements and fixes:
+
+* Track Changes markers not related to AI suggestions are now displayed in gray in the AI balloon text preview, consistent with AI chat behavior.
+* When retrying a specific AI Review, we’re now making sure that the latest version of the document is used.
+* We also improved error handling across CKEditor AI, making it easier to debug backend-related issues by including more detailed error messages.
+
+### New experimental options
+
+We continue to keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes will be introduced until the Active LTS moves to the Maintenance LTS phase (April 2026). This also means that introducing larger features can be challenging if someone is waiting for specific improvements.
+
+To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
+
+* **New table alignment options**
+    
+    Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be introduced as a default in `v48`.
+    
+* **Improved table border normalization**
+    
+    Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be introduced as a default in `v48`.
+    
+* **Better deep schema validation**
+    
+    After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` ****flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be introduced as default in `v48`.
 
 ## Update to CKEditor&nbsp;5 v47.2.0
 
