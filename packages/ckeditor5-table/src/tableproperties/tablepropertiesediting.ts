@@ -117,7 +117,7 @@ export class TablePropertiesEditing extends Plugin {
 			}
 		);
 
-		const useInlineStyles = editor.config.get( 'table.tableProperties.alignment.useInlineStyles' ) !== false;
+		const useInlineStyles = editor.config.get( 'table.tableProperties.alignment.useInlineStyles' ) === true;
 
 		editor.data.addStyleProcessorRules( addMarginStylesRules );
 		editor.data.addStyleProcessorRules( addBorderStylesRules );

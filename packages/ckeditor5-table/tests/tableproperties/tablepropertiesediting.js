@@ -25,7 +25,7 @@ import { TableHeightCommand } from '../../src/tableproperties/commands/tableheig
 import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
-import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
+import { assertTableStyle, assertTableClass, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table properties', () => {
 	describe( 'TablePropertiesEditing', () => {
@@ -739,7 +739,7 @@ describe( 'table properties', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable();
+					table = createEmptyTable( editor.model );
 				} );
 
 				it( 'should consume converted item tableBorderColor attribute', () => {
@@ -1162,7 +1162,7 @@ describe( 'table properties', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable();
+					table = createEmptyTable( editor.model );
 				} );
 
 				it( 'should consume converted item', () => {
@@ -1382,7 +1382,7 @@ describe( 'table properties', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable();
+					table = createEmptyTable( editor.model );
 				} );
 
 				it( 'should consume converted item', () => {
@@ -1581,7 +1581,7 @@ describe( 'table properties', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable();
+					table = createEmptyTable( editor.model );
 				} );
 
 				it( 'should downcast tableHeight', () => {
@@ -2084,7 +2084,7 @@ describe( 'table properties', () => {
 				let table;
 
 				beforeEach( () => {
-					table = createEmptyTable();
+					table = createEmptyTable( editor.model );
 				} );
 
 				it( 'should consume converted item', () => {
@@ -2104,40 +2104,40 @@ describe( 'table properties', () => {
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, '' );
+					assertTableClass( editor, '' );
 				} );
 
 				it( 'should downcast "right" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-right' );
 				} );
 
 				it( 'should downcast "left" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-left' );
 				} );
 
 				it( 'should downcast "center" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'center', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					assertTableClass( editor, null, 'table-style-align-center' );
 				} );
 
 				it( 'should downcast "blockRight" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:auto;margin-right:0;' );
+					assertTableClass( editor, null, 'table-style-block-align-right' );
 				} );
 
 				it( 'should downcast "blockLeft" tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
 
-					assertTableStyle( editor, null, 'margin-left:0;margin-right:auto;' );
+					assertTableClass( editor, null, 'table-style-block-align-left' );
 				} );
 
-				describe( 'with useInlineStyles=false', () => {
+				describe( 'with useInlineStyles=true', () => {
 					let editor, model;
 
 					beforeEach( async () => {
@@ -2146,80 +2146,99 @@ describe( 'table properties', () => {
 							table: {
 								tableProperties: {
 									alignment: {
-										useInlineStyles: false
+										useInlineStyles: true
 									}
 								}
 							}
 						} );
 
 						model = editor.model;
+						table = createEmptyTable( model );
 					} );
 
 					afterEach( async () => {
 						await editor.destroy();
 					} );
 
-					it( 'should downcast "left" alignment to "table-style-align-left" class', () => {
-						_setModelData( model,
-							'<table>' +
-								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
-							'</table>'
-						);
+					it( 'should be overridable', () => {
+						editor.conversion.for( 'downcast' )
+							.add( dispatcher => dispatcher.on( 'attribute:tableAlignment:table', ( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.item, evt.name );
+							}, { priority: 'highest' } ) );
 
-						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', contentTable ) );
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table table-style-align-left">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>foo</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
-						);
+						assertTableStyle( editor, '' );
 					} );
 
-					it( 'should downcast "right" alignment to "table-style-align-right" class', () => {
-						_setModelData( model,
-							'<table>' +
-								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
-							'</table>'
-						);
+					it( 'should downcast "right" tableAlignment', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', contentTable ) );
-
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table table-style-align-right">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>foo</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
-						);
+						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
 					} );
 
-					it( 'should downcast "center" alignment to "table-style-align-center" class', () => {
-						_setModelData( model,
-							'<table>' +
-								'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
-							'</table>'
-						);
+					it( 'should downcast "left" tableAlignment', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
+						assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					} );
 
-						expect( editor.getData() ).to.be.equal(
-							'<figure class="table table-style-align-center">' +
-								'<table>' +
-									'<tbody>' +
-										'<tr><td>foo</td></tr>' +
-									'</tbody>' +
-								'</table>' +
-							'</figure>'
-						);
+					it( 'should downcast "center" tableAlignment', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', table ) );
+
+						assertTableStyle( editor, null, 'margin-left:auto;margin-right:auto;' );
+					} );
+
+					it( 'should downcast "blockRight" tableAlignment', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockRight', table ) );
+
+						assertTableStyle( editor, null, 'margin-left:auto;margin-right:0;' );
+					} );
+
+					it( 'should downcast "blockLeft" tableAlignment', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'blockLeft', table ) );
+
+						assertTableStyle( editor, null, 'margin-left:0;margin-right:auto;' );
+					} );
+
+					it( 'should downcast changed tableAlignment (left -> right)', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
+
+						assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					} );
+
+					it( 'should downcast changed tableAlignment (right -> left)', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
+
+						assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					} );
+
+					it( 'should downcast removed tableAlignment (from left)', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
+
+						assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+
+						model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
+
+						assertTableStyle( editor );
+					} );
+
+					it( 'should downcast removed tableAlignment (from right)', () => {
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+
+						model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
+
+						assertTableStyle( editor );
 					} );
 				} );
 
@@ -2228,7 +2247,14 @@ describe( 'table properties', () => {
 
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
-							plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ]
+							plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+							table: {
+								tableProperties: {
+									alignment: {
+										useInlineStyles: true
+									}
+								}
+							}
 						} );
 
 						model = editor.model;
@@ -2436,41 +2462,41 @@ describe( 'table properties', () => {
 				it( 'should downcast changed tableAlignment (left -> right)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-left' );
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-right' );
 				} );
 
 				it( 'should downcast changed tableAlignment (right -> left)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-right' );
 
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-left' );
 				} );
 
 				it( 'should downcast removed tableAlignment (from left)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'left', table ) );
 
-					assertTableStyle( editor, null, 'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-left' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
-					assertTableStyle( editor );
+					assertTableClass( editor );
 				} );
 
 				it( 'should downcast removed tableAlignment (from right)', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertTableClass( editor, null, 'table-style-align-right' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
-					assertTableStyle( editor );
+					assertTableClass( editor );
 				} );
 			} );
 		} );
@@ -3206,7 +3232,7 @@ describe( 'table properties', () => {
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<div align="right">' +
 							'<table class="table table-style-align-right" ' +
-							'style="float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);" align="right">' +
+							'style="float:right;" align="right">' +
 								'<tbody><tr><td>foo</td></tr></tbody>' +
 							'</table>' +
 						'</div>'
@@ -3313,7 +3339,7 @@ describe( 'table properties', () => {
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( data.dataTransfer.getData( 'text/html' ) ).to.be.equal(
 						'<table class="table table-style-align-left" ' +
-						'style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);" align="left">' +
+						'style="float:left;" align="left">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
@@ -3414,7 +3440,7 @@ describe( 'table properties', () => {
 			} );
 		} );
 
-		function createEmptyTable() {
+		function createEmptyTable( model ) {
 			_setModelData(
 				model,
 				'<table headingRows="0" headingColumns="0">' +

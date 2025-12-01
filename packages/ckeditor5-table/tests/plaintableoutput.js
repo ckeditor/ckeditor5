@@ -234,7 +234,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertPlainTableClass( editor, 'table-style-align-right' );
 				} );
 
 				it( 'tableWidth', () => {
@@ -311,7 +311,7 @@ describe( 'PlainTableOutput', () => {
 				it( 'tableAlignment', () => {
 					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
-					assertPlainTableStyle( editor, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+					assertPlainTableClass( editor, 'table-style-align-right' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
 
@@ -511,6 +511,16 @@ describe( 'PlainTableOutput', () => {
 
 				expect( editor.getData() ).to.equalMarkup(
 					`<table class="table"${ tableStyleEntry }>` +
+						'<tbody><tr><td>foo</td></tr></tbody>' +
+					'</table>'
+				);
+			}
+
+			function assertPlainTableClass( editor, tableClass ) {
+				const tableClassEntry = tableClass ? ` ${ tableClass }` : '';
+
+				expect( editor.getData() ).to.equalMarkup(
+					`<table class="table${ tableClassEntry }">` +
 						'<tbody><tr><td>foo</td></tr></tbody>' +
 					'</table>'
 				);

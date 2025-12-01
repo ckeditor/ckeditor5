@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
-import { assertTableStyle, modelTable } from '../../_utils/utils.js';
+import { assertTableClass, modelTable } from '../../_utils/utils.js';
 import { TablePropertiesEditing } from '../../../src/tableproperties/tablepropertiesediting.js';
 import { TableAlignmentCommand } from '../../../src/tableproperties/commands/tablealignmentcommand.js';
 
@@ -131,7 +131,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -139,7 +139,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
@@ -147,7 +147,7 @@ describe( 'table properties', () => {
 
 						command.execute();
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 
 					it( 'should not set alignment in a selected table if passed the default value', () => {
@@ -155,7 +155,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'center' } );
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 				} );
 
@@ -165,7 +165,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -173,7 +173,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
@@ -181,7 +181,7 @@ describe( 'table properties', () => {
 
 						command.execute();
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 
 					it( 'should not set alignment in a selected table if passed the default value', () => {
@@ -189,7 +189,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'center' } );
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 				} );
 
@@ -199,7 +199,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should change selected table alignment to a passed value', () => {
@@ -207,7 +207,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'right' } );
 
-						assertTableStyle( editor, null, 'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);' );
+						assertTableClass( editor, null, 'table-style-align-right' );
 					} );
 
 					it( 'should remove alignment from a selected table if no value is passed', () => {
@@ -215,7 +215,7 @@ describe( 'table properties', () => {
 
 						command.execute();
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 
 					it( 'should not set alignment in a selected table if passed the default value', () => {
@@ -223,7 +223,7 @@ describe( 'table properties', () => {
 
 						command.execute( { value: 'center' } );
 
-						assertTableStyle( editor, '' );
+						assertTableClass( editor, '' );
 					} );
 				} );
 			} );

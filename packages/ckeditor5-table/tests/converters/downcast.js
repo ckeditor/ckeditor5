@@ -2429,7 +2429,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);',
+						'float:right;',
 						'table table-style-align-right',
 						'align="right"'
 					);
@@ -2446,7 +2446,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);',
+						'float:left;',
 						'table table-style-align-left',
 						'align="left"'
 					);
@@ -2458,7 +2458,7 @@ describe( 'downcast converters', () => {
 					assertPlainTableStyle( editor, 'margin-left:0;margin-right:auto;', 'table table-style-block-align-left' );
 				} );
 
-				it( 'tableAlignment right with TableLayout plugin', async () => {
+				it( ' with TableLayout plugin', async () => {
 					const testEditor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, Table, TableCaption, TableLayout, TableProperties, ClipboardPipeline ]
 					} );
@@ -2481,7 +2481,7 @@ describe( 'downcast converters', () => {
 
 					expect( getClipboardData( testEditor ) ).to.equalMarkup(
 						'<table class="table table-style-align-right layout-table" ' +
-						'style="float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);" ' +
+						'style="float:right;" ' +
 						'align="right" role="presentation">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
@@ -2544,7 +2544,7 @@ describe( 'downcast converters', () => {
 
 					expect( getClipboardData( testEditor ) ).to.equalMarkup(
 						'<table class="table table-style-align-left layout-table" ' +
-						'style="float:left;margin-right:var(--ck-content-table-style-spacing, 1.5em);" align="left" role="presentation">' +
+						'style="float:left;" align="left" role="presentation">' +
 							'<tbody><tr><td>foo</td></tr></tbody>' +
 						'</table>'
 					);
@@ -2733,7 +2733,7 @@ describe( 'downcast converters', () => {
 
 					assertPlainTableStyle(
 						editor,
-						'float:right;margin-left:var(--ck-content-table-style-spacing, 1.5em);',
+						'float:right;',
 						'table table-style-align-right',
 						'align="right"'
 					);
