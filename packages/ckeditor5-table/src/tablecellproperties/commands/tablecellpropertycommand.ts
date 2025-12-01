@@ -55,6 +55,10 @@ export class TableCellPropertyCommand extends Command {
 
 		// Hardcoded defaults for layout table.
 		switch ( attributeName ) {
+			case 'tableCellType':
+				this._defaultLayoutTableValue = 'data';
+				break;
+
 			case 'tableCellBorderStyle':
 				this._defaultLayoutTableValue = 'none';
 				break;
