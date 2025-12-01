@@ -27,7 +27,7 @@ Visibility of the input can be easily configured using the `config.ai.quickActi
 This release also brings several minor but significant enhancements and fixes:
 
 * Track Changes markers not related to AI suggestions are now displayed in gray in the AI balloon text preview, consistent with the behavior of AI chat.
-* When retrying a specific AI Review, we are now ensuring the latest version of the document.
+* When retrying a specific AI Review, we are now ensuring the latest version of the document is used.
 * We also improved error handling across CKEditor AI, making it easier to debug backend-related issues by including more detailed error messages.
 
 ### New experimental options
@@ -71,10 +71,6 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-### Minor breaking changes in this release
-
-todo
 
 ## Update to CKEditor&nbsp;5 v47.2.0
 
