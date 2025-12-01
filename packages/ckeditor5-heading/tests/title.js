@@ -795,6 +795,111 @@ describe( 'Title', () => {
 		} );
 	} );
 
+	describe( 'attribute conversion', () => {
+		it( 'should redirect attributes from `title` to `title-content` in downcast', () => {
+			// Allow a test attribute on both `title` and `title-content`.
+			model.schema.extend( 'title', { allowAttributes: [ 'data-test' ] } );
+			model.schema.extend( 'title-content', { allowAttributes: [ 'data-test' ] } );
+
+			_setModelData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'data-test', 'value', title );
+			} );
+
+			expect( editor.getData() ).to.equal( '<h1 data-test="value">Foo</h1><p>Bar</p>' );
+
+			// The attribute is on `title` in the model, but appears on `h1` (from `title-content`) in the view.
+			expect( title.hasAttribute( 'data-test' ) ).to.equal( true );
+		} );
+
+		it( 'should redirect multiple attributes from title to title-content in downcast', () => {
+			model.schema.extend( 'title', { allowAttributes: [ 'data-test1', 'data-test2', 'class' ] } );
+			model.schema.extend( 'title-content', { allowAttributes: [ 'data-test1', 'data-test2', 'class' ] } );
+
+			_setModelData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'data-test1', 'value1', title );
+				writer.setAttribute( 'data-test2', 'value2', title );
+				writer.setAttribute( 'class', 'my-class', title );
+			} );
+
+			const data = editor.getData();
+
+			expect( data ).to.include( 'data-test1="value1"' );
+			expect( data ).to.include( 'data-test2="value2"' );
+			expect( data ).to.include( 'class="my-class"' );
+		} );
+
+		it( 'should remove attributes from view when removed from title', () => {
+			model.schema.extend( 'title', { allowAttributes: [ 'data-test' ] } );
+			model.schema.extend( 'title-content', { allowAttributes: [ 'data-test' ] } );
+
+			_setModelData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'data-test', 'value', title );
+			} );
+
+			expect( editor.getData() ).to.equal( '<h1 data-test="value">Foo</h1><p>Bar</p>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'data-test', title );
+			} );
+
+			expect( editor.getData() ).to.equal( '<h1>Foo</h1><p>Bar</p>' );
+		} );
+
+		it( 'should not redirect attributes if event was already consumed', () => {
+			model.schema.extend( 'title', { allowAttributes: [ 'data-test' ] } );
+			model.schema.extend( 'title-content', { allowAttributes: [ 'data-test' ] } );
+
+			_setModelData( model,
+				'<title><title-content>Foo</title-content></title>' +
+				'<paragraph>Bar</paragraph>'
+			);
+
+			const title = model.document.getRoot().getChild( 0 );
+
+			// Add a converter with higher priority that consumes the attribute event for `title`.
+			// This simulates a situation where another converter has already processed the event.
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+					if ( data.item.is( 'element', 'title' ) ) {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}
+				}, { priority: 'high' } );
+			} );
+
+			model.change( writer => {
+				writer.setAttribute( 'data-test', 'value', title );
+			} );
+
+			// Since the event was consumed by the higher priority converter,
+			// our converter should not process it and the attribute should not appear in the view.
+			expect( editor.getData() ).to.equal( '<h1>Foo</h1><p>Bar</p>' );
+
+			// The attribute is still on `title` in the model.
+			expect( title.hasAttribute( 'data-test' ) ).to.equal( true );
+		} );
+	} );
+
 	describe( 'Tab press handling', () => {
 		it( 'should handle tab key when the selection is at the beginning of the title', () => {
 			_setModelData( model,
