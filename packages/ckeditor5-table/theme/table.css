@@ -4,6 +4,11 @@
  */
 
 .ck-content {
+	/* Ensure that table header text is aligned to the start by default. See https://github.com/ckeditor/ckeditor5/issues/19454 */
+	& .table th {
+		text-align: start;
+	}
+
 	/* Text alignment of the table header should match the editor settings and override the native browser styling,
 	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
 	&[dir="rtl"] .table th {
