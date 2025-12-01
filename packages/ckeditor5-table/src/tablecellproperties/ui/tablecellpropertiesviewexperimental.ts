@@ -345,7 +345,7 @@ export class TableCellPropertiesViewExperimental extends View {
 				borderColorInput,
 				borderWidthInput
 			],
-			class: `ck-table-form__border-row${ this.options.isTableCellTypeSupported ? '' : ' ck-table-form__border-row_experimental' }`
+			class: `ck-table-form__border-row${ this.options.isTableCellTypeSupported ? ' ck-table-form__border-row_experimental' : '' }`
 		} ) );
 
 		// Background and cell type.

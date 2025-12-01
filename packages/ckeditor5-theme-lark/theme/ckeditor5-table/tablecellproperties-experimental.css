@@ -57,6 +57,16 @@
 					margin: 0 var(--ck-spacing-small);
 				}
 			}
+
+			&.ck-form__row.ck-table-form__action-row {
+				& > .ck.ck-button {
+					flex-grow: initial;
+
+					& .ck-button__label {
+						color: currentColor;
+					}
+				}
+			}
 		}
 
 		&.ck-table-cell-properties-form_experimental-no-cell-type {

@@ -99,6 +99,25 @@ describe( 'table cell properties', () => {
 				expect( view.element.classList.contains( 'ck-table-form' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).to.be.true;
 				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+				// [experimental]
+				expect( experimentalView.element.classList.contains( 'ck-table-cell-properties-form_experimental' ) ).to.be.true;
+			} );
+
+			// [experimental]
+			it( 'should contains experimental CSS class when in experimental mode for table cell properties', () => {
+				const locale = { t: val => val };
+				const VIEW_OPTIONS_EXPERIMENTAL = { ...VIEW_OPTIONS, isTableCellTypeSupported: true };
+				const experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS_EXPERIMENTAL );
+
+				experimentalView.render();
+				document.body.appendChild( experimentalView.element );
+
+				expect( experimentalView.element.classList.contains(
+					'ck-table-cell-properties-form_experimental-no-cell-type'
+				) ).to.be.true;
+
+				experimentalView.element.remove();
+				experimentalView.destroy();
 			} );
 
 			it( 'should create child views (and references)', () => {
@@ -156,6 +175,25 @@ describe( 'table cell properties', () => {
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
 						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
 						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
+					} );
+
+					// [experimental]
+					it( 'should have a dedicated CSS class [experimental]', () => {
+						const locale = { t: val => val };
+						const VIEW_OPTIONS_EXPERIMENTAL = { ...VIEW_OPTIONS, isTableCellTypeSupported: true };
+						const experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS_EXPERIMENTAL );
+
+						experimentalView.render();
+						document.body.appendChild( experimentalView.element );
+
+						const row = experimentalView.element.childNodes[ 1 ];
+
+						expect( row.classList.contains(
+							'ck-table-form__border-row_experimental'
+						) ).to.be.true;
+
+						experimentalView.element.remove();
+						experimentalView.destroy();
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -535,6 +573,13 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
+						// [experimental]
+						it( 'should have a dedicated CSS class [experimental]', () => {
+							expect( experimentalView.horizontalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__horizontal-alignment-toolbar'
+							) ).to.be.true;
+						} );
+
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
@@ -607,6 +652,13 @@ describe( 'table cell properties', () => {
 
 						it( 'should have an ARIA label', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+						} );
+
+						// [experimental]
+						it( 'should have a dedicated CSS class [experimental]', () => {
+							expect( experimentalView.verticalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__vertical-alignment-toolbar'
+							) ).to.be.true;
 						} );
 
 						it( 'should bring alignment buttons', () => {
