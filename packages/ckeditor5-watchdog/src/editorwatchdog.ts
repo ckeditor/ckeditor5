@@ -685,10 +685,14 @@ function getEditorSpecificEntries( editor: Editor ) {
 		editor.conversion,
 		editor.commands,
 		editor.plugins,
-		editor.model.document,
+		editor.keystrokes,
 		editor.model,
-		editor.model.schema,
+		editor.model?.document,
+		editor.model?.schema,
+		editor.ui,
 		editor.ui?.view,
-		editor.editing?.view
+		editor.editing,
+		editor.editing?.view,
+		editor.editing?.mapper
 	].filter( Boolean );
 };
