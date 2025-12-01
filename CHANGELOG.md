@@ -11,57 +11,56 @@ This release introduces a minor stability update, featuring focused fixes and im
 
 #### CKEditor AI improvements and bug fixes
 
-Finding a specific AI Quick Action in a large list with multiple groups can be difficult. To improve this, we’re adding a filter input that lets users search for quick actions directly within the dropdown.
+Finding a specific AI Quick Action in a long list with multiple groups can be difficult. To improve this, we are adding a filter input that lets users search for quick actions directly within the dropdown.
 
-Visibility of the input can be easily configured using the `config.ai.quickActions.isSearchEnabled` configuration option.
+Visibility of the input can be easily configured using the `config.ai.quickActions.isSearchEnabled` configuration option.
 
-This release also brings several smaller but important enhancements and fixes:
+This release also brings several minor but significant enhancements and fixes:
 
-* Track Changes markers not related to AI suggestions are now displayed in gray in the AI balloon text preview, consistent with AI chat behavior.
-* When retrying a specific AI Review, we’re now making sure that the latest version of the document is used.
+* Track Changes markers not related to AI suggestions are now displayed in gray in the AI balloon text preview, consistent with the behavior of AI chat.
+* When retrying a specific AI Review, we are now ensuring the latest version of the document is used.
 * We also improved error handling across CKEditor AI, making it easier to debug backend-related issues by including more detailed error messages.
 
 #### New experimental options
 
-We continue to keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes will be introduced until the Active LTS moves to the Maintenance LTS phase (April 2026). This also means that introducing larger features can be challenging if someone is waiting for specific improvements.
+We keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
 
 To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
 
 * **New table alignment options**
 
-  Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be introduced as a default in `v48`.
+	Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be the default in version 48.0.0.
 
 * **Improved table border normalization**
 
-  Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be introduced as a default in `v48`.
-
+	Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be the default in version 48.0.0.
+		
 * **Better deep schema validation**
 
-  After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` ****flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be introduced as default in `v48`.
+	After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be the default in version 48.0.0.
 
-Read more about these experimental features in the documentation.
+Read more about these experimental features [in the documentation](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-47.html#new-experimental-options).
 
 ### Features
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI balloon contents will always be scrolled to the bottom, so the most recent content is always visible to the user.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI balloon contents is always scrolled to the bottom, so the most recent content is always visible to the user.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Quick Actions are now searchable in the dropdown. Search input can be hidden using the `config.ai.quickActions.isSearchEnabled` configuration option.
 * **[restricted-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing)**: Introducing an automatic command (`restrictedEditingExceptionAuto`) and dedicated toolbar button (`restrictedEditingException:auto`) for creating restricted editing exceptions (both block and inline). Closes [#19353](https://github.com/ckeditor/ckeditor5/issues/19353).
 
 ### Bug fixes
 
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Review did not use the latest editor content when the review check was retried (via "Try again" button).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Review now uses the latest editor content when the review check was retried (via "Try again" button).
 
-  This improvement fixes the issue when cached content was send on retry and any new changes, applied review suggestions or changes made by other users
-  in real-time collaboration, were not sent and accounted by AI when generating new results.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Review now longer results in an error when the AI service returns an unexpected response (multiple elements when one is expected).
+  This improvement fixes the issue when cached content was send on retry and any new changes, applied review suggestions or changes made by other users in real-time collaboration, were not sent and accounted by AI when generating new results.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI Review no longer results in an error when the AI service returns an unexpected response (multiple elements when one is expected).
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Track Changes markers not related to AI suggestions are now displayed in gray in AI balloon text preview, consistent with AI chat behavior.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The translate check in AI Review now correctly translates images `alt` attribute text.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The translate check in AI Review now correctly translates the image `alt` attribute text.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The caption of images (`<figcaption>` element) is now correctly processed by AI Review checks instead of being ignored.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Errors caused by AI feature during initialization will not crash the editor.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Errors caused by AI feature during initialization no longer crash the editor.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI feature keeps the correct UI state after a runtime error occurs.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Review "Custom command" will be hidden if the model list can't be obtained.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The AI Review "Custom command" is hidden if the model list cannot be obtained.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Error messages in AI Chat History are now displayed correctly. Previously, errors caused the history view to appear empty instead of showing the error message.
-* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI suggestions balloon content will no longer stick out of the balloon on very small screens.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: AI suggestions balloon content no longer stick out of the balloon on very small screens.
 * **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Fixed CKBox Image Editor not respecting the language configuration option. Closes [#19338](https://github.com/ckeditor/ckeditor5/issues/19338).
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Fixed an issue where the comment toolbar button remained enabled even when the command to create a new comment thread was disabled (e.g., in read-only mode).
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Disabled revision history toolbar and menu bar buttons in comments-only mode to prevent users from using revision history features.
