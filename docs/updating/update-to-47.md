@@ -48,6 +48,29 @@ To address this, we are introducing **experimental flags** and **experimental pl
 		
 		After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be introduced as default in version 48.0.0.
 
+* **Configuration**
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Table,
+			TableProperties,
+			TableCellProperties,
+			TablePropertiesUIExperimental,
+			TableCellPropertiesUIExperimental,
+			// Other plugins.
+			// ...
+		],
+		experimentalFlags: {
+			useExtendedTableBlockAlignment: true,
+			upcastTableBorderZeroAttributes: true,
+			modelInsertContentDeepSchemaVerification: true
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ### Minor breaking changes in this release
 
 todo
