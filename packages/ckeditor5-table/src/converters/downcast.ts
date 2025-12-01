@@ -20,7 +20,6 @@ import type {
 	DowncastConversionApi
 } from 'ckeditor5/src/engine.js';
 
-import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
@@ -111,37 +110,17 @@ export function downcastRow(): DowncastElementCreatorFunction {
  */
 export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
-		const tableRow = tableCell.parent as ModelElement;
-		const table = tableRow.parent as ModelElement;
-		const rowIndex = table.getChildIndex( tableRow )!;
+		const cellElementName: 'td' | 'th' = (
+			tableCell.getAttribute( 'tableCellType' ) === 'header' ?
+				'th' :
+				'td'
+		);
 
-		const tableWalker = new TableWalker( table, { row: rowIndex } );
-		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-
-		let result: ViewElement | null = null;
-
-		// We need to iterate over a table in order to get proper row & column values from a walker.
-		for ( const tableSlot of tableWalker ) {
-			if ( tableSlot.cell == tableCell ) {
-				let cellElementName: 'td' | 'th' | null = null;
-
-				if ( tableCell.getAttribute( 'tableCellType' ) === 'header' ) {
-					cellElementName = 'th';
-				} else {
-					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-
-					cellElementName = isHeading ? 'th' : 'td';
-				}
-
-				result = options.asWidget ?
-					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
-					writer.createContainerElement( cellElementName );
-				break;
-			}
-		}
-
-		return result;
+		return (
+			options.asWidget ?
+				toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
+				writer.createContainerElement( cellElementName )
+		);
 	};
 }
 

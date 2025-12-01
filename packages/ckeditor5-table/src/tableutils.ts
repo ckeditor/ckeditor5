@@ -141,11 +141,11 @@ export class TableUtils extends Plugin {
 		createEmptyRows( writer, table, 0, rows, columns );
 
 		if ( options.headingRows ) {
-			updateNumericAttribute( 'headingRows', Math.min( options.headingRows, rows ), table, writer, 0 );
+			this.setHeadingRowsCount( writer, table, Math.min( options.headingRows, rows ) );
 		}
 
 		if ( options.headingColumns ) {
-			updateNumericAttribute( 'headingColumns', Math.min( options.headingColumns, columns ), table, writer, 0 );
+			this.setHeadingColumnsCount( writer, table, Math.min( options.headingColumns, columns ) );
 		}
 
 		return table;
@@ -208,7 +208,7 @@ export class TableUtils extends Plugin {
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
-				updateNumericAttribute( 'headingRows', headingRows + rowsToInsert, table, writer, 0 );
+				this.setHeadingRowsCount( writer, table, headingRows + rowsToInsert );
 			}
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
@@ -304,7 +304,7 @@ export class TableUtils extends Plugin {
 
 			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
 			if ( insertAt < headingColumns ) {
-				writer.setAttribute( 'headingColumns', headingColumns + columnsToInsert, table );
+				this.setHeadingColumnsCount( writer, table, headingColumns + columnsToInsert );
 			}
 
 			const tableColumns = this.getColumns( table );
@@ -885,6 +885,48 @@ export class TableUtils extends Plugin {
 	}
 
 	/**
+	 * Sets the number of heading rows for the given `table`.
+	 *
+	 * @param writer The model writer.
+	 * @param table The table model element.
+	 * @param headingRows The number of heading rows to set.
+	 */
+	public setHeadingRowsCount( writer: ModelWriter, table: ModelElement, headingRows: number ): void {
+		updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
+
+		for ( const { cell, row, column } of new TableWalker( table, { endRow: headingRows - 1 } ) ) {
+			updateTableCellType( {
+				table,
+				writer,
+				cell,
+				row,
+				column
+			} );
+		}
+	}
+
+	/**
+	 * Sets the number of heading columns for the given `table`.
+	 *
+	 * @param writer The model writer to use.
+	 * @param table The table model element.
+	 * @param headingColumns The number of heading columns to set.
+	 */
+	public setHeadingColumnsCount( writer: ModelWriter, table: ModelElement, headingColumns: number ): void {
+		updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
+
+		for ( const { cell, row, column } of new TableWalker( table, { endColumn: headingColumns - 1 } ) ) {
+			updateTableCellType( {
+				table,
+				writer,
+				cell,
+				row,
+				column
+			} );
+		}
+	}
+
+	/**
 	 * Returns all model table cells that the provided model selection's ranges
 	 * {@link module:engine/model/range~ModelRange#start} inside.
 	 *
@@ -1297,4 +1339,33 @@ function getBiggestRectangleArea( rows: Set<number>, columns: Set<number> ): num
 	const firstColumn = Math.min( ...columnIndexes );
 
 	return ( lastRow - firstRow + 1 ) * ( lastColumn - firstColumn + 1 );
+}
+
+/**
+ * Updates the `tableCellType` attribute of a table cell based on its position in the table
+ * and the table's `headingRows` and `headingColumns` attributes.
+ */
+function updateTableCellType(
+	{
+		writer,
+		table,
+		row,
+		column,
+		cell
+	}: {
+		writer: ModelWriter;
+		table: ModelElement;
+		row: number;
+		column: number;
+		cell: ModelElement;
+	}
+) {
+	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+	if ( row >= headingRows && column >= headingColumns ) {
+		writer.removeAttribute( 'tableCellType', cell );
+	} else {
+		writer.setAttribute( 'tableCellType', 'header', cell );
+	}
 }
