@@ -126,13 +126,9 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastEl
 			if ( tableSlot.cell == tableCell ) {
 				let cellElementName: 'td' | 'th' | null = null;
 
-				if ( tableSlot.cell.hasAttribute( 'tableCellType' ) ) {
-					const cellType = tableCell.getAttribute( 'tableCellType' )!;
-
-					cellElementName = cellType === 'header' ? 'th' : 'td';
-				}
-
-				if ( !cellElementName ) {
+				if ( tableCell.getAttribute( 'tableCellType' ) === 'header' ) {
+					cellElementName = 'th';
+				} else {
 					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 
 					cellElementName = isHeading ? 'th' : 'td';
