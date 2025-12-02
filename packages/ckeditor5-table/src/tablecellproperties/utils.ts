@@ -7,6 +7,7 @@
  * @module table/tablecellproperties/utils
  */
 
+import { TableWalker } from '../tablewalker.js';
 import type { ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
@@ -28,4 +29,33 @@ export function groupCellsByTable( tableCells: Array<ModelElement> ): Map<ModelE
 	}
 
 	return tableMap;
+}
+
+/**
+ * Checks if all cells in a given row or column are header cells.
+ *
+ * @internal
+ */
+export function isEntireCellsLineHeader(
+	{
+		table,
+		row,
+		column
+	}: {
+		table: ModelElement;
+		row?: number;
+		column?: number;
+	}
+): boolean {
+	const tableWalker = new TableWalker( table, { row, column } );
+
+	for ( const { cell } of tableWalker ) {
+		const cellType = cell.getAttribute( 'tableCellType' );
+
+		if ( cellType !== 'header' ) {
+			return false;
+		}
+	}
+
+	return true;
 }

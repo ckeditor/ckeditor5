@@ -16,8 +16,7 @@ import {
 	type TableCellPropertyCommandAfterExecuteEvent
 } from './tablecellpropertycommand.js';
 
-import { TableWalker } from '../../tablewalker.js';
-import { groupCellsByTable } from '../utils.js';
+import { groupCellsByTable, isEntireCellsLineHeader } from '../utils.js';
 
 /**
  * The table cell type command.
@@ -118,7 +117,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 		if (
 			changedRowsSet.has( headingRows ) &&
 			headingRows < tableRowCount &&
-			isEntireLineHeader( { table, row: headingRows } )
+			isEntireCellsLineHeader( { table, row: headingRows } )
 		) {
 			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1, {
 				updateCellType: false
@@ -130,7 +129,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 		if (
 			changedColumnsSet.has( headingColumns ) &&
 			headingColumns < tableColumnCount &&
-			isEntireLineHeader( { table, column: headingColumns } )
+			isEntireCellsLineHeader( { table, column: headingColumns } )
 		) {
 			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1, {
 				updateCellType: false
@@ -192,31 +191,4 @@ function adjustHeadingAttributesWhenChangingToData(
 			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, { updateCellType: false } );
 		}
 	}
-}
-
-/**
- * Checks if all cells in a given row or column are header cells.
- */
-function isEntireLineHeader(
-	{
-		table,
-		row,
-		column
-	}: {
-		table: ModelElement;
-		row?: number;
-		column?: number;
-	}
-): boolean {
-	const tableWalker = new TableWalker( table, { row, column } );
-
-	for ( const { cell } of tableWalker ) {
-		const cellType = cell.getAttribute( 'tableCellType' );
-
-		if ( cellType !== 'header' ) {
-			return false;
-		}
-	}
-
-	return true;
 }
