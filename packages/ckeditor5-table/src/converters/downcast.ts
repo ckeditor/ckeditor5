@@ -24,6 +24,8 @@ import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
+import { isTableCellTypeEnabled } from '../utils/common.js';
+import { TableWalker } from '../tablewalker.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -109,19 +111,50 @@ export function downcastRow(): DowncastElementCreatorFunction {
  * @returns Element creator.
  */
 export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
-	return ( tableCell, { writer } ) => {
-		const cellElementName: 'td' | 'th' = (
-			tableCell.getAttribute( 'tableCellType' ) === 'header' ?
-				'th' :
-				'td'
-		);
+	return ( tableCell, { writer, schema } ) => {
+		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
+		if ( isTableCellTypeEnabled( schema ) ) {
+			const cellElementName: 'td' | 'th' = (
+				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
+					'th' :
+					'td'
+			);
 
+			return createCellElement( writer, cellElementName );
+		}
+
+		// If the the table cell type feature is not enabled, we should iterate through the table structure
+		// to determine whether the cell is in the heading section.
+		const tableRow = tableCell.parent as ModelElement;
+		const table = tableRow.parent as ModelElement;
+		const rowIndex = table.getChildIndex( tableRow )!;
+
+		const tableWalker = new TableWalker( table, { row: rowIndex } );
+		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+		let result: ViewElement | null = null;
+
+		// We need to iterate over a table in order to get proper row & column values from a walker.
+		for ( const tableSlot of tableWalker ) {
+			if ( tableSlot.cell == tableCell ) {
+				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+
+				result = createCellElement( writer, isHeading ? 'th' : 'td' );
+				break;
+			}
+		}
+
+		return result;
+	};
+
+	function createCellElement( writer: ViewDowncastWriter, name: string ) {
 		return (
 			options.asWidget ?
-				toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
-				writer.createContainerElement( cellElementName )
+				toWidgetEditable( writer.createEditableElement( name ), writer, { withAriaRole: false } ) :
+				writer.createContainerElement( name )
 		);
-	};
+	}
 }
 
 /**

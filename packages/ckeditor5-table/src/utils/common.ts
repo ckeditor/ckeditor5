@@ -170,3 +170,12 @@ export function isEntireCellsLineHeader(
 
 	return true;
 }
+
+/**
+ * Checks whether the `TableCellPropertiesEditing` plugin is enabled.
+ *
+ * @internal
+ */
+export function isTableCellTypeEnabled( schema: ModelSchema ): boolean {
+	return schema.checkAttribute( 'tableCell', 'tableCellType' );
+}

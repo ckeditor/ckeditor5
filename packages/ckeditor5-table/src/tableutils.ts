@@ -20,7 +20,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
-import { createEmptyTableCell, updateNumericAttribute, isEntireCellsLineHeader } from './utils/common.js';
+import { createEmptyTableCell, updateNumericAttribute, isEntireCellsLineHeader, isTableCellTypeEnabled } from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';
 
@@ -186,6 +186,7 @@ export class TableUtils extends Plugin {
 		const rowsToInsert = options.rows || 1;
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
+		const cellTypeEnabled = isTableCellTypeEnabled( model.schema );
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
@@ -220,14 +221,16 @@ export class TableUtils extends Plugin {
 			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
 				const rows = createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
 
-				for ( let rowOffset = 0; rowOffset < rows.length; rowOffset++ ) {
-					const row = rows[ rowOffset ];
+				if ( cellTypeEnabled ) {
+					for ( let rowOffset = 0; rowOffset < rows.length; rowOffset++ ) {
+						const row = rows[ rowOffset ];
 
-					for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
-						const cell = row[ columnIndex ];
+						for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
+							const cell = row[ columnIndex ];
 
-						if ( insertAt + rowOffset < headingRows || columnIndex < headingColumns ) {
-							writer.setAttribute( 'tableCellType', 'header', cell );
+							if ( insertAt + rowOffset < headingRows || columnIndex < headingColumns ) {
+								writer.setAttribute( 'tableCellType', 'header', cell );
+							}
 						}
 					}
 				}
@@ -276,7 +279,7 @@ export class TableUtils extends Plugin {
 						const insertedCells = createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : undefined );
 
 						// If we insert row in heading section, set proper cell type.
-						if ( insertAt + rowIndex < headingRows || cellIndex < headingColumns ) {
+						if ( cellTypeEnabled && ( insertAt + rowIndex < headingRows || cellIndex < headingColumns ) ) {
 							writer.setAttribute( 'tableCellType', 'header', insertedCells );
 						}
 					}
@@ -320,6 +323,7 @@ export class TableUtils extends Plugin {
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
+		const cellTypeEnabled = isTableCellTypeEnabled( model.schema );
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -348,10 +352,12 @@ export class TableUtils extends Plugin {
 
 					const insertedCells = createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
 
-					// If we insert column in heading section, set proper cell type.
-					for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
-						if ( insertAt + columnOffset < headingColumns || rowIndex < headingRows ) {
-							writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+					if ( cellTypeEnabled ) {
+						// If we insert column in heading section, set proper cell type.
+						for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
+							if ( insertAt + columnOffset < headingColumns || rowIndex < headingRows ) {
+								writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+							}
 						}
 					}
 
@@ -388,9 +394,11 @@ export class TableUtils extends Plugin {
 					const insertedCells = createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
 
 					// If we insert column in heading section, set proper cell type.
-					for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
-						if ( insertAt + columnOffset < headingColumns || row < headingRows ) {
-							writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+					if ( cellTypeEnabled ) {
+						for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
+							if ( insertAt + columnOffset < headingColumns || row < headingRows ) {
+								writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+							}
 						}
 					}
 				}
@@ -486,14 +494,16 @@ export class TableUtils extends Plugin {
 			}
 
 			// 3. If next rows are entirely header, adjust heading rows count.
-			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-			const totalRows = this.getRows( table );
+			if ( isTableCellTypeEnabled( model.schema ) ) {
+				let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+				const totalRows = this.getRows( table );
 
-			while ( headingRows < totalRows && isEntireCellsLineHeader( { table, row: headingRows } ) ) {
-				headingRows++;
+				while ( headingRows < totalRows && isEntireCellsLineHeader( { table, row: headingRows } ) ) {
+					headingRows++;
+				}
+
+				this.setHeadingRowsCount( writer, table, headingRows, { shallow: true } );
 			}
-
-			this.setHeadingRowsCount( writer, table, headingRows, { shallow: true } );
 		} );
 	}
 
@@ -572,14 +582,16 @@ export class TableUtils extends Plugin {
 			}
 
 			// If next columns are entirely header, adjust heading columns count.
-			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-			const totalColumns = this.getColumns( table );
+			if ( isTableCellTypeEnabled( model.schema ) ) {
+				let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+				const totalColumns = this.getColumns( table );
 
-			while ( headingColumns < totalColumns && isEntireCellsLineHeader( { table, column: headingColumns } ) ) {
-				headingColumns++;
+				while ( headingColumns < totalColumns && isEntireCellsLineHeader( { table, column: headingColumns } ) ) {
+					headingColumns++;
+				}
+
+				this.setHeadingColumnsCount( writer, table, headingColumns, { shallow: true } );
 			}
-
-			this.setHeadingColumnsCount( writer, table, headingColumns, { shallow: true } );
 		} );
 	}
 
@@ -974,6 +986,8 @@ export class TableUtils extends Plugin {
 		} = {}
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const { model } = this.editor;
+
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 		if ( headingRows === oldHeadingRows ) {
@@ -982,7 +996,7 @@ export class TableUtils extends Plugin {
 
 		updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
 
-		if ( shallow ) {
+		if ( shallow || !isTableCellTypeEnabled( model.schema ) ) {
 			return;
 		}
 
@@ -1054,7 +1068,9 @@ export class TableUtils extends Plugin {
 			autoExpand?: boolean;
 		} = {}
 	): void {
-		const { shallow, resetFormerHeadingCells: checkExisting = true, autoExpand = true } = options;
+		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const { model } = this.editor;
+
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		if ( headingColumns === oldHeadingColumns ) {
@@ -1063,7 +1079,7 @@ export class TableUtils extends Plugin {
 
 		updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
 
-		if ( shallow ) {
+		if ( shallow || !isTableCellTypeEnabled( model.schema ) ) {
 			return;
 		}
 
@@ -1079,7 +1095,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If heading columns were reduced, set body type to all cells in columns that are no longer in heading section.
-		if ( checkExisting && headingColumns < oldHeadingColumns ) {
+		if ( resetFormerHeadingCells && headingColumns < oldHeadingColumns ) {
 			for ( let column = headingColumns; column < oldHeadingColumns; column++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading columns count.
