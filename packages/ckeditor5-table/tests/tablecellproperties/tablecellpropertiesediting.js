@@ -24,7 +24,7 @@ import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils.js';
 
 describe( 'table cell properties', () => {
 	describe( 'TableCellPropertiesEditing', () => {
-		let editor, model;
+		let editor, model, schema;
 
 		beforeEach( async () => {
 			editor = await VirtualTestEditor.create( {
@@ -32,6 +32,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			model = editor.model;
+			schema = model.schema;
 		} );
 
 		afterEach( async () => {
@@ -1885,6 +1886,32 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
+				} );
+			} );
+		} );
+
+		describe( 'cell type', () => {
+			beforeEach( async () => {
+				await editor.destroy();
+
+				editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+					experimentalFlags: {
+						tableCellTypeSupport: true
+					}
+				} );
+
+				model = editor.model;
+				schema = model.schema;
+			} );
+
+			describe( 'schema', () => {
+				it( 'should register tableCellType attribute in the schema', () => {
+					expect( schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellType' ) ).to.be.true;
+				} );
+
+				it( 'should register tableCellType attribute as a formatting attribute', () => {
+					expect( schema.getAttributeProperties( 'tableCellType' ).isFormatting ).to.be.true;
 				} );
 			} );
 		} );
