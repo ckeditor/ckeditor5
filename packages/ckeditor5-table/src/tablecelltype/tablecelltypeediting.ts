@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { UpcastElementEvent, Model, EditingController, ModelElement } from 'ckeditor5/src/engine.js';
+import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { TableEditing } from '../tableediting.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
@@ -46,7 +46,7 @@ export class TableCellTypeEditing extends Plugin {
 	 */
 	public init(): void {
 		const { editor } = this;
-		const { model, config, editing } = editor;
+		const { config } = editor;
 
 		if ( !config.get( 'experimentalFlags.tableCellTypeSupport' ) ) {
 			return;
@@ -54,8 +54,6 @@ export class TableCellTypeEditing extends Plugin {
 
 		this._defineSchema();
 		this._defineConversion();
-
-		registerTableCellTypeReconversionHandler( model, editing );
 
 		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 	}
@@ -94,40 +92,3 @@ export class TableCellTypeEditing extends Plugin {
 	}
 }
 
-/**
- * Registers a handler that forces reconversion of table cells when their `tableCellType` attribute changes.
- * This is necessary because changing from `<td>` to `<th>` (or vice versa) requires rebuilding the element.
- *
- * @param model The editor model.
- * @param editing The editing controller.
- */
-function registerTableCellTypeReconversionHandler( model: Model, editing: EditingController ): void {
-	model.document.on( 'change:data', () => {
-		const cellsToReconvert: Set<ModelElement> = new Set();
-		const { differ } = model.document;
-
-		for ( const change of differ.getChanges() ) {
-			// Only process attribute changes.
-			if ( change.type !== 'attribute' || change.attributeKey !== 'tableCellType' ) {
-				continue;
-			}
-
-			// Get the table cell element and get the view element for this table cell.
-			const tableCell = change.range.start.nodeAfter as ModelElement;
-			const viewElement = editing.mapper.toViewElement( tableCell )!;
-
-			// Determine the expected element name based on the new attribute value.
-			const cellType = tableCell.getAttribute( 'tableCellType' );
-			const expectedElementName = cellType === 'header' ? 'th' : 'td';
-
-			// Only reconvert if the element name actually needs to change.
-			if ( viewElement?.name !== expectedElementName ) {
-				cellsToReconvert.add( tableCell );
-			}
-		}
-
-		for ( const cell of cellsToReconvert ) {
-			editing.reconvertItem( cell );
-		}
-	} );
-}

@@ -28,22 +28,54 @@ import { isSingleParagraphWithoutAttributes } from './downcast.js';
  * @internal
  */
 export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
-	const differ = model.document.differ;
+	updateTableCellType( model, editing );
+	updateTableCellContent( model, editing );
+}
 
-	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
-	const cellsToCheck = new Set();
+function updateTableCellType( model: Model, editing: EditingController ): void {
+	const differ = model.document.differ;
+	const cellsToReconvert = new Set<ModelElement>();
 
 	for ( const change of differ.getChanges() ) {
-		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
+		// If the `tableCellType` attribute changed, the entire cell needs to be re-rendered.
+		if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+			const tableCell = change.range.start.nodeAfter as ModelElement;
 
-		if ( parent.is( 'element', 'tableCell' ) ) {
-			cellsToCheck.add( parent );
+			if ( tableCell.is( 'element', 'tableCell' ) ) {
+				cellsToReconvert.add( tableCell );
+			}
 		}
 	}
 
-	for ( const tableCell of cellsToCheck.values() as Iterable<ModelElement> ) {
+	// Reconvert table cells that had their `tableCellType` attribute changed.
+	for ( const tableCell of cellsToReconvert ) {
+		const viewElement = editing.mapper.toViewElement( tableCell );
+		const cellType = tableCell.getAttribute( 'tableCellType' );
+		const expectedElementName = cellType === 'header' ? 'th' : 'td';
+
+		if ( viewElement?.name !== expectedElementName ) {
+			editing.reconvertItem( tableCell );
+		}
+	}
+}
+
+function updateTableCellContent( model: Model, editing: EditingController ): void {
+	const differ = model.document.differ;
+	const cellsToCheck = new Set<ModelElement>();
+
+	for ( const change of differ.getChanges() ) {
+		// If any change happened inside a table cell, mark it for checking.
+		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
+
+		if ( parent.is( 'element', 'tableCell' ) ) {
+			cellsToCheck.add( parent as ModelElement );
+		}
+	}
+
+	// Reconvert paragraphs inside table cells that need refreshing.
+	for ( const tableCell of cellsToCheck ) {
 		const paragraphsToRefresh = Array.from( tableCell.getChildren() )
-			.filter( child => shouldRefresh( child as ModelElement, editing.mapper ) );
+			.filter( child => shouldRefreshCellParagraph( child as ModelElement, editing.mapper ) );
 
 		for ( const paragraph of paragraphsToRefresh ) {
 			editing.reconvertItem( paragraph );
@@ -54,7 +86,7 @@ export function tableCellRefreshHandler( model: Model, editing: EditingControlle
 /**
  * Check if given model element needs refreshing.
  */
-function shouldRefresh( child: ModelElement, mapper: Mapper ) {
+function shouldRefreshCellParagraph( child: ModelElement, mapper: Mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
 		return false;
 	}
