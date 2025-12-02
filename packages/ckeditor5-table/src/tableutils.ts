@@ -999,7 +999,7 @@ export class TableUtils extends Plugin {
 
 		// If heading rows were reduced, set body type to all cells in rows that are no longer in heading section.
 		if ( checkExisting && headingRows < oldHeadingRows ) {
-			for ( let row = headingRows; row <= oldHeadingRows; row++ ) {
+			for ( let row = headingRows; row < oldHeadingRows; row++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading rows count.
 				if ( !isEntireCellsLineHeader( { table, row } ) ) {
@@ -1080,7 +1080,7 @@ export class TableUtils extends Plugin {
 
 		// If heading columns were reduced, set body type to all cells in columns that are no longer in heading section.
 		if ( checkExisting && headingColumns < oldHeadingColumns ) {
-			for ( let column = headingColumns; column <= oldHeadingColumns; column++ ) {
+			for ( let column = headingColumns; column < oldHeadingColumns; column++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading columns count.
 				if ( !isEntireCellsLineHeader( { table, column } ) ) {
