@@ -8,15 +8,15 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelTable, viewTable } from '../../_utils/utils.js';
-import { TableCellTypeEditing } from '../../../src/tablecelltype/tablecelltypeediting.js';
-import { TableCellTypeCommand } from '../../../src/tablecelltype/commands/tablecelltypecommand.js';
+import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellTypeCommand } from '../../../src/tablecellproperties/commands/tablecelltypecommand.js';
 
 describe( 'TableCellTypeCommand', () => {
 	let editor, model, command;
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableCellTypeEditing ],
+			plugins: [ Paragraph, TableCellPropertiesEditing ],
 			experimentalFlags: {
 				tableCellTypeSupport: true
 			}

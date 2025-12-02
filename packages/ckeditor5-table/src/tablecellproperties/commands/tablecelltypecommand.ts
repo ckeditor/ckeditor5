@@ -4,17 +4,19 @@
  */
 
 /**
- * @module table/tablecelltype/commands/tablecelltypecommand
+ * @module table/tablecellproperties/commands/tablecelltypecommand
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { Batch, ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 
-import { TableCellPropertyCommand } from '../../tablecellproperties/commands/tablecellpropertycommand.js';
-import { TableWalker } from '../../tablewalker.js';
-import type { TableUtils } from '../../tableutils.js';
+import { TableUtils } from '../../tableutils.js';
+import {
+	TableCellPropertyCommand,
+	type TableCellPropertyCommandAfterExecuteEvent
+} from './tablecellpropertycommand.js';
 
-import { groupCellsByTable } from '../utils.js';
+import { groupCellsByTable, isEntireCellsLineHeader } from '../../utils/common.js';
 
 /**
  * The table cell type command.
@@ -40,37 +42,21 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 	 */
 	constructor( editor: Editor ) {
 		super( editor, 'tableCellType', 'data' );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public override execute( options: { value: TableCellType; batch?: Batch } ): void {
-		const { value, batch } = options;
-		const { model, plugins } = this.editor;
-
-		const tableUtils: TableUtils = plugins.get( 'TableUtils' );
-		const tableCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-
-		model.enqueueChange( batch, writer => {
-			const valueToSet = this._getValueToSet( value );
-
-			if ( valueToSet ) {
-				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, valueToSet, tableCell ) );
-			} else {
-				tableCells.forEach( tableCell => writer.removeAttribute( this.attributeName, tableCell ) );
-			}
+		this.on<TableCellPropertyCommandAfterExecuteEvent>( 'afterExecute', ( _, data ) => {
+			const { writer, tableCells, valueToSet } = data;
+			const tableUtils = this.editor.plugins.get( TableUtils );
 
 			switch ( valueToSet ) {
 				// If changing cell type to 'header', increment headingRows/headingColumns if entire row/column is of header type.
 				case 'header':
-					adjustHeadingAttributesWhenChangingToHeader( tableCells, writer, tableUtils );
+					adjustHeadingAttributesWhenChangingToHeader( tableUtils, writer, tableCells );
 					break;
 
 				// If changing cell type to 'data', decrement headingRows/headingColumns
 				// if at least one row/column is no longer of header type.
 				default:
-					adjustHeadingAttributesWhenChangingToData( tableCells, writer, tableUtils );
+					adjustHeadingAttributesWhenChangingToData( tableUtils, writer, tableCells );
 					break;
 			}
 		} );
@@ -99,20 +85,16 @@ export type TableCellType = 'data' | 'header';
  *
  * headingRows: 1                  headingRows: 2
  * ```
- *
- * @param tableCells The table cells being changed.
- * @param writer The model writer.
- * @param tableUtils The table utils plugin instance.
  */
 function adjustHeadingAttributesWhenChangingToHeader(
-	tableCells: Array<ModelElement>,
+	tableUtils: TableUtils,
 	writer: ModelWriter,
-	tableUtils: TableUtils
+	tableCells: Array<ModelElement>
 ): void {
-	const tableMap = groupCellsByTable( tableCells );
+	const tablesMap = groupCellsByTable( tableCells );
 
 	// Process each table.
-	for ( const [ table, cells ] of tableMap ) {
+	for ( const [ table, cells ] of tablesMap ) {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
@@ -135,14 +117,9 @@ function adjustHeadingAttributesWhenChangingToHeader(
 		if (
 			changedRowsSet.has( headingRows ) &&
 			headingRows < tableRowCount &&
-			isEntireLineHeader( {
-				table,
-				index: headingRows,
-				cellsBeingChanged: cells,
-				lineType: 'row'
-			} )
+			isEntireCellsLineHeader( { table, row: headingRows } )
 		) {
-			writer.setAttribute( 'headingRows', headingRows + 1, table );
+			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1 );
 		}
 
 		// Check if we should increment headingColumns.
@@ -150,14 +127,9 @@ function adjustHeadingAttributesWhenChangingToHeader(
 		if (
 			changedColumnsSet.has( headingColumns ) &&
 			headingColumns < tableColumnCount &&
-			isEntireLineHeader( {
-				table,
-				index: headingColumns,
-				cellsBeingChanged: cells,
-				lineType: 'column'
-			} )
+			isEntireCellsLineHeader( { table, column: headingColumns } )
 		) {
-			writer.setAttribute( 'headingColumns', headingColumns + 1, table );
+			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1 );
 		}
 	}
 }
@@ -177,20 +149,16 @@ function adjustHeadingAttributesWhenChangingToHeader(
  *
  * headingRows: 2                  headingRows: 1
  * ```
- *
- * @param tableCells The table cells being changed.
- * @param writer The model writer.
- * @param tableUtils The table utils plugin instance.
  */
 function adjustHeadingAttributesWhenChangingToData(
-	tableCells: Array<ModelElement>,
+	tableUtils: TableUtils,
 	writer: ModelWriter,
-	tableUtils: TableUtils
+	tableCells: Array<ModelElement>
 ): void {
-	const tableMap = groupCellsByTable( tableCells );
+	const tablesMap = groupCellsByTable( tableCells );
 
 	// Process each table.
-	for ( const [ table, cells ] of tableMap ) {
+	for ( const [ table, cells ] of tablesMap ) {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
@@ -205,72 +173,22 @@ function adjustHeadingAttributesWhenChangingToData(
 		for ( const cell of cells ) {
 			const { row, column } = tableUtils.getCellLocation( cell );
 
-			// If cell is in heading rows.
-			if ( row < headingRows ) {
-				minHeadingRow = Math.min( minHeadingRow, row );
-			}
-
-			// If cell is in heading columns.
-			if ( column < headingColumns ) {
-				minHeadingColumn = Math.min( minHeadingColumn, column );
-			}
+			minHeadingRow = Math.min( minHeadingRow, headingRows, row );
+			minHeadingColumn = Math.min( minHeadingColumn, headingColumns, column );
 		}
 
 		// Update headingRows if necessary.
 		if ( minHeadingRow < headingRows ) {
-			setOrRemoveAttribute( writer, 'headingRows', minHeadingRow, table );
+			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, {
+				resetFormerHeadingCells: false
+			} );
 		}
 
 		// Update headingColumns if necessary.
 		if ( minHeadingColumn < headingColumns ) {
-			setOrRemoveAttribute( writer, 'headingColumns', minHeadingColumn, table );
+			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, {
+				resetFormerHeadingCells: false
+			} );
 		}
-	}
-}
-
-/**
- * Checks if all cells in a given row or column are header cells.
- */
-function isEntireLineHeader(
-	{
-		table,
-		index,
-		cellsBeingChanged,
-		lineType
-	}: {
-		table: ModelElement;
-		index: number;
-		cellsBeingChanged: Array<ModelElement>;
-		lineType: 'row' | 'column';
-	}
-): boolean {
-	const tableWalker = new TableWalker( table, { [ lineType ]: index } );
-
-	for ( const { cell } of tableWalker ) {
-		const cellType = cell.getAttribute( 'tableCellType' ) || 'data';
-		const isBeingChangedToType = cellsBeingChanged.includes( cell );
-
-		if ( cellType !== 'header' && !isBeingChangedToType ) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-/**
- * Sets or removes an attribute on the table depending on the value.
- * If value is 0, removes the attribute; otherwise sets it.
- */
-function setOrRemoveAttribute(
-	writer: ModelWriter,
-	attributeName: string,
-	value: number,
-	table: ModelElement
-): void {
-	if ( value === 0 ) {
-		writer.removeAttribute( attributeName, table );
-	} else {
-		writer.setAttribute( attributeName, value, table );
 	}
 }

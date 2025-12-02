@@ -15,7 +15,6 @@ import type {
 	TableCellProperties,
 	TableCellPropertiesEditing,
 	TableCellPropertiesUI,
-	TableCellTypeEditing,
 	TableCellWidthEditing,
 	TableClipboard,
 	TableColumnResize,
@@ -122,7 +121,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableCellPropertiesEditing.pluginName ]: TableCellPropertiesEditing;
 		[ TableCellPropertiesUI.pluginName ]: TableCellPropertiesUI;
 		[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
-		[ TableCellTypeEditing.pluginName ]: TableCellTypeEditing;
 		[ TableClipboard.pluginName ]: TableClipboard;
 		[ TableColumnResize.pluginName ]: TableColumnResize;
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;

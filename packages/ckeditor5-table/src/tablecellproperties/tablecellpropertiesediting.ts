@@ -16,12 +16,12 @@ import {
 	type Conversion,
 	type ViewElement,
 	type UpcastConversionApi,
-	type UpcastConversionData
+	type UpcastConversionData,
+	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
-import { TableCellTypeEditing } from '../tablecelltype/tablecelltypeediting.js';
 import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
 import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
 import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
@@ -31,6 +31,7 @@ import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizon
 import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
+import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
@@ -90,7 +91,7 @@ export class TableCellPropertiesEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ TableEditing, TableCellWidthEditing, TableCellTypeEditing ] as const;
+		return [ TableEditing, TableCellWidthEditing ] as const;
 	}
 
 	/**
@@ -165,6 +166,12 @@ export class TableCellPropertiesEditing extends Plugin {
 			'tableCellVerticalAlignment',
 			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
+
+		if ( editor.config.get( 'experimentalFlags.tableCellTypeSupport' ) ) {
+			enableCellTypeProperty( schema, conversion );
+
+			editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
+		}
 	}
 }
 
@@ -353,4 +360,28 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 				}
 			}
 		} );
+}
+
+/**
+ * Enables the `tableCellType` attribute for table cells.
+ */
+function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
+	schema.extend( 'tableCell', {
+		allowAttributes: [ 'tableCellType' ]
+	} );
+
+	schema.setAttributeProperties( 'tableCellType', {
+		isFormatting: true
+	} );
+
+	// Upcast conversion for td/th elements.
+	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
+		const { writer } = conversionApi;
+		const { modelRange } = data;
+		const modelElement = modelRange?.start.nodeAfter;
+
+		if ( modelElement?.is( 'element', 'tableCell' ) ) {
+			writer.setAttribute( 'tableCellType', 'header', modelElement );
+		}
+	} ) );
 }
