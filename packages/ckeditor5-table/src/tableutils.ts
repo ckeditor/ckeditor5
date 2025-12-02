@@ -1369,11 +1369,14 @@ function createEmptyRows(
  */
 function createCells( cells: number, writer: ModelWriter, insertPosition: ModelPosition, attributes = {} ) {
 	const createdCells: Array<ModelElement> = [];
+	let currentPosition = insertPosition;
 
 	for ( let i = 0; i < cells; i++ ) {
-		createdCells.push(
-			createEmptyTableCell( writer, insertPosition, attributes )
-		);
+		const cell = createEmptyTableCell( writer, currentPosition, attributes );
+
+		createdCells.push( cell );
+
+		currentPosition = writer.createPositionAfter( cell );
 	}
 
 	return createdCells;
