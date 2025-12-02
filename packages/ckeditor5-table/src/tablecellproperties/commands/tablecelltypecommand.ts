@@ -14,10 +14,10 @@ import { TableUtils } from '../../tableutils.js';
 import {
 	TableCellPropertyCommand,
 	type TableCellPropertyCommandAfterExecuteEvent
-} from '../../tablecellproperties/commands/tablecellpropertycommand.js';
+} from './tablecellpropertycommand.js';
 
-import { groupCellsByTable } from '../utils.js';
 import { TableWalker } from '../../tablewalker.js';
+import { groupCellsByTable } from '../utils.js';
 
 /**
  * The table cell type command.

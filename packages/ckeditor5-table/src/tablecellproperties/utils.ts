@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecelltype/utils
+ * @module table/tablecellproperties/utils
  */
 
 import type { ModelElement } from 'ckeditor5/src/engine.js';

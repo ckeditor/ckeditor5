@@ -17,7 +17,6 @@ export { TableCellProperties } from './tablecellproperties.js';
 export { TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting.js';
 export { TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 export { TableCellPropertiesView, type TableCellPropertiesViewOptions } from './tablecellproperties/ui/tablecellpropertiesview.js';
-export { TableCellTypeEditing } from './tablecelltype/tablecelltypeediting.js';
 export { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
 export { TableLayout } from './tablelayout.js';
 export { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
@@ -82,7 +81,7 @@ export { TableBorderWidthCommand } from './tableproperties/commands/tableborderw
 export { TableHeightCommand } from './tableproperties/commands/tableheightcommand.js';
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
-export { TableCellTypeCommand, type TableCellType } from './tablecelltype/commands/tablecelltypecommand.js';
+export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
 export {
 	TableCellPropertyCommand,
 	type TableCellPropertyCommandAfterExecuteEvent
