@@ -18,7 +18,6 @@ import {
 
 import { groupCellsByTable } from '../utils.js';
 import { TableWalker } from '../../tablewalker.js';
-import { updateNumericAttribute } from '../../utils/common.js';
 
 /**
  * The table cell type command.
@@ -45,20 +44,20 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 	constructor( editor: Editor ) {
 		super( editor, 'tableCellType', 'data' );
 
-		this.on<TableCellPropertyCommandAfterExecuteEvent>( 'afterExecute', ( evt, data ) => {
+		this.on<TableCellPropertyCommandAfterExecuteEvent>( 'afterExecute', ( _, data ) => {
 			const { writer, tableCells, valueToSet } = data;
 			const tableUtils = this.editor.plugins.get( TableUtils );
 
 			switch ( valueToSet ) {
 				// If changing cell type to 'header', increment headingRows/headingColumns if entire row/column is of header type.
 				case 'header':
-					adjustHeadingAttributesWhenChangingToHeader( tableCells, writer, tableUtils );
+					adjustHeadingAttributesWhenChangingToHeader( tableUtils, writer, tableCells );
 					break;
 
 				// If changing cell type to 'data', decrement headingRows/headingColumns
 				// if at least one row/column is no longer of header type.
 				default:
-					adjustHeadingAttributesWhenChangingToData( tableCells, writer, tableUtils );
+					adjustHeadingAttributesWhenChangingToData( tableUtils, writer, tableCells );
 					break;
 			}
 		} );
@@ -87,15 +86,11 @@ export type TableCellType = 'data' | 'header';
  *
  * headingRows: 1                  headingRows: 2
  * ```
- *
- * @param tableCells The table cells being changed.
- * @param writer The model writer.
- * @param tableUtils The table utils plugin instance.
  */
 function adjustHeadingAttributesWhenChangingToHeader(
-	tableCells: Array<ModelElement>,
+	tableUtils: TableUtils,
 	writer: ModelWriter,
-	tableUtils: TableUtils
+	tableCells: Array<ModelElement>
 ): void {
 	const tablesMap = groupCellsByTable( tableCells );
 
@@ -125,7 +120,9 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingRows < tableRowCount &&
 			isEntireLineHeader( { table, row: headingRows } )
 		) {
-			updateNumericAttribute( 'headingRows', headingRows + 1, table, writer, 0 );
+			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1, {
+				updateCellType: false
+			} );
 		}
 
 		// Check if we should increment headingColumns.
@@ -135,7 +132,9 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingColumns < tableColumnCount &&
 			isEntireLineHeader( { table, column: headingColumns } )
 		) {
-			updateNumericAttribute( 'headingColumns', headingColumns + 1, table, writer, 0 );
+			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1, {
+				updateCellType: false
+			} );
 		}
 	}
 }
@@ -155,15 +154,11 @@ function adjustHeadingAttributesWhenChangingToHeader(
  *
  * headingRows: 2                  headingRows: 1
  * ```
- *
- * @param tableCells The table cells being changed.
- * @param writer The model writer.
- * @param tableUtils The table utils plugin instance.
  */
 function adjustHeadingAttributesWhenChangingToData(
-	tableCells: Array<ModelElement>,
+	tableUtils: TableUtils,
 	writer: ModelWriter,
-	tableUtils: TableUtils
+	tableCells: Array<ModelElement>
 ): void {
 	const tablesMap = groupCellsByTable( tableCells );
 
@@ -189,12 +184,12 @@ function adjustHeadingAttributesWhenChangingToData(
 
 		// Update headingRows if necessary.
 		if ( minHeadingRow < headingRows ) {
-			updateNumericAttribute( 'headingRows', minHeadingRow, table, writer, 0 );
+			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, { updateCellType: false } );
 		}
 
 		// Update headingColumns if necessary.
 		if ( minHeadingColumn < headingColumns ) {
-			updateNumericAttribute( 'headingColumns', minHeadingColumn, table, writer, 0 );
+			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, { updateCellType: false } );
 		}
 	}
 }
