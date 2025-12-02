@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { _setModelData } from '@ckeditor/ckeditor5-engine';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { modelTable, viewTable } from '../../_utils/utils.js';
 import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
@@ -203,6 +203,37 @@ describe( 'TableCellTypeCommand', () => {
 
 				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
 			} );
+
+			it( 'should properly set headingRows and headingColumns ' +
+					'if whole table is header and column in the middle is set to data', () => {
+				_setModelData( model, modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', isSelected: true, tableCellType: 'header' },
+						{ contents: '02', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', isSelected: true, tableCellType: 'header' },
+						{ contents: '12', tableCellType: 'header' }
+					]
+				], { headingRows: 2, headingColumns: 3 } ) );
+
+				command.execute( { value: 'data' } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01' },
+						{ contents: '02', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11' },
+						{ contents: '12', tableCellType: 'header' }
+					]
+				], { headingColumns: 1 } ) );
+			} );
 		} );
 
 		describe( 'single cell changes', () => {
@@ -314,7 +345,7 @@ describe( 'TableCellTypeCommand', () => {
 				] ) );
 			} );
 
-			it( 'should decrement headingColumns when changing second column (header) to data but keep existing cells as th', () => {
+			it( 'should decrement headingColumns when changing second column cell (header) to data but keep existing cells as th', () => {
 				_setModelData( model, modelTable( [
 					[
 						{ contents: '00', tableCellType: 'header' },
