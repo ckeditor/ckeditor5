@@ -16,7 +16,7 @@ import {
 	type TableCellPropertyCommandAfterExecuteEvent
 } from './tablecellpropertycommand.js';
 
-import { groupCellsByTable, isEntireCellsLineHeader } from '../utils.js';
+import { groupCellsByTable, isEntireCellsLineHeader } from '../../utils/common.js';
 
 /**
  * The table cell type command.
@@ -119,9 +119,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingRows < tableRowCount &&
 			isEntireCellsLineHeader( { table, row: headingRows } )
 		) {
-			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1, {
-				updateCellType: false
-			} );
+			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1, { shallow: true } );
 		}
 
 		// Check if we should increment headingColumns.
@@ -131,9 +129,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingColumns < tableColumnCount &&
 			isEntireCellsLineHeader( { table, column: headingColumns } )
 		) {
-			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1, {
-				updateCellType: false
-			} );
+			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1, { shallow: true } );
 		}
 	}
 }
@@ -183,12 +179,12 @@ function adjustHeadingAttributesWhenChangingToData(
 
 		// Update headingRows if necessary.
 		if ( minHeadingRow < headingRows ) {
-			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, { updateCellType: false } );
+			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, { shallow: true } );
 		}
 
 		// Update headingColumns if necessary.
 		if ( minHeadingColumn < headingColumns ) {
-			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, { updateCellType: false } );
+			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, { shallow: true } );
 		}
 	}
 }

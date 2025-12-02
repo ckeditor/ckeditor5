@@ -20,7 +20,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
-import { createEmptyTableCell, updateNumericAttribute } from './utils/common.js';
+import { createEmptyTableCell, updateNumericAttribute, isEntireCellsLineHeader } from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';
 
@@ -212,7 +212,7 @@ export class TableUtils extends Plugin {
 				headingRows += rowsToInsert;
 
 				this.setHeadingRowsCount( writer, table, headingRows, {
-					updateCellType: false
+					shallow: true
 				} );
 			}
 
@@ -330,7 +330,7 @@ export class TableUtils extends Plugin {
 				headingColumns += columnsToInsert;
 
 				this.setHeadingColumnsCount( writer, table, headingColumns, {
-					updateCellType: false
+					shallow: true
 				} );
 			}
 
@@ -936,26 +936,77 @@ export class TableUtils extends Plugin {
 	 * @param table The table model element.
 	 * @param headingRows The number of heading rows to set.
 	 * @param options Additional options.
-	 * @param options.updateCellType If set to `false` the cell types won't be updated after changing the number of heading rows.
+	 * @param options.shallow If set to `true` it will only update the `headingRows` attribute
+	 * without updating the cell types in the table. Default is `false`.
 	 */
 	public setHeadingRowsCount(
 		writer: ModelWriter,
 		table: ModelElement,
 		headingRows: number,
-		{ updateCellType = true }: { updateCellType?: boolean } = {}
+		{
+			shallow
+		}: {
+			shallow?: boolean;
+		} = {}
 	): void {
+		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
+
+		if ( headingRows === oldHeadingRows ) {
+			return;
+		}
+
 		updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
 
-		if ( updateCellType ) {
-			for ( const { cell, row, column } of new TableWalker( table, { endRow: headingRows - 1 } ) ) {
-				updateTableCellType( {
-					table,
-					writer,
-					cell,
-					row,
-					column
-				} );
+		if ( shallow ) {
+			return;
+		}
+
+		// Set header type to all cells in new heading rows.
+		const walker = new TableWalker( table, {
+			startRow: oldHeadingRows,
+			endRow: headingRows - 1
+		} );
+
+		for ( const { cell, row, column } of walker ) {
+			updateTableCellType( {
+				table,
+				writer,
+				cell,
+				row,
+				column
+			} );
+		}
+
+		// If heading rows were reduced, set body type to all cells in rows that are no longer in heading section.
+		if ( headingRows < oldHeadingRows ) {
+			for ( let row = headingRows; row <= oldHeadingRows; row++ ) {
+				// Handle edge case when some cells were already changed to body type manually,
+				// before changing heading rows count.
+				if ( !isEntireCellsLineHeader( { table, row } ) ) {
+					break;
+				}
+
+				for ( const { cell, row: cellRow, column } of new TableWalker( table, { row } ) ) {
+					updateTableCellType( {
+						table,
+						writer,
+						cell,
+						row: cellRow,
+						column
+					} );
+				}
 			}
+		}
+
+		// If following rows looks like header, expand heading rows to cover them.
+		if ( headingRows > oldHeadingRows ) {
+			const totalRows = this.getRows( table );
+
+			while ( headingRows < totalRows && isEntireCellsLineHeader( { table, row: headingRows } ) ) {
+				headingRows++;
+			}
+
+			updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
 		}
 	}
 
@@ -966,26 +1017,77 @@ export class TableUtils extends Plugin {
 	 * @param table The table model element.
 	 * @param headingColumns The number of heading columns to set.
 	 * @param options Additional options.
-	 * @param options.updateCellType If set to `false` the cell types won't be updated after changing the number of heading columns.
+	 * @param options.shallow If set to `true` it will only update the `headingColumns` attribute
+	 * without updating the cell types in the table. Default is `false`.
 	 */
 	public setHeadingColumnsCount(
 		writer: ModelWriter,
 		table: ModelElement,
 		headingColumns: number,
-		{ updateCellType = true }: { updateCellType?: boolean } = {}
+		{
+			shallow
+		}: {
+			shallow?: boolean;
+		} = {}
 	): void {
+		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+		if ( headingColumns === oldHeadingColumns ) {
+			return;
+		}
+
 		updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
 
-		if ( updateCellType ) {
-			for ( const { cell, row, column } of new TableWalker( table, { endColumn: headingColumns - 1 } ) ) {
-				updateTableCellType( {
-					table,
-					writer,
-					cell,
-					row,
-					column
-				} );
+		if ( shallow ) {
+			return;
+		}
+
+		// Set header type to all cells in new heading columns.
+		const walker = new TableWalker( table, {
+			startColumn: oldHeadingColumns,
+			endColumn: headingColumns - 1
+		} );
+
+		for ( const { cell, row, column } of walker ) {
+			updateTableCellType( {
+				table,
+				writer,
+				cell,
+				row,
+				column
+			} );
+		}
+
+		// If heading columns were reduced, set body type to all cells in columns that are no longer in heading section.
+		if ( headingColumns < oldHeadingColumns ) {
+			for ( let column = headingColumns; column <= oldHeadingColumns; column++ ) {
+				// Handle edge case when some cells were already changed to body type manually,
+				// before changing heading columns count.
+				if ( !isEntireCellsLineHeader( { table, column } ) ) {
+					break;
+				}
+
+				for ( const { cell, row, column: cellColumn } of new TableWalker( table, { column } ) ) {
+					updateTableCellType( {
+						table,
+						writer,
+						cell,
+						row,
+						column: cellColumn
+					} );
+				}
 			}
+		}
+
+		// If following columns looks like header, expand heading columns to cover them.
+		if ( headingColumns > oldHeadingColumns ) {
+			const totalColumns = this.getColumns( table );
+
+			while ( headingColumns < totalColumns && isEntireCellsLineHeader( { table, column: headingColumns } ) ) {
+				headingColumns++;
+			}
+
+			updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
 		}
 	}
 
