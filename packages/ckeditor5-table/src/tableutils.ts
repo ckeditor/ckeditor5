@@ -484,6 +484,16 @@ export class TableUtils extends Plugin {
 				// because of cleaning empty rows and we only removed one of them.
 				removeEmptyRows( table, this );
 			}
+
+			// 3. If next rows are entirely header, adjust heading rows count.
+			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const totalRows = this.getRows( table );
+
+			while ( headingRows < totalRows && isEntireCellsLineHeader( { table, row: headingRows } ) ) {
+				headingRows++;
+			}
+
+			this.setHeadingRowsCount( writer, table, headingRows, { shallow: true } );
 		} );
 	}
 
@@ -560,6 +570,16 @@ export class TableUtils extends Plugin {
 				// because of cleaning empty columns and we only removed one of them.
 				removeEmptyColumns( table, this );
 			}
+
+			// If next columns are entirely header, adjust heading columns count.
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			const totalColumns = this.getColumns( table );
+
+			while ( headingColumns < totalColumns && isEntireCellsLineHeader( { table, column: headingColumns } ) ) {
+				headingColumns++;
+			}
+
+			this.setHeadingColumnsCount( writer, table, headingColumns, { shallow: true } );
 		} );
 	}
 
@@ -943,11 +963,7 @@ export class TableUtils extends Plugin {
 		writer: ModelWriter,
 		table: ModelElement,
 		headingRows: number,
-		{
-			shallow
-		}: {
-			shallow?: boolean;
-		} = {}
+		{ shallow }: { shallow?: boolean } = {}
 	): void {
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
@@ -962,9 +978,10 @@ export class TableUtils extends Plugin {
 		}
 
 		// Set header type to all cells in new heading rows.
+		const maxRows = this.getRows( table );
 		const walker = new TableWalker( table, {
-			startRow: oldHeadingRows,
-			endRow: headingRows - 1
+			startRow: Math.min( maxRows, oldHeadingRows, headingRows ),
+			endRow: Math.min( maxRows, Math.max( oldHeadingRows, headingRows ) - 1 )
 		} );
 
 		for ( const { cell, row, column } of walker ) {
@@ -1024,11 +1041,7 @@ export class TableUtils extends Plugin {
 		writer: ModelWriter,
 		table: ModelElement,
 		headingColumns: number,
-		{
-			shallow
-		}: {
-			shallow?: boolean;
-		} = {}
+		{ shallow }: { shallow?: boolean } = {}
 	): void {
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
@@ -1043,9 +1056,10 @@ export class TableUtils extends Plugin {
 		}
 
 		// Set header type to all cells in new heading columns.
+		const maxColumns = this.getColumns( table );
 		const walker = new TableWalker( table, {
-			startColumn: oldHeadingColumns,
-			endColumn: headingColumns - 1
+			startColumn: Math.min( maxColumns, oldHeadingColumns, headingColumns ),
+			endColumn: Math.min( maxColumns, Math.max( oldHeadingColumns, headingColumns ) - 1 )
 		} );
 
 		for ( const { cell, row, column } of walker ) {
