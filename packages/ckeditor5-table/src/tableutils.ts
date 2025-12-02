@@ -204,16 +204,33 @@ export class TableUtils extends Plugin {
 		}
 
 		model.change( writer => {
-			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
-				this.setHeadingRowsCount( writer, table, headingRows + rowsToInsert );
+				headingRows += rowsToInsert;
+
+				this.setHeadingRowsCount( writer, table, headingRows, {
+					updateCellType: false
+				} );
 			}
 
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
 			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
-				createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
+				const rows = createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
+
+				for ( let rowOffset = 0; rowOffset < rows.length; rowOffset++ ) {
+					const row = rows[ rowOffset ];
+
+					for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
+						const cell = row[ columnIndex ];
+
+						if ( insertAt + rowOffset < headingRows || columnIndex < headingColumns ) {
+							writer.setAttribute( 'tableCellType', 'header', cell );
+						}
+					}
+				}
 
 				return;
 			}
@@ -256,7 +273,12 @@ export class TableUtils extends Plugin {
 
 					// Insert the empty cell only if this slot is not row-spanned from any other cell.
 					if ( colspan > 0 ) {
-						createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : undefined );
+						const insertedCells = createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : undefined );
+
+						// If we insert row in heading section, set proper cell type.
+						if ( insertAt + rowIndex < headingRows || cellIndex < headingColumns ) {
+							writer.setAttribute( 'tableCellType', 'header', insertedCells );
+						}
 					}
 
 					// Skip the col-spanned slots, there won't be any cells.
@@ -300,24 +322,40 @@ export class TableUtils extends Plugin {
 		const columnsToInsert = options.columns || 1;
 
 		model.change( writer => {
-			const headingColumns = table.getAttribute( 'headingColumns' ) as number;
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number;
 
 			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
 			if ( insertAt < headingColumns ) {
-				this.setHeadingColumnsCount( writer, table, headingColumns + columnsToInsert );
+				headingColumns += columnsToInsert;
+
+				this.setHeadingColumnsCount( writer, table, headingColumns, {
+					updateCellType: false
+				} );
 			}
 
 			const tableColumns = this.getColumns( table );
 
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
+				let rowIndex = 0;
+
 				for ( const tableRow of table.getChildren() ) {
 					// Ignore non-row elements inside the table (e.g. caption).
 					if ( !tableRow.is( 'element', 'tableRow' ) ) {
 						continue;
 					}
 
-					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
+					const insertedCells = createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
+
+					// If we insert column in heading section, set proper cell type.
+					for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
+						if ( insertAt + columnOffset < headingColumns || rowIndex < headingRows ) {
+							writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+						}
+					}
+
+					rowIndex++;
 				}
 
 				return;
@@ -347,7 +385,14 @@ export class TableUtils extends Plugin {
 				} else {
 					// It's either cell at this column index or spanned cell by a row-spanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
+					const insertedCells = createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
+
+					// If we insert column in heading section, set proper cell type.
+					for ( let columnOffset = 0; columnOffset < insertedCells.length; columnOffset++ ) {
+						if ( insertAt + columnOffset < headingColumns || row < headingRows ) {
+							writer.setAttribute( 'tableCellType', 'header', insertedCells[ columnOffset ] );
+						}
+					}
 				}
 			}
 		} );
@@ -890,18 +935,27 @@ export class TableUtils extends Plugin {
 	 * @param writer The model writer.
 	 * @param table The table model element.
 	 * @param headingRows The number of heading rows to set.
+	 * @param options Additional options.
+	 * @param options.updateCellType If set to `false` the cell types won't be updated after changing the number of heading rows.
 	 */
-	public setHeadingRowsCount( writer: ModelWriter, table: ModelElement, headingRows: number ): void {
+	public setHeadingRowsCount(
+		writer: ModelWriter,
+		table: ModelElement,
+		headingRows: number,
+		{ updateCellType = true }: { updateCellType?: boolean } = {}
+	): void {
 		updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
 
-		for ( const { cell, row, column } of new TableWalker( table, { endRow: headingRows - 1 } ) ) {
-			updateTableCellType( {
-				table,
-				writer,
-				cell,
-				row,
-				column
-			} );
+		if ( updateCellType ) {
+			for ( const { cell, row, column } of new TableWalker( table, { endRow: headingRows - 1 } ) ) {
+				updateTableCellType( {
+					table,
+					writer,
+					cell,
+					row,
+					column
+				} );
+			}
 		}
 	}
 
@@ -911,18 +965,27 @@ export class TableUtils extends Plugin {
 	 * @param writer The model writer to use.
 	 * @param table The table model element.
 	 * @param headingColumns The number of heading columns to set.
+	 * @param options Additional options.
+	 * @param options.updateCellType If set to `false` the cell types won't be updated after changing the number of heading columns.
 	 */
-	public setHeadingColumnsCount( writer: ModelWriter, table: ModelElement, headingColumns: number ): void {
+	public setHeadingColumnsCount(
+		writer: ModelWriter,
+		table: ModelElement,
+		headingColumns: number,
+		{ updateCellType = true }: { updateCellType?: boolean } = {}
+	): void {
 		updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
 
-		for ( const { cell, row, column } of new TableWalker( table, { endColumn: headingColumns - 1 } ) ) {
-			updateTableCellType( {
-				table,
-				writer,
-				cell,
-				row,
-				column
-			} );
+		if ( updateCellType ) {
+			for ( const { cell, row, column } of new TableWalker( table, { endColumn: headingColumns - 1 } ) ) {
+				updateTableCellType( {
+					table,
+					writer,
+					cell,
+					row,
+					column
+				} );
+			}
 		}
 	}
 
@@ -1146,13 +1209,19 @@ export class TableUtils extends Plugin {
 function createEmptyRows(
 	writer: ModelWriter, table: ModelElement, insertAt: number, rows: number, tableCellToInsert: number, attributes = {}
 ) {
+	const insertedRows: Array<Array<ModelElement>> = [];
+
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
+		insertedRows.push(
+			createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes )
+		);
 	}
+
+	return insertedRows;
 }
 
 /**
@@ -1161,9 +1230,15 @@ function createEmptyRows(
  * @param cells The number of cells to create
  */
 function createCells( cells: number, writer: ModelWriter, insertPosition: ModelPosition, attributes = {} ) {
+	const createdCells: Array<ModelElement> = [];
+
 	for ( let i = 0; i < cells; i++ ) {
-		createEmptyTableCell( writer, insertPosition, attributes );
+		createdCells.push(
+			createEmptyTableCell( writer, insertPosition, attributes )
+		);
 	}
+
+	return createdCells;
 }
 
 /**
