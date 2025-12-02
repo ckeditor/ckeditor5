@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecelltype/commands/tablecelltypecommand
+ * @module table/tablecellproperties/commands/tablecelltypecommand
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
