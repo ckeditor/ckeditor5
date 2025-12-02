@@ -180,14 +180,14 @@ function adjustHeadingAttributesWhenChangingToData(
 		// Update headingRows if necessary.
 		if ( minHeadingRow < headingRows ) {
 			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, {
-				checkExisting: false
+				resetFormerHeadingCells: false
 			} );
 		}
 
 		// Update headingColumns if necessary.
 		if ( minHeadingColumn < headingColumns ) {
 			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, {
-				checkExisting: false
+				resetFormerHeadingCells: false
 			} );
 		}
 	}

@@ -958,7 +958,7 @@ export class TableUtils extends Plugin {
 	 * @param options Additional options.
 	 * @param options.shallow If set to `true` it will only update the `headingRows` attribute
 	 * without updating the cell types in the table. Default is `false`.
-	 * @param options.checkExisting If set to `true`, it will check if the rows that are no longer in the heading section
+	 * @param options.resetFormerHeadingCells If set to `true`, it will check if the rows that are no longer in the heading section
 	 * should be updated to body cells. Default is `true`.
 	 * @param options.autoExpand If set to `true`, it will check if the following rows look like a header and expand the heading section.
 	 * Default is `true`.
@@ -969,11 +969,11 @@ export class TableUtils extends Plugin {
 		headingRows: number,
 		options: {
 			shallow?: boolean;
-			checkExisting?: boolean;
+			resetFormerHeadingCells?: boolean;
 			autoExpand?: boolean;
 		} = {}
 	): void {
-		const { shallow, checkExisting = true, autoExpand = true } = options;
+		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 		if ( headingRows === oldHeadingRows ) {
@@ -998,7 +998,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If heading rows were reduced, set body type to all cells in rows that are no longer in heading section.
-		if ( checkExisting && headingRows < oldHeadingRows ) {
+		if ( resetFormerHeadingCells && headingRows < oldHeadingRows ) {
 			for ( let row = headingRows; row < oldHeadingRows; row++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading rows count.
@@ -1039,7 +1039,7 @@ export class TableUtils extends Plugin {
 	 * @param options Additional options.
 	 * @param options.shallow If set to `true` it will only update the `headingColumns` attribute
 	 * without updating the cell types in the table. Default is `false`.
-	 * @param options.checkExisting If set to `true`, it will check if the columns that are no longer in the heading section
+	 * @param options.resetFormerHeadingCells If set to `true`, it will check if the columns that are no longer in the heading section
 	 * should be updated to body cells. Default is `true`.
 	 * @param options.autoExpand If set to `true`, it will check if the following columns look like a header and expand the heading section.
 	 * Default is `true`.
@@ -1050,11 +1050,11 @@ export class TableUtils extends Plugin {
 		headingColumns: number,
 		options: {
 			shallow?: boolean;
-			checkExisting?: boolean;
+			resetFormerHeadingCells?: boolean;
 			autoExpand?: boolean;
 		} = {}
 	): void {
-		const { shallow, checkExisting = true, autoExpand = true } = options;
+		const { shallow, resetFormerHeadingCells: checkExisting = true, autoExpand = true } = options;
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		if ( headingColumns === oldHeadingColumns ) {
