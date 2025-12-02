@@ -2025,7 +2025,7 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 
-			describe( 'inserting rows / columns', () => {
+			describe( 'integration with insert row command', () => {
 				describe( 'inserting rows to tables with heading columns', () => {
 					it( 'should properly set `tableCellType=header` to first cell of heading columns ' +
 							'when appending new row below (single header column)', () => {
@@ -2134,6 +2134,78 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( 'inserting rows to tables with heading rows', () => {
+					it( 'should not set `tableCellType=header` when inserting row below the first row (header)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[ '10', '11' ]
+						], { headingRows: 1 } ) );
+
+						editor.execute( 'insertTableRowBelow' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ '', '' ],
+								[ '10', '11' ]
+							], { headingRows: 1 } )
+						);
+					} );
+
+					it( 'should properly set `tableCellType=header` when inserting row above the first row (header)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[ '10', '11' ]
+						], { headingRows: 1 } ) );
+
+						editor.execute( 'insertTableRowAbove' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[ { contents: '', tableCellType: 'header' }, { contents: '', tableCellType: 'header' } ],
+								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ '10', '11' ]
+							], { headingRows: 2 } )
+						);
+					} );
+
+					it( 'should not set `tableCellType=header` when inserting row below the last row (body)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ { contents: '10', isSelected: true }, '11' ]
+						], { headingRows: 1 } ) );
+
+						editor.execute( 'insertTableRowBelow' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ '10', '11' ],
+								[ '', '' ]
+							], { headingRows: 1 } )
+						);
+					} );
+
+					it( 'should not set `tableCellType=header` when inserting row above the last row (body)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ { contents: '10', isSelected: true }, '11' ]
+						], { headingRows: 1 } ) );
+
+						editor.execute( 'insertTableRowAbove' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ '', '' ],
+								[ '10', '11' ]
+							], { headingRows: 1 } )
+						);
+					} );
+				} );
+			} );
+
+			describe( 'integration with insert column command', () => {
 				describe( 'inserting columns to tables with heading rows', () => {
 					it( 'should properly set `tableCellType=header` to second cell of heading row ' +
 							'when appending new column to the right (single header row)', () => {
@@ -2197,6 +2269,104 @@ describe( 'table cell properties', () => {
 									'21'
 								]
 							], { headingRows: 2 } )
+						);
+					} );
+				} );
+
+				describe( 'inserting columns to tables with heading columns', () => {
+					it( 'should not set `tableCellType=header` when inserting column right of the first column (header)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[ { contents: '10', tableCellType: 'header' }, '11' ]
+						], { headingColumns: 1 } ) );
+
+						editor.execute( 'insertTableColumnRight' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									{ contents: '00', tableCellType: 'header' },
+									'',
+									'01'
+								],
+								[
+									{ contents: '10', tableCellType: 'header' },
+									'',
+									'11'
+								]
+							], { headingColumns: 1 } )
+						);
+					} );
+
+					it( 'should properly set `tableCellType=header` when inserting column left of the first column (header)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[ { contents: '10', tableCellType: 'header' }, '11' ]
+						], { headingColumns: 1 } ) );
+
+						editor.execute( 'insertTableColumnLeft' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									{ contents: '', tableCellType: 'header' },
+									{ contents: '00', tableCellType: 'header' },
+									'01'
+								],
+								[
+									{ contents: '', tableCellType: 'header' },
+									{ contents: '10', tableCellType: 'header' },
+									'11'
+								]
+							], { headingColumns: 2 } )
+						);
+					} );
+
+					it( 'should not set `tableCellType=header` when inserting column right of the last column (body)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, { contents: '01', isSelected: true } ],
+							[ { contents: '10', tableCellType: 'header' }, '11' ]
+						], { headingColumns: 1 } ) );
+
+						editor.execute( 'insertTableColumnRight' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									{ contents: '00', tableCellType: 'header' },
+									'01',
+									''
+								],
+								[
+									{ contents: '10', tableCellType: 'header' },
+									'11',
+									''
+								]
+							], { headingColumns: 1 } )
+						);
+					} );
+
+					it( 'should not set `tableCellType=header` when inserting column left of the last column (body)', () => {
+						_setModelData( model, modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, { contents: '01', isSelected: true } ],
+							[ { contents: '10', tableCellType: 'header' }, '11' ]
+						], { headingColumns: 1 } ) );
+
+						editor.execute( 'insertTableColumnLeft' );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+							modelTable( [
+								[
+									{ contents: '00', tableCellType: 'header' },
+									'',
+									'01'
+								],
+								[
+									{ contents: '10', tableCellType: 'header' },
+									'',
+									'11'
+								]
+							], { headingColumns: 1 } )
 						);
 					} );
 				} );
