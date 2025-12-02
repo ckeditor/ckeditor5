@@ -67,6 +67,7 @@ export class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
+		// TODO pass $inlineRoot DOM element name
 		this.editable = new InlineEditableUIView( locale, editingView, undefined, {
 			label: options.label
 		} );

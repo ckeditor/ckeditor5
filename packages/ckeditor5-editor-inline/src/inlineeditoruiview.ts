@@ -140,7 +140,7 @@ export class InlineEditorUIView extends EditorUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | string, // TODO string => create DOM element name
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 			useMenuBar?: boolean;

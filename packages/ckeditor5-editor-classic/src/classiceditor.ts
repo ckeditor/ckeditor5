@@ -72,12 +72,13 @@ export class ClassicEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.model.document.createRoot();
+		this.model.document.createRoot(); // TODO $inlineRoot
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
 
+		// TODO pass $inlineRoot DOM element name
 		const view = new ClassicEditorUIView( this.locale, this.editing.view, {
 			shouldToolbarGroupWhenFull,
 			useMenuBar: menuBarConfig.isVisible,

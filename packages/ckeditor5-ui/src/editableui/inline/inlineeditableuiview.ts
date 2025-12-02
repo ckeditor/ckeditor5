@@ -36,7 +36,7 @@ export class InlineEditableUIView extends EditableUIView {
 	constructor(
 		locale: Locale,
 		editingView: EditingView,
-		editableElement?: HTMLElement,
+		editableElement?: HTMLElement | string, // TODO string => create DOM element name
 		options: InlineEditableUIViewOptions = {}
 	) {
 		super( locale, editingView, editableElement );

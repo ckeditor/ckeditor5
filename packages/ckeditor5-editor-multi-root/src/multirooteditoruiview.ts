@@ -132,7 +132,8 @@ export class MultiRootEditorUIView extends EditorUIView {
 	 * @param label The accessible editable label used by assistive technologies.
 	 * @returns The created editable instance.
 	 */
-	public createEditable( editableName: string, editableElement?: HTMLElement, label?: string ): InlineEditableUIView {
+	public createEditable( editableName: string, editableElement?: HTMLElement | string, label?: string ): InlineEditableUIView {
+		// TODO $inlineRoot editableElement: string => create DOM element name
 		const editable = new InlineEditableUIView( this.locale, this._editingView, editableElement, {
 			label
 		} );

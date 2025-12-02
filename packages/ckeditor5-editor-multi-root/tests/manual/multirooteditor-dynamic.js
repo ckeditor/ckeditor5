@@ -24,7 +24,7 @@ let editor;
 
 function initEditor() {
 	MultiRootEditor
-		.create( editorData, {
+		.create( {}, {
 			plugins: [
 				Paragraph, Heading, Bold, Italic,
 				Image, ImageInsert, AutoImage, LinkImage,
@@ -48,6 +48,17 @@ function initEditor() {
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );
+
+			newEditor.on( 'addRoot', ( evt, root ) => {
+				editorData[ root.rootName ].replaceWith( newEditor.createEditable( root, {
+					editableElementName: editorData[ root.rootName ].tagName.toLowerCase()
+				} ) );
+			} );
+
+			newEditor.addRoot( 'intro', { data: editorData.intro.innerHTML, elementName: '$inlineRoot' } );
+			newEditor.addRoot( 'content', { data: editorData.content.innerHTML } );
+			newEditor.addRoot( 'outro', { data: editorData.outro.innerHTML } );
+			newEditor.addRoot( 'signature', { data: editorData.signature.innerHTML, elementName: '$inlineRoot' } );
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
 			document.querySelector( '.menubar-container' ).appendChild( newEditor.ui.view.menuBarView.element );
