@@ -2646,6 +2646,360 @@ describe( 'table cell properties', () => {
 					);
 				} );
 			} );
+
+			describe( 'integration with remove row command', () => {
+				it( 'should merge heading sections when removing a data row between them', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', isSelected: true },
+							'11'
+						],
+						[
+							{ contents: '20', tableCellType: 'header' },
+							{ contents: '21', tableCellType: 'header' }
+						],
+						[ '30', '31' ]
+					], { headingRows: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '20', tableCellType: 'header' },
+								{ contents: '21', tableCellType: 'header' }
+							],
+							[ '30', '31' ]
+						], { headingRows: 2 } )
+					);
+				} );
+
+				it( 'should merge heading sections when removing multiple data rows between them', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', isSelected: true },
+							{ contents: '11', isSelected: true } ],
+						[
+							{ contents: '20', isSelected: true },
+							{ contents: '21', isSelected: true } ],
+						[
+							{ contents: '30', tableCellType: 'header' },
+							{ contents: '31', tableCellType: 'header' }
+						],
+						[ '40', '41' ]
+					], { headingRows: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '30', tableCellType: 'header' },
+								{ contents: '31', tableCellType: 'header' }
+							],
+							[ '40', '41' ]
+						], { headingRows: 2 } )
+					);
+				} );
+
+				it( 'should decrement headingRows when removing a heading row', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header', isSelected: true },
+							{ contents: '11', tableCellType: 'header' }
+						],
+						[ '20', '21' ]
+					], { headingRows: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[ '20', '21' ]
+						], { headingRows: 1 } )
+					);
+				} );
+
+				it( 'should change preceding rows to data when removing heading row that splits heading section', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header', isSelected: true },
+							{ contents: '11', tableCellType: 'header' }
+						],
+						[ '20', '21' ],
+						[
+							{ contents: '30', tableCellType: 'header' },
+							{ contents: '31', tableCellType: 'header' }
+						]
+					], { headingRows: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[ '20', '21' ],
+							[
+								{ contents: '30', tableCellType: 'header' },
+								{ contents: '31', tableCellType: 'header' }
+							]
+						], { headingRows: 1 } )
+					);
+				} );
+
+				it( 'should not change headingRows when removing data row', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', isSelected: true },
+							'11'
+						],
+						[ '20', '21' ]
+					], { headingRows: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[ '20', '21' ]
+						], { headingRows: 1 } )
+					);
+				} );
+			} );
+
+			describe( 'integration with remove column command', () => {
+				it( 'should merge heading sections when removing a data column between them', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', isSelected: true },
+							{ contents: '02', tableCellType: 'header' },
+							'03'
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							'11',
+							{ contents: '12', tableCellType: 'header' },
+							'13'
+						]
+					], { headingColumns: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '02', tableCellType: 'header' },
+								'03'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								{ contents: '12', tableCellType: 'header' },
+								'13'
+							]
+						], { headingColumns: 2 } )
+					);
+				} );
+
+				it( 'should merge heading sections when removing multiple data columns between them', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', isSelected: true },
+							'02',
+							{ contents: '03', tableCellType: 'header' },
+							'04'
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							'11',
+							{ contents: '12', isSelected: true },
+							{ contents: '13', tableCellType: 'header' },
+							'14'
+						]
+					], { headingColumns: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '03', tableCellType: 'header' },
+								'04'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								{ contents: '13', tableCellType: 'header' },
+								'14'
+							]
+						], { headingColumns: 2 } )
+					);
+				} );
+
+				it( 'should decrement headingColumns when removing a heading column', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header', isSelected: true },
+							'02'
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', tableCellType: 'header' },
+							'12'
+						]
+					], { headingColumns: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								'02'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								'12'
+							]
+						], { headingColumns: 1 } )
+					);
+				} );
+
+				it( 'should change preceding columns to data when removing heading column that splits heading section', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header', isSelected: true },
+							'02',
+							{ contents: '03', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', tableCellType: 'header' },
+							'12',
+							{ contents: '13', tableCellType: 'header' }
+						]
+					], { headingColumns: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								'02',
+								{ contents: '03', tableCellType: 'header' }
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								'12',
+								{ contents: '13', tableCellType: 'header' }
+							]
+						], { headingColumns: 1 } )
+					);
+				} );
+
+				it( 'should not change headingColumns when removing data column', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', isSelected: true },
+							'02'
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							'11',
+							'12'
+						]
+					], { headingColumns: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								'02'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								'12'
+							]
+						], { headingColumns: 1 } )
+					);
+				} );
+			} );
 		} );
 	} );
 } );
