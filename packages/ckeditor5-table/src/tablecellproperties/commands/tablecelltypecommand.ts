@@ -119,7 +119,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingRows < tableRowCount &&
 			isEntireCellsLineHeader( { table, row: headingRows } )
 		) {
-			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1, { shallow: true } );
+			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1 );
 		}
 
 		// Check if we should increment headingColumns.
@@ -129,7 +129,7 @@ function adjustHeadingAttributesWhenChangingToHeader(
 			headingColumns < tableColumnCount &&
 			isEntireCellsLineHeader( { table, column: headingColumns } )
 		) {
-			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1, { shallow: true } );
+			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1 );
 		}
 	}
 }
@@ -179,12 +179,16 @@ function adjustHeadingAttributesWhenChangingToData(
 
 		// Update headingRows if necessary.
 		if ( minHeadingRow < headingRows ) {
-			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, { shallow: true } );
+			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, {
+				checkExisting: false
+			} );
 		}
 
 		// Update headingColumns if necessary.
 		if ( minHeadingColumn < headingColumns ) {
-			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, { shallow: true } );
+			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, {
+				checkExisting: false
+			} );
 		}
 	}
 }
