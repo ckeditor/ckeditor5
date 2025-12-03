@@ -683,69 +683,76 @@ Because of the breaking changes in the Angular library output format, the `@cked
 
 <table>
   <thead>
-	<tr>
-	 <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
-	 <th>Angular&nbsp;version</th>
-	 <th>Details</th>
-	</tr>
+    <tr>
+      <th>CKEditor&nbsp;5&nbsp; Angular component version</th>
+      <th>Angular&nbsp;version</th>
+      <th>Details</th>
+    </tr>
   </thead>
   <tbody>
-	<tr>
-	 <td colspan="3">Actively supported versions</td>
-	</tr>
-	<tr>
-	 <td><code>^9</code></td>
-	 <td><code>16+</code></td>
-	 <td>Migration to TypeScript&nbsp;5. Declaration files are not backward compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td colspan="3">Past releases (no longer maintained)</td>
-	</tr>
-	<tr>
-	 <td><code>^8</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^7</code></td>
-	 <td><code>13+</code></td>
-	 <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^6</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^5</code></td>
-	 <td><code>13+</code></td>
-	 <td>Requires Angular in version 13+ or higher. Lower versions are no longer maintained.</td>
-	</tr>
-	<tr>
-	 <td><code>^4</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^3</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Requires Node.js in version 14 or higher.</td>
-	</tr>
-	<tr>
-	 <td><code>^2</code></td>
-	 <td><code>9.1+</code></td>
-	 <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
-	</tr>
-	<tr>
-	 <td><code>^1</code></td>
-	 <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
-	 <td>Angular versions no longer maintained.</td>
-	</tr>
+    <tr>
+      <td colspan="3">Actively supported versions</td>
+    </tr>
+    <tr>
+      <td><code>^11</code></td>
+      <td><code>19+</code></td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v47.0.0">47</a> or higher.</td>
+    </tr>
+    <tr>
+    <tr>
+      <td colspan="3">Past releases (no longer maintained)</td>
+    </tr>
+    </tr>
+    <tr>
+      <td><code>^10</code></td>
+      <td><code>16+</code></td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v46.0.0">46</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^9</code></td>
+      <td><code>16+</code></td>
+      <td>Migration to TypeScript&nbsp;5. Declaration files are not backward compatible. Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0">43</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^8</code></td>
+      <td><code>13+</code></td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v42.0.0">42</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^7</code></td>
+      <td><code>13+</code></td>
+      <td>Changes in peer dependencies (<a href="https://github.com/ckeditor/ckeditor5-angular/issues/376">issue</a>). Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^6</code></td>
+      <td><code>13+</code></td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0">37</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^5</code></td>
+      <td><code>13+</code></td>
+      <td>Requires Angular in version 13+ or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^4</code></td>
+      <td><code>9.1+</code></td>
+      <td>Requires CKEditor&nbsp;5 in version <a href="https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0">34</a> or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^3</code></td>
+      <td><code>9.1+</code></td>
+      <td>Requires Node.js in version 14 or higher.</td>
+    </tr>
+    <tr>
+      <td><code>^2</code></td>
+      <td><code>9.1+</code></td>
+      <td>Migration to TypeScript&nbsp;4. Declaration files are not backward compatible.</td>
+    </tr>
+    <tr>
+      <td><code>^1</code></td>
+      <td><code>5.x&nbsp;-&nbsp;8.x</code></td>
+      <td>Angular versions no longer maintained.</td>
+    </tr>
   </tbody>
 </table>
 

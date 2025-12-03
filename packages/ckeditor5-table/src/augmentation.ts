@@ -80,14 +80,6 @@ declare module '@ckeditor/ckeditor5-engine' {
 		 * This will be enabled by default in the future CKEditor 5 releases.
 		 */
 		upcastTableBorderZeroAttributes?: boolean;
-
-		/**
-		 * When enabled, the the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table properties feature}
-		 * will support extended alignment options for tables, i.e. `blockLeft` and `blockRight`, using CSS `margin` property.
-		 *
-		 * This will be enabled by default in the future CKEditor 5 releases.
-		 */
-		useExtendedTableBlockAlignment?: boolean;
 	}
 }
 
