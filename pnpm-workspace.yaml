@@ -17,6 +17,7 @@ overrides:
   markdown-it-toc: 'npm:@maboloshi/markdown-it-toc@1.1.1'
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
+  'vitest>vite': 'npm:rolldown-vite@latest'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
@@ -24,6 +25,7 @@ minimumReleaseAgeExclude:
   - '@cksource/*'
   - '*ckeditor5*'
   - 'umberto'
+  - '*vitest*'
 
 shellEmulator: true
 shamefullyHoist: true

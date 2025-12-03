@@ -36,10 +36,10 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
-    "@vitest/browser-playwright": "^4.0.14",
-    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/browser-playwright": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.15",
     "typescript": "5.3.3",
-    "vitest": "^4.0.14",
+    "vitest": "^4.0.15",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
