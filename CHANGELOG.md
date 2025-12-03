@@ -23,7 +23,7 @@ This release also brings several minor but significant enhancements and fixes:
 
 #### New experimental options
 
-We keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
+We keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html) promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
 
 To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
 
