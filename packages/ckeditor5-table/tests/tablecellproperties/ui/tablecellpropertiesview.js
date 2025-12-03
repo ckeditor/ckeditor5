@@ -55,7 +55,10 @@ describe( 'table cell properties', () => {
 			view.render();
 			document.body.appendChild( view.element );
 			// [experimental] - to be deleted in v48
-			experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS );
+			experimentalView = new TableCellPropertiesViewExperimental( locale, {
+				...VIEW_OPTIONS,
+				isTableCellTypeSupported: true
+			} );
 			experimentalView.render();
 			document.body.appendChild( experimentalView.element );
 		} );
@@ -367,6 +370,82 @@ describe( 'table cell properties', () => {
 							labeledInput.fieldView.value = 'bar';
 							labeledInput.fieldView.fire( 'input' );
 							expect( view.borderColor ).to.equal( 'bar' );
+						} );
+					} );
+				} );
+
+				describe( 'cell type row [experimental]', () => {
+					it( 'should be defined', () => {
+						const row = experimentalView.element.childNodes[ 2 ].children[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Cell type' );
+						expect( row.childNodes[ 1 ] ).to.equal( experimentalView.cellTypeDropdown.element );
+					} );
+
+					describe( 'cell type dropdown', () => {
+						let labeledDropdown;
+
+						beforeEach( () => {
+							labeledDropdown = experimentalView.cellTypeDropdown;
+						} );
+
+						it( 'should have properties set', () => {
+							expect( labeledDropdown.label ).to.equal( 'Cell type' );
+							expect( labeledDropdown.class ).to.equal( 'ck-table-cell-properties-form__cell-type' );
+						} );
+
+						it( 'should have a button with properties set', () => {
+							expect( labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
+							expect( labeledDropdown.fieldView.buttonView.withText ).to.be.true;
+							expect( labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+						} );
+
+						it( 'should bind button\'s label to #cellType property', () => {
+							experimentalView.cellType = 'data';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Data cell' );
+
+							experimentalView.cellType = 'header';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Header cell' );
+						} );
+
+						it( 'should bind #isEmpty to #cellType property', () => {
+							experimentalView.cellType = 'data';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							experimentalView.cellType = '';
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
+						it( 'should change #cellType when executed', () => {
+							labeledDropdown.fieldView.isOpen = true;
+							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
+							expect( experimentalView.cellType ).to.equal( 'data' );
+
+							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
+							expect( experimentalView.cellType ).to.equal( 'header' );
+						} );
+
+						it( 'should come with a set of pre–defined cell types', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							expect( labeledDropdown.fieldView.listView.items.map( item => {
+								return item.children.first.label;
+							} ) ).to.have.ordered.members( [
+								'Data cell', 'Header cell'
+							] );
+						} );
+
+						it( 'listView should have properties set', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							const listView = labeledDropdown.fieldView.listView;
+
+							expect( listView.element.role ).to.equal( 'menu' );
+							expect( listView.element.ariaLabel ).to.equal( 'Cell type' );
 						} );
 					} );
 				} );
