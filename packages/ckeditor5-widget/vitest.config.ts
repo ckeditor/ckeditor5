@@ -12,6 +12,11 @@ import { playwright } from '@vitest/browser-playwright';
 // In monorepo we can use "Projects" feature of Vitest: https://vitest.dev/guide/projects.html.
 export default defineConfig( {
 	test: {
+		isolate: false,
+
+		/**
+		 * Test configuration.
+		 */
 		include: [
 			'tests/**/*.{js,ts}'
 		],
@@ -24,6 +29,10 @@ export default defineConfig( {
 			'./test_setup.js'
 		],
 		testTimeout: 5_000,
+
+		/**
+		 * Browser configuration.
+		 */
 		browser: {
 			enabled: true,
 			provider: playwright(),
@@ -31,6 +40,17 @@ export default defineConfig( {
 			instances: [
 				{ browser: 'chromium' }
 			]
+		},
+
+		/**
+		 * Coverage configuration.
+		 */
+		coverage: {
+			provider: 'v8',
+			clean: true,
+			thresholds: {
+				100: true
+			}
 		}
 	},
 
@@ -40,7 +60,7 @@ export default defineConfig( {
 		{
 			name: 'load-svg',
 			enforce: 'pre',
-			load( id ) {
+			load( id: string ) {
 				if ( id.endsWith( '.svg' ) ) {
 					const escaped = readFileSync( id, 'utf-8' ).replace( /`/g, '\\`' );
 

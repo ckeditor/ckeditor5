@@ -438,6 +438,7 @@ export class WidgetTypeAround extends Plugin {
 		let shouldStopAndPreventDefault;
 
 		// Handle keyboard navigation when a type-around-compatible widget is currently selected.
+		/* v8 ignore else -- @preserve */
 		if ( isTypeAroundWidget( selectedViewElement, selectedModelElement, schema ) ) {
 			shouldStopAndPreventDefault = this._handleArrowKeyPressOnSelectedWidget( isForward );
 		}
