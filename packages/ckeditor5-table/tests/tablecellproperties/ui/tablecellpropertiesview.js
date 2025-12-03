@@ -304,6 +304,82 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( 'cell type row', () => {
+					it( 'should be defined', () => {
+						const row = view.element.childNodes[ 2 ].children[ 0 ];
+
+						expect( row.classList.contains( 'ck-form__row' ) ).to.be.true;
+						expect( row.classList.contains( 'ck-table-form__cell-type-row' ) ).to.be.true;
+						expect( row.childNodes[ 0 ].textContent ).to.equal( 'Cell type' );
+						expect( row.childNodes[ 1 ] ).to.equal( view.cellTypeDropdown.element );
+					} );
+
+					describe( 'cell type dropdown', () => {
+						let labeledDropdown;
+
+						beforeEach( () => {
+							labeledDropdown = view.cellTypeDropdown;
+						} );
+
+						it( 'should have properties set', () => {
+							expect( labeledDropdown.label ).to.equal( 'Cell type' );
+							expect( labeledDropdown.class ).to.equal( 'ck-table-cell-properties-form__cell-type' );
+						} );
+
+						it( 'should have a button with properties set', () => {
+							expect( labeledDropdown.fieldView.buttonView.isOn ).to.be.false;
+							expect( labeledDropdown.fieldView.buttonView.withText ).to.be.true;
+							expect( labeledDropdown.fieldView.buttonView.tooltip ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabel ).to.equal( 'Cell type' );
+							expect( labeledDropdown.fieldView.buttonView.ariaLabelledBy ).to.be.undefined;
+						} );
+
+						it( 'should bind button\'s label to #cellType property', () => {
+							view.cellType = 'data';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Data cell' );
+
+							view.cellType = 'header';
+							expect( labeledDropdown.fieldView.buttonView.label ).to.equal( 'Header cell' );
+						} );
+
+						it( 'should bind #isEmpty to #cellType property', () => {
+							view.cellType = 'data';
+							expect( labeledDropdown.isEmpty ).to.be.false;
+
+							view.cellType = '';
+							expect( labeledDropdown.isEmpty ).to.be.true;
+						} );
+
+						it( 'should change #cellType when executed', () => {
+							labeledDropdown.fieldView.isOpen = true;
+							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
+							expect( view.cellType ).to.equal( 'data' );
+
+							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
+							expect( view.cellType ).to.equal( 'header' );
+						} );
+
+						it( 'should come with a set of pre–defined cell types', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							expect( labeledDropdown.fieldView.listView.items.map( item => {
+								return item.children.first.label;
+							} ) ).to.have.ordered.members( [
+								'Data cell', 'Header cell'
+							] );
+						} );
+
+						it( 'listView should have properties set', () => {
+							labeledDropdown.fieldView.isOpen = true;
+
+							const listView = labeledDropdown.fieldView.listView;
+
+							expect( listView.element.role ).to.equal( 'menu' );
+							expect( listView.element.ariaLabel ).to.equal( 'Cell type' );
+						} );
+					} );
+				} );
+
 				describe( 'background row', () => {
 					it( 'should be defined', () => {
 						const row = view.element.childNodes[ 2 ].children[ 1 ];
