@@ -116,7 +116,7 @@ export class TableCellPropertiesUI extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'TableCellPropertiesUIExperimental' as const;
+		return 'TableCellPropertiesUI' as const;
 	}
 
 	/**

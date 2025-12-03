@@ -337,7 +337,7 @@ export class TableCellPropertiesView extends View {
 				borderWidthInput,
 				borderColorInput
 			],
-			class: 'ck-table-form__border-row  ck-table-form__border-row_experimental'
+			class: 'ck-table-form__border-row'
 		} ) );
 
 		// Background and cell type.
