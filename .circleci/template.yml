@@ -118,6 +118,11 @@ jobs:
       - bootstrap_repository_command
       - run:
           when: always
+          name: Run Vitest tests in widget package
+          working_directory: packages/ckeditor5-widget
+          command: pnpm run coverage
+      - run:
+          when: always
           name: Execute tests for internal scripts
           command: pnpm run test:scripts
       - run:
