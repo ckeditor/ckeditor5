@@ -12,12 +12,12 @@
 // See: https://circleci.com/docs/using-dynamic-configuration/.
 
 import upath from 'upath';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import yaml from 'js-yaml';
 import IS_COMMUNITY_PR from './is-community-pr.mjs';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_MAIN_PACKAGE_PATH } from '../constants.mjs';
-import { parseArgs } from 'util';
+import { parseArgs } from 'node:util';
 
 const CIRCLECI_CONFIGURATION_DIRECTORY = upath.join( CKEDITOR5_ROOT_PATH, '.circleci' );
 
@@ -137,7 +137,7 @@ const persistToWorkspace = fileName => ( {
 
 	config.jobs.cke5_tests_framework = {
 		docker: [
-			{ image: 'cimg/node:22.12.0-browsers' }
+			{ image: 'cimg/node:24.11.0-browsers' }
 		],
 		steps: [
 			...bootstrapCommands(),
@@ -155,7 +155,7 @@ const persistToWorkspace = fileName => ( {
 	featureTestBatches.forEach( ( batch, batchIndex ) => {
 		config.jobs[ featureTestBatchNames[ batchIndex ] ] = {
 			docker: [
-				{ image: 'cimg/node:22.12.0-browsers' }
+				{ image: 'cimg/node:24.11.0-browsers' }
 			],
 			steps: [
 				...bootstrapCommands(),

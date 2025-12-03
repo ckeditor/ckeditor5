@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-properties-form {
+	width: 320px;
+
+	& .ck-form__row {
+		&.ck-table-properties-form__alignment-row {
+			align-self: flex-end;
+
+			& .ck.ck-toolbar {
+				background: none;
+
+				/* Compensate for missing input label that would push the margin (toolbar has no inputs). */
+				margin-top: var(--ck-spacing-standard);
+
+				& .ck-toolbar__items > * {
+					flex: 1;
+				}
+			}
+		}
+	}
+
+	&.ck-table-properties-form_experimental {
+		& .ck-form__row {
+			&.ck-table-properties-form__alignment-row {
+				padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+			}
+
+			&.ck-table-form__action-row {
+				justify-content: flex-end;
+
+				& > .ck.ck-button {
+					flex-grow: initial;
+
+					& .ck-button__label {
+						color: currentColor;
+					}
+				}
+			}
+		}
+	}
+}

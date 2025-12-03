@@ -1,0 +1,72 @@
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="default-src 'none'; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com https://unpkg.com 'unsafe-inline'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *"
+	/>
+	<style>
+		body,
+		html {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		pre {
+			margin: 0;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			margin: 20px;
+		}
+
+		.row {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 20px;
+		}
+
+		.column {
+			flex: 0 0 30%; /* Set a specific width for the columns */
+			margin: 0 10px;
+			padding: 10px;
+			border: 1px solid #ddd;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+			overflow: auto;
+		}
+
+		.column-title {
+			font-size: 20px;
+			font-weight: bold;
+			margin: 0 10px 5px; /* Adjusted to align with column padding */
+			flex: 0 0 30%; /* Match column width for alignment */
+			text-align: center;
+		}
+
+		.code-block {
+			background-color: #f5f5f5;
+			word-wrap: break-word;
+			overflow-x: auto; /* Ensures code block is scrollable if content is too wide */
+		}
+
+		.raw-table table {
+			border-collapse: collapse;
+		}
+
+		.raw-table table,
+		th,
+		td {
+			border: 1px solid black;
+		}
+	</style>
+	<script src="https://unpkg.com/prettier@3.2.5/standalone.js"></script>
+	<script src="https://unpkg.com/prettier@3.2.5/plugins/html.js"></script>
+	<script>
+		window.prettier = prettier;
+		window.prettierPlugins = prettierPlugins;
+	</script>
+</head>
+<body></body>
