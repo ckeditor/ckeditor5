@@ -322,10 +322,16 @@ export class TableCellPropertiesUIExperimental extends Plugin {
 			'change:verticalAlignment',
 			this._getPropertyChangeCallback( 'tableCellVerticalAlignment' )
 		);
-		view.on<ObservableChangeEvent<string>>(
-			'change:cellType',
-			this._getPropertyChangeCallback( 'tableCellType' )
-		);
+
+		const cellTypeCommand = editor.commands.get( 'tableCellType' );
+
+		if ( cellTypeCommand ) {
+			view.cellTypeDropdown.bind( 'isEnabled' ).to( cellTypeCommand, 'isEnabled' );
+			view.on<ObservableChangeEvent<string>>(
+				'change:cellType',
+				this._getPropertyChangeCallback( 'tableCellType' )
+			);
+		}
 
 		return view;
 	}
