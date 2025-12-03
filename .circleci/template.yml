@@ -102,6 +102,16 @@ jobs:
       - install_newest_emoji
       - run:
           when: always
+          name: Build theme-lark stylesheets
+          working_directory: packages/ckeditor5-theme-lark
+          command: pnpm run build:dist
+      - run:
+          when: always
+          name: Run Vitest tests in widget package
+          working_directory: packages/ckeditor5-widget
+          command: pnpm run coverage
+      - run:
+          when: always
           name: Run Vitest tests in widget package
           working_directory: packages/ckeditor5-widget
           command: pnpm run coverage
