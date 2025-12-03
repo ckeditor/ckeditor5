@@ -469,6 +469,10 @@
 			"trackingId": "G-H2PK3PSE3F"
 		}
 	},
+	"sentry": {
+		"src": "https://js-de.sentry-cdn.com/12b5ff4d03626bea09113fa6770907d9.min.js",
+		"environment": "nightly"
+	},
 	"promobar": {
 		"prefix": {
 			"icon": "premium",

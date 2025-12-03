@@ -37,6 +37,18 @@ export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
 
+// [experimental] Remove in the v48.
+export { TablePropertiesUIExperimental } from './tableproperties/tablepropertiesuiexperimental.js';
+export {
+	TablePropertiesViewExperimental,
+	type TablePropertiesViewOptionsExperimental
+} from './tableproperties/ui/tablepropertiesviewexperimental.js';
+export { TableCellPropertiesUIExperimental } from './tablecellproperties/tablecellpropertiesuiexperimental.js';
+export {
+	TableCellPropertiesViewExperimental,
+	type TableCellPropertiesViewOptionsExperimental
+} from './tablecellproperties/ui/tablecellpropertiesviewexperimental.js';
+
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';
 export { InsertTableCommand } from './commands/inserttablecommand.js';
@@ -75,6 +87,7 @@ export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent 
 
 export type {
 	TableConfig,
+	TableAlignmentConfig,
 	TablePropertiesConfig,
 	TablePropertiesOptions,
 	TableCellPropertiesConfig,

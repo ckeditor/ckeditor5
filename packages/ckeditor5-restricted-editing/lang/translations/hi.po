@@ -42,3 +42,7 @@ msgstr "ब्लॉक संपादन अक्षम करें"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "ब्लॉक संपादन सक्षम करें"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "एडिटिंग अक्षम करें"

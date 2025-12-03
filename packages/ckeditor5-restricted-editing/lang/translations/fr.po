@@ -42,3 +42,7 @@ msgstr "Désactiver la modification par blocs"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "Activer la modification par blocs"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "Désactiver la modification"

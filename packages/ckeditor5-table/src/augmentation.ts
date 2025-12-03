@@ -67,6 +67,30 @@ import type {
 	TableWidthCommand
 } from './index.js';
 
+declare module '@ckeditor/ckeditor5-engine' {
+	interface ExperimentalFlagsConfig {
+
+		/**
+		 * When enabled, the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table properties feature}
+		 * and {@link module:table/tablecellproperties/tablecellpropertiesediting~TableCellPropertiesEditing table cell properties feature}
+		 * upcast `border="0"` attributes on `<table>` and `<td>`/`<th>` elements as `tableBorderStyle` and `tableCellBorderStyle` styles
+		 * with value set to `none`.
+		 *
+		 * This is useful when migrating content from the CKEditor 4, which used `border="0"` to represent tables and cells without borders.
+		 * This will be enabled by default in the future CKEditor 5 releases.
+		 */
+		upcastTableBorderZeroAttributes?: boolean;
+
+		/**
+		 * When enabled, the the {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table properties feature}
+		 * will support extended alignment options for tables, i.e. `blockLeft` and `blockRight`, using CSS `margin` property.
+		 *
+		 * This will be enabled by default in the future CKEditor 5 releases.
+		 */
+		useExtendedTableBlockAlignment?: boolean;
+	}
+}
+
 declare module '@ckeditor/ckeditor5-core' {
 	interface EditorConfig {
 

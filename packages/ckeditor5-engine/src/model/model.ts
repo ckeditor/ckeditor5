@@ -35,8 +35,11 @@ import { type Operation } from './operation/operation.js';
 import {
 	CKEditorError,
 	ObservableMixin,
-	type DecoratedMethodEvent
+	type DecoratedMethodEvent,
+	type Config
 } from '@ckeditor/ckeditor5-utils';
+
+import type { EngineConfig } from '../engineconfig.js';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -62,6 +65,13 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	public readonly schema: ModelSchema;
 
 	/**
+	 * Stores all configurations specific to editor instance.
+	 *
+	 * @internal
+	 */
+	public readonly _config?: Config<EngineConfig>;
+
+	/**
 	 * All callbacks added by {@link module:engine/model/model~Model#change} or
 	 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
 	 */
@@ -75,13 +85,14 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	// @if CK_DEBUG_ENGINE // private _operationLogs: Array<string>;
 	// @if CK_DEBUG_ENGINE // private _appliedOperations: Array<Operation>;
 
-	constructor() {
+	constructor( config?: Config<EngineConfig> ) {
 		super();
 
 		this.markers = new MarkerCollection();
 		this.document = new ModelDocument( this );
 		this.schema = new ModelSchema();
 
+		this._config = config;
 		this._pendingChanges = [];
 		this._currentWriter = null;
 

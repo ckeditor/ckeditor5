@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-form__row {
+	/* Ignore labels that work as fieldset legends */
+	& > *:not(.ck-label) {
+		& + * {
+			margin-inline-start: var(--ck-spacing-large);
+		}
+	}
+
+	& > .ck-label {
+		width: 100%;
+		min-width: 100%;
+	}
+
+	&.ck-table-form__action-row {
+		margin-top: var(--ck-spacing-large);
+	}
+}

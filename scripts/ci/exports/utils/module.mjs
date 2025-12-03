@@ -5,7 +5,7 @@
 
 import parser from '@babel/parser';
 import traverse from '@babel/traverse';
-import fs from 'fs';
+import fs from 'node:fs';
 import upath from 'upath';
 import { Export } from './export.mjs';
 import { Import } from './import.mjs';
