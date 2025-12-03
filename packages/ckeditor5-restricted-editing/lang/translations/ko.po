@@ -45,4 +45,4 @@ msgstr "블록 편집 활성화"
 
 msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
 msgid "Disable editing"
-msgstr ""
+msgstr "편집 비활성화"

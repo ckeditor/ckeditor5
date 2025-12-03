@@ -22,11 +22,12 @@ export class Library {
 		this.modules = typeScriptFileNames.map( fileName => Module.load( fileName, this.errorCollector ) );
 
 		for ( const module of this.modules ) {
-			const packageName = module.packageName;
+			const { packageName, isPublicPackage } = module;
 
 			if ( !this.packages.has( packageName ) ) {
 				this.packages.set( packageName, {
 					packageName,
+					isPublicPackage,
 					dirName: packageDirName( module.fileName ),
 					index: null,
 					modules: []

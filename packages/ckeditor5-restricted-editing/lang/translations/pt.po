@@ -45,4 +45,4 @@ msgstr "Ativar a edição do bloco"
 
 msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
 msgid "Disable editing"
-msgstr ""
+msgstr "Desativar a edição"
