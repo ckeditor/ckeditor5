@@ -117,6 +117,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		const range = model.createRange( startPosition, endPosition );
 		const lastRangePosition = getNearestTextPosition( model.schema, range, 'backward' );
 
+		/* v8 ignore else -- @preserve */
 		if ( lastRangePosition ) {
 			return model.createRange( startPosition, lastRangePosition );
 		}
@@ -132,6 +133,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		const range = model.createRange( startPosition, endPosition );
 		const firstRangePosition = getNearestTextPosition( model.schema, range, 'forward' );
 
+		/* v8 ignore else -- @preserve */
 		if ( firstRangePosition ) {
 			return model.createRange( firstRangePosition, endPosition );
 		}

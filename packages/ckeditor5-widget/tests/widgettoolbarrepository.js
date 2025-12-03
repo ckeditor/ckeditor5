@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { BalloonPanelView, ButtonView, View, EditorUI } from '@ckeditor/ckeditor5-ui';
@@ -15,39 +16,36 @@ import { WidgetToolbarRepository } from '../src/widgettoolbarrepository.js';
 import { isWidget, toWidget } from '../src/utils.js';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'WidgetToolbarRepository', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement, addToolbarSpy;
 
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
+	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		addToolbarSpy = sinon.spy( EditorUI.prototype, 'addToolbar' );
+		addToolbarSpy = vi.spyOn( EditorUI.prototype, 'addToolbar' );
 
-		return ClassicTestEditor
+		editor = await ClassicTestEditor
 			.create( editorElement, {
 				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, FakeChildWidget, BlockQuote ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = newEditor.model;
-				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
+
+		model = editor.model;
+		widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		balloon = editor.plugins.get( 'ContextualBalloon' );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		editorElement.remove();
 
-		return editor.destroy();
+		vi.restoreAllMocks();
+
+		await editor.destroy();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -91,12 +89,11 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => null
 				} );
 
-				sinon.assert.calledWithExactly(
-					addToolbarSpy.lastCall,
+				expect( addToolbarSpy ).toHaveBeenLastCalledWith(
 					widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view,
-					sinon.match( {
+					expect.objectContaining( {
 						isContextual: true,
-						beforeFocus: sinon.match.func
+						beforeFocus: expect.any( Function )
 					} )
 				);
 			} );
@@ -107,7 +104,7 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => editor.editing.view.document.getRoot()
 				} );
 
-				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+				addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].beforeFocus();
 
 				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
 			} );
@@ -118,7 +115,7 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => null
 				} );
 
-				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+				addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].beforeFocus();
 
 				expect( balloon.visibleView ).to.be.null;
 			} );
@@ -129,11 +126,11 @@ describe( 'WidgetToolbarRepository', () => {
 					getRelatedElement: () => editor.editing.view.document.getRoot()
 				} );
 
-				addToolbarSpy.lastCall.args[ 1 ].beforeFocus();
+				addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].beforeFocus();
 
 				expect( balloon.visibleView ).to.equal( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view );
 
-				addToolbarSpy.lastCall.args[ 1 ].afterBlur();
+				addToolbarSpy.mock.calls[ addToolbarSpy.mock.calls.length - 1 ][ 1 ].afterBlur();
 
 				expect( balloon.visibleView ).to.be.null;
 			} );
@@ -185,7 +182,7 @@ describe( 'WidgetToolbarRepository', () => {
 		} );
 
 		it( 'should not register a toolbar when passed an empty collection of the items', () => {
-			const consoleWarnStub = sinon.stub( console, 'warn' );
+			const consoleWarnStub = vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
 
 			widgetToolbarRepository.register( 'fake', {
 				items: [],
@@ -194,8 +191,8 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.undefined;
 
-			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
+			expect( consoleWarnStub ).toHaveBeenCalledTimes( 1 );
+			expect( consoleWarnStub.mock.calls[ 0 ][ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 		} );
 
 		describe( 'lazy init', () => {
@@ -507,7 +504,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 
 			const fakeChildViewElement = view.document.getRoot().getChild( 1 ).getChild( 1 );
-			const updatePositionSpy = sinon.spy( balloon, 'add' );
+			const updatePositionSpy = vi.spyOn( balloon, 'add' );
 
 			view.change( writer => {
 				// [<fake-child-widget></fake-child-widget>]
@@ -516,14 +513,15 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( balloon.visibleView ).to.equal( fakeChildWidgetToolbarView );
 
-			expect( updatePositionSpy.firstCall.args[ 0 ].position.target ).to.equal(
-				view.domConverter.mapViewToDom( fakeChildViewElement ) );
+			expect(
+				updatePositionSpy.mock.calls[ 0 ][ 0 ].position.target
+			).to.equal( view.domConverter.mapViewToDom( fakeChildViewElement ) );
 		} );
 
 		it( 'should not update balloon position when toolbar is in not visible stack', () => {
 			const customView = new View();
 
-			sinon.spy( balloon.view, 'pin' );
+			vi.spyOn( balloon.view, 'pin' );
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
@@ -548,18 +546,18 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( customView );
 			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
 
-			const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			editor.ui.fire( 'update' );
 
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 
 		it( 'should update balloon position when stack with toolbar is switched in rotator to visible', () => {
 			const view = editor.editing.view;
 			const customView = new View();
 
-			sinon.spy( balloon.view, 'pin' );
+			vi.spyOn( balloon.view, 'pin' );
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
@@ -575,7 +573,8 @@ describe( 'WidgetToolbarRepository', () => {
 			const fakeDomElement = editor.editing.view.domConverter.mapViewToDom( fakeViewElement );
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( fakeDomElement );
+			const firstPinArgs = balloon.view.pin.mock.calls[ balloon.view.pin.mock.calls.length - 1 ][ 0 ];
+			expect( firstPinArgs.target ).to.equal( fakeDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -593,17 +592,19 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( fakeDomElement );
+
+			const lastPinArgs = balloon.view.pin.mock.calls[ balloon.view.pin.mock.calls.length - 1 ][ 0 ];
+			expect( lastPinArgs.target ).to.not.equal( fakeDomElement );
 
 			const newFakeViewElement = view.document.getRoot().getChild( 1 ).getChild( 0 );
 			const newFakeDomElement = editor.editing.view.domConverter.mapViewToDom( newFakeViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newFakeDomElement );
+			expect( lastPinArgs.target ).to.equal( newFakeDomElement );
 		} );
 
 		it( 'toolbar should use one of pre-defined positions when attaching to a widget', () => {
 			const editingView = editor.editing.view;
-			const balloonAddSpy = sinon.spy( balloon, 'add' );
+			const balloonAddSpy = vi.spyOn( balloon, 'add' );
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
 			widgetToolbarRepository.register( 'fake', {
@@ -616,8 +617,8 @@ describe( 'WidgetToolbarRepository', () => {
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
 
-			sinon.assert.calledOnce( balloonAddSpy );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			expect( balloonAddSpy ).toHaveBeenCalledTimes( 1 );
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: fakeWidgetToolbarView,
 				position: {
 					target: editingView.domConverter.mapViewToDom( widgetViewElement ),
@@ -637,8 +638,8 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'should use a custom positions if provided', () => {
 			const editingView = editor.editing.view;
-			const balloonAddSpy = sinon.spy( balloon, 'add' );
-			const balloonUpdatePositionSpy = sinon.spy( balloon, 'updatePosition' );
+			const balloonAddSpy = vi.spyOn( balloon, 'add' );
+			const balloonUpdatePositionSpy = vi.spyOn( balloon, 'updatePosition' );
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
 			widgetToolbarRepository.register( 'fake', {
@@ -655,8 +656,8 @@ describe( 'WidgetToolbarRepository', () => {
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
 
-			sinon.assert.calledOnce( balloonAddSpy );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
+			expect( balloonAddSpy ).toHaveBeenCalledTimes( 1 );
+			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: fakeWidgetToolbarView,
 				position: {
 					target: editingView.domConverter.mapViewToDom( widgetViewElement ),
@@ -669,12 +670,12 @@ describe( 'WidgetToolbarRepository', () => {
 			} );
 
 			// Reposition check.
-			sinon.assert.notCalled( balloonUpdatePositionSpy );
+			expect( balloonUpdatePositionSpy ).not.toHaveBeenCalled();
 
 			editor.ui.update();
 
-			sinon.assert.calledOnce( balloonUpdatePositionSpy );
-			sinon.assert.calledWithExactly( balloonUpdatePositionSpy, {
+			expect( balloonUpdatePositionSpy ).toHaveBeenCalledTimes( 1 );
+			expect( balloonUpdatePositionSpy ).toHaveBeenCalledWith( {
 				target: editingView.domConverter.mapViewToDom( widgetViewElement ),
 				positions: [
 					defaultPositions.southArrowNorth,
@@ -688,7 +689,7 @@ describe( 'WidgetToolbarRepository', () => {
 			const customView = new View();
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			sinon.spy( balloon.view, 'pin' );
+			vi.spyOn( balloon.view, 'pin' );
 
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
@@ -708,7 +709,8 @@ describe( 'WidgetToolbarRepository', () => {
 			const fakeDomElement = editor.editing.view.domConverter.mapViewToDom( fakeViewElement );
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( fakeDomElement );
+			const firstPinArgs = balloon.view.pin.mock.calls[ balloon.view.pin.mock.calls.length - 1 ][ 0 ];
+			expect( firstPinArgs.target ).to.equal( fakeDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -726,8 +728,10 @@ describe( 'WidgetToolbarRepository', () => {
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( fakeDomElement );
-			expect( balloon.view.pin.lastCall.args[ 0 ].positions ).to.deep.equal( [
+
+			const lastPinArgs = balloon.view.pin.mock.calls[ balloon.view.pin.mock.calls.length - 1 ][ 0 ];
+			expect( lastPinArgs.target ).to.not.equal( fakeDomElement );
+			expect( lastPinArgs.positions ).to.deep.equal( [
 				defaultPositions.southArrowNorth,
 				defaultPositions.northArrowSouth
 			] );
@@ -735,8 +739,8 @@ describe( 'WidgetToolbarRepository', () => {
 			const newFakeViewElement = view.document.getRoot().getChild( 1 ).getChild( 0 );
 			const newFakeDomElement = editor.editing.view.domConverter.mapViewToDom( newFakeViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newFakeDomElement );
-			expect( balloon.view.pin.lastCall.args[ 0 ].positions ).to.deep.equal( [
+			expect( lastPinArgs.target ).to.equal( newFakeDomElement );
+			expect( lastPinArgs.positions ).to.deep.equal( [
 				defaultPositions.southArrowNorth,
 				defaultPositions.northArrowSouth
 			] );
@@ -745,37 +749,36 @@ describe( 'WidgetToolbarRepository', () => {
 } );
 
 describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () => {
-	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
+	let editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
 
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
+	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
-		clock = testUtils.sinon.useFakeTimers();
+		vi.useFakeTimers();
 
-		return BalloonEditor
+		editor = await BalloonEditor
 			.create( editorElement, {
 				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, Bold ],
 				balloonToolbar: [ 'bold' ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = newEditor.model;
-				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-				balloon = editor.plugins.get( 'ContextualBalloon' );
-				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-				editor.ui.focusTracker.isFocused = true;
 			} );
+
+		model = editor.model;
+		widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		balloon = editor.plugins.get( 'ContextualBalloon' );
+		balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+		editor.ui.focusTracker.isFocused = true;
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		editorElement.remove();
 
-		return editor.destroy();
+		vi.useRealTimers();
+		vi.restoreAllMocks();
+
+		await editor.destroy();
 	} );
 
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
@@ -789,7 +792,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		editor.editing.view.document.isFocused = true;
 		_setModelData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
 		expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 	} );
@@ -803,7 +806,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		editor.editing.view.document.isFocused = true;
 		_setModelData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 
-		clock.tick( 200 );
+		vi.advanceTimersByTime( 200 );
 
 		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 	} );
@@ -815,13 +818,13 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 			} );
 
 			it( 'fires change event', () => {
-				const spy = sinon.spy();
+				const spy = vi.fn();
 
 				widgetToolbarRepository.on( 'change:isEnabled', spy );
 
 				widgetToolbarRepository.isEnabled = false;
 
-				expect( spy.calledOnce ).to.be.true;
+				expect( spy ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 

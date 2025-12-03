@@ -3,14 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { vi } from 'vitest';
 import { WidgetResize } from '../../../src/widgetresize.js';
 
 import { Rect } from '@ckeditor/ckeditor5-utils';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {
-		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
-		const stop = options.stop || sinon.spy().named( 'stop' );
+		const preventDefault = options.preventDefault || vi.fn();
+		const stop = options.stop || vi.fn();
 
 		this._getPlugin( editor )._mouseDownListener( { stop }, { domTarget, preventDefault } );
 	},
@@ -35,6 +36,7 @@ export const resizerMouseSimulator = {
 
 		this._getPlugin( editor )._mouseMoveListener( {}, combinedEventData );
 	},
+
 	up( editor ) {
 		this._getPlugin( editor )._mouseUpListener();
 	},
@@ -50,7 +52,7 @@ export const resizerMouseSimulator = {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {HTMLElement} domTarget
-	 * @param {Object/Point} position If a `Point` instance is given, the drag is performed without acutal pointer move.
+	 * @param {Object|Point} position If a `Point` instance is given, the drag is performed without actual pointer move.
 	 * @param {Point} position.from Coordinates of where the drag begins.
 	 * @param {Point} position.to Coordinates of where the drag ends.
 	 */

@@ -3,42 +3,42 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { KeyObserver, _setModelData } from '@ckeditor/ckeditor5-engine';
 
 import { toWidget } from '../src/utils.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'Widget - Events', () => {
 	const EVENT_NAME = 'keyup';
 	let editor, editorElement, eventCallback, buttonIgnored, buttonRegular;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editorElement = createEditorElement();
 		editor = await createEditor( editorElement );
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		editorElement.remove();
 
+		vi.restoreAllMocks();
+
 		if ( editor ) {
-			return editor.destroy();
+			await editor.destroy();
 		}
 	} );
 
 	it( 'should not ignore events from child inside parent without the `data-cke-ignore-events` attribute', () => {
 		buttonRegular.dispatchEvent( new Event( EVENT_NAME, { bubbles: true } ) );
 
-		expect( eventCallback.callCount ).to.equal( 1 );
+		expect( eventCallback ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should ignore events from child inside parent with the `data-cke-ignore-events` attribute', () => {
 		buttonIgnored.dispatchEvent( new Event( EVENT_NAME, { bubbles: true } ) );
 
-		expect( eventCallback.callCount ).to.equal( 0 );
+		expect( eventCallback ).toHaveBeenCalledTimes( 0 );
 	} );
 
 	function createEditorElement() {
@@ -120,7 +120,7 @@ describe( 'Widget - Events', () => {
 		}
 
 		function addObserver( editor ) {
-			eventCallback = sinon.fake();
+			eventCallback = vi.fn();
 
 			editor.editing.view.addObserver( KeyObserver );
 			editor.editing.view.document.on( EVENT_NAME, eventCallback );

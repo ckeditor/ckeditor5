@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
 	_setModelData,
 	Mapper,
@@ -30,12 +31,9 @@ import {
 	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
@@ -45,36 +43,40 @@ describe( 'widget utils', () => {
 		toWidget( element, writer );
 	} );
 
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
+
 	describe( 'toWidget()', () => {
 		it( 'should set contenteditable to "false"', () => {
-			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+			expect( element.getAttribute( 'contenteditable' ) ).toBe( 'false' );
 		} );
 
 		it( 'should define getFillerOffset method', () => {
-			expect( element.getFillerOffset ).to.be.a( 'function' );
-			expect( element.getFillerOffset() ).to.be.null;
+			expect( typeof element.getFillerOffset ).toBe( 'function' );
+			expect( element.getFillerOffset() ).toBeNull();
 		} );
 
 		it( 'should add proper CSS class', () => {
-			expect( element.hasClass( WIDGET_CLASS_NAME ) ).to.be.true;
+			expect( element.hasClass( WIDGET_CLASS_NAME ) ).toBeTruthy();
 		} );
 
 		it( 'should add element\'s label if one is provided', () => {
 			toWidget( element, writer, { label: 'foo bar baz label' } );
 
-			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+			expect( getLabel( element ) ).toBe( 'foo bar baz label' );
 		} );
 
 		it( 'should add element\'s label if one is provided as function', () => {
 			toWidget( element, writer, { label: () => 'foo bar baz label' } );
 
-			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+			expect( getLabel( element ) ).toBe( 'foo bar baz label' );
 		} );
 
 		it( 'should set element\'s custom property \'widgetLabel\' as an array', () => {
 			toWidget( element, writer );
 
-			expect( element.getCustomProperty( 'widgetLabel' ) ).to.be.an( 'array' );
+			expect( Array.isArray( element.getCustomProperty( 'widgetLabel' ) ) ).toBeTruthy();
 		} );
 
 		it( 'should set default highlight handling methods - CSS class', () => {
@@ -83,14 +85,14 @@ describe( 'widget utils', () => {
 			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
 
-			expect( typeof set ).to.equal( 'function' );
-			expect( typeof remove ).to.equal( 'function' );
+			expect( typeof set ).toBe( 'function' );
+			expect( typeof remove ).toBe( 'function' );
 
 			set( element, { priority: 1, classes: 'highlight', id: 'highlight' }, writer );
-			expect( element.hasClass( 'highlight' ) ).to.be.true;
+			expect( element.hasClass( 'highlight' ) ).toBeTruthy();
 
 			remove( element, 'highlight', writer );
-			expect( element.hasClass( 'highlight' ) ).to.be.false;
+			expect( element.hasClass( 'highlight' ) ).toBeFalsy();
 		} );
 
 		it( 'should set default highlight handling methods - CSS classes array', () => {
@@ -99,16 +101,16 @@ describe( 'widget utils', () => {
 			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
 
-			expect( typeof set ).to.equal( 'function' );
-			expect( typeof remove ).to.equal( 'function' );
+			expect( typeof set ).toBe( 'function' );
+			expect( typeof remove ).toBe( 'function' );
 
 			set( element, { priority: 1, classes: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
-			expect( element.hasClass( 'highlight' ) ).to.be.true;
-			expect( element.hasClass( 'foo' ) ).to.be.true;
+			expect( element.hasClass( 'highlight' ) ).toBeTruthy();
+			expect( element.hasClass( 'foo' ) ).toBeTruthy();
 
 			remove( element, 'highlight', writer );
-			expect( element.hasClass( 'highlight' ) ).to.be.false;
-			expect( element.hasClass( 'foo' ) ).to.be.false;
+			expect( element.hasClass( 'highlight' ) ).toBeFalsy();
+			expect( element.hasClass( 'foo' ) ).toBeFalsy();
 		} );
 
 		it( 'should set default highlight handling methods - attributes', () => {
@@ -117,68 +119,68 @@ describe( 'widget utils', () => {
 			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
 
-			expect( typeof set ).to.equal( 'function' );
-			expect( typeof remove ).to.equal( 'function' );
+			expect( typeof set ).toBe( 'function' );
+			expect( typeof remove ).toBe( 'function' );
 
 			set( element, { priority: 1, attributes: { foo: 'bar', abc: 'xyz' }, id: 'highlight' }, writer );
-			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			expect( element.getAttribute( 'abc' ) ).to.equal( 'xyz' );
+			expect( element.getAttribute( 'foo' ) ).toBe( 'bar' );
+			expect( element.getAttribute( 'abc' ) ).toBe( 'xyz' );
 
 			remove( element, 'highlight', writer );
-			expect( element.hasAttribute( 'foo' ) ).to.be.false;
-			expect( element.hasAttribute( 'abc' ) ).to.be.false;
+			expect( element.hasAttribute( 'foo' ) ).toBeFalsy();
+			expect( element.hasAttribute( 'abc' ) ).toBeFalsy();
 		} );
 
 		it( 'should add element a selection handle to widget if hasSelectionHandle=true is passed', () => {
 			toWidget( element, writer, { hasSelectionHandle: true } );
 
-			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).to.be.true;
+			expect( element.hasClass( 'ck-widget_with-selection-handle' ) ).toBeTruthy();
 
 			const selectionHandle = element.getChild( 0 );
-			expect( selectionHandle ).to.be.instanceof( ViewUIElement );
+			expect( selectionHandle ).toBeInstanceOf( ViewUIElement );
 
 			const domSelectionHandle = selectionHandle.render( document );
 
-			expect( domSelectionHandle.classList.contains( 'ck' ) ).to.be.true;
-			expect( domSelectionHandle.classList.contains( 'ck-widget__selection-handle' ) ).to.be.true;
+			expect( domSelectionHandle.classList.contains( 'ck' ) ).toBeTruthy();
+			expect( domSelectionHandle.classList.contains( 'ck-widget__selection-handle' ) ).toBeTruthy();
 
 			const icon = domSelectionHandle.firstChild;
 
-			expect( icon.nodeName ).to.equal( 'svg' );
-			expect( icon.classList.contains( 'ck' ) ).to.be.true;
-			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
+			expect( icon.nodeName ).toBe( 'svg' );
+			expect( icon.classList.contains( 'ck' ) ).toBeTruthy();
+			expect( icon.classList.contains( 'ck-icon' ) ).toBeTruthy();
 		} );
 
 		it( 'should throw when attempting to create a widget out of anything but ViewContainerElement', () => {
 			expect( () => {
 				toWidget( writer.createRawElement( 'div' ), writer );
-			}, 'raw element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+			} ).toThrow( /^widget-to-widget-wrong-element-type/ );
 
 			expect( () => {
 				toWidget( writer.createEmptyElement( 'img' ), writer );
-			}, 'empty element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+			} ).toThrow( /^widget-to-widget-wrong-element-type/ );
 
 			expect( () => {
 				toWidget( writer.createAttributeElement( 'a' ), writer );
-			}, 'attribute element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+			} ).toThrow( /^widget-to-widget-wrong-element-type/ );
 
 			expect( () => {
 				toWidget( writer.createUIElement( 'span' ), writer );
-			}, 'UI element' ).to.throw( /^widget-to-widget-wrong-element-type/ );
+			} ).toThrow( /^widget-to-widget-wrong-element-type/ );
 		} );
 	} );
 
 	describe( 'isWidget()', () => {
 		it( 'should return true for widgetized elements', () => {
-			expect( isWidget( element ) ).to.be.true;
+			expect( isWidget( element ) ).toBeTruthy();
 		} );
 
 		it( 'should return false for non-widgetized elements', () => {
-			expect( isWidget( new ViewElement( viewDocument, 'p' ) ) ).to.be.false;
+			expect( isWidget( new ViewElement( viewDocument, 'p' ) ) ).toBeFalsy();
 		} );
 
 		it( 'should return false for text node', () => {
-			expect( isWidget( new ViewText( viewDocument, 'p' ) ) ).to.be.false;
+			expect( isWidget( new ViewText( viewDocument, 'p' ) ) ).toBeFalsy();
 		} );
 	} );
 
@@ -187,13 +189,13 @@ describe( 'widget utils', () => {
 			toWidget( element, writer );
 			setLabel( element, 'foo bar baz', writer );
 
-			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
+			expect( getLabel( element ) ).toBe( 'foo bar baz' );
 		} );
 
 		it( 'should return empty string for elements without label', () => {
 			toWidget( element, writer );
 
-			expect( getLabel( element ) ).to.equal( '' );
+			expect( getLabel( element ) ).toBe( '' );
 		} );
 
 		it( 'should allow to use a function as label creator', () => {
@@ -201,9 +203,9 @@ describe( 'widget utils', () => {
 			let caption = 'foo';
 			setLabel( element, () => caption, writer );
 
-			expect( getLabel( element ) ).to.equal( 'foo' );
+			expect( getLabel( element ) ).toBe( 'foo' );
 			caption = 'bar';
-			expect( getLabel( element ) ).to.equal( 'bar' );
+			expect( getLabel( element ) ).toBe( 'bar' );
 		} );
 
 		it( 'should concatenate a label from a function creator and a string', () => {
@@ -211,7 +213,7 @@ describe( 'widget utils', () => {
 			setLabel( element, () => 'foo', writer );
 			element.getCustomProperty( 'widgetLabel' ).push( 'bar' );
 
-			expect( getLabel( element ) ).to.equal( 'foo. bar' );
+			expect( getLabel( element ) ).toBe( 'foo. bar' );
 		} );
 	} );
 
@@ -225,41 +227,41 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should be created in context of proper document', () => {
-			expect( element.document ).to.equal( viewDocument );
+			expect( element.document ).toBe( viewDocument );
 		} );
 
 		it( 'should add proper class', () => {
-			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
+			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).toBeTruthy();
 		} );
 
 		it( 'should add proper role', () => {
-			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+			expect( element.getAttribute( 'role' ) ).toBe( 'textbox' );
 		} );
 
 		it( 'should add proper tabindex', () => {
-			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 		} );
 
 		it( 'should not add tabindex if editable is readonly', () => {
 			element.isReadOnly = true;
-			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+			expect( element.hasAttribute( 'tabindex' ) ).toBeFalsy();
 		} );
 
 		it( 'should toggle tabindex attribute after isReadOnly change', () => {
-			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 
 			element.isReadOnly = true;
-			expect( element.hasAttribute( 'tabindex' ) ).to.be.false;
+			expect( element.hasAttribute( 'tabindex' ) ).toBeFalsy();
 
 			element.isReadOnly = false;
-			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+			expect( element.getAttribute( 'tabindex' ) ).toBe( '-1' );
 		} );
 
 		it( 'should add role attribute by default for backward compatibility', () => {
 			const element = new ViewEditableElement( viewDocument, 'div' );
 			toWidgetEditable( element, writer );
 
-			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+			expect( element.getAttribute( 'role' ) ).toBe( 'textbox' );
 		} );
 
 		it( 'should add role attribute when withAriaRole is set to true', () => {
@@ -407,8 +409,8 @@ describe( 'widget utils', () => {
 		describe( 'custom highlight method', () => {
 			beforeEach( () => {
 				element = new ViewElement( viewDocument, 'p' );
-				addSpy = sinon.spy();
-				removeSpy = sinon.spy();
+				addSpy = vi.fn();
+				removeSpy = vi.fn();
 
 				setHighlightHandling( element, writer, addSpy, removeSpy );
 				set = element.getCustomProperty( 'addHighlight' );
@@ -416,8 +418,8 @@ describe( 'widget utils', () => {
 			} );
 
 			it( 'should set highlight handling methods', () => {
-				expect( typeof set ).to.equal( 'function' );
-				expect( typeof remove ).to.equal( 'function' );
+				expect( typeof set ).toBe( 'function' );
+				expect( typeof remove ).toBe( 'function' );
 			} );
 
 			it( 'should call highlight methods when descriptor is added and removed', () => {
@@ -426,11 +428,11 @@ describe( 'widget utils', () => {
 				set( element, descriptor, writer );
 				remove( element, descriptor.id, writer );
 
-				sinon.assert.calledOnce( addSpy );
-				sinon.assert.calledWithExactly( addSpy, element, descriptor, writer );
+				expect( addSpy ).toHaveBeenCalledTimes( 1 );
+				expect( addSpy ).toHaveBeenCalledWith( element, descriptor, writer );
 
-				sinon.assert.calledOnce( removeSpy );
-				sinon.assert.calledWithExactly( removeSpy, element, descriptor, writer );
+				expect( removeSpy ).toHaveBeenCalledTimes( 1 );
+				expect( removeSpy ).toHaveBeenCalledWith( element, descriptor, writer );
 			} );
 
 			it( 'should call highlight methods when next descriptor is added', () => {
@@ -440,9 +442,9 @@ describe( 'widget utils', () => {
 				set( element, descriptor );
 				set( element, secondDescriptor );
 
-				sinon.assert.calledTwice( addSpy );
-				expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
-				expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+				expect( addSpy ).toHaveBeenCalledTimes( 2 );
+				expect( addSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
+				expect( addSpy.mock.calls[ 1 ][ 1 ] ).toBe( secondDescriptor );
 			} );
 
 			it( 'should not call highlight methods when descriptor with lower priority is added', () => {
@@ -452,8 +454,8 @@ describe( 'widget utils', () => {
 				set( element, descriptor );
 				set( element, secondDescriptor );
 
-				sinon.assert.calledOnce( addSpy );
-				expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+				expect( addSpy ).toHaveBeenCalledTimes( 1 );
+				expect( addSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
 			} );
 
 			it( 'should call highlight methods when descriptor is removed changing active descriptor', () => {
@@ -464,14 +466,14 @@ describe( 'widget utils', () => {
 				set( element, secondDescriptor );
 				remove( element, secondDescriptor.id );
 
-				sinon.assert.calledThrice( addSpy );
-				expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
-				expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
-				expect( addSpy.thirdCall.args[ 1 ] ).to.equal( descriptor );
+				expect( addSpy ).toHaveBeenCalledTimes( 3 );
+				expect( addSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
+				expect( addSpy.mock.calls[ 1 ][ 1 ] ).toBe( secondDescriptor );
+				expect( addSpy.mock.calls[ 2 ][ 1 ] ).toBe( descriptor );
 
-				sinon.assert.calledTwice( removeSpy );
-				expect( removeSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
-				expect( removeSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+				expect( removeSpy ).toHaveBeenCalledTimes( 2 );
+				expect( removeSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
+				expect( removeSpy.mock.calls[ 1 ][ 1 ] ).toBe( secondDescriptor );
 			} );
 
 			it( 'should call highlight methods when descriptor is removed not changing active descriptor', () => {
@@ -482,10 +484,10 @@ describe( 'widget utils', () => {
 				set( element, secondDescriptor );
 				remove( element, secondDescriptor );
 
-				sinon.assert.calledOnce( addSpy );
-				expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
+				expect( addSpy ).toHaveBeenCalledTimes( 1 );
+				expect( addSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
 
-				sinon.assert.notCalled( removeSpy );
+				expect( removeSpy ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should call highlight methods - CSS class array', () => {
@@ -495,9 +497,9 @@ describe( 'widget utils', () => {
 				set( element, descriptor );
 				set( element, secondDescriptor );
 
-				sinon.assert.calledTwice( addSpy );
-				expect( addSpy.firstCall.args[ 1 ] ).to.equal( descriptor );
-				expect( addSpy.secondCall.args[ 1 ] ).to.equal( secondDescriptor );
+				expect( addSpy ).toHaveBeenCalledTimes( 2 );
+				expect( addSpy.mock.calls[ 0 ][ 1 ] ).toBe( descriptor );
+				expect( addSpy.mock.calls[ 1 ][ 1 ] ).toBe( secondDescriptor );
 			} );
 		} );
 	} );

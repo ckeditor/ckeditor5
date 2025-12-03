@@ -3,41 +3,40 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image, ImageResize } from '@ckeditor/ckeditor5-image';
 import { waitForAllImagesLoaded } from '@ckeditor/ckeditor5-image/tests/imageresize/_utils/utils.js';
 
 describe( 'WidgetResize - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
 
-	testUtils.createSinonSandbox();
-
-	beforeEach( () => {
+	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( editorElement, { plugins: [ Image, ImageResize ] } )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				view = editor.editing.view;
-				viewDocument = view.document;
-			} );
+		editor = await ClassicEditor.create( editorElement, {
+			plugins: [ Image, ImageResize ]
+		} );
+
+		model = editor.model;
+		view = editor.editing.view;
+		viewDocument = view.document;
 	} );
 
-	afterEach( () => {
+	afterEach( async () => {
 		editorElement.remove();
 
-		return editor.destroy();
+		vi.restoreAllMocks();
+
+		await editor.destroy();
 	} );
 
 	it( 'should not fire viewDocument#mousedown events after starting resizing', async () => {
-		const eventSpy = sinon.spy().named( 'ViewDocument#mousedown' );
+		const eventSpy = vi.fn();
 
-		_setModelData( model, '[<imageBlock src="/assets/sample.png"></imageBlock>]' );
+		_setModelData( model, '[<imageBlock src="/sample.png"></imageBlock>]' );
 
 		await waitForAllImagesLoaded( editor );
 
@@ -50,6 +49,6 @@ describe( 'WidgetResize - integration', () => {
 
 		squareDomElement.dispatchEvent( new Event( 'mousedown' ) );
 
-		expect( eventSpy.called ).to.equal( false );
+		expect( eventSpy ).not.toHaveBeenCalled();
 	} );
 } );

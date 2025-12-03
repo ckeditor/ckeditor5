@@ -739,7 +739,7 @@ export class Widget extends Plugin {
 
 		const modelElement = mapper.toModelElement( viewElement );
 
-		/* istanbul ignore next -- @preserve */
+		/* v8 ignore next -- @preserve */
 		if ( !modelElement ) {
 			return false;
 		}
@@ -842,6 +842,7 @@ function getElementFromMouseEvent( view: EditingView, domEventData: ViewDocument
 	let viewNode = viewPosition.parent;
 
 	if ( viewPosition.parent.is( 'editableElement' ) ) {
+		/* v8 ignore else -- @preserve */
 		if ( viewPosition.isAtEnd && viewPosition.nodeBefore ) {
 			// Click after a widget tend to return position at the end of the editable element
 			// so use the node before it if range is at the end of a parent.

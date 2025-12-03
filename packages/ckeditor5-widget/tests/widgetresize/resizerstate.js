@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { WidgetResizeState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'ResizerState', () => {
@@ -29,11 +30,11 @@ describe( 'ResizerState', () => {
 			expect( isObservable( 'proposedHandleHostHeight' ), 'proposedHandleHostHeight' ).to.be.true;
 
 			function isObservable( propertyName ) {
-				const listener = sinon.stub();
+				const listener = vi.fn();
 				state.on( `change:${ propertyName }`, listener );
 				state[ propertyName ] = true;
 
-				return listener.calledOnce;
+				return listener.mock.calls.length === 1;
 			}
 		} );
 	} );
@@ -41,7 +42,7 @@ describe( 'ResizerState', () => {
 	describe( 'begin()', () => {
 		const domContentWrapper = document.createElement( 'div' );
 
-		before( () => {
+		beforeAll( () => {
 			const htmlMockup = `<div class="dom-element" style="width: 25%;">
 				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
 					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>
@@ -53,7 +54,7 @@ describe( 'ResizerState', () => {
 			document.body.append( domContentWrapper );
 		} );
 
-		after( () => {
+		afterAll( () => {
 			domContentWrapper.remove();
 		} );
 
@@ -79,7 +80,7 @@ describe( 'ResizerState', () => {
 	describe( 'width percents calculations ', () => {
 		const domContentWrapper = document.createElement( 'span' );
 
-		before( () => {
+		beforeAll( () => {
 			const htmlMockup = `<div class="dom-element">
 				<div class="ck ck-reset_all ck-widget__resizer" style="width: 400px; height: 200px;">
 					<div class="ck-widget__resizer__handle ck-widget__resizer__handle-bottom-right"></div>

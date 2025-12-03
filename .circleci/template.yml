@@ -101,6 +101,16 @@ jobs:
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
+          when: always
+          name: Build theme-lark stylesheets
+          working_directory: packages/ckeditor5-theme-lark
+          command: pnpm run build:dist
+      - run:
+          when: always
+          name: Run Vitest tests in widget package
+          working_directory: packages/ckeditor5-widget
+          command: pnpm run coverage
+      - run:
           name: Prepare DLL builds in CKEditor 5
           command: pnpm run dll:build
       - run:
