@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { expect } from 'vitest';
 import { EmitterMixin } from '../../src/emittermixin.js';
 import { CKEditorError } from '../../src/ckeditorerror.js';
 import { areConnectedThroughProperties } from '../../src/areconnectedthroughproperties.js';

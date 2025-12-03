@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -22,12 +23,13 @@ import {
 } from '@ckeditor/ckeditor5-engine';
 import { toWidget } from '../src/utils.js';
 import { getCode, keyCodes, toArray, env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;
 
-	testUtils.createSinonSandbox();
+	afterEach( () => {
+		vi.restoreAllMocks();
+	} );
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -207,22 +209,21 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		const isEditableElementStub = sinon
-			.stub( ViewRootEditableElement.prototype, 'is' )
-			.withArgs( 'editableElement' )
-			.returns( false );
+		const isEditableElementStub = vi
+			.spyOn( ViewRootEditableElement.prototype, 'is' )
+			.mockImplementation( type => type !== 'editableElement' );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 
-		isEditableElementStub.reset();
-		focusSpy.restore();
+		isEditableElementStub.mockRestore();
+		focusSpy.mockRestore();
 	} );
 
 	it( 'should not crash if the click target is not inside nested editable', () => {
@@ -235,22 +236,21 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( nestedView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		const isEditableElementStub = sinon
-			.stub( ViewEditableElement.prototype, 'is' )
-			.withArgs( 'editableElement' )
-			.returns( false );
+		const isEditableElementStub = vi
+			.spyOn( ViewEditableElement.prototype, 'is' )
+			.mockImplementation( type => type !== 'editableElement' );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 
-		isEditableElementStub.reset();
-		focusSpy.restore();
+		isEditableElementStub.mockRestore();
+		focusSpy.mockRestore();
 	} );
 
 	it( 'should not focus anything when the range start element is not present', () => {
@@ -260,26 +260,26 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					parent: null
 				}
 			} );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should use `createRange` fallback if extracting range from mouse event is not possible', () => {
@@ -289,25 +289,24 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( null );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( null );
 
 		// Expect to execute `createRangeIn` in hope to find the range.
 		// Let's assume it won't find it and return null.
-		const createPositionAtSpy = sinon
-			.spy( editor.editing.view, 'createPositionAt' )
-			.withArgs( editableView, 0 );
+		const createPositionAtSpy = vi
+			.spyOn( editor.editing.view, 'createPositionAt' );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( createPositionAtSpy ).to.be.calledOnce;
-		expect( focusSpy ).to.be.calledOnce;
+		expect( createPositionAtSpy ).toHaveBeenCalledTimes( 1 );
+		expect( focusSpy ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'should not crash and not focus anything if event target is null', () => {
@@ -317,23 +316,23 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( editableView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		// Lets simulate that the other plugin overrides the target to null.
 		editor.plugins.get( Widget ).listenTo(
 			viewDocument, 'pointerdown',
 			( eventInfo, domEventData ) => {
-				sinon.stub( domEventData, 'target' ).get( () => null );
+				Object.defineProperty( domEventData, 'target', { get: () => null } );
 			},
 			{
 				priority: 'high'
 			}
 		);
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 		viewDocument.fire( 'pointerdown', domEventDataMock );
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
@@ -345,39 +344,38 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target,
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( null );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( null );
 
 		// Expect to execute `createRangeIn` in hope to find the range.
 		// Let's assume it won't find it and return null.
 		const position = editor.editing.view.createPositionAt( target, 0 );
-		const createRangeStub = sinon
-			.stub( editor.editing.view, 'createPositionAt' )
-			.returns( position );
+		const createRangeStub = vi
+			.spyOn( editor.editing.view, 'createPositionAt' )
+			.mockReturnValue( position );
 
-		sinon
-			.stub( editor.editing.view, 'createRange' )
-			.withArgs( position )
-			.returns( null );
+		vi
+			.spyOn( editor.editing.view, 'createRange' )
+			.mockReturnValue( null );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					parent: widgetView
 				}
 			} );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( createRangeStub ).to.be.calledOnce;
-		expect( focusSpy ).not.to.be.called;
+		expect( createRangeStub ).toHaveBeenCalledTimes( 1 );
+		expect( focusSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not focus anything when the range start element is text node', () => {
@@ -387,28 +385,28 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					parent: {
-						is: sinon.stub().withArgs( '$text' ).returns( true )
+						is: type => type === '$text'
 					}
 				}
 			} );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not focus anything if there is no widget ancestor of element found in click point', () => {
@@ -418,26 +416,26 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					parent: paragraphView
 				}
 			} );
 
-		const focusSpy = sinon.spy( EditingView.prototype, 'focus' );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).not.to.be.called;
+		expect( focusSpy ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not lookup for widget ancestor of element found in click point if it\'s widget', () => {
@@ -447,26 +445,26 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( paragraphView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					parent: viewDocument.getRoot().getChild( 1 )
 				}
 			} );
 
-		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' ).mockReturnValue( true );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).to.be.called;
+		expect( focusSpy ).toHaveBeenCalled();
 	} );
 
 	it( 'should focus widget if clicked node that is at the end and parent contenteditable is selected', () => {
@@ -478,16 +476,16 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					isAtEnd: true,
 					parent: parentView,
@@ -495,11 +493,11 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' ).mockReturnValue( true );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).to.be.called;
+		expect( focusSpy ).toHaveBeenCalled();
 	} );
 
 	it( 'should focus widget if clicked node that is at the start and parent contenteditable is selected', () => {
@@ -511,16 +509,16 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( parentView ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
-		sinon
-			.stub( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
-			.returns( {} );
+		vi
+			.spyOn( domEventDataMock.domTarget.ownerDocument, 'caretRangeFromPoint' )
+			.mockReturnValue( {} );
 
-		sinon
-			.stub( view.domConverter, 'domRangeToView' )
-			.returns( {
+		vi
+			.spyOn( view.domConverter, 'domRangeToView' )
+			.mockReturnValue( {
 				start: {
 					isAtStart: true,
 					parent: parentView,
@@ -528,11 +526,11 @@ describe( 'Widget', () => {
 				}
 			} );
 
-		const focusSpy = sinon.stub( EditingView.prototype, 'focus' ).returns( true );
+		const focusSpy = vi.spyOn( EditingView.prototype, 'focus' ).mockReturnValue( true );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		expect( focusSpy ).to.be.called;
+		expect( focusSpy ).toHaveBeenCalled();
 	} );
 
 	it( 'should create selection over clicked widget', () => {
@@ -541,7 +539,7 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -557,12 +555,12 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
+		expect( domEventDataMock.domEvent.preventDefault ).toHaveBeenCalledTimes( 1 );
 		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 
 		env.isAndroid = false;
@@ -576,12 +574,12 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
+		expect( domEventDataMock.domEvent.preventDefault ).toHaveBeenCalledTimes( 1 );
 		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 
 		env.isiOS = false;
@@ -594,7 +592,7 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewB ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -608,13 +606,13 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
 			isPrimary: false,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><widget></widget>' );
-		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
+		expect( domEventDataMock.domEvent.preventDefault ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
@@ -623,14 +621,14 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewP ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
 
 		view.focus();
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
-		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
+		expect( domEventDataMock.domEvent.preventDefault ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should not focus editable if already is focused', () => {
@@ -639,14 +637,14 @@ describe( 'Widget', () => {
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( widget ),
 			isPrimary: true,
-			preventDefault: sinon.spy()
+			preventDefault: vi.fn()
 		} );
-		const focusSpy = sinon.spy( view, 'focus' );
+		const focusSpy = vi.spyOn( view, 'focus' );
 
 		viewDocument.isFocused = true;
 		viewDocument.fire( 'pointerdown', domEventDataMock );
 
-		sinon.assert.notCalled( focusSpy );
+		expect( focusSpy ).not.toHaveBeenCalled();
 		expect( _getModelData( model ) ).to.equal( '<paragraph></paragraph>[<widget></widget>]' );
 	} );
 
@@ -722,7 +720,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should allow overriding the selection downcast', () => {
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		editor.conversion.for( 'editingDowncast' ).add(
 			dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
@@ -743,7 +741,7 @@ describe( 'Widget', () => {
 
 		_setModelData( model, '<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>' );
 
-		expect( spy.calledOnce ).to.be.true;
+		expect( spy.mock.calls.length === 1 ).to.be.true;
 		expect( _getViewData( view ) ).to.equal(
 			'<p>' +
 				'foo' +
@@ -862,7 +860,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
@@ -871,7 +869,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -888,7 +886,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const bold = paragraph.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( bold ),
 				preventDefault,
@@ -897,7 +895,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -914,7 +912,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
@@ -923,7 +921,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -941,7 +939,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
@@ -950,7 +948,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -968,7 +966,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
 				preventDefault,
@@ -977,7 +975,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -996,7 +994,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const blockQuote = viewRoot.getChild( 1 );
 			const paragraph = blockQuote.getChild( 0 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
@@ -1006,7 +1004,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1023,7 +1021,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
@@ -1033,7 +1031,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1050,7 +1048,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( paragraph ),
@@ -1060,7 +1058,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1079,7 +1077,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const paragraph = viewRoot.getChild( 1 );
 			const inline = paragraph.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( inline ),
@@ -1089,7 +1087,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1108,7 +1106,7 @@ describe( 'Widget', () => {
 			const viewRoot = viewDocument.getRoot();
 			const widget = viewRoot.getChild( 1 );
 			const nested = widget.getChild( 0 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( nested ),
 				preventDefault,
@@ -1117,7 +1115,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1135,7 +1133,7 @@ describe( 'Widget', () => {
 
 			const viewRoot = viewDocument.getRoot();
 			const widget = viewRoot.getChild( 1 );
-			const preventDefault = sinon.spy();
+			const preventDefault = vi.fn();
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( widget ),
 				preventDefault,
@@ -1144,7 +1142,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			sinon.assert.called( preventDefault );
+			expect( preventDefault ).toHaveBeenCalled();
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
@@ -1160,14 +1158,14 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( editableView ),
 				detail: 3,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			// Lets simulate that the other plugin overrides the target to null.
 			editor.plugins.get( Widget ).listenTo(
 				viewDocument, 'mousedown',
 				( eventInfo, domEventData ) => {
-					sinon.stub( domEventData, 'target' ).get( () => null );
+					Object.defineProperty( domEventData, 'target', { get: () => null } );
 				},
 				{
 					priority: 'high'
@@ -1359,10 +1357,10 @@ describe( 'Widget', () => {
 			);
 
 			it( 'should prevent default behaviour when there is no correct location - document end', () => {
-				const keydownHandler = sinon.spy();
+				const keydownHandler = vi.fn();
 				const domEventDataMock = {
 					keyCode: keyCodes.arrowright,
-					preventDefault: sinon.spy()
+					preventDefault: vi.fn()
 				};
 				_setModelData( model, '<paragraph>foo</paragraph>[<widget></widget>]' );
 				viewDocument.on( 'keydown', keydownHandler );
@@ -1372,15 +1370,15 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
-				sinon.assert.called( domEventDataMock.preventDefault );
-				sinon.assert.notCalled( keydownHandler );
+				expect( domEventDataMock.preventDefault ).toHaveBeenCalled();
+				expect( keydownHandler ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should prevent default behaviour when there is no correct location - document start', () => {
-				const keydownHandler = sinon.spy();
+				const keydownHandler = vi.fn();
 				const domEventDataMock = {
 					keyCode: keyCodes.arrowleft,
-					preventDefault: sinon.spy()
+					preventDefault: vi.fn()
 				};
 				_setModelData( model, '[<widget></widget>]<paragraph>foo</paragraph>' );
 				viewDocument.on( 'keydown', keydownHandler );
@@ -1390,8 +1388,8 @@ describe( 'Widget', () => {
 				viewDocument.fire( 'keydown', domEventDataMock );
 
 				expect( _getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
-				sinon.assert.called( domEventDataMock.preventDefault );
-				sinon.assert.notCalled( keydownHandler );
+				expect( domEventDataMock.preventDefault ).toHaveBeenCalled();
+				expect( keydownHandler ).not.toHaveBeenCalled();
 			} );
 
 			test(
@@ -2927,10 +2925,10 @@ describe( 'Widget', () => {
 
 		function test( name, data, actions, expected, expectedView, contentLanguageDirection = 'ltr', stubCalls = null, modelOptions ) {
 			it( name, () => {
-				testUtils.sinon.stub( editor.locale, 'contentLanguageDirection' ).value( contentLanguageDirection );
+				vi.spyOn( editor.locale, 'contentLanguageDirection', 'get' ).mockReturnValue( contentLanguageDirection );
 
-				const preventDefaultSpy = sinon.spy();
-				const stopPropagationSpy = sinon.spy();
+				const preventDefaultSpy = vi.fn();
+				const stopPropagationSpy = vi.fn();
 
 				actions = toArray( actions );
 				actions = actions.map( action => {
@@ -2967,7 +2965,7 @@ describe( 'Widget', () => {
 				}
 
 				if ( stubCalls ) {
-					expect( preventDefaultSpy.callCount, 'preventDefault' ).to.equal( stubCalls.preventDefault );
+					expect( preventDefaultSpy.mock.calls.length, 'preventDefault' ).to.equal( stubCalls.preventDefault );
 				}
 			} );
 		}
@@ -2977,7 +2975,7 @@ describe( 'Widget', () => {
 		function test( name, input, direction, expected ) {
 			it( name, () => {
 				_setModelData( model, input );
-				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
+				const scrollStub = vi.spyOn( view, 'scrollToTheSelection' );
 
 				viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
 					preventDefault: () => {}
@@ -2989,7 +2987,7 @@ describe( 'Widget', () => {
 				} ) );
 
 				expect( _getModelData( model ) ).to.equal( expected );
-				scrollStub.restore();
+				scrollStub.mockRestore();
 			} );
 		}
 
@@ -3184,9 +3182,9 @@ describe( 'Widget', () => {
 
 		it( 'should prevent default behaviour and stop event propagation', () => {
 			_setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			const deleteSpy = sinon.spy();
-			const preventDefaultSpy = sinon.spy();
+			const scrollStub = vi.spyOn( view, 'scrollToTheSelection' );
+			const deleteSpy = vi.fn();
+			const preventDefaultSpy = vi.fn();
 
 			viewDocument.on( 'delete', deleteSpy );
 
@@ -3199,9 +3197,9 @@ describe( 'Widget', () => {
 				inputType: 'deleteContentForward'
 			} ) );
 
-			sinon.assert.calledOnce( preventDefaultSpy );
-			sinon.assert.notCalled( deleteSpy );
-			scrollStub.restore();
+			expect( preventDefaultSpy ).toHaveBeenCalledTimes( 1 );
+			expect( deleteSpy ).not.toHaveBeenCalled();
+			scrollStub.mockRestore();
 		} );
 
 		test(
@@ -3333,7 +3331,7 @@ describe( 'Widget', () => {
 		);
 
 		it( 'does nothing when editor when read only mode is enabled (delete)', () => {
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
+			const scrollStub = vi.spyOn( view, 'scrollToTheSelection' );
 			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
@@ -3344,7 +3342,7 @@ describe( 'Widget', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
 			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'backward',
 				unit: 'character',
@@ -3359,11 +3357,11 @@ describe( 'Widget', () => {
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
-			scrollStub.restore();
+			scrollStub.mockRestore();
 		} );
 
 		it( 'does nothing when editor when read only mode is enabled (delete forward)', () => {
-			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
+			const scrollStub = vi.spyOn( view, 'scrollToTheSelection' );
 			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
@@ -3374,7 +3372,7 @@ describe( 'Widget', () => {
 			editor.enableReadOnlyMode( 'unit-test' );
 
 			viewDocument.fire( 'delete', new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, {
 				direction: 'forward',
 				unit: 'character',
@@ -3389,7 +3387,7 @@ describe( 'Widget', () => {
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
-			scrollStub.restore();
+			scrollStub.mockRestore();
 		} );
 	} );
 
@@ -3454,7 +3452,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3471,7 +3469,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3513,7 +3511,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3564,7 +3562,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3600,7 +3598,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( viewWidgetSelectionHandle ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3644,7 +3642,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target: view.domConverter.mapViewToDom( widgetInEditable ),
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );
@@ -3680,7 +3678,7 @@ describe( 'Widget', () => {
 			const domEventDataMock = new ViewDocumentDomEventData( view, {
 				target,
 				isPrimary: true,
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			} );
 
 			viewDocument.fire( 'pointerdown', domEventDataMock );

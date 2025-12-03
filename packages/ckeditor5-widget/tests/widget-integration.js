@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -17,15 +18,12 @@ import { ViewDocumentDomEventData,
 import { toWidget } from '../src/utils.js';
 
 import { env } from '@ckeditor/ckeditor5-utils';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( () => {
-		testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+		vi.spyOn( env, 'isSafari', 'get' ).mockReturnValue( true );
 
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -93,6 +91,8 @@ describe( 'Widget - integration', () => {
 	afterEach( () => {
 		editorElement.remove();
 
+		vi.restoreAllMocks();
+
 		return editor.destroy();
 	} );
 
@@ -101,7 +101,7 @@ describe( 'Widget - integration', () => {
 		const viewDiv = viewDocument.getRoot().getChild( 1 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
@@ -111,7 +111,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.notCalled( preventDefault );
+		expect( preventDefault ).not.toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<p>[]</p>' +
@@ -129,7 +129,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -138,7 +138,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
@@ -154,7 +154,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
@@ -163,7 +163,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
@@ -187,7 +187,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewLink = viewDiv.getChild( 0 ).getChild( 1 ).getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewLink ),
 			preventDefault,
@@ -196,7 +196,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
@@ -224,7 +224,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const secondViewFigcaption = viewDiv.getChild( 1 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( secondViewFigcaption ),
 			preventDefault,
@@ -233,7 +233,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
@@ -251,7 +251,7 @@ describe( 'Widget - integration', () => {
 
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -260,7 +260,7 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		sinon.assert.called( preventDefault );
+		expect( preventDefault ).toHaveBeenCalled();
 
 		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
@@ -276,7 +276,7 @@ describe( 'Widget - integration', () => {
 		_setModelData( model, '[]<imageBlock></imageBlock>' );
 
 		const image = viewDocument.getRoot().getChild( 0 );
-		const preventDefault = sinon.spy();
+		const preventDefault = vi.fn();
 		const domEventDataMock = new ViewDocumentDomEventData( view, {
 			target: view.domConverter.mapViewToDom( image ),
 			preventDefault,

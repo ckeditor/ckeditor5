@@ -16,9 +16,9 @@
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-enter": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
+    "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*",
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
@@ -36,7 +36,10 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-table": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
+    "@vitest/browser-playwright": "^4.0.14",
+    "@vitest/coverage-v8": "^4.0.14",
     "typescript": "5.3.3",
+    "vitest": "^4.0.14",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
@@ -59,6 +62,9 @@
   ],
   "scripts": {
     "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest --browser.headless run",
+    "coverage": "vitest run --coverage"
   }
 }

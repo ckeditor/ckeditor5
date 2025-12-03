@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
+
 import { WidgetResizer } from '../../src/widgetresize/resizer.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -13,7 +15,7 @@ import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlep
 describe( 'Resizer', () => {
 	let editor, editorElement;
 
-	before( () => {
+	beforeAll( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.append( editorElement );
 
@@ -44,7 +46,7 @@ describe( 'Resizer', () => {
 			} );
 	} );
 
-	after( () => {
+	afterAll( () => {
 		editorElement.remove();
 		return editor.destroy();
 	} );
@@ -58,14 +60,14 @@ describe( 'Resizer', () => {
 	describe( 'markup', () => {
 		let resizerInstance, renderedElement;
 
-		before( () => {
+		beforeAll( () => {
 			resizerInstance = createResizer();
 			resizerInstance.attach();
 
 			renderedElement = resizerInstance._viewResizerWrapper.render( document );
 		} );
 
-		after( () => {
+		afterAll( () => {
 			renderedElement.remove();
 		} );
 
@@ -215,20 +217,20 @@ describe( 'Resizer', () => {
 
 			document.body.appendChild( renderedElement );
 
-			const viewChangeSpy = sinon.spy( editor.editing.view, 'change' );
+			const viewChangeSpy = vi.spyOn( editor.editing.view, 'change' );
 
 			resizerInstance.redraw();
-			sinon.assert.calledOnce( viewChangeSpy );
+			expect( viewChangeSpy ).toHaveBeenCalledTimes( 1 );
 
 			resizerInstance.redraw();
-			sinon.assert.calledOnce( viewChangeSpy );
+			expect( viewChangeSpy ).toHaveBeenCalledTimes( 1 );
 
 			const host = resizerInstance._getHandleHost();
 
 			host.style.width = '123px';
 
 			resizerInstance.redraw();
-			sinon.assert.calledTwice( viewChangeSpy );
+			expect( viewChangeSpy ).toHaveBeenCalledTimes( 2 );
 
 			// Cleanup.
 			renderedElement.remove();

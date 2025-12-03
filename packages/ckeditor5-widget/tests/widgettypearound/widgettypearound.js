@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ViewDocumentDomEventData, BubblingEventInfo, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
@@ -13,12 +14,8 @@ import { WidgetTypeAround } from '../../src/widgettypearound/widgettypearound.js
 import { TYPE_AROUND_SELECTION_ATTRIBUTE } from '../../src/widgettypearound/utils.js';
 import { toWidget } from '../../src/utils.js';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
@@ -29,6 +26,8 @@ describe( 'WidgetTypeAround', () => {
 
 	afterEach( async () => {
 		element.remove();
+
+		vi.restoreAllMocks();
 
 		await editor.destroy();
 	} );
@@ -79,7 +78,7 @@ describe( 'WidgetTypeAround', () => {
 		let executeSpy;
 
 		beforeEach( () => {
-			executeSpy = sinon.spy( editor, 'execute' );
+			executeSpy = vi.spyOn( editor, 'execute' );
 		} );
 
 		it( 'should execute the "insertParagraph" command when inserting a paragraph before the widget', () => {
@@ -87,11 +86,11 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
 
-			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const spyExecutePosition = executeSpy.mock.calls[ 0 ][ 1 ].position;
 			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertParagraph', expect.anything() );
 
 			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
@@ -103,11 +102,11 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
-			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const spyExecutePosition = executeSpy.mock.calls[ 0 ][ 1 ].position;
 			const positionAfterWidget = editor.model.createPositionAfter( modelRoot.getChild( 0 ) );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+			expect( executeSpy ).toHaveBeenCalledTimes( 1 );
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertParagraph', expect.anything() );
 
 			expect( spyExecutePosition.isEqual( positionAfterWidget ) ).to.be.true;
 
@@ -115,23 +114,23 @@ describe( 'WidgetTypeAround', () => {
 		} );
 
 		it( 'should focus the editing view', () => {
-			const spy = sinon.spy( editor.editing.view, 'focus' );
+			const spy = vi.spyOn( editor.editing.view, 'focus' );
 
 			_setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should scroll the editing view to the selection in an inserted paragraph', () => {
-			const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+			const spy = vi.spyOn( editor.editing.view, 'scrollToTheSelection' );
 
 			_setModelData( editor.model, '<blockWidget></blockWidget>' );
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'after' );
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should inherit attributes from widget that have copyOnReplace property', () => {
@@ -151,11 +150,11 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
 
-			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const spyExecutePosition = executeSpy.mock.calls[ 0 ][ 1 ].position;
 			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertParagraph', expect.anything() );
 
 			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
@@ -175,11 +174,11 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
 
-			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const spyExecutePosition = executeSpy.mock.calls[ 0 ][ 1 ].position;
 			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertParagraph', expect.anything() );
 
 			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
@@ -199,11 +198,11 @@ describe( 'WidgetTypeAround', () => {
 
 			plugin._insertParagraph( modelRoot.getChild( 0 ), 'before' );
 
-			const spyExecutePosition = executeSpy.firstCall.args[ 1 ].position;
+			const spyExecutePosition = executeSpy.mock.calls[ 0 ][ 1 ].position;
 			const positionBeforeWidget = editor.model.createPositionBefore( modelRoot.getChild( 0 ) );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWith( executeSpy, 'insertParagraph' );
+			expect( executeSpy ).toHaveBeenCalledOnce();
+			expect( executeSpy ).toHaveBeenCalledWith( 'insertParagraph', expect.anything() );
 
 			expect( spyExecutePosition.isEqual( positionBeforeWidget ) ).to.be.true;
 
@@ -306,11 +305,11 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
-					const preventDefaultSpy = sinon.spy();
-					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
+					const preventDefaultSpy = vi.fn();
+					const typeAroundSpy = vi.spyOn( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
-					const stopSpy = sinon.stub( eventInfo, 'stop' );
+					const stopSpy = vi.spyOn( eventInfo, 'stop' );
 					const domEventDataMock = new ViewDocumentDomEventData( editingView, {
 						target: buttonBefore,
 						preventDefault: preventDefaultSpy
@@ -318,24 +317,24 @@ describe( 'WidgetTypeAround', () => {
 
 					viewDocument.fire( eventInfo, domEventDataMock );
 
-					sinon.assert.calledOnce( typeAroundSpy );
-					sinon.assert.calledWithExactly( typeAroundSpy, modelRoot.getChild( 1 ), 'before' );
-					sinon.assert.calledOnce( preventDefaultSpy );
-					sinon.assert.calledOnce( stopSpy );
+					expect( typeAroundSpy ).toHaveBeenCalledOnce();
+					expect( typeAroundSpy ).toHaveBeenCalledExactlyOnceWith( modelRoot.getChild( 1 ), 'before' );
+					expect( preventDefaultSpy ).toHaveBeenCalledOnce();
+					expect( stopSpy ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should not cause WidgetTypeAround#_insertParagraph() when clicked something other than the button', () => {
-					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
+					const typeAroundSpy = vi.spyOn( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const domEventDataMock = new ViewDocumentDomEventData( editingView, {
 						// Clicking a widget.
 						target: editingView.domConverter.mapViewToDom( viewRoot.getChild( 0 ) ),
-						preventDefault: sinon.spy()
+						preventDefault: vi.fn()
 					} );
 
 					viewDocument.fire( eventInfo, domEventDataMock );
-					sinon.assert.notCalled( typeAroundSpy );
+					expect( typeAroundSpy ).not.toHaveBeenCalled();
 				} );
 			} );
 
@@ -349,11 +348,11 @@ describe( 'WidgetTypeAround', () => {
 				} );
 
 				it( 'should execute WidgetTypeAround#_insertParagraph() when clicked', () => {
-					const preventDefaultSpy = sinon.spy();
-					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
+					const preventDefaultSpy = vi.fn();
+					const typeAroundSpy = vi.spyOn( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
-					const stopSpy = sinon.stub( eventInfo, 'stop' );
+					const stopSpy = vi.spyOn( eventInfo, 'stop' );
 					const domEventDataMock = new ViewDocumentDomEventData( editingView, {
 						target: buttonAfter,
 						preventDefault: preventDefaultSpy
@@ -361,10 +360,10 @@ describe( 'WidgetTypeAround', () => {
 
 					viewDocument.fire( eventInfo, domEventDataMock );
 
-					sinon.assert.calledOnce( typeAroundSpy );
-					sinon.assert.calledWithExactly( typeAroundSpy, modelRoot.getChild( 0 ), 'after' );
-					sinon.assert.calledOnce( preventDefaultSpy );
-					sinon.assert.calledOnce( stopSpy );
+					expect( typeAroundSpy ).toHaveBeenCalledOnce();
+					expect( typeAroundSpy ).toHaveBeenCalledExactlyOnceWith( modelRoot.getChild( 0 ), 'after' );
+					expect( preventDefaultSpy ).toHaveBeenCalledOnce();
+					expect( stopSpy ).toHaveBeenCalledOnce();
 				} );
 			} );
 
@@ -394,8 +393,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should activate after when the collapsed selection is after a widget and the navigation is backward', () => {
@@ -411,8 +410,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should activate after when the widget is selected and the navigation is forward', () => {
@@ -428,8 +427,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should activate before when the widget is selected and the navigation is backward', () => {
@@ -445,8 +444,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should not activate if an arrow key is pressed along with Shift', () => {
@@ -457,8 +456,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[</paragraph><blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should not activate when the selection is before the widget but the non-arrow key was pressed', () => {
@@ -476,8 +475,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBeFalsy();
+				expect( domEventDataStub.domEvent.preventDefault ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not activate when the selection is not before the widget and navigating forward', () => {
@@ -492,8 +491,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBeFalsy();
+				expect( domEventDataStub.domEvent.preventDefault ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not activate when the selection is not after the widget and navigating backward', () => {
@@ -508,8 +507,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBeFalsy();
+				expect( domEventDataStub.domEvent.preventDefault ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not activate when the non-collapsed selection is before the widget and navigating forward', () => {
@@ -524,8 +523,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBeFalsy();
+				expect( domEventDataStub.domEvent.preventDefault ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not activate when the non-collapsed selection is after the widget and navigating backward', () => {
@@ -540,8 +539,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBeFalsy();
+				expect( domEventDataStub.domEvent.preventDefault ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should not activate selection downcast when a non–type-around-friendly widget is selected', () => {
@@ -572,8 +571,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 				} );
 
 				it( 'should activate before when the widget is the first and last element and the navigation is backward', () => {
@@ -591,8 +590,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 				} );
 
 				it( 'should activate after when the widget is the last element and the navigation is forward', () => {
@@ -608,8 +607,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 				} );
 
 				it( 'should activate after when the widget is the first and last element and the navigation is forward', () => {
@@ -627,8 +626,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 				} );
 			} );
 		} );
@@ -642,8 +641,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowleft' );
 
@@ -655,8 +654,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is forward to a valid position', () => {
@@ -667,8 +666,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowright' );
 
@@ -680,8 +679,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should deactivate if an arrow key is pressed along with Shift', () => {
@@ -692,8 +691,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fo[o</paragraph><blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should not deactivate when the widget is selected and the navigation is backward but there is nowhere to go', () => {
@@ -704,24 +703,24 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowleft' );
 
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				const viewWidget = viewRoot.getChild( 0 );
 
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should not deactivate when the widget is selected and the navigation is forward but there is nowhere to go', () => {
@@ -732,24 +731,24 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowright' );
 
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				const viewWidget = viewRoot.getChild( 0 );
 
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is against the fake caret (backward)', () => {
@@ -760,8 +759,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowright' );
 
@@ -773,8 +772,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should deactivate when the widget is selected and the navigation is against the fake caret (forward)', () => {
@@ -785,8 +784,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 
 				fireKeyboardEvent( 'arrowleft' );
 
@@ -798,8 +797,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 		} );
 
@@ -812,8 +811,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph><blockWidget></blockWidget>' );
 				expect( modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 
 			it( 'should collapse selection at the end if the widget is the first element and the navigation is forward', () => {
@@ -824,8 +823,8 @@ describe( 'WidgetTypeAround', () => {
 				expect( _getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>foo[]</paragraph>' );
 				expect( modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.false;
 
-				sinon.assert.calledOnce( eventInfoStub.stop );
-				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				expect( eventInfoStub.stop.called ).toBe( true );
+				expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalled();
 			} );
 		} );
 
@@ -1319,7 +1318,7 @@ describe( 'WidgetTypeAround', () => {
 				describe( 'Android', () => {
 					beforeEach( async () => {
 						await editor.destroy();
-						sinon.stub( env, 'isAndroid' ).value( true );
+						vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
 
 						await createEditor();
 					} );
@@ -1400,8 +1399,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]</paragraph><blockWidget></blockWidget>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty paragraph before a widget if the "fake caret" is also before the widget', () => {
@@ -1416,8 +1415,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty document tree branch before a widget if the "fake caret" is also before the widget', () => {
@@ -1437,8 +1436,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty document tree sub-branch before a widget if the "fake caret" is also before the widget', () => {
@@ -1479,8 +1478,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 					expect( operationType ).to.equal( 'merge' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should do nothing if the "fake caret" is before the widget but there is nothing to delete there', () => {
@@ -1495,8 +1494,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a widget if the "fake caret" is after the widget (no content after the widget)', () => {
@@ -1511,8 +1510,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a widget if the "fake caret" is after the widget (some content after the widget)', () => {
@@ -1527,8 +1526,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a widget if there is no fake caret', () => {
@@ -1541,7 +1540,7 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a sibling widget', () => {
@@ -1559,8 +1558,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><blockWidget></blockWidget>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should do nothing if some content inside widget is deleted', () => {
@@ -1584,8 +1583,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]oo</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty paragraph after a widget if the "fake caret" is also after the widget', () => {
@@ -1600,8 +1599,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty document tree branch after a widget if the "fake caret" is also after the widget', () => {
@@ -1619,8 +1618,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete an empty document tree sub-branch after a widget if the "fake caret" is also after the widget', () => {
@@ -1661,8 +1660,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 					expect( operationType ).to.equal( 'merge' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should do nothing if the "fake caret" is after the widget but there is nothing to delete there', () => {
@@ -1677,8 +1676,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a widget if the "fake caret" is before the widget (no content before the widget)', () => {
@@ -1693,8 +1692,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a widget if the "fake caret" is before the widget (some content before the widget)', () => {
@@ -1709,8 +1708,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 
 				it( 'should delete a sibling widget', () => {
@@ -1728,8 +1727,8 @@ describe( 'WidgetTypeAround', () => {
 					expect( _getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 
-					sinon.assert.calledOnce( eventInfoStub.stop );
-					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+					expect( eventInfoStub.stop.called ).toBe( true );
+					expect( domEventDataStub.domEvent.preventDefault ).toHaveBeenCalledOnce();
 				} );
 			} );
 
@@ -1752,7 +1751,6 @@ describe( 'WidgetTypeAround', () => {
 
 			function fireDeleteEvent( isForward = false ) {
 				eventInfoStub = new BubblingEventInfo( viewDocument, 'delete' );
-				sinon.spy( eventInfoStub, 'stop' );
 
 				const data = {
 					direction: isForward ? 'forward' : 'backward',
@@ -1769,13 +1767,13 @@ describe( 'WidgetTypeAround', () => {
 
 		function getDomEvent() {
 			return {
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				preventDefault: vi.fn(),
+				stopPropagation: vi.fn()
 			};
 		}
 
 		function fireInsertTextEvent( text ) {
-			const preventDefaultSpy = sinon.spy();
+			const preventDefaultSpy = vi.fn();
 
 			viewDocument.fire( 'insertText', {
 				text,
@@ -1785,7 +1783,7 @@ describe( 'WidgetTypeAround', () => {
 				preventDefault: preventDefaultSpy,
 				domEvent: {
 					get defaultPrevented() {
-						return preventDefaultSpy.called;
+						return preventDefaultSpy.mock.calls.length > 0;
 					}
 				}
 			} );
@@ -1814,8 +1812,6 @@ describe( 'WidgetTypeAround', () => {
 		function fireKeyboardEvent( key, modifiers ) {
 			eventInfoStub = new BubblingEventInfo( viewDocument, 'keydown' );
 
-			sinon.spy( eventInfoStub, 'stop' );
-
 			const data = {
 				document: viewDocument,
 				domTarget: editingView.getDomRoot(),
@@ -1839,8 +1835,6 @@ describe( 'WidgetTypeAround', () => {
 		function fireCompositionKeyDownEvent() {
 			eventInfoStub = new BubblingEventInfo( viewDocument, 'keydown' );
 
-			sinon.spy( eventInfoStub, 'stop' );
-
 			const data = {
 				document: viewDocument,
 				domTarget: editingView.getDomRoot(),
@@ -1854,7 +1848,7 @@ describe( 'WidgetTypeAround', () => {
 
 		function fireEnter( isSoft ) {
 			viewDocument.fire( new BubblingEventInfo( viewDocument, 'enter' ), new ViewDocumentDomEventData( viewDocument, {
-				preventDefault: sinon.spy()
+				preventDefault: vi.fn()
 			}, { isSoft } ) );
 		}
 	} );
@@ -2066,7 +2060,7 @@ describe( 'WidgetTypeAround', () => {
 			_setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 			const batchSet = setupBatchWatch();
-			const insertObjectSpy = sinon.spy( model, 'insertObject' );
+			const insertObjectSpy = vi.spyOn( model, 'insertObject' );
 
 			model.change( writer => {
 				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
@@ -2076,7 +2070,7 @@ describe( 'WidgetTypeAround', () => {
 
 			expect( _getModelData( model ) ).to.equal( '<blockWidget></blockWidget>[<blockWidget></blockWidget>]' );
 			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
-			expect( insertObjectSpy.firstCall.args[ 3 ].findOptimalPosition ).to.equal( 'after' );
+			expect( insertObjectSpy.mock.calls[ 0 ][ 3 ].findOptimalPosition ).to.equal( 'after' );
 			expect( batchSet.size ).to.be.equal( 1 );
 		} );
 
