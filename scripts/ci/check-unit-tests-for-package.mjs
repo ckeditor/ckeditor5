@@ -5,8 +5,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs/promises';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import minimist from 'minimist';
 

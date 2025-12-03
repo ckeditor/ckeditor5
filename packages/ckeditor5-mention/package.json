@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-mention",
-  "version": "47.2.0",
+  "version": "47.3.0",
   "description": "Mention feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-block-quote": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-cloud-services": "workspace:*",
-    "@ckeditor/ckeditor5-dev-utils": "^53.3.1",
+    "@ckeditor/ckeditor5-dev-utils": "^54.0.0",
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",

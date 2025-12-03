@@ -1574,6 +1574,39 @@ describe( 'TableElementSupport', () => {
 		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 	} );
 
+	it( 'should upcast `table` CSS class to figure element and consume it on table element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /^.*$/,
+			styles: true,
+			attributes: true,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<figure class="table">' +
+				'<table class="table">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+	} );
+
 	it( 'should propagate specific styles from table to figure element', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /.*/,

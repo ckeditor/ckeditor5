@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-form {
+	& .ck-form__row {
+		&.ck-table-form__border-row {
+			flex-wrap: wrap;
+		}
+
+		&.ck-table-form__background-row {
+			flex-wrap: wrap;
+		}
+
+		&.ck-table-form__dimensions-row {
+			flex-wrap: wrap;
+			align-items: center;
+
+			& .ck-labeled-field-view {
+				display: flex;
+				flex-direction: column-reverse;
+				align-items: center;
+
+				& .ck.ck-dropdown {
+					flex-grow: 0;
+				}
+			}
+		}
+
+		/* Ignore labels that work as fieldset legends */
+		/* Fallback for table dimension operator */
+		&:not(.ck-table-form__action-row) > *:not(.ck-label, .ck-table-form__dimension-operator) {
+			flex-grow: 1;
+		}
+	}
+
+	& .ck.ck-labeled-field-view {
+		/* Allow absolute positioning of the status (error) balloons. */
+		position: relative;
+
+		& .ck.ck-labeled-field-view__status {
+			position: absolute;
+			left: 50%;
+			bottom: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+			transform: translate(-50%,100%);
+
+			/* Make sure the balloon status stays on top of other form elements. */
+			z-index: 1;
+
+			/* The arrow pointing towards the field. */
+			&::after {
+				content: "";
+				position: absolute;
+				top: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+				left: 50%;
+				transform: translateX( -50% );
+			}
+		}
+	}
+
+	&:has( .ck-form__header > .ck-button-back ) {
+		& .ck-form__row.ck-table-form__action-row {
+			& > .ck.ck-button {
+				flex-grow: initial;
+
+				& .ck-button__label {
+					color: currentColor;
+				}
+			}
+		}
+	}
+}

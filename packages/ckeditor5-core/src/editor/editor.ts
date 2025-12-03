@@ -353,7 +353,7 @@ export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 		this.once<EditorReadyEvent>( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
 		this.once<EditorDestroyEvent>( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
-		this.model = new Model();
+		this.model = new Model( this.config );
 
 		this.on( 'change:isReadOnly', () => {
 			this.model.document.isReadOnly = this.isReadOnly;

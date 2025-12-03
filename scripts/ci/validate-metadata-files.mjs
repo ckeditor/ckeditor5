@@ -5,7 +5,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
 import upath from 'upath';
 import parser from '@babel/parser';

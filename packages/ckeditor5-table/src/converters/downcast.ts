@@ -7,12 +7,24 @@
  * @module table/converters/downcast
  */
 
+import { type Editor } from 'ckeditor5/src/core.js';
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type {
+	ModelNode,
+	ViewElement,
+	ViewElementAttributes,
+	ModelElement,
+	ViewDowncastWriter,
+	DowncastElementCreatorFunction,
+	ViewContainerElement,
+	DowncastConversionApi
+} from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
+import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
+import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
 /**
  * Model table element to view table element conversion helper.
@@ -209,6 +221,175 @@ function hasAnyAttribute( element: ModelNode ): boolean {
 	}
 
 	return false;
+}
+
+/**
+ * Downcasts a plain table (also used in the clipboard pipeline).
+ */
+export function convertPlainTable( editor: Editor ): DowncastElementCreatorFunction {
+	return ( table, conversionApi ) => {
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+			return null;
+		}
+
+		return downcastPlainTable( table, conversionApi, editor );
+	};
+}
+
+/**
+ * Downcasts a plain table caption (also used in the clipboard pipeline).
+ */
+export function convertPlainTableCaption( editor: Editor ): DowncastElementCreatorFunction {
+	return ( modelElement, { writer, options } ) => {
+		const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+		const isClipboardPipeline = options.isClipboardPipeline;
+		const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+		if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+			return null;
+		}
+
+		if ( modelElement.parent!.name === 'table' ) {
+			return writer.createContainerElement( 'caption' );
+		}
+
+		return null;
+	};
+}
+
+/**
+ * Downcasts a plain table.
+ *
+ * @param table Table model element.
+ * @param conversionApi The conversion API object.
+ * @param defaultTableProperties Normalized default table properties.
+ * @returns Created element.
+ */
+export function downcastPlainTable(
+	table: ModelElement,
+	conversionApi: DowncastConversionApi,
+	editor: Editor
+): ViewElement {
+	const writer = conversionApi.writer;
+	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+
+	// Table head rows slot.
+	const headRowsSlot = writer.createSlot( ( element: ModelNode ) =>
+		element.is( 'element', 'tableRow' ) && element.index! < headingRows
+	);
+
+	// Table body rows slot.
+	const bodyRowsSlot = writer.createSlot( ( element: ModelNode ) =>
+		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
+	);
+
+	// Table children slot.
+	const childrenSlot = writer.createSlot( ( element: ModelNode ) => !element.is( 'element', 'tableRow' ) );
+
+	// Table <thead> element with all the heading rows.
+	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );
+
+	// Table <tbody> element with all the body rows.
+	const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
+
+	// Table contents element containing <thead> and <tbody> when necessary.
+	const tableContentElements: Array<ViewContainerElement> = [];
+
+	if ( headingRows ) {
+		tableContentElements.push( theadElement );
+	}
+
+	if ( headingRows < table.childCount ) {
+		tableContentElements.push( tbodyElement );
+	}
+
+	const tableAttributes: ViewElementAttributes = { class: 'table' };
+
+	if ( editor.plugins.has( 'TableProperties' ) && conversionApi.options.isClipboardPipeline ) {
+		const defaultTableProperties = getNormalizedDefaultTableProperties(
+			editor.config.get( 'table.tableProperties.defaultProperties' )!,
+			{
+				includeAlignmentProperty: true
+			}
+		);
+
+		const tableAlignment = table.getAttribute( 'tableAlignment' ) as TableAlignmentValues | undefined;
+
+		let localDefaultValue = defaultTableProperties.alignment;
+
+		if ( table.getAttribute( 'tableType' ) === 'layout' ) {
+			localDefaultValue = '';
+		}
+
+		const tableAlignmentValue = tableAlignment || localDefaultValue as TableAlignmentValues | undefined;
+
+		if ( tableAlignmentValue ) {
+			tableAttributes.class += ' ' + downcastTableAlignmentConfig[ tableAlignmentValue ].className;
+			tableAttributes.style = downcastTableAlignmentConfig[ tableAlignmentValue ].style;
+
+			if ( downcastTableAlignmentConfig[ tableAlignmentValue ].align !== undefined ) {
+				tableAttributes.align = downcastTableAlignmentConfig[ tableAlignmentValue ].align;
+			}
+		}
+	}
+
+	// Create table structure.
+	//
+	// <table>
+	//    {children-slot-like-caption}
+	//    <thead>
+	//        {table-head-rows-slot}
+	//    </thead>
+	//    <tbody>
+	//        {table-body-rows-slot}
+	//    </tbody>
+	// </table>
+	return writer.createContainerElement( 'table', tableAttributes, [ childrenSlot, ...tableContentElements ] );
+}
+
+/**
+ * Registers border and background attributes converters for plain tables or when the clipboard pipeline is used.
+ */
+export function downcastTableBorderAndBackgroundAttributes( editor: Editor ): void {
+	const modelAttributes = {
+		'border-width': 'tableBorderWidth',
+		'border-color': 'tableBorderColor',
+		'border-style': 'tableBorderStyle',
+		'background-color': 'tableBackgroundColor'
+	};
+
+	for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+			return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
+				const { item, attributeNewValue } = data;
+				const { mapper, writer } = conversionApi;
+
+				const hasPlainTableOutput = editor.plugins.has( 'PlainTableOutput' );
+				const isClipboardPipeline = conversionApi.options.isClipboardPipeline;
+				const useExtendedAlignment = editor.config.get( 'experimentalFlags.useExtendedTableBlockAlignment' ) as boolean;
+
+				if ( !hasPlainTableOutput && !( useExtendedAlignment && isClipboardPipeline ) ) {
+					return;
+				}
+
+				if ( !conversionApi.consumable.consume( item, evt.name ) ) {
+					return;
+				}
+
+				const table = mapper.toViewElement( item );
+
+				if ( attributeNewValue ) {
+					writer.setStyle( styleName, attributeNewValue, table );
+				} else {
+					writer.removeStyle( styleName, table );
+				}
+			}, { priority: 'high' } );
+		} );
+	}
 }
 
 /**

@@ -87,6 +87,22 @@ describe( 'StandardEditingModeUI', () => {
 		} );
 	} );
 
+	describe( 'the "restrictedEditingException:auto" toolbar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'restrictedEditingException:auto' );
+		} );
+
+		testButton( 'restrictedEditingExceptionAuto', [ 'Enable editing', 'Disable editing' ], ButtonView );
+
+		it( 'should have #tooltip', () => {
+			expect( button.tooltip ).to.be.true;
+		} );
+
+		it( 'should have #isToggleable', () => {
+			expect( button.isToggleable ).to.be.true;
+		} );
+	} );
+
 	describe( 'the "menuBar:restrictedEditingException" menu bar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'menuBar:restrictedEditingException' );
@@ -109,6 +125,14 @@ describe( 'StandardEditingModeUI', () => {
 		} );
 
 		testButton( 'restrictedEditingExceptionBlock', [ 'Enable block editing', 'Disable block editing' ], MenuBarMenuListItemButtonView );
+	} );
+
+	describe( 'the "menuBar:restrictedEditingException:auto" menu bar button', () => {
+		beforeEach( () => {
+			button = editor.ui.componentFactory.create( 'menuBar:restrictedEditingException:auto' );
+		} );
+
+		testButton( 'restrictedEditingExceptionAuto', [ 'Enable editing', 'Disable editing' ], MenuBarMenuListItemButtonView );
 	} );
 
 	describe( 'the restrictedEditingException:dropdown toolbar dropdown', () => {

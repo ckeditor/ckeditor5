@@ -45,7 +45,8 @@ async function startStandardEditingMode() {
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'insertImage', '|',
 			// 'restrictedEditingException:inline', 'restrictedEditingException:block', '|',
-			'restrictedEditingException:dropdown', '|',
+			// 'restrictedEditingException:dropdown', '|',
+			'restrictedEditingException:auto', '|',
 			'undo', 'redo'
 		],
 		image: {
