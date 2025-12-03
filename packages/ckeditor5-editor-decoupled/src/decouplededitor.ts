@@ -83,11 +83,11 @@ export class DecoupledEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			secureSourceElement( this, sourceElementOrData );
 		}
 
-		this.model.document.createRoot(); // TODO $inlineRoot
+		this.model.document.createRoot( this.config.get( 'modelRootElementName' ) as string || '$root' );
 
 		const shouldToolbarGroupWhenFull = !this.config.get( 'toolbar.shouldNotGroupWhenFull' );
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, {
-			editableElement: this.sourceElement, // TODO pass $inlineRoot DOM element name
+			editableElement: this.sourceElement || this.config.get( 'viewRootElementName' ) as string,
 			shouldToolbarGroupWhenFull,
 			label: this.config.get( 'label' )
 		} );

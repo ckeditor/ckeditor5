@@ -69,7 +69,7 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
 		}
 
-		this.model.document.createRoot(); // TODO $inlineRoot
+		this.model.document.createRoot( this.config.get( 'modelRootElementName' ) as string || '$root' );
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
@@ -80,12 +80,16 @@ export class InlineEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		const menuBarConfig = this.config.get( 'menuBar' )!;
 
-		// TODO pass $inlineRoot DOM element name
-		const view = new InlineEditorUIView( this.locale, this.editing.view, this.sourceElement, {
-			shouldToolbarGroupWhenFull,
-			useMenuBar: menuBarConfig.isVisible,
-			label: this.config.get( 'label' )
-		} );
+		const view = new InlineEditorUIView(
+			this.locale,
+			this.editing.view,
+			this.sourceElement || this.config.get( 'viewRootElementName' ) as string,
+			{
+				shouldToolbarGroupWhenFull,
+				useMenuBar: menuBarConfig.isVisible,
+				label: this.config.get( 'label' )
+			}
+		);
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );

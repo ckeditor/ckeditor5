@@ -34,6 +34,16 @@ function initEditor() {
 				'heading', '|', 'bold', 'italic', 'undo', 'redo', '|',
 				'insertImage', 'insertTable', 'blockQuote'
 			],
+			modelRootElementName: {
+				intro: '$inlineRoot',
+				outro: '$root',
+				signature: '$inlineRoot'
+			},
+			viewRootElementName: { // TODO this is ignored as original element is reused
+				intro: 'h2',
+				outro: 'blockquote',
+				signature: 'em'
+			},
 			image: {
 				toolbar: [
 					'imageStyle:inline', 'imageStyle:block',

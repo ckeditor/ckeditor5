@@ -65,7 +65,7 @@ export class EditableUIView extends View {
 		super( locale );
 
 		this.setTemplate( {
-			tag: typeof editableElement == 'string' ? editableElement : 'div', // TODO $inlineRoot
+			tag: typeof editableElement == 'string' ? editableElement : 'div',
 			attributes: {
 				class: [
 					'ck',

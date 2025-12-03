@@ -82,10 +82,14 @@ export class BalloonEditor extends /* #__PURE__ */ ElementApiMixin( Editor ) {
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
-		this.model.document.createRoot(); // TODO $inlineRoot
+		this.model.document.createRoot( this.config.get( 'modelRootElementName' ) as string || '$root' );
 
-		// TODO $inlineRoot might require different element name
-		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement, this.config.get( 'label' ) );
+		const view = new BalloonEditorUIView(
+			this.locale,
+			this.editing.view,
+			this.sourceElement || this.config.get( 'viewRootElementName' ) as string,
+			this.config.get( 'label' )
+		);
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );

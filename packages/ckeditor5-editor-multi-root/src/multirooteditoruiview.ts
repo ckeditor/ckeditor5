@@ -65,7 +65,7 @@ export class MultiRootEditorUIView extends EditorUIView {
 		editingView: EditingView,
 		editableNames: Array<string>,
 		options: {
-			editableElements?: Record<string, HTMLElement>;
+			editableElements?: Record<string, HTMLElement | string>; // TODO docs
 			shouldToolbarGroupWhenFull?: boolean;
 			label?: string | Record<string, string>;
 		} = {}

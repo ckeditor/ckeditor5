@@ -148,19 +148,10 @@ export class MultiRootEditor extends Editor {
 		} );
 
 		for ( const rootName of rootNames ) {
-			let rootElementName = '$root';
-
-			if ( !sourceIsData ) {
-				const tagName = sourceElementsOrData[ rootName ].tagName.toLowerCase();
-
-				// TODO $inlineRoot auto detection should be more bullet proof.
-				if ( ![ 'div', 'article', 'section', 'blockquote' ].includes( tagName ) ) {
-					rootElementName = '$inlineRoot';
-				}
-			}
+			const rootElementName = ( this.config.get( 'modelRootElementName' ) as Record<string, string> )?.[ rootName ] || '$root';
 
 			// Create root and `UIView` element for each editable container.
-			this.model.document.createRoot( rootElementName, rootName ); // TODO $inlineRoot
+			this.model.document.createRoot( rootElementName, rootName );
 		}
 
 		if ( this.config.get( 'lazyRoots' ) ) {
@@ -209,7 +200,9 @@ export class MultiRootEditor extends Editor {
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
+			editableElements: (
+				sourceIsData ? this.config.get( 'viewRootElementName' ) : sourceElementsOrData
+			) as Record<string, HTMLElement | string>,
 			label: this.config.get( 'label' )
 		};
 
