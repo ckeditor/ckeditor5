@@ -10,6 +10,7 @@ import { IndentBlock, Indent } from '@ckeditor/ckeditor5-indent';
 
 import {
 	TableCellPropertiesEditing, TableCellPropertiesUIExperimental,
+	TableLayout,
 	TablePropertiesEditing, TablePropertiesUIExperimental
 } from '../../src/index.js';
 
@@ -24,7 +25,8 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet, Alignment, Indent, IndentBlock,
 			TablePropertiesEditing, TablePropertiesUIExperimental,
-			TableCellPropertiesEditing, TableCellPropertiesUIExperimental
+			TableCellPropertiesEditing, TableCellPropertiesUIExperimental,
+			TableLayout
 		],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

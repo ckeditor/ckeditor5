@@ -40,6 +40,12 @@ describe( 'TableCellTypeCommand', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be false if selection is in a layout table', () => {
+			_setModelData( model, modelTable( [ [ '[]foo' ] ], { tableType: 'layout' } ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
 	} );
 
 	describe( 'value', () => {

@@ -16,7 +16,7 @@ import {
 	type TableCellPropertyCommandAfterExecuteEvent
 } from './tablecellpropertycommand.js';
 
-import { groupCellsByTable, isEntireCellsLineHeader } from '../../utils/common.js';
+import { groupCellsByTable, isEntireCellsLineHeader, getSelectionAffectedTable } from '../../utils/common.js';
 
 /**
  * The table cell type command.
@@ -60,6 +60,19 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 					break;
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override refresh(): void {
+		super.refresh();
+
+		const table = getSelectionAffectedTable( this.editor.model.document.selection );
+
+		if ( this.isEnabled && table && table.getAttribute( 'tableType' ) === 'layout' ) {
+			this.isEnabled = false;
+		}
 	}
 }
 
