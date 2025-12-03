@@ -294,3 +294,27 @@ msgstr "Tablo türü"
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
 msgstr "Tablo türü seçenekleri"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Table Alignment"
+msgstr "Tablo Hizalama"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as an inline element, allowing text to wrap around it."
+msgid "Align table to the left with text wrapping"
+msgstr "Metin kaydırma yaparak tabloyu sola hizala"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table as a block element with no text wrapping."
+msgid "Center table with no text wrapping"
+msgstr "Metin kaydırma yapmadan tabloyu ortala"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as an inline element, allowing text to wrap around it."
+msgid "Align table to the right with text wrapping"
+msgstr "Metin kaydırma yaparak tabloyu sağa hizala"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as a block element with no text wrapping."
+msgid "Align table to the left with no text wrapping"
+msgstr "Metin kaydırma yapmadan tabloyu sola hizala"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
+msgid "Align table to the right with no text wrapping"
+msgstr "Metin kaydırma yapmadan tabloyu sağa hizala"

@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 47.x | CKEditor 5 Documentation
 menu-title: Update to v47.x
 order: 77
-modified_at: 2025-10-16
+modified_at: 2025-12-01
 ---
 
 # Update to CKEditor&nbsp;5 v47.x
@@ -13,6 +13,64 @@ modified_at: 2025-10-16
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For optimal results, ensure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v47.3.0
+
+Released on 3 December, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v47.3.0))
+
+### CKEditor AI improvements and bug fixes
+
+Finding a specific AI Quick Action in a long list with multiple groups can be difficult. To improve this, we are adding a filter input that lets users search for quick actions directly within the dropdown.
+
+Visibility of the input can be easily configured using the `config.ai.quickActions.isSearchEnabled` configuration option.
+
+This release also brings several minor but significant enhancements and fixes:
+
+* Track Changes markers not related to AI suggestions are now displayed in gray in the AI balloon text preview, consistent with the behavior of AI chat.
+* When retrying a specific AI Review, we are now ensuring the latest version of the document is used.
+* We also improved error handling across CKEditor AI, making it easier to debug backend-related issues by including more detailed error messages.
+
+### New experimental options
+
+We keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
+
+To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
+
+* **New table alignment options**
+
+	Enable `config.experimentalFlags.useExtendedTableBlockAlignment` and load the experimental UI plugins `TablePropertiesUIExperimental` and `TableCellPropertiesUIExperimental` for upcoming improvements to table block alignment. New options allow setting left and right table block alignment without text wrapping and resolve issues such as [#3225](https://github.com/ckeditor/ckeditor5/issues/3225). We also improved table properties and cell properties balloon interfaces. This change will be the default in version 48.0.0.
+
+* **Improved table border normalization**
+
+	Setting `config.experimentalFlags.upcastTableBorderZeroAttributes` enables support for the normalization of HTML tables that use `border="0"`. This change will be the default in version 48.0.0.
+		
+* **Better deep schema validation**
+
+	After enabling the `config.experimentalFlags.modelInsertContentDeepSchemaVerification` flag, the editor performs deep schema verification during `model.insertContent()` operations. This ensures that the inserted content fully follows the editor’s schema, even in complex or nested structures. This change will be the default in version 48.0.0.
+
+* **Configuration**
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Table,
+			TableProperties,
+			TableCellProperties,
+			TablePropertiesUIExperimental,
+			TableCellPropertiesUIExperimental,
+			// Other plugins.
+			// ...
+		],
+		experimentalFlags: {
+			useExtendedTableBlockAlignment: true,
+			upcastTableBorderZeroAttributes: true,
+			modelInsertContentDeepSchemaVerification: true
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 ## Update to CKEditor&nbsp;5 v47.2.0
 
@@ -76,11 +134,11 @@ Breaking changes in CKEditor AI are permitted during the Active phase of an LTS 
 
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: Simplified CSS for the CKEditor AI integration in a sidebar mode (`config.ai.container.type: 'sidebar'`) by removing default layout constraints:
 
-  * Removed the default `min-height` from `.ck-ai-chat`,
-  * Removed the default `height` from `.ck-tabs`,
-  * Removed the default `width` from `.ck-ai-tabs`.
+	* Removed the default `min-height` from `.ck-ai-chat`,
+	* Removed the default `height` from `.ck-tabs`,
+	* Removed the default `width` from `.ck-ai-tabs`.
 
-  Also, the `--ck-tabs-panels-container-width` custom property has been removed from the codebase.
+	Also, the `--ck-tabs-panels-container-width` custom property has been removed from the codebase.
 
 ## Update to CKEditor&nbsp;5 v47.0.0
 
@@ -138,15 +196,15 @@ This release also brings several smaller but important enhancements and fixes:
 With the release of {@link features/ckeditor-ai-overview **CKEditor AI**}, the `ai.*` configuration structure has changed. Until now, the configuration object was used for the former `AIAssistant` feature.
 
 Now, this configuration space is used for all AI related features. Configuration for the `AIAssistant` was moved. The changes are: 
-  * `ai.aiAssistant` -> `ai.assistant`,
-  * `ai.useTheme` -> `ai.assistant.useTheme`,
-  * `ai.aws` -> `ai.assistant.adapter.aws`,
-  * `ai.openAI` -> `ai.assistant.adapter.openAI`.
+	* `ai.aiAssistant` -> `ai.assistant`,
+	* `ai.useTheme` -> `ai.assistant.useTheme`,
+	* `ai.aws` -> `ai.assistant.adapter.aws`,
+	* `ai.openAI` -> `ai.assistant.adapter.openAI`.
 
 ### Minor breaking changes in this release
 
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table), [widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)**: The Widget feature implements the default handling for `Tab`/`Shift+Tab` to navigate nested editable elements in the editor content. Closes [#19083](https://github.com/ckeditor/ckeditor5/issues/19083). The listeners are registered on the `low` priority bubbling event in the context of widgets and editable elements.
-  Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
+	Please verify if your custom `Tab`/`Shift+Tab` handling does not collide with the default one.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The internal structure of the package has changed. Importing `AIAssistant` from the source should be done via `@ckeditor/ckeditor5-ai/src/aiassistant/aiassistant.js` path instead of the previous `@ckeditor/ckeditor5-ai/src/aiassistant.js`.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Changed the CSS selectors used to style the confirmation view displayed when attempting to remove a comment or an entire comment thread. For now, CSS classes will be more generic, for example: `.ck-confirm-view` instead of `.ck-thread__remove-confirm`. If you override styles for these components, you will need to update the selectors.
 * **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: The `UndoCommandRevertEvent` type was renamed to `UndoRedoBaseCommandRevertEvent` and moved to the `basecommand.ts` file. Adjust your code if you have used this type in your custom integration. See [#19168](https://github.com/ckeditor/ckeditor5/issues/19168).

@@ -42,3 +42,7 @@ msgstr "ปิดใช้งานการแก้ไขแบบบล็อ
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "เปิดใช้งานการแก้ไขแบบบล็อก"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "ปิดใช้งานการแก้ไข"

@@ -42,3 +42,7 @@ msgstr "停用區塊編輯"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "啟用區塊編輯"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "禁止編輯"

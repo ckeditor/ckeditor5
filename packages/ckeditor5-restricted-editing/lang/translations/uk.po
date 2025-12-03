@@ -42,3 +42,7 @@ msgstr "Вимкнути редагування блоків"
 msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
 msgid "Enable block editing"
 msgstr "Увімкнути редагування блоків"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "Вимкнути редагування"
