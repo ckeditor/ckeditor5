@@ -91,6 +91,13 @@ describe( 'table cell properties', () => {
 				expect( view.element.classList.contains( 'ck-table-form' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-table-cell-properties-form' ) ).to.be.true;
 				expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+				expect( view.element.classList.contains( 'ck-table-cell-properties-form_experimental' ) ).to.be.true;
+			} );
+
+			it( 'should contains experimental CSS class when in experimental mode for table cell properties', () => {
+				expect( view.element.classList.contains(
+					'ck-table-cell-properties-form_experimental-no-cell-type'
+				) ).to.be.true;
 			} );
 
 			it( 'should create child views (and references)', () => {
@@ -98,6 +105,7 @@ describe( 'table cell properties', () => {
 				expect( view.borderWidthInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.borderColorInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.backgroundInput ).to.be.instanceOf( LabeledFieldView );
+				expect( view.cellTypeDropdown ).to.be.instanceOf( LabeledFieldView );
 				expect( view.paddingInput ).to.be.instanceOf( LabeledFieldView );
 				expect( view.horizontalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
 				expect( view.verticalAlignmentToolbar ).to.be.instanceOf( ToolbarView );
@@ -126,6 +134,14 @@ describe( 'table cell properties', () => {
 						expect( row.childNodes[ 1 ] ).to.equal( view.borderStyleDropdown.element );
 						expect( row.childNodes[ 2 ] ).to.equal( view.borderColorInput.element );
 						expect( row.childNodes[ 3 ] ).to.equal( view.borderWidthInput.element );
+					} );
+
+					it( 'should have a dedicated CSS class', () => {
+						const row = view.element.childNodes[ 1 ];
+
+						expect( row.classList.contains(
+							'ck-table-form__border-row_experimental'
+						) ).to.be.true;
 					} );
 
 					describe( 'border style labeled dropdown', () => {
@@ -505,6 +521,12 @@ describe( 'table cell properties', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Horizontal text alignment toolbar' );
 						} );
 
+						it( 'should have a dedicated CSS class', () => {
+							expect( view.horizontalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__horizontal-alignment-toolbar'
+							) ).to.be.true;
+						} );
+
 						it( 'should bring alignment buttons in the right order (left-to-right UI)', () => {
 							expect( toolbar.items.map( ( { label } ) => label ) ).to.have.ordered.members( [
 								'Align cell text to the left',
@@ -577,6 +599,12 @@ describe( 'table cell properties', () => {
 
 						it( 'should have an ARIA label', () => {
 							expect( toolbar.ariaLabel ).to.equal( 'Vertical text alignment toolbar' );
+						} );
+
+						it( 'should have a dedicated CSS class', () => {
+							expect( view.verticalAlignmentToolbar.element.classList.contains(
+								'ck-table-cell-properties-form__vertical-alignment-toolbar'
+							) ).to.be.true;
 						} );
 
 						it( 'should bring alignment buttons', () => {
@@ -731,6 +759,7 @@ describe( 'table cell properties', () => {
 					view.borderStyleDropdown,
 					view.borderColorInput,
 					view.borderWidthInput,
+					view.cellTypeDropdown,
 					view.backgroundInput,
 					view.widthInput,
 					view.heightInput,
