@@ -42,7 +42,7 @@ export default defineConfig( {
 			} ),
 			screenshotFailures: false,
 			instances: [
-				{ browser: 'chromium' }
+				{ browser: 'chromium', viewport: { width: 1024, height: 720 } }
 			]
 		},
 
@@ -66,9 +66,9 @@ export default defineConfig( {
 			enforce: 'pre',
 			load( id: string ) {
 				if ( id.endsWith( '.svg' ) ) {
-					const escaped = readFileSync( id, 'utf-8' ).replace( /`/g, '\\`' );
+					const content = readFileSync( id, 'utf-8' );
 
-					return `export default \`${ escaped }\`;`;
+					return `export default ${ JSON.stringify( content ) };`;
 				}
 			}
 		}

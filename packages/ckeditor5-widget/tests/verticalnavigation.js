@@ -74,7 +74,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				padding: 0 !important;
 				border: 0 !important
 			}
-			.ck.ck-editor__editable { width: 300px !important; }
+			.ck.ck-editor__editable { width: 400px !important; }
 			`
 		) );
 		global.document.querySelector( 'head' ).appendChild( styleElement );
@@ -932,7 +932,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
 					_setModelData( model,
 						'<widget><nested><paragraph>' +
-							text.substring( 0, text.length - 2 ) + '[]rd word word word' +
+							text + 'word word word wo[]rd word word word' +
 						'</paragraph></nested></widget>'
 					);
 
