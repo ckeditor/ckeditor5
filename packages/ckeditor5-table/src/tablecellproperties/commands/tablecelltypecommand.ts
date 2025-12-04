@@ -159,8 +159,7 @@ function getAdjustedHeadingSectionSize(
 
 	// Iterate through each row/column to check if all cells are headers.
 	for ( let currentIndex = 0; currentIndex < totalRowsOrColumns; currentIndex++ ) {
-		const walkerOptions = mode === 'row' ? { row: currentIndex } : { column: currentIndex };
-		const walker = new TableWalker( table, walkerOptions );
+		const walker = new TableWalker( table, { [ mode ]: currentIndex } );
 
 		let allCellsAreHeaders = true;
 		let hasHeaderOutsidePerpendicularSection = false;
