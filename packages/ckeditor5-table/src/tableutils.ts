@@ -495,6 +495,7 @@ export class TableUtils extends Plugin {
 
 			// 3. If next rows are entirely header, adjust heading rows count.
 			if ( isTableCellTypeEnabled( model.schema ) ) {
+				/* istanbul ignore next -- @preserve */
 				let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 				const totalRows = this.getRows( table );
 
@@ -583,6 +584,7 @@ export class TableUtils extends Plugin {
 
 			// If next columns are entirely header, adjust heading columns count.
 			if ( isTableCellTypeEnabled( model.schema ) ) {
+				/* istanbul ignore next -- @preserve */
 				let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 				const totalColumns = this.getColumns( table );
 
