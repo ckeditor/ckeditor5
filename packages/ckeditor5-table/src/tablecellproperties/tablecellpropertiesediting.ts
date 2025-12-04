@@ -445,7 +445,10 @@ function enableCellTypeProperty( editor: Editor ) {
 			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			// Prioritize the dimension that is already larger to prevent the other dimension from
-			// aggressively consuming "orphaned" header cells.
+			// aggressively consuming "orphaned" header cells. In other words, if table has tree
+			// heading columns (which fills entire table), we should not count all rows as heading rows.
+			// User might later add column to the right and expect to un toggle column headers, which would
+			// be impossible if header rows also covered entire table.
 			//
 			// For example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
 			// if headingColumns=0 and headingRows=0 (but all cells are headers):
@@ -494,13 +497,6 @@ function enableCellTypeProperty( editor: Editor ) {
 
 /**
  * Calculates the adjusted size of a heading section (rows or columns).
- *
- * It determines the new size based on the current size, the perpendicular heading size, and the cell types.
- *
- * The logic is as follows:
- * - The section cannot extend beyond the first non-header cell (it must be consecutive).
- * - The section must include all "orphaned" header cells (header cells not covered by the perpendicular heading section).
- * - The current size is preserved if it satisfies the above conditions.
  */
 function getAdjustedHeadingSectionSize(
 	tableUtils: TableUtils,
