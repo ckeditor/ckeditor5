@@ -393,18 +393,8 @@ function enableCellTypeProperty( editor: Editor ) {
 	} ) );
 
 	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
-	// are consistent with the `tableCellType` attribute of the cells.
-	//
-	// The consistency check is two-fold:
-	// 1. It ensures that `headingRows` covers all rows that *must* be headers (because they contain
-	//    header cells not covered by `headingColumns`).
-	// 2. It ensures that `headingRows` does not exceed the number of contiguous header rows.
-	//
-	// The same logic applies to `headingColumns`.
-	//
-	// This allows for a flexible overlap between heading rows and columns, where a cell can be a header
-	// because it is in a heading row, a heading column, or both. It also allows reducing the number
-	// of heading rows/columns as long as the remaining header cells are justified by the other axis.
+	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority
+	// over `headingRows` and `headingColumns` and we use it to adjust the heading sections of the table.
 	model.document.registerPostFixer( writer => {
 		// 1. Collect all tables that need to be checked.
 		const changes = model.document.differ.getChanges();
@@ -451,8 +441,8 @@ function enableCellTypeProperty( editor: Editor ) {
 		let changed = false;
 
 		for ( const table of tablesToCheck ) {
-			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			// Prioritize the dimension that is already larger to prevent the other dimension from
 			// aggressively consuming "orphaned" header cells.
@@ -466,34 +456,30 @@ function enableCellTypeProperty( editor: Editor ) {
 			// If headingColumns=1 and headingRows=0:
 			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
 			// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
-			if ( headingColumns > headingRows ) {
+			const processColumnsFirst = headingColumns > headingRows;
+
+			if ( processColumnsFirst ) {
 				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', headingRows );
 				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
 				if ( newHeadingColumns !== headingColumns ) {
 					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+					headingColumns = newHeadingColumns;
 					changed = true;
 				}
+			}
 
-				// Use the updated headingColumns for the row calculation to ensure consistency.
-				const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', newHeadingColumns );
-				const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
+			const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
+			const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
 
-				if ( newHeadingRows !== headingRows ) {
-					tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
-					changed = true;
-				}
-			} else {
-				const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
-				const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
+			if ( newHeadingRows !== headingRows ) {
+				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+				headingRows = newHeadingRows;
+				changed = true;
+			}
 
-				if ( newHeadingRows !== headingRows ) {
-					tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
-					changed = true;
-				}
-
-				// Use the updated headingRows for the column calculation to ensure consistency.
-				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', newHeadingRows );
+			if ( !processColumnsFirst ) {
+				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', headingRows );
 				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
 				if ( newHeadingColumns !== headingColumns ) {
@@ -527,9 +513,6 @@ function enableCellTypeProperty( editor: Editor ) {
  * @param table The table element to analyze.
  * @param mode The mode of analysis: 'row' for heading rows, 'column' for heading columns.
  * @param orthogonalLimit The limit of the orthogonal heading section (e.g., headingColumns for row analysis).
- * @returns An object containing:
- * - `max`: The maximum number of contiguous header lines (rows or columns) from the start.
- * - `required`: The number of lines that *must* be headers because they contain header cells not covered by the orthogonal section.
  */
 function analyzeHeadingSection(
 	tableUtils: TableUtils,
