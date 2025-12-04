@@ -42,6 +42,7 @@ import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 
 import '../theme/tableediting.css';
+import { isTableCellTypeEnabled } from './utils/common.js';
 
 /**
  * The table editing feature.
@@ -222,7 +223,10 @@ export class TableEditing extends Plugin {
 		injectTableCellParagraphPostFixer( model );
 
 		this.listenTo( model.document, 'change:data', () => {
-			tableHeadingsRefreshHandler( model, editor.editing );
+			if ( !isTableCellTypeEnabled( schema ) ) {
+				tableHeadingsRefreshHandler( model, editor.editing );
+			}
+
 			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
