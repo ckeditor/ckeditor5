@@ -17,7 +17,8 @@ import {
 	type ViewElement,
 	type UpcastConversionApi,
 	type UpcastConversionData,
-	type UpcastElementEvent
+	type UpcastElementEvent,
+	type ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
@@ -33,7 +34,8 @@ import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcomm
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
-import { enableProperty } from '../utils/common.js';
+import { enableProperty, isEntireCellsLineHeader } from '../utils/common.js';
+import { TableUtils } from '../tableutils.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -168,7 +170,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		if ( editor.config.get( 'experimentalFlags.tableCellTypeSupport' ) ) {
-			enableCellTypeProperty( schema, conversion );
+			enableCellTypeProperty( editor );
 
 			editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 		}
@@ -365,7 +367,10 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 /**
  * Enables the `tableCellType` attribute for table cells.
  */
-function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
+function enableCellTypeProperty( editor: Editor ) {
+	const { model, conversion } = editor;
+	const { schema } = model;
+
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellType' ]
 	} );
@@ -384,4 +389,83 @@ function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
 			writer.setAttribute( 'tableCellType', 'header', modelElement );
 		}
 	} ) );
+
+	model.document.registerPostFixer( writer => {
+		const changes = model.document.differ.getChanges();
+
+		const tablesToCheck = new Set<ModelElement>();
+
+		for ( const change of changes ) {
+			// Check if tableCellType changed.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const cell = change.range.start.nodeAfter as ModelElement;
+
+				if ( cell?.is( 'element', 'tableCell' ) ) {
+					const table = cell.findAncestor( 'table' ) as ModelElement;
+
+					if ( table && table.root.rootName !== '$graveyard' ) {
+						tablesToCheck.add( table );
+					}
+				}
+			}
+
+			// Check if new cells were inserted.
+			if ( change.type === 'insert' && change.position.nodeAfter ) {
+				const range = model.createRangeOn( change.position.nodeAfter );
+
+				for ( const { item } of range ) {
+					if ( item.is( 'element', 'tableCell' ) && item.getAttribute( 'tableCellType' ) ) {
+						const table = item.findAncestor( 'table' ) as ModelElement;
+
+						if ( table && table.root.rootName !== '$graveyard' ) {
+							tablesToCheck.add( table );
+						}
+					}
+				}
+			}
+		}
+
+		const tableUtils = editor.plugins.get( TableUtils );
+		let changed = false;
+
+		for ( const table of tablesToCheck ) {
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+			const tableRowCount = tableUtils.getRows( table );
+			const tableColumnCount = tableUtils.getColumns( table );
+
+			// Find the maximum contiguous sequence of header rows from the start.
+			let newHeadingRows = 0;
+
+			while (
+				newHeadingRows < tableRowCount &&
+				isEntireCellsLineHeader( { table, row: newHeadingRows } )
+			) {
+				newHeadingRows++;
+			}
+
+			if ( newHeadingRows !== headingRows ) {
+				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+				changed = true;
+			}
+
+			// Find the maximum contiguous sequence of header columns from the start.
+			let newHeadingColumns = 0;
+
+			while (
+				newHeadingColumns < tableColumnCount &&
+				isEntireCellsLineHeader( { table, column: newHeadingColumns } )
+			) {
+				newHeadingColumns++;
+			}
+
+			if ( newHeadingColumns !== headingColumns ) {
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				changed = true;
+			}
+		}
+
+		return changed;
+	} );
 }
