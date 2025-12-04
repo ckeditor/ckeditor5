@@ -12,7 +12,7 @@ import { TableEditing } from '../../src/tableediting.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { modelTable } from '../_utils/utils.js';
 
-describe( 'collaboration', () => {
+describe.only( 'collaboration', () => {
 	let john, kate;
 
 	beforeEach( async () => {

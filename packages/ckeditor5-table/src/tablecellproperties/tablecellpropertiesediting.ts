@@ -371,6 +371,7 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 function enableCellTypeProperty( editor: Editor ) {
 	const { model, conversion } = editor;
 	const { schema } = model;
+	const tableUtils = editor.plugins.get( TableUtils );
 
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellType' ]
@@ -391,25 +392,25 @@ function enableCellTypeProperty( editor: Editor ) {
 		}
 	} ) );
 
+	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
+	// are consistent with the `tableCellType` attribute of the cells.
+	//
+	// The consistency check is two-fold:
+	// 1. It ensures that `headingRows` covers all rows that *must* be headers (because they contain
+	//    header cells not covered by `headingColumns`).
+	// 2. It ensures that `headingRows` does not exceed the number of contiguous header rows.
+	//
+	// The same logic applies to `headingColumns`.
+	//
+	// This allows for a flexible overlap between heading rows and columns, where a cell can be a header
+	// because it is in a heading row, a heading column, or both. It also allows reducing the number
+	// of heading rows/columns as long as the remaining header cells are justified by the other axis.
 	model.document.registerPostFixer( writer => {
+		// 1. Collect all tables that need to be checked.
 		const changes = model.document.differ.getChanges();
-
 		const tablesToCheck = new Set<ModelElement>();
 
 		for ( const change of changes ) {
-			// Check if tableCellType changed.
-			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
-				const cell = change.range.start.nodeAfter as ModelElement;
-
-				if ( cell?.is( 'element', 'tableCell' ) ) {
-					const table = cell.findAncestor( 'table' ) as ModelElement;
-
-					if ( table && table.root.rootName !== '$graveyard' ) {
-						tablesToCheck.add( table );
-					}
-				}
-			}
-
 			// Check if headingRows or headingColumns changed.
 			if ( change.type === 'attribute' && ( change.attributeKey === 'headingRows' || change.attributeKey === 'headingColumns' ) ) {
 				const table = change.range.start.nodeAfter as ModelElement;
@@ -419,15 +420,26 @@ function enableCellTypeProperty( editor: Editor ) {
 				}
 			}
 
-			// Check if new cells were inserted.
-			if ( change.type === 'insert' && change.position.nodeAfter ) {
-				const range = model.createRangeOn( change.position.nodeAfter );
+			// Check if tableCellType changed.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const cell = change.range.start.nodeAfter as ModelElement;
 
-				for ( const { item } of range ) {
+				if ( cell?.is( 'element', 'tableCell' ) ) {
+					const table = cell.findAncestor( 'table' ) as ModelElement;
+
+					if ( table?.root.rootName !== '$graveyard' ) {
+						tablesToCheck.add( table );
+					}
+				}
+			}
+
+			// Check if new headers were inserted.
+			if ( change.type === 'insert' && change.position.nodeAfter ) {
+				for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
 					if ( item.is( 'element', 'tableCell' ) && item.getAttribute( 'tableCellType' ) ) {
 						const table = item.findAncestor( 'table' ) as ModelElement;
 
-						if ( table && table.root.rootName !== '$graveyard' ) {
+						if ( table?.root.rootName !== '$graveyard' ) {
 							tablesToCheck.add( table );
 						}
 					}
@@ -435,113 +447,111 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 		}
 
-		const tableUtils = editor.plugins.get( TableUtils );
+		// 2. Update the attributes of the collected tables.
 		let changed = false;
 
 		for ( const table of tablesToCheck ) {
-			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
-			const tableRowCount = tableUtils.getRows( table );
-			const tableColumnCount = tableUtils.getColumns( table );
-
-			// Find the maximum contiguous sequence of header rows from the start.
-			let maxHeadingRows = 0;
-			let requiredHeadingRows = 0;
-
-			for ( let rowIndex = 0; rowIndex < tableRowCount; rowIndex++ ) {
-				let isAllHeaders = true;
-				let hasCellOutsideHeadingColumns = false;
-
-				const rowWalker = new TableWalker( table, { row: rowIndex } );
-
-				for ( const { cell, column } of rowWalker ) {
-					if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
-						isAllHeaders = false;
-						break;
-					}
-
-					if ( column >= headingColumns ) {
-						hasCellOutsideHeadingColumns = true;
-					}
-				}
-
-				if ( !isAllHeaders ) {
-					break;
-				}
-
-				maxHeadingRows++;
-
-				if ( hasCellOutsideHeadingColumns ) {
-					requiredHeadingRows = rowIndex + 1;
-				}
-			}
-
-			let newHeadingRows = headingRows;
-
-			if ( newHeadingRows < requiredHeadingRows ) {
-				newHeadingRows = requiredHeadingRows;
-			}
-
-			if ( newHeadingRows > maxHeadingRows ) {
-				newHeadingRows = maxHeadingRows;
-			}
+			const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
+			const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
 
 			if ( newHeadingRows !== headingRows ) {
 				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
 				changed = true;
-				headingRows = newHeadingRows;
 			}
 
-			// Find the maximum contiguous sequence of header columns from the start.
-			let maxHeadingColumns = 0;
-			let requiredHeadingColumns = 0;
-
-			for ( let columnIndex = 0; columnIndex < tableColumnCount; columnIndex++ ) {
-				let isAllHeaders = true;
-				let hasCellOutsideHeadingRows = false;
-
-				const columnWalker = new TableWalker( table, { column: columnIndex } );
-
-				for ( const { cell, row } of columnWalker ) {
-					if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
-						isAllHeaders = false;
-						break;
-					}
-
-					if ( row >= headingRows ) {
-						hasCellOutsideHeadingRows = true;
-					}
-				}
-
-				if ( !isAllHeaders ) {
-					break;
-				}
-
-				maxHeadingColumns++;
-
-				if ( hasCellOutsideHeadingRows ) {
-					requiredHeadingColumns = columnIndex + 1;
-				}
-			}
-
-			let newHeadingColumns = headingColumns;
-
-			if ( newHeadingColumns < requiredHeadingColumns ) {
-				newHeadingColumns = requiredHeadingColumns;
-			}
-
-			if ( newHeadingColumns > maxHeadingColumns ) {
-				newHeadingColumns = maxHeadingColumns;
-			}
+			// Use the updated headingRows for the column calculation to ensure consistency.
+			const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', newHeadingRows );
+			const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
 			if ( newHeadingColumns !== headingColumns ) {
 				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
 				changed = true;
-				headingColumns = newHeadingColumns;
 			}
 		}
 
 		return changed;
 	} );
+}
+
+/**
+ * Analyzes the heading section (rows or columns) of a table to determine the maximum and required heading counts.
+ *
+ * ```
+ * +---+---+---+---+
+ * | H | H | H | D |  <-- Row 0: All headers. Cell at col 2 is outside headingColumns (2). Required = 1.
+ * +---+---+---+---+
+ * | H | H | H | D |  <-- Row 1: All headers. Cell at col 2 is outside headingColumns (2). Required = 2.
+ * +---+---+---+---+
+ * | H | H | D | D |  <-- Row 2: Not all headers. Max = 2.
+ * +---+---+---+---+
+ *   ^   ^   ^
+ *   |   |   |
+ *  HC  HC  Outside HC
+ * ```
+ *
+ * @param tableUtils The table utils plugin instance.
+ * @param table The table element to analyze.
+ * @param mode The mode of analysis: 'row' for heading rows, 'column' for heading columns.
+ * @param orthogonalLimit The limit of the orthogonal heading section (e.g., headingColumns for row analysis).
+ * @returns An object containing:
+ * - `max`: The maximum number of contiguous header lines (rows or columns) from the start.
+ * - `required`: The number of lines that *must* be headers because they contain header cells not covered by the orthogonal section.
+ */
+function analyzeHeadingSection(
+	tableUtils: TableUtils,
+	table: ModelElement,
+	mode: 'row' | 'column',
+	orthogonalLimit: number
+): { max: number; required: number } {
+	const limit = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
+	let max = 0;
+	let required = 0;
+
+	for ( let i = 0; i < limit; i++ ) {
+		const walkerOptions = mode === 'row' ? { row: i } : { column: i };
+		const walker = new TableWalker( table, walkerOptions );
+
+		let isAllHeaders = true;
+		let hasCellOutside = false;
+
+		for ( const { cell, row, column } of walker ) {
+			if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+				isAllHeaders = false;
+				break;
+			}
+
+			const orthogonalIndex = mode === 'row' ? column : row;
+
+			if ( orthogonalIndex >= orthogonalLimit ) {
+				hasCellOutside = true;
+			}
+		}
+
+		if ( !isAllHeaders ) {
+			break;
+		}
+
+		max++;
+
+		if ( hasCellOutside ) {
+			required = i + 1;
+		}
+	}
+
+	return { max, required };
+}
+
+/**
+ * Clamps a value between a minimum and maximum.
+ *
+ * @param value The value to clamp.
+ * @param min The minimum allowed value.
+ * @param max The maximum allowed value.
+ * @returns The clamped value.
+ */
+function clamp( value: number, min: number, max: number ): number {
+	return Math.min( Math.max( value, min ), max );
 }
