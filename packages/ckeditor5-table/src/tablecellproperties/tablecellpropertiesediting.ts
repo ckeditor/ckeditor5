@@ -456,10 +456,12 @@ function enableCellTypeProperty( editor: Editor ) {
 			// If headingColumns=1 and headingRows=0:
 			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
 			// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
+			//
+			// It should be good enough to resolve conflicts in most cases.
 			const processColumnsFirst = headingColumns > headingRows;
 
 			if ( processColumnsFirst ) {
-				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', headingRows );
+				const { max: maxCols, required: requiredCols } = getHeadingSectionBounds( tableUtils, table, 'column', headingRows );
 				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
 				if ( newHeadingColumns !== headingColumns ) {
@@ -469,7 +471,7 @@ function enableCellTypeProperty( editor: Editor ) {
 				}
 			}
 
-			const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
+			const { max: maxRows, required: requiredRows } = getHeadingSectionBounds( tableUtils, table, 'row', headingColumns );
 			const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
 
 			if ( newHeadingRows !== headingRows ) {
@@ -479,7 +481,7 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 
 			if ( !processColumnsFirst ) {
-				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', headingRows );
+				const { max: maxCols, required: requiredCols } = getHeadingSectionBounds( tableUtils, table, 'column', headingRows );
 				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
 				if ( newHeadingColumns !== headingColumns ) {
@@ -494,68 +496,66 @@ function enableCellTypeProperty( editor: Editor ) {
 }
 
 /**
- * Analyzes the heading section (rows or columns) of a table to determine the maximum and required heading counts.
+ * Calculates the minimum and maximum bounds for a heading section (rows or columns).
  *
- * ```
- * +---+---+---+---+
- * | H | H | H | D |  <-- Row 0: All headers. Cell at col 2 is outside headingColumns (2). Required = 1.
- * +---+---+---+---+
- * | H | H | H | D |  <-- Row 1: All headers. Cell at col 2 is outside headingColumns (2). Required = 2.
- * +---+---+---+---+
- * | H | H | D | D |  <-- Row 2: Not all headers. Max = 2.
- * +---+---+---+---+
- *   ^   ^   ^
- *   |   |   |
- *  HC  HC  Outside HC
- * ```
- *
- * @param tableUtils The table utils plugin instance.
- * @param table The table element to analyze.
- * @param mode The mode of analysis: 'row' for heading rows, 'column' for heading columns.
- * @param orthogonalLimit The limit of the orthogonal heading section (e.g., headingColumns for row analysis).
+ * It calculates two values:
+ * - `max`: The number of consecutive rows/columns from the start that consist entirely of header cells.
+ *          The heading section cannot exceed this value because a non-header cell breaks the section.
+ * - `required`: The number of rows/columns that *must* be headers. This is determined by finding the last
+ *               row/column that contains a "standalone" header cell (one that is not covered by the
+ *               heading section of the other axis).
  */
-function analyzeHeadingSection(
+function getHeadingSectionBounds(
 	tableUtils: TableUtils,
 	table: ModelElement,
 	mode: 'row' | 'column',
-	orthogonalLimit: number
+	perpendicularHeadingSize: number
 ): { max: number; required: number } {
-	const limit = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
-	let max = 0;
-	let required = 0;
+	const totalRowsOrColumns = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
+	let maxPossible = 0;
+	let minRequired = 0;
 
-	for ( let i = 0; i < limit; i++ ) {
-		const walkerOptions = mode === 'row' ? { row: i } : { column: i };
+	// Iterate through each row/column to check if all cells are headers.
+	for ( let currentIndex = 0; currentIndex < totalRowsOrColumns; currentIndex++ ) {
+		const walkerOptions = mode === 'row' ? { row: currentIndex } : { column: currentIndex };
 		const walker = new TableWalker( table, walkerOptions );
 
-		let isAllHeaders = true;
-		let hasCellOutside = false;
+		let allCellsAreHeaders = true;
+		let hasHeaderOutsidePerpendicularSection = false;
 
+		// Check each cell in the current row/column.
 		for ( const { cell, row, column } of walker ) {
+			// If we find a non-header cell, this row/column can't be part of the heading section.
 			if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
-				isAllHeaders = false;
+				allCellsAreHeaders = false;
 				break;
 			}
 
-			const orthogonalIndex = mode === 'row' ? column : row;
+			// Check if this header cell extends beyond the perpendicular heading section.
+			// E.g., when checking rows, see if the cell extends beyond headingColumns.
+			const perpendicularIndex = mode === 'row' ? column : row;
 
-			if ( orthogonalIndex >= orthogonalLimit ) {
-				hasCellOutside = true;
+			if ( perpendicularIndex >= perpendicularHeadingSize ) {
+				hasHeaderOutsidePerpendicularSection = true;
 			}
 		}
 
-		if ( !isAllHeaders ) {
+		// If not all cells are headers, we can't extend the heading section any further.
+		if ( !allCellsAreHeaders ) {
 			break;
 		}
 
-		max++;
+		// This row/column can be part of the heading section.
+		maxPossible++;
 
-		if ( hasCellOutside ) {
-			required = i + 1;
+		// If there's a header extending beyond the perpendicular section,
+		// we must include this row/column in the heading section.
+		if ( hasHeaderOutsidePerpendicularSection ) {
+			minRequired = maxPossible;
 		}
 	}
 
-	return { max, required };
+	return { max: maxPossible, required: minRequired };
 }
 
 /**
