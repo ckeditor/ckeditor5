@@ -447,10 +447,9 @@ function enableCellTypeProperty( editor: Editor ) {
 			// Prioritize the dimension that is already larger to prevent the other dimension from
 			// aggressively consuming "orphaned" header cells. In other words, if table has tree
 			// heading columns (which fills entire table), we should not count all rows as heading rows.
-			// User might later add column to the right and expect to un toggle column headers, which would
-			// be impossible if header rows also covered entire table.
+			// User might later add column to the right which should not be heading.
 			//
-			// For example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
+			// The other example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
 			// if headingColumns=0 and headingRows=0 (but all cells are headers):
 			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 0.
 			// - Processing columns first expands headingColumns to 2, leaving headingRows at 0.
