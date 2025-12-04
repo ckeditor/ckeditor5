@@ -15,6 +15,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { isSingleParagraphWithoutAttributes } from './downcast.js';
+import { isTableCellTypeEnabled } from '../utils/common.js';
 
 /**
  * A table cell refresh handler which marks the table cell in the differ to have it re-rendered.
@@ -28,11 +29,14 @@ import { isSingleParagraphWithoutAttributes } from './downcast.js';
  * @internal
  */
 export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
-	updateTableCellType( model, editing );
-	updateTableCellContent( model, editing );
+	refreshIfNestedChildChanged( model, editing );
+
+	if ( isTableCellTypeEnabled( model.schema ) ) {
+		refreshIfCellTypeChanged( model, editing );
+	}
 }
 
-function updateTableCellType( model: Model, editing: EditingController ): void {
+function refreshIfCellTypeChanged( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 	const cellsToReconvert = new Set<ModelElement>();
 
@@ -59,7 +63,7 @@ function updateTableCellType( model: Model, editing: EditingController ): void {
 	}
 }
 
-function updateTableCellContent( model: Model, editing: EditingController ): void {
+function refreshIfNestedChildChanged( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 	const cellsToCheck = new Set<ModelElement>();
 
