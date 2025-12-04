@@ -426,6 +426,36 @@ describe( 'collaboration', () => {
 			);
 		} );
 	} );
+
+	describe( 'cell type', () => {
+		it( 'should work properly if john set cell type and kate does nothing', () => {
+			const initialModel = modelTable( [
+				[ '00', '01' ],
+				[ '10', '12[]' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+
+			syncClients();
+
+			john._processExecute( 'tableCellType', { value: 'header' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						'01'
+					],
+					[ '10', '12' ]
+				] )
+			);
+		} );
+	} );
 } );
 
 function selectCells( client, start, end ) {
