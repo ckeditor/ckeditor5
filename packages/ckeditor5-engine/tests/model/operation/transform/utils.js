@@ -248,6 +248,10 @@ export class Client {
 			return this._getPositionFromSelection( type );
 		}
 
+		if ( path instanceof ModelPosition ) {
+			return path.clone();
+		}
+
 		return new ModelPosition( this.document.getRoot(), path );
 	}
 
