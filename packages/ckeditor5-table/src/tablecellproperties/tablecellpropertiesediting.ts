@@ -454,21 +454,52 @@ function enableCellTypeProperty( editor: Editor ) {
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
-			const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
-			const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
+			// Prioritize the dimension that is already larger to prevent the other dimension from
+			// aggressively consuming "orphaned" header cells.
+			//
+			// For example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
+			// if headingColumns=0 and headingRows=0 (but all cells are headers):
+			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 0.
+			// - Processing columns first expands headingColumns to 2, leaving headingRows at 0.
+			//
+			// However, if we have a hint (e.g. headingColumns > headingRows), we should follow it.
+			// If headingColumns=1 and headingRows=0:
+			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
+			// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
+			if ( headingColumns > headingRows ) {
+				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', headingRows );
+				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
 
-			if ( newHeadingRows !== headingRows ) {
-				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
-				changed = true;
-			}
+				if ( newHeadingColumns !== headingColumns ) {
+					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+					changed = true;
+				}
 
-			// Use the updated headingRows for the column calculation to ensure consistency.
-			const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', newHeadingRows );
-			const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
+				// Use the updated headingColumns for the row calculation to ensure consistency.
+				const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', newHeadingColumns );
+				const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
 
-			if ( newHeadingColumns !== headingColumns ) {
-				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
-				changed = true;
+				if ( newHeadingRows !== headingRows ) {
+					tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+					changed = true;
+				}
+			} else {
+				const { max: maxRows, required: requiredRows } = analyzeHeadingSection( tableUtils, table, 'row', headingColumns );
+				const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
+
+				if ( newHeadingRows !== headingRows ) {
+					tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+					changed = true;
+				}
+
+				// Use the updated headingRows for the column calculation to ensure consistency.
+				const { max: maxCols, required: requiredCols } = analyzeHeadingSection( tableUtils, table, 'column', newHeadingRows );
+				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
+
+				if ( newHeadingColumns !== headingColumns ) {
+					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+					changed = true;
+				}
 			}
 		}
 

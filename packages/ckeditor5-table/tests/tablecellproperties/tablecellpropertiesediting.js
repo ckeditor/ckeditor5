@@ -1890,7 +1890,7 @@ describe( 'table cell properties', () => {
 			} );
 		} );
 
-		describe.only( 'cell type', () => {
+		describe( 'cell type', () => {
 			beforeEach( async () => {
 				await editor.destroy();
 

@@ -12,7 +12,7 @@ import { TableEditing } from '../../src/tableediting.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { modelTable } from '../_utils/utils.js';
 
-describe.only( 'collaboration', () => {
+describe( 'collaboration', () => {
 	let john, kate;
 
 	beforeEach( async () => {
@@ -410,7 +410,7 @@ describe.only( 'collaboration', () => {
 						{ contents: '10', tableCellType: 'header' },
 						{ contents: '12', tableCellType: 'header' }
 					]
-				], { headingColumns: 1, headingRows: 2 } )
+				], { headingColumns: 2 } )
 			);
 		} );
 
@@ -839,7 +839,7 @@ describe.only( 'collaboration', () => {
 							{ tableCellType: 'header', contents: '10' },
 							{ tableCellType: 'header', contents: '12' }
 						]
-					], { headingColumns: 1, headingRows: 2 } )
+					], { headingColumns: 2 } )
 				);
 			} );
 		} );
