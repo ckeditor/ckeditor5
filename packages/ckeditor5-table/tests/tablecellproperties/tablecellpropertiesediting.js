@@ -2672,6 +2672,21 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'integration with remove row command', () => {
+				it( 'should remove first row without headingRows and heading cells as expected', () => {
+					_setModelData( model, modelTable( [
+						[ '[00]', '[01]' ],
+						[ '10', '11' ]
+					] ) );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
 				it( 'should merge heading sections when removing a data row between them', () => {
 					_setModelData( model, modelTable( [
 						[
@@ -2845,6 +2860,25 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'integration with remove column command', () => {
+				it( 'remove column without heading columns and header cells should work as expected', () => {
+					_setModelData( model, modelTable( [
+						[ '[00]', '01', '02' ],
+						[ '[10]', '11', '12' ]
+					] ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.be.undefined;
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ '01', '02' ],
+							[ '11', '12' ]
+						] )
+					);
+				} );
+
 				it( 'should merge heading sections when removing a data column between them', () => {
 					_setModelData( model, modelTable( [
 						[
