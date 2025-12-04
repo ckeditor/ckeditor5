@@ -455,6 +455,269 @@ describe( 'collaboration', () => {
 				] )
 			);
 		} );
+
+		it( 'should work properly if john set cell type to header and kate set cell type on different cells at the same time', () => {
+			const initialModel = modelTable( [
+				[ '00', '01' ],
+				[ '10', '12[]' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+			selectCells( kate, [ 1, 1 ], [ 1, 1 ] );
+
+			syncClients();
+
+			john._processExecute( 'tableCellType', { value: 'header' } );
+			kate._processExecute( 'tableCellType', { value: 'header' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						'01'
+					],
+					[
+						'10',
+						{ contents: '12', tableCellType: 'header' }
+					]
+				] )
+			);
+		} );
+
+		it( 'should work properly if john set cell type to header and ' +
+				'kate set cell type to data at the same time on the same cells', () => {
+			const initialModel = modelTable( [
+				[ '00', '01' ],
+				[ '10[]', '12' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 1, 0 ], [ 1, 0 ] );
+			selectCells( kate, [ 1, 0 ], [ 1, 0 ] );
+
+			syncClients();
+
+			kate._processExecute( 'tableCellType', { value: 'data' } );
+			john._processExecute( 'tableCellType', { value: 'header' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[ '00', '01' ],
+					[ { tableCellType: 'header', contents: '10' }, '12' ]
+				] )
+			);
+		} );
+
+		describe( 'setting whole row', () => {
+			it( 'should work properly if john set cell type to header on whole row and ' +
+					'kate set cell type to data on first cell at the same time (first row)', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 0, 0 ], [ 0, 1 ] );
+				selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'data' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[
+							{ tableCellType: 'header', contents: '00' },
+							{ tableCellType: 'header', contents: '01' }
+						],
+						[ '10', '12' ]
+					], { headingRows: 1 } )
+				);
+			} );
+
+			it( 'should work properly if john set cell type to header on whole row and ' +
+					'kate set cell type to data on first cell at the same time (second row)', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 1, 0 ], [ 1, 1 ] );
+				selectCells( kate, [ 1, 0 ], [ 1, 0 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'data' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[ '00', '01' ],
+						[
+							{ tableCellType: 'header', contents: '10' },
+							{ tableCellType: 'header', contents: '12' }
+						]
+					] )
+				);
+			} );
+
+			it( 'should work properly if john set cell type to header on the first row and ' +
+					'kate set cell type to header on second row at the same time', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 0, 0 ], [ 0, 1 ] );
+				selectCells( kate, [ 1, 0 ], [ 1, 1 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'header' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[
+							{ tableCellType: 'header', contents: '00' },
+							{ tableCellType: 'header', contents: '01' }
+						],
+						[
+							{ tableCellType: 'header', contents: '10' },
+							{ tableCellType: 'header', contents: '12' }
+						]
+					], { headingRows: 2 } )
+				);
+			} );
+		} );
+
+		describe( 'setting whole column', () => {
+			it( 'should work properly if john set cell type to header on whole column and ' +
+					'kate set cell type to data on first cell at the same time (first column)', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 0, 0 ], [ 1, 0 ] );
+				selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'data' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[
+							{ tableCellType: 'header', contents: '00' },
+							'01'
+						],
+						[
+							{ tableCellType: 'header', contents: '10' },
+							'12'
+						]
+					], { headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should work properly if john set cell type to header on whole column and ' +
+					'kate set cell type to data on first cell at the same time (second column)', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 0, 1 ], [ 1, 1 ] );
+				selectCells( kate, [ 0, 1 ], [ 0, 1 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'data' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[
+							'00',
+							{ tableCellType: 'header', contents: '01' }
+						],
+						[
+							'10',
+							{ tableCellType: 'header', contents: '12' }
+						]
+					] )
+				);
+			} );
+
+			it( 'should work properly if john set cell type to header on the first column and ' +
+					'kate set cell type to header on second column at the same time', () => {
+				const initialModel = modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '12' ]
+				] );
+
+				john.setData( initialModel );
+				kate.setData( initialModel );
+
+				selectCells( john, [ 0, 0 ], [ 1, 0 ] );
+				selectCells( kate, [ 0, 1 ], [ 1, 1 ] );
+
+				syncClients();
+
+				kate._processExecute( 'tableCellType', { value: 'header' } );
+				john._processExecute( 'tableCellType', { value: 'header' } );
+
+				syncClients();
+
+				expectClients(
+					modelTable( [
+						[
+							{ tableCellType: 'header', contents: '00' },
+							{ tableCellType: 'header', contents: '01' }
+						],
+						[
+							{ tableCellType: 'header', contents: '10' },
+							{ tableCellType: 'header', contents: '12' }
+						]
+					], { headingColumns: 2 } )
+				);
+			} );
+		} );
 	} );
 } );
 
