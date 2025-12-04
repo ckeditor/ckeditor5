@@ -16,7 +16,8 @@ import {
 	type TableCellPropertyCommandAfterExecuteEvent
 } from './tablecellpropertycommand.js';
 
-import { groupCellsByTable, isEntireCellsLineHeader, getSelectionAffectedTable } from '../../utils/common.js';
+import { groupCellsByTable, getSelectionAffectedTable } from '../../utils/common.js';
+import { TableWalker } from '../../tablewalker.js';
 
 /**
  * The table cell type command.
@@ -44,21 +45,11 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 		super( editor, 'tableCellType', 'data' );
 
 		this.on<TableCellPropertyCommandAfterExecuteEvent>( 'afterExecute', ( _, data ) => {
-			const { writer, tableCells, valueToSet } = data;
+			const { writer, tableCells } = data;
 			const tableUtils = this.editor.plugins.get( TableUtils );
+			const tablesMap = groupCellsByTable( tableCells );
 
-			switch ( valueToSet ) {
-				// If changing cell type to 'header', increment headingRows/headingColumns if entire row/column is of header type.
-				case 'header':
-					adjustHeadingAttributesWhenChangingToHeader( tableUtils, writer, tableCells );
-					break;
-
-				// If changing cell type to 'data', decrement headingRows/headingColumns
-				// if at least one row/column is no longer of header type.
-				default:
-					adjustHeadingAttributesWhenChangingToData( tableUtils, writer, tableCells );
-					break;
-			}
+			updateTablesHeadingAttributes( tableUtils, writer, tablesMap.keys() );
 		} );
 	}
 
@@ -82,126 +73,119 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 export type TableCellType = 'data' | 'header';
 
 /**
- * Increments the `headingRows` and `headingColumns` attributes of the tables
- * containing the given table cells being changed to `header` cell type,
- * but only if the entire row/column is of header type and the heading attributes
- * are directly preceding the changed cell.
- *
- * ```
- * +---+---+---+                   +---+---+---+
- * | H | H | H |                   | H | H | H |
- * +===+===+===+                   +---+---+---+
- * | D | D | D |   change cells    | H | H | H |
- * +---+---+---+   to 'header'     +===+===+===+  <-- headingRows incremented
- * | D | D | D |   ----------->    | D | D | D |
- * +---+---+---+                   +---+---+---+
- *
- * headingRows: 1                  headingRows: 2
- * ```
+ * Updates the `headingRows` and `headingColumns` attributes of the given tables
+ * based on the `tableCellType` of their cells.
  */
-function adjustHeadingAttributesWhenChangingToHeader(
+export function updateTablesHeadingAttributes(
 	tableUtils: TableUtils,
 	writer: ModelWriter,
-	tableCells: Array<ModelElement>
-): void {
-	const tablesMap = groupCellsByTable( tableCells );
+	tables: Iterable<ModelElement>
+): boolean {
+	let changed = false;
 
-	// Process each table.
-	for ( const [ table, cells ] of tablesMap ) {
-		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+	for ( const table of tables ) {
+		let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
-		const tableRowCount = tableUtils.getRows( table );
-		const tableColumnCount = tableUtils.getColumns( table );
+		// Prioritize the dimension that is already larger to prevent the other dimension from
+		// aggressively consuming "orphaned" header cells. In other words, if table has tree
+		// heading columns (which fills entire table), we should not count all rows as heading rows.
+		// User might later add column to the right which should not be heading.
+		//
+		// The other example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
+		// if headingColumns=0 and headingRows=0 (but all cells are headers):
+		// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 0.
+		// - Processing columns first expands headingColumns to 2, leaving headingRows at 0.
+		//
+		// However, if we have a hint (e.g. headingColumns > headingRows), we should follow it.
+		// If headingColumns=1 and headingRows=0:
+		// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
+		// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
+		//
+		// It should be good enough to resolve conflicts in most cases.
+		const processColumnsFirst = headingColumns > headingRows;
 
-		// Track which rows and columns were changed.
-		const changedRowsSet = new Set<number>();
-		const changedColumnsSet = new Set<number>();
+		if ( processColumnsFirst ) {
+			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
-		for ( const cell of cells ) {
-			const { row, column } = tableUtils.getCellLocation( cell );
-
-			changedRowsSet.add( row );
-			changedColumnsSet.add( column );
+			if ( newHeadingColumns !== headingColumns ) {
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				headingColumns = newHeadingColumns;
+				changed = true;
+			}
 		}
 
-		// Check if we should increment headingRows.
-		// We only increment if the changed row index equals the current headingRows value.
-		if (
-			changedRowsSet.has( headingRows ) &&
-			headingRows < tableRowCount &&
-			isEntireCellsLineHeader( { table, row: headingRows } )
-		) {
-			tableUtils.setHeadingRowsCount( writer, table, headingRows + 1 );
+		const newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+
+		if ( newHeadingRows !== headingRows ) {
+			tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+			headingRows = newHeadingRows;
+			changed = true;
 		}
 
-		// Check if we should increment headingColumns.
-		// We only increment if the changed column index equals the current headingColumns value.
-		if (
-			changedColumnsSet.has( headingColumns ) &&
-			headingColumns < tableColumnCount &&
-			isEntireCellsLineHeader( { table, column: headingColumns } )
-		) {
-			tableUtils.setHeadingColumnsCount( writer, table, headingColumns + 1 );
+		if ( !processColumnsFirst ) {
+			const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
+
+			if ( newHeadingColumns !== headingColumns ) {
+				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+				changed = true;
+			}
 		}
 	}
+
+	return changed;
 }
 
 /**
- * Decrements the `headingRows` and `headingColumns` attributes of the tables
- * containing the given table cells being changed to `data` cell type.
- *
- * ```
- * +---+---+---+                   +---+---+---+
- * | H | H | H |                   | H | H | H |
- * +---+---+---+   change cell     +===+===+===+
- * | H | H | H |   to 'data'       | H | D | H |  <-- headingRows decremented
- * +===+===+===+   ----------->    +---+---+---+
- * | D | D | D |                   | D | D | D |
- * +---+---+---+                   +---+---+---+
- *
- * headingRows: 2                  headingRows: 1
- * ```
+ * Calculates the adjusted size of a heading section (rows or columns).
  */
-function adjustHeadingAttributesWhenChangingToData(
+function getAdjustedHeadingSectionSize(
 	tableUtils: TableUtils,
-	writer: ModelWriter,
-	tableCells: Array<ModelElement>
-): void {
-	const tablesMap = groupCellsByTable( tableCells );
+	table: ModelElement,
+	mode: 'row' | 'column',
+	currentSize: number,
+	perpendicularHeadingSize: number
+): number {
+	const totalRowsOrColumns = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
+	let size = currentSize;
 
-	// Process each table.
-	for ( const [ table, cells ] of tablesMap ) {
-		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-		const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+	// Iterate through each row/column to check if all cells are headers.
+	for ( let currentIndex = 0; currentIndex < totalRowsOrColumns; currentIndex++ ) {
+		const walkerOptions = mode === 'row' ? { row: currentIndex } : { column: currentIndex };
+		const walker = new TableWalker( table, walkerOptions );
 
-		if ( headingRows === 0 && headingColumns === 0 ) {
-			continue;
+		let allCellsAreHeaders = true;
+		let hasHeaderOutsidePerpendicularSection = false;
+
+		// Check each cell in the current row/column.
+		for ( const { cell, row, column } of walker ) {
+			// If we find a non-header cell, this row/column can't be part of the heading section.
+			if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+				allCellsAreHeaders = false;
+				break;
+			}
+
+			// Check if this header cell extends beyond the perpendicular heading section.
+			// E.g., when checking rows, see if the cell extends beyond headingColumns.
+			const perpendicularIndex = mode === 'row' ? column : row;
+
+			if ( perpendicularIndex >= perpendicularHeadingSize ) {
+				hasHeaderOutsidePerpendicularSection = true;
+			}
 		}
 
-		let minHeadingRow = headingRows;
-		let minHeadingColumn = headingColumns;
-
-		// Check each cell being changed to 'data'
-		for ( const cell of cells ) {
-			const { row, column } = tableUtils.getCellLocation( cell );
-
-			minHeadingRow = Math.min( minHeadingRow, headingRows, row );
-			minHeadingColumn = Math.min( minHeadingColumn, headingColumns, column );
+		// If not all cells are headers, we can't extend the heading section any further.
+		if ( !allCellsAreHeaders ) {
+			// The section cannot extend beyond the last valid header row/column.
+			return Math.min( size, currentIndex );
 		}
 
-		// Update headingRows if necessary.
-		if ( minHeadingRow < headingRows ) {
-			tableUtils.setHeadingRowsCount( writer, table, minHeadingRow, {
-				resetFormerHeadingCells: false
-			} );
-		}
-
-		// Update headingColumns if necessary.
-		if ( minHeadingColumn < headingColumns ) {
-			tableUtils.setHeadingColumnsCount( writer, table, minHeadingColumn, {
-				resetFormerHeadingCells: false
-			} );
+		// If there's a header extending beyond the perpendicular section,
+		// we must include this row/column in the heading section.
+		if ( hasHeaderOutsidePerpendicularSection ) {
+			size = Math.max( size, currentIndex + 1 );
 		}
 	}
+
+	return Math.min( size, totalRowsOrColumns );
 }
