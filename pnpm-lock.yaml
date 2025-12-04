@@ -67,7 +67,7 @@ importers:
         version: 2.0.22(@inquirer/prompts@7.8.6(@types/node@24.6.2))
       '@vitest/coverage-v8':
         specifier: ^4.0.15
-        version: 4.0.15(@vitest/browser@4.0.15(vite@8.0.0-beta.0(@types/node@24.6.2)(esbuild@0.25.10)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)
+        version: 4.0.15(@vitest/browser@4.0.15(vite@7.1.12(@types/node@24.6.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)
       '@webspellchecker/wproofreader-ckeditor5':
         specifier: ^3.0.0
         version: 3.1.3(ckeditor5@packages+ckeditor5)
@@ -1697,9 +1697,18 @@ importers:
       '@ckeditor/ckeditor5-theme-lark':
         specifier: workspace:*
         version: link:../ckeditor5-theme-lark
+      '@vitest/browser-playwright':
+        specifier: ^4.0.15
+        version: 4.0.15(playwright@1.57.0)(vite@8.0.0-beta.0(@types/node@24.6.2)(esbuild@0.25.10)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15)
+      '@vitest/coverage-v8':
+        specifier: ^4.0.15
+        version: 4.0.15(@vitest/browser@4.0.15(vite@8.0.0-beta.0(@types/node@24.6.2)(esbuild@0.25.10)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+      vitest:
+        specifier: ^4.0.15
+        version: 4.0.15(@types/node@24.6.2)(@vitest/browser-playwright@4.0.15)(esbuild@0.25.10)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
       webpack:
         specifier: ^5.94.0
         version: 5.102.0(@swc/core@1.13.5)(esbuild@0.25.10)(webpack-cli@6.0.1)
@@ -15506,7 +15515,6 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
-    optional: true
 
   '@vitest/browser@4.0.15(vite@7.1.12(@types/node@24.6.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15)':
     dependencies:
@@ -15541,7 +15549,6 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
-    optional: true
 
   '@vitest/coverage-v8@4.0.15(@vitest/browser@4.0.15(vite@7.1.12(@types/node@24.6.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vitest@4.0.15))(vitest@4.0.15)':
     dependencies:

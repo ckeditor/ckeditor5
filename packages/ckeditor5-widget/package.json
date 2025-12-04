@@ -64,7 +64,7 @@
     "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs",
     "test": "vitest run",
-    "test:headless": "vitest --browser.headless run",
-    "coverage": "vitest run --coverage"
+    "test:headless": "vitest run --browser.headless",
+    "coverage": "pnpm run test:headless --coverage"
   }
 }

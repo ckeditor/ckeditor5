@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EmojiCategoriesView } from '../../src/ui/emojicategoriesview.js';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 
 describe( 'EmojiCategoriesView', () => {
 	let locale, emojiCategoriesView, emojiCategories;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {
@@ -40,47 +38,47 @@ describe( 'EmojiCategoriesView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates `view#buttonViews` collection', () => {
-			expect( emojiCategoriesView.buttonViews ).to.be.instanceOf( ViewCollection );
+			expect( emojiCategoriesView.buttonViews ).toBeInstanceOf( ViewCollection );
 
 			// To check if the `#createCollection()` factory was used.
-			expect( emojiCategoriesView._viewCollections.has( emojiCategoriesView.buttonViews ) ).to.equal( true );
+			expect( emojiCategoriesView._viewCollections.has( emojiCategoriesView.buttonViews ) ).toBe( true );
 		} );
 
 		it( 'creates #element from template', () => {
-			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories-list' ) ).to.be.true;
+			expect( emojiCategoriesView.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( emojiCategoriesView.element.classList.contains( 'ck-emoji__categories-list' ) ).toBe( true );
 
-			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).to.equal( emojiCategories.length );
+			expect( Object.values( emojiCategoriesView.element.childNodes ).length ).toBe( emojiCategories.length );
 
-			expect( emojiCategoriesView.element.getAttribute( 'role' ) ).to.equal( 'tablist' );
+			expect( emojiCategoriesView.element.getAttribute( 'role' ) ).toBe( 'tablist' );
 		} );
 	} );
 
 	describe( 'focus()', () => {
 		it( 'should focus the first category item', () => {
-			const spy = sinon.spy( emojiCategoriesView.buttonViews.first, 'focus' );
+			const spy = vi.spyOn( emojiCategoriesView.buttonViews.first, 'focus' );
 
 			emojiCategoriesView.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'destroy()', () => {
 		it( 'should destroy an instance of focus tracker', () => {
-			const spy = sinon.spy( emojiCategoriesView.focusTracker, 'destroy' );
+			const spy = vi.spyOn( emojiCategoriesView.focusTracker, 'destroy' );
 
 			emojiCategoriesView.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy an instance of keystroke handler', () => {
-			const spy = sinon.spy( emojiCategoriesView.keystrokes, 'destroy' );
+			const spy = vi.spyOn( emojiCategoriesView.keystrokes, 'destroy' );
 
 			emojiCategoriesView.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
@@ -89,20 +87,20 @@ describe( 'EmojiCategoriesView', () => {
 			emojiCategoriesView.enableCategories();
 
 			emojiCategoriesView.buttonViews.forEach( buttonView => {
-				expect( buttonView.isEnabled ).to.equal( true );
+				expect( buttonView.isEnabled ).toBe( true );
 			} );
 		} );
 
 		it( 'should restore the "active" category indicator when categories are enabled', () => {
 			const button = emojiCategoriesView.buttonViews.get( 0 );
 
-			expect( button.isOn ).to.equal( true );
+			expect( button.isOn ).toBe( true );
 
 			emojiCategoriesView.disableCategories();
-			expect( button.isOn ).to.equal( false );
+			expect( button.isOn ).toBe( false );
 
 			emojiCategoriesView.enableCategories();
-			expect( button.isOn ).to.equal( true );
+			expect( button.isOn ).toBe( true );
 		} );
 	} );
 
@@ -111,9 +109,9 @@ describe( 'EmojiCategoriesView', () => {
 			emojiCategoriesView.disableCategories();
 
 			emojiCategoriesView.buttonViews.forEach( buttonView => {
-				expect( buttonView.class ).to.equal( '' );
-				expect( buttonView.isOn ).to.equal( false );
-				expect( buttonView.isEnabled ).to.equal( false );
+				expect( buttonView.class ).toBe( '' );
+				expect( buttonView.isOn ).toBe( false );
+				expect( buttonView.isEnabled ).toBe( false );
 			} );
 		} );
 	} );
@@ -125,7 +123,7 @@ describe( 'EmojiCategoriesView', () => {
 				icon: '😊'
 			} );
 
-			expect( categoryButton.role ).to.equal( 'tab' );
+			expect( categoryButton.role ).toBe( 'tab' );
 		} );
 
 		it( 'does not use the `[aria-labelled-by]` attribute as the button is descriptive enough', () => {
@@ -134,7 +132,7 @@ describe( 'EmojiCategoriesView', () => {
 				icon: '😊'
 			} );
 
-			expect( categoryButton.ariaLabelledBy ).to.equal( undefined );
+			expect( categoryButton.ariaLabelledBy ).toBe( undefined );
 		} );
 
 		it( 'uses the emoji instead of a descriptive text label for a non-screen reader', () => {
@@ -143,7 +141,7 @@ describe( 'EmojiCategoriesView', () => {
 				icon: '😊'
 			} );
 
-			expect( categoryButton.label ).to.equal( '😊' );
+			expect( categoryButton.label ).toBe( '😊' );
 		} );
 
 		it( 'uses the emoji name instead of an icon for a screen reader', () => {
@@ -152,30 +150,30 @@ describe( 'EmojiCategoriesView', () => {
 				icon: '😊'
 			} );
 
-			expect( categoryButton.ariaLabel ).to.equal( 'faces' );
+			expect( categoryButton.ariaLabel ).toBe( 'faces' );
 		} );
 	} );
 
 	describe( '#buttonViews', () => {
 		it( 'updates `categoryName` upon clicking  a category item click', () => {
-			expect( emojiCategoriesView.categoryName ).to.equal( 'faces' );
+			expect( emojiCategoriesView.categoryName ).toBe( 'faces' );
 
 			emojiCategoriesView.buttonViews.get( 1 ).fire( 'execute' );
 
-			expect( emojiCategoriesView.categoryName ).to.equal( 'food' );
+			expect( emojiCategoriesView.categoryName ).toBe( 'food' );
 		} );
 
 		it( 'deactivates the previous active button upon clicking on a new one', () => {
 			const facesButton = emojiCategoriesView.buttonViews.get( 0 );
 			const thingsBottom = emojiCategoriesView.buttonViews.get( 2 );
 
-			expect( facesButton.isOn ).to.equal( true );
-			expect( thingsBottom.isOn ).to.equal( false );
+			expect( facesButton.isOn ).toBe( true );
+			expect( thingsBottom.isOn ).toBe( false );
 
 			thingsBottom.fire( 'execute' );
 
-			expect( facesButton.isOn ).to.equal( false );
-			expect( thingsBottom.isOn ).to.equal( true );
+			expect( facesButton.isOn ).toBe( false );
+			expect( thingsBottom.isOn ).toBe( true );
 		} );
 
 		it( 'renders the `[aria-selected]` attribute on each item', () => {
@@ -183,9 +181,9 @@ describe( 'EmojiCategoriesView', () => {
 			const foodButton = emojiCategoriesView.buttonViews.get( 1 );
 			const thingsBottom = emojiCategoriesView.buttonViews.get( 2 );
 
-			expect( facesButton.element.getAttribute( 'aria-selected' ) ).to.equal( 'true' );
-			expect( foodButton.element.getAttribute( 'aria-selected' ) ).to.equal( 'false' );
-			expect( thingsBottom.element.getAttribute( 'aria-selected' ) ).to.equal( 'false' );
+			expect( facesButton.element.getAttribute( 'aria-selected' ) ).toBe( 'true' );
+			expect( foodButton.element.getAttribute( 'aria-selected' ) ).toBe( 'false' );
+			expect( thingsBottom.element.getAttribute( 'aria-selected' ) ).toBe( 'false' );
 		} );
 	} );
 } );

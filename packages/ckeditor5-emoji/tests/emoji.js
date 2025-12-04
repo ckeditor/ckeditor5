@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Emoji, EmojiMention, EmojiPicker } from '../src/index.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Mention } from '@ckeditor/ckeditor5-mention';
@@ -28,21 +29,21 @@ describe( 'Emoji', () => {
 	} );
 
 	it( 'should be correctly named', () => {
-		expect( Emoji.pluginName ).to.equal( 'Emoji' );
+		expect( Emoji.pluginName ).toBe( 'Emoji' );
 	} );
 
 	it( 'should have proper "requires" value', () => {
-		expect( Emoji.requires ).to.deep.equal( [
+		expect( Emoji.requires ).toEqual( [
 			EmojiMention,
 			EmojiPicker
 		] );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( Emoji.isOfficialPlugin ).to.be.true;
+		expect( Emoji.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( Emoji.isPremiumPlugin ).to.be.false;
+		expect( Emoji.isPremiumPlugin ).toBe( false );
 	} );
 } );
