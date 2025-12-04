@@ -461,8 +461,7 @@ function enableCellTypeProperty( editor: Editor ) {
 			const processColumnsFirst = headingColumns > headingRows;
 
 			if ( processColumnsFirst ) {
-				const { max: maxCols, required: requiredCols } = getHeadingSectionBounds( tableUtils, table, 'column', headingRows );
-				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
+				const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 				if ( newHeadingColumns !== headingColumns ) {
 					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
@@ -471,8 +470,7 @@ function enableCellTypeProperty( editor: Editor ) {
 				}
 			}
 
-			const { max: maxRows, required: requiredRows } = getHeadingSectionBounds( tableUtils, table, 'row', headingColumns );
-			const newHeadingRows = clamp( headingRows, requiredRows, maxRows );
+			const newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
 
 			if ( newHeadingRows !== headingRows ) {
 				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
@@ -481,8 +479,7 @@ function enableCellTypeProperty( editor: Editor ) {
 			}
 
 			if ( !processColumnsFirst ) {
-				const { max: maxCols, required: requiredCols } = getHeadingSectionBounds( tableUtils, table, 'column', headingRows );
-				const newHeadingColumns = clamp( headingColumns, requiredCols, maxCols );
+				const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
 
 				if ( newHeadingColumns !== headingColumns ) {
 					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
@@ -496,24 +493,24 @@ function enableCellTypeProperty( editor: Editor ) {
 }
 
 /**
- * Calculates the minimum and maximum bounds for a heading section (rows or columns).
+ * Calculates the adjusted size of a heading section (rows or columns).
  *
- * It calculates two values:
- * - `max`: The number of consecutive rows/columns from the start that consist entirely of header cells.
- *          The heading section cannot exceed this value because a non-header cell breaks the section.
- * - `required`: The number of rows/columns that *must* be headers. This is determined by finding the last
- *               row/column that contains a "standalone" header cell (one that is not covered by the
- *               heading section of the other axis).
+ * It determines the new size based on the current size, the perpendicular heading size, and the cell types.
+ *
+ * The logic is as follows:
+ * - The section cannot extend beyond the first non-header cell (it must be consecutive).
+ * - The section must include all "orphaned" header cells (header cells not covered by the perpendicular heading section).
+ * - The current size is preserved if it satisfies the above conditions.
  */
-function getHeadingSectionBounds(
+function getAdjustedHeadingSectionSize(
 	tableUtils: TableUtils,
 	table: ModelElement,
 	mode: 'row' | 'column',
+	currentSize: number,
 	perpendicularHeadingSize: number
-): { max: number; required: number } {
+): number {
 	const totalRowsOrColumns = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
-	let maxPossible = 0;
-	let minRequired = 0;
+	let size = currentSize;
 
 	// Iterate through each row/column to check if all cells are headers.
 	for ( let currentIndex = 0; currentIndex < totalRowsOrColumns; currentIndex++ ) {
@@ -542,30 +539,16 @@ function getHeadingSectionBounds(
 
 		// If not all cells are headers, we can't extend the heading section any further.
 		if ( !allCellsAreHeaders ) {
-			break;
+			// The section cannot extend beyond the last valid header row/column.
+			return Math.min( size, currentIndex );
 		}
-
-		// This row/column can be part of the heading section.
-		maxPossible++;
 
 		// If there's a header extending beyond the perpendicular section,
 		// we must include this row/column in the heading section.
 		if ( hasHeaderOutsidePerpendicularSection ) {
-			minRequired = maxPossible;
+			size = Math.max( size, currentIndex + 1 );
 		}
 	}
 
-	return { max: maxPossible, required: minRequired };
-}
-
-/**
- * Clamps a value between a minimum and maximum.
- *
- * @param value The value to clamp.
- * @param min The minimum allowed value.
- * @param max The maximum allowed value.
- * @returns The clamped value.
- */
-function clamp( value: number, min: number, max: number ): number {
-	return Math.min( Math.max( value, min ), max );
+	return Math.min( size, totalRowsOrColumns );
 }
