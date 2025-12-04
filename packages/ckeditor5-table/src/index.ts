@@ -82,7 +82,10 @@ export { TableHeightCommand } from './tableproperties/commands/tableheightcomman
 export { TableWidthCommand } from './tableproperties/commands/tablewidthcommand.js';
 export { TablePropertyCommand, type TablePropertyCommandExecuteOptions } from './tableproperties/commands/tablepropertycommand.js';
 export { TableCellTypeCommand, type TableCellType } from './tablecellproperties/commands/tablecelltypecommand.js';
-export { TableCellPropertyCommand } from './tablecellproperties/commands/tablecellpropertycommand.js';
+export {
+	TableCellPropertyCommand,
+	type TableCellPropertyCommandAfterExecuteEvent
+} from './tablecellproperties/commands/tablecellpropertycommand.js';
 
 export type { ViewDocumentTableMouseMoveEvent, ViewDocumentTableMouseLeaveEvent } from './tablemouse/mouseeventsobserver.js';
 
