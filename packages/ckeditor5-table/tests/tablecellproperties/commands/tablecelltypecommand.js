@@ -368,7 +368,7 @@ describe( 'TableCellTypeCommand', () => {
 				expect( editor.getData() ).to.equalMarkup( viewTable( [
 					[ { contents: '00', isHeading: true }, { contents: '01', isHeading: true } ],
 					[ { contents: '10', isHeading: true }, '11' ]
-				] ) );
+				], { headingRows: 1 } ) );
 			} );
 		} );
 	} );

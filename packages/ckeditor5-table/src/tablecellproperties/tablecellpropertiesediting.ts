@@ -17,7 +17,8 @@ import {
 	type ViewElement,
 	type UpcastConversionApi,
 	type UpcastConversionData,
-	type UpcastElementEvent
+	type UpcastElementEvent,
+	type ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
@@ -34,6 +35,8 @@ import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcomm
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
+import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -168,7 +171,7 @@ export class TableCellPropertiesEditing extends Plugin {
 		);
 
 		if ( editor.config.get( 'experimentalFlags.tableCellTypeSupport' ) ) {
-			enableCellTypeProperty( schema, conversion );
+			enableCellTypeProperty( editor );
 
 			editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 		}
@@ -365,7 +368,11 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 /**
  * Enables the `tableCellType` attribute for table cells.
  */
-function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
+function enableCellTypeProperty( editor: Editor ) {
+	const { model, conversion } = editor;
+	const { schema } = model;
+	const tableUtils = editor.plugins.get( TableUtils );
+
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellType' ]
 	} );
@@ -384,4 +391,159 @@ function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
 			writer.setAttribute( 'tableCellType', 'header', modelElement );
 		}
 	} ) );
+
+	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
+	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority
+	// over `headingRows` and `headingColumns` and we use it to adjust the heading sections of the table.
+	model.document.registerPostFixer( writer => {
+		// 1. Collect all tables that need to be checked.
+		const changes = model.document.differ.getChanges();
+		const tablesToCheck = new Set<ModelElement>();
+
+		for ( const change of changes ) {
+			// Check if headingRows or headingColumns changed.
+			if ( change.type === 'attribute' && ( change.attributeKey === 'headingRows' || change.attributeKey === 'headingColumns' ) ) {
+				const table = change.range.start.nodeAfter as ModelElement;
+
+				if ( table?.is( 'element', 'table' ) && table.root.rootName !== '$graveyard' ) {
+					tablesToCheck.add( table );
+				}
+			}
+
+			// Check if tableCellType changed.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const cell = change.range.start.nodeAfter as ModelElement;
+
+				if ( cell?.is( 'element', 'tableCell' ) ) {
+					const table = cell.findAncestor( 'table' ) as ModelElement;
+
+					if ( table?.root.rootName !== '$graveyard' ) {
+						tablesToCheck.add( table );
+					}
+				}
+			}
+
+			// Check if new headers were inserted.
+			if ( change.type === 'insert' && change.position.nodeAfter ) {
+				for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
+					if ( item.is( 'element', 'tableCell' ) && item.getAttribute( 'tableCellType' ) ) {
+						const table = item.findAncestor( 'table' ) as ModelElement;
+
+						if ( table?.root.rootName !== '$graveyard' ) {
+							tablesToCheck.add( table );
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Update the attributes of the collected tables.
+		let changed = false;
+
+		for ( const table of tablesToCheck ) {
+			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+
+			// Prioritize the dimension that is already larger to prevent the other dimension from
+			// aggressively consuming "orphaned" header cells. In other words, if table has tree
+			// heading columns (which fills entire table), we should not count all rows as heading rows.
+			// User might later add column to the right which should not be heading.
+			//
+			// The other example, in a 2x2 table where all cells are headers (e.g. due to concurrent edits),
+			// if headingColumns=0 and headingRows=0 (but all cells are headers):
+			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 0.
+			// - Processing columns first expands headingColumns to 2, leaving headingRows at 0.
+			//
+			// However, if we have a hint (e.g. headingColumns > headingRows), we should follow it.
+			// If headingColumns=1 and headingRows=0:
+			// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
+			// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
+			//
+			// It should be good enough to resolve conflicts in most cases.
+			const processColumnsFirst = headingColumns > headingRows;
+
+			if ( processColumnsFirst ) {
+				const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
+
+				if ( newHeadingColumns !== headingColumns ) {
+					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+					headingColumns = newHeadingColumns;
+					changed = true;
+				}
+			}
+
+			const newHeadingRows = getAdjustedHeadingSectionSize( tableUtils, table, 'row', headingRows, headingColumns );
+
+			if ( newHeadingRows !== headingRows ) {
+				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
+				headingRows = newHeadingRows;
+				changed = true;
+			}
+
+			if ( !processColumnsFirst ) {
+				const newHeadingColumns = getAdjustedHeadingSectionSize( tableUtils, table, 'column', headingColumns, headingRows );
+
+				if ( newHeadingColumns !== headingColumns ) {
+					tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
+					changed = true;
+				}
+			}
+		}
+
+		return changed;
+	} );
+}
+
+/**
+ * Calculates the adjusted size of a heading section (rows or columns).
+ */
+function getAdjustedHeadingSectionSize(
+	tableUtils: TableUtils,
+	table: ModelElement,
+	mode: 'row' | 'column',
+	currentSize: number,
+	perpendicularHeadingSize: number
+): number {
+	const totalRowsOrColumns = mode === 'row' ? tableUtils.getRows( table ) : tableUtils.getColumns( table );
+	let size = currentSize;
+
+	// Iterate through each row/column to check if all cells are headers.
+	for ( let currentIndex = 0; currentIndex < totalRowsOrColumns; currentIndex++ ) {
+		const walkerOptions = mode === 'row' ? { row: currentIndex } : { column: currentIndex };
+		const walker = new TableWalker( table, walkerOptions );
+
+		let allCellsAreHeaders = true;
+		let hasHeaderOutsidePerpendicularSection = false;
+
+		// Check each cell in the current row/column.
+		for ( const { cell, row, column } of walker ) {
+			// If we find a non-header cell, this row/column can't be part of the heading section.
+			if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+				allCellsAreHeaders = false;
+				break;
+			}
+
+			// Check if this header cell extends beyond the perpendicular heading section.
+			// E.g., when checking rows, see if the cell extends beyond headingColumns.
+			const perpendicularIndex = mode === 'row' ? column : row;
+
+			if ( perpendicularIndex >= perpendicularHeadingSize ) {
+				hasHeaderOutsidePerpendicularSection = true;
+			}
+		}
+
+		// If not all cells are headers, we can't extend the heading section any further.
+		if ( !allCellsAreHeaders ) {
+			// The section cannot extend beyond the last valid header row/column.
+			return Math.min( size, currentIndex );
+		}
+
+		// If there's a header extending beyond the perpendicular section,
+		// we must include this row/column in the heading section.
+		if ( hasHeaderOutsidePerpendicularSection ) {
+			size = Math.max( size, currentIndex + 1 );
+		}
+	}
+
+	return Math.min( size, totalRowsOrColumns );
 }

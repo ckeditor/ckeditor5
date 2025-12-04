@@ -495,6 +495,7 @@ export class TableUtils extends Plugin {
 
 			// 3. If next rows are entirely header, adjust heading rows count.
 			if ( isTableCellTypeEnabled( model.schema ) ) {
+				/* istanbul ignore next -- @preserve */
 				let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 				const totalRows = this.getRows( table );
 
@@ -583,6 +584,7 @@ export class TableUtils extends Plugin {
 
 			// If next columns are entirely header, adjust heading columns count.
 			if ( isTableCellTypeEnabled( model.schema ) ) {
+				/* istanbul ignore next -- @preserve */
 				let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 				const totalColumns = this.getColumns( table );
 
@@ -970,10 +972,6 @@ export class TableUtils extends Plugin {
 	 * @param options Additional options.
 	 * @param options.shallow If set to `true` it will only update the `headingRows` attribute
 	 * without updating the cell types in the table. Default is `false`.
-	 * @param options.resetFormerHeadingCells If set to `true`, it will check if the rows that are no longer in the heading section
-	 * should be updated to body cells. Default is `true`.
-	 * @param options.autoExpand If set to `true`, it will check if the following rows look like a header and expand the heading section.
-	 * Default is `true`.
 	 */
 	public setHeadingRowsCount(
 		writer: ModelWriter,
@@ -981,11 +979,9 @@ export class TableUtils extends Plugin {
 		headingRows: number,
 		options: {
 			shallow?: boolean;
-			resetFormerHeadingCells?: boolean;
-			autoExpand?: boolean;
 		} = {}
 	): void {
-		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const { shallow } = options;
 		const { model } = this.editor;
 
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -1012,7 +1008,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If heading rows were reduced, set body type to all cells in rows that are no longer in heading section.
-		if ( resetFormerHeadingCells && headingRows < oldHeadingRows ) {
+		if ( headingRows < oldHeadingRows ) {
 			for ( let row = headingRows; row < oldHeadingRows; row++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading rows count.
@@ -1033,7 +1029,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If following rows looks like header, expand heading rows to cover them.
-		if ( autoExpand && headingRows > oldHeadingRows ) {
+		if ( headingRows > oldHeadingRows ) {
 			const totalRows = this.getRows( table );
 
 			while ( headingRows < totalRows && isEntireCellsLineHeader( { table, row: headingRows } ) ) {
@@ -1053,10 +1049,6 @@ export class TableUtils extends Plugin {
 	 * @param options Additional options.
 	 * @param options.shallow If set to `true` it will only update the `headingColumns` attribute
 	 * without updating the cell types in the table. Default is `false`.
-	 * @param options.resetFormerHeadingCells If set to `true`, it will check if the columns that are no longer in the heading section
-	 * should be updated to body cells. Default is `true`.
-	 * @param options.autoExpand If set to `true`, it will check if the following columns look like a header and expand the heading section.
-	 * Default is `true`.
 	 */
 	public setHeadingColumnsCount(
 		writer: ModelWriter,
@@ -1064,11 +1056,9 @@ export class TableUtils extends Plugin {
 		headingColumns: number,
 		options: {
 			shallow?: boolean;
-			resetFormerHeadingCells?: boolean;
-			autoExpand?: boolean;
 		} = {}
 	): void {
-		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
+		const { shallow } = options;
 		const { model } = this.editor;
 
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
@@ -1095,7 +1085,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If heading columns were reduced, set body type to all cells in columns that are no longer in heading section.
-		if ( resetFormerHeadingCells && headingColumns < oldHeadingColumns ) {
+		if ( headingColumns < oldHeadingColumns ) {
 			for ( let column = headingColumns; column < oldHeadingColumns; column++ ) {
 				// Handle edge case when some cells were already changed to body type manually,
 				// before changing heading columns count.
@@ -1116,7 +1106,7 @@ export class TableUtils extends Plugin {
 		}
 
 		// If following columns looks like header, expand heading columns to cover them.
-		if ( autoExpand && headingColumns > oldHeadingColumns ) {
+		if ( headingColumns > oldHeadingColumns ) {
 			const totalColumns = this.getColumns( table );
 
 			while ( headingColumns < totalColumns && isEntireCellsLineHeader( { table, column: headingColumns } ) ) {
