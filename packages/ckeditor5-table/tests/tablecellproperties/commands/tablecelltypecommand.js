@@ -49,9 +49,10 @@ describe( 'TableCellTypeCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'should be undefined if selected table cell has no tableCellType property', () => {
+		it( 'should be data if selected table cell has no tableCellType property', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-			expect( command.value ).to.be.undefined;
+
+			expect( command.value ).to.be.equal( 'data' );
 		} );
 
 		it( 'should be "header" if selected table cell has tableCellType="header"', () => {
@@ -61,8 +62,12 @@ describe( 'TableCellTypeCommand', () => {
 
 		it( 'should be undefined if multiple cells with different types are selected', () => {
 			_setModelData( model, modelTable( [
-				[ { contents: '00', isSelected: true, tableCellType: 'header' }, { contents: '01', isSelected: true } ]
+				[
+					{ contents: '00', isSelected: true, tableCellType: 'header' },
+					{ contents: '01', isSelected: true }
+				]
 			] ) );
+
 			expect( command.value ).to.be.undefined;
 		} );
 	} );

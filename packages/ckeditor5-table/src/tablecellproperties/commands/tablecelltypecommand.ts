@@ -34,6 +34,7 @@ import { TableWalker } from '../../tablewalker.js';
  * ```
  *
  * The `value` can be either `'header'` or `'data'`.
+ * It'll return `undefined` if multiple types are selected.
  */
 export class TableCellTypeCommand extends TableCellPropertyCommand {
 	/**
@@ -64,6 +65,13 @@ export class TableCellTypeCommand extends TableCellPropertyCommand {
 		if ( this.isEnabled && table && table.getAttribute( 'tableType' ) === 'layout' ) {
 			this.isEnabled = false;
 		}
+	}
+
+	/**
+	 * Returns the attribute value for a table cell.
+	 */
+	protected override _getAttribute( tableCell: ModelElement | undefined ): unknown {
+		return tableCell?.getAttribute( this.attributeName ) || 'data';
 	}
 }
 

@@ -972,9 +972,7 @@ export class TableCellPropertiesViewExperimental extends View {
 				} )
 			};
 
-			definition.model.bind( 'isOn' ).to( this, 'cellType', value => {
-				return value === type || ( !value && type === 'data' );
-			} );
+			definition.model.bind( 'isOn' ).to( this, 'cellType', value => value === type );
 
 			itemDefinitions.add( definition );
 		}
