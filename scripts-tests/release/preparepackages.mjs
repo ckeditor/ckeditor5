@@ -20,7 +20,7 @@ describe( 'scripts/release/preparepackages', () => {
 	beforeEach( async () => {
 		vi.resetModules();
 
-		await import( '../../../scripts/release/preparepackages.mjs' );
+		await import( '../../scripts/release/preparepackages.mjs' );
 
 		listrTasks = vi.mocked( Listr ).mock.calls[ 0 ][ 0 ];
 	} );
