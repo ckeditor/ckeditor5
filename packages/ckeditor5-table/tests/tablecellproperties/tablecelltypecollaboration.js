@@ -222,6 +222,102 @@ describe( 'collaboration', () => {
 				], { headingRows: 2 } )
 			);
 		} );
+
+		it( 'should work properly if john sets header row and kate sets cell type to data on a cell in that row', () => {
+			const initialModel = modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '12' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+			selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+			syncClients();
+
+			john._processExecute( 'setTableRowHeader' );
+			kate._processExecute( 'tableCellType', { value: 'data' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[ '10', '12' ]
+				], { headingRows: 1 } )
+			);
+		} );
+
+		it( 'should work properly if john sets header row and kate sets header column', () => {
+			const initialModel = modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '12' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+			selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+			syncClients();
+
+			john._processExecute( 'setTableRowHeader' );
+			kate._processExecute( 'setTableColumnHeader' );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						'12'
+					]
+				], { headingRows: 1, headingColumns: 1 } )
+			);
+		} );
+
+		it( 'should work properly if john unsets header row and kate sets cell type to header on a cell in that row', () => {
+			const initialModel = modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[ '10[]', '12' ]
+			], { headingRows: 1 } );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+			selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+			syncClients();
+
+			john._processExecute( 'setTableRowHeader', { forceValue: false } );
+			kate._processExecute( 'tableCellType', { value: 'header' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						'01'
+					],
+					[ '10', '12' ]
+				] )
+			);
+		} );
 	} );
 
 	describe( 'header columns', () => {
@@ -423,6 +519,39 @@ describe( 'collaboration', () => {
 						{ contents: '12', tableCellType: 'header' }
 					]
 				], { headingColumns: 2 } )
+			);
+		} );
+
+		it( 'should work properly if john sets header column and kate sets cell type to data on a cell in that column', () => {
+			const initialModel = modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '12' ]
+			] );
+
+			john.setData( initialModel );
+			kate.setData( initialModel );
+
+			selectCells( john, [ 0, 0 ], [ 0, 0 ] );
+			selectCells( kate, [ 0, 0 ], [ 0, 0 ] );
+
+			syncClients();
+
+			john._processExecute( 'setTableColumnHeader' );
+			kate._processExecute( 'tableCellType', { value: 'data' } );
+
+			syncClients();
+
+			expectClients(
+				modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						'01'
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						'12'
+					]
+				], { headingColumns: 1 } )
 			);
 		} );
 	} );
