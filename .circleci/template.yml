@@ -109,6 +109,10 @@ jobs:
           when: always
           name: Run Vitest tests in widget package
           working_directory: packages/ckeditor5-widget
+      - run:
+          when: always
+          name: Run Vitest tests in emoji package
+          working_directory: packages/ckeditor5-emoji
           command: pnpm run coverage
       - run:
           name: Prepare DLL builds in CKEditor 5

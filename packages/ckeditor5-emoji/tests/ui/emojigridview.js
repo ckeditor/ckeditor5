@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EmojiGridView } from '../../src/ui/emojigridview.js';
 import { ViewCollection, ButtonView } from '@ckeditor/ckeditor5-ui';
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'EmojiGridView', () => {
 	let view, locale, emojiCategories;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {
@@ -64,29 +62,29 @@ describe( 'EmojiGridView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates `view#tiles` collection', () => {
-			expect( view.tiles ).to.be.instanceOf( ViewCollection );
+			expect( view.tiles ).toBeInstanceOf( ViewCollection );
 
 			// To check if the `#createCollection()` factory was used.
-			expect( view._viewCollections.has( view.tiles ) ).to.equal( true );
+			expect( view._viewCollections.has( view.tiles ) ).toBe( true );
 		} );
 
 		it( 'creates `view#cachedTiles` collection', () => {
-			expect( view.cachedTiles ).to.be.instanceOf( ViewCollection );
+			expect( view.cachedTiles ).toBeInstanceOf( ViewCollection );
 
 			// To check if the `#createCollection()` factory was used.
-			expect( view._viewCollections.has( view.cachedTiles ) ).to.equal( true );
+			expect( view._viewCollections.has( view.cachedTiles ) ).toBe( true );
 		} );
 
 		it( 'creates #element from template', () => {
-			expect( view.element.getAttribute( 'role' ) ).to.equal( 'tabpanel' );
-			expect( view.element.classList.contains( 'ck' ) ).to.equal( true );
-			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).to.equal( true );
+			expect( view.element.getAttribute( 'role' ) ).toBe( 'tabpanel' );
+			expect( view.element.classList.contains( 'ck' ) ).toBe( true );
+			expect( view.element.classList.contains( 'ck-emoji__tiles' ) ).toBe( true );
 
 			const tilesContainer = view.element.firstChild;
 
-			expect( tilesContainer.getAttribute( 'role' ) ).to.equal( 'grid' );
-			expect( tilesContainer.classList.contains( 'ck' ) ).to.equal( true );
-			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).to.equal( true );
+			expect( tilesContainer.getAttribute( 'role' ) ).toBe( 'grid' );
+			expect( tilesContainer.classList.contains( 'ck' ) ).toBe( true );
+			expect( tilesContainer.classList.contains( 'ck-emoji__grid' ) ).toBe( true );
 		} );
 
 		describe( 'focus management across the grid items using arrow keys', () => {
@@ -120,8 +118,8 @@ describe( 'EmojiGridView', () => {
 				it( '"arrow right" should focus the next focusable grid item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.filter( new RegExp( 'smile' ) );
@@ -130,12 +128,12 @@ describe( 'EmojiGridView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 1 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( '"arrow down" should focus the focusable grid item in the second row', () => {
@@ -147,8 +145,8 @@ describe( 'EmojiGridView', () => {
 
 					const keyEvtData = {
 						keyCode: keyCodes.arrowdown,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.filter( new RegExp( 'smile' ) );
@@ -157,12 +155,12 @@ describe( 'EmojiGridView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( numberOfColumns ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( numberOfColumns ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 
@@ -175,8 +173,8 @@ describe( 'EmojiGridView', () => {
 				it( '"arrow right" should focus the next focusable grid item', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowright,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.filter( new RegExp( 'smile' ) );
@@ -185,19 +183,19 @@ describe( 'EmojiGridView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 1 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 1 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 
 				it( '"arrow down" should focus the focusable grid item in the second row', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.arrowdown,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: vi.fn(),
+						stopPropagation: vi.fn()
 					};
 
 					view.filter( new RegExp( 'smile' ) );
@@ -206,12 +204,12 @@ describe( 'EmojiGridView', () => {
 					view.focusTracker.isFocused = true;
 					view.focusTracker.focusedElement = view.tiles.first.element;
 
-					const spy = sinon.spy( view.tiles.get( 5 ), 'focus' );
+					const spy = vi.spyOn( view.tiles.get( 5 ), 'focus' );
 
 					view.keystrokes.press( keyEvtData );
-					sinon.assert.calledOnce( keyEvtData.preventDefault );
-					sinon.assert.calledOnce( keyEvtData.stopPropagation );
-					sinon.assert.calledOnce( spy );
+					expect( keyEvtData.preventDefault ).toHaveBeenCalledTimes( 1 );
+					expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 1 );
+					expect( spy ).toHaveBeenCalledTimes( 1 );
 				} );
 			} );
 		} );
@@ -221,25 +219,25 @@ describe( 'EmojiGridView', () => {
 		it( 'focuses the first tile', () => {
 			view.filter( new RegExp( 'smile' ) );
 
-			const spy = sinon.spy( view.tiles.first, 'focus' );
+			const spy = vi.spyOn( view.tiles.first, 'focus' );
 
 			view.focus();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'does not crash when a grid is empty', () => {
 			const view = new EmojiGridView( locale, {
 				emojiCategories: [],
 				categoryName: '',
-				getEmojiByQuery: sinon.spy()
+				getEmojiByQuery: vi.fn()
 			} );
 
 			view.render();
 
 			expect( () => {
 				view.focus();
-			} ).to.not.throw();
+			} ).not.toThrow();
 
 			view.destroy();
 		} );
@@ -247,36 +245,36 @@ describe( 'EmojiGridView', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should destroy an instance of focus tracker', () => {
-			const spy = sinon.spy( view.focusTracker, 'destroy' );
+			const spy = vi.spyOn( view.focusTracker, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 
 		it( 'should destroy an instance of keystroke handler', () => {
-			const spy = sinon.spy( view.keystrokes, 'destroy' );
+			const spy = vi.spyOn( view.keystrokes, 'destroy' );
 
 			view.destroy();
 
-			sinon.assert.calledOnce( spy );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
 		} );
 	} );
 
 	describe( 'render()', () => {
-		it( 'listens to keyboard events from the grid element', () => {
+		it( 'does not crash when a grid is empty', () => {
 			const view = new EmojiGridView( locale, {
 				emojiCategories: [],
 				categoryName: '',
-				getEmojiByQuery: sinon.spy()
+				getEmojiByQuery: vi.fn()
 			} );
 
-			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+			const spy = vi.spyOn( view.keystrokes, 'listenTo' );
 
 			view.render();
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWith( spy, view.element );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( view.element );
 
 			view.destroy();
 		} );
@@ -296,7 +294,7 @@ describe( 'EmojiGridView', () => {
 				}
 			];
 
-			const spy = sinon.stub().returns( [
+			const spy = vi.fn().mockReturnValue( [
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
@@ -304,10 +302,10 @@ describe( 'EmojiGridView', () => {
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
-			expect( result ).to.deep.equal( { resultsCount: 1, totalItemsCount: 3 } );
-			expect( view.isEmpty ).is.equal( false );
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'smile' );
+			expect( result ).toEqual( { resultsCount: 1, totalItemsCount: 3 } );
+			expect( view.isEmpty ).toBe( false );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( 'smile' );
 
 			view.destroy();
 		} );
@@ -325,16 +323,16 @@ describe( 'EmojiGridView', () => {
 				}
 			];
 
-			const spy = sinon.stub().returns( [] );
+			const spy = vi.fn().mockReturnValue( [] );
 
 			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			const result = view.filter( new RegExp( 'smile' ) );
 
-			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 3 } );
-			expect( view.isEmpty ).is.equal( true );
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'smile' );
+			expect( result ).toEqual( { resultsCount: 0, totalItemsCount: 3 } );
+			expect( view.isEmpty ).toBe( true );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( 'smile' );
 
 			view.destroy();
 		} );
@@ -348,15 +346,15 @@ describe( 'EmojiGridView', () => {
 				}
 			];
 
-			const spy = sinon.stub().returns( [] );
+			const spy = vi.fn().mockReturnValue( [] );
 
 			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
 			const result = view.filter( null );
 
-			expect( result ).to.deep.equal( { resultsCount: 0, totalItemsCount: 0 } );
-			expect( view.isEmpty ).is.equal( true );
-			sinon.assert.callCount( spy, 0 );
+			expect( result ).toEqual( { resultsCount: 0, totalItemsCount: 0 } );
+			expect( view.isEmpty ).toBe( true );
+			expect( spy ).toHaveBeenCalledTimes( 0 );
 
 			view.destroy();
 		} );
@@ -374,44 +372,44 @@ describe( 'EmojiGridView', () => {
 				}
 			];
 
-			const spy = sinon.stub().returns( [
+			const spy = vi.fn().mockReturnValue( [
 				{ 'annotation': 'grinning face', 'emoji': '😀', skins: { 'default': '😀' } }
 			] );
 
 			const view = new EmojiGridView( locale, { emojiCategories, categoryName: 'faces', getEmojiByQuery: spy } );
 
-			expect( view.cachedTiles.length ).to.equal( 0 );
+			expect( view.cachedTiles.length ).toBe( 0 );
 
 			view.filter( new RegExp( 'happy' ) );
 
-			expect( view.cachedTiles.length ).to.equal( 1 );
-			expect( view.cachedTiles.has( '😀' ) ).to.equal( true );
+			expect( view.cachedTiles.length ).toBe( 1 );
+			expect( view.cachedTiles.has( '😀' ) ).toBe( true );
 
 			view.filter( new RegExp( 'smile' ) );
 
-			expect( view.cachedTiles.length ).to.equal( 1 );
-			expect( view.tiles.get( '😀' ) ).to.equal( view.cachedTiles.get( '😀' ) );
+			expect( view.cachedTiles.length ).toBe( 1 );
+			expect( view.tiles.get( '😀' ) ).toBe( view.cachedTiles.get( '😀' ) );
 
 			view.destroy();
 		} );
 
 		describe( '#focusTracker', () => {
 			it( 'should include the added items in focus tracker', () => {
-				const spy = sinon.spy( view.focusTracker, 'add' );
+				const spy = vi.spyOn( view.focusTracker, 'add' );
 
 				view.filter( new RegExp( 'smile' ) );
 
 				// `getEmojiByQuery()` returns two items.
-				sinon.assert.calledTwice( spy );
+				expect( spy ).toHaveBeenCalledTimes( 2 );
 			} );
 
 			it( 'should exclude the removed items in focus tracker', () => {
-				const spy = sinon.spy( view.focusTracker, 'remove' );
+				const spy = vi.spyOn( view.focusTracker, 'remove' );
 
 				view.filter( new RegExp( 'smile' ) );
 
 				// The initial render includes all items from the `faces` category.
-				sinon.assert.callCount( spy, 6 );
+				expect( spy ).toHaveBeenCalledTimes( 6 );
 			} );
 		} );
 	} );
@@ -420,39 +418,39 @@ describe( 'EmojiGridView', () => {
 		it( 'creates a new tile button', () => {
 			const tile = view._createTile( '😊', 'smile' );
 
-			expect( tile ).to.be.instanceOf( ButtonView );
-			expect( tile.viewUid ).to.equal( '😊' );
-			expect( tile.label ).to.equal( '😊' );
-			expect( tile.tooltip ).to.equal( 'smile' );
-			expect( tile.withText ).to.equal( true );
-			expect( tile.element.classList.contains( 'ck-emoji__tile' ) ).to.equal( true );
+			expect( tile ).toBeInstanceOf( ButtonView );
+			expect( tile.viewUid ).toBe( '😊' );
+			expect( tile.label ).toBe( '😊' );
+			expect( tile.tooltip ).toBe( 'smile' );
+			expect( tile.withText ).toBe( true );
+			expect( tile.element.classList.contains( 'ck-emoji__tile' ) ).toBe( true );
 		} );
 
 		it( 'does not use the `[aria-labelled-by]` attribute as the button is descriptive enough', () => {
 			const tile = view._createTile( '😊', 'smile' );
 
-			expect( tile.ariaLabel ).to.equal( 'smile' );
-			expect( tile.ariaLabelledBy ).to.equal( undefined );
+			expect( tile.ariaLabel ).toBe( 'smile' );
+			expect( tile.ariaLabelledBy ).toBe( undefined );
 		} );
 
 		it( 'delegates `execute` from the tile to the grid', () => {
 			const tile = view._createTile( '😊', 'smile' );
-			const spy = sinon.spy();
+			const spy = vi.fn();
 
 			view.on( 'execute', spy );
 			tile.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { name: 'smile', emoji: '😊' } );
+			expect( spy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledWith( expect.anything(), { name: 'smile', emoji: '😊' } );
 		} );
 
 		it( 'adds created tile to the collection of cached tiles', () => {
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( false );
+			expect( view.cachedTiles.has( '😊' ) ).toBe( false );
 
 			const tile = view._createTile( '😊', 'smile' );
 
-			expect( view.cachedTiles.has( '😊' ) ).to.equal( true );
-			expect( view.cachedTiles.get( '😊' ) ).to.equal( tile );
+			expect( view.cachedTiles.has( '😊' ) ).toBe( true );
+			expect( view.cachedTiles.get( '😊' ) ).toBe( tile );
 		} );
 	} );
 } );

@@ -20,21 +20,24 @@
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "ckeditor5": "workspace:*",
-    "fuzzysort": "3.1.0",
-    "es-toolkit": "1.39.5"
+    "es-toolkit": "1.39.5",
+    "fuzzysort": "3.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "workspace:*",
     "@ckeditor/ckeditor5-dev-utils": "^54.2.0",
-    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-balloon": "workspace:*",
+    "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-list": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
+    "@vitest/browser-playwright": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.15",
     "typescript": "5.3.3",
+    "vitest": "^4.0.15",
     "webpack": "^5.94.0",
     "webpack-cli": "^6.0.1"
   },
@@ -60,7 +63,10 @@
   "scripts": {
     "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.json",
-    "build:dist": "node ../../scripts/nim/build-package.mjs"
+    "build:dist": "node ../../scripts/nim/build-package.mjs",
+    "test": "vitest run",
+    "test:headless": "vitest run --browser.headless",
+    "coverage": "pnpm run test:headless --coverage"
   },
   "sideEffects": [
     "*.css",
