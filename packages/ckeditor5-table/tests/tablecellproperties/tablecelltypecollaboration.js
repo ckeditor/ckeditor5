@@ -11,9 +11,8 @@ import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablec
 import { TableEditing } from '../../src/tableediting.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { modelTable } from '../_utils/utils.js';
-// import { _getModelData } from '@ckeditor/ckeditor5-engine';
 
-describe.only( 'collaboration', () => {
+describe( 'collaboration', () => {
 	let john, kate;
 
 	beforeEach( async () => {
@@ -124,10 +123,7 @@ describe.only( 'collaboration', () => {
 						{ contents: '10', tableCellType: 'header' },
 						{ contents: '12', tableCellType: 'header' }
 					]
-				], {
-					headingColumns: 2,
-					headingRows: 2
-				} )
+				], { headingRows: 2 } )
 			);
 		} );
 
@@ -222,7 +218,7 @@ describe.only( 'collaboration', () => {
 						{ contents: '10', tableCellType: 'header' },
 						{ contents: '12', tableCellType: 'header' }
 					]
-				], { headingColumns: 2, headingRows: 2 } )
+				], { headingRows: 2 } )
 			);
 		} );
 
@@ -414,7 +410,7 @@ describe.only( 'collaboration', () => {
 						{ contents: '10', tableCellType: 'header' },
 						{ contents: '12', tableCellType: 'header' }
 					]
-				], { headingColumns: 2, headingRows: 2 } )
+				], { headingColumns: 1, headingRows: 2 } )
 			);
 		} );
 
@@ -449,9 +445,9 @@ describe.only( 'collaboration', () => {
 
 			expectClients(
 				modelTable( [
-					[ { contents: '00', tableCellType: 'header' }, '01' ],
-					[ { contents: '10', tableCellType: 'header' }, '12' ],
-					[ '20', '22' ]
+					[ '00', { contents: '01', tableCellType: 'header' } ],
+					[ '10', { contents: '12', tableCellType: 'header' } ],
+					[ '20', { contents: '22', tableCellType: 'header' } ]
 				] )
 			);
 		} );
@@ -518,7 +514,7 @@ describe.only( 'collaboration', () => {
 						{ contents: '10', tableCellType: 'header' },
 						{ contents: '12', tableCellType: 'header' }
 					]
-				], { headingColumns: 2, headingRows: 2 } )
+				], { headingColumns: 2 } )
 			);
 		} );
 
@@ -739,7 +735,7 @@ describe.only( 'collaboration', () => {
 							{ tableCellType: 'header', contents: '10' },
 							{ tableCellType: 'header', contents: '12' }
 						]
-					], { headingColumns: 2, headingRows: 2 } )
+					], { headingRows: 2 } )
 				);
 			} );
 		} );
@@ -843,7 +839,7 @@ describe.only( 'collaboration', () => {
 							{ tableCellType: 'header', contents: '10' },
 							{ tableCellType: 'header', contents: '12' }
 						]
-					], { headingColumns: 2, headingRows: 2 } )
+					], { headingColumns: 1, headingRows: 2 } )
 				);
 			} );
 		} );

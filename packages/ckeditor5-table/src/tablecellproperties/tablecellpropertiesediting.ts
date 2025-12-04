@@ -34,8 +34,9 @@ import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcomm
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
-import { enableProperty, isEntireCellsLineHeader } from '../utils/common.js';
+import { enableProperty } from '../utils/common.js';
 import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -409,6 +410,15 @@ function enableCellTypeProperty( editor: Editor ) {
 				}
 			}
 
+			// Check if headingRows or headingColumns changed.
+			if ( change.type === 'attribute' && ( change.attributeKey === 'headingRows' || change.attributeKey === 'headingColumns' ) ) {
+				const table = change.range.start.nodeAfter as ModelElement;
+
+				if ( table?.is( 'element', 'table' ) && table.root.rootName !== '$graveyard' ) {
+					tablesToCheck.add( table );
+				}
+			}
+
 			// Check if new cells were inserted.
 			if ( change.type === 'insert' && change.position.nodeAfter ) {
 				const range = model.createRangeOn( change.position.nodeAfter );
@@ -429,40 +439,106 @@ function enableCellTypeProperty( editor: Editor ) {
 		let changed = false;
 
 		for ( const table of tablesToCheck ) {
-			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-			const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
+			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			const tableRowCount = tableUtils.getRows( table );
 			const tableColumnCount = tableUtils.getColumns( table );
 
 			// Find the maximum contiguous sequence of header rows from the start.
-			let newHeadingRows = 0;
+			let maxHeadingRows = 0;
+			let requiredHeadingRows = 0;
 
-			while (
-				newHeadingRows < tableRowCount &&
-				isEntireCellsLineHeader( { table, row: newHeadingRows } )
-			) {
-				newHeadingRows++;
+			for ( let rowIndex = 0; rowIndex < tableRowCount; rowIndex++ ) {
+				let isAllHeaders = true;
+				let hasCellOutsideHeadingColumns = false;
+
+				const rowWalker = new TableWalker( table, { row: rowIndex } );
+
+				for ( const { cell, column } of rowWalker ) {
+					if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+						isAllHeaders = false;
+						break;
+					}
+
+					if ( column >= headingColumns ) {
+						hasCellOutsideHeadingColumns = true;
+					}
+				}
+
+				if ( !isAllHeaders ) {
+					break;
+				}
+
+				maxHeadingRows++;
+
+				if ( hasCellOutsideHeadingColumns ) {
+					requiredHeadingRows = rowIndex + 1;
+				}
+			}
+
+			let newHeadingRows = headingRows;
+
+			if ( newHeadingRows < requiredHeadingRows ) {
+				newHeadingRows = requiredHeadingRows;
+			}
+
+			if ( newHeadingRows > maxHeadingRows ) {
+				newHeadingRows = maxHeadingRows;
 			}
 
 			if ( newHeadingRows !== headingRows ) {
 				tableUtils.setHeadingRowsCount( writer, table, newHeadingRows, { shallow: true } );
 				changed = true;
+				headingRows = newHeadingRows;
 			}
 
 			// Find the maximum contiguous sequence of header columns from the start.
-			let newHeadingColumns = 0;
+			let maxHeadingColumns = 0;
+			let requiredHeadingColumns = 0;
 
-			while (
-				newHeadingColumns < tableColumnCount &&
-				isEntireCellsLineHeader( { table, column: newHeadingColumns } )
-			) {
-				newHeadingColumns++;
+			for ( let columnIndex = 0; columnIndex < tableColumnCount; columnIndex++ ) {
+				let isAllHeaders = true;
+				let hasCellOutsideHeadingRows = false;
+
+				const columnWalker = new TableWalker( table, { column: columnIndex } );
+
+				for ( const { cell, row } of columnWalker ) {
+					if ( cell.getAttribute( 'tableCellType' ) !== 'header' ) {
+						isAllHeaders = false;
+						break;
+					}
+
+					if ( row >= headingRows ) {
+						hasCellOutsideHeadingRows = true;
+					}
+				}
+
+				if ( !isAllHeaders ) {
+					break;
+				}
+
+				maxHeadingColumns++;
+
+				if ( hasCellOutsideHeadingRows ) {
+					requiredHeadingColumns = columnIndex + 1;
+				}
+			}
+
+			let newHeadingColumns = headingColumns;
+
+			if ( newHeadingColumns < requiredHeadingColumns ) {
+				newHeadingColumns = requiredHeadingColumns;
+			}
+
+			if ( newHeadingColumns > maxHeadingColumns ) {
+				newHeadingColumns = maxHeadingColumns;
 			}
 
 			if ( newHeadingColumns !== headingColumns ) {
 				tableUtils.setHeadingColumnsCount( writer, table, newHeadingColumns, { shallow: true } );
 				changed = true;
+				headingColumns = newHeadingColumns;
 			}
 		}
 
