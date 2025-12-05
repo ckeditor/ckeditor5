@@ -64,7 +64,8 @@ import type {
 	TableBorderStyleCommand,
 	TableBorderWidthCommand,
 	TableHeightCommand,
-	TableWidthCommand
+	TableWidthCommand,
+	TableCellTypeCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-engine' {
@@ -151,6 +152,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		tableCellPadding: TableCellPaddingCommand;
 		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
 		tableCellWidth: TableCellWidthCommand;
+		tableCellType: TableCellTypeCommand;
 		tableAlignment: TableAlignmentCommand;
 		tableBackgroundColor: TableBackgroundColorCommand;
 		tableBorderColor: TableBorderColorCommand;

@@ -539,13 +539,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel(
-				'<table headingColumns="1" headingRows="2">' +
-				'<tableRow>' +
-					'<tableCell><paragraph>11</paragraph></tableCell>' +
-					'<tableCell><paragraph>12</paragraph></tableCell>' +
-					'<tableCell><paragraph>13</paragraph></tableCell>' +
-					'<tableCell><paragraph>14</paragraph></tableCell>' +
-				'</tableRow>' +
+				'<table headingColumns="1" headingRows="1">' +
 				'<tableRow>' +
 					'<tableCell><paragraph>21</paragraph></tableCell>' +
 					'<tableCell><paragraph>22</paragraph></tableCell>' +
@@ -569,6 +563,12 @@ describe( 'upcastTable()', () => {
 					'<tableCell><paragraph>52</paragraph></tableCell>' +
 					'<tableCell><paragraph>53</paragraph></tableCell>' +
 					'<tableCell><paragraph>54</paragraph></tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'<tableCell><paragraph>14</paragraph></tableCell>' +
 				'</tableRow>' +
 				'</table>'
 			);
@@ -686,6 +686,76 @@ describe( 'upcastTable()', () => {
 						'<tableCell colspan="2"><paragraph>31</paragraph></tableCell>' +
 						'<tableCell><paragraph>33</paragraph></tableCell>' +
 						'<tableCell><paragraph>34</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should properly group heading rows in table containing multiple tbody', () => {
+			editor.setData( `
+				<figure class="table">
+					<table>
+						<thead>
+						<tr>
+							<th>Col Header 1</th>
+							<th>Col Header 2</th>
+							<th>Col Header 3</th>
+						</tr>
+						<tr>
+							<th colspan="3">Rowgroup Header 1</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<th>Row Header 1</th>
+							<td>Data 1,1</td>
+							<td>Data 2,1</td>
+						</tr>
+						<tr>
+							<th colspan="3">Rowgroup Header 2</th>
+						</tr>
+						<tr>
+							<th>Row Header 2</th>
+							<td>Data 1,2</td>
+							<td>Data 2,2</td>
+						</tr>
+						<tr>
+							<th>Row Header 3</th>
+							<td>Data 1,3</td>
+							<td>Data 2,3</td>
+						</tr>
+						</tbody>
+					</table>
+				</figure>
+			` );
+
+			expectModel(
+				'<table headingColumns="1" headingRows="2">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Col Header 1</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 2</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 3</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell colspan="3"><paragraph>Rowgroup Header 1</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Row Header 1</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 1,1</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 2,1</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell colspan="3"><paragraph>Rowgroup Header 2</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Row Header 2</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 1,2</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 2,2</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Row Header 3</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 1,3</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 2,3</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
