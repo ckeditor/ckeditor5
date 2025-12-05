@@ -7,6 +7,7 @@
  * @module table/converters/table-cell-refresh-handler
  */
 
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	EditingController,
 	ModelElement,
@@ -28,10 +29,12 @@ import { isTableCellTypeEnabled } from '../utils/common.js';
  *
  * @internal
  */
-export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
+export function tableCellRefreshHandler( editor: Editor ): void {
+	const { model, editing } = editor;
+
 	refreshIfNestedChildChanged( model, editing );
 
-	if ( isTableCellTypeEnabled( model.schema ) ) {
+	if ( isTableCellTypeEnabled( editor ) ) {
 		refreshIfCellTypeChanged( model, editing );
 	}
 }

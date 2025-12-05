@@ -107,13 +107,18 @@ export function downcastRow(): DowncastElementCreatorFunction {
  * and `<td>` otherwise.
  *
  * @internal
+ * @param editor The editor instance.
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
-	return ( tableCell, { writer, schema } ) => {
+export function downcastCell( editor: Editor, options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
+	let cellTypeEnabled: boolean | null = null;
+
+	return ( tableCell, { writer } ) => {
+		cellTypeEnabled ??= isTableCellTypeEnabled( editor );
+
 		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
-		if ( isTableCellTypeEnabled( schema ) ) {
+		if ( cellTypeEnabled ) {
 			const cellElementName: 'td' | 'th' = (
 				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
 					'th' :

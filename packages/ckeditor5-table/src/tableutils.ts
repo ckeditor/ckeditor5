@@ -186,7 +186,7 @@ export class TableUtils extends Plugin {
 		const rowsToInsert = options.rows || 1;
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
-		const cellTypeEnabled = isTableCellTypeEnabled( model.schema );
+		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
@@ -323,7 +323,7 @@ export class TableUtils extends Plugin {
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
-		const cellTypeEnabled = isTableCellTypeEnabled( model.schema );
+		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -494,7 +494,7 @@ export class TableUtils extends Plugin {
 			}
 
 			// 3. If next rows are entirely header, adjust heading rows count.
-			if ( isTableCellTypeEnabled( model.schema ) ) {
+			if ( isTableCellTypeEnabled( this.editor ) ) {
 				let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 				const totalRows = this.getRows( table );
 
@@ -582,7 +582,7 @@ export class TableUtils extends Plugin {
 			}
 
 			// If next columns are entirely header, adjust heading columns count.
-			if ( isTableCellTypeEnabled( model.schema ) ) {
+			if ( isTableCellTypeEnabled( this.editor ) ) {
 				let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 				const totalColumns = this.getColumns( table );
 
@@ -986,8 +986,6 @@ export class TableUtils extends Plugin {
 		} = {}
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
-		const { model } = this.editor;
-
 		const oldHeadingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 		if ( headingRows === oldHeadingRows ) {
@@ -996,7 +994,7 @@ export class TableUtils extends Plugin {
 
 		updateNumericAttribute( 'headingRows', headingRows, table, writer, 0 );
 
-		if ( shallow || !isTableCellTypeEnabled( model.schema ) ) {
+		if ( shallow || !isTableCellTypeEnabled( this.editor ) ) {
 			return;
 		}
 
@@ -1069,8 +1067,6 @@ export class TableUtils extends Plugin {
 		} = {}
 	): void {
 		const { shallow, resetFormerHeadingCells = true, autoExpand = true } = options;
-		const { model } = this.editor;
-
 		const oldHeadingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		if ( headingColumns === oldHeadingColumns ) {
@@ -1079,7 +1075,7 @@ export class TableUtils extends Plugin {
 
 		updateNumericAttribute( 'headingColumns', headingColumns, table, writer, 0 );
 
-		if ( shallow || !isTableCellTypeEnabled( model.schema ) ) {
+		if ( shallow || !isTableCellTypeEnabled( this.editor ) ) {
 			return;
 		}
 
