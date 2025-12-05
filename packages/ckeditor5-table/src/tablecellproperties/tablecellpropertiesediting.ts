@@ -7,6 +7,7 @@
  * @module table/tablecellproperties/tablecellpropertiesediting
  */
 
+import { priorities } from 'ckeditor5/src/utils.js';
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import {
 	addBorderStylesRules,
@@ -36,6 +37,7 @@ import { TableCellTypeCommand, updateTablesHeadingAttributes } from './commands/
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -381,21 +383,34 @@ function enableCellTypeProperty( editor: Editor ) {
 	} );
 
 	// Upcast conversion for td/th elements.
-	conversion.for( 'upcast' ).add( dispatcher => dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
-		const { writer } = conversionApi;
-		const { modelRange } = data;
-		const modelElement = modelRange?.start.nodeAfter;
+	conversion.for( 'upcast' ).add( dispatcher => {
+		dispatcher.on<UpcastElementEvent>( 'element:th', ( evt, data, conversionApi ) => {
+			const { writer } = conversionApi;
+			const { modelRange } = data;
+			const modelElement = modelRange?.start.nodeAfter;
 
-		if ( modelElement?.is( 'element', 'tableCell' ) ) {
-			const table = modelElement.findAncestor( 'table' );
-
-			if ( table?.getAttribute( 'tableType' ) === 'layout' ) {
-				return;
+			if ( modelElement?.is( 'element', 'tableCell' ) ) {
+				writer.setAttribute( 'tableCellType', 'header', modelElement );
 			}
+		} );
 
-			writer.setAttribute( 'tableCellType', 'header', modelElement );
-		}
-	} ) );
+		// Table type is examined after all other cell converters, on low priority, so
+		// we double check if there is any `th` left in the table. If so, the table is converted to a content table.
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			const { writer } = conversionApi;
+			const { modelRange } = data;
+			const modelElement = modelRange?.start.nodeAfter;
+
+			if ( modelElement?.is( 'element', 'table' ) && modelElement.getAttribute( 'tableType' ) === 'layout' ) {
+				for ( const { cell } of new TableWalker( modelElement ) ) {
+					if ( cell.getAttribute( 'tableCellType' ) === 'header' ) {
+						writer.setAttribute( 'tableType', 'content', modelElement );
+						break;
+					}
+				}
+			}
+		}, { priority: priorities.low - 1 } );
+	} );
 
 	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
 	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority

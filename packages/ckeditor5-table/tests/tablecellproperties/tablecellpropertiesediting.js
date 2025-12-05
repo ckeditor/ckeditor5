@@ -1960,7 +1960,7 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should not upcast `th` to `tableCellType=header` to layout tables', async () => {
+				it( 'should transform layout tables to content tables if `th` is present in the table', async () => {
 					await editor.destroy();
 
 					editor = await VirtualTestEditor.create( {
@@ -1985,9 +1985,9 @@ describe( 'table cell properties', () => {
 
 					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 						modelTable( [
-							[ '00', '01' ],
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
 							[ '10', '11' ]
-						], { tableType: 'layout' } )
+						], { tableType: 'content' } )
 					);
 				} );
 			} );
