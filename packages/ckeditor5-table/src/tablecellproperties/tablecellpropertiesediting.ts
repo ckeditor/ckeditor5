@@ -419,10 +419,10 @@ function enableCellTypeProperty( editor: Editor ) {
 			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
 				const cell = change.range.start.nodeAfter as ModelElement;
 
-				if ( cell?.is( 'element', 'tableCell' ) ) {
+				if ( cell?.is( 'element', 'tableCell' ) && cell.root.rootName !== '$graveyard' ) {
 					const table = cell.findAncestor( 'table' ) as ModelElement;
 
-					if ( table?.root.rootName !== '$graveyard' ) {
+					if ( table ) {
 						tablesToCheck.add( table );
 					}
 				}
@@ -431,10 +431,14 @@ function enableCellTypeProperty( editor: Editor ) {
 			// Check if new headers were inserted.
 			if ( change.type === 'insert' && change.position.nodeAfter ) {
 				for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
-					if ( item.is( 'element', 'tableCell' ) && item.getAttribute( 'tableCellType' ) ) {
+					if (
+						item.is( 'element', 'tableCell' ) &&
+						item.getAttribute( 'tableCellType' ) &&
+						item.root.rootName !== '$graveyard'
+					) {
 						const table = item.findAncestor( 'table' ) as ModelElement;
 
-						if ( table?.root.rootName !== '$graveyard' ) {
+						if ( table ) {
 							tablesToCheck.add( table );
 						}
 					}
