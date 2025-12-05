@@ -7,7 +7,6 @@
  * @module table/converters/table-cell-refresh-handler
  */
 
-import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	EditingController,
 	ModelElement,
@@ -16,7 +15,6 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { isSingleParagraphWithoutAttributes } from './downcast.js';
-import { isTableCellTypeEnabled } from '../utils/common.js';
 
 /**
  * A table cell refresh handler which marks the table cell in the differ to have it re-rendered.
@@ -29,60 +27,23 @@ import { isTableCellTypeEnabled } from '../utils/common.js';
  *
  * @internal
  */
-export function tableCellRefreshHandler( editor: Editor ): void {
-	const { model, editing } = editor;
-
-	refreshIfNestedChildChanged( model, editing );
-
-	if ( isTableCellTypeEnabled( editor ) ) {
-		refreshIfCellTypeChanged( model, editing );
-	}
-}
-
-function refreshIfCellTypeChanged( model: Model, editing: EditingController ): void {
+export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
-	const cellsToReconvert = new Set<ModelElement>();
+
+	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
+	const cellsToCheck = new Set();
 
 	for ( const change of differ.getChanges() ) {
-		// If the `tableCellType` attribute changed, the entire cell needs to be re-rendered.
-		if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
-			const tableCell = change.range.start.nodeAfter as ModelElement;
-
-			if ( tableCell.is( 'element', 'tableCell' ) ) {
-				cellsToReconvert.add( tableCell );
-			}
-		}
-	}
-
-	// Reconvert table cells that had their `tableCellType` attribute changed.
-	for ( const tableCell of cellsToReconvert ) {
-		const viewElement = editing.mapper.toViewElement( tableCell );
-		const cellType = tableCell.getAttribute( 'tableCellType' );
-		const expectedElementName = cellType === 'header' ? 'th' : 'td';
-
-		if ( viewElement?.name !== expectedElementName ) {
-			editing.reconvertItem( tableCell );
-		}
-	}
-}
-
-function refreshIfNestedChildChanged( model: Model, editing: EditingController ): void {
-	const differ = model.document.differ;
-	const cellsToCheck = new Set<ModelElement>();
-
-	for ( const change of differ.getChanges() ) {
-		// If any change happened inside a table cell, mark it for checking.
 		const parent = change.type == 'attribute' ? change.range.start.parent : change.position.parent;
 
 		if ( parent.is( 'element', 'tableCell' ) ) {
-			cellsToCheck.add( parent as ModelElement );
+			cellsToCheck.add( parent );
 		}
 	}
 
-	// Reconvert paragraphs inside table cells that need refreshing.
-	for ( const tableCell of cellsToCheck ) {
+	for ( const tableCell of cellsToCheck.values() as Iterable<ModelElement> ) {
 		const paragraphsToRefresh = Array.from( tableCell.getChildren() )
-			.filter( child => shouldRefreshCellParagraph( child as ModelElement, editing.mapper ) );
+			.filter( child => shouldRefresh( child as ModelElement, editing.mapper ) );
 
 		for ( const paragraph of paragraphsToRefresh ) {
 			editing.reconvertItem( paragraph );
@@ -93,7 +54,7 @@ function refreshIfNestedChildChanged( model: Model, editing: EditingController )
 /**
  * Check if given model element needs refreshing.
  */
-function shouldRefreshCellParagraph( child: ModelElement, mapper: Mapper ) {
+function shouldRefresh( child: ModelElement, mapper: Mapper ) {
 	if ( !child.is( 'element', 'paragraph' ) ) {
 		return false;
 	}

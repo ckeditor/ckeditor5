@@ -370,7 +370,7 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
  * Enables the `tableCellType` attribute for table cells.
  */
 function enableCellTypeProperty( editor: Editor ) {
-	const { model, conversion } = editor;
+	const { model, conversion, editing } = editor;
 	const { schema } = model;
 	const tableUtils = editor.plugins.get( TableUtils );
 
@@ -463,5 +463,33 @@ function enableCellTypeProperty( editor: Editor ) {
 
 		// 2. Update the attributes of the collected tables.
 		return updateTablesHeadingAttributes( tableUtils, writer, tablesToCheck );
+	} );
+
+	// Refresh the table cells in the editing view when their `tableCellType` attribute changes.
+	model.document.on( 'change:data', () => {
+		const { differ } = model.document;
+		const cellsToReconvert = new Set<ModelElement>();
+
+		for ( const change of differ.getChanges() ) {
+			// If the `tableCellType` attribute changed, the entire cell needs to be re-rendered.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const tableCell = change.range.start.nodeAfter as ModelElement;
+
+				if ( tableCell.is( 'element', 'tableCell' ) ) {
+					cellsToReconvert.add( tableCell );
+				}
+			}
+		}
+
+		// Reconvert table cells that had their `tableCellType` attribute changed.
+		for ( const tableCell of cellsToReconvert ) {
+			const viewElement = editing.mapper.toViewElement( tableCell );
+			const cellType = tableCell.getAttribute( 'tableCellType' );
+			const expectedElementName = cellType === 'header' ? 'th' : 'td';
+
+			if ( viewElement?.name !== expectedElementName ) {
+				editing.reconvertItem( tableCell );
+			}
+		}
 	} );
 }
