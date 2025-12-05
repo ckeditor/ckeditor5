@@ -56,7 +56,19 @@ You can also control how the alignment appears in the editor's output. Learn mor
 
 ## Table cell type
 
-TODO
+There are two types the table cell can take in content: data cell (the default type) and header cell. Header cells provide semantic labelling for rows or columns, helping the browser or a screen reader understand the data arrangement and relations.
+
+To change cell type, click the cell and use the cell properties icon {@icon @ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg Table cell properties} from the table toolbar. Once there, choose the desired cell type.
+
+{@img assets/img/table-cell-type.png 400 Table cell type}
+
+To create a header row or header column in your table, simply select all cell in the row or column and change their type to header. You will see the type change automatically in the row/column property dialog.
+
+{@img assets/img/table-row-property.png 300 Table row type}
+
+<info-box tip>
+	It is easier to use the row/column property dialog to change these into headers, rather, than use the cell property method.
+</info-box>
 
 ## Typing around tables
 
