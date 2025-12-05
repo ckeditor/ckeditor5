@@ -17,7 +17,8 @@ import {
 	type ViewElement,
 	type UpcastConversionApi,
 	type UpcastConversionData,
-	type UpcastElementEvent
+	type UpcastElementEvent,
+	type ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
@@ -31,9 +32,10 @@ import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizon
 import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
 import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
-import { TableCellTypeCommand } from './commands/tablecelltypecommand.js';
+import { TableCellTypeCommand, updateTablesHeadingAttributes } from './commands/tablecelltypecommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
+import { TableUtils } from '../tableutils.js';
 
 const VALIGN_VALUES_REG_EXP = /^(top|middle|bottom)$/;
 const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
@@ -167,7 +169,7 @@ export class TableCellPropertiesEditing extends Plugin {
 			new TableCellVerticalAlignmentCommand( editor, defaultTableCellProperties.verticalAlignment! )
 		);
 
-		enableCellTypeProperty( schema, conversion );
+		enableCellTypeProperty( editor );
 		editor.commands.add( 'tableCellType', new TableCellTypeCommand( editor ) );
 	}
 }
@@ -362,7 +364,11 @@ function enableVerticalAlignmentProperty( schema: ModelSchema, conversion: Conve
 /**
  * Enables the `tableCellType` attribute for table cells.
  */
-function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
+function enableCellTypeProperty( editor: Editor ) {
+	const { model, conversion } = editor;
+	const { schema } = model;
+	const tableUtils = editor.plugins.get( TableUtils );
+
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellType' ]
 	} );
@@ -381,4 +387,53 @@ function enableCellTypeProperty( schema: ModelSchema, conversion: Conversion ) {
 			writer.setAttribute( 'tableCellType', 'header', modelElement );
 		}
 	} ) );
+
+	// Registers a post-fixer that ensures the `headingRows` and `headingColumns` attributes
+	// are consistent with the `tableCellType` attribute of the cells. `tableCellType` has priority
+	// over `headingRows` and `headingColumns` and we use it to adjust the heading sections of the table.
+	model.document.registerPostFixer( writer => {
+		// 1. Collect all tables that need to be checked.
+		const changes = model.document.differ.getChanges();
+		const tablesToCheck = new Set<ModelElement>();
+
+		for ( const change of changes ) {
+			// Check if headingRows or headingColumns changed.
+			if ( change.type === 'attribute' && ( change.attributeKey === 'headingRows' || change.attributeKey === 'headingColumns' ) ) {
+				const table = change.range.start.nodeAfter as ModelElement;
+
+				if ( table?.is( 'element', 'table' ) && table.root.rootName !== '$graveyard' ) {
+					tablesToCheck.add( table );
+				}
+			}
+
+			// Check if tableCellType changed.
+			if ( change.type === 'attribute' && change.attributeKey === 'tableCellType' ) {
+				const cell = change.range.start.nodeAfter as ModelElement;
+
+				if ( cell?.is( 'element', 'tableCell' ) ) {
+					const table = cell.findAncestor( 'table' ) as ModelElement;
+
+					if ( table?.root.rootName !== '$graveyard' ) {
+						tablesToCheck.add( table );
+					}
+				}
+			}
+
+			// Check if new headers were inserted.
+			if ( change.type === 'insert' && change.position.nodeAfter ) {
+				for ( const { item } of model.createRangeOn( change.position.nodeAfter ) ) {
+					if ( item.is( 'element', 'tableCell' ) && item.getAttribute( 'tableCellType' ) ) {
+						const table = item.findAncestor( 'table' ) as ModelElement;
+
+						if ( table?.root.rootName !== '$graveyard' ) {
+							tablesToCheck.add( table );
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Update the attributes of the collected tables.
+		return updateTablesHeadingAttributes( tableUtils, writer, tablesToCheck );
+	} );
 }

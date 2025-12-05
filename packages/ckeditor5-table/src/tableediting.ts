@@ -40,6 +40,7 @@ import { injectTableCellParagraphPostFixer } from './converters/table-cell-parag
 
 import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
 import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
+import { isTableCellTypeEnabled } from './utils/common.js';
 
 import '../theme/tableediting.css';
 
@@ -153,11 +154,11 @@ export class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( { asWidget: true } )
+			view: downcastCell( this.editor, { asWidget: true } )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell()
+			view: downcastCell( this.editor )
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
@@ -222,8 +223,13 @@ export class TableEditing extends Plugin {
 		injectTableCellParagraphPostFixer( model );
 
 		this.listenTo( model.document, 'change:data', () => {
-			tableHeadingsRefreshHandler( model, editor.editing );
-			tableCellRefreshHandler( model, editor.editing );
+			// It's no longer needed to refresh table headings on every data change if table cell type feature is enabled.
+			// It's because headings rows / columns are updated based on cell types which triggers their own refresh handler.
+			if ( !isTableCellTypeEnabled( editor ) ) {
+				tableHeadingsRefreshHandler( model, editor.editing );
+			}
+
+			tableCellRefreshHandler( editor );
 		} );
 	}
 

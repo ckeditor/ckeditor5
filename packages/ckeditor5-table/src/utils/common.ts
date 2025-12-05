@@ -7,6 +7,7 @@
  * @module table/utils/common
  */
 
+import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	Conversion,
 	ModelElement,
@@ -176,6 +177,8 @@ export function isEntireCellsLineHeader(
  *
  * @internal
  */
-export function isTableCellTypeEnabled( schema: ModelSchema ): boolean {
-	return schema.checkAttribute( 'tableCell', 'tableCellType' );
+export function isTableCellTypeEnabled( editor: Editor ): boolean {
+	const { model } = editor;
+
+	return model.schema.checkAttribute( 'tableCell', 'tableCellType' );
 }

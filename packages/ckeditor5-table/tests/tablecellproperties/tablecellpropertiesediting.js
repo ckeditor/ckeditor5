@@ -1891,20 +1891,6 @@ describe( 'table cell properties', () => {
 		} );
 
 		describe( 'cell type', () => {
-			beforeEach( async () => {
-				await editor.destroy();
-
-				editor = await VirtualTestEditor.create( {
-					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
-					experimentalFlags: {
-						tableCellTypeSupport: true
-					}
-				} );
-
-				model = editor.model;
-				schema = model.schema;
-			} );
-
 			describe( 'schema', () => {
 				it( 'should register tableCellType attribute in the schema', () => {
 					expect( schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellType' ) ).to.be.true;
@@ -2137,7 +2123,10 @@ describe( 'table cell properties', () => {
 				describe( 'inserting rows to tables with heading rows', () => {
 					it( 'should not set `tableCellType=header` when inserting row below the first row (header)', () => {
 						_setModelData( model, modelTable( [
-							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[
+								{ contents: '00', tableCellType: 'header', isSelected: true },
+								{ contents: '01', tableCellType: 'header' }
+							],
 							[ '10', '11' ]
 						], { headingRows: 1 } ) );
 
@@ -2145,7 +2134,7 @@ describe( 'table cell properties', () => {
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
-								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 								[ '', '' ],
 								[ '10', '11' ]
 							], { headingRows: 1 } )
@@ -2154,7 +2143,10 @@ describe( 'table cell properties', () => {
 
 					it( 'should properly set `tableCellType=header` when inserting row above the first row (header)', () => {
 						_setModelData( model, modelTable( [
-							[ { contents: '00', tableCellType: 'header', isSelected: true }, '01' ],
+							[
+								{ contents: '00', tableCellType: 'header', isSelected: true },
+								{ contents: '01', tableCellType: 'header', isSelected: true }
+							],
 							[ '10', '11' ]
 						], { headingRows: 1 } ) );
 
@@ -2163,7 +2155,7 @@ describe( 'table cell properties', () => {
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
 								[ { contents: '', tableCellType: 'header' }, { contents: '', tableCellType: 'header' } ],
-								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 								[ '10', '11' ]
 							], { headingRows: 2 } )
 						);
@@ -2171,15 +2163,24 @@ describe( 'table cell properties', () => {
 
 					it( 'should not set `tableCellType=header` when inserting row below the last row (body)', () => {
 						_setModelData( model, modelTable( [
-							[ { contents: '00', tableCellType: 'header' }, '01' ],
-							[ { contents: '10', isSelected: true }, '11' ]
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '10', isSelected: true },
+								'11'
+							]
 						], { headingRows: 1 } ) );
 
 						editor.execute( 'insertTableRowBelow' );
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
-								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[
+									{ contents: '00', tableCellType: 'header' },
+									{ contents: '01', tableCellType: 'header' }
+								],
 								[ '10', '11' ],
 								[ '', '' ]
 							], { headingRows: 1 } )
@@ -2188,15 +2189,24 @@ describe( 'table cell properties', () => {
 
 					it( 'should not set `tableCellType=header` when inserting row above the last row (body)', () => {
 						_setModelData( model, modelTable( [
-							[ { contents: '00', tableCellType: 'header' }, '01' ],
-							[ { contents: '10', isSelected: true }, '11' ]
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '10', isSelected: true },
+								'11'
+							]
 						], { headingRows: 1 } ) );
 
 						editor.execute( 'insertTableRowAbove' );
 
 						expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
 							modelTable( [
-								[ { contents: '00', tableCellType: 'header' }, '01' ],
+								[
+									{ contents: '00', tableCellType: 'header' },
+									{ contents: '01', tableCellType: 'header' }
+								],
 								[ '', '' ],
 								[ '10', '11' ]
 							], { headingRows: 1 } )
@@ -2501,7 +2511,7 @@ describe( 'table cell properties', () => {
 					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
 				} );
 
-				it( 'should not increment heading attributes when other table attributes change', () => {
+				it( 'should not set heading attributes when other table attributes change', () => {
 					schema.extend( 'table', { allowAttributes: 'foo' } );
 
 					_setModelData( model, modelTable( [
@@ -2511,7 +2521,7 @@ describe( 'table cell properties', () => {
 							{ contents: '11', tableCellType: 'header' }
 						],
 						[ '20', '21' ]
-					], { headingRows: 1 } ) );
+					] ) );
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
@@ -2519,7 +2529,7 @@ describe( 'table cell properties', () => {
 						writer.setAttribute( 'foo', 'bar', table );
 					} );
 
-					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( table.getAttribute( 'headingRows' ) ).to.be.undefined;
 				} );
 
 				it( 'should not increment headingRows when decreasing it, even ' +
@@ -2648,6 +2658,21 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'integration with remove row command', () => {
+				it( 'should remove first row without headingRows and heading cells as expected', () => {
+					_setModelData( model, modelTable( [
+						[ '[00]', '[01]' ],
+						[ '10', '11' ]
+					] ) );
+
+					editor.execute( 'removeTableRow' );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ '10', '11' ]
+						] )
+					);
+				} );
+
 				it( 'should merge heading sections when removing a data row between them', () => {
 					_setModelData( model, modelTable( [
 						[
@@ -2821,6 +2846,25 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'integration with remove column command', () => {
+				it( 'remove column without heading columns and header cells should work as expected', () => {
+					_setModelData( model, modelTable( [
+						[ '[00]', '01', '02' ],
+						[ '[10]', '11', '12' ]
+					] ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					editor.execute( 'removeTableColumn' );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.be.undefined;
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ '01', '02' ],
+							[ '11', '12' ]
+						] )
+					);
+				} );
+
 				it( 'should merge heading sections when removing a data column between them', () => {
 					_setModelData( model, modelTable( [
 						[

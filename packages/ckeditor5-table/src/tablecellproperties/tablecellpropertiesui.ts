@@ -323,10 +323,7 @@ export class TableCellPropertiesUI extends Plugin {
 
 		if ( cellTypeCommand ) {
 			view.cellTypeDropdown.bind( 'isEnabled' ).to( cellTypeCommand, 'isEnabled' );
-			view.on<ObservableChangeEvent<string>>(
-				'change:cellType',
-				this._getPropertyChangeCallback( 'tableCellType' )
-			);
+			view.on<ObservableChangeEvent<string>>( 'change:cellType', this._getPropertyChangeCallback( 'tableCellType' ) );
 		}
 
 		return view;
@@ -357,7 +354,7 @@ export class TableCellPropertiesUI extends Plugin {
 				let defaultValue: string;
 
 				if ( propertyKey === 'cellType' ) {
-					defaultValue = 'data';
+					defaultValue = '';
 				} else {
 					defaultValue = this.view === this._viewWithContentTableDefaults ?
 						this._defaultContentTableCellProperties[ propertyKey ] || '' :

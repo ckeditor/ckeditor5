@@ -16,10 +16,7 @@ describe( 'TableCellTypeCommand', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableCellPropertiesEditing ],
-			experimentalFlags: {
-				tableCellTypeSupport: true
-			}
+			plugins: [ Paragraph, TableCellPropertiesEditing ]
 		} );
 
 		model = editor.model;
@@ -49,9 +46,10 @@ describe( 'TableCellTypeCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'should be undefined if selected table cell has no tableCellType property', () => {
+		it( 'should be data if selected table cell has no tableCellType property', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
-			expect( command.value ).to.be.undefined;
+
+			expect( command.value ).to.be.equal( 'data' );
 		} );
 
 		it( 'should be "header" if selected table cell has tableCellType="header"', () => {
@@ -61,8 +59,12 @@ describe( 'TableCellTypeCommand', () => {
 
 		it( 'should be undefined if multiple cells with different types are selected', () => {
 			_setModelData( model, modelTable( [
-				[ { contents: '00', isSelected: true, tableCellType: 'header' }, { contents: '01', isSelected: true } ]
+				[
+					{ contents: '00', isSelected: true, tableCellType: 'header' },
+					{ contents: '01', isSelected: true }
+				]
 			] ) );
+
 			expect( command.value ).to.be.undefined;
 		} );
 	} );
@@ -368,7 +370,7 @@ describe( 'TableCellTypeCommand', () => {
 				expect( editor.getData() ).to.equalMarkup( viewTable( [
 					[ { contents: '00', isHeading: true }, { contents: '01', isHeading: true } ],
 					[ { contents: '10', isHeading: true }, '11' ]
-				] ) );
+				], { headingRows: 1 } ) );
 			} );
 		} );
 	} );

@@ -2497,10 +2497,7 @@ describe( 'TableUtils with tableCellTypeSupport enabled', () => {
 
 	beforeEach( async () => {
 		editor = await ModelTestEditor.create( {
-			plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ],
-			experimentalFlags: {
-				tableCellTypeSupport: true
-			}
+			plugins: [ Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing ]
 		} );
 
 		model = editor.model;
