@@ -229,7 +229,7 @@ export class TableEditing extends Plugin {
 				tableHeadingsRefreshHandler( model, editor.editing );
 			}
 
-			tableCellRefreshHandler( editor );
+			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
 

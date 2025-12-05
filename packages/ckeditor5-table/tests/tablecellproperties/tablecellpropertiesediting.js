@@ -1945,6 +1945,37 @@ describe( 'table cell properties', () => {
 						] )
 					);
 				} );
+
+				it( 'should transform layout tables to content tables if `th` is present in the table', async () => {
+					await editor.destroy();
+
+					editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+						experimentalFlags: {
+							tableCellTypeSupport: true
+						}
+					} );
+
+					model = editor.model;
+
+					editor.setData(
+						'<table>' +
+							'<tr>' +
+								'<th>00</th><td>01</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td>10</td><td>11</td>' +
+							'</tr>' +
+						'</table>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ { contents: '00', tableCellType: 'header' }, '01' ],
+							[ '10', '11' ]
+						], { tableType: 'content' } )
+					);
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
