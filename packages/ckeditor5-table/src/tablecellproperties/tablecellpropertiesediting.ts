@@ -387,6 +387,12 @@ function enableCellTypeProperty( editor: Editor ) {
 		const modelElement = modelRange?.start.nodeAfter;
 
 		if ( modelElement?.is( 'element', 'tableCell' ) ) {
+			const table = modelElement.findAncestor( 'table' );
+
+			if ( table?.getAttribute( 'tableType' ) === 'layout' ) {
+				return;
+			}
+
 			writer.setAttribute( 'tableCellType', 'header', modelElement );
 		}
 	} ) );

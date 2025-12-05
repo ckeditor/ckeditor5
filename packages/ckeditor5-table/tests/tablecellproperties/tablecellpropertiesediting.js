@@ -1959,6 +1959,37 @@ describe( 'table cell properties', () => {
 						] )
 					);
 				} );
+
+				it( 'should not upcast `th` to `tableCellType=header` to layout tables', async () => {
+					await editor.destroy();
+
+					editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+						experimentalFlags: {
+							tableCellTypeSupport: true
+						}
+					} );
+
+					model = editor.model;
+
+					editor.setData(
+						'<table>' +
+							'<tr>' +
+								'<th>00</th><td>01</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td>10</td><td>11</td>' +
+							'</tr>' +
+						'</table>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						], { tableType: 'layout' } )
+					);
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
