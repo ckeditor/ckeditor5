@@ -2577,8 +2577,7 @@ describe( 'table cell properties', () => {
 					expect( table.getAttribute( 'headingRows' ) ).to.be.undefined;
 				} );
 
-				it( 'should not increment headingRows when decreasing it, even ' +
-						'if the next row contains headers (due to headingColumns)', () => {
+				it( 'should properly decrement headingRows when all cells are placed within headingColumns range', () => {
 					_setModelData( model, modelTable( [
 						[
 							{ contents: '00', tableCellType: 'header' },
@@ -2597,8 +2596,7 @@ describe( 'table cell properties', () => {
 					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
 				} );
 
-				it( 'should not increment headingColumns when decreasing it, even ' +
-						'if the next column contains headers (due to headingRows)', () => {
+				it( 'should properly decrement headingColumns when all cells are placed within headingRows range', () => {
 					_setModelData( model, modelTable( [
 						[
 							{ contents: '00', tableCellType: 'header' },
