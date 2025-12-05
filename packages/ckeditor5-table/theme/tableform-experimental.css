@@ -58,16 +58,4 @@
 			}
 		}
 	}
-
-	&:has( .ck-form__header > .ck-button-back ) {
-		& .ck-form__row.ck-table-form__action-row {
-			& > .ck.ck-button {
-				flex-grow: initial;
-
-				& .ck-button__label {
-					color: currentColor;
-				}
-			}
-		}
-	}
 }

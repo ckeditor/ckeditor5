@@ -18,6 +18,8 @@ import { TableLayout } from '../../src/tablelayout.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
 import { TableCellPropertiesUI } from '../../src/tablecellproperties/tablecellpropertiesui.js';
+import { TableCellPropertiesUIExperimental } from '../../src/tablecellproperties/tablecellpropertiesuiexperimental.js';
+
 import { TableCellPropertiesView } from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
 import { defaultColors } from '../../src/utils/ui/table-properties.js';
 import { modelTable } from '../_utils/utils.js';
@@ -30,31 +32,12 @@ describe( 'table cell properties', () => {
 
 		testUtils.createSinonSandbox();
 
-		beforeEach( () => {
+		beforeEach( async () => {
 			clock = sinon.useFakeTimers();
 			editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [
-						Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing,
-						Paragraph, Undo, ClipboardPipeline
-					],
-					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>'
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					tableCellPropertiesUI = editor.plugins.get( TableCellPropertiesUI );
-					tableCellPropertiesButton = editor.ui.componentFactory.create( 'tableCellProperties' );
-					contextualBalloon = editor.plugins.get( ContextualBalloon );
-					tableCellPropertiesView = tableCellPropertiesUI.view;
-
-					// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-					testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
-					testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
-				} );
+			await initEditor();
 		} );
 
 		afterEach( () => {
@@ -63,6 +46,37 @@ describe( 'table cell properties', () => {
 
 			return editor.destroy();
 		} );
+
+		async function initEditor( { experimental } = {} ) {
+			await editor?.destroy();
+
+			const PropertiesUIPlugin = experimental ? TableCellPropertiesUIExperimental : TableCellPropertiesUI;
+
+			editor = await ClassicTestEditor
+				.create( editorElement, {
+					plugins: [
+						Table, TableCellPropertiesEditing,
+						PropertiesUIPlugin, TableCellWidthEditing,
+						Paragraph, Undo, ClipboardPipeline
+					],
+					initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+					...experimental ? {
+						experimentalFlags: {
+							useExtendedTableBlockAlignment: true,
+							tableCellTypeSupport: true
+						}
+					} : {}
+				} );
+
+			tableCellPropertiesUI = editor.plugins.get( PropertiesUIPlugin );
+			tableCellPropertiesButton = editor.ui.componentFactory.create( 'tableCellProperties' );
+			contextualBalloon = editor.plugins.get( ContextualBalloon );
+			tableCellPropertiesView = tableCellPropertiesUI.view;
+
+			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+			testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
+			testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+		}
 
 		it( 'should be named', () => {
 			expect( TableCellPropertiesUI.pluginName ).to.equal( 'TableCellPropertiesUI' );
@@ -325,6 +339,25 @@ describe( 'table cell properties', () => {
 				expect( contextualBalloon.visibleView ).to.be.null;
 			} );
 
+			it( 'should bind cellTypeDropdown enabled state to tableCellType command [experimental]', async () => {
+				await initEditor( { experimental: true } );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+				} );
+
+				const command = editor.commands.get( 'tableCellType' );
+
+				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
+				command.isEnabled = true;
+				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).to.be.true;
+
+				command.isEnabled = false;
+				expect( tableCellPropertiesView.cellTypeDropdown.isEnabled ).to.be.false;
+			} );
+
 			describe( 'property changes', () => {
 				let batch;
 
@@ -555,6 +588,29 @@ describe( 'table cell properties', () => {
 					} );
 				} );
 
+				describe( '#cellType', () => {
+					it( 'should affect the editor state [experimental]', async () => {
+						await initEditor( { experimental: true } );
+
+						batch = editor.model.createBatch();
+
+						tableCellPropertiesUI._undoStepBatch = batch;
+						tableCellPropertiesUI._showView();
+						tableCellPropertiesView = tableCellPropertiesUI.view;
+
+						editor.model.change( writer => {
+							writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+						} );
+
+						const spy = testUtils.sinon.stub( editor, 'execute' );
+
+						tableCellPropertiesView.cellType = 'header';
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, 'tableCellType', { value: 'header', batch } );
+					} );
+				} );
+
 				it( 'should not display an error text if user managed to fix the value before the UI timeout', () => {
 					// First, let's pass an invalid value.
 					tableCellPropertiesView.borderColor = '#';
@@ -709,6 +765,25 @@ describe( 'table cell properties', () => {
 						verticalAlignment: 'middle'
 					} );
 				} );
+			} );
+
+			it( 'should handle missing commands gracefully [experimental]', async () => {
+				await initEditor( { experimental: true } );
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+				} );
+
+				const stub = testUtils.sinon.stub( editor.commands, 'get' );
+
+				stub.callThrough();
+				stub.withArgs( 'tableCellType' ).returns( undefined );
+
+				tableCellPropertiesButton.fire( 'execute' );
+				tableCellPropertiesView = tableCellPropertiesUI.view;
+
+				expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+				expect( tableCellPropertiesView.borderStyle ).to.equal( 'solid' );
 			} );
 
 			it( 'should focus the form view', () => {
