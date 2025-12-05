@@ -326,7 +326,7 @@ export interface TablePropertiesConfig {
 	 * const tableConfig = {
 	 * 	tableProperties: {
 	 * 		alignment: {
-	 * 			useInlineStyles: false // Use CSS classes instead of inline styles
+	 * 			useInlineStyles: true // Use inline styles instead of CSS classes
 	 * 		}
 	 * 	}
 	 * };
@@ -650,10 +650,10 @@ export interface TableAlignmentConfig {
 	/**
 	 * Whether to use inline styles for table alignment in the editor output.
 	 *
-	 * * When `true` (default), the alignment is rendered as inline styles.
-	 * * When `false`, the alignment is rendered as CSS classes.
+	 * * When `true`, the alignment is rendered as inline styles.
+	 * * When `false` (default), the alignment is rendered as CSS classes.
 	 *
-	 * @default true
+	 * @default false
 	 */
 	useInlineStyles?: boolean;
 }

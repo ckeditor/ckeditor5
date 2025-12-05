@@ -127,7 +127,16 @@
 					"styles": [
 						"float",
 						"height",
-						"width"
+						"width",
+						"margin-left",
+						"margin-right"
+					],
+					"classes": [
+						"table-style-align-left",
+						"table-style-align-center",
+						"table-style-align-right",
+						"table-style-block-align-left",
+						"table-style-block-align-right"
 					]
 				},
 				{
