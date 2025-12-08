@@ -113,6 +113,16 @@ Due to the rapid development of the {@link features/ckeditor-ai-overview CKEdito
 
 The {@link features/ai-assistant-overview CKEditor&nbsp;5 AI Assistant} feature (introduced in `v40.0.0`) is not affected by this exception.
 
+### Experimental flags and plugins
+
+Throughout the life cycle of the LTE version, some experimental features may be added during the Active LTS phase. These can take the form of experimental flags or separate plugins. They would typically be added to test changes coming in the next major release.
+
+Experimental plugins will be marked by a name, for example, `PasteFromMarkdownExperimental`. The feature guide in our documentation will, too, mention if a feature is experimental. It will also inform the user why or what the current issues with the plugin are.
+
+Experimental flag is a {@link module:engine/engineconfig~ExperimentalFlagsConfig configuration option} that enables specific features. These are turned off by default and need to be explicitly set to `true` to use. Each experimental feature has its own separate key.
+
+However, these experimental additions are not covered by LTS guarantees, meaning they may change, evolve, or be removed without the stability or compatibility assurances provided for core LTS features.
+
 ## Installing the LTS Edition
 
 The LTS Edition releases of CKEditor&nbsp;5 are available through standard distribution channels: npm, ZIP, and CDN. Using the editor versions released in the Maintenance phase requires a subscription, which includes the CKEditor&nbsp;5 LTS Edition add-on. [Contact sales](https://ckeditor.com/contact-sales/) to learn more.
