@@ -24,7 +24,6 @@ import { type TableUtils } from '../tableutils.js';
 import type { TableConversionAdditionalSlot } from '../tableediting.js';
 import { downcastTableAlignmentConfig, type TableAlignmentValues } from './tableproperties.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
-import { isTableCellTypeEnabled } from '../utils/common.js';
 import { TableWalker } from '../tablewalker.js';
 
 /**
@@ -107,18 +106,14 @@ export function downcastRow(): DowncastElementCreatorFunction {
  * and `<td>` otherwise.
  *
  * @internal
- * @param editor The editor instance.
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param options.cellTypeEnabled If set to `true`, the converter will use the `tableCellType` attribute to determine
  * @returns Element creator.
  */
-export function downcastCell( editor: Editor, options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
-	let cellTypeEnabled: boolean | null = null;
-
+export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled?: () => boolean } = {} ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
-		cellTypeEnabled ??= isTableCellTypeEnabled( editor );
-
 		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
-		if ( cellTypeEnabled ) {
+		if ( options.cellTypeEnabled?.() ) {
 			const cellElementName: 'td' | 'th' = (
 				tableCell.getAttribute( 'tableCellType' ) === 'header' ?
 					'th' :

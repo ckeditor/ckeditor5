@@ -115,7 +115,7 @@ export class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastTable( editor ) );
+		conversion.for( 'upcast' ).add( upcastTable() );
 
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
@@ -154,11 +154,16 @@ export class TableEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( this.editor, { asWidget: true } )
+			view: downcastCell( {
+				asWidget: true,
+				cellTypeEnabled: () => isTableCellTypeEnabled( this.editor )
+			} )
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'tableCell',
-			view: downcastCell( this.editor )
+			view: downcastCell( {
+				cellTypeEnabled: () => isTableCellTypeEnabled( this.editor )
+			} )
 		} );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
