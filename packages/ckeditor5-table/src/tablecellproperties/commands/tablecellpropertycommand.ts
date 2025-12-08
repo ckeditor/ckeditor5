@@ -174,9 +174,15 @@ export class TableCellPropertyCommand extends Command {
  */
 export type TableCellPropertyCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ {
-		writer: ModelWriter;
-		tableCells: Array<ModelElement>;
-		valueToSet: unknown;
-	} ];
+	args: [ data: TableCellPropertyCommandAfterExecuteEventData ];
+};
+
+/**
+ * The data of the
+ * {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommandAfterExecuteEvent} event.
+ */
+export type TableCellPropertyCommandAfterExecuteEventData = {
+	writer: ModelWriter;
+	tableCells: Array<ModelElement>;
+	valueToSet: unknown;
 };
