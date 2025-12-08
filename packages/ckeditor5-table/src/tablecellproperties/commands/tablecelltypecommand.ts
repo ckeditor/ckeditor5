@@ -105,11 +105,6 @@ export function updateTablesHeadingAttributes(
 		// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 0.
 		// - Processing columns first expands headingColumns to 2, leaving headingRows at 0.
 		//
-		// However, if we have a hint (e.g. headingColumns > headingRows), we should follow it.
-		// If headingColumns=1 and headingRows=0:
-		// - Processing rows first would expand headingRows to 2 (covering all cells), leaving headingColumns at 1.
-		// - Processing columns first expands headingColumns to 2, which is the intended result if we started with columns.
-		//
 		// It should be good enough to resolve conflicts in most cases.
 		const processColumnsFirst = headingColumns > headingRows;
 
@@ -146,6 +141,33 @@ export function updateTablesHeadingAttributes(
 
 /**
  * Calculates the adjusted size of a heading section (rows or columns).
+ *
+ * The algorithm iterates through rows (or columns) to determine if they should be part of the heading section.
+ * A row/column is included if:
+ * 1. All its cells are of type 'header'.
+ * 2. AND it contains at least one header cell that is NOT already covered by the perpendicular heading section.
+ *
+ * This check prevents the algorithm from aggressively expanding the heading section when cells are already
+ * headers due to the other dimension.
+ *
+ * Consider a 2x2 table where all cells are headers:
+ *
+ * ```
+ *    C0  C1
+ *   +---+---+
+ * R0| H | H |
+ *   +---+---+
+ * R1| H | H |
+ *   +---+---+
+ * ```
+ *
+ * If `headingColumns=2`, both C0 and C1 are heading columns.
+ * If we want `headingRows=1` (only R0), the algorithm must NOT include R1, even though R1 consists of header cells.
+ * R1's cells are headers because of C0 and C1.
+ *
+ * Without this check, the algorithm would see that R1 is all headers and force `headingRows` to 2.
+ * This would prevent the user from reducing `headingRows` from 2 to 1 without converting R1 cells to 'data'
+ * (which would incorrectly break C0 and C1).
  */
 function getAdjustedHeadingSectionSize(
 	tableUtils: TableUtils,
