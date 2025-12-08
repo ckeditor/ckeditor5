@@ -204,10 +204,10 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
 		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
-		'<link rel="preload" href="https://cdn.ckbox.io/ckbox/latest/ckbox.js" as="script">',
+		'<link rel="preload" href="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js" as="script">',
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
+		'<script src="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js"></script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 
