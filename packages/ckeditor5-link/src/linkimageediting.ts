@@ -165,24 +165,23 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 
 			// A full definition of the image feature.
 			// figure > a > img: parent of the view link element is an image element (figure).
-			let modelElement: ModelNode | null = data.modelCursor.parent as ModelNode;
+			const modelElement = data.modelCursor.parent as ModelNode;
 
-			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
-				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
-				const conversionResult = conversionApi.convertItem( imageInLink, data.modelCursor );
-
-				// Set image range as conversion result.
-				data.modelRange = conversionResult.modelRange;
-
-				// Continue conversion where image conversion ends.
-				data.modelCursor = conversionResult.modelCursor;
-
-				modelElement = data.modelCursor.nodeBefore as ModelNode;
-			}
-
-			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {
+			if ( modelElement.is( 'element', 'imageBlock' ) ) {
 				// Set the linkHref attribute from link element on model image element.
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
+			} else {
+				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
+				Object.assign( data, conversionApi.convertChildren( viewLink, data.modelCursor ) );
+
+				// Iterate over all converted model elements and set the linkHref attribute on image elements.
+				if ( data.modelRange ) {
+					for ( const { item } of data.modelRange.getWalker( { ignoreElementEnd: true } ) ) {
+						if ( !item.hasAttribute( 'linkHref' ) && conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
+							conversionApi.writer.setAttribute( 'linkHref', linkHref, item );
+						}
+					}
+				}
 			}
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastImageLinkManualDecorator()` converter guarantees

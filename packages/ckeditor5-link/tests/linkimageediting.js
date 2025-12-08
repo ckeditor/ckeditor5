@@ -318,6 +318,40 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
+				it( 'should convert multiple images surrounded by a link', () => {
+					editor.setData(
+						'<a href="http://ckeditor.com">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png"></imageBlock>'
+					);
+				} );
+
+				it( 'should convert an image and text surrounded by a link', () => {
+					editor.setData(
+						'<a href="http://ckeditor.com">' +
+							'Foo' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'Bar' +
+						'</a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'<$text linkHref="http://ckeditor.com">Foo</$text>' +
+						'</paragraph>' +
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' +
+						'<paragraph>' +
+							'<$text linkHref="http://ckeditor.com">Bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
 				it( 'should not convert in wrong context', () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 					model.schema.addChildCheck( ( ctx, childDef ) => {
