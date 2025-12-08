@@ -107,10 +107,10 @@ export function downcastRow(): DowncastElementCreatorFunction {
  *
  * @internal
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
- * @param options.cellTypeEnabled If set to `true`, the converter will use the `tableCellType` attribute to determine
+ * @param options.cellTypeEnabled If returns `true`, the downcast conversion will use the `tableCellType` attribute to determine cell type.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled?: () => boolean } = {} ): DowncastElementCreatorFunction {
+export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: () => boolean } ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		// If the table cell type feature is enabled, then we can simply check the cell type attribute.
 		if ( options.cellTypeEnabled?.() ) {
