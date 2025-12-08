@@ -96,7 +96,7 @@ export function updateTablesHeadingAttributes(
 		let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 		// Prioritize the dimension that is already larger to prevent the other dimension from
-		// aggressively consuming "orphaned" header cells. In other words, if table has tree
+		// aggressively consuming "orphaned" header cells. In other words, if table has three
 		// heading columns (which fills entire table), we should not count all rows as heading rows.
 		// User might later add column to the right which should not be heading.
 		//
