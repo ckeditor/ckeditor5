@@ -170,8 +170,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       umberto:
-        specifier: ^9.1.1
-        version: 9.1.1(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: ^9.1.2
+        version: 9.1.2(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -10326,6 +10326,7 @@ packages:
 
   moize@6.1.6:
     resolution: {integrity: sha512-vSKdIUO61iCmTqhdoIDrqyrtp87nWZUmBPniNjO0fX49wEYmyDO4lvlnFXiGcaH1JLE/s/9HbiK4LSHsbiUY6Q==}
+    deprecated: This library has been deprecated in favor of micro-memoize, which as-of version 5 incorporates most of the functionality that this library offers at nearly half the size and better speed.
 
   moment-timezone@0.5.48:
     resolution: {integrity: sha512-f22b8LV1gbTO2ms2j2z13MuPogNoh5UzxL3nzNAYKGraILnbGc9NEE6dyiiiLv46DGRb8A4kg8UKWLjPthxBHw==}
@@ -12219,8 +12220,8 @@ packages:
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
 
-  umberto@9.1.1:
-    resolution: {integrity: sha512-Bsw8VJb2Oq7/AVzPNNr/W2zBWY2h6kWKB8IzJIeHBYFQQXSOyjaYiuo9jtqBZoiVdPXuDVmjPTY05OBq7vTnDw==}
+  umberto@9.1.2:
+    resolution: {integrity: sha512-1geRxBuFDuHIm2RWgdOh1lqp4vM3DKDtCc3TSg7edCC79ux/Z9oTSIBleh8CwIPmgXIQQo6Kw5QDmw+frRqowQ==}
     engines: {node: '>=24.11.0'}
 
   undici-types@7.13.0:
@@ -21483,7 +21484,7 @@ snapshots:
 
   ufo@1.6.1: {}
 
-  umberto@9.1.1(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
+  umberto@9.1.2(@swc/core@1.13.5)(chokidar@3.6.0)(esbuild@0.25.10)(webpack-cli@6.0.1):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/preset-env': 7.28.3(@babel/core@7.28.4)
