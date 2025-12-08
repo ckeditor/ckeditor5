@@ -60,7 +60,7 @@ There are two types the table cell can take in content: data cell (the default t
 
 To change cell type, click the cell and use the cell properties icon {@icon @ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg Table cell properties} from the table toolbar. Once there, choose the desired cell type.
 
-{@img assets/img/table-cell-type.png 400 Table cell type}
+{@img assets/img/table-cell-type.png 605 Table cell type}
 
 To create a header row or header column in your table, simply select all cell in the row or column and change their type to header. You will see the type change automatically in the row/column property dialog.
 
