@@ -332,7 +332,7 @@ describe( 'LinkImageEditing', () => {
 					);
 				} );
 
-				it( 'should convert an block image and text surrounded by a link', () => {
+				it( 'should convert a block image and text surrounded by a link', () => {
 					editor.setData(
 						'<a href="http://ckeditor.com">' +
 							'Foo' +
