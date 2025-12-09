@@ -168,7 +168,7 @@ export class TableCellPropertyCommand extends Command {
 }
 
 /**
- * Fired after the the {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand}
+ * Fired after the {@link module:table/tablecellproperties/commands/tablecellpropertycommand~TableCellPropertyCommand}
  *
  * @eventName ~TableCellPropertyCommand#afterExecute
  */
