@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-editor {
+	margin: 0;
+}
+#ckbox-button {
+	background-color: var(--ck-color-list-button-on-background);
+	color: var(--color-common-white);
+	border: none;
+	padding: 10px 20px;
+	border-radius: var(--radius-2);
+	cursor: pointer;
+}
+#snippet-ckbox-standalone {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-flow: column;
+	gap: .5rem;
+	margin: 1rem 0 7rem 0;
+}
+#snippet-ckbox-standalone > label {
+	font-weight: 500;
+}
+#snippet-ckbox-uploader-widget {
+	display: flex;
+	justify-content: center;
+}
