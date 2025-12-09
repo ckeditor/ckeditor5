@@ -7,7 +7,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 
-import { modelTable, viewTable } from '../../_utils/utils.js';
+import { modelTable } from '../../_utils/utils.js';
 import { TableCellPropertiesEditing } from '../../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellTypeCommand } from '../../../src/tablecellproperties/commands/tablecelltypecommand.js';
 
@@ -78,8 +78,8 @@ describe( 'TableCellTypeCommand', () => {
 
 			command.execute( { value: 'header' } );
 
-			expect( editor.getData() ).to.equalMarkup( viewTable(
-				[ [ { isHeading: true, contents: 'foo' } ] ],
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable(
+				[ [ { tableCellType: 'header', contents: 'foo' } ] ],
 				{ headingRows: 1 }
 			) );
 		} );
@@ -89,7 +89,7 @@ describe( 'TableCellTypeCommand', () => {
 
 			command.execute( { value: 'data' } );
 
-			expect( editor.getData() ).to.equalMarkup( viewTable( [ [ 'foo' ] ] ) );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [ [ 'foo' ] ] ) );
 		} );
 
 		describe( 'multiple cells changes', () => {
@@ -101,8 +101,8 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ '00', '01' ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				], { headingRows: 1 } ) );
 			} );
@@ -127,9 +127,9 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
 				], { headingRows: 2 } ) );
 			} );
 
@@ -147,9 +147,9 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 					[ '00', '01' ],
-					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' } ]
+					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
 				] ) );
 			} );
 
@@ -180,8 +180,8 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ '00', '01' ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				], { headingRows: 1 } ) );
 			} );
@@ -259,8 +259,8 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ { isHeading: true, contents: '00' }, '01' ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
 				] ) );
 			} );
@@ -276,8 +276,8 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingColumns' ) ).to.be.false;
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ { isHeading: true, contents: '00' }, '01' ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { tableCellType: 'header', contents: '00' }, '01' ],
 					[ '10', '11' ]
 				] ) );
 			} );
@@ -290,10 +290,10 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'header' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ { isHeading: true, contents: '00' }, '01' ],
-					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' } ]
-				] ) );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { tableCellType: 'header', contents: '00' }, '01' ],
+					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
+				], { headingColumns: 1 } ) );
 			} );
 
 			it( 'should increment headingRows if setting all header cells in the previous row to header', () => {
@@ -307,9 +307,9 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' } ],
-					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' } ]
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { tableCellType: 'header', contents: '00' }, { tableCellType: 'header', contents: '01' } ],
+					[ { tableCellType: 'header', contents: '10' }, { tableCellType: 'header', contents: '11' } ]
 				], { headingRows: 2 } ) );
 			} );
 
@@ -327,8 +327,8 @@ describe( 'TableCellTypeCommand', () => {
 				const table = model.document.getRoot().getChild( 0 );
 
 				expect( table.hasAttribute( 'headingRows' ) ).to.be.false;
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ '00', { contents: '01', isHeading: true } ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', { contents: '01', tableCellType: 'header' } ],
 					[ '10', '11' ]
 				] ) );
 			} );
@@ -347,11 +347,11 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ '00', { isHeading: true, contents: '01' } ],
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '00', { tableCellType: 'header', contents: '01' } ],
 					[
-						{ isHeading: true, contents: '10' },
-						{ isHeading: true, contents: '11' }
+						{ tableCellType: 'header', contents: '10' },
+						{ tableCellType: 'header', contents: '11' }
 					]
 				] ) );
 			} );
@@ -370,10 +370,10 @@ describe( 'TableCellTypeCommand', () => {
 
 				command.execute( { value: 'data' } );
 
-				expect( editor.getData() ).to.equalMarkup( viewTable( [
-					[ { contents: '00', isHeading: true }, { contents: '01', isHeading: true } ],
-					[ { contents: '10', isHeading: true }, '11' ]
-				], { headingRows: 1 } ) );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, '11' ]
+				], { headingColumns: 1, headingRows: 1 } ) );
 			} );
 		} );
 	} );
