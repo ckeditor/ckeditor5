@@ -331,12 +331,8 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDe
 			}
 
 			if ( data.modelRange ) {
-				for ( const item  of data.modelRange.getItems() ) {
-					if (
-						item.is( 'element', 'imageBlock' ) &&
-						!item.hasAttribute( decorator.id ) &&
-						conversionApi.schema.checkAttribute( item, decorator.id )
-					) {
+				for ( const item of data.modelRange.getItems() ) {
+					if ( !item.hasAttribute( decorator.id ) && conversionApi.schema.checkAttribute( item, decorator.id ) ) {
 						conversionApi.writer.setAttribute( decorator.id, true, item );
 					}
 				}
