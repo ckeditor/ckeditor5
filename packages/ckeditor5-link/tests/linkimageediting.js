@@ -382,6 +382,52 @@ describe( 'LinkImageEditing', () => {
 					await newEditor.destroy();
 				} );
 
+				it( 'should convert multiple block images surrounded by a link with automatic decorator', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								detectDownloadable: {
+									mode: 'automatic',
+									callback: url => url.endsWith( '.pdf' ),
+									attributes: {
+										download: 'file.pdf'
+									}
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com/example.pdf" class="gallery">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
+				} );
+
 				it( 'should convert multiple block images surrounded by a link ' +
 						'with link.addTargetToExternalLinks set to true', async () => {
 					const newEditor = await VirtualTestEditor.create( {
