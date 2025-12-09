@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "github-copilot/gemini-3-pro-preview",
+  "small_model": "github-copilot/gpt-5.1-codex-mini",
+  "lsp": {
+    "eslint": {
+      "disabled": true
+    }
+  }
+}

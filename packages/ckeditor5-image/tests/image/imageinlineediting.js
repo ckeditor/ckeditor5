@@ -10,8 +10,8 @@ import { ViewDataTransfer, _getModelData, _setModelData, _getViewData } from '@c
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { LegacyListEditing } from '@ckeditor/ckeditor5-list';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
@@ -25,8 +25,6 @@ import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js'
 describe( 'ImageInlineEditing', () => {
 	let editor, model, doc, view, viewDocument;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ ImageInlineEditing, Paragraph ]
@@ -39,6 +37,7 @@ describe( 'ImageInlineEditing', () => {
 	} );
 
 	afterEach( async () => {
+		vi.restoreAllMocks();
 		await editor.destroy();
 	} );
 
@@ -47,11 +46,11 @@ describe( 'ImageInlineEditing', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageInlineEditing.isOfficialPlugin ).to.be.true;
+		expect( ImageInlineEditing.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageInlineEditing.isPremiumPlugin ).to.be.false;
+		expect( ImageInlineEditing.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
@@ -60,17 +59,17 @@ describe( 'ImageInlineEditing', () => {
 
 	describe( 'schema rules', () => {
 		it( 'should be set', () => {
-			expect( model.schema.isRegistered( 'imageInline' ) ).to.be.true;
-			expect( model.schema.isInline( 'imageInline' ) ).to.be.true;
-			expect( model.schema.isObject( 'imageInline' ) ).to.be.true;
+			expect( model.schema.isRegistered( 'imageInline' ) ).toBe( true );
+			expect( model.schema.isInline( 'imageInline' ) ).toBe( true );
+			expect( model.schema.isObject( 'imageInline' ) ).toBe( true );
 
-			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).to.be.true;
+			expect( model.schema.checkChild( [ '$root', '$block' ], 'imageInline' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'src' ) ).toBe( true );
+			expect( model.schema.checkAttribute( [ '$root', '$block', 'imageInline' ], 'alt' ) ).toBe( true );
 
-			expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).to.be.false;
-			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).to.be.false;
-			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root' ], 'imageInline' ) ).toBe( false );
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], 'imageBlock' ) ).toBe( false );
+			expect( model.schema.checkChild( [ '$root', '$block', 'imageInline' ], '$text' ) ).toBe( false );
 		} );
 
 		it( 'should disallow imageInline in the caption element', () => {
@@ -80,7 +79,7 @@ describe( 'ImageInlineEditing', () => {
 				isLimit: true
 			} );
 
-			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).to.be.false;
+			expect( model.schema.checkChild( [ '$root', 'caption' ], 'imageInline' ) ).toBe( false );
 		} );
 	} );
 
@@ -120,16 +119,16 @@ describe( 'ImageInlineEditing', () => {
 			plugins: [ ImageInlineEditing, Paragraph ]
 		} );
 
-		editor.data.set( '<p><img src="/assets/sample.png" alt="bar" /></p>' );
+		editor.data.set( '<p><img src="/sample.png" alt="bar" /></p>' );
 
-		const spy = sinon.spy();
+		const spy = vi.fn();
 
 		editor.ui.on( 'update', spy );
 
 		const htmlImageElement = editor.ui.getEditableElement().querySelector( 'img' );
 		htmlImageElement.dispatchEvent( new Event( 'load' ) );
 
-		sinon.assert.calledOnce( spy );
+		expect( spy ).toHaveBeenCalledOnce();
 
 		await editor.destroy();
 		element.remove();
@@ -138,26 +137,26 @@ describe( 'ImageInlineEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/sample.png" alt="alt text"></p>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png"></imageInline></paragraph>' );
 
-				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/sample.png"></p>' );
 			} );
 
 			it( 'should convert srcset attribute to srcset and sizes attribute', () => {
 				_setModelData( model,
 					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
+						'<imageInline src="/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
 				expect( normalizeHtml( editor.getData() ) ).to.equal(
-					'<p><img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img></p>'
+					'<p><img alt="alt text" sizes="100vw" src="/sample.png" srcset="small.png 148w, big.png 1024w"></img></p>'
 				);
 			} );
 
@@ -170,19 +169,19 @@ describe( 'ImageInlineEditing', () => {
 
 				_setModelData( model,
 					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
+						'src="/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
 				);
 
-				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/sample.png" alt="alt text"></p>' );
 			} );
 
 			it( 'should not convert srcset attribute if has no data', () => {
 				_setModelData( model,
 					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
+						'src="/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="">' +
 					'</imageInline></paragraph>' );
@@ -192,16 +191,16 @@ describe( 'ImageInlineEditing', () => {
 					writer.removeAttribute( 'srcset', imageInline );
 				} );
 
-				expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png" alt="alt text"></p>' );
+				expect( editor.getData() ).to.equal( '<p><img src="/sample.png" alt="alt text"></p>' );
 			} );
 		} );
 
 		describe( 'view to model', () => {
 			it( 'should convert image inline', () => {
-				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
+				editor.setData( '<p><img src="/sample.png" alt="alt text" /></p>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
+					.to.equal( '<paragraph><imageInline alt="alt text" src="/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert if there is no img inside #1', () => {
@@ -219,10 +218,10 @@ describe( 'ImageInlineEditing', () => {
 			} );
 
 			it( 'should convert without alt attribute', () => {
-				editor.setData( '<p><img src="/assets/sample.png" /></p>' );
+				editor.setData( '<p><img src="/sample.png" /></p>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+					.to.equal( '<paragraph><imageInline src="/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should convert without src attribute', () => {
@@ -242,7 +241,7 @@ describe( 'ImageInlineEditing', () => {
 
 				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
-				editor.setData( '<div><img src="/assets/sample.png" alt="alt text" /></div>' );
+				editor.setData( '<div><img src="/sample.png" alt="alt text" /></div>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div></div>' );
@@ -254,7 +253,7 @@ describe( 'ImageInlineEditing', () => {
 					conversionApi.consumable.consume( img, { name: true } );
 				}, { priority: 'high' } );
 
-				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
+				editor.setData( '<p><img src="/sample.png" alt="alt text" /></p>' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<paragraph></paragraph>' );
@@ -262,26 +261,26 @@ describe( 'ImageInlineEditing', () => {
 
 			it( 'should consume the src attribute on <img>', () => {
 				editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
-					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).to.be.false;
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'src' } ) ).toBe( false );
 				}, { priority: 'low' } );
 
-				editor.setData( '<p><img src="/assets/sample.png" alt="alt text" /></p>' );
+				editor.setData( '<p><img src="/sample.png" alt="alt text" /></p>' );
 			} );
 
 			it( 'should dispatch conversion for nested elements', () => {
-				const conversionSpy = sinon.spy();
+				const conversionSpy = vi.fn();
 				editor.data.upcastDispatcher.on( 'element:img', conversionSpy );
 
-				editor.setData( '<span class="image"><img src="/assets/sample.png" alt="alt text" /></span>' );
+				editor.setData( '<span class="image"><img src="/sample.png" alt="alt text" /></span>' );
 
-				sinon.assert.calledOnce( conversionSpy );
+				expect( conversionSpy ).toHaveBeenCalledOnce();
 			} );
 
 			it( 'should convert bare img element', () => {
-				editor.setData( '<img src="/assets/sample.png" alt="alt text" />' );
+				editor.setData( '<img src="/sample.png" alt="alt text" />' );
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>' );
+					.to.equal( '<paragraph><imageInline alt="alt text" src="/sample.png"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert alt attribute on non-img element', () => {
@@ -299,13 +298,13 @@ describe( 'ImageInlineEditing', () => {
 
 			it( 'should convert image with srcset attribute', () => {
 				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
+					'<p><img src="/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" /></p>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
+							'<imageInline alt="alt text" src="/sample.png" srcset="small.png 148w, big.png 1024w">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
@@ -313,13 +312,13 @@ describe( 'ImageInlineEditing', () => {
 
 			it( 'should ignore sizes attribute', () => {
 				editor.setData(
-					'<p><img src="/assets/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
+					'<p><img src="/sample.png" alt="alt text" srcset="small.png 148w, big.png 1024w" sizes="50vw" /></p>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w">' +
+							'<imageInline alt="alt text" src="/sample.png" srcset="small.png 148w, big.png 1024w">' +
 							'</imageInline>' +
 						'</paragraph>'
 					);
@@ -327,50 +326,50 @@ describe( 'ImageInlineEditing', () => {
 
 			it( 'should not convert a link on an inline image', () => {
 				editor.setData(
-					'<a href="http://ckeditor.com"><img src="/assets/sample.png" alt="alt text" /></a>'
+					'<a href="http://ckeditor.com"><img src="/sample.png" alt="alt text" /></a>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<paragraph>' +
-							'<imageInline alt="alt text" src="/assets/sample.png"></imageInline>' +
+							'<imageInline alt="alt text" src="/sample.png"></imageInline>' +
 						'</paragraph>'
 					);
 			} );
 
 			it( 'should preserve the white space before the image', () => {
-				editor.setData( '<p>foo <img alt="alt text" src="/assets/sample.png"></p>' );
+				editor.setData( '<p>foo <img alt="alt text" src="/sample.png"></p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p>foo <img src="/assets/sample.png" alt="alt text"></p>'
+					'<p>foo <img src="/sample.png" alt="alt text"></p>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph>foo <imageInline alt="alt text" src="/assets/sample.png"></imageInline></paragraph>'
+					'<paragraph>foo <imageInline alt="alt text" src="/sample.png"></imageInline></paragraph>'
 				);
 			} );
 
 			it( 'should preserve the white space after the image', () => {
-				editor.setData( '<p><img alt="alt text" src="/assets/sample.png"> foo</p>' );
+				editor.setData( '<p><img alt="alt text" src="/sample.png"> foo</p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p><img src="/assets/sample.png" alt="alt text"> foo</p>'
+					'<p><img src="/sample.png" alt="alt text"> foo</p>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph><imageInline alt="alt text" src="/assets/sample.png"></imageInline> foo</paragraph>'
+					'<paragraph><imageInline alt="alt text" src="/sample.png"></imageInline> foo</paragraph>'
 				);
 			} );
 
 			it( 'should preserve white spaces surrounding the image', () => {
-				editor.setData( '<p>foo <img alt="alt text" src="/assets/sample.png"> bar</p>' );
+				editor.setData( '<p>foo <img alt="alt text" src="/sample.png"> bar</p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p>foo <img src="/assets/sample.png" alt="alt text"> bar</p>'
+					'<p>foo <img src="/sample.png" alt="alt text"> bar</p>'
 				);
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph>foo <imageInline alt="alt text" src="/assets/sample.png"></imageInline> bar</paragraph>'
+					'<paragraph>foo <imageInline alt="alt text" src="/sample.png"></imageInline> bar</paragraph>'
 				);
 			} );
 
@@ -478,25 +477,25 @@ describe( 'ImageInlineEditing', () => {
 	describe( 'conversion in editing pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should convert', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<img alt="alt text" src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
 
 			it( 'converted element should be widgetized', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const element = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 				expect( element.name ).to.equal( 'span' );
-				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( element ) ).to.be.true;
+				expect( editor.plugins.get( 'ImageUtils' ).isImageWidget( element ) ).toBe( true );
 			} );
 
 			it( 'should convert attribute change', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				model.change( writer => {
@@ -505,13 +504,13 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="new text" src="/assets/sample.png"></img>' +
+						'<img alt="new text" src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
 
 			it( 'should convert attribute removal (but keeps an empty "alt" to the data)', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				model.change( writer => {
@@ -519,12 +518,12 @@ describe( 'ImageInlineEditing', () => {
 				} );
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<p><span class="ck-widget image-inline" contenteditable="false"><img alt="" src="/assets/sample.png"></img></span></p>'
+					'<p><span class="ck-widget image-inline" contenteditable="false"><img alt="" src="/sample.png"></img></span></p>'
 				);
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
-				_setModelData( model, '<paragraph><imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>' );
+				_setModelData( model, '<paragraph><imageInline src="/sample.png" alt="alt text"></imageInline></paragraph>' );
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:imageInline', ( evt, data, conversionApi ) => {
@@ -537,7 +536,7 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<img alt="alt text" src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -545,14 +544,14 @@ describe( 'ImageInlineEditing', () => {
 			it( 'should convert srcset attribute to srcset and sizes', () => {
 				_setModelData( model,
 					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
+						'src="/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>' );
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" sizes="100vw" src="/assets/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
+						'<img alt="alt text" sizes="100vw" src="/sample.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -560,7 +559,7 @@ describe( 'ImageInlineEditing', () => {
 			it( 'should not convert srcset attribute if has no data', () => {
 				_setModelData( model,
 					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
+						'src="/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="">' +
 					'</imageInline></paragraph>' );
@@ -572,7 +571,7 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<img alt="alt text" src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -580,7 +579,7 @@ describe( 'ImageInlineEditing', () => {
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				_setModelData( model,
 					'<paragraph>' +
-						'<imageInline src="/assets/sample.png" srcset="small.png 148w, big.png 1024w" ></imageInline>' +
+						'<imageInline src="/sample.png" srcset="small.png 148w, big.png 1024w" ></imageInline>' +
 					'</paragraph>'
 				);
 				const image = doc.getRoot().getChild( 0 ).getChild( 0 );
@@ -591,7 +590,7 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img src="/assets/sample.png"></img>' +
+						'<img src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -605,7 +604,7 @@ describe( 'ImageInlineEditing', () => {
 
 				_setModelData( model,
 					'<paragraph><imageInline ' +
-						'src="/assets/sample.png" ' +
+						'src="/sample.png" ' +
 						'alt="alt text" ' +
 						'srcset="small.png 148w, big.png 1024w">' +
 					'</imageInline></paragraph>'
@@ -613,7 +612,7 @@ describe( 'ImageInlineEditing', () => {
 
 				expect( _getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p><span class="ck-widget image-inline" contenteditable="false">' +
-						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<img alt="alt text" src="/sample.png"></img>' +
 					'</span></p>'
 				);
 			} );
@@ -654,7 +653,7 @@ describe( 'ImageInlineEditing', () => {
 		it( 'should paste or drop a block image as inline in the middle of a non-empty paragraph', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" /></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -662,14 +661,14 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
 		it( 'should paste or drop a block image as inline in the empty list item', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" /></figure>'
 			} );
 
 			_setModelData( model, '<listItem listType="bulleted" listIndent="0"></listItem>' );
@@ -678,7 +677,7 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( _getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">' +
-					'<imageInline src="/assets/sample.png"></imageInline>[]' +
+					'<imageInline src="/sample.png"></imageInline>[]' +
 				'</listItem>'
 			);
 		} );
@@ -686,7 +685,7 @@ describe( 'ImageInlineEditing', () => {
 		it( 'should not work if there are elements other than block images in the pipeline data', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure><img src="/assets/sample.png?id=B" />'
+				getData: () => '<figure class="image"><img src="/sample.png?id=A" /></figure><img src="/sample.png?id=B" />'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -695,15 +694,15 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
-				'<imageBlock src="/assets/sample.png?id=A"></imageBlock>' +
-				'<paragraph><imageInline src="/assets/sample.png?id=B"></imageInline>[]oo</paragraph>'
+				'<imageBlock src="/sample.png?id=A"></imageBlock>' +
+				'<paragraph><imageInline src="/sample.png?id=B"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
 		it( 'should use targetRanges from the data when present (when dropping)', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" /></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
@@ -719,18 +718,18 @@ describe( 'ImageInlineEditing', () => {
 				target: viewElement,
 				dataTransfer,
 				targetRanges: [ targetViewRange ],
-				domEvent: sinon.spy()
+				domEvent: vi.fn()
 			} );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph></paragraph><paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph></paragraph><paragraph>f<imageInline src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
 		it( 'should not interfere if dropped or pasted in the middle of a non-empty paragraph when the image has caption', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" /><figcaption>abc</figcaption></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" /><figcaption>abc</figcaption></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -739,7 +738,7 @@ describe( 'ImageInlineEditing', () => {
 
 			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f</paragraph>' +
-				'[<imageBlock src="/assets/sample.png"><caption>abc</caption></imageBlock>]' +
+				'[<imageBlock src="/sample.png"><caption>abc</caption></imageBlock>]' +
 				'<paragraph>oo</paragraph>'
 			);
 		} );
@@ -747,7 +746,7 @@ describe( 'ImageInlineEditing', () => {
 		it( 'should not interfere if pasted or dropped in an empty paragraph', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" /></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>[]</paragraph>' );
@@ -755,29 +754,29 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
+				'[<imageBlock src="/sample.png"></imageBlock>]'
 			);
 		} );
 
 		it( 'should not interfere if pasted or dropped on another block widget', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png?id=A" /></figure>'
 			} );
 
-			_setModelData( model, '[<imageBlock src="/assets/sample.png?id=B"></imageBlock>]' );
+			_setModelData( model, '[<imageBlock src="/sample.png?id=B"></imageBlock>]' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'[<imageBlock src="/assets/sample.png?id=A"></imageBlock>]'
+				'[<imageBlock src="/sample.png?id=A"></imageBlock>]'
 			);
 		} );
 
 		it( 'should preserve image attributes (such as alt) when converting to an inline image', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><img src="/assets/sample.png" alt="abc" /></figure>'
+				getData: () => '<figure class="image"><img src="/sample.png" alt="abc" /></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -785,14 +784,14 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline alt="abc" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline alt="abc" src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
 		it( 'should preserve image link when converting to an inline image (LinkImage integration)', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<figure class="image"><a href="https://cksource.com"><img src="/assets/sample.png" /></a></figure>'
+				getData: () => '<figure class="image"><a href="https://cksource.com"><img src="/sample.png" /></a></figure>'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -800,7 +799,7 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline linkHref="https://cksource.com" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline linkHref="https://cksource.com" src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
@@ -812,7 +811,7 @@ describe( 'ImageInlineEditing', () => {
 				types: [ 'text/html' ],
 				getData: () => (
 					'<figure class="image" foo="bar">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 					'</figure>'
 				)
 			} );
@@ -821,7 +820,7 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline foo="bar" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline foo="bar" src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
@@ -830,7 +829,7 @@ describe( 'ImageInlineEditing', () => {
 				types: [ 'text/html' ],
 				getData: () => (
 					'<figure class="image image_resized" style="width:25%">' +
-						'<img src="/assets/sample.png" />' +
+						'<img src="/sample.png" />' +
 					'</figure>'
 				)
 			} );
@@ -839,14 +838,14 @@ describe( 'ImageInlineEditing', () => {
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<paragraph>f<imageInline resizedWidth="25%" src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+				'<paragraph>f<imageInline resizedWidth="25%" src="/sample.png"></imageInline>[]oo</paragraph>'
 			);
 		} );
 
 		it( 'should add image width and height on image paste', done => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<img src="/assets/sample.png" />'
+				getData: () => '<img src="/sample.png" />'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -855,7 +854,7 @@ describe( 'ImageInlineEditing', () => {
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>f<imageInline height="96" src="/assets/sample.png" width="96"></imageInline>[]oo</paragraph>'
+					'<paragraph>f<imageInline height="96" src="/sample.png" width="96"></imageInline>[]oo</paragraph>'
 				);
 
 				done();
@@ -865,7 +864,7 @@ describe( 'ImageInlineEditing', () => {
 		it( 'should not add image width and height on image method other than paste', done => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<img src="/assets/sample.png" />'
+				getData: () => '<img src="/sample.png" />'
 			} );
 
 			_setModelData( model, '<paragraph>f[]oo</paragraph>' );
@@ -874,7 +873,7 @@ describe( 'ImageInlineEditing', () => {
 
 			setTimeout( () => {
 				expect( _getModelData( model ) ).to.equal(
-					'<paragraph>f<imageInline src="/assets/sample.png"></imageInline>[]oo</paragraph>'
+					'<paragraph>f<imageInline src="/sample.png"></imageInline>[]oo</paragraph>'
 				);
 
 				done();
@@ -916,54 +915,54 @@ describe( 'ImageInlineEditing', () => {
 		it( 'should disallow (nested) inline images inside the caption', () => {
 			editor.setData(
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" />' +
-					'<figcaption>foo<img src="/assets/sample.png" />bar</figcaption>' +
+					'<img src="/sample.png" />' +
+					'<figcaption>foo<img src="/sample.png" />bar</figcaption>' +
 				'</figure>'
 			);
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<imageBlock src="/assets/sample.png"><caption>foobar</caption></imageBlock>' );
+				.to.equal( '<imageBlock src="/sample.png"><caption>foobar</caption></imageBlock>' );
 		} );
 
 		it( 'should disallow (nested) linked inline images inside the caption', () => {
 			editor.setData(
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" />' +
-					'<figcaption>foo<a href="https://cksource.com"><img src="/assets/sample.png" /></a>bar</figcaption>' +
+					'<img src="/sample.png" />' +
+					'<figcaption>foo<a href="https://cksource.com"><img src="/sample.png" /></a>bar</figcaption>' +
 				'</figure>'
 			);
 
 			expect( _getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<imageBlock src="/assets/sample.png"><caption>foobar</caption></imageBlock>' );
+				.to.equal( '<imageBlock src="/sample.png"><caption>foobar</caption></imageBlock>' );
 		} );
 
 		it( 'should disallow pasting inline images into the caption', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<img src="/assets/sample.png" />'
+				getData: () => '<img src="/sample.png" />'
 			} );
 
-			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png"><caption>foo[]bar</caption></imageBlock>' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
+				'<imageBlock src="/sample.png"><caption>foo[]bar</caption></imageBlock>'
 			);
 		} );
 
 		it( 'should disallow pasting linked inline images into the caption', () => {
 			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
-				getData: () => '<a href="https://cksource.com"><img src="/assets/sample.png" /></a>'
+				getData: () => '<a href="https://cksource.com"><img src="/sample.png" /></a>'
 			} );
 
-			_setModelData( model, '<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>' );
+			_setModelData( model, '<imageBlock src="/sample.png"><caption>foo[]bar</caption></imageBlock>' );
 
 			viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 			expect( _getModelData( model ) ).to.equal(
-				'<imageBlock src="/assets/sample.png"><caption>foo[]bar</caption></imageBlock>'
+				'<imageBlock src="/sample.png"><caption>foo[]bar</caption></imageBlock>'
 			);
 		} );
 	} );

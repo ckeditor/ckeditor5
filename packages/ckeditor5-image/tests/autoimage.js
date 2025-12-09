@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
@@ -42,51 +43,50 @@ describe( 'AutoImage - integration', () => {
 	} );
 
 	it( 'should load the Clipboard plugin', () => {
-		expect( AutoImage.requires ).to.include( Clipboard );
+		expect( AutoImage.requires ).toContain( Clipboard );
 	} );
 
 	it( 'should load the Undo plugin', () => {
-		expect( AutoImage.requires ).to.include( Undo );
+		expect( AutoImage.requires ).toContain( Undo );
 	} );
 
 	it( 'should load the ImageUtils plugin', () => {
-		expect( AutoImage.requires ).to.include( ImageUtils );
+		expect( AutoImage.requires ).toContain( ImageUtils );
 	} );
 
 	it( 'has proper name', () => {
-		expect( AutoImage.pluginName ).to.equal( 'AutoImage' );
+		expect( AutoImage.pluginName ).toBe( 'AutoImage' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( AutoImage.isOfficialPlugin ).to.be.true;
+		expect( AutoImage.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( AutoImage.isPremiumPlugin ).to.be.false;
+		expect( AutoImage.isPremiumPlugin ).toBe( false );
 	} );
 
 	describe( 'use fake timers', () => {
-		let clock;
-
 		beforeEach( () => {
-			clock = sinon.useFakeTimers();
+			vi.useFakeTimers();
 		} );
 
 		afterEach( () => {
-			clock.restore();
+			vi.restoreAllMocks();
+			vi.useRealTimers();
 		} );
 
 		it( 'replaces pasted text with image element after 100ms', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
@@ -95,15 +95,15 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			editor.commands.execute( 'undo' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 		} );
@@ -112,22 +112,22 @@ describe( 'AutoImage - integration', () => {
 			const viewDocument = editor.editing.view.document;
 			const deleteEvent = new ViewDocumentDomEventData(
 				viewDocument,
-				{ preventDefault: sinon.spy() },
+				{ preventDefault: vi.fn() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
 			);
 
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 		} );
@@ -158,9 +158,9 @@ describe( 'AutoImage - integration', () => {
 					_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 					pasteHtml( editor, supportedURL );
 
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						`<paragraph>[<imageInline src="${ supportedURL }"></imageInline>]</paragraph>`
 					);
 				} );
@@ -185,9 +185,9 @@ describe( 'AutoImage - integration', () => {
 					_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 					pasteHtml( editor, unsupportedURL );
 
-					clock.tick( 100 );
+					vi.advanceTimersByTime( 100 );
 
-					expect( _getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).toBe(
 						`<paragraph>${ unsupportedURL }[]</paragraph>`
 					);
 				} );
@@ -200,9 +200,9 @@ describe( 'AutoImage - integration', () => {
 				_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 				pasteHtml( editor, invalidURL );
 
-				clock.tick( 100 );
+				vi.advanceTimersByTime( 100 );
 
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					`<paragraph>${ invalidURL }[]</paragraph>`
 				);
 			} );
@@ -213,9 +213,9 @@ describe( 'AutoImage - integration', () => {
 			pasteHtml( editor, '<a href="http://example.com/image.png">' +
 				'http://example.com/image.png</a>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
@@ -224,9 +224,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<b>http://example.com/image.png</b>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
@@ -235,9 +235,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>[Foo]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 			);
 		} );
@@ -246,9 +246,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>Fo[o</paragraph><paragraph>Ba]r</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'Fo[<imageInline src="http://example.com/image.png"></imageInline>]r' +
 				'</paragraph>'
@@ -259,9 +259,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>Foo []Bar</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'Foo [<imageInline src="http://example.com/image.png"></imageInline>]Bar' +
 				'</paragraph>'
@@ -272,9 +272,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>Foo [Bar] Baz</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'Foo [<imageInline src="http://example.com/image.png"></imageInline>] Baz' +
 				'</paragraph>'
@@ -289,9 +289,9 @@ describe( 'AutoImage - integration', () => {
 				'http://example.com/image.png</a>'
 			);
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph>http://example.com/image.png ' +
 				'<$text linkHref="http://example.com/image.png">' +
 				'http://example.com/image.png</$text>' +
@@ -303,9 +303,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<p>http://example.com/image.png</p>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 		} );
@@ -314,9 +314,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<p>https://</p><p>example.com/image</p><p>.png</p>' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>https://</paragraph><paragraph>example.com/image</paragraph><paragraph>.png[]</paragraph>'
 			);
 		} );
@@ -326,9 +326,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<imageBlock src="/assets/sample.png"><caption>Foo.[]</caption></imageBlock>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<imageBlock src="/assets/sample.png"><caption>' +
 				'Foo.http://example.com/image.png[]' +
 				'</caption></imageBlock>'
@@ -343,9 +343,9 @@ describe( 'AutoImage - integration', () => {
 
 			pasteHtml( editor, 'http://example.com/image2.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>[<imageInline src="http://example.com/image2.png"></imageInline>]</paragraph>'
 			);
 		} );
@@ -360,9 +360,9 @@ describe( 'AutoImage - integration', () => {
 
 			pasteHtml( editor, 'http://example.com/image2.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
 				'<paragraph>[<imageInline src="http://example.com/image2.png"></imageInline>]</paragraph>' +
 				'<paragraph>Bar.</paragraph>'
@@ -373,9 +373,9 @@ describe( 'AutoImage - integration', () => {
 			_setModelData( editor.model, '<paragraph><$text linkHref="https://cksource.com">linked[]text</$text></paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			clock.tick( 100 );
+			vi.advanceTimersByTime( 100 );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>' +
 					'<$text linkHref="https://cksource.com">linked</$text>' +
 					'[<imageInline linkHref="https://cksource.com" src="http://example.com/image.png"></imageInline>]' +
@@ -388,24 +388,24 @@ describe( 'AutoImage - integration', () => {
 	describe( 'use real timers', () => {
 		const characters = Array( 10 ).fill( 1 ).map( ( x, i ) => String.fromCharCode( 65 + i ) );
 
-		it( 'undo breaks the auto-image feature (undo was done before auto-image)', done => {
+		it( 'undo breaks the auto-image feature (undo was done before auto-image)', () => new Promise( done => {
 			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
-			expect( _getModelData( editor.model ) ).to.equal(
+			expect( _getModelData( editor.model ) ).toBe(
 				'<paragraph>http://example.com/image.png[]</paragraph>'
 			);
 
 			setTimeout( () => {
 				editor.commands.execute( 'undo' );
 
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>[]</paragraph>'
 				);
 
 				done();
 			} );
-		} );
+		} ) );
 
 		// Checking whether paste+typing calls the auto-image handler once.
 		it( 'pasting handler should be executed once', done => {
@@ -426,7 +426,7 @@ describe( 'AutoImage - integration', () => {
 			setTimeout( () => {
 				AutoImagePlugin._embedImageBetweenPositions = autoImageHandler;
 
-				expect( counter ).to.equal( 1 );
+				expect( counter ).toBe( 1 );
 
 				done();
 			}, 100 );
@@ -448,7 +448,7 @@ describe( 'AutoImage - integration', () => {
 			}
 
 			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]ABCDEFGHIJ</paragraph>'
 				);
 
@@ -470,7 +470,7 @@ describe( 'AutoImage - integration', () => {
 			}
 
 			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>[<imageInline src="http://example.com/image.png"></imageInline>]ABCDEFGHIJ</paragraph>'
 				);
 
@@ -488,7 +488,7 @@ describe( 'AutoImage - integration', () => {
 			} );
 
 			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>Foo.[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>'
 				);
 
@@ -516,7 +516,7 @@ describe( 'AutoImage - integration', () => {
 			}
 
 			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>Foo.</paragraph>' +
 					'<paragraph>ABCDEFGHIJ</paragraph>' +
 					'<paragraph>Bar.' +
@@ -548,7 +548,7 @@ describe( 'AutoImage - integration', () => {
 			}
 
 			setTimeout( () => {
-				expect( _getModelData( editor.model ) ).to.equal(
+				expect( _getModelData( editor.model ) ).toBe(
 					'<paragraph>Foo.</paragraph>' +
 					'<paragraph>Bar.' +
 					'[<imageInline src="http://example.com/image.png"></imageInline>]</paragraph>' +
@@ -577,7 +577,7 @@ describe( 'AutoImage - integration', () => {
 
 		pasteHtml( editor, '<table><tr><td>one</td><td>two</td></tr></table>' );
 
-		expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+		expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 			'<table>' +
 				'<tableRow>' +
 					'<tableCell><paragraph>one</paragraph></tableCell>' +

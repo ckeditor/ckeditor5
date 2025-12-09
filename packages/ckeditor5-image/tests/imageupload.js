@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import { Image } from '../src/image.js';
@@ -36,22 +37,22 @@ describe( 'ImageUpload', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageUpload.isOfficialPlugin ).to.be.true;
+		expect( ImageUpload.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageUpload.isPremiumPlugin ).to.be.false;
+		expect( ImageUpload.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should include ImageUploadEditing', () => {
-		expect( editor.plugins.get( ImageUploadEditing ) ).to.be.instanceOf( ImageUploadEditing );
+		expect( editor.plugins.get( ImageUploadEditing ) ).toBeInstanceOf( ImageUploadEditing );
 	} );
 
 	it( 'should include ImageUploadProgress', () => {
-		expect( editor.plugins.get( ImageUploadProgress ) ).to.be.instanceOf( ImageUploadProgress );
+		expect( editor.plugins.get( ImageUploadProgress ) ).toBeInstanceOf( ImageUploadProgress );
 	} );
 
 	it( 'should include ImageUploadUI', () => {
-		expect( editor.plugins.get( ImageUploadUI ) ).to.be.instanceOf( ImageUploadUI );
+		expect( editor.plugins.get( ImageUploadUI ) ).toBeInstanceOf( ImageUploadUI );
 	} );
 } );

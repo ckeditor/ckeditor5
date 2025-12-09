@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Image } from '../../../src/image.js';
 import { global } from '@ckeditor/ckeditor5-utils';
@@ -50,7 +51,7 @@ describe( 'Utils', () => {
 
 	describe( 'repositionContextualBalloon', () => {
 		it( 'should re-position the ContextualBalloon when the image is selected', () => {
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 			const view = new View();
 
 			view.element = global.document.createElement( 'div' );
@@ -65,14 +66,14 @@ describe( 'Utils', () => {
 			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			repositionContextualBalloon( editor );
 
-			sinon.assert.calledWithExactly( spy, {
+			expect( spy ).toHaveBeenCalledWith( {
 				target: converter.mapViewToDom( selection.getSelectedElement() ),
 				positions
 			} );
 		} );
 
 		it( 'should re-position the ContextualBalloon when the selection is inside a block image caption', () => {
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 			const view = new View();
 
 			view.element = global.document.createElement( 'div' );
@@ -87,19 +88,19 @@ describe( 'Utils', () => {
 			_setModelData( editor.model, '<imageBlock src=""><caption>[Foo]</caption></imageBlock>' );
 			repositionContextualBalloon( editor );
 
-			sinon.assert.calledWithExactly( spy, {
+			expect( spy ).toHaveBeenCalledWith( {
 				target: converter.mapViewToDom( selection.getFirstPosition().parent.parent.parent ),
 				positions
 			} );
 		} );
 
 		it( 'should not engage with no image is selected', () => {
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = vi.spyOn( balloon, 'updatePosition' );
 
 			_setModelData( editor.model, '<paragraph>foo</paragraph>' );
 
 			repositionContextualBalloon( editor );
-			sinon.assert.notCalled( spy );
+			expect( spy ).not.toHaveBeenCalled();
 		} );
 	} );
 
@@ -108,7 +109,7 @@ describe( 'Utils', () => {
 			_setModelData( editor.model, '[<imageBlock src=""></imageBlock>]' );
 			const data = getBalloonPositionData( editor );
 
-			expect( data ).to.deep.equal( {
+			expect( data ).toEqual( {
 				target: converter.mapViewToDom( selection.getSelectedElement() ),
 				positions
 			} );
@@ -118,7 +119,7 @@ describe( 'Utils', () => {
 			_setModelData( editor.model, '<imageBlock src=""><caption>Foo[]</caption></imageBlock>' );
 			const data = getBalloonPositionData( editor );
 
-			expect( data ).to.deep.equal( {
+			expect( data ).toEqual( {
 				target: converter.mapViewToDom( selection.getFirstPosition().parent.parent.parent ),
 				positions
 			} );

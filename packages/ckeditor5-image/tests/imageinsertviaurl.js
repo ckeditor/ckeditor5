@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ImageInsertUI } from '../src/imageinsert/imageinsertui.js';
 import { ImageInsertViaUrl } from '../src/imageinsertviaurl.js';
@@ -28,26 +29,26 @@ describe( 'ImageInsertViaUrl', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( 'ImageInsertViaUrl' ) ).to.instanceOf( ImageInsertViaUrl );
+		expect( editor.plugins.get( 'ImageInsertViaUrl' ) ).toBeInstanceOf( ImageInsertViaUrl );
 	} );
 
 	it( 'should load ImageInsertUI plugin', () => {
-		expect( editor.plugins.get( 'ImageInsertUI' ) ).to.instanceOf( ImageInsertUI );
+		expect( editor.plugins.get( 'ImageInsertUI' ) ).toBeInstanceOf( ImageInsertUI );
 	} );
 
 	it( 'should load ImageInsertViaUrlUI plugin', () => {
-		expect( editor.plugins.get( 'ImageInsertViaUrlUI' ) ).to.instanceOf( ImageInsertViaUrlUI );
+		expect( editor.plugins.get( 'ImageInsertViaUrlUI' ) ).toBeInstanceOf( ImageInsertViaUrlUI );
 	} );
 
 	it( 'should not load ImageUpload plugin', () => {
-		expect( editor.plugins.has( 'ImageUpload' ) ).to.be.false;
+		expect( editor.plugins.has( 'ImageUpload' ) ).toBe( false );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageInsertViaUrl.isOfficialPlugin ).to.be.true;
+		expect( ImageInsertViaUrl.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageInsertViaUrl.isPremiumPlugin ).to.be.false;
+		expect( ImageInsertViaUrl.isPremiumPlugin ).toBe( false );
 	} );
 } );

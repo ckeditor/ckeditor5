@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { global } from '@ckeditor/ckeditor5-utils';
@@ -31,31 +32,31 @@ describe( 'ImageInline', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageInline ) ).to.instanceOf( ImageInline );
-		expect( editor.plugins.get( 'ImageInline' ) ).to.instanceOf( ImageInline );
+		expect( editor.plugins.get( ImageInline ) ).toBeInstanceOf( ImageInline );
+		expect( editor.plugins.get( 'ImageInline' ) ).toBeInstanceOf( ImageInline );
 	} );
 
 	it( 'should load ImageInlineEditing plugin', () => {
-		expect( editor.plugins.get( ImageInlineEditing ) ).to.instanceOf( ImageInlineEditing );
+		expect( editor.plugins.get( ImageInlineEditing ) ).toBeInstanceOf( ImageInlineEditing );
 	} );
 
 	it( 'should load Widget plugin', () => {
-		expect( editor.plugins.get( Widget ) ).to.instanceOf( Widget );
+		expect( editor.plugins.get( Widget ) ).toBeInstanceOf( Widget );
 	} );
 
 	it( 'should load ImageTextAlternative plugin', () => {
-		expect( editor.plugins.get( ImageTextAlternative ) ).to.instanceOf( ImageTextAlternative );
+		expect( editor.plugins.get( ImageTextAlternative ) ).toBeInstanceOf( ImageTextAlternative );
 	} );
 
 	it( 'should load ImageInsertUI plugin', () => {
-		expect( editor.plugins.get( ImageInsertUI ) ).to.instanceOf( ImageInsertUI );
+		expect( editor.plugins.get( ImageInsertUI ) ).toBeInstanceOf( ImageInsertUI );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageInline.isOfficialPlugin ).to.be.true;
+		expect( ImageInline.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageInline.isPremiumPlugin ).to.be.false;
+		expect( ImageInline.isPremiumPlugin ).toBe( false );
 	} );
 } );

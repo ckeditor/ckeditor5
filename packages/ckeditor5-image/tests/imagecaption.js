@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { ImageCaption } from '../src/imagecaption.js';
 import { ImageCaptionEditing } from '../src/imagecaption/imagecaptionediting.js';
@@ -30,22 +31,22 @@ describe( 'ImageCaption', () => {
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageCaption.isOfficialPlugin ).to.be.true;
+		expect( ImageCaption.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageCaption.isPremiumPlugin ).to.be.false;
+		expect( ImageCaption.isPremiumPlugin ).toBe( false );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageCaption ) ).to.instanceOf( ImageCaption );
+		expect( editor.plugins.get( ImageCaption ) ).toBeInstanceOf( ImageCaption );
 	} );
 
 	it( 'should load the ImageCaptionEditing plugin', () => {
-		expect( editor.plugins.get( ImageCaptionEditing ) ).to.instanceOf( ImageCaptionEditing );
+		expect( editor.plugins.get( ImageCaptionEditing ) ).toBeInstanceOf( ImageCaptionEditing );
 	} );
 
 	it( 'should load the ImageCaptionUI plugin', () => {
-		expect( editor.plugins.get( ImageCaptionUI ) ).to.instanceOf( ImageCaptionUI );
+		expect( editor.plugins.get( ImageCaptionUI ) ).toBeInstanceOf( ImageCaptionUI );
 	} );
 } );

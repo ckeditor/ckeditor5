@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { global } from '@ckeditor/ckeditor5-utils';
@@ -31,31 +32,31 @@ describe( 'ImageBlock', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageBlock ) ).to.instanceOf( ImageBlock );
-		expect( editor.plugins.get( 'ImageBlock' ) ).to.instanceOf( ImageBlock );
+		expect( editor.plugins.get( ImageBlock ) ).toBeInstanceOf( ImageBlock );
+		expect( editor.plugins.get( 'ImageBlock' ) ).toBeInstanceOf( ImageBlock );
 	} );
 
 	it( 'should load ImageBlockEditing plugin', () => {
-		expect( editor.plugins.get( ImageBlockEditing ) ).to.instanceOf( ImageBlockEditing );
+		expect( editor.plugins.get( ImageBlockEditing ) ).toBeInstanceOf( ImageBlockEditing );
 	} );
 
 	it( 'should load Widget plugin', () => {
-		expect( editor.plugins.get( Widget ) ).to.instanceOf( Widget );
+		expect( editor.plugins.get( Widget ) ).toBeInstanceOf( Widget );
 	} );
 
 	it( 'should load ImageTextAlternative plugin', () => {
-		expect( editor.plugins.get( ImageTextAlternative ) ).to.instanceOf( ImageTextAlternative );
+		expect( editor.plugins.get( ImageTextAlternative ) ).toBeInstanceOf( ImageTextAlternative );
 	} );
 
 	it( 'should load ImageInsertUI plugin', () => {
-		expect( editor.plugins.get( ImageInsertUI ) ).to.instanceOf( ImageInsertUI );
+		expect( editor.plugins.get( ImageInsertUI ) ).toBeInstanceOf( ImageInsertUI );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( ImageBlock.isOfficialPlugin ).to.be.true;
+		expect( ImageBlock.isOfficialPlugin ).toBe( true );
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( ImageBlock.isPremiumPlugin ).to.be.false;
+		expect( ImageBlock.isPremiumPlugin ).toBe( false );
 	} );
 } );
