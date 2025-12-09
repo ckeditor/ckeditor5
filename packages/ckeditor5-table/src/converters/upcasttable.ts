@@ -206,7 +206,7 @@ export function ensureParagraphInTableCell( elementName: string ) {
  */
 function scanTable( viewTable: ViewElement ) {
 	let headingColumns: number | undefined = undefined;
-	let shouldAccumulateHeadingRows: boolean | null = null;
+	let shouldAccumulateHeadingRows: boolean = true;
 
 	// The `<tbody>` and `<thead>` sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more than one
 	// of them.
@@ -236,7 +236,7 @@ function scanTable( viewTable: ViewElement ) {
 
 		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
 		if ( tableChild.name === 'thead' ) {
-			shouldAccumulateHeadingRows = null;
+			shouldAccumulateHeadingRows = true;
 			firstTheadElement ||= tableChild;
 		}
 
@@ -267,8 +267,7 @@ function scanTable( viewTable: ViewElement ) {
 					( maxPrevColumns === null || trColumns.length === maxPrevColumns ) &&
 					trColumns.every( e => e.is( 'element', 'th' ) ) &&
 					// If there is at least one "normal" table row between heading rows, then stop accumulating heading rows.
-					// However, if flag `ignoreHeaderRowMoveIfNormalRowsBefore` is set to `false`, then ignore this rule.
-					( shouldAccumulateHeadingRows === null || shouldAccumulateHeadingRows )
+					shouldAccumulateHeadingRows
 				)
 			) {
 				headRows.push( tr );
