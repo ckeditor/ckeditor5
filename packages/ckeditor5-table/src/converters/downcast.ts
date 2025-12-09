@@ -123,7 +123,7 @@ export function downcastCell( options: { asWidget?: boolean; cellTypeEnabled: ()
 			return createCellElement( writer, cellElementName );
 		}
 
-		// If the the table cell type feature is not enabled, we should iterate through the table structure
+		// If the table cell type feature is not enabled, we should iterate through the table structure
 		// to determine whether the cell is in the heading section.
 		const tableRow = tableCell.parent as ModelElement;
 		const table = tableRow.parent as ModelElement;
