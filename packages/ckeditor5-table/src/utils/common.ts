@@ -173,7 +173,7 @@ export function isEntireCellsLineHeader(
 }
 
 /**
- * Checks whether the `TableCellPropertiesEditing` plugin is enabled.
+ * Checks whether the `tableCellType` attribute is enabled in the editor schema and the experimental flag is set.
  *
  * @internal
  */
