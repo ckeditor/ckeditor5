@@ -235,9 +235,9 @@ function scanTable( viewTable: ViewElement ) {
 		}
 
 		// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
-		if ( tableChild.name === 'thead' ) {
+		if ( tableChild.name === 'thead' && !firstTheadElement ) {
 			shouldAccumulateHeadingRows = true;
-			firstTheadElement ||= tableChild;
+			firstTheadElement = tableChild;
 		}
 
 		// There might be some extra empty text nodes between the `<tr>`s.

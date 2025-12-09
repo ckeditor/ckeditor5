@@ -760,6 +760,84 @@ describe( 'upcastTable()', () => {
 				'</table>'
 			);
 		} );
+
+		it( 'should properly group heading rows in table containing multiple thead and multiple tbody', async () => {
+			// Only the first thead should be rendered on top of the table, so
+			// it only makes sense to not move the last thead table headers to heading rows.
+			editor.setData( `
+				<figure class="table">
+					<table>
+						<thead>
+							<tr>
+								<th>Col Header 1</th>
+								<th>Col Header 2</th>
+								<th>Col Header 3</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<th>Row Header 1</th>
+								<th>Row Header 2</td>
+								<th>Row Header 3</td>
+							</tr>
+
+							<tr>
+								<th>Row Header 4</th>
+								<th>Row Header 5</th>
+								<th>Row Header 6</th>
+							</tr>
+						</tbody>
+
+						<thead>
+							<tr>
+								<th>Col Header 4</th>
+								<th>Col Header 5</th>
+								<th>Col Header 6</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<th>Data 4</th>
+								<th>Data 5</th>
+								<th>Data 6</th>
+							</tr>
+						</tbody>
+					</table>
+				</figure>
+			` );
+
+			expectModel(
+				'<table headingColumns="3" headingRows="3">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Col Header 1</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 2</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 3</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Row Header 1</paragraph></tableCell>' +
+						'<tableCell><paragraph>Row Header 2</paragraph></tableCell>' +
+						'<tableCell><paragraph>Row Header 3</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Row Header 4</paragraph></tableCell>' +
+						'<tableCell><paragraph>Row Header 5</paragraph></tableCell>' +
+						'<tableCell><paragraph>Row Header 6</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Col Header 4</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 5</paragraph></tableCell>' +
+						'<tableCell><paragraph>Col Header 6</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>Data 4</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 5</paragraph></tableCell>' +
+						'<tableCell><paragraph>Data 6</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 
 	describe( 'headingRows', () => {
