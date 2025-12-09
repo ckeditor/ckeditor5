@@ -3087,6 +3087,222 @@ describe( 'table cell properties', () => {
 					);
 				} );
 			} );
+
+			describe( 'postfixer', () => {
+				it( 'should decrement headingRows when changing tableCellType within the last row', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header', isSelected: true },
+							{ contents: '11', tableCellType: 'header' }
+						],
+						[ '20', '21' ]
+					], { headingRows: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 0 ) );
+					} );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								'10',
+								{ contents: '11', tableCellType: 'header' }
+							],
+							[ '20', '21' ]
+						], { headingRows: 1 } )
+					);
+				} );
+
+				it( 'should transform `headingColumns` to `headingRows` if changed all heading columns cells ' +
+						'but whole heading row was kept', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', tableCellType: 'header', isSelected: true }
+						]
+					], { headingColumns: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 0 ) );
+					} );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '10' },
+								{ contents: '11', tableCellType: 'header' }
+							]
+						], { headingRows: 1 } )
+					);
+				} );
+
+				it( 'should decrement headingColumns when changing tableCellType within the last column', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header', isSelected: true }
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', tableCellType: 'header' }
+						]
+					], { headingColumns: 2 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.removeAttribute( 'tableCellType', table.getChild( 0 ).getChild( 1 ) );
+					} );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								'01'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								{ contents: '11', tableCellType: 'header' }
+							]
+						], { headingColumns: 1 } )
+					);
+				} );
+
+				it( 'should increment headingRows when changing a cell to header makes the whole row headers', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', isSelected: true }
+						],
+						[ '20', '21' ]
+					], { headingRows: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableCellType', 'header', table.getChild( 1 ).getChild( 1 ) );
+					} );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								{ contents: '11', tableCellType: 'header' }
+							],
+							[ '20', '21' ]
+						], { headingRows: 2 } )
+					);
+				} );
+
+				it( 'should increment headingColumns when changing a cell to header makes the whole column headers', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' },
+							'02'
+						],
+						[
+							{ contents: '10', tableCellType: 'header' },
+							{ contents: '11', isSelected: true },
+							'12'
+						]
+					], { headingColumns: 1 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableCellType', 'header', table.getChild( 1 ).getChild( 1 ) );
+					} );
+
+					expect( table.getAttribute( 'headingColumns' ) ).to.equal( 2 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' },
+								'02'
+							],
+							[
+								{ contents: '10', tableCellType: 'header' },
+								{ contents: '11', tableCellType: 'header' },
+								'12'
+							]
+						], { headingColumns: 2 } )
+					);
+				} );
+
+				it( 'should split headingRows when a cell in the middle of heading section becomes data', () => {
+					_setModelData( model, modelTable( [
+						[
+							{ contents: '00', tableCellType: 'header' },
+							{ contents: '01', tableCellType: 'header' }
+						],
+						[
+							{ contents: '10', tableCellType: 'header', isSelected: true },
+							{ contents: '11', tableCellType: 'header' }
+						],
+						[
+							{ contents: '20', tableCellType: 'header' },
+							{ contents: '21', tableCellType: 'header' }
+						]
+					], { headingRows: 3 } ) );
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					model.change( writer => {
+						writer.removeAttribute( 'tableCellType', table.getChild( 1 ).getChild( 0 ) );
+					} );
+
+					expect( table.getAttribute( 'headingRows' ) ).to.equal( 1 );
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						modelTable( [
+							[
+								{ contents: '00', tableCellType: 'header' },
+								{ contents: '01', tableCellType: 'header' }
+							],
+							[
+								'10',
+								{ contents: '11', tableCellType: 'header' }
+							],
+							[
+								{ contents: '20', tableCellType: 'header' },
+								{ contents: '21', tableCellType: 'header' }
+							]
+						], { headingRows: 1 } )
+					);
+				} );
+			} );
 		} );
 	} );
 } );
