@@ -318,7 +318,7 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
-				it( 'should convert multiple images surrounded by a link', () => {
+				it( 'should convert multiple block images surrounded by a link', () => {
 					editor.setData(
 						'<a href="http://ckeditor.com">' +
 							'<img src="/assets/sample.png" alt="alt text" />' +
@@ -332,7 +332,7 @@ describe( 'LinkImageEditing', () => {
 					);
 				} );
 
-				it( 'should convert an image and text surrounded by a link', () => {
+				it( 'should convert an block image and text surrounded by a link', () => {
 					editor.setData(
 						'<a href="http://ckeditor.com">' +
 							'Foo' +
@@ -350,6 +350,75 @@ describe( 'LinkImageEditing', () => {
 							'<$text linkHref="http://ckeditor.com">Bar</$text>' +
 						'</paragraph>'
 					);
+				} );
+
+				it( 'should convert multiple block images surrounded by a link with manual decorator', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								isGallery: {
+									mode: 'manual',
+									classes: 'gallery'
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com" class="gallery">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link ' +
+						'with link.addTargetToExternalLinks set to true', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: true
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
 				} );
 
 				it( 'should not convert in wrong context', () => {
