@@ -322,13 +322,25 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDe
 				return;
 			}
 
-			// At this stage we can assume that we have the `<imageBlock>` element.
-			// `nodeBefore` comes after conversion: `<a><img></a>`.
-			// `parent` comes with full image definition: `<figure><a><img></a></figure>.
-			// See the body of the `upcastLink()` function.
-			const modelElement = data.modelCursor.nodeBefore as ModelElement || data.modelCursor.parent;
+			// At this stage we can assume that we have the `<imageBlock>` elements in model cursor or range.
+			const modelElement = data.modelCursor.parent;
 
-			conversionApi.writer.setAttribute( decorator.id, true, modelElement );
+			if ( modelElement?.is( 'element', 'imageBlock' ) ) {
+				conversionApi.writer.setAttribute( decorator.id, true, modelElement );
+				return;
+			}
+
+			if ( data.modelRange ) {
+				for ( const { item } of data.modelRange!.getWalker( { ignoreElementEnd: true } ) ) {
+					if (
+						item.is( 'element', 'imageBlock' ) &&
+						!item.hasAttribute( decorator.id ) &&
+						conversionApi.schema.checkAttribute( item, decorator.id )
+					) {
+						conversionApi.writer.setAttribute( decorator.id, true, item );
+					}
+				}
+			}
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
