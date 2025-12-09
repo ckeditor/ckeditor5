@@ -176,7 +176,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 
 				// Iterate over all converted model elements and set the linkHref attribute on image elements.
 				if ( data.modelRange ) {
-					for ( const { item } of data.modelRange.getWalker( { ignoreElementEnd: true } ) ) {
+					for ( const item of data.modelRange.getItems() ) {
 						if ( !item.hasAttribute( 'linkHref' ) && conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
 							conversionApi.writer.setAttribute( 'linkHref', linkHref, item );
 						}
