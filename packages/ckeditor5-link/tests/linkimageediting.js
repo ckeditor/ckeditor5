@@ -275,9 +275,18 @@ describe( 'LinkImageEditing', () => {
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
-				it( 'should not convert if a link misses "href" attribute', () => {
+				it( 'should convert even if a link has empty "href" attribute', () => {
 					editor.setData(
 						'<figure class="image"><a href=""><img src="/assets/sample.png" alt="alt text" /></a></figure>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+				} );
+
+				it( 'should not convert if a link misses "href" attribute', () => {
+					editor.setData(
+						'<figure class="image"><a><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
@@ -500,9 +509,18 @@ describe( 'LinkImageEditing', () => {
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
-				it( 'should not convert if a link misses "href" attribute', () => {
+				it( 'should convert if a has empty "href" attribute', () => {
 					editor.setData(
 						'<a href=""><img src="/assets/sample.png" alt="alt text" /></a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+				} );
+
+				it( 'should not convert if a link misses "href" attribute', () => {
+					editor.setData(
+						'<a><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )

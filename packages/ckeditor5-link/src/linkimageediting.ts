@@ -151,17 +151,12 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 			const consumableAttributes = { attributes: [ 'href' ] };
 
 			// Consume the `href` attribute so the default one will not convert it to $text attribute.
-			if ( !conversionApi.consumable.consume( viewLink, consumableAttributes ) ) {
+			if ( !conversionApi.consumable.test( viewLink, consumableAttributes ) ) {
 				// Might be consumed by something else - i.e. other converter with priority=highest - a standard check.
 				return;
 			}
 
 			const linkHref = viewLink.getAttribute( 'href' );
-
-			// Missing the 'href' attribute.
-			if ( !linkHref ) {
-				return;
-			}
 
 			// A full definition of the image feature.
 			// figure > a > img: parent of the view link element is an image element (figure).
@@ -170,18 +165,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 			if ( modelElement.is( 'element', 'imageBlock' ) ) {
 				// Set the linkHref attribute from link element on model image element.
 				conversionApi.writer.setAttribute( 'linkHref', linkHref, modelElement );
-			} else {
-				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
-				Object.assign( data, conversionApi.convertChildren( viewLink, data.modelCursor ) );
-
-				// Iterate over all converted model elements and set the linkHref attribute on image elements.
-				if ( data.modelRange ) {
-					for ( const item of data.modelRange.getItems() ) {
-						if ( !item.hasAttribute( 'linkHref' ) && conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
-							conversionApi.writer.setAttribute( 'linkHref', linkHref, item );
-						}
-					}
-				}
+				conversionApi.consumable.consume( viewLink, consumableAttributes );
 			}
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastImageLinkManualDecorator()` converter guarantees
@@ -318,7 +302,7 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDe
 			}
 
 			// Check whether we can consume those attributes.
-			if ( !conversionApi.consumable.consume( viewLink, result.match ) ) {
+			if ( !conversionApi.consumable.test( viewLink, result.match ) ) {
 				return;
 			}
 
@@ -327,15 +311,7 @@ function upcastImageLinkManualDecorator( editor: Editor, decorator: LinkManualDe
 
 			if ( modelElement?.is( 'element', 'imageBlock' ) ) {
 				conversionApi.writer.setAttribute( decorator.id, true, modelElement );
-				return;
-			}
-
-			if ( data.modelRange ) {
-				for ( const item of data.modelRange.getItems() ) {
-					if ( !item.hasAttribute( decorator.id ) && conversionApi.schema.checkAttribute( item, decorator.id ) ) {
-						conversionApi.writer.setAttribute( decorator.id, true, item );
-					}
-				}
+				conversionApi.consumable.consume( viewLink, result.match );
 			}
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
