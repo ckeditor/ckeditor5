@@ -35,17 +35,12 @@
     "dist",
     "src/*.js",
     "src/*.d.ts",
-    "build/ckeditor5-dll.js",
-    "build/ckeditor5-dll.manifest.json",
-    "build/translations/*.js",
     "COPYING.GPL",
     "CHANGELOG.md",
     "LICENSE.md",
     "README.md"
   ],
   "scripts": {
-    "predll:build": "pnpm run build",
-    "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
   },
