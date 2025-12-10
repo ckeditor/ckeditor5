@@ -16,7 +16,6 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
-// TODO add a comment here explaining why the issue link was removed.
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/mediaform.css';
 
