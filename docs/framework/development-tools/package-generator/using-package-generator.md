@@ -16,7 +16,7 @@ The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-pack
 To create a new package without installing the tool, simply execute the following command:
 
 ```bash
-npx ckeditor5-package-generator <packageName> [--use-npm] [--use-yarn] [--installation-methods <current|current-and-legacy>] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
+npx ckeditor5-package-generator <packageName> [--use-npm] [--use-pnpm] [--use-yarn] [--installation-methods <current|current-and-legacy>] [--plugin-name <...>] [--lang <js|ts>] [--global-name <...>] [--verbose]
 ```
 
 The `<packageName>` argument is required and must obey these rules:
@@ -30,6 +30,7 @@ As a result of executing the command, a new directory with a package in it will 
 Available modifiers for the command are:
 
 * `--use-npm` &ndash; use `npm` to install dependencies in the newly created package.
+* `--use-pnpm` &ndash; use `pnpm` to install dependencies in the newly created package.
 * `--use-yarn` &ndash; use `yarn` to install dependencies in the newly created package.
 * `--global-name` &ndash; define a global name of the package to be used in the UMD build.
 * `--plugin-name` &ndash; define the plugin name to be different from the package name.
