@@ -107,7 +107,7 @@ describe( 'table cell properties', () => {
 			} );
 
 			// [experimental]
-			it( 'should contains experimental CSS class when in experimental mode for table cell properties', () => {
+			it( 'should contain experimental CSS class when in experimental mode for table cell properties', () => {
 				const locale = { t: val => val };
 				const VIEW_OPTIONS_EXPERIMENTAL = { ...VIEW_OPTIONS, isTableCellTypeSupported: true };
 				const experimentalView = new TableCellPropertiesViewExperimental( locale, VIEW_OPTIONS_EXPERIMENTAL );
