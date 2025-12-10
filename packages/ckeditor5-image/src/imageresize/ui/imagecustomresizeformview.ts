@@ -26,7 +26,6 @@ import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/imagecustomresizeform.css';
 
-// TODO add comment explaining why the issue link was removed.
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 

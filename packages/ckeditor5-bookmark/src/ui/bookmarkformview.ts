@@ -27,7 +27,6 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
-// TODO add comment explaining why the issue link was removed.
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
