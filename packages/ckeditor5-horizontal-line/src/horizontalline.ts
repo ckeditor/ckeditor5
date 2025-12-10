@@ -7,8 +7,8 @@
  * @module horizontal-line/horizontalline
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Widget } from 'ckeditor5/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 import { HorizontalLineEditing } from './horizontallineediting.js';
 import { HorizontalLineUI } from './horizontallineui.js';
 

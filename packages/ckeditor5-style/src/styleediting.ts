@@ -7,7 +7,7 @@
  * @module style/styleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import { StyleCommand } from './stylecommand.js';

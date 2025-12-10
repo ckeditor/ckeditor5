@@ -7,8 +7,8 @@
  * @module html-embed/htmlembed
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { Widget } from 'ckeditor5/src/widget.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Widget } from '@ckeditor/ckeditor5-widget';
 
 import { HtmlEmbedEditing } from './htmlembedediting.js';
 import { HtmlEmbedUI } from './htmlembedui.js';

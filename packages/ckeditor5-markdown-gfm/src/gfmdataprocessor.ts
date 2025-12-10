@@ -13,7 +13,7 @@ import {
 	type ViewDocument,
 	type ViewDocumentFragment,
 	type MatcherPattern
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { MarkdownGfmMdToHtml } from './markdown2html/markdown2html.js';
 import { MarkdownGfmHtmlToMd } from './html2markdown/html2markdown.js';

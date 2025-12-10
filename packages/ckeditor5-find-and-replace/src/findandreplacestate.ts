@@ -7,8 +7,8 @@
  * @module find-and-replace/findandreplacestate
  */
 
-import type { Model, ModelItem } from 'ckeditor5/src/engine.js';
-import { ObservableMixin, Collection, type CollectionChangeEvent, type ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import type { Model, ModelItem } from '@ckeditor/ckeditor5-engine';
+import { ObservableMixin, Collection, type CollectionChangeEvent, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import type { FindResultType } from './findandreplace.js';
 
 /**

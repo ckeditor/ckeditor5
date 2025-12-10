@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
+import { IconAlignLeft, IconAlignRight } from '@ckeditor/ckeditor5-icons';
 
 import { AlignmentEditing } from '../src/alignmentediting.js';
 import { AlignmentUI } from '../src/alignmentui.js';

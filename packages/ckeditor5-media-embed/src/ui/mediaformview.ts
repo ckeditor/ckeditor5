@@ -13,11 +13,10 @@ import {
 	View,
 	createLabeledInputText,
 	submitHandler
-} from 'ckeditor5/src/ui.js';
-import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
+} from '@ckeditor/ckeditor5-ui';
+import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+// TODO add a comment here explaining why the issue link was removed.
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/mediaform.css';
 

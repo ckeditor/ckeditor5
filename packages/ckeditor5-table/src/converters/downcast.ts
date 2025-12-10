@@ -7,8 +7,8 @@
  * @module table/converters/downcast
  */
 
-import { type Editor } from 'ckeditor5/src/core.js';
-import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
+import { type Editor } from '@ckeditor/ckeditor5-core';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import type {
 	ModelNode,
 	ViewElement,
@@ -18,7 +18,7 @@ import type {
 	DowncastElementCreatorFunction,
 	ViewContainerElement,
 	DowncastConversionApi
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';

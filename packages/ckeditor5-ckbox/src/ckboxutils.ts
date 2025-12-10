@@ -8,8 +8,8 @@
  */
 
 import type { CloudServices, InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
-import { CKEditorError, logError } from 'ckeditor5/src/utils.js';
-import { Plugin } from 'ckeditor5/src/core.js';
+import { CKEditorError, logError } from '@ckeditor/ckeditor5-utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	convertMimeTypeToExtension,
 	getContentTypeOfUrl,

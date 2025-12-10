@@ -7,11 +7,11 @@
  * @module bookmark/bookmarkediting
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { toWidget } from 'ckeditor5/src/widget.js';
-import { IconView } from 'ckeditor5/src/ui.js';
-import { IconBookmarkInline } from 'ckeditor5/src/icons.js';
-import type { EventInfo } from 'ckeditor5/src/utils.js';
+import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
+import { IconView } from '@ckeditor/ckeditor5-ui';
+import { IconBookmarkInline } from '@ckeditor/ckeditor5-icons';
+import type { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	ViewUIElement,
@@ -22,7 +22,7 @@ import type {
 	UpcastElementEvent,
 	UpcastConversionData,
 	UpcastConversionApi
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 import { InsertBookmarkCommand } from './insertbookmarkcommand.js';
 import { UpdateBookmarkCommand } from './updatebookmarkcommand.js';

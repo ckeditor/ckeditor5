@@ -14,7 +14,7 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 import { type TableUtils } from '../tableutils.js';
 import {
 	normalizeColumnWidths,

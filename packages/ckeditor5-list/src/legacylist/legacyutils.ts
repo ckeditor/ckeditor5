@@ -20,7 +20,7 @@ import {
 	type ViewElement,
 	type ViewItem,
 	type ViewPosition
-} from 'ckeditor5/src/engine.js';
+} from '@ckeditor/ckeditor5-engine';
 
 /**
  * Creates a list item {@link module:engine/view/containerelement~ViewContainerElement}.

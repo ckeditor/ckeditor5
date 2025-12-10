@@ -7,8 +7,8 @@
  * @module easy-image/easyimage
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import { logWarning } from 'ckeditor5/src/utils.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 import { CloudServicesUploadAdapter } from './cloudservicesuploadadapter.js';
 

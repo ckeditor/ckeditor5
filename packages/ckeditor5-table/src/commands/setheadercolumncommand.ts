@@ -7,7 +7,7 @@
  * @module table/commands/setheadercolumncommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import { Command } from '@ckeditor/ckeditor5-core';
 import { type TableUtils } from '../tableutils.js';
 
 import {

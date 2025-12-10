@@ -7,7 +7,7 @@
  * @module ckbox/ckboximageedit
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
 import { CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
