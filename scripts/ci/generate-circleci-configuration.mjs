@@ -39,11 +39,6 @@ const NON_FULL_COVERAGE_PACKAGES = [
 	'ckeditor5-minimap'
 ];
 
-const PACKAGES_TO_SKIP = [
-	// No tests at the moment.
-	'ckeditor5-collaboration'
-];
-
 const { values: options } = parseArgs( {
 	options: {
 		'chrome-version': {
@@ -257,9 +252,7 @@ const persistToWorkspace = fileName => ( {
  * @returns {Array.<CircleCITask>}
  */
 function generateTestSteps( packages, { checkCoverage, coverageFile = null } ) {
-	return packages.filter( packageName => {
-		return !PACKAGES_TO_SKIP.includes( packageName );
-	} ).map( packageName => {
+	return packages.map( packageName => {
 		const allowNonFullCoverage = NON_FULL_COVERAGE_PACKAGES.includes( packageName );
 
 		const testCommand = [
