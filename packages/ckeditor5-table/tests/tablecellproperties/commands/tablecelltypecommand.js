@@ -36,7 +36,7 @@ describe( 'TableCellTypeCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true is selection has table cell', () => {
+		it( 'should be true if selection has table cell', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 			expect( command.isEnabled ).to.be.true;
 		} );
