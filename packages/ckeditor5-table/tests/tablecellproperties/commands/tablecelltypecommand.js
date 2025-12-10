@@ -49,7 +49,7 @@ describe( 'TableCellTypeCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'should be data if selected table cell has no tableCellType property', () => {
+		it( 'should be "data" if selected table cell has no tableCellType property', () => {
 			_setModelData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 			expect( command.value ).to.be.equal( 'data' );
