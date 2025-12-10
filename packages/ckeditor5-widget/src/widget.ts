@@ -28,7 +28,12 @@ import {
 	type ViewDocumentTabEvent,
 	type ViewDocumentKeyDownEvent,
 	type ViewNode,
-	type ViewRange
+	type ViewRange,
+	type ViewPosition,
+	type ModelRange,
+	type Model,
+	type ModelSelection,
+	type ModelDocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
 import { Delete, type ViewDocumentDeleteEvent } from '@ckeditor/ckeditor5-typing';
@@ -38,11 +43,13 @@ import {
 	keyCodes,
 	getLocalizedArrowKeyCodeDirection,
 	getRangeFromMouseEvent,
+	compareArrays,
 	type EventInfo,
 	type KeystrokeInfo
 } from '@ckeditor/ckeditor5-utils';
 
 import { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
+import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 import { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils.js';
 
@@ -213,35 +220,17 @@ export class Widget extends Plugin {
 			}
 		}, { context: '$root' } );
 
-		// Handle Tab key while a widget is selected.
+		// Handle Tab/Shift+Tab key.
 		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
-			// This event could be triggered from inside the widget, but we are interested
-			// only when the widget is selected itself.
-			if ( evt.eventPhase != 'atTarget' ) {
-				return;
-			}
-
-			if ( data.shiftKey ) {
-				return;
-			}
-
-			if ( this._selectFirstNestedEditable() ) {
+			if ( this._selectNextEditable( data.shiftKey ? 'backward' : 'forward' ) ) {
+				view.scrollToTheSelection();
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { context: isWidget, priority: 'low' } );
-
-		// Handle Shift+Tab key while caret inside a widget editable.
-		this.listenTo<ViewDocumentTabEvent>( viewDocument, 'tab', ( evt, data ) => {
-			if ( !data.shiftKey ) {
-				return;
-			}
-
-			if ( this._selectAncestorWidget() ) {
-				data.preventDefault();
-				evt.stop();
-			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => isWidget( node ) || node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Handle Esc key while inside a nested editable.
 		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
@@ -253,7 +242,10 @@ export class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'low' } );
+		}, {
+			context: node => node.is( 'editableElement' ),
+			priority: 'low'
+		} );
 
 		// Add the information about the keystrokes to the accessibility database.
 		editor.accessibility.addKeystrokeInfoGroup( {
@@ -408,68 +400,85 @@ export class Widget extends Plugin {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
-		const objectElement = modelSelection.getSelectedElement();
+		const selectedElement = modelSelection.getSelectedElement();
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, this.editor.locale.contentLanguageDirection );
 		const isForward = direction == 'down' || direction == 'right';
 		const isVerticalNavigation = direction == 'up' || direction == 'down';
 
-		// If object element is selected.
-		if ( objectElement && schema.isObject( objectElement ) ) {
-			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = schema.getNearestSelectionRange( position!, isForward ? 'forward' : 'backward' );
+		// Collapsing a non-collapsed selection.
+		if ( !domEventData.shiftKey && !modelSelection.isCollapsed ) {
+			// If object element is selected or object is at the edge of selection.
+			if ( hasObjectAtEdge( modelSelection, schema ) ) {
+				const position = isForward ? modelSelection.getLastPosition()! : modelSelection.getFirstPosition()!;
+				const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
-			if ( newRange ) {
+				if ( newRange ) {
+					model.change( writer => {
+						writer.setSelection( newRange );
+					} );
+
+					domEventData.preventDefault();
+					eventInfo.stop();
+				}
+			}
+
+			// Else is handled by the browser.
+			return;
+		}
+
+		// Adjust selection for fake caret and for selection direction when single object is selected.
+		const originalSelection = getModelSelectionAdjusted( model, isForward );
+
+		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
+		// to its current state after undo.
+		const probe = model.createSelection( originalSelection );
+
+		model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+
+		// The selection didn't change so there is nothing there.
+		if ( probe.isEqual( originalSelection ) ) {
+			return;
+		}
+
+		// Move probe one step further to make it visually recognizable.
+		if ( probe.focus!.isTouching( originalSelection.focus! ) ) {
+			model.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+		}
+
+		const lastSelectedNode = isForward ? originalSelection.focus!.nodeBefore : originalSelection.focus!.nodeAfter;
+
+		const nodeBeforeProbe = probe.focus!.nodeBefore;
+		const nodeAfterProbe = probe.focus!.nodeAfter;
+		const lastProbeNode = isForward ? nodeBeforeProbe : nodeAfterProbe;
+
+		if ( domEventData.shiftKey ) {
+			// Expand selection from a selected object or include object in selection.
+			if (
+				selectedElement && schema.isObject( selectedElement ) ||
+				lastProbeNode && schema.isObject( lastProbeNode ) ||
+				lastSelectedNode && schema.isObject( lastSelectedNode )
+			) {
 				model.change( writer => {
-					writer.setSelection( newRange );
+					writer.setSelection( probe );
 				} );
 
 				domEventData.preventDefault();
 				eventInfo.stop();
 			}
+		} else {
+			// Select an object when moving caret over it.
+			if ( lastProbeNode && schema.isObject( lastProbeNode ) ) {
+				if ( schema.isInline( lastProbeNode ) && isVerticalNavigation ) {
+					return;
+				}
 
-			return;
-		}
-
-		// Handle collapsing of the selection when there is any widget on the edge of selection.
-		// This is needed because browsers have problems with collapsing such selection.
-		if ( !modelSelection.isCollapsed && !domEventData.shiftKey ) {
-			const firstPosition = modelSelection.getFirstPosition();
-			const lastPosition = modelSelection.getLastPosition();
-
-			const firstSelectedNode = firstPosition!.nodeAfter;
-			const lastSelectedNode = lastPosition!.nodeBefore;
-
-			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
 				model.change( writer => {
-					writer.setSelection( isForward ? lastPosition : firstPosition );
+					writer.setSelection( lastProbeNode, 'on' );
 				} );
 
 				domEventData.preventDefault();
 				eventInfo.stop();
 			}
-
-			return;
-		}
-
-		// Return if not collapsed.
-		if ( !modelSelection.isCollapsed ) {
-			return;
-		}
-
-		// If selection is next to object element.
-
-		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
-
-		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
-			// Do not select an inline widget while handling up/down arrow.
-			if ( schema.isInline( objectElementNextToSelection ) && isVerticalNavigation ) {
-				return;
-			}
-
-			this._setSelectionOverElement( objectElementNextToSelection );
-
-			domEventData.preventDefault();
-			eventInfo.stop();
 		}
 	}
 
@@ -569,7 +578,7 @@ export class Widget extends Plugin {
 
 		const objectElement = forward ? probe.focus!.nodeBefore : probe.focus!.nodeAfter;
 
-		if ( !!objectElement && schema.isObject( objectElement ) ) {
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			return objectElement as ModelElement;
 		}
 
@@ -588,34 +597,124 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Moves the document selection into the first nested editable.
+	 * Moves the document selection into the next editable or block widget.
 	 */
-	private _selectFirstNestedEditable(): boolean {
-		const editor = this.editor;
-		const view = this.editor.editing.view;
-		const viewDocument = view.document;
+	private _selectNextEditable( direction: 'backward' | 'forward' ): boolean {
+		const editing = this.editor.editing;
+		const view = editing.view;
+		const model = this.editor.model;
+		const viewSelection = view.document.selection;
+		const modelSelection = model.document.selection;
 
-		for ( const item of viewDocument.selection.getFirstRange()!.getItems() ) {
-			if ( item.is( 'editableElement' ) ) {
-				const modelElement = editor.editing.mapper.toModelElement( item );
+		// Find start position.
+		let startPosition: ViewPosition;
 
-				/* istanbul ignore next -- @preserve */
-				if ( !modelElement ) {
-					continue;
-				}
+		// Multiple table cells are selected - use focus cell.
+		if ( modelSelection.rangeCount > 1 ) {
+			const selectionRange = modelSelection.isBackward ?
+				modelSelection.getFirstRange()! :
+				modelSelection.getLastRange()!;
 
-				const position = editor.model.createPositionAt( modelElement, 0 );
-				const newRange = editor.model.schema.getNearestSelectionRange( position, 'forward' );
+			startPosition = editing.mapper.toViewPosition(
+				direction == 'forward' ?
+					selectionRange.end :
+					selectionRange.start
+			);
+		} else {
+			startPosition = direction == 'forward' ?
+				viewSelection.getFirstPosition()! :
+				viewSelection.getLastPosition()!;
+		}
 
-				editor.model.change( writer => {
-					writer.setSelection( newRange );
-				} );
+		const modelRange = this._findNextFocusRange( startPosition, direction );
 
-				return true;
-			}
+		if ( modelRange ) {
+			model.change( writer => {
+				writer.setSelection( modelRange );
+			} );
+
+			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Looks for next focus point in the document starting from the given view position and direction.
+	 * The focus point is either a block widget or an editable.
+	 *
+	 * @internal
+	 */
+	public _findNextFocusRange( startPosition: ViewPosition, direction: 'backward' | 'forward' ): ModelRange | null {
+		const editing = this.editor.editing;
+		const view = editing.view;
+		const model = this.editor.model;
+		const viewSelection = view.document.selection;
+
+		const editableElement = viewSelection.editableElement!;
+		const editablePath = editableElement.getPath();
+
+		let selectedElement = viewSelection.getSelectedElement();
+
+		if ( selectedElement && !isWidget( selectedElement ) ) {
+			selectedElement = null;
+		}
+
+		// Look for the next editable.
+		const viewRange = direction == 'forward' ?
+			view.createRange( startPosition, view.createPositionAt( startPosition.root as ViewNode, 'end' ) ) :
+			view.createRange( view.createPositionAt( startPosition.root as ViewNode, 0 ), startPosition );
+
+		for ( const { nextPosition } of viewRange.getWalker( { direction } ) ) {
+			const item = nextPosition.parent as ViewNode;
+
+			// Some widget along the way except the currently selected one.
+			if ( isWidget( item ) && item != selectedElement ) {
+				const modelElement = editing.mapper.toModelElement( item as ViewElement )!;
+
+				// Do not select inline widgets.
+				if ( !model.schema.isBlock( modelElement ) ) {
+					continue;
+				}
+
+				// Do not select widget itself when going out of widget or iterating over sibling elements in a widget.
+				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
+					return model.createRangeOn( modelElement );
+				}
+			}
+			// Encountered an editable element.
+			else if ( item.is( 'editableElement' ) ) {
+				// Ignore the current editable for text selection,
+				// but use it when widget was selected to be able to jump after the widget.
+				if ( item == editableElement && !selectedElement ) {
+					continue;
+				}
+
+				const modelPosition = editing.mapper.toModelPosition( nextPosition );
+				const newRange = model.schema.getNearestSelectionRange( modelPosition, direction );
+
+				// There is nothing to select so just jump to the next one.
+				if ( !newRange ) {
+					continue;
+				}
+
+				// In the same editable while widget was selected - do not select the editable content.
+				if ( item == editableElement && selectedElement ) {
+					return newRange;
+				}
+
+				// Select the content of editable element when iterating over sibling editable elements
+				// or going deeper into nested widgets.
+				if ( compareArrays( editablePath, item.getPath() ) != 'extension' ) {
+					// Find a limit element closest to the new selection range.
+					return model.createRangeIn( model.schema.getLimitElement( newRange ) );
+				}
+
+				return newRange;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -651,6 +750,44 @@ export class Widget extends Plugin {
 
 		return true;
 	}
+}
+
+/**
+ * Returns true if there is an object on an edge of the given selection.
+ */
+function hasObjectAtEdge( modelSelection: ModelSelection | ModelDocumentSelection, schema: ModelSchema ): boolean {
+	const firstPosition = modelSelection.getFirstPosition()!;
+	const lastPosition = modelSelection.getLastPosition()!;
+
+	const firstSelectedNode = firstPosition.nodeAfter;
+	const lastSelectedNode = lastPosition.nodeBefore;
+
+	return (
+		!!firstSelectedNode && schema.isObject( firstSelectedNode ) ||
+		!!lastSelectedNode && schema.isObject( lastSelectedNode )
+	);
+}
+
+/**
+ * Returns new instance of the model selection adjusted for fake caret and selection direction on widgets.
+ */
+function getModelSelectionAdjusted( model: Model, isForward: boolean ): ModelSelection {
+	const modelSelection = model.document.selection;
+	const selectedElement = modelSelection.getSelectedElement();
+
+	// Adjust selection for fake caret.
+	const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( modelSelection );
+
+	if ( selectedElement && typeAroundFakeCaretPosition == 'before' ) {
+		return model.createSelection( selectedElement, 'before' );
+	} else if ( selectedElement && typeAroundFakeCaretPosition == 'after' ) {
+		return model.createSelection( selectedElement, 'after' );
+	}
+
+	// Make a copy of selection with adjusted direction for object selected.
+	return model.createSelection( modelSelection.getRanges(), {
+		backward: !!selectedElement && model.schema.isObject( selectedElement ) ? !isForward : modelSelection.isBackward
+	} );
 }
 
 /**

@@ -1022,6 +1022,111 @@ describe( 'DialogView', () => {
 			expect( view.element.firstChild.style.top ).to.equal( '225px' );
 		} );
 
+		it( 'should return early when position is null', () => {
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = null;
+
+			view.updatePosition();
+
+			sinon.assert.notCalled( moveToSpy );
+		} );
+
+		it( 'should call position function with correct arguments and use returned coordinates', () => {
+			const mockCoords = { left: 123, top: 456 };
+			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			sinon.assert.calledOnce( positionFunctionSpy );
+
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( dialogRect ).to.deep.equal( {
+				width: 100,
+				height: 50,
+				left: 0,
+				right: 100,
+				top: 0,
+				bottom: 50
+			} );
+
+			expect( domRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
+			} );
+
+			sinon.assert.calledOnceWithExactly( moveToSpy, 123, 456 );
+		} );
+
+		it( 'should call position function with undefined domRootRect when no DOM root is available', () => {
+			const mockCoords = { left: 789, top: 101 };
+			const positionFunctionSpy = testUtils.sinon.stub().returns( mockCoords );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			getCurrentDomRootStub.returns( null );
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			sinon.assert.calledOnce( positionFunctionSpy );
+
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( dialogRect ).to.deep.equal( {
+				width: 100,
+				height: 50,
+				left: 0,
+				right: 100,
+				top: 0,
+				bottom: 50
+			} );
+
+			expect( domRootRect ).to.be.undefined;
+
+			sinon.assert.calledOnceWithExactly( moveToSpy, 789, 101 );
+		} );
+
+		it( 'should move dialog off screen when position function returns null', () => {
+			const positionFunctionSpy = testUtils.sinon.stub().returns( null );
+			const moveToSpy = testUtils.sinon.spy( view, '_moveTo' );
+
+			view.position = positionFunctionSpy;
+
+			view.updatePosition();
+
+			sinon.assert.calledOnce( positionFunctionSpy );
+
+			const [ dialogRect, domRootRect ] = positionFunctionSpy.firstCall.args;
+
+			expect( dialogRect ).to.deep.equal( {
+				width: 100,
+				height: 50,
+				left: 0,
+				right: 100,
+				top: 0,
+				bottom: 50
+			} );
+
+			expect( domRootRect ).to.deep.equal( {
+				width: 200,
+				height: 200,
+				left: 10,
+				right: 210,
+				top: 10,
+				bottom: 210
+			} );
+
+			sinon.assert.calledOnceWithExactly( moveToSpy, -9999, -9999 );
+		} );
+
 		describe( 'when the DOM root is visible in the viewport', () => {
 			it( 'should support EDITOR_TOP_SIDE position (LTR editor)', () => {
 				view.position = DialogViewPosition.EDITOR_TOP_SIDE;

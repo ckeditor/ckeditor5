@@ -251,6 +251,10 @@ export function reconvertItemsOnDataChange(
 			return false;
 		}
 
+		if ( isItemBlockInsideStructureSlot( viewElement ) ) {
+			return true;
+		}
+
 		const needsRefresh = listEditing.fire<ListEditingCheckElementEvent>( 'checkElement', {
 			modelElement: item,
 			viewElement
@@ -269,6 +273,25 @@ export function reconvertItemsOnDataChange(
 		if ( useBogus && viewElement.is( 'element', 'p' ) ) {
 			return true;
 		} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	function isItemBlockInsideStructureSlot( viewElement: ViewElement ) {
+		viewElement = viewElement.parent as ViewElement;
+
+		while ( viewElement.is( 'attributeElement' ) && [ 'ol', 'ul', 'li' ].includes( viewElement.name ) ) {
+			viewElement = viewElement.parent as ViewElement;
+		}
+
+		// List item inside elementToStructure slot parent without mapping then it requires refresh for correct positions
+		// as structure child elements does not have mapping from model and position would land in wrong place.
+		if (
+			viewElement.getCustomProperty( '$structureSlotParent' ) &&
+			!editing.mapper.toModelElement( viewElement )
+		) {
 			return true;
 		}
 
@@ -343,7 +366,7 @@ export function listItemDowncastConverter(
 	model: Model,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
 ): GetCallback<DowncastAttributeEvent<ListElement>> {
-	const consumer = createAttributesConsumer( attributeNames );
+	const consumer = createAttributesConsumer( attributeNames, strategies );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
@@ -366,7 +389,7 @@ export function listItemDowncastConverter(
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		const viewElement = findMappedViewElement( listItem, mapper, model )!;
+		const viewElement = findMappedViewElement( listItem, mapper, model, writer )!;
 
 		// Remove custom item marker.
 		removeCustomMarkerElements( viewElement, writer, mapper );
@@ -458,12 +481,25 @@ export function bogusParagraphCreator(
  * @param element The model element.
  * @param mapper The mapper instance.
  * @param model The model.
+ * @param writer The view downcast writer.
  */
-export function findMappedViewElement( element: ModelElement, mapper: Mapper, model: Model ): ViewElement | null {
+export function findMappedViewElement(
+	element: ModelElement,
+	mapper: Mapper,
+	model: Model,
+	writer: ViewDowncastWriter
+): ViewElement | undefined {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
+	const viewWalker = viewRange.getWalker();
 
-	return viewRange.end.nodeBefore as ViewElement | null;
+	for ( const { item } of viewWalker ) {
+		if ( item.is( 'element' ) && item.getCustomProperty( 'listItemMarker' ) ) {
+			viewWalker.jumpTo( writer.createPositionAfter( item ) );
+		} else if ( item.is( 'element' ) && !item.getCustomProperty( 'listItemWrapper' ) ) {
+			return item;
+		}
+	}
 }
 
 /**
@@ -645,7 +681,7 @@ function wrapListItemBlock(
 	viewRange: ViewRange,
 	strategies: Array<ListDowncastStrategy>,
 	writer: ViewDowncastWriter,
-	options?: Record<string, unknown>
+	options: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -667,7 +703,8 @@ function wrapListItemBlock(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
 					strategy.scope == 'list' ? listViewElement : listItemViewElement,
-					options
+					options,
+					currentListItem
 				);
 			}
 		}
@@ -690,13 +727,17 @@ function wrapListItemBlock(
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
-function createAttributesConsumer( attributeNames: Array<string> ) {
+function createAttributesConsumer( attributeNames: Array<string>, strategies: Array<ListDowncastStrategy> ) {
+	const nonConsumingAttributes = strategies
+		.filter( strategy => strategy.consume === false )
+		.map( strategy => strategy.attributeName );
+
 	return ( node: ModelNode, consumable: ModelConsumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
 		for ( const attributeName of attributeNames ) {
-			if ( node.hasAttribute( attributeName ) ) {
+			if ( node.hasAttribute( attributeName ) && !nonConsumingAttributes.includes( attributeName ) ) {
 				events.push( `attribute:${ attributeName }` );
 			}
 		}

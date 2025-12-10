@@ -45,11 +45,11 @@ msgstr "Headerrække"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Indsæt header under"
+msgstr "Indsæt række under"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Indsæt header over"
+msgstr "Indsæt række over"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
@@ -294,3 +294,27 @@ msgstr "Tabeltype"
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
 msgstr "Indstillinger for tabeltype"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Table Alignment"
+msgstr "Tabeljustering"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as an inline element, allowing text to wrap around it."
+msgid "Align table to the left with text wrapping"
+msgstr "Juster tabel til venstre med tekstombrydning"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table as a block element with no text wrapping."
+msgid "Center table with no text wrapping"
+msgstr "Centrer tabel uden nogen tekstombrydning"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as an inline element, allowing text to wrap around it."
+msgid "Align table to the right with text wrapping"
+msgstr "Juster tabel til højre med tekstombrydning"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as a block element with no text wrapping."
+msgid "Align table to the left with no text wrapping"
+msgstr "Juster tabel til venstre uden nogen tekstombrydning"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
+msgid "Align table to the right with no text wrapping"
+msgstr "Juster tabel til højre uden nogen tekstombrydning"

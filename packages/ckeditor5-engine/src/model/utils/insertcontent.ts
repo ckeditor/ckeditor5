@@ -287,9 +287,9 @@ class Insertion {
 	private _lastAutoParagraph: ModelElement | null = null;
 
 	/**
-	 * The array of nodes that should be cleaned of not allowed attributes.
+	 * The array of nodes that should be cleaned of not allowed attributes and sub-nodes.
 	 */
-	private _filterAttributesOf: Array<ModelNode> = [];
+	private _filterAttributesAndChildrenOf: Array<ModelNode> = [];
 
 	/**
 	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
@@ -321,7 +321,10 @@ class Insertion {
 	 */
 	public handleNodes( nodes: Iterable<ModelNode> ): void {
 		for ( const node of Array.from( nodes ) ) {
-			this._handleNode( node );
+			// Ignore empty nodes, especially empty text nodes.
+			if ( node.offsetSize > 0 ) {
+				this._handleNode( node );
+			}
 		}
 
 		// Insert nodes collected in temporary ModelDocumentFragment.
@@ -337,8 +340,61 @@ class Insertion {
 		this._mergeOnRight();
 
 		// TMP this will become a post-fixer.
-		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
-		this._filterAttributesOf = [];
+		this.schema.removeDisallowedAttributes( this._filterAttributesAndChildrenOf, this.writer );
+
+		if ( this.model._config?.get( 'experimentalFlags.modelInsertContentDeepSchemaVerification' ) ) {
+			this._removeDisallowedChildren( this._filterAttributesAndChildrenOf );
+		}
+
+		this._filterAttributesAndChildrenOf = [];
+	}
+
+	/**
+	 * Removes disallowed children from nodes that were inserted or modified during insertion.
+	 */
+	private _removeDisallowedChildren( nodes: Iterable<ModelNode> ): void {
+		// Make sure we do not modify the original iterable.
+		const nodesArray = Array.from( nodes );
+
+		// Check all sub-nodes of top level inserted nodes.
+		// We do it at this point so node is already in the model tree and schema checks will be correct.
+		for ( const node of nodesArray ) {
+			if ( !node.is( 'element' ) ) {
+				continue;
+			}
+
+			const remove = [];
+			const unwrap = [];
+			const walker = this.writer.createRangeIn( node ).getWalker( { ignoreElementEnd: true } );
+
+			for ( const { item } of walker ) {
+				const itemParent = item.parent as ModelElement;
+
+				if ( !this.schema.checkChild( itemParent, item as ModelNode ) ) {
+					if ( item.is( 'element' ) && !this.schema.isObject( item ) ) {
+						// Unwrap non-object element.
+						unwrap.push( item );
+
+						// Store the parent for re-checking children after unwrap.
+						nodesArray.push( itemParent );
+					} else {
+						// Remove object with children, or text.
+						remove.push( item );
+					}
+
+					// Skip the whole subtree as it will be removed or processed later.
+					walker.jumpTo( this.writer.createPositionAfter( item ) );
+				}
+			}
+
+			for ( const item of unwrap ) {
+				this.writer.unwrap( item );
+			}
+
+			for ( const item of remove ) {
+				this.writer.remove( item );
+			}
+		}
 	}
 
 	/**
@@ -420,7 +476,7 @@ class Insertion {
 		}
 
 		// Add node to the current temporary ModelDocumentFragment.
-		this._appendToFragment( node );
+		node = this._appendToFragment( node );
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
 		if ( !this._firstNode ) {
@@ -481,7 +537,7 @@ class Insertion {
 	 *
 	 * @param node The node to insert.
 	 */
-	private _appendToFragment( node: ModelNode ): void {
+	private _appendToFragment( node: ModelNode ): ModelNode {
 		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -504,6 +560,12 @@ class Insertion {
 		this.writer.insert( node, this._documentFragmentPosition );
 		this._documentFragmentPosition = this._documentFragmentPosition.getShiftedBy( node.offsetSize );
 
+		// In case text node was merged with already inserted text node, we need to get the actual node that is in the document.
+		// This happens when there is a non-allowed object between text nodes.
+		if ( !node.parent ) {
+			node = this._documentFragmentPosition.nodeBefore as ModelNode;
+		}
+
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
 		if ( this.schema.isObject( node ) && !this.schema.checkChild( this.position, '$text' ) ) {
 			this._nodeToSelect = node;
@@ -511,7 +573,9 @@ class Insertion {
 			this._nodeToSelect = null;
 		}
 
-		this._filterAttributesOf.push( node );
+		this._filterAttributesAndChildrenOf.push( node );
+
+		return node;
 	}
 
 	/**
@@ -615,7 +679,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosLeft.detach();
 	}
@@ -699,7 +763,7 @@ class Insertion {
 
 		// After merge elements that were marked by _insert() to be filtered might be gone so
 		// we need to mark the new container.
-		this._filterAttributesOf.push( this.position.parent as any );
+		this._filterAttributesAndChildrenOf.push( this.position.parent as any );
 
 		mergePosRight.detach();
 	}
@@ -818,13 +882,18 @@ class Insertion {
 	 * @param childNode The node to check.
 	 */
 	private _getAllowedIn( contextElement: ModelElement, childNode: ModelNode ): ModelElement | null {
+		const context = this.schema.createContext( contextElement );
+
 		// Check if a node can be inserted in the given context...
-		if ( this.schema.checkChild( contextElement, childNode ) ) {
+		if ( this.schema.checkChild( context, childNode ) ) {
 			return contextElement;
 		}
 
 		// ...or it would be accepted if a paragraph would be inserted.
-		if ( this.schema.checkChild( contextElement, 'paragraph' ) && this.schema.checkChild( 'paragraph', childNode ) ) {
+		if (
+			this.schema.checkChild( context, 'paragraph' ) &&
+			this.schema.checkChild( context.push( 'paragraph' ), childNode )
+		) {
 			return contextElement;
 		}
 

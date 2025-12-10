@@ -22,7 +22,6 @@ Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below a
 
 Here are some examples of snippets changed by the text transformation feature:
 
-<!-- vale off -->
 <table style="width: unset">
 	<thead>
 		<tr>
@@ -53,7 +52,6 @@ Here are some examples of snippets changed by the text transformation feature:
 		</tr>
 	</tbody>
 </table>
-<!-- vale on -->
 
 This feature comes pre-configured with a set of the most popular transformations. You can, however, remove existing ones or add your own autocorrect entries.
 

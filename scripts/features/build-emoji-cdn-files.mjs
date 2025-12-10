@@ -26,7 +26,8 @@ const versions = await checkbox( {
 	message: 'Select Unicode versions to process',
 	choices: [
 		{ value: 15, checked: true },
-		{ value: 16, checked: true }
+		{ value: 16, checked: true },
+		{ value: 17, checked: true }
 	]
 } );
 

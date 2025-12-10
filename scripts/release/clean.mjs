@@ -5,11 +5,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import { glob } from 'glob';
 import { rimraf } from 'rimraf';
 import minimist from 'minimist';
 import isTypeScriptPackage from './utils/istypescriptpackage.mjs';
+import { PACKAGES_DIRECTORY } from './utils/constants.mjs';
 
 const options = parseArguments( process.argv.slice( 2 ) );
 
@@ -77,16 +78,10 @@ async function findTypeScriptPackages( repositoryRoot ) {
  * @param {String} repositoryRoot An absolute path to the repository where to look for packages.
  * @returns {Promise} Array of package names.
  */
-function findAllPackages( repositoryRoot ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.readdir( path.join( repositoryRoot, 'packages' ), ( err, files ) => {
-			if ( err ) {
-				reject( err );
-			} else {
-				resolve( files.map( pkg => path.join( repositoryRoot, 'packages', pkg ) ) );
-			}
-		} );
-	} );
+async function findAllPackages( repositoryRoot ) {
+	return glob( `${ PACKAGES_DIRECTORY }/*/`, { cwd: repositoryRoot, absolute: true } )
+		// Glob returns packages from bottom to top (Z-A). Let's align the results to `fs.readdir()` (A-Z).
+		.then( items => items.reverse() );
 }
 
 /**

@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "편집 비활성화"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "편집 활성화"
@@ -30,3 +26,23 @@ msgstr "다음 편집 가능한 구역"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "편집 가능한 구역 탐색"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr "인라인 편집 비활성화"
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr "인라인 편집 활성화"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr "블록 편집 비활성화"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr "블록 편집 활성화"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "편집 비활성화"

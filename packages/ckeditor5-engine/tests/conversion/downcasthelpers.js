@@ -2520,6 +2520,552 @@ describe( 'DowncastHelpers', () => {
 			} );
 		} );
 
+		describe( 'with complex view structure - structure nested in structure', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					allowIn: [ '$root', 'complex' ],
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'complex',
+						attributes: [ 'toStyle', 'toClass' ],
+						children: true
+					},
+					view: ( modelElement, { writer } ) => {
+						const outer = writer.createContainerElement( 'div', { class: 'complex-outer' } );
+						const inner = writer.createContainerElement( 'div', {
+							class: 'complex-inner',
+							...getViewAttributes( modelElement )
+						} );
+
+						writer.insert( writer.createPositionAt( outer, 0 ), inner );
+						writer.insert( writer.createPositionAt( inner, 0 ), writer.createSlot() );
+
+						return outer;
+					}
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'complex'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+
+				model.schema.register( 'heading', {
+					inheritAllFrom: '$block',
+					allowIn: 'complex'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'heading',
+					view: 'h1'
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.not.have.property( 'reconversion' );
+					spy();
+				} );
+
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+					writer.insertElement( 'complex', modelRoot.getChild( 0 ), 0 );
+				} );
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner">' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on attribute set', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex>' +
+							'<paragraph></paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner" style="display:block">' +
+									'<p></p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on attribute change', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toStyle="display:block">' +
+							'<paragraph></paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner" style="display:inline">' +
+									'<p></p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on attribute remove', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toStyle="display:block">' +
+							'<paragraph></paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner">' +
+									'<p></p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on attribute change on both elements', () => {
+				_setModelData( model,
+					'<complex toClass="true">' +
+						'<complex toStyle="display:block">' +
+							'<paragraph>foo</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:flex', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toStyle', 'display:inline-block', modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter, textAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="is-classy" style="display:flex">' +
+							'<div class="complex-outer">' +
+								'<div class="complex-inner" style="display:inline-block">' +
+									'<p>foo</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on one attribute add and other remove', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toStyle="display:block">' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ).getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on adding a child (at the beginning)', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toClass="true">' +
+							'<paragraph>foo</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore
+				] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'bar' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ).getChild( 0 ), 0 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter, /* insertedPara */, /* insertedText */,
+					paragraphAfter, textAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+									'<p>bar</p>' +
+									'<p>foo</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on adding a child (at the end)', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toClass="true">' +
+							'<paragraph>foo</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore
+				] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'bar' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ).getChild( 0 ), 1 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter, textAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+									'<p>foo</p>' +
+									'<p>bar</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on renaming a child', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toClass="true">' +
+							'<paragraph>foo</paragraph>' +
+							'<paragraph>bar</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore, paragraph2Before, text2Before
+				] = getNodes();
+
+				model.change( writer => {
+					writer.rename( modelRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ), 'heading' );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					headingAfter, textAfter, paragraph2After, text2After
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+									'<h1>foo</h1>' +
+									'<p>bar</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( headingAfter, 'p' ).to.not.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.not.equal( textBefore );
+				expect( paragraph2After, 'p' ).to.equal( paragraph2Before );
+				expect( text2After, '$text' ).to.equal( text2Before );
+				expect( spy.called ).to.be.true;
+			} );
+
+			it( 'should convert on removing a child', () => {
+				_setModelData( model,
+					'<complex>' +
+						'<complex toClass="true">' +
+							'<paragraph>foo</paragraph>' +
+							'<paragraph>bar</paragraph>' +
+						'</complex>' +
+					'</complex>'
+				);
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:complex', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+					spy();
+				} );
+
+				const [
+					outerDivBefore, innerDivBefore,
+					nestedOuterDivBefore, nestedInnerDivBefore,
+					paragraphBefore, textBefore
+				] = getNodes();
+
+				model.change( writer => {
+					writer.remove( modelRoot.getNodeByPath( [ 0, 0, 1 ] ) );
+				} );
+
+				const [
+					outerDivAfter, innerDivAfter,
+					nestedOuterDivAfter, nestedInnerDivAfter,
+					paragraphAfter, textAfter
+				] = getNodes();
+
+				expectResult(
+					'<div class="complex-outer">' +
+						'<div class="complex-inner">' +
+							'<div class="complex-outer">' +
+								'<div class="is-classy">' +
+									'<p>foo</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+				expect( nestedOuterDivAfter, 'nested outer div' ).to.not.equal( nestedOuterDivBefore );
+				expect( nestedInnerDivAfter, 'nested inner div' ).to.not.equal( nestedInnerDivBefore );
+				expect( paragraphAfter, 'p' ).to.equal( paragraphBefore );
+				expect( textAfter, '$text' ).to.equal( textBefore );
+				expect( spy.called ).to.be.true;
+			} );
+		} );
+
 		it( 'should throw an exception if invalid slot mode or filter was provided', () => {
 			model.schema.register( 'simple', {
 				allowIn: '$root'
@@ -4222,6 +4768,20 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<span class="comment">foo</span>' );
+		} );
+
+		it( 'config.view is not polluted', () => {
+			const myView = { classes: 'comment' };
+
+			downcastHelpers.markerToHighlight( { model: 'comment', view: myView } );
+
+			model.change( writer => {
+				writer.insertText( 'foo', modelRoot, 0 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
+			} );
+
+			expect( myView ).to.deep.equal( { classes: 'comment' } );
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {

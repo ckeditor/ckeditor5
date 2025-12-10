@@ -409,6 +409,58 @@ describe( 'upcastTable()', () => {
 		);
 	} );
 
+	describe( 'in limited container allowing only inline content', () => {
+		beforeEach( () => {
+			model.schema.register( 'limitContainer', {
+				allowWhere: '$block',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.elementToElement( {
+				model: 'limitContainer',
+				view: 'div'
+			} );
+		} );
+
+		it( 'should strip table if parent does not allow it', () => {
+			editor.setData(
+				'<div>' +
+					'123' +
+					'<table>' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</table>' +
+					'456' +
+				'</div>'
+			);
+
+			expectModel(
+				'<limitContainer>123foo456</limitContainer>'
+			);
+		} );
+
+		it( 'should strip table in figure if parent does not allow it', () => {
+			editor.setData(
+				'<div>' +
+					'123' +
+					'<figure class="table">' +
+						'<table>' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>' +
+					'</figure>' +
+					'456' +
+				'</div>'
+			);
+
+			expectModel(
+				'<limitContainer>123foo456</limitContainer>'
+			);
+		} );
+	} );
+
 	describe( 'headingColumns', () => {
 		it( 'should properly calculate heading columns', () => {
 			editor.setData(
@@ -556,6 +608,85 @@ describe( 'upcastTable()', () => {
 					'<tableCell><paragraph>33</paragraph></tableCell>' +
 					'<tableCell><paragraph>34</paragraph></tableCell>' +
 				'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should calculate heading columns of cells with rowspan', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						// This row's second <th> has a rowspan of 2 so it should "add" a <th>
+						// to the next row (which only has one)
+						'<tr><th>21</th><th rowspan="2">22</th><td>23</td><td>24</td></tr>' +
+						'<tr><th>31</th><td>33</td><td>34</td></tr>' +
+					'</tbody>' +
+					'<thead>' +
+						// This row has 4 ths but it is a thead.
+						'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
+					'</thead>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingColumns="2" headingRows="1">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+						'<tableCell><paragraph>14</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell rowspan="2"><paragraph>22</paragraph></tableCell>' +
+						'<tableCell><paragraph>23</paragraph></tableCell>' +
+						'<tableCell><paragraph>24</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>31</paragraph></tableCell>' +
+						'<tableCell><paragraph>33</paragraph></tableCell>' +
+						'<tableCell><paragraph>34</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should calculate heading columns of cells with conflicting rowspan and colspan', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						// This row's second <th> has a rowspan of 2 so it should "add" a <th>
+						// to the next row (which only has one), except the next row's first <th>
+						// has a colspan of 2, so it overrides the rowspan
+						'<tr><th>21</th><th rowspan="2">22</th><th>23</th><td>24</td></tr>' +
+						'<tr><th colspan="2">31</th><td>33</td><td>34</td></tr>' +
+					'</tbody>' +
+					'<thead>' +
+						// This row has 4 ths but it is a thead.
+						'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
+					'</thead>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingColumns="2" headingRows="1">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+						'<tableCell><paragraph>13</paragraph></tableCell>' +
+						'<tableCell><paragraph>14</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell rowspan="2"><paragraph>22</paragraph></tableCell>' +
+						'<tableCell><paragraph>23</paragraph></tableCell>' +
+						'<tableCell><paragraph>24</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell colspan="2"><paragraph>31</paragraph></tableCell>' +
+						'<tableCell><paragraph>33</paragraph></tableCell>' +
+						'<tableCell><paragraph>34</paragraph></tableCell>' +
+					'</tableRow>' +
 				'</table>'
 			);
 		} );
@@ -881,14 +1012,14 @@ describe( 'upcastTable()', () => {
 				'<table>' +
 					'<tbody>' +
 						'<tr>' +
-							'<td><img src="sample.png"></td>' +
+							'<td><img src="/assets/sample.png"></td>' +
 						'</tr>' +
 					'</tbody>' +
 				'</table>'
 			);
 
 			expectModel( modelTable( [
-				[ '<imageBlock src="sample.png"></imageBlock>' ]
+				[ '<imageBlock src="/assets/sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );

@@ -34,3 +34,15 @@ msgstr "โครงร่างของเอกสาร"
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
 msgstr "ผู้ใช้ที่เชื่อมต่ออยู่"
+
+msgctxt "Tooltip for a button that shows the left sidebar"
+msgid "Show left sidebar"
+msgstr "แสดงแถบข้างด้านซ้าย"
+
+msgctxt "Tooltip for a button that hides the left sidebar"
+msgid "Hide left sidebar"
+msgstr "ซ่อนแถบข้างด้านซ้าย"
+
+msgctxt "Label for a button that toggles the left sidebar"
+msgid "Toggle sidebar"
+msgstr "สลับแถบข้าง"

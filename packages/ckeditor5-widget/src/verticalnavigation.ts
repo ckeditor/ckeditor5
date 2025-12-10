@@ -46,12 +46,6 @@ export function verticalWidgetNavigationHandler(
 
 		const isForward = arrowDownPressed;
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach any object.
-		if ( expandSelection && selectionWillShrink( selection, isForward ) ) {
-			return;
-		}
-
 		// Find a range between selection and closest limit element.
 		const range = findTextRangeFromSelection( editing, selection, isForward );
 
@@ -112,12 +106,12 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 	const model = editing.model;
 
 	if ( isForward ) {
-		const startPosition = selection.isCollapsed ? selection.focus! : selection.getLastPosition()!;
+		const startPosition = selection.focus!;
 		const endPosition = getNearestNonInlineLimit( model, startPosition, 'forward' );
 
 		// There is no limit element, browser should handle this.
 		if ( !endPosition ) {
-			return null;
+			return;
 		}
 
 		const range = model.createRange( startPosition, endPosition );
@@ -126,15 +120,13 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		if ( lastRangePosition ) {
 			return model.createRange( startPosition, lastRangePosition );
 		}
-
-		return null;
 	} else {
-		const endPosition = selection.isCollapsed ? selection.focus! : selection.getFirstPosition()!;
+		const endPosition = selection.focus!;
 		const startPosition = getNearestNonInlineLimit( model, endPosition, 'backward' );
 
 		// There is no limit element, browser should handle this.
 		if ( !startPosition ) {
-			return null;
+			return;
 		}
 
 		const range = model.createRange( startPosition, endPosition );
@@ -143,8 +135,6 @@ function findTextRangeFromSelection( editing: EditingController, selection: Mode
 		if ( firstRangePosition ) {
 			return model.createRange( firstRangePosition, endPosition );
 		}
-
-		return null;
 	}
 }
 
@@ -195,8 +185,6 @@ function getNearestTextPosition( schema: ModelSchema, range: ModelRange, directi
 			return nextPosition;
 		}
 	}
-
-	return null;
 }
 
 /**
@@ -249,8 +237,4 @@ function isSingleLineRange( editing: EditingController, modelRange: ModelRange, 
 	}
 
 	return true;
-}
-
-function selectionWillShrink( selection: ModelDocumentSelection, isForward: boolean ) {
-	return !selection.isCollapsed && selection.isBackward == isForward;
 }

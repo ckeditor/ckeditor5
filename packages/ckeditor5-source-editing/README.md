@@ -2,7 +2,7 @@ CKEditor&nbsp;5 source code editing feature
 =================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-source-editing.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)
-[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![codecov](https://codecov.io/gh/ckeditor/ckeditor5/branch/master/graph/badge.svg)](https://codecov.io/gh/ckeditor/ckeditor5)
 [![CircleCI](https://circleci.com/gh/ckeditor/ckeditor5.svg?style=shield)](https://app.circleci.com/pipelines/github/ckeditor/ckeditor5?branch=master)
 
 This package implements the source code editing support for CKEditor&nbsp;5 that allows you to view and edit the source of the document.

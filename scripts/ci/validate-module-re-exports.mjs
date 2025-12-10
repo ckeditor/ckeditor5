@@ -140,6 +140,10 @@ function getFixingAction( pkg, module, exportItem ) {
 		return 'Add @internal and re-export with `_` suffix';
 	}
 
+	if ( isInternal && isReExported && !allowsReexportInternals( pkg ) ) {
+		return 'Remove from index or @internal.';
+	}
+
 	const namingCheck = validateNaming( { pkg, module, item: exportItem } );
 
 	if ( !namingCheck.ok ) {
@@ -175,4 +179,8 @@ function removeExpectedExceptions( data ) {
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-image', 'isHtmlInDataTransfer' ) )
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-find-and-replace', 'FindReplaceCommandBase' ) )
 		.filter( record => !memberExistInRecord( record, '@ckeditor/ckeditor5-utils', 'globalVar' ) );
+}
+
+function allowsReexportInternals( pkg ) {
+	return pkg.isPublicPackage;
 }

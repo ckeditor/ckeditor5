@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "Zablokuj edycję"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "Odblokuj edycję"
@@ -30,3 +26,23 @@ msgstr "Następne pole do edycji"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "Przejdź między polami do edycji"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr "Zablokuj edycję w tekście"
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr "Odblokuj edycję w tekście"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr "Zablokuj edycję bloku"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr "Odblokuj edycję bloku"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "Zablokuj edycję"

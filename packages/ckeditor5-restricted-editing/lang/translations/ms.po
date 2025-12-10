@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "Matikan suntingan"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "Benarkan suntingan"
@@ -30,3 +26,23 @@ msgstr "Bahagian yang boleh disunting seterusnya"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "Kawal bahagian yang boleh disunting seterusnya"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr "Nyahaktifkan penyuntingan sebaris"
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr "Aktifkan penyuntingan sebaris"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr "Nyahaktifkan penyuntingan blok"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr "Aktifkan penyuntingan blok"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "Matikan suntingan"

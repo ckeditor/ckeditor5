@@ -141,11 +141,59 @@ describe( 'CKBoxImageEditCommand', () => {
 			_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
 			command.execute();
 
-			await new Promise( resolve => setTimeout( resolve, 0 ) );
+			await tick();
 
 			expect( window.CKBox.mountImageEditor.callCount ).to.equal( 1 );
 			expect( window.CKBox.mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'assetId' ).that.equals( 'example-id' );
 		} );
+
+		describe( 'mount image editor options', () => {
+			let mountImageEditor;
+
+			beforeEach( () => {
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/assets/sample.png"></imageBlock>]' );
+
+				mountImageEditor = window.CKBox.mountImageEditor;
+			} );
+
+			it( 'should forward ckbox language configuration to mountImageEditor', async () => {
+				editor.config.set( 'ckbox.language', 'fr' );
+				command.execute();
+
+				await tick();
+
+				expect( mountImageEditor.callCount ).to.equal( 1 );
+				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'language' ).that.equals( 'fr' );
+			} );
+
+			it( 'should forward tokenUrl configuration to mountImageEditor', async () => {
+				editor.config.set( 'ckbox.tokenUrl', 'https://example.com/token' );
+				command.execute();
+
+				await tick();
+
+				expect( mountImageEditor.callCount ).to.equal( 1 );
+				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'tokenUrl' ).that.equals(
+					'https://example.com/token'
+				);
+			} );
+
+			it( 'should forward serviceOrigin configuration to mountImageEditor', async () => {
+				editor.config.set( 'ckbox.serviceOrigin', 'https://example.com' );
+				command.execute();
+
+				await tick();
+
+				expect( mountImageEditor.callCount ).to.equal( 1 );
+				expect( mountImageEditor.firstCall.args[ 1 ] ).to.have.property( 'serviceOrigin' ).that.equals(
+					'https://example.com'
+				);
+			} );
+		} );
+
+		function tick() {
+			return new Promise( resolve => setTimeout( resolve, 0 ) );
+		}
 	} );
 
 	describe( 'save edited image logic', () => {
@@ -265,7 +313,7 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (external image with relative URL)', async () => {
-				const imageUrl = 'sample.png';
+				const imageUrl = 'assets/sample.png';
 				const categoryId = 'id-category-1';
 				const origin = window.location.origin;
 

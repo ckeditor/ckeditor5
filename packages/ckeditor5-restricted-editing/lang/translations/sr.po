@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "Немогуће уређивање"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "Омогући уређивање"
@@ -30,3 +26,23 @@ msgstr "Следећа регија за уређивање"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "Пронђи регије за уређивање"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr "Onemogući direktno uređivanje"
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr "Omogući direktno uređivanje"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr "Onemogući uređivanje blokova"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr "Omogući uređivanje blokova"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "Onemogući uređivanje"

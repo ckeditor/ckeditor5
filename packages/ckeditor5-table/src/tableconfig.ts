@@ -23,13 +23,11 @@ import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @internal
  */
 export interface TableConfig {
 
 	/**
-	 * Number of rows and columns to render by table heading when inserting new tables.
+	 * Number of rows and columns to render by the table heading when inserting new tables.
 	 *
 	 * You can configure it like this:
 	 *
@@ -42,7 +40,7 @@ export interface TableConfig {
 	 * };
 	 * ```
 	 *
-	 * Both rows and columns properties are optional defaulting to 0 (no heading).
+	 * Both rows and columns properties are optional, defaulting to 0 (no heading).
 	 */
 	defaultHeadings?: {
 		rows?: number;
@@ -95,7 +93,7 @@ export interface TableConfig {
 	tableToolbar?: Array<ToolbarConfigItem>;
 
 	/**
-	 * The configuration of the table properties user interface (balloon). It allows to define:
+	 * The configuration of the table properties user interface (balloon). It allows us to define:
 	 *
 	 * * The color palette for the table border color style field (`tableProperties.borderColors`),
 	 * * The color palette for the table background style field (`tableProperties.backgroundColors`).
@@ -139,9 +137,9 @@ export interface TableConfig {
 	 * {@link module:table/tableconfig~TablePropertiesOptions Read more about the supported properties.}
 	 *
 	 * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
-	 * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
-	 * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
-	 * Default values will not be kept in the editor model.
+	 * i.e., they do not limit or filter the colors in the data. They are used only in the user interface,
+	 * allowing users to pick colors more conveniently. The `defaultProperties` option does impact the data.
+	 * The editor model will not keep the default values.
 	 *
 	 * The default color palettes for the table background and the table border are the same
 	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
@@ -154,7 +152,7 @@ export interface TableConfig {
 	tableProperties?: TablePropertiesConfig;
 
 	/**
-	 * The configuration of the table cell properties user interface (balloon). It allows to define:
+	 * The configuration of the table cell properties user interface (balloon). It allows us to define:
 	 *
 	 * * The color palette for the cell border color style field (`tableCellProperties.borderColors`),
 	 * * The color palette for the cell background style field (`tableCellProperties.backgroundColors`).
@@ -197,11 +195,11 @@ export interface TableConfig {
 	 * {@link module:table/tableconfig~TablePropertiesOptions Read more about the supported properties.}
 	 *
 	 * **Note**: The `borderColors` and `backgroundColors` options do not impact the data loaded into the editor,
-	 * i.e. they do not limit or filter the colors in the data. They are used only in the user interface
+	 * i.e., they do not limit or filter the colors in the data. They are used only in the user interface,
 	 * allowing users to pick colors in a more convenient way. The `defaultProperties` option does impact the data.
-	 * Default values will not be kept in the editor model.
+	 * The editor model will not keep the default values.
 	 *
-	 * The default color palettes for the cell background and the cell border are the same
+	 * The default color palettes for the cell background and the cell border are identical
 	 * ({@link module:table/utils/ui/table-properties#defaultColors check out their content}).
 	 *
 	 * Both color palette configurations must follow the
@@ -238,9 +236,103 @@ export interface TableConfig {
  * The configuration of the table properties user interface (balloon).
  */
 export interface TablePropertiesConfig {
+
+	/**
+	 * The color palette for the table border color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		borderColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 0%)',
+	 * 				label: 'Black'
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	borderColors?: TableColorConfig;
+
+	/**
+	 * The color palette for the table background color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		backgroundColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(120, 75%, 60%)',
+	 * 				label: 'Green'
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	backgroundColors?: TableColorConfig;
+
+	/**
+	 * Default styles for newly created tables.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		defaultProperties: {
+	 * 			borderStyle: 'dashed',
+	 * 			borderColor: 'hsl(0, 0%, 90%)',
+	 * 			borderWidth: '3px',
+	 * 			alignment: 'left',
+	 * 			width: '550px',
+	 * 			height: '450px'
+	 * 		}
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * **Note**: The model does not store the default values. The editor will only keep values that differ from the defaults.
+	 *
+	 * See {@link module:table/tableconfig~TablePropertiesOptions} for the full list of properties.
+	 */
 	defaultProperties?: TablePropertiesOptions;
+
+	/**
+	 * Configuration of the table alignment behavior in the editor output.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableProperties: {
+	 * 		alignment: {
+	 * 			useInlineStyles: false // Use CSS classes instead of inline styles
+	 * 		}
+	 * 	}
+	 * };
+	 * ```
+	 */
+	alignment?: TableAlignmentConfig;
 
 	/**
 	 * Configuration of the color picker in the table properties balloon.
@@ -299,8 +391,87 @@ export interface TablePropertiesOptions {
  * The configuration of the table cell properties user interface (balloon).
  */
 export interface TableCellPropertiesConfig {
+
+	/**
+	 * The color palette for the table cell border color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		borderColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 0%)',
+	 * 				label: 'Black'
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	borderColors?: TableColorConfig;
+
+	/**
+	 * The color palette for the table cell background color picker.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		backgroundColors: [
+	 * 			{
+	 * 				color: 'hsl(0, 0%, 100%)',
+	 * 				label: 'White',
+	 * 				hasBorder: true
+	 * 			},
+	 * 			{
+	 * 				color: 'hsl(120, 75%, 60%)',
+	 * 				label: 'Green'
+	 * 			}
+	 * 		]
+	 * 	}
+	 * };
+	 * ```
+	 *
+	 * **Note**: This configuration only affects the UI. It does not limit or filter the colors in the data.
+	 *
+	 * Defaults to {@link module:table/utils/ui/table-properties#defaultColors}.
+	 *
+	 * @see {@link module:table/tableconfig~TableColorConfig}
+	 */
 	backgroundColors?: TableColorConfig;
+
+	/**
+	 * Default styles for newly created table cells.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableCellProperties: {
+	 * 		defaultProperties: {
+	 * 			borderStyle: 'dashed',
+	 * 			borderColor: 'hsl(0, 0%, 90%)',
+	 * 			borderWidth: '3px',
+	 * 			horizontalAlignment: 'center',
+	 * 			verticalAlignment: 'middle',
+	 * 			padding: '10px'
+	 * 		}
+	 * 	}
+	 * }
+	 * ```
+	 *
+	 * **Note**: The model does not store the default values. The editor will only keep values that differ from the defaults.
+	 *
+	 * See {@link module:table/tableconfig~TableCellPropertiesOptions} for the full list of properties.
+	 */
 	defaultProperties?: TableCellPropertiesOptions;
 
 	/**
@@ -473,3 +644,16 @@ export interface TableCaptionConfig {
  * The type of the table.
  */
 export type TableType = 'content' | 'layout';
+
+export interface TableAlignmentConfig {
+
+	/**
+	 * Whether to use inline styles for table alignment in the editor output.
+	 *
+	 * * When `true` (default), the alignment is rendered as inline styles.
+	 * * When `false`, the alignment is rendered as CSS classes.
+	 *
+	 * @default true
+	 */
+	useInlineStyles?: boolean;
+}

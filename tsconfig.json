@@ -22,11 +22,11 @@
     "noImplicitAny": true,
     "noImplicitOverride": true,
     "strict": true,
-    "module": "es6",
+    "module": "esnext",
     "target": "es2022",
     "sourceMap": true,
     "allowJs": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true
   },

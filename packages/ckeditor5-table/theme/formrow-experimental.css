@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-form__row {
+	&.ck-table-form__action-row {
+		justify-content: flex-end;
+
+		& .ck-button-save,
+		& .ck-button-cancel {
+			justify-content: center;
+		}
+	}
+}

@@ -937,6 +937,44 @@ describe( 'Editor - license check', () => {
 			} );
 		}
 
+		it( 'should throw `license-key-plugin-not-allowed` pointing to the main plugin if a check is an editing part', async () => {
+			const editor = await TestEditor.create( {
+				licenseKey: 'GPL',
+				plugins: [
+					class TableColumnResize {
+						static get pluginName() {
+							return 'TableColumnResize';
+						}
+					}
+				]
+			} );
+
+			editor._showLicenseError( 'pluginNotAllowed', 'TableColumnResizeEditing' );
+
+			expectToThrowCKEditorError( () => clock.tick( 1 ), 'license-key-plugin-not-allowed', undefined, {
+				pluginName: 'TableColumnResize'
+			} );
+		} );
+
+		it( 'should throw `license-key-plugin-not-allowed` pointing to the main plugin if a check is a UI part', async () => {
+			const editor = await TestEditor.create( {
+				licenseKey: 'GPL',
+				plugins: [
+					class TableColumnResize {
+						static get pluginName() {
+							return 'TableColumnResize';
+						}
+					}
+				]
+			} );
+
+			editor._showLicenseError( 'pluginNotAllowed', 'TableColumnResizeUI' );
+
+			expectToThrowCKEditorError( () => clock.tick( 1 ), 'license-key-plugin-not-allowed', undefined, {
+				pluginName: 'TableColumnResize'
+			} );
+		} );
+
 		it( 'should throw error only once', () => {
 			const editor = new TestEditor( { licenseKey: 'GPL' } );
 

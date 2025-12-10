@@ -11,10 +11,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
-msgid "Disable editing"
-msgstr "সম্পাদনা নিষ্ক্রিয় করুন"
-
 msgctxt "A label of the button indicating that using this button will make a selected text editable."
 msgid "Enable editing"
 msgstr "সম্পাদনা সক্রিয় করুন"
@@ -30,3 +26,23 @@ msgstr "পরবর্তী সম্পাদনাযোগ্য অংশ"
 msgctxt "A label of the dropdown that provides controls to navigate editable regions in the content."
 msgid "Navigate editable regions"
 msgstr "সম্পাদনাযোগ্য অংশে নেভিগেট করুন"
+
+msgctxt "A label of the button indicating that using this button will make a selected text non–editable."
+msgid "Disable inline editing"
+msgstr "ইনলাইন ইডিটিং নিষ্ক্রিয় করুন"
+
+msgctxt "A label of the button indicating that using this button will make a selected text editable."
+msgid "Enable inline editing"
+msgstr "ইনলাইন ইডিটিং সষ্ক্রিয় করুন"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks non–editable."
+msgid "Disable block editing"
+msgstr "ব্লক ইডিটিং নিষ্ক্রিয় করুন"
+
+msgctxt "A label of the button indicating that using this button will make a selected blocks editable."
+msgid "Enable block editing"
+msgstr "ব্লক ইডিটিং সষ্ক্রিয় করুন"
+
+msgctxt "A label of the button indicating that using this button will make a selected text or blocks non–editable."
+msgid "Disable editing"
+msgstr "সম্পাদনা নিষ্ক্রিয় করুন"

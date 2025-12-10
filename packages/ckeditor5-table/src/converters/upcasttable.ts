@@ -10,6 +10,7 @@
 import type { ModelElement, UpcastDispatcher, UpcastElementEvent, ViewElement, ViewNode } from 'ckeditor5/src/engine.js';
 
 import { createEmptyTableCell } from '../utils/common.js';
+import { getViewTableFromWrapper } from '../utils/structure.js';
 import { first } from 'ckeditor5/src/utils.js';
 
 /**
@@ -36,7 +37,7 @@ export function upcastTableFigure() {
 			}
 
 			// Find a table element inside the figure element.
-			const viewTable = getViewTableFromFigure( data.viewItem );
+			const viewTable = getViewTableFromWrapper( data.viewItem );
 
 			// Do not convert if table element is absent or was already converted.
 			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
@@ -53,9 +54,15 @@ export function upcastTableFigure() {
 			const modelTable = first( conversionResult.modelRange!.getItems() as Iterator<ModelElement> );
 
 			// When table wasn't successfully converted then finish conversion.
-			if ( !modelTable ) {
+			if ( !modelTable || !modelTable.is( 'element', 'table' ) ) {
 				// Revert consumed figure so other features can convert it.
 				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+
+				// If anyway some table content was converted, we have to pass the model range and cursor.
+				if ( conversionResult.modelRange && !conversionResult.modelRange.isCollapsed ) {
+					data.modelRange = conversionResult.modelRange;
+					data.modelCursor = conversionResult.modelCursor;
+				}
 
 				return;
 			}
@@ -188,17 +195,6 @@ export function ensureParagraphInTableCell( elementName: string ) {
 }
 
 /**
- * Get view `<table>` element from the view widget (`<figure>`).
- */
-function getViewTableFromFigure( figureView: ViewElement ) {
-	for ( const figureChild of figureView.getChildren() ) {
-		if ( figureChild.is( 'element', 'table' ) ) {
-			return figureChild;
-		}
-	}
-}
-
-/**
  * Scans table rows and extracts required metadata from the table:
  *
  * headingRows    - The number of rows that go as table headers.
@@ -272,19 +268,33 @@ function scanTable( viewTable: ViewElement ) {
 				headRows.push( tr );
 			} else {
 				bodyRows.push( tr );
-				// For other rows check how many column headings this row has.
-
-				const headingCols = scanRowForHeadingColumns( tr );
-
-				if ( !headingColumns || headingCols < headingColumns ) {
-					headingColumns = headingCols;
-				}
 			}
 
 			// We use the maximum number of columns to avoid false positives when detecting
 			// multiple rows with single column within `rowspan`. Without it the last row of `rowspan=3`
 			// would be detected as a heading row because it has only one column (identical to the previous row).
 			maxPrevColumns = Math.max( maxPrevColumns || 0, trColumns.length );
+		}
+	}
+
+	// Generate the cell matrix so we can calculate the heading columns.
+	const bodyMatrix = generateCellMatrix( bodyRows );
+
+	for ( const rowSlots of bodyMatrix ) {
+		// Look for the first non-`<th>` entry (either a `<td>` or a missing cell).
+		let index = 0;
+
+		while ( index < rowSlots.length ) {
+			if ( rowSlots[ index ]?.name !== 'th' ) {
+				break;
+			}
+
+			index += 1;
+		}
+
+		// Update headingColumns.
+		if ( !headingColumns || index < headingColumns ) {
+			headingColumns = index;
 		}
 	}
 
@@ -296,31 +306,144 @@ function scanTable( viewTable: ViewElement ) {
 }
 
 /**
- * Scans a `<tr>` element and its children for metadata:
- * - For heading row:
- *     - Adds this row to either the heading or the body rows.
- *     - Updates the number of heading rows.
- * - For body rows:
- *     - Calculates the number of column headings.
+ * Takes an array of `<tr>` elements and generates a "matrix" (square
+ * two-dimensional array) describing which `<th>`s and `<td>`s fill which
+ * "slots", factoring in `rowspan`s and `colspan`s. For example, given
+ *
+ * ```xml
+ * <table>
+ *   <tr> <td>11</td> <td rowspan="2">12-22</td> <td>13</td> </tr>
+ *   <tr> <td>21</td> <td>23</td> </tr>
+ *   <tr> <td colspan="2">31-32</td> <td>33</rd> </tr>
+ * </table>
+ * ```
+ *
+ * The result would be (with cell elements' text content in place of the element
+ * objects for readability):
+ *
+ * ```js
+ * [
+ *   [ '11', '12-22', '13' ],
+ *   [ '21', '12-22', '23' ],
+ *   [ '31-32', '31-32', '33' ],
+ * ]
+ * ```
+ *
+ * This allows for a computation of heading columns that factors in the case
+ * where a cell from a previous rows with a `rowspan` attribute effectively adds
+ * an additional header cell to a subsequent row.
+ *
+ * There are also cases where cells are "missing" from a row. A simple one is
+ * the case where a row simply has fewer cells than another row in the same
+ * table. But another is one where a row has a cell with a `rowspan` that
+ * effectively adds a cell to a subsequent row "off the end" of the row. In this
+ * case, there will be a `null` value instead of an element object in that
+ * position. For example,
+ *
+ * ```xml
+ * <table>
+ *   <tr> <td>11</td> <td>12</td> <td rowspan="2">13-23</td> </tr>
+ *   <tr> <td>21</td> </tr>
+ *   <tr> <td>31</td> </tr>
+ * </table>
+ * ```
+ *
+ * would result in
+ *
+ * ```js
+ * [
+ *   [ '11', '12', '13-23' ],
+ *   [ '21', null, '13-23' ],
+ *   [ '31', null, null ]
+ * ]
+ * ```
+ *
+ * @param trs the array of `<tr>` elements
+ * @returns the cell matrix
  */
-function scanRowForHeadingColumns( tr: ViewElement ) {
-	let headingColumns = 0;
-	let index = 0;
+function generateCellMatrix( trs: Array<ViewElement> ) {
+	// As we iterate, we keep track of cells with rowspans >1 so later rows can
+	// factor them in. This trackes any such cells from previous rows.
+	let prevRowspans = new Map<number, { cell: ViewElement; remaining: number }>();
 
-	// Filter out empty text nodes from tr children.
-	const children = Array.from( tr.getChildren() as IterableIterator<ViewElement> )
-		.filter( child => child.name === 'th' || child.name === 'td' );
+	// This is the maximum number of columns we've encountered.
+	let maxColumns = 0;
 
-	// Count starting adjacent <th> elements of a <tr>.
-	while ( index < children.length && children[ index ].name === 'th' ) {
-		const th = children[ index ];
+	const slots = trs.map( tr => {
+		// This will be the slots that are in this row, including cells from
+		// previous rows with a big enough "rowspan" to affect this row.
+		const curSlots: Array<ViewElement | null> = [];
 
-		// Adjust columns calculation by the number of spanned columns.
-		const colspan = parseInt( th.getAttribute( 'colspan' ) as string || '1' );
+		// Get the cell elements
+		const children = Array.from( tr.getChildren() as IterableIterator<ViewElement> )
+			.filter( child => child.name === 'th' || child.name === 'td' );
 
-		headingColumns = headingColumns + colspan;
-		index++;
+		// This will be any cells in this row that have a rowspan >1, so we can
+		// combine it with `prevRowspans` when we're done processing this row.
+		const curRowspans = new Map<number, { cell: ViewElement; remaining: number }>();
+
+		// We need to process all the cells in this row, but also previous rows'
+		// cells with rowspans might add additional slots to the end of this row, so
+		// we need to iterate until we've both consumed all the children _and_
+		// filled out slots to the max number of columns we've encountered so far.
+		while ( children.length || curSlots.length < maxColumns ) {
+			const rowSpan = prevRowspans.get( curSlots.length );
+			if ( rowSpan && rowSpan.remaining > 0 ) {
+				// We have a cell at this index in a previous row whose rowspan extends
+				// it into this row, so we insert a copy of it here.
+				curSlots.push( rowSpan.cell );
+			} else {
+				// See if we have more cells in the row.
+				const cell = children.shift();
+				if ( cell ) {
+					// We do, so process it
+					const colspan = parseInt( cell.getAttribute( 'colspan' ) as string || '1' );
+					const rowspan = parseInt( cell.getAttribute( 'rowspan' ) as string || '1' );
+
+					// Process this cell as many times as needed according to its colspan.
+					for ( let i = 0; i < colspan; i++ ) {
+						// if we have a >1 rowspan, create a record in the rowSpans map for
+						// this column index keeping track of it.
+						if ( rowspan > 1 ) {
+							curRowspans.set( curSlots.length, { cell, remaining: rowspan - 1 } );
+						}
+
+						curSlots.push( cell );
+					}
+				} else {
+					// No remaining children in this row, so no cell in this slot.
+					curSlots.push( null );
+					continue;
+				}
+			}
+		}
+
+		// Now update the row spans. In weird edge cases where colspan and rowspan
+		// conflict, we can end up with a cell in a column in this row that
+		// "truncates" a row-spanning cell from a previous column, so make sure in
+		// those cases, the value in `curRowspans` always "wins". We do this by
+		// copying (and decrementing) values from `prevRowspans` into `curRowspans`
+		// as long as there is no conflict, and then re-assigning `prevRowspans`.
+		for ( const [ index, entry ] of prevRowspans.entries() ) {
+			entry.remaining -= 1;
+			if ( entry.remaining > 0 && !curRowspans.has( index ) ) {
+				curRowspans.set( index, entry );
+			}
+		}
+		prevRowspans = curRowspans;
+
+		// Finally, update `maxColumns`.
+		maxColumns = Math.max( maxColumns, curSlots.length );
+		return curSlots;
+	} );
+
+	// Now expand any rows that have fewer than `maxColumns` with nulls so we have
+	// a proper matrix.
+	for ( const rowSlots of slots ) {
+		while ( rowSlots.length < maxColumns ) {
+			rowSlots.push( null );
+		}
 	}
 
-	return headingColumns;
+	return slots;
 }

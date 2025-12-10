@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import url from 'url';
-import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
+import url from 'node:url';
+import { constants, readFile, writeFile, copyFile, access, mkdir } from 'node:fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
@@ -188,13 +188,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 			hrefs.map( href => `@import '${ href }' layer(${ layer });` ).join( '\n' ) +
 		'</style>';
 
-	const documents = {};
-
-	// TODO: Use `Object.groupBy` instead, when we migrate to Node 22.
-	for ( const snippet of snippets ) {
-		documents[ snippet.destinationPath ] ??= [];
-		documents[ snippet.destinationPath ].push( snippet );
-	}
+	const documents = Object.groupBy( snippets, snippet => snippet.destinationPath );
 
 	// Style paths for preloading and layered imports
 	const editorStylePaths = [
@@ -210,10 +204,10 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">',
 		'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
-		'<link rel="preload" href="https://cdn.ckbox.io/ckbox/latest/ckbox.js" as="script">',
+		'<link rel="preload" href="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js" as="script">',
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
+		'<script src="https://cdn.ckbox.io/ckbox/2.9.2/ckbox.js"></script>',
 		getLayeredStyles( 'editor', editorStylePaths )
 	];
 

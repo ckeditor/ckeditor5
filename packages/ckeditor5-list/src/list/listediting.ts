@@ -680,9 +680,22 @@ export interface ListAttributeDowncastStrategy {
 	attributeName: string;
 
 	/**
+	 * Whether the attribute should be consumed or this strategy is a side effect.
+	 *
+	 * @default true
+	 */
+	consume?: boolean;
+
+	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
+	setAttributeOnDowncast(
+		writer: ViewDowncastWriter,
+		value: unknown,
+		element: ViewElement,
+		options: Record<string, unknown>,
+		modelElement: ModelElement
+	): void;
 }
 
 /**
@@ -699,6 +712,13 @@ export interface ListItemMarkerDowncastStrategy {
 	 * The model attribute name.
 	 */
 	attributeName: string;
+
+	/**
+	 * Whether the attribute should be consumed or this strategy is a side effect.
+	 *
+	 * @default true
+	 */
+	consume?: boolean;
 
 	/**
 	 * Creates a view element for a custom item marker.

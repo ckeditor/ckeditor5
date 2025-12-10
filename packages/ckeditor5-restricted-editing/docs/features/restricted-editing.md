@@ -41,13 +41,22 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 The restricted editing feature enables two editing modes:
 
 * **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
-* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. This mode supports only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
+* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. There changes allowed withing these fields can be configured.
+
+There are two types of editable fields: inline and block.
+
+* **Inline editable fields** only allow content editing with [features enabled in the restricted mode](#enabling-commands-in-the-restricted-editing-mode). This kind of field can only hold inline content. They support only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this field, either.
+*  **Block editable fields** enable all content editing features loaded in the editor. Content inside the block can be anything, including lists, tables, images etc. (providing these features are loaded into the editor).
+
+You can observe it in the [demo](#demo) while switching between the inline and the block editable field &ndash; the number of active toolbar items will change.
+
+Both block and inline fields can be inserted via the toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing}. The availability of one or both types of fields from the toolbar [can be configured](#configuring-the-toolbar).
 
 You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
 By using this feature, the users of your application will be able to create template documents. In a certain way, you can use this feature to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor&nbsp;5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
-<info-box>
+<info-box note>
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
@@ -57,7 +66,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 ### Running the standard editing mode
 
-To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException:auto'` button to the toolbar:
 
 <code-switcher>
 ```js
@@ -67,12 +76,16 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException', /* ... */ ]
+		toolbar: [ 'restrictedEditingException:auto', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+<info-box note>
+	Please note there are available toolbar items for inline, block, auto, and both types of editable fields. Read more in the [Configuring the tollbar](#configuring-the-toolbar) section.
+</info-box>
 
 ### Running the restricted editing mode
 
@@ -95,7 +108,7 @@ ClassicEditor
 
 ## Configuration
 
-You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
+You can configure which features should be available in the inline editing field. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
 ClassicEditor
@@ -109,11 +122,11 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
-
 <info-box warning>
-	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode.
+	This setting only applies to inline editing fields, where only inline content inserting or editing commands are allowed. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are only available in block editing fields.
 </info-box>
+
+**Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
 ### Enabling commands in the restricted editing mode
 
@@ -131,6 +144,42 @@ class MyPlugin extends Plugin {
 ```
 </code-switcher>
 
+### Configuring the toolbar
+
+When configuring the toolbar item for inserting restricted editing fields in standard mode, you can choose to provide your users with access to inline, block or both types of fields. To add these to the toolbar, you should use the following toolbar item calls, respectively: `restrictedEditingException:dropdown` (both types of fields available), `restrictedEditingException:inline`, and `restrictedEditingException:block`. There is also the `restrictedEditingException:auto` button that switches between an inline and block depending on the selection. 
+
+Example toolbar configuration may look like the one below:
+
+```js
+toolbar: [
+	'restrictedEditingException:auto', '|',
+	'heading', '|', 'bold', 'italic', 'link', '|',
+	'bulletedList', 'numberedList', 'todolist', 'outdent', 'indent', '|',
+	'blockQuote', 'insertImage', 'insertTable', '|',
+	'undo', 'redo'
+]
+```
+
+To configure the feature toolbar button for restricted mode, use the `restrictedEditing` call, instead. The Navigate editable regions button {@icon @ckeditor/ckeditor5-icons/theme/icons/content-lock.svg Navigate editable regions} allows for moving between previous/next editable fields.
+
+Example toolbar configuration may look like the one below. Please note that whatever toolbar items maybe enable, the two different types of editable fields [will not support all of them.](#additional-feature-information). From the example below, inline editable fields will only support bold, italic, link, and undo, while images, tables, and list will only be available for block type fields.
+
+```js
+toolbar: {
+	items: [
+		'restrictedEditing', '|', 
+		'heading', '|', 'bold', 'italic', `link`, '|',
+		'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent', '|',
+		'insertImage', 'insertTable', '|',
+		'undo', 'redo'
+	]
+}
+```
+
+#### Legacy toolbar button
+
+The new toolbar items were introduced with version 47.2.0. To retain full backwards compatibility, we have provided an alias toolbar item: `restrictedEditingException`. It is the old toolbar button call and it defaults to inline restricted editing field button. There is no need to change your configuration if you only want to use inline fields type.
+
 ## Related features
 
 CKEditor&nbsp;5 has more features that help you control user permissions:
@@ -147,8 +196,14 @@ CKEditor&nbsp;5 has more features that help you control user permissions:
 
 The {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin registers:
 
-* The `'restrictedEditingException'` button that lets you mark regions as editable.
-* The {@link module:restricted-editing/restrictededitingexceptioncommand~RestrictedEditingExceptionCommand `'restrictedEditingException'`} command that allows marking regions as editable.
+* The `'restrictedEditingException:auto'` button that lets you mark regions as editable (either block or inline depending on the selection).
+* The `'restrictedEditingException:dropdown'` button that lets you mark regions as editable.
+* The `'restrictedEditingException:inline'` button that lets you mark inline regions as editable.
+* The `'restrictedEditingException:block'` button that lets you mark block regions as editable.
+* The `'restrictedEditingException'` button that lets you mark inline regions as editable (legacy alias).
+* The {@link module:restricted-editing/restrictededitingexceptioncommand~RestrictedEditingExceptionCommand `'restrictedEditingException'`} command that allows marking inline regions as editable.
+* The {@link module:restricted-editing/restrictededitingexceptionblockcommand~RestrictedEditingExceptionBlockCommand `'restrictedEditingExceptionBlock'`} command that allows marking block regions as editable.
+* The {@link module:restricted-editing/restrictededitingexceptionautocommand~RestrictedEditingExceptionAutoCommand `'restrictedEditingExceptionAuto'`} command that calls either inline or block command depending on the selection.
 
 The {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin registers:
 

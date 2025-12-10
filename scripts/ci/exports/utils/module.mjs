@@ -5,7 +5,7 @@
 
 import parser from '@babel/parser';
 import traverse from '@babel/traverse';
-import fs from 'fs';
+import fs from 'node:fs';
 import upath from 'upath';
 import { Export } from './export.mjs';
 import { Import } from './import.mjs';
@@ -13,6 +13,16 @@ import { Declaration } from './declaration.mjs';
 import { ExternalModule } from './externalmodule.mjs';
 import { isInternalNode } from './misc.mjs';
 import { createExportResolutionError } from './errorutils.mjs';
+import { globSync } from 'glob';
+import { CKEDITOR5_ROOT_PATH } from '../../../constants.mjs';
+import { PACKAGES_DIRECTORY } from '../../../release/utils/constants.mjs';
+
+// The trailing `/` is important to mark the end of a package name.
+const PUBLIC_PACKAGES = globSync( `${ PACKAGES_DIRECTORY }/*/`, {
+	cwd: CKEDITOR5_ROOT_PATH,
+	mark: true,
+	absolute: true
+} ).map( upath.normalize );
 
 export class Module {
 	static load( fileName, errorCollector ) {
@@ -32,8 +42,8 @@ export class Module {
 
 	constructor( fileName, ast, { publicApiTag }, errorCollector ) {
 		this.fileName = fileName.replace( /\.d\.ts$/, '.ts' );
-		// TODO: `/external/` check doesn't seem correct, because it causes some errors to be silenced.
-		this.isPublicApi = fileName.includes( '/external/' ) || this.relativeFileName === 'index.ts' ? true : publicApiTag;
+		this.isPublicPackage = this._isFromPublicPackages( fileName );
+		this.isPublicApi = this.isPublicPackage || this.relativeFileName === 'index.ts' ? true : publicApiTag;
 		this.exports = [];
 		this.imports = [];
 		this.declarations = [];
@@ -370,6 +380,11 @@ export class Module {
 				}
 			}
 		} );
+	}
+
+	_isFromPublicPackages( fileName ) {
+		// Checking if the file belongs to the public package.
+		return PUBLIC_PACKAGES.some( publicPackagePath => fileName.startsWith( publicPackagePath ) );
 	}
 
 	resolveImportsExports( packages, modules ) {

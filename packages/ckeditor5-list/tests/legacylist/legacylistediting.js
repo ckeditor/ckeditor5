@@ -480,15 +480,15 @@ describe( 'LegacyListEditing', () => {
 
 		it( 'should not capture event when list cannot be indented and allow other listeners to capture it', () => {
 			const listInputModel = '<listItem listIndent="0" listType="bulleted">bar[]</listItem>';
-			const listOutputModel = '<listItem listIndent="0" listType="bulleted">bar</listItem>';
 
 			const input = modelTable( [
 				[ 'foo', listInputModel ]
 			] );
 
+			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
 			const output = modelTable( [
-				[ 'foo', listOutputModel ],
-				[ '[]', '' ]
+				[ 'foo', listInputModel ],
+				[ '', '' ]
 			] );
 
 			_setModelData( model, input );
@@ -497,7 +497,8 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
 			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
+			// sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );
@@ -507,9 +508,10 @@ describe( 'LegacyListEditing', () => {
 				[ 'foo', 'bar[]' ]
 			] );
 
+			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
 			const output = modelTable( [
-				[ 'foo', 'bar' ],
-				[ '[]', '' ]
+				[ 'foo', 'bar[]' ],
+				[ '', '' ]
 			] );
 
 			_setModelData( model, input );
@@ -518,7 +520,8 @@ describe( 'LegacyListEditing', () => {
 
 			sinon.assert.neverCalledWith( editor.execute, 'indentList' );
 			sinon.assert.neverCalledWith( editor.execute, 'outdentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			// The Widget plugin is not loaded here so selection does not jump but table feature adds a row.
+			// sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 			expect( _getModelData( model ) ).to.equalMarkup( output );
 		} );

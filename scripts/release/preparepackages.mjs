@@ -7,7 +7,7 @@
 
 import upath from 'upath';
 import fs from 'fs-extra';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { Listr } from 'listr2';
@@ -121,17 +121,6 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Updating dependencies.',
-					task: async () => {
-						return releaseTools.updateDependencies( {
-							// We do not use caret ranges by purpose. See: #14046.
-							version: latestVersion,
-							packagesDirectory: PACKAGES_DIRECTORY,
-							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
-						} );
-					}
-				},
-				{
 					title: 'Updating references.',
 					task: async ctx => {
 						ctx.updatedFiles = await updateVersionReferences( {
@@ -139,10 +128,6 @@ const tasks = new Listr( [
 							releaseDate: new Date()
 						} );
 					}
-				},
-				{
-					title: 'Updating `pnpm-lock.yaml` file.',
-					task: () => tools.shExec( 'pnpm install --lockfile-only', { async: true, verbosity: 'silent' } )
 				}
 			], taskOptions );
 		},
@@ -210,6 +195,17 @@ const tasks = new Listr( [
 					}
 				},
 				{
+					title: 'Substituting `workspace:*` with a version.',
+					task: async () => {
+						return releaseTools.updateDependencies( {
+							// We do not use caret ranges by purpose. See: #14046.
+							version: latestVersion,
+							packagesDirectory: RELEASE_DIRECTORY,
+							shouldUpdateVersionCallback: await isCKEditor5PackageFactory()
+						} );
+					}
+				},
+				{
 					title: 'Copying `ckeditor5` files to the release directory.',
 					task: async () => {
 						const filenamesToCopy = [
@@ -262,12 +258,20 @@ const tasks = new Listr( [
 						// Copy all DLL builds to the CDN folder.
 						const data = fs
 							.globSync( '*/build', { cwd: CKEDITOR5_PACKAGES_PATH } )
-							.map( async path => {
+							.filter( buildPath => {
+								// Ignore `ckeditor5`. It has a dedicated handler.
+								if ( buildPath.split( '/' )[ 0 ] === 'ckeditor5' ) {
+									return false;
+								}
+
+								return true;
+							} )
+							.map( async buildPath => {
 								// `ckeditor5-word-count/build` => `word-count`
-								const dllName = path.split( '/' )[ 0 ].replace( 'ckeditor5-', '' );
+								const dllName = buildPath.split( '/' )[ 0 ].replace( 'ckeditor5-', '' );
 
 								await fs.copy(
-									upath.join( CKEDITOR5_PACKAGES_PATH, path ),
+									upath.join( CKEDITOR5_PACKAGES_PATH, buildPath ),
 									upath.join( RELEASE_CDN_DIRECTORY, 'dll', dllName )
 								);
 							} );
@@ -325,13 +329,24 @@ const tasks = new Listr( [
 		}
 	},
 	{
+		title: 'Verify release directory.',
+		task: async () => {
+			const isEmpty = ( await fs.readdir( RELEASE_DIRECTORY ) ).length === 0;
+
+			if ( !isEmpty ) {
+				return;
+			}
+
+			return Promise.reject( 'Release directory is empty, aborting.' );
+		}
+	},
+	{
 		title: 'Commit & tag phase.',
 		task: ctx => {
 			return releaseTools.commitAndTag( {
 				version: latestVersion,
 				files: [
 					'package.json',
-					'pnpm-lock.yaml',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
 					...ctx.updatedFiles
 				]

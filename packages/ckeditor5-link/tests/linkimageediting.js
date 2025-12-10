@@ -275,9 +275,18 @@ describe( 'LinkImageEditing', () => {
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
-				it( 'should not convert if a link misses "href" attribute', () => {
+				it( 'should convert even if a link has empty "href" attribute', () => {
 					editor.setData(
 						'<figure class="image"><a href=""><img src="/assets/sample.png" alt="alt text" /></a></figure>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+				} );
+
+				it( 'should not convert if a link misses "href" attribute', () => {
+					editor.setData(
+						'<figure class="image"><a><img src="/assets/sample.png" alt="alt text" /></a></figure>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
@@ -318,6 +327,307 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
+				it( 'should convert multiple block images surrounded by a link', () => {
+					editor.setData(
+						'<a href="http://ckeditor.com">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png"></imageBlock>'
+					);
+				} );
+
+				it( 'should convert a block image and text surrounded by a link', () => {
+					editor.setData(
+						'<a href="http://ckeditor.com">' +
+							'Foo' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'Bar' +
+						'</a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>' +
+							'<$text linkHref="http://ckeditor.com">Foo</$text>' +
+						'</paragraph>' +
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' +
+						'<paragraph>' +
+							'<$text linkHref="http://ckeditor.com">Bar</$text>' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should convert multiple block images surrounded by a link with manual decorator', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								isGallery: {
+									mode: 'manual',
+									classes: 'gallery'
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com" class="gallery">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<figure class="image">' +
+							'<a class="gallery" href="http://ckeditor.com">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a class="gallery" href="http://ckeditor.com">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link with manual decorator (mixed content)', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								isGallery: {
+									mode: 'manual',
+									classes: 'gallery'
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com" class="gallery">' +
+							'Foo' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+							'Bar' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><$text linkHref="http://ckeditor.com" linkIsGallery="true">Foo</$text></paragraph>' +
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" linkIsGallery="true" src="/assets/sample2.png">' +
+						'</imageBlock>' +
+						'<paragraph><$text linkHref="http://ckeditor.com" linkIsGallery="true">Bar</$text></paragraph>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link with automatic decorator', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								detectDownloadable: {
+									mode: 'automatic',
+									callback: url => url.endsWith( '.pdf' ),
+									attributes: {
+										download: 'file.pdf'
+									}
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com/example.pdf" class="gallery">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link with automatic decorator (mixed content)', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							decorators: {
+								detectDownloadable: {
+									mode: 'automatic',
+									callback: url => url.endsWith( '.pdf' ),
+									attributes: {
+										download: 'file.pdf'
+									}
+								}
+							}
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com/example.pdf">' +
+							'Foo' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+							'Bar' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><$text linkHref="http://ckeditor.com/example.pdf">Foo</$text></paragraph>' +
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com/example.pdf" src="/assets/sample2.png">' +
+						'</imageBlock>' +
+						'<paragraph><$text linkHref="http://ckeditor.com/example.pdf">Bar</$text></paragraph>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<p>' +
+							'<a download="file.pdf" href="http://ckeditor.com/example.pdf">Foo</a>' +
+						'</p>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com/example.pdf" download="file.pdf">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>' +
+						'<p>' +
+							'<a download="file.pdf" href="http://ckeditor.com/example.pdf">Bar</a>' +
+						'</p>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link ' +
+						'with link.addTargetToExternalLinks set to true', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: true
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com">' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
+				} );
+
+				it( 'should convert multiple block images surrounded by a link ' +
+						'with link.addTargetToExternalLinks set to true (mixed content)', async () => {
+					const newEditor = await VirtualTestEditor.create( {
+						plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing ],
+						link: {
+							addTargetToExternalLinks: true
+						}
+					} );
+
+					newEditor.setData(
+						'<a href="http://ckeditor.com">' +
+							'Foo' +
+							'<img src="/assets/sample.png" alt="alt text" />' +
+							'Bar' +
+							'<img src="/assets/sample2.png" alt="alt text 2" />' +
+						'</a>'
+					);
+
+					expect( _getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph><$text linkHref="http://ckeditor.com">Foo</$text></paragraph>' +
+						'<imageBlock alt="alt text" linkHref="http://ckeditor.com" src="/assets/sample.png">' +
+						'</imageBlock>' +
+						'<paragraph><$text linkHref="http://ckeditor.com">Bar</$text></paragraph>' +
+						'<imageBlock alt="alt text 2" linkHref="http://ckeditor.com" src="/assets/sample2.png">' +
+						'</imageBlock>'
+					);
+
+					expect( newEditor.getData() ).to.equal(
+						'<p>' +
+							'<a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com">Foo</a>' +
+						'</p>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample.png" alt="alt text">' +
+							'</a>' +
+						'</figure>' +
+						'<p>' +
+							'<a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com">Bar</a>' +
+						'</p>' +
+						'<figure class="image">' +
+							'<a href="http://ckeditor.com" target="_blank" rel="noopener noreferrer">' +
+								'<img src="/assets/sample2.png" alt="alt text 2">' +
+							'</a>' +
+						'</figure>'
+					);
+
+					await newEditor.destroy();
+				} );
+
 				it( 'should not convert in wrong context', () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 					model.schema.addChildCheck( ( ctx, childDef ) => {
@@ -351,9 +661,18 @@ describe( 'LinkImageEditing', () => {
 					expect( editor.getData() ).to.equal( '<figure class="image"><img src="/assets/sample.png" alt="alt text"></figure>' );
 				} );
 
-				it( 'should not convert if a link misses "href" attribute', () => {
+				it( 'should convert if a has empty "href" attribute', () => {
 					editor.setData(
 						'<a href=""><img src="/assets/sample.png" alt="alt text" /></a>'
+					);
+
+					expect( _getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '<imageBlock alt="alt text" linkHref="" src="/assets/sample.png"></imageBlock>' );
+				} );
+
+				it( 'should not convert if a link misses "href" attribute', () => {
+					editor.setData(
+						'<a><img src="/assets/sample.png" alt="alt text" /></a>'
 					);
 
 					expect( _getModelData( model, { withoutSelection: true } ) )
@@ -981,7 +1300,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a class="gallery highlighted" href="https://cksource.com" target="_blank" ' +
 						'rel="noopener noreferrer" download="download" style="text-decoration:underline;">' +
-							'<img src="sample.jpg" alt="bar">' +
+							'<img src="assets/sample.png" alt="bar">' +
 						'</a>' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>' +
@@ -999,7 +1318,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'linkIsHighlighted="true" ' +
-						'src="sample.jpg">' +
+						'src="assets/sample.png">' +
 					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
@@ -1014,7 +1333,7 @@ describe( 'LinkImageEditing', () => {
 				editor.setData(
 					'<a class="gallery highlighted" href="https://cksource.com" target="_blank" rel="noopener noreferrer"' +
 					'download="download" style="text-decoration:underline;">' +
-						'<img src="sample.jpg" alt="bar">' +
+						'<img src="assets/sample.png" alt="bar">' +
 					'</a>' +
 					'<p>' +
 						'<a href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
@@ -1030,7 +1349,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
 						'linkIsHighlighted="true" ' +
-						'src="sample.jpg">' +
+						'src="assets/sample.png">' +
 					'</imageBlock>' +
 					'<paragraph>' +
 						'<$text linkHref="https://cksource.com" linkIsDownloadable="true" linkIsExternal="true">' +
@@ -1058,7 +1377,7 @@ describe( 'LinkImageEditing', () => {
 						'foo ' +
 						'<a class="gallery" href="https://cksource.com">' +
 							'abc ' +
-							'<img src="sample.jpg" alt="bar">' +
+							'<img src="assets/sample.png" alt="bar">' +
 							' 123' +
 						'</a>' +
 						' bar' +
@@ -1069,7 +1388,8 @@ describe( 'LinkImageEditing', () => {
 					'<paragraph>' +
 						'foo ' +
 						'<$text linkHref="https://cksource.com" linkIsGallery="true">abc </$text>' +
-						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" src="sample.jpg"></imageInline>' +
+						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" ' +
+							'src="assets/sample.png"></imageInline>' +
 						'<$text linkHref="https://cksource.com" linkIsGallery="true"> 123</$text>' +
 						' bar' +
 					'</paragraph>'
@@ -1131,7 +1451,7 @@ describe( 'LinkImageEditing', () => {
 
 			it( 'should downcast the decorators after applying a change', () => {
 				_setModelData( model,
-					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]' +
+					'[<imageBlock alt="bar" src="assets/sample.png"></imageBlock>]' +
 					'<paragraph>' +
 						'<$text>https://cksource.com</$text>' +
 					'</paragraph>'
@@ -1159,7 +1479,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="image">' +
 						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
 						'download="download" target="_blank" rel="noopener noreferrer">' +
-							'<img alt="bar" src="sample.jpg">' +
+							'<img alt="bar" src="assets/sample.png">' +
 						'</a>' +
 					'</figure>' +
 					'<p>' +
@@ -1175,7 +1495,7 @@ describe( 'LinkImageEditing', () => {
 				_setModelData( model,
 					'<imageBlock alt="bar" linkHref="https://cksource.com" ' +
 					'linkIsDownloadable="true" linkIsExternal="true" ' +
-					'linkIsGallery="true" linkIsHighlighted="true" src="sample.jpg"></imageBlock>'
+					'linkIsGallery="true" linkIsHighlighted="true" src="assets/sample.png"></imageBlock>'
 				);
 
 				// Verify if decorators are present in the view
@@ -1183,7 +1503,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" download="download" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1199,7 +1519,7 @@ describe( 'LinkImageEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" ' +
 						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1211,7 +1531,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="gallery highlighted" href="https://cksource.com" style="text-decoration:underline">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1223,7 +1543,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a class="highlighted" href="https://cksource.com" style="text-decoration:underline">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1235,7 +1555,7 @@ describe( 'LinkImageEditing', () => {
 				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<a href="https://cksource.com">' +
-							'<img alt="bar" src="sample.jpg"></img>' +
+							'<img alt="bar" src="assets/sample.png"></img>' +
 						'</a>' +
 					'</figure>'
 				);
@@ -1244,7 +1564,7 @@ describe( 'LinkImageEditing', () => {
 			// See #8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				_setModelData( model,
-					'[<imageBlock alt="bar" src="sample.jpg"></imageBlock>]'
+					'[<imageBlock alt="bar" src="assets/sample.png"></imageBlock>]'
 				);
 
 				editor.execute( 'link', 'https://cksource.com', {
@@ -1267,7 +1587,7 @@ describe( 'LinkImageEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img alt="bar" src="sample.jpg">' +
+						'<img alt="bar" src="assets/sample.png">' +
 					'</figure>'
 				);
 			} );

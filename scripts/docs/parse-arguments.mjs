@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { parseArgs, styleText } from 'util';
+import { parseArgs, styleText } from 'node:util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
+import { IS_ISOLATED_REPOSITORY } from '../constants.mjs';
 
 /**
  * @param {Array<string>} args An array containing modifiers for the executed command.
@@ -25,7 +26,7 @@ export default function parseArguments( args ) {
 			},
 			'skip-validation': {
 				type: 'boolean',
-				default: false
+				default: IS_ISOLATED_REPOSITORY
 			},
 			'skip-guides': {
 				type: 'boolean',
@@ -36,6 +37,10 @@ export default function parseArguments( args ) {
 				default: false
 			},
 			'skip-commercial': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-obfuscation': {
 				type: 'boolean',
 				default: false
 			},
@@ -93,7 +98,8 @@ export default function parseArguments( args ) {
 		'skip-validation',
 		'skip-guides',
 		'skip-ckeditor5',
-		'skip-commercial'
+		'skip-commercial',
+		'skip-obfuscation'
 	] );
 
 	return values;

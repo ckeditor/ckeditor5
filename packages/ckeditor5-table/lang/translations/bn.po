@@ -296,3 +296,27 @@ msgstr "টেবিল টাইপ"
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
 msgstr "টেবিল টাইপ অপশনসমূহ"
+
+msgctxt "The label for the toolbar that allows configuring the alignment of a table."
+msgid "Table Alignment"
+msgstr "টেবিল সমন্বয়"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as an inline element, allowing text to wrap around it."
+msgid "Align table to the left with text wrapping"
+msgstr "টেক্সট র‍্যাপিংসহ টেবিল বাম দিকে সমন্বয় করুন"
+
+msgctxt "The label used by assistive technologies describing a button that centers the table as a block element with no text wrapping."
+msgid "Center table with no text wrapping"
+msgstr "টেক্সট র‍্যাপিং ছাড়া টেবিল কেন্দ্রে সমন্বয় করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as an inline element, allowing text to wrap around it."
+msgid "Align table to the right with text wrapping"
+msgstr "টেক্সট র‍্যাপিংসহ টেবিল ডান দিকে সমন্বয় করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the left as a block element with no text wrapping."
+msgid "Align table to the left with no text wrapping"
+msgstr "টেক্সট র‍্যাপিং ছাড়া টেবিল বাম দিকে সমন্বয় করুন"
+
+msgctxt "The label used by assistive technologies describing a button that aligns the table to the right as a block element with no text wrapping."
+msgid "Align table to the right with no text wrapping"
+msgstr "টেক্সট র‍্যাপিং ছাড়া টেবিল ডান দিকে সমন্বয় করুন"

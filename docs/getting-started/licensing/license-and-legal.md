@@ -40,24 +40,39 @@ The following features are available for the GPL-compliant projects, but their a
 
 ## Commercial license
 
-The commercial license unlocks many benefits:
+The commercial license unlocks many benefits. All commercial plans include:
 
-* No GPL restrictions
-* Self-hosted CKEditor&nbsp;5
-* Additionally paid Premium features such as:
-	* {@link features/collaboration Asynchronous and Real-Time Collaboration}
-	* {@link features/import-word Import from Word}
-	* {@link features/export-word Export to Word}
-	* {@link features/export-pdf Export to PDF}
-	* {@link features/multi-level-lists Multi-level Lists}
-	* Advanced Productivity
-	* Advanced Page Management
-	* {@link features/ai-assistant-overview AI Assistant}
-	* {@link features/ckbox CKBox for file storage and management}
-* {@link getting-started/licensing/managing-ckeditor-logo White-labeling}
-* Technical support
+* No GPL restrictions,
+* {@link getting-started/licensing/managing-ckeditor-logo White-labeling} (except the free plan),
+* Technical support (except the free plan).
+
+Additionally, depending on the plan you choose, you gain access to Premium features such as:
+
+* {@link features/collaboration Asynchronous and Real-Time Collaboration}
+* {@link features/import-word Import from Word}
+* {@link features/export-word Export to Word}
+* {@link features/export-pdf Export to PDF}
+* {@link features/multi-level-lists Multi-level Lists}
+* {@link features/merge-fields Merge Fields}
+* {@link features/ckeditor-ai-overview CKEditor AI}
+* {@link features/ckbox CKBox for file storage and management}
+* {@link features/uploadcare Image Optimizer powered by Uploadcare}
+
+Some premium features are included in selected pricing plans, while others are available as add-ons depending on the selected deployment model and plan.
 
 [Visit the CKEditor&nbsp;5 Pricing page](https://ckeditor.com/pricing) to find out more or [start the 14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
+
+### Distribution options on commercial license
+
+CKEditor&nbsp;5 commercial plans are available with different distribution models:
+
+**Cloud-hosted distribution**
+
+Cloud-hosting is available in self-service and custom plans. The packages are managed and hosted through a CDN, providing quick setup and maintenance-free deployment.
+
+**Self-hosted distribution**
+
+Self-hosted distribution is available with custom plans, allowing you to host CKEditor&nbsp;5 on your own infrastructure. This option provides greater flexibility and complete control over your deployment environment.
 
 ## Sources of intellectual property included in CKEditor
 

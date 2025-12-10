@@ -583,6 +583,7 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'insertInline',
  * 				items: [
  * 					'menuBar:link',
+ * 					'menuBar:insertFootnote',
  * 					'menuBar:bookmark',
  * 					'menuBar:comment',
  * 					'menuBar:insertMergeField',
@@ -715,7 +716,9 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				groupId: 'aiTools',
  * 				items: [
  * 					'menuBar:aiAssistant',
- * 					'menuBar:aiCommands'
+ * 					'menuBar:aiCommands',
+ * 					'menuBar:toggleAi',
+ * 					'menuBar:aiQuickActions'
  * 				]
  * 			},
  * 			{
@@ -856,6 +859,7 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'insertInline',
 				items: [
 					'menuBar:link',
+					'menuBar:insertFootnote',
 					'menuBar:bookmark',
 					'menuBar:comment',
 					'menuBar:insertMergeField',
@@ -884,7 +888,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 			{
 				groupId: 'restrictedEditingException',
 				items: [
-					'menuBar:restrictedEditingException'
+					'menuBar:restrictedEditingException:inline',
+					'menuBar:restrictedEditingException:block'
 				]
 			}
 		]
@@ -989,7 +994,9 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'aiTools',
 				items: [
 					'menuBar:aiAssistant',
-					'menuBar:aiCommands'
+					'menuBar:aiCommands',
+					'menuBar:toggleAi',
+					'menuBar:aiQuickActions'
 				]
 			},
 			{
