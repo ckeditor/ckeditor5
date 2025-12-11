@@ -1,7 +1,7 @@
 ---
 menu-title: Technology upgrades policy
 meta-title: Policy for technology upgrades | CKEditor 5 Documentation
-meta-description: How and when CKEditor 5 is upgrading the core technologies that its build upon.
+meta-description: How and when CKEditor 5 is upgrading the core technologies that it is built upon.
 category: updating
 order: 50
 ---
@@ -19,7 +19,7 @@ It covers the following technical areas:
 
 ## Our primary goal
 
-Adopt the established best practices of each technology's community, instead of inventing our own rules. We believe that aligning with well-known standards makes the development process more transparent and easier for plugin authors and projects consuming CKEditor 5.
+Adopt the established best practices of each technology's community, instead of inventing our own rules. We believe that aligning with well-known standards makes the development process more transparent and easier for plugin authors and for projects that consume CKEditor 5.
 
 ## Why this policy exists
 
@@ -80,7 +80,7 @@ The table below summarizes how technology-baseline updates affect three key grou
 
 **Approach:** We will update the development environment to the [latest Active Long-Term Support (LTS) version of Node.js](https://nodejs.org/en/about/previous-releases) approximately every 6 months. We may update more often if Node releases critical security fixes that impact development or CI environments.
 
-**Reasoning:** The Node.js community recommends using either Active LTS or Maintenance LTS for production environments. We chose Active LTS because it provides high stability and security of an LTS release while giving us access to more modern features, than versions in the older Maintenance LTS phase.
+**Reasoning:** The Node.js community recommends using either Active LTS or Maintenance LTS for production environments. We chose Active LTS because it provides high stability and security of an LTS release while giving us access to more modern features than versions in the older Maintenance LTS phase.
 
 ### Framework integrations (Vue, Angular, React)
 
