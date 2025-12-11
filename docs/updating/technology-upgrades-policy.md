@@ -20,7 +20,7 @@ It covers the following technical areas:
 
 ## Our primary goal
 
-Adopt the established best practices of each technology's community, instead of inventing our own rules. We believe that aligning with well-known standards makes the development process more transparent and easier for plugin authors and for projects that consume CKEditor&nbsp;55.
+Adopt the established best practices of each technology's community, instead of inventing our own rules. We believe that aligning with well-known standards makes the development process more transparent and easier for plugin authors and for projects that consume CKEditor&nbsp;5.
 
 ## Why this policy exists
 
