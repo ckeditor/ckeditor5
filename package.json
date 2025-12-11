@@ -112,7 +112,6 @@
     "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
     "translations:validate": "node ./scripts/translations/synchronize.mjs --validate-only",
     "translations:move": "node ./scripts/translations/move.mjs",
-    "dll:build": "node scripts/dll/build-dlls.mjs",
     "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "release:prepare-changelog": "node ./scripts/release/preparechangelog.mjs",
     "release:prepare-packages": "node ./scripts/release/preparepackages.mjs",

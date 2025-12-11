@@ -101,9 +101,6 @@ jobs:
       - bootstrap_repository_command
       - install_newest_emoji
       - run:
-          name: Prepare DLL builds in CKEditor 5
-          command: pnpm run dll:build
-      - run:
           name: Verify CKEditor 5 manual tests
           command: |
             export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"

@@ -22,7 +22,6 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			},
 			'./*': './dist/*',
 			'./browser/*': null,
-			'./build/*': './build/*',
 			'./src/*': './src/*',
 			'./package.json': './package.json'
 		};
