@@ -872,72 +872,6 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7822)
 
-### DLL Builds: `ckeditor5-rules/ckeditor-imports`
-
-To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
-
-Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link getting-started/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
-
-The other CKEditor&nbsp;5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
-
-When importing modules from the `ckeditor5` package, all imports must come from the `src/` directory. Other directories are not published on npm, so such imports will not work.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
-
-import { Plugin } from '@ckeditor/ckeditor5-core';
-
-// The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
-
-import { Plugin } from 'ckeditor5/packages/ckeditor5-core';
-```
-
-👍&nbsp; Examples of correct code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
-
-import { Plugin } from 'ckeditor5/src/core';
-```
-
-Also, non-DLL packages should not import between non-DLL packages to avoid code duplications when building DLL builds.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
-
-import { createImageViewElement } from '@ckeditor/ckeditor5-image'
-```
-
-To use the `createImageViewElement()` function, consider implementing a utility plugin that will expose the required function in the `ckeditor5-image` package.
-
-When importing a DLL package from another DLL package, an import statement must use the full name of the imported package instead of using the `ckeditor5` notation.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
-
-import { Plugin } from 'ckeditor5/src/core';
-```
-
-👍&nbsp; Examples of correct code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
-
-import { Plugin } from 'ckeditor5';
-```
-
-History of changes:
-
-* [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
-* [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)
-* [Imports between DLL packages must use full names of packages.](https://github.com/ckeditor/ckeditor5/issues/10375)
-
 ### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
 
 It is allowed to import modules from other packages:
@@ -1235,7 +1169,7 @@ In addition to the rules provided by Stylelint, CKEditor&nbsp;5 uses a few custo
 
 ### Names of CSS variables within `.ck-content`: `ckeditor5-rules/ck-content-variable-name`
 
-This rule aims to enforce convention of all variables targeting styling of elements within the editor (`.ck-content`) using a common prefix (`--ck-content-*`) 
+This rule aims to enforce convention of all variables targeting styling of elements within the editor (`.ck-content`) using a common prefix (`--ck-content-*`)
 
 👎&nbsp; Example of incorrect code for this rule:
 
