@@ -28,7 +28,6 @@ This policy will help you:
 
 * Understand when CKEditor&nbsp;5 introduces breaking changes,
 * Prepare your plugins and applications for major upgrades,
-* Avoid guessing which Node.js, TypeScript, or browser versions you should support,
 * Follow stable patterns instead of learning each change in isolation.
 
 ## Upgrade frequency and release cadence
