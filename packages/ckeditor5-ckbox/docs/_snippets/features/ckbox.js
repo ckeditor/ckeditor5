@@ -10,9 +10,13 @@ import {
 	findToolbarItem
 } from '@snippets/index.js';
 import { CkBoxEditor } from './build-ckbox-source.js';
+import './ckbox.css';
+
+const { CKBoxWidget, CKBox } = window;
 
 CkBoxEditor
-	.create( document.querySelector( '#snippet-ckbox' ), {
+	.create( document.querySelector( '#snippet-ckbox-ckeditor' ), {
+		initialData: document.querySelector( '#snippet-ckbox-content' ).innerHTML,
 		toolbar: {
 			items: [
 				'undo', 'redo',
@@ -79,3 +83,22 @@ CkBoxEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+fetch( TOKEN_URL )
+	.then( response => response.text() )
+	.then( token => {
+		const { auth } = JSON.parse( atob( token.split( '.' )[ 1 ] ) );
+		const workspaceId = auth.ckbox.workspaces[ 0 ];
+
+		CKBoxWidget.mountUploaderWidget( document.getElementById( 'snippet-ckbox-uploader-widget' ), {
+			tokenUrl: TOKEN_URL,
+			workspaceId
+		} );
+	} );
+
+document.getElementById( 'ckbox-button' ).addEventListener( 'click', () => {
+	CKBox.mount( document.getElementById( 'snippet-ckbox-standalone-root' ), {
+		dialog: true,
+		tokenUrl: TOKEN_URL
+	} );
+} );
