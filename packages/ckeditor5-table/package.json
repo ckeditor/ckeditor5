@@ -13,11 +13,11 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "workspace:*",
     "@ckeditor/ckeditor5-clipboard": "workspace:*",
     "@ckeditor/ckeditor5-core": "workspace:*",
     "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
+    "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
     "@ckeditor/ckeditor5-widget": "workspace:*",
@@ -44,13 +44,13 @@
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
     "@ckeditor/ckeditor5-source-editing": "workspace:*",
     "@ckeditor/ckeditor5-theme-lark": "workspace:*",
-    "@ckeditor/ckeditor5-typing": "workspace:*",
     "@ckeditor/ckeditor5-undo": "workspace:*",
     "@ckeditor/ckeditor5-autosave": "workspace:*",
     "json-diff": "^0.5.4",
     "typescript": "5.3.3",
     "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "ckeditor5": "workspace:*"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

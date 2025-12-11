@@ -14,10 +14,10 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-core": "workspace:*",
+    "@ckeditor/ckeditor5-engine": "workspace:*",
     "@ckeditor/ckeditor5-icons": "workspace:*",
     "@ckeditor/ckeditor5-ui": "workspace:*",
     "@ckeditor/ckeditor5-utils": "workspace:*",
-    "ckeditor5": "workspace:*",
     "es-toolkit": "1.39.5"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
     "@ckeditor/ckeditor5-editor-classic": "workspace:*",
     "@ckeditor/ckeditor5-editor-decoupled": "workspace:*",
     "@ckeditor/ckeditor5-editor-multi-root": "workspace:*",
-    "@ckeditor/ckeditor5-engine": "workspace:*",
+    "ckeditor5": "workspace:*",
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-font": "workspace:*",
