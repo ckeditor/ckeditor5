@@ -43,12 +43,10 @@
     "src/**/*.js",
     "src/**/*.d.ts",
     "theme",
-    "build",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "dll:build": "webpack",
     "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
