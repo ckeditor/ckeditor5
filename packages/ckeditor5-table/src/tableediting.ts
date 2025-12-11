@@ -195,9 +195,9 @@ export class TableEditing extends Plugin {
 
 		if ( editor.config.get( 'table.showHiddenBorders' ) ) {
 			editor.editing.view.change( writer => {
-				const root = editor.editing.view.document.getRoot()!;
-
-				writer.addClass( 'ck-table-show-hidden-borders', root );
+				for ( const root of editor.editing.view.document.roots ) {
+					writer.addClass( 'ck-table-show-hidden-borders', root );
+				}
 			} );
 		}
 
