@@ -44,7 +44,7 @@ When you upgrade to a new major version of CKEditor&nbsp;5:
 * Check the updated minimum version of TypeScript,
 * If you use our tooling or forked one of our repositories, check the updated minimum version of Node,
 * Review browser support changes,
-* Update integrations to supported framework versions,
+* Update framework integrations to supported versions,
 * Follow the corresponding migration guide for detailed instructions.
 
 ## Detailed rules
