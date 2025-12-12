@@ -37,7 +37,7 @@
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
-  "main": "./theme/theme.css",
+  "main": "src/index.ts",
   "scripts": {
     "build:dist": "ckeditor5-dev-build-tools --input=theme/index.css --clean --source-map --banner=../../scripts/nim/banner.mjs"
   }

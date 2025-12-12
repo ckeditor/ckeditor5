@@ -41,7 +41,6 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.release.json",
     "build:dist": "node ../../scripts/nim/build-ckeditor5.mjs"
   },
   "dependencies": {

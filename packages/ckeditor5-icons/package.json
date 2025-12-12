@@ -33,7 +33,6 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc --build --force ./tsconfig.json && node ../../scripts/update-icons-typings.mjs",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

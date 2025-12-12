@@ -17,12 +17,11 @@ export default async function updatePackageEntryPoint( packagePath ) {
 	if ( pkgJson.name === 'ckeditor5' ) {
 		pkgJson.exports = {
 			'.': {
-				'types': './src/index.d.ts',
+				'types': './dist/index.d.ts',
 				'import': './dist/ckeditor5.js'
 			},
 			'./*': './dist/*',
 			'./browser/*': null,
-			'./src/*': './src/*',
 			'./package.json': './package.json'
 		};
 
@@ -33,6 +32,7 @@ export default async function updatePackageEntryPoint( packagePath ) {
 		return;
 	}
 
+	// TODO: change src/index.ts => dist/index.js
 	const main = pkgJson.main.replace( /\.ts$/, '.js' );
 	const types = pkgJson.main.replace( /\.ts$/, '.d.ts' );
 	const files = pkgJson.files || [];
