@@ -53,7 +53,7 @@ Below, you will find all name changes in packages listed alphabetically for conv
 </info-box>
 
 <info-box info>
-	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://raw.githubusercontent.com/ckeditor/ckeditor5/refs/heads/master/docs/updating/nim-migration/migrating-exports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
+	Manually updating all these numerous imports could be time-consuming and error-prone. We recommend using the [tables with the changed import/export names](https://github.com/ckeditor/ckeditor5/blob/master/docs/updating/nim-migration/migrating-imports.md) as context for tools such as Copilot, ChatGPT, or other LLM-based services that can automatically update all imports in your project.
 </info-box>
 
 ### @ckeditor/ckeditor5-adapter-ckfinder
