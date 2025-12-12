@@ -1,0 +1,437 @@
+<style>
+	#common-editors-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-evenly;
+	}
+
+	#common-editors-container.horizontal {
+		flex-direction: row;
+	}
+
+	#common-editors-container.horizontal>section {
+		max-width: 48%;
+		flex-grow: 1;
+	}
+
+	#common-editors-container>div {
+		display: none;
+	}
+
+</style>
+
+<section id="common-editors-container" class="horizontal">
+	<section>
+		<h2>Editor with <code>showHiddenBorders</code></h2>
+
+		<div id="editor-with-show-hidden-borders">
+			<h2>
+				table: no border, cells: no border
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: default double, cells: default solid
+			</h2>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: default double, cells: no border
+			</h2>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: no border, cells: default solid
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: no border, cells: mixed
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:dashed;border-width:2px;border-color: #2F2;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:dashed;border-width:4px;border-color: #F22;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				&nbsp;
+			</p>
+		</div>
+	</section>
+
+	<section>
+		<h2>Editor without <code>showHiddenBorders</code></h2>
+
+		<div id="editor-without-show-hidden-borders">
+			<h2>
+				table: no border, cells: no border
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: default double, cells: default solid
+			</h2>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: default double, cells: no border
+			</h2>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: no border, cells: default solid
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<h2>
+				table: no border, cells: mixed
+			</h2>
+			<figure class="table">
+				<table style="border-style:none;">
+					<tbody>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+							<td style="border-style:dashed;border-width:2px;border-color: #2F2;">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td style="border-style:dashed;border-width:4px;border-color: #F22;">
+								&nbsp;
+							</td>
+							<td style="border-style:none;">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				&nbsp;
+			</p>
+		</div>
+	</section>
+</section>

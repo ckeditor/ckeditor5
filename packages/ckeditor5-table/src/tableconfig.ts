@@ -230,6 +230,25 @@ export interface TableConfig {
 	 * ```
 	 */
 	tableCaption?: TableCaptionConfig;
+
+	/**
+	 * When set to `true` (default), the editor visually displays dashed borders around table elements (`<table>`, `<td>`, `<th>`)
+	 * that contain inline styles explicitly removing borders (for example: `border: none`, `border-top-style: none`, etc.).
+	 *
+	 * This visualization is shown **only in the editing view**.
+	 * It does not modify the underlying table data or the HTML produced by the editor.
+	 * When set to `false`, the editor will not render any dashed borders, and elements with `border: none`
+	 * will remain visually borderless during editing.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	showHiddenBorders: false
+	 * };
+	 * ```
+	 *
+	 * @default true
+	 */
+	showHiddenBorders?: boolean;
 }
 
 /**
