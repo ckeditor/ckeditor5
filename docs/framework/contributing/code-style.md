@@ -877,7 +877,7 @@ throw new CKEditorError( 'editor-wrong-element', this );
 It is allowed to import modules from other packages:
 
 ```js
-import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
 ```
 
 However, some packages cannot import modules from CKEditor&nbsp;5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
@@ -889,7 +889,7 @@ Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 ```js
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
-import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
 import { toArray } from 'ckeditor5';
 ```
 
@@ -906,7 +906,7 @@ File was processed with these loaders:
 You may need an additional loader to handle the result of these loaders.
 |  */
 |
-> /* @if CK_DEBUG */  import { CKEditorError } from 'ckeditor5/src/utils';
+> /* @if CK_DEBUG */  import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 |
 | /**
 ```
