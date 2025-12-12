@@ -8,6 +8,9 @@ overrides:
   markdown-it-toc: npm:@maboloshi/markdown-it-toc@1.1.1
   '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@ckeditor/jsdoc-plugins>jsdoc': '-'
+  '@ckeditor/ckeditor5-dev-tests': github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-tests
+  '@ckeditor/ckeditor5-dev-utils': github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+  '@ckeditor/ckeditor5-dev-translations': github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-translations
 
 importers:
 
@@ -44,8 +47,8 @@ importers:
         specifier: ^54.2.1
         version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-dev-tests':
-        specifier: ^54.2.1
-        version: 54.2.1(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(webpack-cli@6.0.1)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-tests
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-tests(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(webpack-cli@6.0.1)
       '@ckeditor/ckeditor5-dev-web-crawler':
         specifier: ^54.2.1
         version: 54.2.1(typescript@5.3.3)
@@ -375,11 +378,11 @@ importers:
         version: link:../ckeditor5-word-count
     devDependencies:
       '@ckeditor/ckeditor5-dev-translations':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-translations
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-translations(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@wiris/mathtype-ckeditor5':
         specifier: ^8.13.1
         version: 8.13.4(ckeditor5@packages+ckeditor5)
@@ -418,8 +421,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -482,8 +485,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -549,8 +552,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -601,8 +604,8 @@ importers:
         version: 1.39.5
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -647,8 +650,8 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -705,8 +708,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -781,8 +784,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -875,8 +878,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -933,8 +936,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1109,8 +1112,8 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1167,8 +1170,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1295,8 +1298,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1344,8 +1347,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1405,8 +1408,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1469,8 +1472,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1530,8 +1533,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1603,8 +1606,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-enter':
         specifier: workspace:*
         version: link:../ckeditor5-enter
@@ -1679,8 +1682,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -1865,8 +1868,8 @@ importers:
         version: link:../ckeditor5-undo
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1914,8 +1917,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -1990,8 +1993,8 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2063,8 +2066,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2199,8 +2202,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2257,8 +2260,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2321,8 +2324,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2379,8 +2382,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2470,8 +2473,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2609,8 +2612,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2700,8 +2703,8 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2740,8 +2743,8 @@ importers:
         version: link:../ckeditor5-utils
     devDependencies:
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -2813,8 +2816,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -2898,8 +2901,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3043,8 +3046,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3137,8 +3140,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-basic-styles
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-balloon':
         specifier: workspace:*
         version: link:../ckeditor5-editor-balloon
@@ -3210,8 +3213,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3277,8 +3280,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3344,8 +3347,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3451,8 +3454,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3533,8 +3536,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-clipboard
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3609,8 +3612,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3734,8 +3737,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3858,8 +3861,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -3916,8 +3919,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-cloud-services
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -3992,8 +3995,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-code-block
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-easy-image':
         specifier: workspace:*
         version: link:../ckeditor5-easy-image
@@ -4116,8 +4119,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -4647,8 +4650,8 @@ importers:
         specifier: workspace:*
         version: link:../ckeditor5-block-quote
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^54.2.1
-        version: 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+        specifier: github:ckeditor/ckeditor5-dev#ci/4196-remove-oim-specific-code&path:packages/ckeditor5-dev-utils
+        version: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-editor-classic':
         specifier: workspace:*
         version: link:../ckeditor5-editor-classic
@@ -5268,17 +5271,20 @@ packages:
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-tests@54.2.1':
-    resolution: {integrity: sha512-5uxUsLa8EngkD0/Dsbv/CuW46Mgrtfx+zmyGQIBR+++rVyNfZhWk0mCo59ZTA0C1w6Hhp863LmkQidgntWtoow==}
+  '@ckeditor/ckeditor5-dev-tests@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-tests':
+    resolution: {path: packages/ckeditor5-dev-tests, tarball: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6}
+    version: 54.2.1
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-translations@54.2.1':
-    resolution: {integrity: sha512-i+wQvK33tVWVBzUMUYPaPmF1iqy6+oM2nzTbSbtzHOsmizzq7LhQGfxHokEB+oQJRJGvjrxAg5nS/KJd2DT7Ew==}
+  '@ckeditor/ckeditor5-dev-translations@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-translations':
+    resolution: {path: packages/ckeditor5-dev-translations, tarball: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6}
+    version: 54.2.1
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@54.2.1':
-    resolution: {integrity: sha512-mhKN+M5lv7KGDqzXedajqnId8x0ehyeABnQlh5Sb6Zuc4D3b5a8n6HS4nyjscEc2halHTKZ3SZwWJ8vJVzlh4g==}
+  '@ckeditor/ckeditor5-dev-utils@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils':
+    resolution: {path: packages/ckeditor5-dev-utils, tarball: https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6}
+    version: 54.2.1
     engines: {node: '>=24.11.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-dev-web-crawler@54.2.1':
@@ -13463,7 +13469,7 @@ snapshots:
 
   '@ckeditor/ckeditor5-dev-changelog@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       date-fns: 4.1.0
       glob: 13.0.0
       gray-matter: 4.0.3
@@ -13488,7 +13494,7 @@ snapshots:
 
   '@ckeditor/ckeditor5-dev-dependency-checker@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       depcheck: 1.4.7
       glob: 13.0.0
       minimist: 1.2.8
@@ -13522,7 +13528,7 @@ snapshots:
 
   '@ckeditor/ckeditor5-dev-release-tools@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@octokit/rest': 22.0.0
       cli-columns: 4.0.0
       glob: 13.0.0
@@ -13544,7 +13550,7 @@ snapshots:
 
   '@ckeditor/ckeditor5-dev-stale-bot@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       date-fns: 4.1.0
       graphql: 16.11.0
       graphql-request: 7.2.0(graphql@16.11.0)
@@ -13561,11 +13567,11 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-tests@54.2.1(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(webpack-cli@6.0.1)':
+  '@ckeditor/ckeditor5-dev-tests@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-tests(@swc/core@1.13.5)(@types/node@24.6.2)(esbuild@0.25.10)(webpack-cli@6.0.1)':
     dependencies:
       '@babel/core': 7.28.4
-      '@ckeditor/ckeditor5-dev-translations': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-translations': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-translations(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@ckeditor/ckeditor5-inspector': 5.0.0
       '@types/chai': 4.3.20
       '@types/karma-sinon-chai': 2.0.6
@@ -13620,11 +13626,11 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@ckeditor/ckeditor5-dev-translations@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
+  '@ckeditor/ckeditor5-dev-translations@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-translations(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/traverse': 7.28.5
-      '@ckeditor/ckeditor5-dev-utils': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-utils': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       glob: 13.0.0
       plural-forms: 0.5.5
       pofile: 1.1.4
@@ -13641,9 +13647,9 @@ snapshots:
       - uglify-js
       - webpack
 
-  '@ckeditor/ckeditor5-dev-utils@54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
+  '@ckeditor/ckeditor5-dev-utils@https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-utils(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-translations': 54.2.1(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
+      '@ckeditor/ckeditor5-dev-translations': https://codeload.github.com/ckeditor/ckeditor5-dev/tar.gz/10dfa8392b54b83247f38cde8bfad7b877ba7da6#path:packages/ckeditor5-dev-translations(@babel/core@7.28.4)(@swc/core@1.13.5)(esbuild@0.25.10)(typescript@5.3.3)(webpack@5.102.0)
       '@types/postcss-import': 14.0.3
       '@types/through2': 2.0.41
       babel-loader: 10.0.0(@babel/core@7.28.4)(webpack@5.102.0)
