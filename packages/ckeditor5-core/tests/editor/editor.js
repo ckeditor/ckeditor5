@@ -360,7 +360,13 @@ describe( 'Editor', () => {
 
 		it( 'should use locale instance with a proper configuration passed as the argument to the constructor', () => {
 			const editor = new TestEditor( {
-				language: 'pl'
+				language: 'pl',
+				translations: [ {
+					pl: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					}
+				} ]
 			} );
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
@@ -369,7 +375,13 @@ describe( 'Editor', () => {
 
 		it( 'should use locale instance with a proper configuration set as the defaultConfig option on the constructor', () => {
 			TestEditor.defaultConfig = {
-				language: 'pl'
+				language: 'pl',
+				translations: [ {
+					pl: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					}
+				} ]
 			};
 
 			const editor = new TestEditor();
@@ -380,7 +392,13 @@ describe( 'Editor', () => {
 
 		it( 'should prefer the language passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
 			TestEditor.defaultConfig = {
-				language: 'de'
+				language: 'de',
+				translations: [ {
+					pl: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					}
+				} ]
 			};
 
 			const editor = new TestEditor( {
@@ -393,10 +411,22 @@ describe( 'Editor', () => {
 
 		it( 'should prefer the language from the context instead of the constructor config or defaultConfig if all are set', async () => {
 			TestEditor.defaultConfig = {
-				language: 'de'
+				language: 'de',
+				translations: [ {
+					pl: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					}
+				} ]
 			};
 
-			const context = await Context.create( { language: 'pl' } );
+			const context = await Context.create( {
+				language: 'pl',
+				translations: [ { pl: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
+			} );
 			const editor = new TestEditor( { context, language: 'ru' } );
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
