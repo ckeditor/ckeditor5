@@ -109,6 +109,28 @@ export function expectToThrowCKEditorError( fn, message, editorThatShouldBeFinda
 }
 
 /**
+ * An assertion util to test whether the given promise is failed with an error that has correct message,
+ * data and whether the context of the error and the `editorThatShouldBeFindableFromContext`
+ * have common props (So the watchdog will be able to find the correct editor instance and restart it).
+ *
+ * @param {Promise} promise Tested promise that should be rejected with a `CKEditorError`.
+ * @param {RegExp|String} message Expected message of the error.
+ * @param {*} editorThatShouldBeFindableFromContext An editor instance that should be findable from the error context.
+ * @param {Object} [data] Error data.
+ */
+export async function expectToRejectWithCKEditorError( promise, message, editorThatShouldBeFindableFromContext, data ) {
+	let err = null;
+
+	await promise.catch( _err => {
+		err = _err;
+	} );
+
+	assertCKEditorError( err, message, editorThatShouldBeFindableFromContext, data );
+
+	expect( err ).to.not.equal( null, 'Function did not throw any error' );
+}
+
+/**
  * An assertion util to test whether a given error has correct message, data and whether the context of the
  * error and the `editorThatShouldBeFindableFromContext` have common props (So the watchdog will be able to
  * find the correct editor instance and restart it).
