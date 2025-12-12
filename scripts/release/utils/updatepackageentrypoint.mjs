@@ -46,20 +46,9 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			default: './' + main
 		},
 		'./dist/*': {
-			/**
-			 * To avoid problems caused by having two different copies of the declaration
-			 * files, the new installation methods will temporarily use those from the
-			 * old installation methods. Once the old methods are removed, the declaration
-			 * files will be moved to the `dist` directory.
-			 */
 			types: './' + types,
-			import: './dist/*',
-			default: './dist/*'
-		},
-		'./src/*': {
-			types: './src/*.d.ts',
-			import: './src/*',
-			default: './src/*'
+			import: './' + main,
+			default: './' + main
 		}
 	};
 
