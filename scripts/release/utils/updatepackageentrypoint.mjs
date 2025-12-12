@@ -25,6 +25,8 @@ export default async function updatePackageEntryPoint( packagePath ) {
 			'./package.json': './package.json'
 		};
 
+		pkgJson.types = 'dist/index.d.ts';
+
 		return fs.writeJson( packageJsonPath, pkgJson );
 	}
 
